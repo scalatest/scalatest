@@ -17,12 +17,15 @@ package org.scalactic.views
 
 import org.scalactic.Collections
 import org.scalactic.SortedCollections
+import org.scalactic.iterators.GenIterableOnce
+import org.scalactic.iterators.Iterator
 
 trait SortedSetView[+T] extends SetView[T] {
+  def iterator: Iterator[T]
   def collect[U](pf: PartialFunction[T, U]): TreeSetView[U]
 
   def map[U](f: T => U): TreeSetView[U]
-  def flatMap[U](f: T => SetView[U]): TreeSetView[U]
+  def flatMap[U](f: T => GenIterableOnce[U]): TreeSetView[U]
   def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]

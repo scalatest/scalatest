@@ -17,12 +17,15 @@ package org.scalactic.views
 
 import org.scalactic.Collections
 import org.scalactic.SortedCollections
+import org.scalactic.iterators.GenIterableOnce
+import org.scalactic.iterators.Iterator
 
 trait TreeSetView[+T] extends SortedSetView[T] {
+  def iterator: Iterator[T]
   def collect[U](pf: PartialFunction[T, U]): TreeSetView[U]
 
   def map[U](f: T => U): TreeSetView[U]
-  def flatMap[U](f: T => SetView[U]): TreeSetView[U]
+  def flatMap[U](f: T => GenIterableOnce[U]): TreeSetView[U]
   def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeSet[U]
@@ -43,9 +46,17 @@ trait TreeSetView[+T] extends SortedSetView[T] {
 
 object TreeSetView {
   private class BasicTreeSetView[T](private val args: List[T]) extends TreeSetView[T] { thisTreeSetView =>
+    def iterator: Iterator[T] =
+      new Iterator[T] {
+        private val it = args.iterator
+        def hasNext: Boolean = it.hasNext
+        def next(): T = it.next()
+        def iterator: Iterator[T] = this
+        def toStandardList: scala.collection.immutable.List[T] = it.toList
+      }
     def collect[U](pf: PartialFunction[T, U]): TreeSetView[U] = new CollectTreeSetView(thisTreeSetView, pf)
     def map[U](f: T => U): TreeSetView[U] = new MapTreeSetView(thisTreeSetView, f)
-    def flatMap[U](f: T => SetView[U]): TreeSetView[U] = new FlatMapTreeSetView(thisTreeSetView, f)
+    def flatMap[U](f: T => GenIterableOnce[U]): TreeSetView[U] = new FlatMapTreeSetView(thisTreeSetView, f)
     def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = force(toPath)
     def force[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = toPath.immutable.FastSet(args: _*)
     def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U] = force(toPath)
@@ -80,9 +91,17 @@ object TreeSetView {
   }
 
   private abstract class TransformTreeSetView[T, U] extends TreeSetView[U] { thisTreeSetView =>
+    def iterator: Iterator[U] =
+      new Iterator[U] {
+        private val it = toStandardList.iterator
+        def hasNext: Boolean = it.hasNext
+        def next(): U = it.next()
+        def iterator: Iterator[U] = this
+        def toStandardList: scala.collection.immutable.List[U] = it.toList
+      }
     def collect[V](pf: PartialFunction[U, V]): TreeSetView[V] = new CollectTreeSetView(thisTreeSetView, pf)
     def map[V](g: U => V): TreeSetView[V] = new MapTreeSetView[U, V](thisTreeSetView, g)
-    def flatMap[V](f: U => SetView[V]): TreeSetView[V] = new FlatMapTreeSetView(thisTreeSetView, f)
+    def flatMap[V](f: U => GenIterableOnce[V]): TreeSetView[V] = new FlatMapTreeSetView(thisTreeSetView, f)
     def force[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
       toPath.immutable.FastSet[V](toStandardList: _*)
     }
@@ -133,7 +152,7 @@ object TreeSetView {
     def toStandardList: List[U] = lazySeq.toStandardList.map(f)
   }
 
-  private class FlatMapTreeSetView[T, U](lazySeq: TreeSetView[T], f: T => SetView[U]) extends TransformTreeSetView[T, U] { thisTreeSetView =>
+  private class FlatMapTreeSetView[T, U](lazySeq: TreeSetView[T], f: T => GenIterableOnce[U]) extends TransformTreeSetView[T, U] { thisTreeSetView =>
     def toStandardList: List[U] = lazySeq.toStandardList.flatMap(f.andThen(_.toStandardList))
   }
 

@@ -17,10 +17,13 @@ package org.scalactic.views
 
 import org.scalactic.Collections
 import org.scalactic.SortedCollections
+import org.scalactic.iterators.GenIterableOnce
+import org.scalactic.iterators.Iterator
 
 trait FastSetView[+T] extends SetView[T] {
+  def iterator: Iterator[T]
   def map[U](f: T => U): FastSetView[U]
-  def flatMap[U](f: T => SetView[U]): FastSetView[U]
+  def flatMap[U](f: T => GenIterableOnce[U]): FastSetView[U]
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
@@ -165,9 +168,17 @@ trait FastSetView[+T] extends SetView[T] {
 
 object FastSetView {
   private class BasicFastSetView[T](private val args: List[T]) extends FastSetView[T] { thisFastSetView =>
+    def iterator: Iterator[T] =
+      new Iterator[T] {
+        private val it = args.iterator
+        def hasNext: Boolean = it.hasNext
+        def next(): T = it.next()
+        def iterator: Iterator[T] = this
+        def toStandardList: scala.collection.immutable.List[T] = it.toList
+      }
     def collect[U](pf: PartialFunction[T, U]): FastSetView[U] = new CollectFastSetView(thisFastSetView, pf)
     def map[U](f: T => U): FastSetView[U] = new MapFastSetView(thisFastSetView, f)
-    def flatMap[U](f: T => SetView[U]): FastSetView[U] = new FlatMapFastSetView(thisFastSetView, f)
+    def flatMap[U](f: T => GenIterableOnce[U]): FastSetView[U] = new FlatMapFastSetView(thisFastSetView, f)
     def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = force(toPath)
     def force[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = toPath.immutable.FastSet[U](args: _*)
     def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U] = ???
@@ -207,9 +218,17 @@ object FastSetView {
   }
 
   private abstract class TransformFastSetView[T, U] extends FastSetView[U] { thisFastSetView =>
+    def iterator: Iterator[U] =
+      new Iterator[U] {
+        private val it = toStandardList.iterator
+        def hasNext: Boolean = it.hasNext
+        def next(): U = it.next()
+        def iterator: Iterator[U] = this
+        def toStandardList: scala.collection.immutable.List[U] = it.toList
+      }
     def collect[V](pf: PartialFunction[U, V]): FastSetView[V] = new CollectFastSetView(thisFastSetView, pf)
     def map[V](g: U => V): FastSetView[V] = new MapFastSetView[U, V](thisFastSetView, g)
-    def flatMap[V](f: U => SetView[V]): FastSetView[V] = ???
+    def flatMap[V](f: U => GenIterableOnce[V]): FastSetView[V] = ???
     def toSet[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = force(toPath)
     def force[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
       toPath.immutable.FastSet[V](toStandardList: _*)
@@ -251,7 +270,7 @@ object FastSetView {
     def toStandardList: List[U] = lazyBag.toStandardList.map(f)
   }
 
-  private class FlatMapFastSetView[T, U](lazyBag: FastSetView[T], f: T => SetView[U]) extends TransformFastSetView[T, U] {
+  private class FlatMapFastSetView[T, U](lazyBag: FastSetView[T], f: T => GenIterableOnce[U]) extends TransformFastSetView[T, U] {
     def toStandardList: List[U] = lazyBag.toStandardList.flatMap(f.andThen(_.toStandardList))
   }
 
