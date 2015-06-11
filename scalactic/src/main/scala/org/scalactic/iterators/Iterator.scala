@@ -20,3 +20,12 @@ trait Iterator[+A] extends Any with GenIterableOnce[A] {
   def next(): A
 }
 
+private[scalactic] object Iterator {
+  def apply[A](it: scala.collection.Iterator[A]): org.scalactic.iterators.Iterator[A] = 
+      new Iterator[A] {
+        def hasNext: Boolean = it.hasNext
+        def next(): A = it.next()
+        def iterator: Iterator[A] = this
+        def toStandardList: scala.collection.immutable.List[A] = it.toList
+      }
+}

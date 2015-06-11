@@ -23,6 +23,8 @@ import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 import scala.collection.{SortedSet => StandardSortedSet}
 import scala.collection.parallel.mutable.ParArray
+import org.scalactic.iterators.Iterator
+import scala.collection.{Iterator => StdIterator}
 
 class SortedSetSpec extends UnitSpec {
   implicit class HasExactType[T](o: T) {
@@ -341,7 +343,7 @@ class SortedSetSpec extends UnitSpec {
     result8.shouldHaveExactType[lower.immutable.TreeSet[String]]
   }
   it should "return an iterator that returns elements in sorted order" in {
-    lower.immutable.SortedSet("hi", "ho", "ha", "he").iterator.toList shouldEqual List("ha", "he", "hi", "ho")
+    lower.immutable.SortedSet("hi", "ho", "ha", "he").iterator.toStandardList shouldEqual List("ha", "he", "hi", "ho")
   }
   it should "have a ++ method that takes a GenTraversableOnce" in {
     val result1 = lower.immutable.SortedSet("hi", "ho") ++ List("ha", "hey!")
@@ -974,63 +976,63 @@ class SortedSetSpec extends UnitSpec {
     result8.shouldHaveExactType[scala.collection.GenMap[Int, number.immutable.TreeSet[Int]]]
   }
   it should "have a grouped method" in {
-    val result1 = number.immutable.SortedSet(1, 2, 3).grouped(2).toList
+    val result1 = number.immutable.SortedSet(1, 2, 3).grouped(2).toStandardList
     result1 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(3))
     result1.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result2 = number.immutable.SortedSet(1, 2, 3).grouped(1).toList
+    val result2 = number.immutable.SortedSet(1, 2, 3).grouped(1).toStandardList
     result2 shouldBe List(number.immutable.SortedSet(1), number.immutable.SortedSet(2), number.immutable.SortedSet(3))
     result2.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    an [IllegalArgumentException] should be thrownBy { number.immutable.SortedSet(1, 2, 3).grouped(0).toList }
+    an [IllegalArgumentException] should be thrownBy { number.immutable.SortedSet(1, 2, 3).grouped(0).toStandardList }
 
-    val result3 = number.immutable.SortedSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toList
+    val result3 = number.immutable.SortedSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toStandardList
     result3 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(3, 4), number.immutable.SortedSet(5, 6), number.immutable.SortedSet(7, 8), number.immutable.SortedSet(9, 10))
     result3.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result4 = number.immutable.SortedSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toList
+    val result4 = number.immutable.SortedSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toStandardList
     result4 shouldBe List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(4, 5, 6), number.immutable.SortedSet(7, 8, 9), number.immutable.SortedSet(10))
     result4.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result5 = number.immutable.SortedSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toList
+    val result5 = number.immutable.SortedSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toStandardList
     result5 shouldBe List(number.immutable.SortedSet(1, 2, 3, 4), number.immutable.SortedSet(5, 6, 7, 8), number.immutable.SortedSet(9, 10))
     result5.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result6 = number.immutable.SortedSet(1).grouped(2).toList
+    val result6 = number.immutable.SortedSet(1).grouped(2).toStandardList
     result6 shouldBe List(number.immutable.SortedSet(1))
     result6.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result7 = number.immutable.SortedSet(1).grouped(1).toList
+    val result7 = number.immutable.SortedSet(1).grouped(1).toStandardList
     result7 shouldBe List(number.immutable.SortedSet(1))
     result7.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result8 = number.immutable.TreeSet(1, 2, 3).grouped(2).toList
+    val result8 = number.immutable.TreeSet(1, 2, 3).grouped(2).toStandardList
     result8 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(3))
     result8.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result9 = number.immutable.TreeSet(1, 2, 3).grouped(1).toList
+    val result9 = number.immutable.TreeSet(1, 2, 3).grouped(1).toStandardList
     result9 shouldBe List(number.immutable.TreeSet(1), number.immutable.TreeSet(2), number.immutable.TreeSet(3))
     result9.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    an [IllegalArgumentException] should be thrownBy { number.immutable.TreeSet(1, 2, 3).grouped(0).toList }
+    an [IllegalArgumentException] should be thrownBy { number.immutable.TreeSet(1, 2, 3).grouped(0).toStandardList }
 
-    val result10 = number.immutable.TreeSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toList
+    val result10 = number.immutable.TreeSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(2).toStandardList
     result10 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(3, 4), number.immutable.TreeSet(5, 6), number.immutable.TreeSet(7, 8), number.immutable.TreeSet(9, 10))
     result10.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result11 = number.immutable.TreeSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toList
+    val result11 = number.immutable.TreeSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(3).toStandardList
     result11 shouldBe List(number.immutable.TreeSet(1, 2, 3), number.immutable.TreeSet(4, 5, 6), number.immutable.TreeSet(7, 8, 9), number.immutable.TreeSet(10))
     result11.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result12 = number.immutable.TreeSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toList
+    val result12 = number.immutable.TreeSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10).grouped(4).toStandardList
     result12 shouldBe List(number.immutable.TreeSet(1, 2, 3, 4), number.immutable.TreeSet(5, 6, 7, 8), number.immutable.TreeSet(9, 10))
     result12.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result13 = number.immutable.TreeSet(1).grouped(2).toList
+    val result13 = number.immutable.TreeSet(1).grouped(2).toStandardList
     result13 shouldBe List(number.immutable.TreeSet(1))
     result13.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result14 = number.immutable.TreeSet(1).grouped(1).toList
+    val result14 = number.immutable.TreeSet(1).grouped(1).toStandardList
     result14 shouldBe List(number.immutable.TreeSet(1))
     result14.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
   }
@@ -1251,203 +1253,203 @@ class SortedSetSpec extends UnitSpec {
   }
   it should "have 2 sliding methods" in {
 
-    val result1 = number.immutable.SortedSet(1).sliding(1).toList
+    val result1 = number.immutable.SortedSet(1).sliding(1).toStandardList
     result1 shouldBe List(number.immutable.SortedSet(1))
     result1.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result2 = number.immutable.SortedSet(1).sliding(2).toList
+    val result2 = number.immutable.SortedSet(1).sliding(2).toStandardList
     result2 shouldBe List(number.immutable.SortedSet(1))
     result2.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result3 = number.immutable.SortedSet(1, 2, 3).sliding(2).toList
+    val result3 = number.immutable.SortedSet(1, 2, 3).sliding(2).toStandardList
     result3 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(2, 3))
     result3.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result4 = number.immutable.SortedSet(1, 2, 3).sliding(1).toList
+    val result4 = number.immutable.SortedSet(1, 2, 3).sliding(1).toStandardList
     result4 shouldBe List(number.immutable.SortedSet(1), number.immutable.Set(2), number.immutable.SortedSet(3))
     result4.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result5 = number.immutable.SortedSet(1, 2, 3).sliding(3).toList
+    val result5 = number.immutable.SortedSet(1, 2, 3).sliding(3).toStandardList
     result5 shouldBe List(number.immutable.SortedSet(1, 2, 3))
     result5.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result6 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3).toList
+    val result6 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3).toStandardList
     result6 shouldBe List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(2, 3, 4), number.immutable.SortedSet(3, 4, 5))
     result6.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result7 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(2).toList
+    val result7 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(2).toStandardList
     result7 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(2, 3), number.immutable.SortedSet(3, 4), number.immutable.SortedSet(4, 5))
     result7.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result8 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(1).toList
+    val result8 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(1).toStandardList
     result8 shouldBe List(number.immutable.SortedSet(1), number.immutable.SortedSet(2), number.immutable.SortedSet(3), number.immutable.SortedSet(4), number.immutable.SortedSet(5))
     result8.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result9 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(4).toList
+    val result9 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(4).toStandardList
     result9 shouldBe List(number.immutable.SortedSet(1, 2, 3, 4), number.immutable.SortedSet(2, 3, 4, 5))
     result9.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result10 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(5).toList
+    val result10 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(5).toStandardList
     result10 shouldBe List(number.immutable.SortedSet(1, 2, 3, 4, 5))
     result10.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result11 = number.immutable.SortedSet(1).sliding(1, 1).toList
+    val result11 = number.immutable.SortedSet(1).sliding(1, 1).toStandardList
     result11 shouldBe List(number.immutable.SortedSet(1))
     result11.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result12 = number.immutable.SortedSet(1).sliding(1, 2).toList
+    val result12 = number.immutable.SortedSet(1).sliding(1, 2).toStandardList
     result12 shouldBe List(number.immutable.SortedSet(1))
     result12.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result13 = number.immutable.SortedSet(1, 2, 3).sliding(1, 1).toList
+    val result13 = number.immutable.SortedSet(1, 2, 3).sliding(1, 1).toStandardList
     result13 shouldBe List(number.immutable.SortedSet(1), number.immutable.SortedSet(2), number.immutable.SortedSet(3))
     result13.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result14 = number.immutable.SortedSet(1, 2, 3).sliding(2, 1).toList
+    val result14 = number.immutable.SortedSet(1, 2, 3).sliding(2, 1).toStandardList
     result14 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(2, 3))
     result14.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result15 = number.immutable.SortedSet(1, 2, 3).sliding(2, 2).toList
+    val result15 = number.immutable.SortedSet(1, 2, 3).sliding(2, 2).toStandardList
     result15 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(3))
     result15.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result16 = number.immutable.SortedSet(1, 2, 3).sliding(3, 2).toList
+    val result16 = number.immutable.SortedSet(1, 2, 3).sliding(3, 2).toStandardList
     result16 shouldBe List(number.immutable.SortedSet(1, 2, 3))
     result16.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result17 = number.immutable.SortedSet(1, 2, 3).sliding(3, 1).toList
+    val result17 = number.immutable.SortedSet(1, 2, 3).sliding(3, 1).toStandardList
     result17 shouldBe List(number.immutable.SortedSet(1, 2, 3))
     result17.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result18 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    val result18 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 1).toStandardList
     result18 shouldBe List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(2, 3, 4), number.immutable.SortedSet(3, 4, 5))
     result18.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result19 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(2, 2).toList
+    val result19 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(2, 2).toStandardList
     result19 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(3, 4), number.immutable.SortedSet(5))
     result19.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result20 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(2, 3).toList
+    val result20 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(2, 3).toStandardList
     result20 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(4, 5))
     result20.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result21 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(2, 4).toList
+    val result21 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(2, 4).toStandardList
     result21 shouldBe List(number.immutable.SortedSet(1, 2), number.immutable.SortedSet(5))
     result21.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result22 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    val result22 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 1).toStandardList
     result22 shouldBe List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(2, 3, 4), number.immutable.SortedSet(3, 4, 5))
     result22.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result23 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 2).toList
+    val result23 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 2).toStandardList
     result23 shouldBe List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(3, 4, 5))
     result23.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result24 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 3).toList
+    val result24 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 3).toStandardList
     result24 shouldBe List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(4, 5))
     result24.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result25 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 4).toList
+    val result25 = number.immutable.SortedSet(1, 2, 3, 4, 5).sliding(3, 4).toStandardList
     result25 shouldBe List(number.immutable.SortedSet(1, 2, 3), number.immutable.SortedSet(5))
     result25.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result26 = number.immutable.TreeSet(1).sliding(1).toList
+    val result26 = number.immutable.TreeSet(1).sliding(1).toStandardList
     result26 shouldBe List(number.immutable.TreeSet(1))
     result26.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result27 = number.immutable.TreeSet(1).sliding(2).toList
+    val result27 = number.immutable.TreeSet(1).sliding(2).toStandardList
     result27 shouldBe List(number.immutable.TreeSet(1))
     result27.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result28 = number.immutable.TreeSet(1, 2, 3).sliding(2).toList
+    val result28 = number.immutable.TreeSet(1, 2, 3).sliding(2).toStandardList
     result28 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(2, 3))
     result28.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result29 = number.immutable.TreeSet(1, 2, 3).sliding(1).toList
+    val result29 = number.immutable.TreeSet(1, 2, 3).sliding(1).toStandardList
     result29 shouldBe List(number.immutable.TreeSet(1), number.immutable.TreeSet(2), number.immutable.TreeSet(3))
     result29.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result30 = number.immutable.TreeSet(1, 2, 3).sliding(3).toList
+    val result30 = number.immutable.TreeSet(1, 2, 3).sliding(3).toStandardList
     result30 shouldBe List(number.immutable.TreeSet(1, 2, 3))
     result30.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result31 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3).toList
+    val result31 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3).toStandardList
     result31 shouldBe List(number.immutable.TreeSet(1, 2, 3), number.immutable.TreeSet(2, 3, 4), number.immutable.TreeSet(3, 4, 5))
     result31.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result32 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(2).toList
+    val result32 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(2).toStandardList
     result32 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(2, 3), number.immutable.TreeSet(3, 4), number.immutable.TreeSet(4, 5))
     result32.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result33 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(1).toList
+    val result33 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(1).toStandardList
     result33 shouldBe List(number.immutable.TreeSet(1), number.immutable.TreeSet(2), number.immutable.TreeSet(3), number.immutable.TreeSet(4), number.immutable.TreeSet(5))
     result33.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result34 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(4).toList
+    val result34 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(4).toStandardList
     result34 shouldBe List(number.immutable.TreeSet(1, 2, 3, 4), number.immutable.TreeSet(2, 3, 4, 5))
     result34.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result35 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(5).toList
+    val result35 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(5).toStandardList
     result35 shouldBe List(number.immutable.TreeSet(1, 2, 3, 4, 5))
     result35.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result36 = number.immutable.TreeSet(1).sliding(1, 1).toList
+    val result36 = number.immutable.TreeSet(1).sliding(1, 1).toStandardList
     result36 shouldBe List(number.immutable.TreeSet(1))
     result36.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result37 = number.immutable.TreeSet(1).sliding(1, 2).toList
+    val result37 = number.immutable.TreeSet(1).sliding(1, 2).toStandardList
     result37 shouldBe List(number.immutable.TreeSet(1))
     result37.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result38 = number.immutable.TreeSet(1, 2, 3).sliding(1, 1).toList
+    val result38 = number.immutable.TreeSet(1, 2, 3).sliding(1, 1).toStandardList
     result38 shouldBe List(number.immutable.TreeSet(1), number.immutable.TreeSet(2), number.immutable.TreeSet(3))
     result38.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result39 = number.immutable.TreeSet(1, 2, 3).sliding(2, 1).toList
+    val result39 = number.immutable.TreeSet(1, 2, 3).sliding(2, 1).toStandardList
     result39 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(2, 3))
     result39.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result40 = number.immutable.TreeSet(1, 2, 3).sliding(2, 2).toList
+    val result40 = number.immutable.TreeSet(1, 2, 3).sliding(2, 2).toStandardList
     result40 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(3))
     result40.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result41 = number.immutable.TreeSet(1, 2, 3).sliding(3, 2).toList
+    val result41 = number.immutable.TreeSet(1, 2, 3).sliding(3, 2).toStandardList
     result41 shouldBe List(number.immutable.TreeSet(1, 2, 3))
     result41.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result42 = number.immutable.TreeSet(1, 2, 3).sliding(3, 1).toList
+    val result42 = number.immutable.TreeSet(1, 2, 3).sliding(3, 1).toStandardList
     result42 shouldBe List(number.immutable.TreeSet(1, 2, 3))
     result42.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result43 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    val result43 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 1).toStandardList
     result43 shouldBe List(number.immutable.TreeSet(1, 2, 3), number.immutable.TreeSet(2, 3, 4), number.immutable.TreeSet(3, 4, 5))
     result43.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result44 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(2, 2).toList
+    val result44 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(2, 2).toStandardList
     result44 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(3, 4), number.immutable.TreeSet(5))
     result44.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result45 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(2, 3).toList
+    val result45 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(2, 3).toStandardList
     result45 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(4, 5))
     result45.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result46 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(2, 4).toList
+    val result46 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(2, 4).toStandardList
     result46 shouldBe List(number.immutable.TreeSet(1, 2), number.immutable.TreeSet(5))
     result46.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result47 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    val result47 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 1).toStandardList
     result47 shouldBe List(number.immutable.TreeSet(1, 2, 3), number.immutable.TreeSet(2, 3, 4), number.immutable.TreeSet(3, 4, 5))
     result47.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result48 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 2).toList
+    val result48 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 2).toStandardList
     result48 shouldBe List(number.immutable.TreeSet(1, 2, 3), number.immutable.TreeSet(3, 4, 5))
     result48.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result49 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 3).toList
+    val result49 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 3).toStandardList
     result49 shouldBe List(number.immutable.TreeSet(1, 2, 3), number.immutable.TreeSet(4, 5))
     result49.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
 
-    val result50 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 4).toList
+    val result50 = number.immutable.TreeSet(1, 2, 3, 4, 5).sliding(3, 4).toStandardList
     result50 shouldBe List(number.immutable.TreeSet(1, 2, 3), number.immutable.TreeSet(5))
     result50.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
   }
@@ -1517,7 +1519,7 @@ class SortedSetSpec extends UnitSpec {
     lower.immutable.SortedSet("aa", "bc").subsetOf(lower.immutable.SortedSet("aa", "bb", "cc")) shouldBe false
   }
   it should "have a subsets method" in {
-    val subsets = number.immutable.SortedSet(1, 2, 3).subsets.toList
+    val subsets = number.immutable.SortedSet(1, 2, 3).subsets.toStandardList
     subsets should have length 8
     subsets should contain (number.immutable.SortedSet())
     subsets should contain (number.immutable.SortedSet(1))
@@ -1528,7 +1530,7 @@ class SortedSetSpec extends UnitSpec {
     subsets should contain (number.immutable.SortedSet(2, 3))
     subsets should contain (number.immutable.SortedSet(1, 2, 3))
 
-    val subsets2 = number.immutable.SortedSet(1, 2, 3).subsets(2).toList
+    val subsets2 = number.immutable.SortedSet(1, 2, 3).subsets(2).toStandardList
     subsets2 should have length 3
     subsets2 should contain (number.immutable.SortedSet(1, 2))
     subsets2 should contain (number.immutable.SortedSet(1, 3))
@@ -1556,11 +1558,11 @@ class SortedSetSpec extends UnitSpec {
     result2.shouldHaveExactType[number.immutable.TreeSet[Int]]
   }
   it should "have an tails method" in {
-    val result1 = number.immutable.SortedSet(1, 2, 3).tails.toList
+    val result1 = number.immutable.SortedSet(1, 2, 3).tails.toStandardList
     result1 shouldBe List(number.immutable.SortedSet(1,2,3), number.immutable.SortedSet(2,3), number.immutable.SortedSet(3), number.immutable.SortedSet())
     result1.shouldHaveExactType[List[number.immutable.SortedSet[Int]]]
 
-    val result2 = number.immutable.TreeSet(1, 2, 3).tails.toList
+    val result2 = number.immutable.TreeSet(1, 2, 3).tails.toStandardList
     result2 shouldBe List(number.immutable.TreeSet(1,2,3), number.immutable.TreeSet(2,3), number.immutable.TreeSet(3), number.immutable.TreeSet())
     result2.shouldHaveExactType[List[number.immutable.TreeSet[Int]]]
   }
@@ -1670,21 +1672,22 @@ class SortedSetSpec extends UnitSpec {
     lower.immutable.SortedSet("a", "b").toBoxStandardIterable shouldBe (Set(lower.Box("a"), lower.Box("b")))
     number.immutable.SortedSet(1).toBoxStandardIterable shouldBe (Set(number.Box(1)))
   }
-  it should "have a toIterator method" in {
-    number.immutable.SortedSet(1, 2, 3).toStandardIterator.toList shouldBe (Iterator(1, 2, 3).toList)
-    lower.immutable.SortedSet("a", "b").toStandardIterator.toList shouldBe (Iterator("a", "b").toList)
-    number.immutable.SortedSet(1).toStandardIterator.toList shouldBe (Iterator(1).toList)
-    number.immutable.SortedSet(1, 2, 3).toStandardIterator shouldBe an [Iterator[_]]
-    lower.immutable.SortedSet("a", "b").toStandardIterator shouldBe an [Iterator[_]]
-    number.immutable.SortedSet(1).toStandardIterator shouldBe an [Iterator[_]]
+  it should "have a toIterator method" is pending
+  it should "have a toStandardIterator method" in {
+    number.immutable.SortedSet(1, 2, 3).toStandardIterator.toList shouldBe (StdIterator(1, 2, 3).toList)
+    lower.immutable.SortedSet("a", "b").toStandardIterator.toList shouldBe (StdIterator("a", "b").toList)
+    number.immutable.SortedSet(1).toStandardIterator.toList shouldBe (StdIterator(1).toList)
+    number.immutable.SortedSet(1, 2, 3).toStandardIterator shouldBe an [StdIterator[_]]
+    lower.immutable.SortedSet("a", "b").toStandardIterator shouldBe an [StdIterator[_]]
+    number.immutable.SortedSet(1).toStandardIterator shouldBe an [StdIterator[_]]
   }
-  it should "have a toBoxIterator method" in {
-    number.immutable.SortedSet(1, 2, 3).toBoxStandardIterator.toList shouldBe (Iterator(number.Box(1), number.Box(2), number.Box(3)).toList)
-    lower.immutable.SortedSet("a", "b").toBoxStandardIterator.toList shouldBe (Iterator(lower.Box("a"), lower.Box("b")).toList)
-    number.immutable.SortedSet(1).toBoxStandardIterator.toList shouldBe (Iterator(number.Box(1)).toList)
-    number.immutable.SortedSet(1, 2, 3).toBoxStandardIterator shouldBe an [Iterator[_]]
-    lower.immutable.SortedSet("a", "b").toBoxStandardIterator shouldBe an [Iterator[_]]
-    number.immutable.SortedSet(1).toBoxStandardIterator shouldBe an [Iterator[_]]
+  it should "have a toStandardBoxIterator method" in {
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardIterator.toList shouldBe (StdIterator(number.Box(1), number.Box(2), number.Box(3)).toList)
+    lower.immutable.SortedSet("a", "b").toBoxStandardIterator.toList shouldBe (StdIterator(lower.Box("a"), lower.Box("b")).toList)
+    number.immutable.SortedSet(1).toBoxStandardIterator.toList shouldBe (StdIterator(number.Box(1)).toList)
+    number.immutable.SortedSet(1, 2, 3).toBoxStandardIterator shouldBe an [StdIterator[_]]
+    lower.immutable.SortedSet("a", "b").toBoxStandardIterator shouldBe an [StdIterator[_]]
+    number.immutable.SortedSet(1).toBoxStandardIterator shouldBe an [StdIterator[_]]
   }
   it should "have a toList method" in {
     number.immutable.SortedSet(1, 2, 3).toStandardList shouldBe (List(1, 2, 3))

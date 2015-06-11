@@ -22,6 +22,8 @@ import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
 import scala.collection.parallel.mutable.ParArray
 import org.scalactic.views.FastSetView
+import org.scalactic.iterators.Iterator
+import scala.collection.{Iterator => StdIterator}
 
 /*
 val t = Collections[String](StringNormalizations.trimmed.toHashingEquality)
@@ -295,7 +297,7 @@ class SetSpec extends UnitSpec {
     result8.shouldHaveExactType[lower.immutable.FastSet[String]]
   }
   it should "return an iterator that returns the set's elements" in {
-    lower.immutable.Set("hi", "ho", "ha", "he").iterator.toList should contain theSameElementsAs List("ha", "he", "hi", "ho")
+    lower.immutable.Set("hi", "ho", "ha", "he").iterator.toStandardList should contain theSameElementsAs List("ha", "he", "hi", "ho")
   }
   it should "have a ++ method that takes a GenTraversableOnce" in {
     val result1 = lower.immutable.Set("hi", "ho") ++ List("ha", "hey!")
@@ -1006,65 +1008,65 @@ class SetSpec extends UnitSpec {
     result8.shouldHaveExactType[scala.collection.GenMap[Int, number.immutable.FastSet[Int]]]
   }
   it should "have a grouped method" in {
-    val result1 = number.immutable.Set(1, 2, 3).grouped(2).toList
+    val result1 = number.immutable.Set(1, 2, 3).grouped(2).toStandardList
     result1 shouldBe List(number.immutable.Set(1, 2), number.immutable.Set(3))
     result1.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result2 = number.immutable.Set(1, 2, 3).grouped(1).toList
+    val result2 = number.immutable.Set(1, 2, 3).grouped(1).toStandardList
     result2 shouldBe List(number.immutable.Set(1), number.immutable.Set(2), number.immutable.Set(3))
     result2.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    an [IllegalArgumentException] should be thrownBy { number.immutable.Set(1, 2, 3).grouped(0).toList }
+    an [IllegalArgumentException] should be thrownBy { number.immutable.Set(1, 2, 3).grouped(0).toStandardList }
 
     val set = number.immutable.Set(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     val fastSet = number.immutable.FastSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     val seq = set.toStandardSet.toSeq
 
-    val result3 = set.grouped(2).toList
+    val result3 = set.grouped(2).toStandardList
     result3 shouldBe List(number.immutable.Set(seq(0), seq(1)), number.immutable.Set(seq(2), seq(3)), number.immutable.Set(seq(4), seq(5)), number.immutable.Set(seq(6), seq(7)), number.immutable.Set(seq(8), seq(9)))
     result3.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result4 = set.grouped(3).toList
+    val result4 = set.grouped(3).toStandardList
     result4 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2)), number.immutable.Set(seq(3), seq(4), seq(5)), number.immutable.Set(seq(6), seq(7), seq(8)), number.immutable.Set(seq(9)))
     result4.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result5 = set.grouped(4).toList
+    val result5 = set.grouped(4).toStandardList
     result5 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2), seq(3)), number.immutable.Set(seq(4), seq(5), seq(6), seq(7)), number.immutable.Set(seq(8), seq(9)))
     result5.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result6 = number.immutable.Set(1).grouped(2).toList
+    val result6 = number.immutable.Set(1).grouped(2).toStandardList
     result6 shouldBe List(number.immutable.Set(1))
     result6.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result7 = number.immutable.Set(1).grouped(1).toList
+    val result7 = number.immutable.Set(1).grouped(1).toStandardList
     result7 shouldBe List(number.immutable.Set(1))
     result7.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result8 = number.immutable.FastSet(1, 2, 3).grouped(2).toList
+    val result8 = number.immutable.FastSet(1, 2, 3).grouped(2).toStandardList
     result8 shouldBe List(number.immutable.FastSet(1, 2), number.immutable.FastSet(3))
     result8.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result9 = number.immutable.FastSet(1, 2, 3).grouped(1).toList
+    val result9 = number.immutable.FastSet(1, 2, 3).grouped(1).toStandardList
     result9 shouldBe List(number.immutable.FastSet(1), number.immutable.Set(2), number.immutable.FastSet(3))
     result9.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result10 = fastSet.grouped(2).toList
+    val result10 = fastSet.grouped(2).toStandardList
     result10 shouldBe List(number.immutable.FastSet(seq(0), seq(1)), number.immutable.Set(seq(2), seq(3)), number.immutable.FastSet(seq(4), seq(5)), number.immutable.Set(seq(6), seq(7)), number.immutable.FastSet(seq(8), seq(9)))
     result10.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result11 = fastSet.grouped(3).toList
+    val result11 = fastSet.grouped(3).toStandardList
     result11 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2)), number.immutable.FastSet(seq(3), seq(4), seq(5)), number.immutable.FastSet(seq(6), seq(7), seq(8)), number.immutable.FastSet(seq(9)))
     result11.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result12 = fastSet.grouped(4).toList
+    val result12 = fastSet.grouped(4).toStandardList
     result12 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2), seq(3)), number.immutable.FastSet(seq(4), seq(5), seq(6), seq(7)), number.immutable.FastSet(seq(8), seq(9)))
     result12.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result13 = number.immutable.FastSet(1).grouped(2).toList
+    val result13 = number.immutable.FastSet(1).grouped(2).toStandardList
     result13 shouldBe List(number.immutable.FastSet(1))
     result13.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result14 = number.immutable.FastSet(1).grouped(1).toList
+    val result14 = number.immutable.FastSet(1).grouped(1).toStandardList
     result14 shouldBe List(number.immutable.FastSet(1))
     result14.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
   }
@@ -1275,203 +1277,203 @@ class SetSpec extends UnitSpec {
 
     val seq = number.immutable.Set(1, 2, 3, 4, 5).toStandardSet.toSeq
 
-    val result1 = number.immutable.Set(1).sliding(1).toList
+    val result1 = number.immutable.Set(1).sliding(1).toStandardList
     result1 shouldBe List(number.immutable.Set(1))
     result1.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result2 = number.immutable.Set(1).sliding(2).toList
+    val result2 = number.immutable.Set(1).sliding(2).toStandardList
     result2 shouldBe List(number.immutable.Set(1))
     result2.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result3 = number.immutable.Set(1, 2, 3).sliding(2).toList
+    val result3 = number.immutable.Set(1, 2, 3).sliding(2).toStandardList
     result3 shouldBe List(number.immutable.Set(1, 2), number.immutable.Set(2, 3))
     result3.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result4 = number.immutable.Set(1, 2, 3).sliding(1).toList
+    val result4 = number.immutable.Set(1, 2, 3).sliding(1).toStandardList
     result4 shouldBe List(number.immutable.Set(1), number.immutable.Set(2), number.immutable.Set(3))
     result4.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result5 = number.immutable.Set(1, 2, 3).sliding(3).toList
+    val result5 = number.immutable.Set(1, 2, 3).sliding(3).toStandardList
     result5 shouldBe List(number.immutable.Set(1, 2, 3))
     result5.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result6 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3).toList
+    val result6 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3).toStandardList
     result6 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2)), number.immutable.Set(seq(1), seq(2), seq(3)), number.immutable.Set(seq(2), seq(3), seq(4)))
     result6.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result7 = number.immutable.Set(1, 2, 3, 4, 5).sliding(2).toList
+    val result7 = number.immutable.Set(1, 2, 3, 4, 5).sliding(2).toStandardList
     result7 shouldBe List(number.immutable.Set(seq(0), seq(1)), number.immutable.Set(seq(1), seq(2)), number.immutable.Set(seq(2), seq(3)), number.immutable.Set(seq(3), seq(4)))
     result7.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result8 = number.immutable.Set(1, 2, 3, 4, 5).sliding(1).toList
+    val result8 = number.immutable.Set(1, 2, 3, 4, 5).sliding(1).toStandardList
     result8 shouldBe List(number.immutable.Set(seq(0)), number.immutable.Set(seq(1)), number.immutable.Set(seq(2)), number.immutable.Set(seq(3)), number.immutable.Set(seq(4)))
     result8.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result9 = number.immutable.Set(1, 2, 3, 4, 5).sliding(4).toList
+    val result9 = number.immutable.Set(1, 2, 3, 4, 5).sliding(4).toStandardList
     result9 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2), seq(3)), number.immutable.Set(seq(1), seq(2), seq(3), seq(4)))
     result9.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result10 = number.immutable.Set(1, 2, 3, 4, 5).sliding(5).toList
+    val result10 = number.immutable.Set(1, 2, 3, 4, 5).sliding(5).toStandardList
     result10 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2), seq(3), seq(4)))
     result10.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result11 = number.immutable.Set(1).sliding(1, 1).toList
+    val result11 = number.immutable.Set(1).sliding(1, 1).toStandardList
     result11 shouldBe List(number.immutable.Set(1))
     result11.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result12 = number.immutable.Set(1).sliding(1, 2).toList
+    val result12 = number.immutable.Set(1).sliding(1, 2).toStandardList
     result12 shouldBe List(number.immutable.Set(1))
     result12.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result13 = number.immutable.Set(1, 2, 3).sliding(1, 1).toList
+    val result13 = number.immutable.Set(1, 2, 3).sliding(1, 1).toStandardList
     result13 shouldBe List(number.immutable.Set(1), number.immutable.Set(2), number.immutable.Set(3))
     result13.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result14 = number.immutable.Set(1, 2, 3).sliding(2, 1).toList
+    val result14 = number.immutable.Set(1, 2, 3).sliding(2, 1).toStandardList
     result14 shouldBe List(number.immutable.Set(1, 2), number.immutable.Set(2, 3))
     result14.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result15 = number.immutable.Set(1, 2, 3).sliding(2, 2).toList
+    val result15 = number.immutable.Set(1, 2, 3).sliding(2, 2).toStandardList
     result15 shouldBe List(number.immutable.Set(1, 2), number.immutable.Set(3))
     result15.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result16 = number.immutable.Set(1, 2, 3).sliding(3, 2).toList
+    val result16 = number.immutable.Set(1, 2, 3).sliding(3, 2).toStandardList
     result16 shouldBe List(number.immutable.Set(1, 2, 3))
     result16.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result17 = number.immutable.Set(1, 2, 3).sliding(3, 1).toList
+    val result17 = number.immutable.Set(1, 2, 3).sliding(3, 1).toStandardList
     result17 shouldBe List(number.immutable.Set(1, 2, 3))
     result17.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result18 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 1).toList
+    val result18 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 1).toStandardList
     result18 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2)), number.immutable.Set(seq(1), seq(2), seq(3)), number.immutable.Set(seq(2), seq(3), seq(4)))
     result18.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result19 = number.immutable.Set(1, 2, 3, 4, 5).sliding(2, 2).toList
+    val result19 = number.immutable.Set(1, 2, 3, 4, 5).sliding(2, 2).toStandardList
     result19 shouldBe List(number.immutable.Set(seq(0), seq(1)), number.immutable.Set(seq(2), seq(3)), number.immutable.Set(seq(4)))
     result19.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result20 = number.immutable.Set(1, 2, 3, 4, 5).sliding(2, 3).toList
+    val result20 = number.immutable.Set(1, 2, 3, 4, 5).sliding(2, 3).toStandardList
     result20 shouldBe List(number.immutable.Set(seq(0), seq(1)), number.immutable.Set(seq(3), seq(4)))
     result20.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result21 = number.immutable.Set(1, 2, 3, 4, 5).sliding(2, 4).toList
+    val result21 = number.immutable.Set(1, 2, 3, 4, 5).sliding(2, 4).toStandardList
     result21 shouldBe List(number.immutable.Set(seq(0), seq(1)), number.immutable.Set(seq(4)))
     result21.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result22 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 1).toList
+    val result22 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 1).toStandardList
     result22 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2)), number.immutable.Set(seq(1), seq(2), seq(3)), number.immutable.Set(seq(2), seq(3), seq(4)))
     result22.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result23 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 2).toList
+    val result23 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 2).toStandardList
     result23 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2)), number.immutable.Set(seq(2), seq(3), seq(4)))
     result23.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result24 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 3).toList
+    val result24 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 3).toStandardList
     result24 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2)), number.immutable.Set(seq(3), seq(4)))
     result24.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result25 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 4).toList
+    val result25 = number.immutable.Set(1, 2, 3, 4, 5).sliding(3, 4).toStandardList
     result25 shouldBe List(number.immutable.Set(seq(0), seq(1), seq(2)), number.immutable.Set(seq(4)))
     result25.shouldHaveExactType[List[number.immutable.Set[Int]]]
 
-    val result26 = number.immutable.FastSet(1).sliding(1).toList
+    val result26 = number.immutable.FastSet(1).sliding(1).toStandardList
     result26 shouldBe List(number.immutable.FastSet(1))
     result26.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result27 = number.immutable.FastSet(1).sliding(2).toList
+    val result27 = number.immutable.FastSet(1).sliding(2).toStandardList
     result27 shouldBe List(number.immutable.FastSet(1))
     result27.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result28 = number.immutable.FastSet(1, 2, 3).sliding(2).toList
+    val result28 = number.immutable.FastSet(1, 2, 3).sliding(2).toStandardList
     result28 shouldBe List(number.immutable.FastSet(1, 2), number.immutable.FastSet(2, 3))
     result28.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result29 = number.immutable.FastSet(1, 2, 3).sliding(1).toList
+    val result29 = number.immutable.FastSet(1, 2, 3).sliding(1).toStandardList
     result29 shouldBe List(number.immutable.FastSet(1), number.immutable.FastSet(2), number.immutable.FastSet(3))
     result29.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result30 = number.immutable.FastSet(1, 2, 3).sliding(3).toList
+    val result30 = number.immutable.FastSet(1, 2, 3).sliding(3).toStandardList
     result30 shouldBe List(number.immutable.FastSet(1, 2, 3))
     result30.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result31 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3).toList
+    val result31 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3).toStandardList
     result31 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2)), number.immutable.FastSet(seq(1), seq(2), seq(3)), number.immutable.FastSet(seq(2), seq(3), seq(4)))
     result31.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result32 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(2).toList
+    val result32 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(2).toStandardList
     result32 shouldBe List(number.immutable.FastSet(seq(0), seq(1)), number.immutable.FastSet(seq(1), seq(2)), number.immutable.FastSet(seq(2), seq(3)), number.immutable.FastSet(seq(3), seq(4)))
     result32.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result33 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(1).toList
+    val result33 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(1).toStandardList
     result33 shouldBe List(number.immutable.FastSet(seq(0)), number.immutable.FastSet(seq(1)), number.immutable.FastSet(seq(2)), number.immutable.FastSet(seq(3)), number.immutable.FastSet(seq(4)))
     result33.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result34 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(4).toList
+    val result34 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(4).toStandardList
     result34 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2), seq(3)), number.immutable.FastSet(seq(1), seq(2), seq(3), seq(4)))
     result34.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result35 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(5).toList
+    val result35 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(5).toStandardList
     result35 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2), seq(3), seq(4)))
     result35.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result36 = number.immutable.FastSet(1).sliding(1, 1).toList
+    val result36 = number.immutable.FastSet(1).sliding(1, 1).toStandardList
     result36 shouldBe List(number.immutable.FastSet(1))
     result36.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result37 = number.immutable.FastSet(1).sliding(1, 2).toList
+    val result37 = number.immutable.FastSet(1).sliding(1, 2).toStandardList
     result37 shouldBe List(number.immutable.FastSet(1))
     result37.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result38 = number.immutable.FastSet(1, 2, 3).sliding(1, 1).toList
+    val result38 = number.immutable.FastSet(1, 2, 3).sliding(1, 1).toStandardList
     result38 shouldBe List(number.immutable.FastSet(1), number.immutable.FastSet(2), number.immutable.FastSet(3))
     result38.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result39 = number.immutable.FastSet(1, 2, 3).sliding(2, 1).toList
+    val result39 = number.immutable.FastSet(1, 2, 3).sliding(2, 1).toStandardList
     result39 shouldBe List(number.immutable.FastSet(1, 2), number.immutable.FastSet(2, 3))
     result39.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result40 = number.immutable.FastSet(1, 2, 3).sliding(2, 2).toList
+    val result40 = number.immutable.FastSet(1, 2, 3).sliding(2, 2).toStandardList
     result40 shouldBe List(number.immutable.FastSet(1, 2), number.immutable.FastSet(3))
     result40.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result41 = number.immutable.FastSet(1, 2, 3).sliding(3, 2).toList
+    val result41 = number.immutable.FastSet(1, 2, 3).sliding(3, 2).toStandardList
     result41 shouldBe List(number.immutable.FastSet(1, 2, 3))
     result41.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result42 = number.immutable.FastSet(1, 2, 3).sliding(3, 1).toList
+    val result42 = number.immutable.FastSet(1, 2, 3).sliding(3, 1).toStandardList
     result42 shouldBe List(number.immutable.FastSet(1, 2, 3))
     result42.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result43 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    val result43 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 1).toStandardList
     result43 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2)), number.immutable.FastSet(seq(1), seq(2), seq(3)), number.immutable.FastSet(seq(2), seq(3), seq(4)))
     result43.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result44 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(2, 2).toList
+    val result44 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(2, 2).toStandardList
     result44 shouldBe List(number.immutable.FastSet(seq(0), seq(1)), number.immutable.FastSet(seq(2), seq(3)), number.immutable.FastSet(seq(4)))
     result44.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result45 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(2, 3).toList
+    val result45 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(2, 3).toStandardList
     result45 shouldBe List(number.immutable.FastSet(seq(0), seq(1)), number.immutable.FastSet(seq(3), seq(4)))
     result45.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result46 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(2, 4).toList
+    val result46 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(2, 4).toStandardList
     result46 shouldBe List(number.immutable.FastSet(seq(0), seq(1)), number.immutable.FastSet(seq(4)))
     result46.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result47 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 1).toList
+    val result47 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 1).toStandardList
     result47 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2)), number.immutable.FastSet(seq(1), seq(2), seq(3)), number.immutable.FastSet(seq(2), seq(3), seq(4)))
     result47.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result48 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 2).toList
+    val result48 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 2).toStandardList
     result48 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2)), number.immutable.FastSet(seq(2), seq(3), seq(4)))
     result48.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result49 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 3).toList
+    val result49 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 3).toStandardList
     result49 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2)), number.immutable.FastSet(seq(3), seq(4)))
     result49.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
 
-    val result50 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 4).toList
+    val result50 = number.immutable.FastSet(1, 2, 3, 4, 5).sliding(3, 4).toStandardList
     result50 shouldBe List(number.immutable.FastSet(seq(0), seq(1), seq(2)), number.immutable.FastSet(seq(4)))
     result50.shouldHaveExactType[List[number.immutable.FastSet[Int]]]
   }
@@ -1541,7 +1543,7 @@ class SetSpec extends UnitSpec {
     lower.immutable.Set("aa", "bc").subsetOf(lower.immutable.Set("aa", "bb", "cc")) shouldBe false
   }
   it should "have a 2 subsets method" in {
-    val subsets = number.immutable.Set(1, 2, 3).subsets.toList
+    val subsets = number.immutable.Set(1, 2, 3).subsets.toStandardList
     subsets should have length 8
     subsets should contain (number.immutable.Set())
     subsets should contain (number.immutable.Set(1))
@@ -1552,7 +1554,7 @@ class SetSpec extends UnitSpec {
     subsets should contain (number.immutable.Set(2, 3))
     subsets should contain (number.immutable.Set(1, 2, 3))
 
-    val subsets2 = number.immutable.Set(1, 2, 3).subsets(2).toList
+    val subsets2 = number.immutable.Set(1, 2, 3).subsets(2).toStandardList
     subsets2 should have length 3
     subsets2 should contain (number.immutable.Set(1, 2))
     subsets2 should contain (number.immutable.Set(1, 3))
@@ -1581,11 +1583,11 @@ class SetSpec extends UnitSpec {
   }
   it should "have an tails method" in {
     val result1 = number.immutable.Set(1, 2, 3).tails
-    result1.toList shouldBe List(number.immutable.Set(1,2,3), number.immutable.Set(2,3), number.immutable.Set(3), number.immutable.Set())
+    result1.toStandardList shouldBe List(number.immutable.Set(1,2,3), number.immutable.Set(2,3), number.immutable.Set(3), number.immutable.Set())
     result1.shouldHaveExactType[Iterator[number.immutable.Set[Int]]]
 
     val result2 = number.immutable.FastSet(1, 2, 3).tails
-    result2.toList shouldBe List(number.immutable.FastSet(1,2,3), number.immutable.FastSet(2,3), number.immutable.FastSet(3), number.immutable.FastSet())
+    result2.toStandardList shouldBe List(number.immutable.FastSet(1,2,3), number.immutable.FastSet(2,3), number.immutable.FastSet(3), number.immutable.FastSet())
     result2.shouldHaveExactType[Iterator[number.immutable.FastSet[Int]]]
   }
   it should "have a take method" in {
@@ -1694,21 +1696,22 @@ class SetSpec extends UnitSpec {
     lower.immutable.Set("a", "b").toBoxStandardIterable shouldBe (Set(lower.Box("a"), lower.Box("b")))
     number.immutable.Set(1).toBoxStandardIterable shouldBe (Set(number.Box(1)))
   }
-  it should "have a toIterator method" in {
-    number.immutable.Set(1, 2, 3).toStandardIterator.toList shouldBe (Iterator(1, 2, 3).toList)
-    lower.immutable.Set("a", "b").toStandardIterator.toList shouldBe (Iterator("a", "b").toList)
-    number.immutable.Set(1).toStandardIterator.toList shouldBe (Iterator(1).toList)
-    number.immutable.Set(1, 2, 3).toStandardIterator shouldBe an [Iterator[_]]
-    lower.immutable.Set("a", "b").toStandardIterator shouldBe an [Iterator[_]]
-    number.immutable.Set(1).toStandardIterator shouldBe an [Iterator[_]]
+  it should "have a toIterator method" is pending
+  it should "have a toStandardIterator method" in {
+    number.immutable.Set(1, 2, 3).toStandardIterator.toList shouldBe (StdIterator(1, 2, 3).toList)
+    lower.immutable.Set("a", "b").toStandardIterator.toList shouldBe (StdIterator("a", "b").toList)
+    number.immutable.Set(1).toStandardIterator.toList shouldBe (StdIterator(1).toList)
+    number.immutable.Set(1, 2, 3).toStandardIterator shouldBe an [StdIterator[_]]
+    lower.immutable.Set("a", "b").toStandardIterator shouldBe an [StdIterator[_]]
+    number.immutable.Set(1).toStandardIterator shouldBe an [StdIterator[_]]
   }
-  it should "have a toBoxIterator method" in {
-    number.immutable.Set(1, 2, 3).toBoxStandardIterator.toList shouldBe (Iterator(number.Box(1), number.Box(2), number.Box(3)).toList)
-    lower.immutable.Set("a", "b").toBoxStandardIterator.toList shouldBe (Iterator(lower.Box("a"), lower.Box("b")).toList)
-    number.immutable.Set(1).toBoxStandardIterator.toList shouldBe (Iterator(number.Box(1)).toList)
-    number.immutable.Set(1, 2, 3).toBoxStandardIterator shouldBe an [Iterator[_]]
-    lower.immutable.Set("a", "b").toBoxStandardIterator shouldBe an [Iterator[_]]
-    number.immutable.Set(1).toBoxStandardIterator shouldBe an [Iterator[_]]
+  it should "have a toStandardBoxIterator method" in {
+    number.immutable.Set(1, 2, 3).toBoxStandardIterator.toList shouldBe (StdIterator(number.Box(1), number.Box(2), number.Box(3)).toList)
+    lower.immutable.Set("a", "b").toBoxStandardIterator.toList shouldBe (StdIterator(lower.Box("a"), lower.Box("b")).toList)
+    number.immutable.Set(1).toBoxStandardIterator.toList shouldBe (StdIterator(number.Box(1)).toList)
+    number.immutable.Set(1, 2, 3).toBoxStandardIterator shouldBe an [StdIterator[_]]
+    lower.immutable.Set("a", "b").toBoxStandardIterator shouldBe an [StdIterator[_]]
+    number.immutable.Set(1).toBoxStandardIterator shouldBe an [StdIterator[_]]
   }
   it should "have a toList method" in {
     number.immutable.Set(1, 2, 3).toStandardList shouldBe (List(1, 2, 3))
@@ -2026,6 +2029,14 @@ def zipWithIndex: Set[(A, Int)]
   }
 
   it should "offer a flatMap method" in {
+    val set = trimmed.immutable.Set("1", "2", "01", "3")
+    val flatMapped = set.flatMap { (digit: String) =>
+      FastSetView(digit.toInt)
+    }
+    val strictSet = flatMapped.toSet(number)
+    strictSet should equal (number.immutable.Set(1, 2, 3))
+  }
+  it should "offer a flatMap method on its view" in {
     val lazySet = trimmed.immutable.Set("1", "2", "01", "3").view
     val flatMapped = lazySet.flatMap { (digit: String) =>
       FastSetView(digit.toInt)
@@ -2033,7 +2044,7 @@ def zipWithIndex: Set[(A, Int)]
     val strictSet = flatMapped.toSet(number)
     strictSet should equal (number.immutable.Set(1, 2, 3))
   }
-  it should "allow chaining of maps and flatMaps" in {
+  it should "allow chaining of maps and flatMaps on its view" in {
     val lazySet = trimmed.immutable.Set("1", "2", "01", "3").view
     val flatMapped = lazySet.flatMap { (digit: String) =>
       FastSetView(digit.toInt)

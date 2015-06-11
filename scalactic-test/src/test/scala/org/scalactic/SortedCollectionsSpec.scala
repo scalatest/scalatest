@@ -26,7 +26,7 @@ class SortedCollectionsSpec extends UnitSpec {
   "The SortedCollections object" should "offer an apply method that takes an implicit OrderingEquality that picks up an implicit Ordering" in {
     val sortedIntColls = SortedCollections[Int]
     import sortedIntColls.immutable._
-    SortedSet(9, 8, 2, 1, 2, 3).iterator.toList shouldEqual (List(1, 2, 3, 8, 9))
+    SortedSet(9, 8, 2, 1, 2, 3).iterator.toStandardList shouldEqual (List(1, 2, 3, 8, 9))
   }
   it should "treat arrays structurally (given an Ordering for arrays, because no implicit Ordering for arrays is provided by Scala)" in { 
     // This is contrived, but just to make sure arrays are treated structurally, I make up an Ordering for Array[Int] that
@@ -37,7 +37,7 @@ class SortedCollectionsSpec extends UnitSpec {
       }
     val intArrayColls = SortedCollections[Array[Int]]
     import intArrayColls.immutable._
-    SortedSet(Array(9, 8, 7), Array(1, 2, 3), Array(4, 5, 6)).iterator.toList.map(_.toList) shouldEqual  List(List(1, 2, 3), List(4, 5, 6), List(9, 8, 7))
+    SortedSet(Array(9, 8, 7), Array(1, 2, 3), Array(4, 5, 6)).iterator.toStandardList.map(_.toList) shouldEqual List(List(1, 2, 3), List(4, 5, 6), List(9, 8, 7))
   }
 }
 

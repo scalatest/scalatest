@@ -16,7 +16,7 @@
 package org.scalactic.iterators
 
 trait GenIterableOnce[+A] extends Any {
-  def iterator: Iterator[A]
+  def iterator: org.scalactic.iterators.Iterator[A]
   def toStandardList: scala.collection.immutable.List[A]
 }
 

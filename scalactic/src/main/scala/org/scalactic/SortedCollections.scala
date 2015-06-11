@@ -15,7 +15,6 @@
  */
 package org.scalactic
 
-import scala.Iterator
 import scala.collection.generic.CanBuildFrom
 import scala.collection.immutable._
 import scala.collection.mutable
@@ -29,6 +28,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
 import scala.language.higherKinds
 import scala.reflect.ClassTag
 import org.scalactic.views._
+import org.scalactic.iterators._
 
 class SortedCollections[E](override val equality: OrderingEquality[E]) extends Collections[E](equality) { thisCollections =>
 
@@ -200,6 +200,8 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        */
       def filterNot(pred: T => Boolean): thisCollections.immutable.SortedSet[T]
   
+      def flatMap[U](f: T => GenIterableOnce[U]): SetView[U]
+
       /**
        * Partitions this `SortedSet` into a map of `SortedSet`s according to some discriminator function.
        *
@@ -269,7 +271,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
        *
        * @return an instance of `Iterator` for elements of this `SortedSet`
        */
-      def iterator: Iterator[T]
+      def iterator: org.scalactic.iterators.Iterator[T]
   
       /**
        * Partitions this `SortedSet` in two `SortedSet`s according to a predicate.
@@ -588,13 +590,14 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def filter(pred: T => Boolean): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.filter((box: Box[T]) => pred(box.value)))
       def filterNot(pred: T => Boolean): thisCollections.immutable.SortedSet[T] = new immutable.TreeSet[T](underlying.filterNot((box: Box[T]) => pred(box.value)))
       def find(pred: T => Boolean): Option[T] = underlying.find((box: Box[T]) => pred(box.value)).map(_.value)
+      def flatMap[U](f: T => GenIterableOnce[U]): SetView[U] = view.flatMap(f)
       def fold[T1 >: T](z: T1)(op: (T1, T1) => T1): T1 = underlying.toList.map(_.value).fold[T1](z)(op)
       def foldLeft[B](z: B)(op: (B, T) => B): B = underlying.toList.map(_.value).foldLeft[B](z)(op)
       def foldRight[B](z: B)(op: (T, B) => B): B = underlying.toList.map(_.value).foldRight[B](z)(op)
       def forall(pred: T => Boolean): Boolean = underlying.toList.map(_.value).forall(pred)
       def foreach[U](f: T => U): Unit = underlying.toList.map(_.value).foreach(f)
       def groupBy[K](f: T => K): GenMap[K, thisCollections.immutable.TreeSet[T]] = underlying.groupBy((box: Box[T]) => f(box.value)).map(t => (t._1, new immutable.TreeSet[T](t._2)))
-      def grouped(size: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.grouped(size).map(new immutable.TreeSet[T](_))
+      def grouped(size: Int): Iterator[thisCollections.immutable.TreeSet[T]] = Iterator(underlying.grouped(size).map(new immutable.TreeSet[T](_)))
       def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
       override def hashCode: Int = underlying.hashCode
       def head: T = underlying.head.value
@@ -604,11 +607,18 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
           case None => None
         }
       def init: thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.init)
-      def inits: Iterator[thisCollections.immutable.TreeSet[T]] = underlying.inits.map(new immutable.TreeSet[T](_))
+      def inits: Iterator[thisCollections.immutable.TreeSet[T]] = Iterator(underlying.inits.map(new immutable.TreeSet[T](_)))
       def intersect[U >: T <: E](that: thisCollections.immutable.Set[U]): thisCollections.immutable.TreeSet[U] =
         new immutable.TreeSet[U](scala.collection.immutable.TreeSet[Box[U]]((underlying.map(ebt => ebt: Box[U]) intersect that.toBoxStandardSet).toList: _*)(ordering[U]))
       def isEmpty: Boolean = underlying.isEmpty
-      def iterator: Iterator[T] = underlying.iterator.map(_.value)
+      def iterator: org.scalactic.iterators.Iterator[T] =
+        new Iterator[T] {
+          private val it = underlying.iterator.map(_.value)
+          def hasNext: Boolean = it.hasNext
+          def next(): T = it.next()
+          def iterator: Iterator[T] = this
+          def toStandardList: scala.collection.immutable.List[T] = it.toList
+        }
       def last: T = underlying.last.value
       def lastOption: Option[T] =
         underlying.lastOption match {
@@ -648,8 +658,8 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
 */
       def size: Int = underlying.size
       def slice(unc_from: Int, unc_until: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.slice(unc_from, unc_until))
-      def sliding(size: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.sliding(size).map(new immutable.TreeSet[T](_))
-      def sliding(size: Int, step: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.sliding(size, step).map(new immutable.TreeSet[T](_))
+      def sliding(size: Int): Iterator[thisCollections.immutable.TreeSet[T]] = Iterator(underlying.sliding(size).map(new immutable.TreeSet[T](_)))
+      def sliding(size: Int, step: Int): Iterator[thisCollections.immutable.TreeSet[T]] = Iterator(underlying.sliding(size, step).map(new immutable.TreeSet[T](_)))
       def span(pred: T => Boolean): (thisCollections.immutable.TreeSet[T], thisCollections.immutable.TreeSet[T]) = {
         val (trueSet, falseSet) = underlying.span((box: Box[T]) => pred(box.value))
         (new immutable.TreeSet[T](trueSet), new immutable.TreeSet[T](falseSet))
@@ -660,11 +670,11 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       }
       def stringPrefix: String = "TreeSet"
       def subsetOf[U >: T <: E](that: thisCollections.immutable.Set[U]): Boolean = underlying.map(ebt => ebt: Box[U]).subsetOf(that.toBoxStandardSet)
-      def subsets(len: Int): Iterator[thisCollections.immutable.TreeSet[T]] = underlying.subsets(len).map(new immutable.TreeSet[T](_))
-      def subsets: Iterator[thisCollections.immutable.TreeSet[T]] = underlying.subsets.map(new immutable.TreeSet[T](_))
+      def subsets(len: Int): Iterator[thisCollections.immutable.TreeSet[T]] = Iterator(underlying.subsets(len).map(new immutable.TreeSet[T](_)))
+      def subsets: Iterator[thisCollections.immutable.TreeSet[T]] = Iterator(underlying.subsets.map(new immutable.TreeSet[T](_)))
       def sum[T1 >: T](implicit num: Numeric[T1]): T1 = underlying.map(_.value).sum(num)
       def tail: thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.tail)
-      def tails: Iterator[thisCollections.immutable.TreeSet[T]] = underlying.tails.map(new immutable.TreeSet[T](_))
+      def tails: Iterator[thisCollections.immutable.TreeSet[T]] = Iterator(underlying.tails.map(new immutable.TreeSet[T](_)))
       def take(n: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.take(n))
       def takeRight(n: Int): thisCollections.immutable.TreeSet[T] = new immutable.TreeSet[T](underlying.takeRight(n))
       def toArray[U >: T <: E](implicit ct: ClassTag[U]): Array[U] = {
@@ -682,8 +692,8 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def toBoxStandardIndexedSeq: scala.collection.immutable.IndexedSeq[thisCollections.Box[T]] = underlying.toIndexedSeq
       def toStandardIterable: GenIterable[T] = underlying.toIterable.map(_.value)
       def toBoxStandardIterable: GenIterable[thisCollections.Box[T]] = underlying.toIterable
-      def toStandardIterator: Iterator[T] = underlying.toIterator.map(_.value)
-      def toBoxStandardIterator: Iterator[thisCollections.Box[T]] = underlying.toIterator
+      def toStandardIterator: scala.collection.Iterator[T] = underlying.toIterator.map(_.value)
+      def toBoxStandardIterator: scala.collection.Iterator[thisCollections.Box[T]] = underlying.toIterator
       def toBoxStandardList: List[thisCollections.Box[T]] = underlying.toList
       def toStandardList: List[T] = underlying.toList.map(_.value)
       def toStandardMap[K, V](implicit ev: T <:< (K, V)): Map[K, V] = underlying.map(_.value).toMap
