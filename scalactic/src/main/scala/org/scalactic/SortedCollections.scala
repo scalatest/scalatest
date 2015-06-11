@@ -38,7 +38,7 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
         equality.compare(a.value, b.value)
     }
 
-  class SortedImmutable extends Immutable {
+  class SortedImmutable extends Immutable { thisSortedImmutable =>
 
     trait SortedSet[+T <: E] extends Set[T] {
   
@@ -602,7 +602,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def grouped(size: Int): Iterator[thisCollections.immutable.TreeSet[T]] = Iterator(underlying.grouped(size).map(new immutable.TreeSet[T](_)))
       def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
       override def hashCode: Int = underlying.hashCode
-      def head: T = underlying.head.value
       def headOption: Option[T] =
         underlying.headOption match {
           case Some(head) => Some(head.value)
@@ -753,12 +752,19 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
     }
     object SortedSet {
       def empty[T <: E]: immutable.SortedSet[T] = immutable.TreeSet.empty[T]
-      def apply[T <: E](elems: T*): immutable.SortedSet[T] = immutable.TreeSet[T](elems: _*)
+      def apply[T <: E](): immutable.SortedSet[T] = thisCollections.immutable.TreeSet.empty[T]
+      def apply[T <: E](firstElem: T, otherElems: T*): immutable.inhabited.SortedSet[T] = {
+        val elements = firstElem +: otherElems
+        new immutable.inhabited.TreeSet[T](scala.collection.immutable.TreeSet(elements.map(Box[T](_)): _*)(ordering))
+      }
     }
     object TreeSet {
       def empty[T <: E]: immutable.TreeSet[T] = new immutable.TreeSet[T](scala.collection.immutable.TreeSet.empty(ordering))
-      def apply[T <: E](elems: T*): immutable.TreeSet[T] = 
-        new immutable.TreeSet[T](scala.collection.immutable.TreeSet(elems.map(Box[T](_)): _*)(ordering))
+      def apply[T <: E](): immutable.TreeSet[T] = thisCollections.immutable.TreeSet.empty[T]
+      def apply[T <: E](firstElem: T, otherElems: T*): immutable.inhabited.TreeSet[T] = {
+        val elements = firstElem +: otherElems
+        new immutable.inhabited.TreeSet[T](scala.collection.immutable.TreeSet(elements.map(Box[T](_)): _*)(ordering))
+      }
     }
 
   /*
@@ -935,6 +941,32 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
       def apply[V](entries: (T, V)*): TreeEquaMap[V] = new immutable.TreeEquaMap[V](TreeMap(entries.map(e => Box(e._1) -> e._2): _*)(ordering))
     }
   */
+    class SortedInhabited extends Inhabited {
+      trait SortedSet[+T <: E] extends thisSortedImmutable.SortedSet[T] { // TODO Make this extend thisImmutable.inhabited.Set also
+        /** Selects the first element of this `Set`.
+          *
+          * @return the first element of this `Set`.
+          * @throws `NoSuchElementException` if the `Set` is empty.
+          */
+        def head: T
+      }
+  
+      class TreeSet[+T <: E] private[scalactic] (private val underlying: scala.collection.immutable.TreeSet[Box[T@uV]]) extends thisSortedImmutable.TreeSet[T](underlying) with SortedSet[T] {
+        def head: T = underlying.head.value
+      }
+      object TreeSet {
+        def apply[T <: E](firstElem: T, otherElems: T*): thisCollections.immutable.inhabited.TreeSet[T] = {
+          val elements = firstElem +: otherElems
+          new thisCollections.immutable.inhabited.TreeSet[T](scala.collection.immutable.TreeSet(elements.map(Box[T](_)): _*)(ordering))
+        }
+      }
+      object SortedSet {
+        def apply[T <: E](firstElem: T, otherElems: T*): thisCollections.immutable.inhabited.SortedSet[T] = {
+          thisCollections.immutable.inhabited.TreeSet[T](firstElem, otherElems: _*)
+        }
+      }
+    }
+    override val inhabited: SortedInhabited = new SortedInhabited
   }
   override val immutable: SortedImmutable = new SortedImmutable
   type SortedSet[T <: E] = immutable.SortedSet[T]

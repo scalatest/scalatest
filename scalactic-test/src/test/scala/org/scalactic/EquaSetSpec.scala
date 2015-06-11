@@ -773,23 +773,23 @@ class SetSpec extends UnitSpec {
     val seq = number.immutable.Set(1, 2, 3, 4, 5).toStandardSet.toSeq
 
     val result1 = set.dropWhile(_ < 1)
-    result1 shouldBe number.immutable.Set(seq.dropWhile(_ < 1): _*)
+    result1 shouldBe number.immutable.Set.empty ++ seq.dropWhile(_ < 1)
     result1.shouldHaveExactType[number.immutable.Set[Int]]
 
     val result2 = set.dropWhile(_ < 2)
-    result2 shouldBe number.immutable.Set(seq.dropWhile(_ < 2): _*)
+    result2 shouldBe number.immutable.Set.empty ++ seq.dropWhile(_ < 2)
     result2.shouldHaveExactType[number.immutable.Set[Int]]
 
     val result3 = set.dropWhile(_ < 3)
-    result3 shouldBe number.immutable.Set(seq.dropWhile(_ < 3): _*)
+    result3 shouldBe number.immutable.Set.empty ++ seq.dropWhile(_ < 3)
     result3.shouldHaveExactType[number.immutable.Set[Int]]
 
     val result4 = set.dropWhile(_ < 4)
-    result4 shouldBe number.immutable.Set(seq.dropWhile(_ < 4): _*)
+    result4 shouldBe number.immutable.Set.empty ++ seq.dropWhile(_ < 4)
     result4.shouldHaveExactType[number.immutable.Set[Int]]
 
     val result5 = set.dropWhile(_ < 5)
-    result5 shouldBe number.immutable.Set(seq.dropWhile(_ < 5): _*)
+    result5 shouldBe number.immutable.Set.empty ++ seq.dropWhile(_ < 5)
     result5.shouldHaveExactType[number.immutable.Set[Int]]
 
     val result6 = set.dropWhile(_ < 6)
@@ -797,23 +797,23 @@ class SetSpec extends UnitSpec {
     result6.shouldHaveExactType[number.immutable.Set[Int]]
 
     val result7 = fastSet.dropWhile(_ < 1)
-    result7 shouldBe number.immutable.FastSet(seq.dropWhile(_ < 1): _*)
+    result7 shouldBe number.immutable.FastSet.empty ++ seq.dropWhile(_ < 1)
     result7.shouldHaveExactType[number.immutable.FastSet[Int]]
 
     val result8 = fastSet.dropWhile(_ < 2)
-    result8 shouldBe number.immutable.FastSet(seq.dropWhile(_ < 2): _*)
+    result8 shouldBe number.immutable.FastSet.empty ++ seq.dropWhile(_ < 2)
     result8.shouldHaveExactType[number.immutable.FastSet[Int]]
 
     val result9 = fastSet.dropWhile(_ < 3)
-    result9 shouldBe number.immutable.FastSet(seq.dropWhile(_ < 3): _*)
+    result9 shouldBe number.immutable.FastSet.empty ++ seq.dropWhile(_ < 3)
     result9.shouldHaveExactType[number.immutable.FastSet[Int]]
 
     val result10 = fastSet.dropWhile(_ < 4)
-    result10 shouldBe number.immutable.FastSet(seq.dropWhile(_ < 4): _*)
+    result10 shouldBe number.immutable.FastSet.empty ++ seq.dropWhile(_ < 4)
     result10.shouldHaveExactType[number.immutable.FastSet[Int]]
 
     val result11 = fastSet.dropWhile(_ < 5)
-    result11 shouldBe number.immutable.FastSet(seq.dropWhile(_ < 5): _*)
+    result11 shouldBe number.immutable.FastSet.empty ++ seq.dropWhile(_ < 5)
     result11.shouldHaveExactType[number.immutable.FastSet[Int]]
 
     val result12 = fastSet.dropWhile(_ < 6)

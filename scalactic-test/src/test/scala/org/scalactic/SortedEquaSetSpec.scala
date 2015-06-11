@@ -110,11 +110,11 @@ class SortedSetSpec extends UnitSpec {
   it can "be constructed with apply" in {
     val result1 = lower.immutable.SortedSet("one", "two", "three")
     result1 should have size 3
-    result1.shouldHaveExactType[lower.immutable.SortedSet[String]]
+    result1.shouldHaveExactType[lower.immutable.inhabited.SortedSet[String]]
 
     val result2 = lower.immutable.TreeSet("one", "two", "three")
     result2 should have size 3
-    result2.shouldHaveExactType[lower.immutable.TreeSet[String]]
+    result2.shouldHaveExactType[lower.immutable.inhabited.TreeSet[String]]
     // TODO: After moving enablers to scalactic, make a nominal typeclass
     // instance for Size and Length for SortedSet.
   }
@@ -134,11 +134,11 @@ class SortedSetSpec extends UnitSpec {
   it should "eliminate 'duplicate' entries passed to the apply factory method" in {
     val result1 = lower.immutable.SortedSet("one", "two", "two", "three", "Three")
     result1 should have size 3
-    result1.shouldHaveExactType[lower.immutable.SortedSet[String]]
+    result1.shouldHaveExactType[lower.immutable.inhabited.SortedSet[String]]
 
     val result2 = lower.immutable.TreeSet("one", "two", "two", "three", "Three")
     result2 should have size 3
-    result2.shouldHaveExactType[lower.immutable.TreeSet[String]]
+    result2.shouldHaveExactType[lower.immutable.inhabited.TreeSet[String]]
     // TODO: After moving enablers to scalactic, make a nominal typeclass
     // instance for Size and Length for SortedSet.
   }

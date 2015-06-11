@@ -1,4 +1,4 @@
-/* * Copyright 2001-2013 Artima, Inc.
+/* Copyright 2001-2013 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
     val path: thisCollections.type = thisCollections
   }
   
-  class Immutable {
+  class Immutable { thisImmutable =>
 
     // I think we can just put this flatten on Set itself, and possibly have a flatten
     // method here that works if S is a GenTraversable[T]. That means that they have
@@ -542,13 +542,6 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def grouped(size: Int): Iterator[thisCollections.immutable.Set[T]]
   
       def hasDefiniteSize: Boolean
-  
-      /** Selects the first element of this `Set`.
-        *
-        * @return the first element of this `Set`.
-        * @throws `NoSuchElementException` if the `Set` is empty.
-        */
-      def head: T
   
       /** Optionally selects the first element.
         *
@@ -1280,7 +1273,6 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
   
       def view: SetView[T]
     }
-  
   /*
     trait EquaMap[V]/* extends Function[T, V] with Equals*/ {
   
@@ -1443,7 +1435,7 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
     }
   */
 
-    class FastSet[+T <: E] private[scalactic] (private val underlying: scala.collection.immutable.Set[Box[T@uV]]) extends Set[T] { thisFastSet =>
+    sealed class FastSet[+T <: E] private[scalactic] (private val underlying: scala.collection.immutable.Set[Box[T@uV]]) extends Set[T] { thisFastSet =>
       def +[U >: T <: E](elem: U): thisCollections.immutable.FastSet[U] = new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) + Box[U](elem))
       def +[U >: T <: E](elem1: U, elem2: U, elem3: U*): thisCollections.immutable.FastSet[U] =
         new immutable.FastSet[U](underlying.map(ebt => (ebt: Box[U])) + (Box[U](elem1), Box[U](elem2), elem3.map(Box[U](_)): _*))
@@ -1501,7 +1493,6 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def grouped(size: Int): Iterator[thisCollections.immutable.FastSet[T]] = Iterator(underlying.grouped(size).map(new immutable.FastSet[T](_)))
       def hasDefiniteSize: Boolean = underlying.hasDefiniteSize
       override def hashCode: Int = underlying.hashCode
-      def head: T = underlying.head.value
       def headOption: Option[T] =
         underlying.headOption match {
           case Some(head) => Some(head.value)
@@ -1635,15 +1626,22 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       val path: thisCollections.type = thisCollections
       def view: FastSetView[T] = FastSetView(thisFastSet.toStandardList: _*)
     }
-  
+
     object FastSet {
       def empty[T <: E]: thisCollections.immutable.FastSet[T] = new thisCollections.immutable.FastSet[T](scala.collection.immutable.Set.empty)
-      def apply[T <: E](elems: T*): thisCollections.immutable.FastSet[T] = 
-        new thisCollections.immutable.FastSet[T](scala.collection.immutable.Set(elems.map(Box[T](_)): _*))
+      def apply[T <: E](): thisCollections.immutable.FastSet[T] = 
+        new thisCollections.immutable.FastSet[T](scala.collection.immutable.Set.empty)
+      def apply[T <: E](firstElem: T, otherElems: T*): thisCollections.immutable.inhabited.FastSet[T] = {
+        val elements = firstElem +: otherElems
+        new thisCollections.immutable.inhabited.FastSet[T](scala.collection.immutable.Set(elements.map(Box[T](_)): _*))
+      }
     }
     object Set {
       def empty[T <: E]: thisCollections.immutable.Set[T] = thisCollections.immutable.FastSet.empty[T]
-      def apply[T <: E](elems: T*): thisCollections.immutable.Set[T] = thisCollections.immutable.FastSet[T](elems: _*)
+      def apply[T <: E](): thisCollections.immutable.Set[T] = thisCollections.immutable.FastSet.empty[T]
+      def apply[T <: E](firstElem: T, otherElems: T*): thisCollections.immutable.inhabited.Set[T] = {
+        thisCollections.immutable.inhabited.FastSet[T](firstElem, otherElems: _*)
+      }
     }
   /*
     class FastEquaMap[V] private[scalactic] (private val underlying: Map[Box, V]) extends EquaMap[V] { thisFastEquaMap =>
@@ -1687,6 +1685,33 @@ class Collections[E](val equality: HashingEquality[E]) { thisCollections =>
       def apply[V](entries: (T, V)*): EquaMap[V] = new FastEquaMap[V](Map.empty ++ entries.map(e => Box(e._1) -> e._2))
     }
   */
+  
+    class Inhabited {
+      trait Set[+T <: E] extends thisImmutable.Set[T] {
+        /** Selects the first element of this `Set`.
+          *
+          * @return the first element of this `Set`.
+          * @throws `NoSuchElementException` if the `Set` is empty.
+          */
+        def head: T
+      }
+  
+      class FastSet[+T <: E] private[scalactic] (private val underlying: scala.collection.immutable.Set[Box[T@uV]]) extends thisImmutable.FastSet[T](underlying) with Set[T] {
+        def head: T = underlying.head.value
+      }
+      object FastSet {
+        def apply[T <: E](firstElem: T, otherElems: T*): thisCollections.immutable.inhabited.FastSet[T] = {
+          val elements = firstElem +: otherElems
+          new thisCollections.immutable.inhabited.FastSet[T](scala.collection.immutable.Set(elements.map(Box[T](_)): _*))
+        }
+      }
+      object Set {
+        def apply[T <: E](firstElem: T, otherElems: T*): thisCollections.immutable.inhabited.Set[T] = {
+          thisCollections.immutable.inhabited.FastSet[T](firstElem, otherElems: _*)
+        }
+      }
+    }
+    val inhabited: Inhabited = new Inhabited
   }
   val immutable: Immutable = new Immutable
   type Set[T <: E] = immutable.Set[T]
