@@ -247,7 +247,7 @@ object GenScalaTestJS {
         "ParsedArgs.scala",
         "PrintReporter.scala",
         "ProgressBarPanel.scala",
-        "ReporterConfigParam.scala",
+        //"ReporterConfigParam.scala",
         "ReporterConfiguration.scala",
         "ReporterFactory.scala",
         "RunDoneListener.scala",
