@@ -642,7 +642,7 @@ import exceptions.TestFailedException
  *
  * <pre class="stREPL">
  * scala&gt; List(1, 2, 3) should contain oneOf (2, 3, 4)
- * org.scalatest.exceptions.TestFailedException: List(1, 2, 3) did not contain one of (2, 3, 4)
+ * org.scalatest.exceptions.TestFailedException: List(1, 2, 3) did not contain one (and only one) of (2, 3, 4)
  *         at ...
  * </pre>
  *
@@ -662,6 +662,17 @@ import exceptions.TestFailedException
  * </pre>
  *
  * <p>
+ * If you have a collection of elements that you'd like to use in a "one of" comparison, you can use "oneElementOf," like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain oneElementOf List(5, 7, 9)
+ * Some(7) should contain oneElementOf Vector(5, 7, 9)
+ * "howdy" should contain oneElementOf Set('a', 'b', 'c', 'd')
+ * (Array("Doe", "Ray", "Me") should contain oneElementOf List("X", "RAY", "BEAM")) (after being lowerCased)
+ * </pre>
+ *
+ * <p>
  * The <code>contain</code> <code>noneOf</code> syntax does the opposite of <code>oneOf</code>: it ensures none of the specified elements
  * are contained in the containing object:
  * </p>
@@ -670,6 +681,16 @@ import exceptions.TestFailedException
  * List(1, 2, 3, 4, 5) should contain noneOf (7, 8, 9)
  * Some(0) should contain noneOf (7, 8, 9)
  * "12345" should contain noneOf ('7', '8', '9')
+ * </pre>
+ *
+ * <p>
+ * If you have a collection of elements that you'd like to use in a "none of" comparison, you can use "noElementsOf," like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain noElementsOf List(7, 8, 9)
+ * Some(0) should contain noElementsOf Vector(7, 8, 9)
+ * "12345" should contain noElementsOf Set('7', '8', '9')
  * </pre>
  *
  * <a name="workingWithAggregations"></a>
@@ -720,6 +741,17 @@ import exceptions.TestFailedException
  * </pre>
  * 
  * <p>
+ * If you have a collection of elements that you'd like to use in an "at least one of" comparison, you can use "atLeastOneElementOf," like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * List(1, 2, 3) should contain atLeastOneElementOf List(2, 3, 4)
+ * Array(1, 2, 3) should contain atLeastOneElementOf Vector(3, 4, 5)
+ * "abc" should contain atLeastOneElementOf Set('c', 'a', 't')
+ * (Vector(" A", "B ") should contain atLeastOneElementOf List("a ", "b", "c")) (after being lowerCased and trimmed)
+ * </pre>
+ *
+ * <p>
  * The "<code>contain</code> <code>atMostOneOf</code>" syntax lets you specify a set of objects at most one of which should be contained in the containing object:
  * </p>
  *
@@ -728,11 +760,27 @@ import exceptions.TestFailedException
  * </pre>
  *
  * <p>
+ * If you have a collection of elements that you'd like to use in a "at most one of" comparison, you can use "atMostOneElementOf," like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain atMostOneElementOf Vector(5, 6, 7)
+ * </pre>
+ *
+ * <p>
  * The "<code>contain</code> <code>allOf</code>" syntax lets you specify a set of objects that should all be contained in the containing object:
  * </p>
  *
  * <pre class="stHighlight">
  * List(1, 2, 3, 4, 5) should contain allOf (2, 3, 5)
+ * </pre>
+ *
+ * <p>
+ * If you have a collection of elements that you'd like to use in a "all of" comparison, you can use "allElementsOf," like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * List(1, 2, 3, 4, 5) should contain allElementsOf Array(2, 3, 5)
  * </pre>
  *
  * <p>
@@ -771,6 +819,13 @@ import exceptions.TestFailedException
  *         at ...
  * </pre>
  * 
+ * <p>
+ * Note that no <code>onlyElementsOf</code> matcher is provided, because it would have the same
+ * behavior as <code>theSameElementsAs</code>. (<em>I.e.</em>, if you were looking for <code>onlyElementsOf</code>, please use <code>theSameElementsAs</code>
+ * instead.)
+ * </p>
+ * 
+ * </p>
  * <a name="workingWithSequences"></a>
  * <h2>Working with "sequences"</h2>
  *
@@ -821,6 +876,14 @@ import exceptions.TestFailedException
  * </pre>
  *
  * <p>
+ * If you have a collection of elements that you'd like to use in a "in order" comparison, you can use "inOrderElementsOf," like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrderElementsOf Array(1, 2, 3)
+ * </pre>
+ *
+ * <p>
  * Note that "order" in <code>inOrder</code>, <code>inOrderOnly</code>, and <code>theSameElementsInOrderAs</code> (described below)
  * in the <code>Aggregation[L]</code> instances built-in to ScalaTest is defined as "iteration order".
  * </p>
@@ -840,6 +903,12 @@ import exceptions.TestFailedException
  * in the same order.
  * </p>
  *
+ * <p>
+ * Note that no <code>inOrderOnlyElementsOf</code> matcher is provided, because it would have the same
+ * behavior as <code>theSameElementsInOrderAs</code>. (<em>I.e.</em>, if you were looking for <code>inOrderOnlyElementsOf</code>, please use <code>theSameElementsInOrderAs</code>
+ * instead.)
+ * </p>
+ * 
  * <a name="workingWithSortables"></a>
  * <h2>Working with "sortables"</h2>
  *
