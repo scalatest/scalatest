@@ -244,7 +244,7 @@ object GenScalaTestJS {
         "MemoryReporter.scala",
         "NarrowJOptionPane.scala",
         "NestedSuiteParam.scala",
-        "ParsedArgs.scala",
+        //"ParsedArgs.scala",
         "PrintReporter.scala",
         "ProgressBarPanel.scala",
         //"ReporterConfigParam.scala",
@@ -389,11 +389,30 @@ object GenScalaTestJS {
     copyDir("scalatest-test/src/test/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
-    copyFiles("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools",
+    copyDir("scalatest-test/src/test/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
-        "SuiteSortingReporterSpec.scala",
-        "TestSortingReporterSpec.scala"
-      ), targetDir)
+        "DashboardReporterSpec.scala",
+        "DiscoverySuiteSuite.scala",
+        "FilterReporterSpec.scala",
+        "FrameworkSuite.scala",
+        "HtmlReporterSpec.scala",
+        "JUnitXmlReporterSuite.scala",
+        "MemoryReporterSuite.scala",
+        "RunnerSpec.scala",
+        "SbtCommandParserSpec.scala",
+        "ScalaTestAntTaskSpec.scala",
+        "ScalaTestFrameworkSuite.scala",
+        "ScalaTestRunnerSuite.scala",
+        "SomeApiClass.scala",
+        "SomeApiClassRunner.scala",
+        "SomeApiSubClass.scala",
+        "StringReporterAlertSpec.scala",
+        "StringReporterSuite.scala",
+        "StringReporterSummarySpec.scala",
+        "SuiteDiscoveryHelperSuite.scala",
+        "XmlSocketReporterSpec.scala"
+      )
+    )
   }
 
 }

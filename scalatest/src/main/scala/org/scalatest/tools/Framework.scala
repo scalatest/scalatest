@@ -22,15 +22,8 @@ import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteAborted
 import org.scalatest.events._
-import Runner.parsePropertiesArgsIntoMap
-import Runner.parseCompoundArgIntoSet
 import Suite.SELECTED_TAG
 import Suite.mergeMap
-import Runner.parseSuiteArgsIntoNameStrings
-import Runner.parseChosenStylesIntoChosenStyleSet
-import Runner.parseArgs
-import Runner.parseDoubleArgument
-import Runner.parseSlowpokeConfig
 import java.io.{StringWriter, PrintWriter}
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
@@ -38,6 +31,7 @@ import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
+import ArgsParser._
 
 /**
  * <p>
@@ -1136,11 +1130,11 @@ class Framework extends SbtFramework {
       if (remoteArgs.isEmpty) {
         // Creating the normal/main runner, should create reporters as specified by args.
         // If no reporters specified, just give them a default stdout reporter
-        Runner.parseReporterArgsIntoConfigurations(stdoutArgs ::: stderrArgs ::: others)
+        parseReporterArgsIntoConfigurations(stdoutArgs ::: stderrArgs ::: others)
       }
       else {
         // Creating a sub-process runner, should just create stdout reporter and socket reporter
-        Runner.parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: stdoutArgs)
+        parseReporterArgsIntoConfigurations("-K" :: remoteArgs(0) :: remoteArgs(1) :: stdoutArgs)
       }
 
     val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")

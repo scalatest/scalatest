@@ -16,13 +16,6 @@
 package org.scalatest.tools
 
 import org.scalatools.testing.{Framework => SbtFramework, _}
-import org.scalatest.tools.Runner.parsePropertiesArgsIntoMap
-import org.scalatest.tools.Runner.parseCompoundArgIntoSet
-import org.scalatest.tools.Runner.parseSuiteArgsIntoNameStrings
-import org.scalatest.tools.Runner.parseChosenStylesIntoChosenStyleSet
-import org.scalatest.tools.Runner.parseArgs
-import org.scalatest.tools.Runner.parseDoubleArgument
-import org.scalatest.tools.Runner.parseSlowpokeConfig
 import SuiteDiscoveryHelper._
 import org.scalatest.Suite.formatterForSuiteStarting
 import org.scalatest.Suite.formatterForSuiteCompleted
@@ -37,6 +30,7 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
+import ArgsParser._
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).
@@ -209,7 +203,7 @@ class ScalaTestFramework extends SbtFramework {
           
           Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
           
-          val fullReporterConfigurations = Runner.parseReporterArgsIntoConfigurations(reporterArgs)
+          val fullReporterConfigurations = parseReporterArgsIntoConfigurations(reporterArgs)
           val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")
           
           fullReporterConfigurations.standardOutReporterConfiguration match {
