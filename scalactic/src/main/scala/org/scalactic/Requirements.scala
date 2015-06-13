@@ -16,6 +16,7 @@
 package org.scalactic
 
 import reflect.macros.Context
+import exceptions.NullArgumentException
 
 /**
  * Trait that contains <code>require</code>, and <code>requireState</code>, and <code>requireNonNull</code> methods for checking pre-conditions
@@ -97,7 +98,7 @@ import reflect.macros.Context
  * </p>
  * 
  * <p>
- * The <code>requireNonNull</code> method takes one or more variables as arguments and throws <code>NullPointerException</code>
+ * The <code>requireNonNull</code> method takes one or more variables as arguments and throws <code>NullArgumentException</code>
  * with an error messages that includes the variable names if any are <code>null</code>. Here's an example:
  * </p>
  * 
@@ -109,7 +110,7 @@ import reflect.macros.Context
  * f: java.util.Date = null
  * 
  * scala&gt; requireNonNull(a, b, c, d, e, f)
- * java.lang.NullPointerException: <strong>e and f were null</strong>
+ * org.scalactic.exceptions.NullArgumentException: <strong>e and f were null</strong>
  * 	at org.scalactic.Requirements$RequirementsHelper.macroRequireNonNull(Requirements.scala:101)
  * 	...
  * </pre>
@@ -174,7 +175,7 @@ trait Requirements {
     }
 
     /**
-     * Require that all of the passed in arguments are not <code>null</code>, else fail with <code>NullPointerException</code>.
+     * Require that all of the passed in arguments are not <code>null</code>, else fail with <code>NullArgumentException</code>.
      *
      * @param variableNames names of variable passed as appear in source
      * @param arguments arguments to check for <code>null</code> value
@@ -199,7 +200,7 @@ trait Requirements {
             val combinedVariableNames = Resources.commaAnd(nullVariableNames.dropRight(1).mkString(Resources.comma), nullVariableNames.last)
             FailureMessages.wereNull(UnquotedString(combinedVariableNames))
           }
-        throw new NullPointerException(errorMessage)
+        throw new NullArgumentException(errorMessage)
       }
     }
 
@@ -286,12 +287,12 @@ trait Requirements {
    *
    * <p>
    * If none of the passed arguments are <code>null</code>, this method returns normally.
-   * Else, it throws <code>NullPointerException</code> with an error message that includes the name
+   * Else, it throws <code>NullArgumentException</code> with an error message that includes the name
    * (as it appeared in the source) of each argument that was <code>null</code>.
    * </p>
    *
    * @param arguments arguments to check for <code>null</code> value
-   * @throws NullPointerException if any of the arguments are <code>null</code>.
+   * @throws NullArgumentException if any of the arguments are <code>null</code>.
    */
   def requireNonNull(arguments: Any*): Unit = macro RequirementsMacro.requireNonNull
 }
@@ -348,7 +349,7 @@ private[scalactic] object RequirementsMacro {
    *
    * @param context macro context
    * @param arguments original arguments expression(s)
-   * @return transformed expression that performs the requirement check and throw <code>NullPointerException</code> with rich error message if requirement failed
+   * @return transformed expression that performs the requirement check and throw <code>NullArgumentException</code> with rich error message if requirement failed
    */
   def requireNonNull(context: Context)(arguments: context.Expr[Any]*): context.Expr[Unit] = {
     import context.universe._

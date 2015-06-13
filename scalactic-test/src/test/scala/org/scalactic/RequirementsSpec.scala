@@ -18,6 +18,7 @@ package org.scalactic
 import org.scalatest._
 import java.util.Date
 import Prettifier.lineSeparator
+import org.scalactic.exceptions.NullArgumentException
 
 class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
@@ -4388,52 +4389,52 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       requireNonNull(prefix, string, suffix)
     }
 
-    it("should throw NullPointerException with correct message when one of passed parameters is null") {
-      val e = intercept[NullPointerException] {
+    it("should throw NullArgumentException with correct message when one of passed parameters is null") {
+      val e = intercept[NullArgumentException] {
         requireNonNull(prefix, nullString, suffix)
       }
       assert(e.getMessage == "nullString was null")
     }
 
-    it("should throw NullPointerException with correct message when two of passed parameters is null") {
-      val e = intercept[NullPointerException] {
+    it("should throw NullArgumentException with correct message when two of passed parameters is null") {
+      val e = intercept[NullArgumentException] {
         requireNonNull(nullPrefix, nullString, suffix)
       }
       assert(e.getMessage == "nullPrefix and nullString were null")
     }
 
-    it("should throw NullPointerException with correct message when three of passed parameters is null") {
-      val e = intercept[NullPointerException] {
+    it("should throw NullArgumentException with correct message when three of passed parameters is null") {
+      val e = intercept[NullArgumentException] {
         requireNonNull(nullPrefix, nullString, nullSuffix)
       }
       assert(e.getMessage == "nullPrefix, nullString, and nullSuffix were null")
     }
 
-    it("should throw NullPointerException with correct message when one of passed parameters through object property is null") {
+    it("should throw NullArgumentException with correct message when one of passed parameters through object property is null") {
       class AClass {
         val aNull: String = null
       }
       val aClass = new AClass
-      val e = intercept[NullPointerException] {
+      val e = intercept[NullArgumentException] {
         requireNonNull(prefix, aClass.aNull, suffix)
       }
       assert(e.getMessage == "aClass.aNull was null")
     }
 
-    it("should throw NullPointerException with correct message when one of passed parameters through object method call is null") {
+    it("should throw NullArgumentException with correct message when one of passed parameters through object method call is null") {
       class AClass {
         def returnNull: String = null
       }
       val aClass = new AClass
-      val e = intercept[NullPointerException] {
+      val e = intercept[NullArgumentException] {
         requireNonNull(prefix, aClass.returnNull, suffix)
       }
       assert(e.getMessage == "aClass.returnNull was null")
     }
 
-    it("should throw NullPointerException with correct message when one of passed parameters through method call is null") {
+    it("should throw NullArgumentException with correct message when one of passed parameters through method call is null") {
       def returnNull: String = null
-      val e = intercept[NullPointerException] {
+      val e = intercept[NullArgumentException] {
         requireNonNull(prefix, returnNull, suffix)
       }
       assert(e.getMessage == "returnNull was null")
