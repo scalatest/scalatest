@@ -198,11 +198,36 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
-      "-m", "org.scalautils",
       "-oDI",
       "-h", "target/html",
       "-u", "target/junit",
       "-fW", "target/result.txt"))
+
+  def scalatestTestJSOptions =
+    Seq(Tests.Argument(TestFrameworks.ScalaTest,
+      "-l", "org.scalatest.tags.Slow",
+      "-m", "org.scalatest",
+      "-m", "org.scalactic",
+      "-m", "org.scalactic.anyvals",
+      "-m", "org.scalactic.algebra",
+      "-m", "org.scalactic.enablers",
+      "-m", "org.scalatest.fixture",
+      "-m", "org.scalatest.concurrent",
+      "-m", "org.scalatest.testng",
+      "-m", "org.scalatest.junit",
+      "-m", "org.scalatest.events",
+      "-m", "org.scalatest.prop",
+      "-m", "org.scalatest.tools",
+      "-m", "org.scalatest.matchers",
+      "-m", "org.scalatest.suiteprop",
+      "-m", "org.scalatest.mock",
+      "-m", "org.scalatest.path",
+      "-m", "org.scalatest.selenium",
+      "-m", "org.scalatest.exceptions",
+      "-m", "org.scalatest.time",
+      "-m", "org.scalatest.words",
+      "-m", "org.scalatest.enablers",
+      "-oDI"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
@@ -525,7 +550,7 @@ object ScalatestBuild extends Build {
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
-      testOptions in Test := scalatestTestOptions,
+      testOptions in Test := scalatestTestJSOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {},

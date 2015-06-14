@@ -156,23 +156,33 @@ private[tools] object ArgsParser {
 
   private[scalatest] def parseArgs(args: Array[String]): ParsedArgs = {
 
+    // SKIP-SCALATESTJS-START
     val runpath = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-END
     val reporters = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-START
     val suites = new ListBuffer[String]()
     val tryAgains = new ListBuffer[String]()
     val junits = new ListBuffer[String]()
     val props = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-END
     val includes = new ListBuffer[String]()
     val excludes = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-START
     val concurrent = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-END
     val membersOnly = new ListBuffer[String]()
     val wildcard = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-START
     val testNGXMLFiles = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-END
     val suffixes = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-START
     val chosenStyles = new ListBuffer[String]()
     val spanScaleFactor = new ListBuffer[String]()
     val testSortingReporterTimeout = new ListBuffer[String]()
     val slowpoke = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-END
 
     val it = args.iterator.buffered
     while (it.hasNext) {
@@ -180,36 +190,57 @@ private[tools] object ArgsParser {
       val s = it.next
 
       if (s.startsWith("-D")) {
+        // SKIP-SCALATESTJS-START
         props += s
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s.startsWith("-R")) {
+        // SKIP-SCALATESTJS-START
         runpath += s
         if (it.hasNext)
           runpath += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s.startsWith("-g")) {
+        // SKIP-SCALATESTJS-START
         reporters += s
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s.startsWith("-o")) {
         reporters += s
       }
       else if (s.startsWith("-e")) {
+        // SKIP-SCALATESTJS-START
         reporters += s
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s.startsWith("-f")) {
+        // SKIP-SCALATESTJS-START
         reporters += s
         if (it.hasNext)
           reporters += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-M") {
+        // SKIP-SCALATESTJS-START
         reporters += s
         if (it.hasNext)
           reporters += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-u") {
+        // SKIP-SCALATESTJS-START
         reporters += s
         if (it.hasNext)
           reporters += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       /*else if (s.startsWith("-d")) {
         reporters += s
@@ -227,6 +258,7 @@ private[tools] object ArgsParser {
           reporters += it.next
       }*/
       else if (s.startsWith("-h")) {
+        // SKIP-SCALATESTJS-START
         reporters += s
         if (it.hasNext)
           reporters += it.next
@@ -235,6 +267,8 @@ private[tools] object ArgsParser {
           if (it.hasNext)
             reporters += it.next
         }
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-n") {
         includes += s
@@ -247,45 +281,60 @@ private[tools] object ArgsParser {
           excludes += it.next
       }
       else if (s.startsWith("-C")) {
+        // SKIP-SCALATESTJS-START
         reporters += s
         if (it.hasNext)
           reporters += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-s") {
-
+        // SKIP-SCALATESTJS-START
         suites += s
         if (it.hasNext)
           suites += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-A") {
-
+        // SKIP-SCALATESTJS-START
         tryAgains += s
         if (it.hasNext)
           tryAgains += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-i") {
-
+        // SKIP-SCALATESTJS-START
         suites += s
         if (it.hasNext)
           suites += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-t") {
-
+        // SKIP-SCALATESTJS-START
         suites += s
         if (it.hasNext)
           suites += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-z") {
-
+        // SKIP-SCALATESTJS-START
         suites += s
         if (it.hasNext)
           suites += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-j") {
-
+        // SKIP-SCALATESTJS-START
         junits += s
         if (it.hasNext)
           junits += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-m") {
 
@@ -300,13 +349,18 @@ private[tools] object ArgsParser {
           wildcard += it.next
       }
       else if (s.startsWith("-P")) {
+        // SKIP-SCALATESTJS-START
         concurrent += s
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-b") {
-
+        // SKIP-SCALATESTJS-START
         testNGXMLFiles += s
         if (it.hasNext)
           testNGXMLFiles += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-q") {
         if (it.hasNext)
@@ -316,38 +370,51 @@ private[tools] object ArgsParser {
         suffixes += "Spec|Suite"
       }
       else if (s == "-k") {
-
+        // SKIP-SCALATESTJS-START
         reporters += s
         if (it.hasNext && !it.head.startsWith("-")) // for host
           reporters += it.next
         if (it.hasNext && !it.head.startsWith("-")) // for port
           reporters += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-K") {
-
+        // SKIP-SCALATESTJS-START
         reporters += s
         if (it.hasNext && !it.head.startsWith("-")) // for host
           reporters += it.next
         if (it.hasNext && !it.head.startsWith("-")) // for port
           reporters += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-y") {
+        // SKIP-SCALATESTJS-START
         chosenStyles += s
         if (it.hasNext)
           chosenStyles += it.next()
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-F") {
+        // SKIP-SCALATESTJS-START
         spanScaleFactor += s
         if (it.hasNext)
           spanScaleFactor += it.next()
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-T") {
-
+        // SKIP-SCALATESTJS-START
         testSortingReporterTimeout += s
         if (it.hasNext)
           testSortingReporterTimeout += it.next
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-W") {
+        // SKIP-SCALATESTJS-START
         def isParsableAsInt(s: String): Boolean =
           try { s.toInt; true } catch { case _: NumberFormatException => false }
         slowpoke += s
@@ -361,6 +428,8 @@ private[tools] object ArgsParser {
           else throw new IllegalArgumentException("-W must be followed by two valid integers, the second specifying the period, but got: " + it.head)
         }
         else throw new IllegalArgumentException("-W must be followed by two valid integers, the second specifying the period")
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else {
         throw new IllegalArgumentException("Argument unrecognized by ScalaTest's Runner: " + s)
@@ -368,24 +437,75 @@ private[tools] object ArgsParser {
     }
 
     ParsedArgs(
+      // SKIP-SCALATESTJS-START
       runpath.toList,
+      // SKIP-SCALATESTJS-END
       reporters.toList,
+      // SKIP-SCALATESTJS-START
       suites.toList,
       tryAgains.toList,
       junits.toList,
       props.toList,
+      // SKIP-SCALATESTJS-END
       includes.toList,
       excludes.toList,
+      // SKIP-SCALATESTJS-START
       concurrent.toList,
+      // SKIP-SCALATESTJS-END
       membersOnly.toList,
       wildcard.toList,
+      // SKIP-SCALATESTJS-START
       testNGXMLFiles.toList,
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY genSuffixesPattern(suffixes.toList)
+      // SKIP-SCALATESTJS-START
       genSuffixesPattern(suffixes.toList),
       chosenStyles.toList,
       spanScaleFactor.toList,
       testSortingReporterTimeout.toList,
       slowpoke.toList
+      // SKIP-SCALATESTJS-END
     )
+  }
+
+  // Used to parse -j, -m, and -w args, one of which will be passed as a String as dashArg
+  def parseSuiteArgsIntoNameStrings(args: List[String], dashArg: String) = {
+
+    if (args == null)
+      throw new NullPointerException("args was null")
+
+    if (args.exists(_ == null))
+      throw new NullPointerException("an arg String was null")
+
+    if (dashArg != "-j" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
+      throw new IllegalArgumentException("dashArg invalid: " + dashArg)
+    /*
+    <<<<<<< .working TODOCS: Is the above the correct way to merge these?
+        if (dashArg != "-j" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
+          throw new IllegalArgumentException("dashArg invalid: " + dashArg)
+    =======
+        if (dashArg != "-j" && dashArg != "-s" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
+          throw new NullPointerException("dashArg invalid: " + dashArg)
+    >>>>>>> .merge-right.r3653
+    */
+
+    val lb = new ListBuffer[String]
+    val it = args.iterator
+    while (it.hasNext) {
+      val dashS = it.next
+      if (dashS != dashArg)
+        throw new IllegalArgumentException("Every other element, starting with the first, must be " + dashArg)
+      if (it.hasNext) {
+        val suiteName = it.next
+        if (!suiteName.startsWith("-"))
+          lb += suiteName
+        else
+          throw new IllegalArgumentException("Expecting a Suite class name or package name to follow " + dashArg + ", but got: " + suiteName)
+      }
+      else
+        throw new IllegalArgumentException("Last element must be a Suite class name or package name, not a " + dashArg + ".")
+    }
+    lb.toList
   }
 
   /**
@@ -864,46 +984,6 @@ private[tools] object ArgsParser {
       xmlSocketReporterConfigurationList,
       socketReporterConfigurationList
     )
-  }
-
-  // Used to parse -j, -m, and -w args, one of which will be passed as a String as dashArg
-  def parseSuiteArgsIntoNameStrings(args: List[String], dashArg: String) = {
-
-    if (args == null)
-      throw new NullPointerException("args was null")
-
-    if (args.exists(_ == null))
-      throw new NullPointerException("an arg String was null")
-
-    if (dashArg != "-j" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
-      throw new IllegalArgumentException("dashArg invalid: " + dashArg)
-    /*
-    <<<<<<< .working TODOCS: Is the above the correct way to merge these?
-        if (dashArg != "-j" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
-          throw new IllegalArgumentException("dashArg invalid: " + dashArg)
-    =======
-        if (dashArg != "-j" && dashArg != "-s" && dashArg != "-w" && dashArg != "-m" && dashArg != "-b")
-          throw new NullPointerException("dashArg invalid: " + dashArg)
-    >>>>>>> .merge-right.r3653
-    */
-
-    val lb = new ListBuffer[String]
-    val it = args.iterator
-    while (it.hasNext) {
-      val dashS = it.next
-      if (dashS != dashArg)
-        throw new IllegalArgumentException("Every other element, starting with the first, must be " + dashArg)
-      if (it.hasNext) {
-        val suiteName = it.next
-        if (!suiteName.startsWith("-"))
-          lb += suiteName
-        else
-          throw new IllegalArgumentException("Expecting a Suite class name or package name to follow " + dashArg + ", but got: " + suiteName)
-      }
-      else
-        throw new IllegalArgumentException("Last element must be a Suite class name or package name, not a " + dashArg + ".")
-    }
-    lb.toList
   }
 
   //

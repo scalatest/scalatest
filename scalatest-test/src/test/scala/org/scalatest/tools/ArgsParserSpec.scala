@@ -47,41 +47,58 @@ class ArgsParserSpec extends FunSpec {
                 ) = {
 
       val ParsedArgs(
+      // SKIP-SCALATESTJS-START
       runpathList,
+      // SKIP-SCALATESTJS-END
       reportersList,
+      // SKIP-SCALATESTJS-START
       suitesList,
       runAgainsList,
       junitsList,
       propsList,
+      // SKIP-SCALATESTJS-END
       includesList,
       excludesList,
+      // SKIP-SCALATESTJS-START
       concurrentList,
+      // SKIP-SCALATESTJS-END
       memberOfList,
       beginsWithList,
+      //SCALATESTJS-ONLY suffixes
+      // SKIP-SCALATESTJS-START
       testNGList,
       suffixes,
       chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
       slowpokeList
+      // SKIP-SCALATESTJS-END
       ) = ArgsParser.parseArgs(args)
 
+      // SKIP-SCALATESTJS-START
       assert(runpathList === expectedRunpathList)
+      // SKIP-SCALATESTJS-END
       assert(reportersList === expectedReporterList)
+      // SKIP-SCALATESTJS-START
       assert(suitesList === expectedSuitesList)
       assert(runAgainsList === expectedRunAgainsList)
       assert(junitsList === expectedJunitsList)
       assert(propsList === expectedPropsList)
+      // SKIP-SCALATESTJS-END
       assert(includesList === expectedIncludesList)
       assert(excludesList === expectedExcludesList)
+      // SKIP-SCALATESTJS-START
       assert(concurrentList === expectedConcurrentList)
+      // SKIP-SCALATESTJS-END
       assert(memberOfList === expectedMemberOfList)
       assert(beginsWithList === expectedBeginsWithList)
+      // SKIP-SCALATESTJS-START
       assert(testNGList === expectedTestNGList)
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedScaleFactorList)
       assert(testSortingReporterTimeoutList == expectedTestSortingReporterTimeoutList)
       assert(slowpokeList == expectedSlowpokeList)
+      // SKIP-SCALATESTJS-END
       if (expectedSuffixes.isEmpty) {
         assert(suffixes.isEmpty)
       } else {
@@ -509,40 +526,57 @@ class ArgsParserSpec extends FunSpec {
                 ) = {
 
       val ParsedArgs(
+      // SKIP-SCALATESTJS-START
       runpathList,
+      // SKIP-SCALATESTJS-END
       reportersList,
+      // SKIP-SCALATESTJS-START
       suitesList,
       runAgainsList,
       junitsList,
       propsList,
+      // SKIP-SCALATESTJS-END
       includesList,
       excludesList,
+      // SKIP-SCALATESTJS-START
       concurrentList,
+      // SKIP-SCALATESTJS-END
       memberOfList,
       beginsWithList,
+      //SCALATESTJS-ONLY suffixes
+      // SKIP-SCALATESTJS-START
       testNGList,
       suffixes,
       chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
       slowpokeList
+      // SKIP-SCALATESTJS-END
       ) = ArgsParser.parseArgs(args)
 
+      // SKIP-SCALATESTJS-START
       assert(runpathList === expectedRunpathList)
+      // SKIP-SCALATESTJS-END
       assert(reportersList === expectedReporterList)
+      // SKIP-SCALATESTJS-START
       assert(suitesList === expectedSuitesList)
       assert(runAgainsList === expectedRunAgainsList)
       assert(junitsList === expectedJunitsList)
       assert(propsList === expectedPropsList)
+      // SKIP-SCALATESTJS-END
       assert(includesList === expectedIncludesList)
       assert(excludesList === expectedExcludesList)
+      // SKIP-SCALATESTJS-START
       assert(concurrentList === expectedConcurrentList)
+      // SKIP-SCALATESTJS-END
       assert(memberOfList === expectedMemberOfList)
       assert(beginsWithList === expectedBeginsWithList)
+      // SKIP-SCALATESTJS-START
       assert(testNGList === expectedTestNGList)
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedSpanScaleFactorList)
       assert(testSortingReporterTimeoutList == expectedTestSortingReporterTimeoutList)
+      // SKIP-SCALATESTJS-END
       if (expectedSuffixes.isEmpty) {
         assert(suffixes.isEmpty)
       } else {
@@ -551,6 +585,7 @@ class ArgsParserSpec extends FunSpec {
       }
     }
 
+    // SKIP-SCALATESTJS-START
     verify(
       Array("-g", "-Dincredible=whatshername", "-Ddbname=testdb", "-Dserver=192.168.1.188", "-R",
         "\"serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar\"", "-g", "-f", "file.out", "-R"),
@@ -1026,6 +1061,7 @@ class ArgsParserSpec extends FunSpec {
       Nil,
       Nil
     )
+    // SKIP-SCALATESTJS-END
   }
 
   describe("parseCompoundArgIntoSet should") {
@@ -1216,6 +1252,27 @@ class ArgsParserSpec extends FunSpec {
     }
   }
 
+  it("parseSuiteArgsIntoClassNameStrings should work correctly") {
+    intercept[NullPointerException] {
+      ArgsParser.parseSuiteArgsIntoNameStrings(null, "-j")
+    }
+    intercept[NullPointerException] {
+      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", null, "-j"), "-j")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", "SweetSuite", "-j"), "-j")
+    }
+    intercept[IllegalArgumentException] {
+      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", "SweetSuite", "-j", "-j"), "-j")
+    }
+    assertResult(List("SweetSuite", "OKSuite")) {
+      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", "SweetSuite", "-j", "OKSuite"), "-j")
+    }
+    assertResult(List("SweetSuite", "OKSuite", "SomeSuite")) {
+      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", "SweetSuite", "-j", "OKSuite", "-j", "SomeSuite"), "-j")
+    }
+  }
+
   // SKIP-SCALATESTJS-START
   it("parseReporterArgsIntoSpecs should work correctly") {
     intercept[NullPointerException] {
@@ -1346,27 +1403,6 @@ class ArgsParserSpec extends FunSpec {
     }
     assertResult(new ReporterConfigurations(None, Nil, Nil, Nil, /*Nil, Nil, */None, None, List(new HtmlReporterConfiguration(Set(), "htmldir", None), new HtmlReporterConfiguration(Set(), "html", Some(new File("MyStyle.css").toURI.toURL))), Nil, Nil, Nil)) {
       ArgsParser.parseReporterArgsIntoConfigurations(List("-h", "htmldir", "-h", "html", "-Y", "MyStyle.css"))
-    }
-  }
-
-  it("parseSuiteArgsIntoClassNameStrings should work correctly") {
-    intercept[NullPointerException] {
-      ArgsParser.parseSuiteArgsIntoNameStrings(null, "-j")
-    }
-    intercept[NullPointerException] {
-      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", null, "-j"), "-j")
-    }
-    intercept[IllegalArgumentException] {
-      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", "SweetSuite", "-j"), "-j")
-    }
-    intercept[IllegalArgumentException] {
-      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", "SweetSuite", "-j", "-j"), "-j")
-    }
-    assertResult(List("SweetSuite", "OKSuite")) {
-      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", "SweetSuite", "-j", "OKSuite"), "-j")
-    }
-    assertResult(List("SweetSuite", "OKSuite", "SomeSuite")) {
-      ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", "SweetSuite", "-j", "OKSuite", "-j", "SomeSuite"), "-j")
     }
   }
 

@@ -5,11 +5,12 @@ import org.scalatest.events.Summary
 import sbt.testing.{Framework => BaseFramework, Event => SbtEvent, Status => SbtStatus, _}
 
 import scala.compat.Platform
+import ArgsParser._
 
 class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClassLoader: ClassLoader) extends Runner {
 
   // TODO: To take these from test arguments
-  val presentAllDurations: Boolean = true
+  /*val presentAllDurations: Boolean = true
   val presentInColor: Boolean = true
   val presentShortStackTraces: Boolean = true
   val presentFullStackTraces: Boolean = true
@@ -17,7 +18,58 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
   val presentReminder: Boolean = false
   val presentReminderWithShortStackTraces: Boolean = false
   val presentReminderWithFullStackTraces: Boolean = false
-  val presentReminderWithoutCanceledTests: Boolean = false
+  val presentReminderWithoutCanceledTests: Boolean = false*/
+
+  val sbtNoFormat = false   // System property not supported in scala-js
+
+  val ParsedArgs(
+  reporterArgs,
+  tagsToIncludeArgs,
+  tagsToExcludeArgs,
+  membersOnlyArgs,
+  wildcardArgs,
+  suffixes
+  ) = parseArgs(args)
+
+  val (
+    presentAllDurations,
+    presentInColor,
+    presentShortStackTraces,
+    presentFullStackTraces,
+    presentUnformatted,
+    presentReminder,
+    presentReminderWithShortStackTraces,
+    presentReminderWithFullStackTraces,
+    presentReminderWithoutCanceledTests,
+    configSet
+    ) = {
+    if (reporterArgs.length == 1 && reporterArgs(0).startsWith("-o")) {
+      val configSet = parseConfigSet(reporterArgs(0))
+      (
+        configSet.contains(PresentAllDurations),
+        !configSet.contains(PresentWithoutColor) && !sbtNoFormat,
+        configSet.contains(PresentShortStackTraces) || configSet.contains(PresentFullStackTraces),
+        configSet.contains(PresentFullStackTraces),
+        configSet.contains(PresentUnformatted),
+        configSet.exists { ele =>
+          ele == PresentReminderWithoutStackTraces || ele == PresentReminderWithShortStackTraces || ele == PresentReminderWithFullStackTraces
+        },
+        configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
+        configSet.contains(PresentReminderWithFullStackTraces),
+        configSet.contains(PresentReminderWithoutCanceledTests),
+        configSet
+        )
+    }
+    else if (reporterArgs.length > 1)
+      throw new IllegalArgumentException("Only one -o can be passed in as test argument.")
+    else
+      (false, !sbtNoFormat, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+  }
+
+  val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
+  val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
+  val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
+  val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
 
   val runStartTime = Platform.currentTime
 
@@ -51,9 +103,23 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
     theArgs
   }
 
-  def tasks(list: Array[TaskDef]): Array[Task] = {
-    list.map(t => new TaskRunner(t, testClassLoader, tracker, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-      presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, None))
+  def tasks(taskDefs: Array[TaskDef]): Array[Task] = {
+    def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
+      taskDefs.filter(td => paths.exists(td.fullyQualifiedName.startsWith(_)))
+
+    def filterMembersOnly(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] =
+      taskDefs.filter { td =>
+        paths.exists(path => td.fullyQualifiedName.startsWith(path) && td.fullyQualifiedName.substring(path.length).lastIndexOf('.') <= 0)
+      }
+
+    def createTask(t: TaskDef): Task =
+      new TaskRunner(t, testClassLoader, tracker, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+        presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, None)
+
+    for {
+      taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
+      val task = createTask(taskDef)
+    } yield task
   }
 
   def receiveMessage(msg: String): Option[String] = {
