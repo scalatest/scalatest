@@ -73,7 +73,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.4"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.10.5"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -171,20 +171,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.3",
-      "org.easymock" % "easymockclassextension" % "3.1" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
-      "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "org.testng" % "testng" % "6.8.7" % "optional",
-      "com.google.inject" % "guice" % "2.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
-      "org.apache.ant" % "ant" % "1.7.1" % "optional",
-      "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
-      "org.ow2.asm" % "asm-all" % "4.1" % "optional",
-      "org.pegdown" % "pegdown" % "1.4.2" % "optional"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.3"
     )
 
   def scalatestTestOptions =
@@ -211,11 +198,36 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
-      "-m", "org.scalautils",
       "-oDI",
       "-h", "target/html",
       "-u", "target/junit",
       "-fW", "target/result.txt"))
+
+  def scalatestTestJSOptions =
+    Seq(Tests.Argument(TestFrameworks.ScalaTest,
+      "-l", "org.scalatest.tags.Slow",
+      "-m", "org.scalatest",
+      "-m", "org.scalactic",
+      "-m", "org.scalactic.anyvals",
+      "-m", "org.scalactic.algebra",
+      "-m", "org.scalactic.enablers",
+      "-m", "org.scalatest.fixture",
+      "-m", "org.scalatest.concurrent",
+      "-m", "org.scalatest.testng",
+      "-m", "org.scalatest.junit",
+      "-m", "org.scalatest.events",
+      "-m", "org.scalatest.prop",
+      "-m", "org.scalatest.tools",
+      "-m", "org.scalatest.matchers",
+      "-m", "org.scalatest.suiteprop",
+      "-m", "org.scalatest.mock",
+      "-m", "org.scalatest.path",
+      "-m", "org.scalatest.selenium",
+      "-m", "org.scalatest.exceptions",
+      "-m", "org.scalatest.time",
+      "-m", "org.scalatest.words",
+      "-m", "org.scalatest.enablers",
+      "-oDI"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
@@ -538,7 +550,7 @@ object ScalatestBuild extends Build {
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
-      testOptions in Test := scalatestTestOptions,
+      testOptions in Test := scalatestTestJSOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {},
@@ -553,7 +565,7 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestAll = Project("scalatest-all", file("."))
+  lazy val scalatestAll = Project("scalatestAll", file("."))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest All",

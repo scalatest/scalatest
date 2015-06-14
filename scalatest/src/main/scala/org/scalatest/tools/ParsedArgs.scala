@@ -18,21 +18,32 @@ package org.scalatest.tools
 import java.util.regex.Pattern
 
 private[scalatest] case class ParsedArgs(
+  // SKIP-SCALATESTJS-START
   runpath: List[String],
+  // SKIP-SCALATESTJS-END
   reporters: List[String],
+  // SKIP-SCALATESTJS-START
   suites: List[String],
   tryAgains: List[String],
   junits: List[String],
   props: List[String],
+  // SKIP-SCALATESTJS-END
   includes: List[String],
   excludes: List[String],
+  // SKIP-SCALATESTJS-START
   concurrent: List[String],
+  // SKIP-SCALATESTJS-END
   membersOnly: List[String],
   wildcard: List[String],
+  // SKIP-SCALATESTJS-START
   testNGXMLFiles: List[String],
-  genSuffixesPattern: Option[Pattern], 
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY genSuffixesPattern: Option[Pattern]
+  // SKIP-SCALATESTJS-START
+  genSuffixesPattern: Option[Pattern],
   chosenStyles: List[String], 
   spanScaleFactor: List[String], 
   testSortingReporterTimeout: List[String],
   slowpokeParams: List[String]
+  // SKIP-SCALATESTJS-END
 )

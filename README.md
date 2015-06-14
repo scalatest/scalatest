@@ -56,7 +56,7 @@ You can package the ScalaTest JAR file using this command:
 
   `$ sbt package`
 
-The resulting JAR file will be produced in target/scala-2.10/.
+The resulting JAR file will be produced in target/scala-2.11/.
 
 You can also publish it to your local Ivy repository using this command:
 
@@ -91,10 +91,6 @@ If you would like to export a particular private key into a separate GPG file, y
 
 With Sonatype credentials and GPG file in place, you can now publish to Sonatype.
 
-To publish ScalaTest, use the following command:
+To publish scalactic, scalatest and scalatest-all (for Scala and Scala-js, version 2.11 and 2.10) to Sonatype, use the following command:
 
-  `$ sbt publishSigned`
-
-To publish Scalactic, use the following command:
-
-  `$ sbt scalalactic/publishSigned`
+  `$ sbt publishSigned "project scalatestAllJS" publishSigned ++2.10.5 "project scalatestAll" publishSigned "project scalatestAllJS" publishSigned`

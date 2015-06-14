@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest.tools.SuiteRunner
 import scala.collection.GenSet
 import java.io.Serializable
 

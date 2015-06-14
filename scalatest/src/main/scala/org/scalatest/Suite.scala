@@ -45,7 +45,6 @@ import Suite.createInfoProvided
 import Suite.createMarkupProvided
 import Suite.wrapReporterIfNecessary
 import scala.reflect.NameTransformer
-import tools.SuiteDiscoveryHelper
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions._
 import collection.mutable.ListBuffer
@@ -57,6 +56,7 @@ import scala.util.control.NonFatal
 import Suite.getTopOfMethod
 
 // SKIP-SCALATESTJS-START
+import tools.SuiteDiscoveryHelper
 import org.scalatest.tools.StandardOutReporter
 import Suite.getTopOfClass
 import Suite.getSuiteRunTestGoodies

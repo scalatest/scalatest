@@ -46,7 +46,8 @@ class CheckersSpec extends FunSpec with Checkers {
     }
 
     // Ensure a property that doesn't generate enough test cases throws an assertion error
-    val propTrivial = forAll( (n: Int) => (n == 0) ==> (n == 0) )
+    val negativeOne = -1
+    val propTrivial = forAll( (n: Int) => (negativeOne == 0) ==> (n == 0) )
     intercept[TestFailedException] {
       check(propTrivial)
     }
