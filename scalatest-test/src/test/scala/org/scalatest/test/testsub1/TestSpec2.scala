@@ -6,7 +6,7 @@ class TestSpec2 extends FunSpec {
 
   describe("TestSpec2") {
 
-    it("test 1")
+    it("test 1") {}
 
   }
 
