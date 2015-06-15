@@ -2471,10 +2471,14 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
 
-      it("should compile when used with Java static method ") {
+      it("should compile when used with Java static method") {
         assertCompiles(
           """
             |assert(System.currentTimeMillis() > 0)
+          """.stripMargin)
+        assertCompiles(
+          """
+            |assert(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO)
           """.stripMargin)
       }
     }
@@ -4854,6 +4858,10 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """
             |assert(System.currentTimeMillis() > 0, "this is a clue")
           """.stripMargin)
+        assertCompiles(
+          """
+            |assert(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO, "this is a clue")
+          """.stripMargin)
       }
     }
 
@@ -7232,6 +7240,10 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
           """
             |assume(System.currentTimeMillis() > 0)
           """.stripMargin)
+        assertCompiles(
+          """
+            |assume(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO)
+          """.stripMargin)
       }
     }
 
@@ -9609,6 +9621,10 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         assertCompiles(
           """
             |assume(System.currentTimeMillis() > 0, "this is a clue")
+          """.stripMargin)
+        assertCompiles(
+          """
+            |assume(java.math.BigDecimal.ZERO == java.math.BigDecimal.ZERO, "this is a clue")
           """.stripMargin)
       }
     }
