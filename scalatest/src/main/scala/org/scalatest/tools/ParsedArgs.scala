@@ -22,8 +22,8 @@ private[scalatest] case class ParsedArgs(
   runpath: List[String],
   // SKIP-SCALATESTJS-END
   reporters: List[String],
-  // SKIP-SCALATESTJS-START
   suites: List[String],
+  // SKIP-SCALATESTJS-START
   tryAgains: List[String],
   junits: List[String],
   props: List[String],
@@ -34,12 +34,12 @@ private[scalatest] case class ParsedArgs(
   concurrent: List[String],
   // SKIP-SCALATESTJS-END
   membersOnly: List[String],
+  // SKIP-SCALATESTJS-START
   wildcard: List[String],
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY wildcard: List[String]
   // SKIP-SCALATESTJS-START
   testNGXMLFiles: List[String],
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY genSuffixesPattern: Option[Pattern]
-  // SKIP-SCALATESTJS-START
   genSuffixesPattern: Option[Pattern],
   chosenStyles: List[String], 
   spanScaleFactor: List[String], 

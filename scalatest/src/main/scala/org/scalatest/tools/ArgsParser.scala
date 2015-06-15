@@ -160,8 +160,8 @@ private[tools] object ArgsParser {
     val runpath = new ListBuffer[String]()
     // SKIP-SCALATESTJS-END
     val reporters = new ListBuffer[String]()
-    // SKIP-SCALATESTJS-START
     val suites = new ListBuffer[String]()
+    // SKIP-SCALATESTJS-START
     val tryAgains = new ListBuffer[String]()
     val junits = new ListBuffer[String]()
     val props = new ListBuffer[String]()
@@ -289,12 +289,9 @@ private[tools] object ArgsParser {
         //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-s") {
-        // SKIP-SCALATESTJS-START
         suites += s
         if (it.hasNext)
           suites += it.next
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-A") {
         // SKIP-SCALATESTJS-START
@@ -305,28 +302,19 @@ private[tools] object ArgsParser {
         //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-i") {
-        // SKIP-SCALATESTJS-START
         suites += s
         if (it.hasNext)
           suites += it.next
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-t") {
-        // SKIP-SCALATESTJS-START
         suites += s
         if (it.hasNext)
           suites += it.next
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-z") {
-        // SKIP-SCALATESTJS-START
         suites += s
         if (it.hasNext)
           suites += it.next
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-j") {
         // SKIP-SCALATESTJS-START
@@ -441,8 +429,8 @@ private[tools] object ArgsParser {
       runpath.toList,
       // SKIP-SCALATESTJS-END
       reporters.toList,
-      // SKIP-SCALATESTJS-START
       suites.toList,
+      // SKIP-SCALATESTJS-START
       tryAgains.toList,
       junits.toList,
       props.toList,
@@ -453,12 +441,10 @@ private[tools] object ArgsParser {
       concurrent.toList,
       // SKIP-SCALATESTJS-END
       membersOnly.toList,
+      //SCALATESTJS-ONLY wildcard.toList
+      // SKIP-SCALATESTJS-START
       wildcard.toList,
-      // SKIP-SCALATESTJS-START
       testNGXMLFiles.toList,
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY genSuffixesPattern(suffixes.toList)
-      // SKIP-SCALATESTJS-START
       genSuffixesPattern(suffixes.toList),
       chosenStyles.toList,
       spanScaleFactor.toList,

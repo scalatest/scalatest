@@ -24,11 +24,11 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
 
   val ParsedArgs(
   reporterArgs,
+  suiteArgs,
   tagsToIncludeArgs,
   tagsToExcludeArgs,
   membersOnlyArgs,
-  wildcardArgs,
-  suffixes
+  wildcardArgs
   ) = parseArgs(args)
 
   val (
@@ -70,6 +70,31 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
   val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
   val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
   val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
+
+  private def parseSuiteArgs(suiteArgs: List[String]): List[Selector] = {
+    val itr = suiteArgs.iterator
+    val wildcards = new scala.collection.mutable.ListBuffer[Selector]()
+    while (itr.hasNext) {
+      val next = itr.next
+      next match {
+        case "-z" =>
+          if (itr.hasNext)
+            wildcards += new TestWildcardSelector(itr.next)
+          else
+            new IllegalArgumentException("-z must be followed by a wildcard string.")
+        case "-t" =>
+          if (itr.hasNext)
+            wildcards += new TestSelector(itr.next)
+          else
+            new IllegalArgumentException("-t must be followed by a test name string.")
+        case _ =>
+          throw new IllegalArgumentException("Specifying a suite (-s <suite>) or nested suite (-i <nested suite>) is not supported when running ScalaTest from sbt; Please use sbt's test-only instead.")
+      }
+    }
+    wildcards.toList
+  }
+
+  val autoSelectors = parseSuiteArgs(suiteArgs)
 
   val runStartTime = Platform.currentTime
 
@@ -113,7 +138,7 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
       }
 
     def createTask(t: TaskDef): Task =
-      new TaskRunner(t, testClassLoader, tracker, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+      new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
         presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, None)
 
     for {
@@ -148,8 +173,10 @@ class MasterRunner(theArgs: Array[String], theRemoteArgs: Array[String], testCla
   def serializeTask(task: Task, serializer: (TaskDef) => String): String =
     serializer(task.taskDef())
 
-  def deserializeTask(task: String, deserializer: (String) => TaskDef): Task =
-    new TaskRunner(deserializer(task), testClassLoader, tracker, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
+  def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
+    val taskDef = deserializer(task)
+    new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
       presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, None)
+  }
 
 }

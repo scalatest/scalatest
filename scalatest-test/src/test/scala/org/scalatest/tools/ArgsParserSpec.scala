@@ -51,8 +51,8 @@ class ArgsParserSpec extends FunSpec {
       runpathList,
       // SKIP-SCALATESTJS-END
       reportersList,
-      // SKIP-SCALATESTJS-START
       suitesList,
+      // SKIP-SCALATESTJS-START
       runAgainsList,
       junitsList,
       propsList,
@@ -63,8 +63,10 @@ class ArgsParserSpec extends FunSpec {
       concurrentList,
       // SKIP-SCALATESTJS-END
       memberOfList,
+      // SKIP-SCALATESTJS-START
       beginsWithList,
-      //SCALATESTJS-ONLY suffixes
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY beginsWithList
       // SKIP-SCALATESTJS-START
       testNGList,
       suffixes,
@@ -98,13 +100,13 @@ class ArgsParserSpec extends FunSpec {
       assert(spanScaleFactorList == expectedScaleFactorList)
       assert(testSortingReporterTimeoutList == expectedTestSortingReporterTimeoutList)
       assert(slowpokeList == expectedSlowpokeList)
-      // SKIP-SCALATESTJS-END
       if (expectedSuffixes.isEmpty) {
         assert(suffixes.isEmpty)
       } else {
         assert(!suffixes.isEmpty)
         assert(suffixes.get.toString === expectedSuffixes.get.toString)
       }
+      // SKIP-SCALATESTJS-END
     }
 
     intercept[IllegalArgumentException] {
@@ -530,8 +532,8 @@ class ArgsParserSpec extends FunSpec {
       runpathList,
       // SKIP-SCALATESTJS-END
       reportersList,
-      // SKIP-SCALATESTJS-START
       suitesList,
+      // SKIP-SCALATESTJS-START
       runAgainsList,
       junitsList,
       propsList,
@@ -542,8 +544,10 @@ class ArgsParserSpec extends FunSpec {
       concurrentList,
       // SKIP-SCALATESTJS-END
       memberOfList,
+      // SKIP-SCALATESTJS-START
       beginsWithList,
-      //SCALATESTJS-ONLY suffixes
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY beginsWithList
       // SKIP-SCALATESTJS-START
       testNGList,
       suffixes,
@@ -576,13 +580,13 @@ class ArgsParserSpec extends FunSpec {
       assert(chosenStyleList === expectedChosenStyleList)
       assert(spanScaleFactorList == expectedSpanScaleFactorList)
       assert(testSortingReporterTimeoutList == expectedTestSortingReporterTimeoutList)
-      // SKIP-SCALATESTJS-END
       if (expectedSuffixes.isEmpty) {
         assert(suffixes.isEmpty)
       } else {
         assert(!suffixes.isEmpty)
         assert(suffixes.get.toString === expectedSuffixes.get.toString)
       }
+      // SKIP-SCALATESTJS-END
     }
 
     // SKIP-SCALATESTJS-START

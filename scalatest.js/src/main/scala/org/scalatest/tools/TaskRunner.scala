@@ -1,5 +1,6 @@
 package org.scalatest.tools
 
+import org.scalatest.Suite._
 import org.scalatest.events.{TestFailed,
                              ExceptionalEvent,
                              Event,
@@ -11,7 +12,7 @@ import org.scalatest.events.{TestFailed,
 import org.scalatest.tools.StringReporter._
 import sbt.testing._
 import org.scalajs.testinterface.TestUtils
-import org.scalatest.{Suite, Args, Tracker}
+import org.scalatest._
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.compat.Platform
@@ -19,6 +20,10 @@ import scala.compat.Platform
 final class TaskRunner(task: TaskDef,
                        cl: ClassLoader,
                        tracker: Tracker,
+                       tagsToInclude: Set[String],
+                       tagsToExclude: Set[String],
+                       selectors: Array[Selector],
+                       explicitlySpecified: Boolean,
                        presentAllDurations: Boolean,
                        presentInColor: Boolean,
                        presentShortStackTraces: Boolean,
@@ -53,6 +58,48 @@ final class TaskRunner(task: TaskDef,
       notifyServer
     )
 
+    val filter =
+      if ((selectors.length == 1 && selectors(0).isInstanceOf[SuiteSelector] && !explicitlySpecified))  // selectors will always at least have one SuiteSelector, according to javadoc of TaskDef
+        Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExclude)
+      else {
+        var suiteTags = Map[String, Set[String]]()
+        var testTags = Map[String, Map[String, Set[String]]]()
+        var hasTest = false
+        var hasNested = false
+
+        selectors.foreach { selector =>
+          selector match {
+            case suiteSelector: SuiteSelector =>
+              suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(suite.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
+            case testSelector: TestSelector =>
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> Map(testSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) =>
+                mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
+              }
+              hasTest = true
+            case testWildcardSelector: TestWildcardSelector =>
+              val filteredTestNames = suite.testNames.filter(_.contains(testWildcardSelector.testWildcard))
+              val selectorTestTags = Map.empty ++ filteredTestNames.map(_ -> Set(SELECTED_TAG))
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(suite.suiteId -> selectorTestTags))) { (testMap1, testMap2) =>
+                mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
+              }
+              hasTest = true
+            case nestedSuiteSelector: NestedSuiteSelector =>
+              suiteTags = mergeMap[String, Set[String]](List(suiteTags, Map(nestedSuiteSelector.suiteId -> Set(SELECTED_TAG)))) { _ ++ _ }
+              hasNested = true
+            case nestedTestSelector: NestedTestSelector =>
+              testTags = mergeMap[String, Map[String, Set[String]]](List(testTags, Map(nestedTestSelector.suiteId -> Map(nestedTestSelector.testName -> Set(SELECTED_TAG))))) { (testMap1, testMap2) =>
+                mergeMap[String, Set[String]](List(testMap1, testMap2)) { _ ++ _}
+              }
+              hasNested = true
+          }
+        }
+
+        // Only exclude nested suites when using -s XXX -t XXXX, same behaviour with Runner.
+        val excludeNestedSuites = hasTest && !hasNested
+        // For suiteTags, we need to remove them if there's entry in testTags already, because testTags is more specific.
+        Filter(if (tagsToInclude.isEmpty) Some(Set(SELECTED_TAG)) else Some(tagsToInclude + SELECTED_TAG), tagsToExclude, false, new DynaTags(suiteTags.filter(s => !testTags.contains(s._1)).toMap, testTags.toMap))
+      }
+
     val formatter = Suite.formatterForSuiteStarting(suite)
     val suiteClass = suite.getClass
 
@@ -61,8 +108,10 @@ final class TaskRunner(task: TaskDef,
     if (!suite.isInstanceOf[DistributedTestRunnerSuite])
       reporter(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
+    val args = Args(reporter, Stopper.default, filter, ConfigMap.empty, None, tracker, Set.empty)
+
     try {
-      suite.run(None, Args(reporter))
+      suite.run(None, args)
       val formatter = Suite.formatterForSuiteCompleted(suite)
       val duration = Platform.currentTime
       if (!suite.isInstanceOf[DistributedTestRunnerSuite])
