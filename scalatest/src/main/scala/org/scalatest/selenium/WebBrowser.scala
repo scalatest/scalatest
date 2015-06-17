@@ -4342,8 +4342,9 @@ trait WebBrowser {
    * You can change capture directory by calling <code>setCaptureDir</code>
    * 
    * @param fun function to execute
+   * @return the value returned by <code>fun</code>
    */
-  def withScreenshot(fun: => Unit)(implicit driver: WebDriver) {
+  def withScreenshot[T](fun: => T)(implicit driver: WebDriver): T = {
     try {
       fun
     }
