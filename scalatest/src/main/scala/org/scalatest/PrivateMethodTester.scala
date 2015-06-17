@@ -183,20 +183,22 @@ trait PrivateMethodTester {
             // If arg.asInstanceOf[AnyRef] has class java.lang.Integer, this needs to match the paramType Class instance for int
 
             def argMatchesParamType(arg: Any, paramType: Class[_]) = {
-              val anyRefArg = arg.asInstanceOf[AnyRef]
-              paramType match {
-                case java.lang.Long.TYPE => anyRefArg.getClass == classOf[java.lang.Long]
-                case java.lang.Integer.TYPE => anyRefArg.getClass == classOf[java.lang.Integer]
-                case java.lang.Short.TYPE => anyRefArg.getClass == classOf[java.lang.Short]
-                case java.lang.Byte.TYPE => anyRefArg.getClass == classOf[java.lang.Byte]
-                case java.lang.Character.TYPE => anyRefArg.getClass == classOf[java.lang.Character]
-                case java.lang.Double.TYPE => anyRefArg.getClass == classOf[java.lang.Double]
-                case java.lang.Float.TYPE => anyRefArg.getClass == classOf[java.lang.Float]
-                case java.lang.Boolean.TYPE => anyRefArg.getClass == classOf[java.lang.Boolean]
-                case _ => paramType.isAssignableFrom(anyRefArg.getClass)
+              // note that arg might be null, which is assignable to any reference type
+              Option(arg.asInstanceOf[AnyRef]).fold (true) { anyRefArg =>
+                paramType match {
+                  case java.lang.Long.TYPE => anyRefArg.getClass == classOf[java.lang.Long]
+                  case java.lang.Integer.TYPE => anyRefArg.getClass == classOf[java.lang.Integer]
+                  case java.lang.Short.TYPE => anyRefArg.getClass == classOf[java.lang.Short]
+                  case java.lang.Byte.TYPE => anyRefArg.getClass == classOf[java.lang.Byte]
+                  case java.lang.Character.TYPE => anyRefArg.getClass == classOf[java.lang.Character]
+                  case java.lang.Double.TYPE => anyRefArg.getClass == classOf[java.lang.Double]
+                  case java.lang.Float.TYPE => anyRefArg.getClass == classOf[java.lang.Float]
+                  case java.lang.Boolean.TYPE => anyRefArg.getClass == classOf[java.lang.Boolean]
+                  case _ => paramType.isAssignableFrom(anyRefArg.getClass)
+                }
               }
             }
-
+            
             // The args classes need only be assignable to the parameter type. So therefore the parameter type
             // must be assignable *from* the corresponding arg class type.
             val invalidArgs =
@@ -252,6 +254,7 @@ trait PrivateMethodTester {
           for (arg <- args) yield arg match {
             case anyRef: AnyRef => anyRef
             case any: Any => any.asInstanceOf[AnyRef] // Can't use AnyVal in 2.8
+            case null => null
           }
         val privateMethodToInvoke = methodArray(0)
         privateMethodToInvoke.setAccessible(true)

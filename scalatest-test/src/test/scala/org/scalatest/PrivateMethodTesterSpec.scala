@@ -110,6 +110,14 @@ class PrivateMethodTesterSpec extends FunSpec {
       val secret = PrivateMethod[String]('secret)
       assert(((new Modest) invokePrivate secret(8l, "hi", false)) === 9l)
     }
+
+    it("should work if the private method is passed a null") {
+      class Modest {
+        private def secret(s: String) = Option(s).getOrElse("open") + " sesame!"
+      }
+      val secret = PrivateMethod[String]('secret)
+      assert(((new Modest) invokePrivate secret(null)) === "open sesame!")
+    }
   }
 }
 
