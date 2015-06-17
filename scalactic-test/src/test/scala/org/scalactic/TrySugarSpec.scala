@@ -21,6 +21,7 @@ import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
 import prop.TableDrivenPropertyChecks._
+import exceptions.ValidationFailedException
 
 class TrySugarSpec extends UnitSpec with Accumulation with TrySugar {
 

@@ -24,6 +24,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 // SKIP-SCALATESTJS-END
 //SCALATESTJS-ONLY import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import org.scalatest.concurrent.ScalaFutures
+import exceptions.ValidationFailedException
 
 class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with ScalaFutures {
 

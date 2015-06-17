@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.exceptions
 
 import java.text._
 import org.scalatest._
@@ -21,6 +21,7 @@ import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
 import prop.TableDrivenPropertyChecks._
+import org.scalactic.UnitSpec
 
 class ValidationFailedExceptionSpec extends UnitSpec {
 

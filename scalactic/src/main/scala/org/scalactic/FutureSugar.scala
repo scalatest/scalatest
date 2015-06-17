@@ -17,6 +17,7 @@ package org.scalactic
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
+import exceptions.ValidationFailedException
 
 /**
  * Trait providing an implicit class that adds a <code>toOr</code> method to

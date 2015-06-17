@@ -18,6 +18,7 @@ package org.scalactic
 import scala.util.Try
 import scala.util.Failure
 import annotation.tailrec
+import exceptions.ValidationFailedException
 
 /**
  * Trait providing an implicit class that adds a <code>toOr</code> method to
