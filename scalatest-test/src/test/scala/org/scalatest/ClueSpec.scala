@@ -244,6 +244,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
     result should be theSameInstanceAs succeeded
   }
 
+  // SKIP-SCALATESTJS-START
   it should "throw Serializable TestFailedDueToTimeoutException thrown from withClue wrapping a failing eventually" in {
 
     import org.scalatest.concurrent.Eventually._
@@ -260,5 +261,6 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
     serializeRoundtrip(result)
   }
+  // SKIP-SCALATESTJS-END
 }
 
