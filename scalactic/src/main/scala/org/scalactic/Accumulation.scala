@@ -54,7 +54,7 @@ trait Accumulation {
   import scala.language.{higherKinds, implicitConversions}
 
   /**
-   * Implicitly converts an accumulating <code>Or</code> to an instance of <a href="Accumulation$$Acumulatable.html"><code>Accumulatable</code></a>, which
+   * Implicitly converts an accumulating <code>Or</code> to an instance of <a href="Accumulation$$Accumulatable.html"><code>Accumulatable</code></a>, which
    * enables <code>zip</code> and <code>when</code> methods to be invoked on it.
    *
    * <p>
@@ -1739,7 +1739,7 @@ object Accumulation extends Accumulation {
     /**
      * Given a <code>Good</code> accumulating <code>Or</code>, applies the given validation functions to the <code>Good</code> value and returns
      * either the same <code>Good</code>, if all validations resulted in <code>Pass</code>, else returns a <code>Bad</code> containing every
-     * error reported by validation <code>Fail</code> results; Given a <code>Bad</code> accumualting <code>Or</code>, returns the same <code>Bad</code>.
+     * error reported by validation <code>Fail</code> results; Given a <code>Bad</code> accumulating<code>Or</code>, returns the same <code>Bad</code>.
      *
      * <p>
      * For more information and examples, see the <a href="Or.html#usingWhen">Using <code>when</code></a>

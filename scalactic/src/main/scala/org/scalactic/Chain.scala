@@ -105,7 +105,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  *
  * <p>
  * <code>Chain</code> does <em>not</em> currently define any methods corresponding to <code>Seq</code> methods that could result in
- * an empty <code>Seq</code>. However, an implicit converison from <code>Chain</code> to <code>List</code>
+ * an empty <code>Seq</code>. However, an implicit conversion from <code>Chain</code> to <code>List</code>
  * is defined in the <code>Chain</code> companion object that will be applied if you attempt to call one of the missing methods. As a
  * result, you can invoke <code>filter</code> on an <code>Chain</code>, even though <code>filter</code> could result
  * in an empty sequence&mdash;but the result type will be <code>List</code> instead of <code>Chain</code>:
@@ -537,7 +537,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * if all the nested <code>GenTraversableOnce</code>s were empty, you'd end up with an empty <code>Chain</code>.
    * </p>
    *
-   * @tparm B the type of the elements of each nested <code>Chain</code>
+   * @tparam B the type of the elements of each nested <code>Chain</code>
    * @return a new <code>Chain</code> resulting from concatenating all nested <code>Chain</code>s.
    */
   final def flatten[B](implicit ev: T <:< Chain[B]): Chain[B] = flatMap(ev)
@@ -1528,7 +1528,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * </p>
    *
    * <p>
-   * Another way to express this is that <code>chainX</code> <code>union</code> <code>everyY</code> computes the order-presevring multi-set union
+   * Another way to express this is that <code>chainX</code> <code>union</code> <code>everyY</code> computes the order-preserving multi-set union
    * of <code>chainX</code> and <code>everyY</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
    * also work on multi-sets.
    * </p>
@@ -1546,7 +1546,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * </p>
    *
    * <p>
-   * Another way to express this is that <code>chainX</code> <code>union</code> <code>chainY</code> computes the order-presevring multi-set union
+   * Another way to express this is that <code>chainX</code> <code>union</code> <code>chainY</code> computes the order-preserving multi-set union
    * of <code>chainX</code> and <code>chainY</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
    * also work on multi-sets.
    * </p>
@@ -1564,7 +1564,7 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * </p>
    *
    * <p>
-   * Another way to express this is that <code>chainX</code> <code>union</code> <code>ys</code> computes the order-presevring multi-set union
+   * Another way to express this is that <code>chainX</code> <code>union</code> <code>ys</code> computes the order-preserving multi-set union
    * of <code>chainX</code> and <code>ys</code>. This <code>union</code> method is hence a counter-part of <code>diff</code> and <code>intersect</code> that
    * also work on multi-sets.
    * </p>
@@ -1619,8 +1619,8 @@ final class Chain[+T] private (underlying: List[T]) extends PartialFunction[Int,
    * elements in pairs. If one of the two collections is shorter than the other, placeholder elements will be used to extend the
    * shorter collection to the length of the longer.
    *
-   * @tparm O the type of the second half of the returned pairs
-   * @tparm U the type of the first half of the returned pairs
+   * @tparam O the type of the second half of the returned pairs
+   * @tparam U the type of the first half of the returned pairs
    * @param other the <code>Iterable</code> providing the second half of each result pair
    * @param thisElem the element to be used to fill up the result if this <code>Chain</code> is shorter than <code>that</code> <code>Iterable</code>.
    * @param thatElem the element to be used to fill up the result if <code>that</code> <code>Iterable</code> is shorter than this <code>Chain</code>.

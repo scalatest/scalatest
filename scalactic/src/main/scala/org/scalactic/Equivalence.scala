@@ -27,7 +27,7 @@ package org.scalactic
  * and ScalaTest's <code>should</code> <code>===</code> syntax of <code>Matchers</code> trait. 
  * </p>
  *
- * <a name="equivalanceLaws"></a>
+ * <a name="equivalenceLaws"></a>
  * <h2>Equivalence laws</h2>
  *
  * <p>

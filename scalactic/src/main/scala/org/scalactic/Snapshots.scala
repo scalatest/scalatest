@@ -30,7 +30,7 @@ import reflect.macros.Context
 final case class Snapshot(name: String, value: Any) {
 
   /**
-   * Overriden <code>toString</code> to print in {name} = {value} format.
+   * Overridden <code>toString</code> to print in {name} = {value} format.
    *
    * @return string in {name} = {value} format
    */

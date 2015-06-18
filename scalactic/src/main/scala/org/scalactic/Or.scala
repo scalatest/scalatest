@@ -384,7 +384,7 @@ import scala.collection.mutable.Builder
  * <h2>Other ways to accumulate errors</h2>
 
  * <p>
- * The <code>Accumlation</code> trait also enables other ways of accumulating errors.
+ * The <code>Accumulation</code> trait also enables other ways of accumulating errors.
  * </p>
  *
  * <a name="usingCombined"></a>
@@ -430,7 +430,7 @@ import scala.collection.mutable.Builder
  *
  * <p>
  * You can also zip two accumulating <code>Or</code>s together. If both are <code>Good</code>, you'll get a 
- * <code>Good</code> tuple containin both original <code>Good</code> values. Otherwise, you'll get a <code>Bad</code>
+ * <code>Good</code> tuple containing both original <code>Good</code> values. Otherwise, you'll get a <code>Bad</code>
  * containing every error message. Here are some examples:
  * </p>
  *
@@ -449,7 +449,7 @@ import scala.collection.mutable.Builder
  * <h3>Using <code>when</code></h3>
  *
  * <p>
- * In addition, given an accumlating <code>Or</code>, you can pass one or more <em>validation functions</em> to <code>when</code> on the <code>Or</code>
+ * In addition, given an accumulating <code>Or</code>, you can pass one or more <em>validation functions</em> to <code>when</code> on the <code>Or</code>
  * to submit that <code>Or</code> to further scrutiny. A validation function accepts a <code>Good</code> type and returns a <code>Validation[E]</code>,
  * where <code>E</code> is the type in the <code>Every</code> in the <code>Bad</code> type. For an <code>Int</code> <code>Or</code> <code>One[ErrorMessage]</code>, for example
  * the validation function type would be <code>Int</code> <code>=&gt;</code> <code>Validation[ErrorMessage]</code>. Here are a few examples:
@@ -465,7 +465,7 @@ import scala.collection.mutable.Builder
  * 
  * <p>
  * If the <code>Or</code> on which you call <code>when</code> is already <code>Bad</code>, you get the same (<code>Bad</code>) <code>Or</code> back, because
- * no <code>Good</code> value exists to pass to the valiation functions:
+ * no <code>Good</code> value exists to pass to the validation functions:
  * </p>
  * 
  * <pre class="stHighlight">
@@ -745,7 +745,7 @@ sealed abstract class Or[+G,+B] {
    * containing the <code>Bad</code> value, if this is a <code>Bad</code>.
    *
    * <p>
-   * Note that values effectively &ldquo;switch sides&rdquo; when convering an <code>Or</code> to an <code>Either</code>. If the type of the
+   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Or</code> to an <code>Either</code>. If the type of the
    * <code>Or</code> on which you invoke <code>toEither</code> is <code>Or[Int, ErrorMessage]</code> for example, the result will be an
    * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
    * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.

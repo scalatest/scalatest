@@ -754,7 +754,7 @@ class SortedEquaPath[T](override val equality: OrderingEquality[T]) extends Equa
     def takeRight(n: Int): thisEquaPath.TreeEquaSet = new TreeEquaSet(underlying.takeRight(n))
     def to[Col[_]](implicit cbf: CanBuildFrom[Nothing, thisEquaPath.EquaBox, Col[thisEquaPath.EquaBox @uV]]): Col[thisEquaPath.EquaBox @uV] = underlying.to[Col]
     def toArray: Array[T] = {
-      // A workaround becauase underlying.map(_.value).toArray does not work due to this weird error message:
+      // A workaround because underlying.map(_.value).toArray does not work due to this weird error message:
       // No ClassTag available for T
       val arr: Array[Any] = new Array[Any](underlying.size)
       underlying.map(_.value).copyToArray(arr)
