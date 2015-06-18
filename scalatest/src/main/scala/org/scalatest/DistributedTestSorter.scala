@@ -40,7 +40,7 @@ trait DistributedTestSorter {
    * @throws IllegalArgumentException if the specified test name has already
    *     completed (was already passed to <code>distributingTest</code>), but its events
    *     have not yet been fully reported.
-   * @throws NullPointerException if <code>testName</code> is null.
+   * @throws NullArgumentException if <code>testName</code> is null.
    *
    * @param testName the name of the test that has completed
    */
@@ -51,7 +51,7 @@ trait DistributedTestSorter {
    *
    * @param testName the name of the distributed test that produced this event
    * @param event the event to report
-   * @throws NullPointerException if either <code>testName</code> or <code>event</code> is null.
+   * @throws NullArgumentException if either <code>testName</code> or <code>event</code> is null.
    */
   def apply(testName: String, event: Event)
 
@@ -61,7 +61,7 @@ trait DistributedTestSorter {
    * @throws IllegalArgumentException if the specified test name was never distributed
    *     (<em>i.e.</em>, was never passed to <code>distributingTest</code>), or has already
    *     completed (was already passed to <code>completedTest</code>.
-   * @throws NullPointerException if <code>testName</code> is null.
+   * @throws NullArgumentException if <code>testName</code> is null.
    *
    * @param testName the name of the test that has completed
    */

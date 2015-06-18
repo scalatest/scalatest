@@ -119,7 +119,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
-   * @throws NullPointerException if <code>testName</code> or any passed test tag is <code>null</code>
+   * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
    */
   protected def property(testName: String, testTags: Tag*)(testFun: FixtureParam => Any) {
     // SKIP-SCALATESTJS-START
@@ -178,7 +178,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>fixture.PropSpec</code>
-   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
+   * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
@@ -256,7 +256,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>FunSpec</code>.
    * @param args the <code>Args</code> to which results will be reported
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
-   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
+   * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
     runTestsImpl(thisSuite, testName, args, info, true, runTest)

@@ -38,7 +38,7 @@ trait Rerunner /* extends ((Reporter, Stopper, Filter, ConfigMap, Option[Distrib
    * @param loader the <code>ClassLoader</code> from which to load classes needed to rerun
    *     the test or suite.
    *
-   * @throws NullPointerException if any of the passed values are <code>null</code>.
+   * @throws NullArgumentException if any of the passed values are <code>null</code>.
    */
   def apply(reporter: Reporter, stopper: Stopper, filter: Filter,
             configMap: ConfigMap, distributor: Option[Distributor], tracker: Tracker, loader: ClassLoader): Unit

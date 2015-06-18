@@ -52,7 +52,7 @@ trait Distributor {
    * @param args a <code>Args</code> containing objects that may be passed to the <code>Suite</code>'s
    *             <code>run</code> method via a <code>Args</code> instance.
    *
-   * @throws NullPointerException if either <code>suite</code> or <code>tracker</code> is <code>null</code>.
+   * @throws NullArgumentException if either <code>suite</code> or <code>tracker</code> is <code>null</code>.
    */
   def apply(suite: Suite, args: Args): Status
 }

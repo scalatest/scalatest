@@ -23,8 +23,9 @@ import org.scalatest.time.Span
 import java.util.UUID
 import scala.annotation.tailrec
 import java.io.PrintStream
+import org.scalactic.Requirements
 
-private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter, sortingTimeout: Span, testCount: Int, suiteSorter: Option[DistributedSuiteSorter], val out: PrintStream) extends CatchReporter with DistributedTestSorter {
+private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter, sortingTimeout: Span, testCount: Int, suiteSorter: Option[DistributedSuiteSorter], val out: PrintStream) extends CatchReporter with DistributedTestSorter with Requirements {
 
   suiteSorter match {
     case Some(suiteSorter) => 
@@ -59,8 +60,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
    * @param testName the name of the test being distributed
    */
   def distributingTest(testName: String) {
-    if (testName == null)
-      throw new NullPointerException("testName was null")
+    requireNonNull(testName)
     synchronized {
       if (slotMap.contains(testName))
         throw new IllegalArgumentException("The passed testname: " + testName + ", was already passed to distributedTests.")
@@ -75,10 +75,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   }
 
   def apply(testName: String, event: Event) {
-    if (testName == null)
-      throw new NullPointerException("testName was null")
-    if (event == null)
-      throw new NullPointerException("event was null")
+    requireNonNull(testName, event)
     synchronized {
       event match { // TODO: Maybe it doesn't make sense to have AlertProvided and NoteProvided here, after enhancing to let them through immediately
         case _: InfoProvided | _: MarkupProvided | _: AlertProvided | _: NoteProvided =>  // This can happen if there's an info in before or after. Inside the test these will be recorded. Oh, it will also happen if multi-threaded info's going out from the test.
@@ -97,8 +94,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   // maybe not. It should really throw an exception, such as a NotAllowedException? No,
   // this is an IllegalArgumentException.
   def completedTest(testName: String) {
-    if (testName == null)
-      throw new NullPointerException("testName was null")
+    requireNonNull(testName)
     synchronized {
       if (!slotMap.contains(testName))
         throw new IllegalArgumentException("The passed testname: " + testName + ", has either never started or already completed.")

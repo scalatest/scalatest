@@ -18,6 +18,7 @@ package org.scalatest.concurrent
 import org.scalatest._
 import time.Span
 import PatienceConfiguration._
+import org.scalactic.Requirements
 
 /**
  * Trait providing methods and classes used to configure timeouts and, where relevant, the interval
@@ -127,12 +128,12 @@ object PatienceConfiguration {
    *
    * @param value the maximum amount of time to retry before giving up and throwing
    *   <code>TestFailedException</code>.
-   * @throws NullPointerException if passed <code>value</code> is <code>null</code>
+   * @throws NullArgumentException if passed <code>value</code> is <code>null</code>
    *
    * @author Bill Venners
    */
-  final case class Timeout(value: Span) extends PatienceConfigParam {
-    if (value == null) throw new NullPointerException("value was null")
+  final case class Timeout(value: Span) extends PatienceConfigParam with Requirements {
+    requireNonNull(value)
   }
 
   /**
@@ -140,11 +141,11 @@ object PatienceConfiguration {
    * a retry.
    *
    * @param value the amount of time to sleep between each attempt
-   * @throws NullPointerException if passed <code>value</code> is <code>null</code>
+   * @throws NullArgumentException if passed <code>value</code> is <code>null</code>
    *
    * @author Bill Venners
    */
-  final case class Interval(value: Span) extends PatienceConfigParam {
-    if (value == null) throw new NullPointerException("value was null")
+  final case class Interval(value: Span) extends PatienceConfigParam with Requirements {
+    requireNonNull(value)
   }
 }

@@ -15,6 +15,9 @@
  */
 package org.scalatest.exceptions
 
+import org.scalactic.Requirements
+import org.scalactic.exceptions.NullArgumentException
+
 /**
  * Exception that indicates an action that is only allowed during a suite's test registration phase,
  * such as registering a test to run or ignore, was attempted after registration had already closed.
@@ -46,15 +49,14 @@ package org.scalatest.exceptions
  * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *   to register the test after registration had been closed.
  *
- * @throws NullPointerException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
+ * @throws NullArgumentException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
  *
  * @author Bill Venners
  */
 class TestRegistrationClosedException(message: String, failedCodeStackDepthFun: StackDepthException => Int)
-    extends StackDepthException(Some(message), None, failedCodeStackDepthFun) {
+    extends StackDepthException(Some(message), None, failedCodeStackDepthFun) with Requirements {
 
-  if (message == null) throw new NullPointerException("message was null")
-  if (failedCodeStackDepthFun == null) throw new NullPointerException("failedCodeStackDepthFun was null")
+  requireNonNull(message, failedCodeStackDepthFun)
 
   /**
    * Constructs a <code>TestRegistrationClosedException</code> with a <code>message</code> and a pre-determined 
@@ -63,7 +65,7 @@ class TestRegistrationClosedException(message: String, failedCodeStackDepthFun: 
    * @param message the exception's detail message
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if <code>message</code> is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
   def this(message: String, failedCodeStackDepth: Int) = this(message, e => failedCodeStackDepth)
 

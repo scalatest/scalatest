@@ -27,6 +27,7 @@ import TableDrivenPropertyChecks._
 import org.scalatest.exceptions.ModifiableMessage
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
+import org.scalactic.exceptions.NullArgumentException
 
 class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
@@ -160,7 +161,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
   it should "throw NPE if a null clue object is passed" in {
     forAll (examples) { e =>
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         withClue (null) {
           throw e
         }

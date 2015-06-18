@@ -16,6 +16,7 @@
 package org.scalatest.exceptions
 
 import org.scalatest.Resources
+import org.scalactic.Requirements
 
 /**
  * Exception that indicates an attempt was made to register a test that had the same name as a test
@@ -28,7 +29,7 @@ import org.scalatest.Resources
  * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *   to register the test with the duplicate name resides.
  *
- * @throws NullPointerException if <code>testName</code> is <code>null</code>
+ * @throws NullArgumentException if <code>testName</code> is <code>null</code>
  *
  * @author Bill Venners
  */
@@ -37,10 +38,9 @@ class   DuplicateTestNameException(testName: String, failedCodeStackDepthFun: St
       Some(Resources.duplicateTestName(testName)),
       None,
       failedCodeStackDepthFun
-    ) {
+    ) with Requirements {
   
-  if (testName == null)
-    throw new NullPointerException("testName was null")
+  requireNonNull(testName)
 
   /**
    * Constructs a <code>DuplicateTestNameException</code> with pre-determined <code>failedCodeStackDepth</code>. (This was
@@ -49,7 +49,7 @@ class   DuplicateTestNameException(testName: String, failedCodeStackDepthFun: St
    * @param testName the test name found to be duplicate
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if <code>testName</code> is <code>null</code>
+   * @throws NullArgumentException if <code>testName</code> is <code>null</code>
    */
   def this(testName: String, failedCodeStackDepth: Int) = this(testName, e => failedCodeStackDepth)
 

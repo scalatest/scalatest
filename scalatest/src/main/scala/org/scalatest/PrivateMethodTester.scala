@@ -16,6 +16,7 @@
 package org.scalatest
 
 import java.lang.reflect.{InvocationTargetException, Method, Modifier}
+import org.scalactic.Requirements
 
 /**
  * Trait that facilitates the testing of private methods.
@@ -89,12 +90,11 @@ trait PrivateMethodTester {
    * The type parameter, <code>T</code>, is the return type of the private method.
    *
    * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
-   * @throws NullPointerException if <code>methodName</code> is <code>null</code>
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class PrivateMethod[T] private (methodName: Symbol) {
+  final class PrivateMethod[T] private (methodName: Symbol) extends Requirements {
 
-    if (methodName == null)
-      throw new NullPointerException("methodName was null")
+    requireNonNull(methodName)
 
     /**
      * Apply arguments to a private method. This method returns an <code>Invocation</code>
@@ -118,7 +118,7 @@ trait PrivateMethodTester {
      * The type parameter, <code>T</code>, is the return type of the private method.
      *
      * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
-     * @throws NullPointerException if <code>methodName</code> is <code>null</code>
+     * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
      */
     def apply[T](methodName: Symbol) = new PrivateMethod[T](methodName)
   }
@@ -131,20 +131,18 @@ trait PrivateMethodTester {
    *
    * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
    * @param args zero to many arguments to pass to the private method when invoked
-   * @throws NullPointerException if <code>methodName</code> is <code>null</code>
+   * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation[T](val methodName: Symbol, val args: Any*) {
-    if (methodName == null)
-      throw new NullPointerException
+  final class Invocation[T](val methodName: Symbol, val args: Any*) extends Requirements {
+    requireNonNull(methodName)
   }
 
   /**
    * Class used via an implicit conversion to enable private methods to be tested.
    */
-  final class Invoker(target: AnyRef) {
+  final class Invoker(target: AnyRef) extends Requirements {
 
-    if (target == null)
-      throw new NullPointerException
+    requireNonNull(target)
     
     /**
      * Invoke a private method. This method will attempt to invoke via reflection a private method.
@@ -274,7 +272,7 @@ trait PrivateMethodTester {
    * assertions testing of private methods.
    *
    * @param target the target object on which to invoke a private method.
-   * @throws NullPointerException if <code>target</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>target</code> is <code>null</code>.
    */
   implicit def anyRefToInvoker(target: AnyRef): Invoker = new Invoker(target)
 }

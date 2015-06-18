@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.exceptions.NullArgumentException
+
 /**
  * A <code>Suite</code> class that takes zero to many <code>Suite</code>s,
  * which will be returned from its <code>nestedSuites</code> method and
@@ -53,7 +55,7 @@ package org.scalatest
  * 
  * @param suitesToNest a sequence of <code>Suite</code>s to nest.
  *
- * @throws NullPointerException if <code>suitesToNest</code>, or any suite
+ * @throws NullArgumentException if <code>suitesToNest</code>, or any suite
  * it contains, is <code>null</code>.
  *
  * @author Bill Venners
@@ -62,7 +64,7 @@ class Stepwise(suitesToNest: Suite*) extends Suite with StepwiseNestedSuiteExecu
 
   for (s <- suitesToNest) {
     if (s == null)
-      throw new NullPointerException("A passed suite was null")
+      throw new NullArgumentException("A passed suite was null")
   }
 
   /**

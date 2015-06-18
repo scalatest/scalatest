@@ -27,7 +27,7 @@ private[scalatest] trait JSuite { thisSuite =>
    *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>Suite</code>.
    * @param args the <code>Args</code> for this run
    *
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    */
   def runJSuite(testName: Option[String], args: Args): Status // Will be testName: nullable String, args: JArgs
 

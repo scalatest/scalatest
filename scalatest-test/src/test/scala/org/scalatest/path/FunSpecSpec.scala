@@ -30,6 +30,7 @@ import java.awt.AWTError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
+import org.scalactic.exceptions.NullArgumentException
 
 class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
@@ -335,13 +336,13 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(testStartingOption.get.asInstanceOf[TestStarting].testName === "should be that I am shared")
     }
 
-    "should throw NullPointerException if a null test tag is provided" in {
+    "should throw NullArgumentException if a null test tag is provided" in {
       // it
       class TestSpec1 extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec1
         it("hi", null) {}
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new TestSpec1
       }
 
@@ -349,7 +350,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec2
         it("hi", mytags.SlowAsMolasses, null) {}
       }
-      val caught = intercept[NullPointerException] {
+      val caught = intercept[NullArgumentException] {
         new TestSpec2
       }
       assert(caught.getMessage === "a test tag was null")
@@ -358,7 +359,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec3
         it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new TestSpec3
       }
 
@@ -367,7 +368,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec4
         ignore("hi", null) {}
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new TestSpec4
       }
 
@@ -375,7 +376,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec5
         ignore("hi", mytags.SlowAsMolasses, null) {}
       }
-      val caught2 = intercept[NullPointerException] {
+      val caught2 = intercept[NullArgumentException] {
         new TestSpec5
       }
       assert(caught2.getMessage === "a test tag was null")
@@ -384,7 +385,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec6
         ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new TestSpec6
       }
     }

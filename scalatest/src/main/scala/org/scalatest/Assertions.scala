@@ -24,6 +24,7 @@ import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
 import org.scalactic.{Prettifier, Bool}
 import exceptions.TestFailedException
+import org.scalactic.Requirements
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -378,7 +379,7 @@ import exceptions.TestFailedException
  *
  * @author Bill Venners
  */
-trait Assertions extends TripleEquals {
+trait Assertions extends TripleEquals with Requirements {
 
   import language.experimental.macros
 
@@ -464,8 +465,7 @@ trait Assertions extends TripleEquals {
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
     def macroAssert(bool: Bool, clue: Any) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
+      requireNonNull(clue)
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
@@ -479,8 +479,7 @@ trait Assertions extends TripleEquals {
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
     def macroAssume(bool: Bool, clue: Any) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
+      requireNonNull(clue)
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
@@ -563,7 +562,7 @@ trait Assertions extends TripleEquals {
    * @param condition the boolean condition to assert
    * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestFailedException if the condition is <code>false</code>.
-   * @throws NullPointerException if <code>message</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
   def assert(condition: Boolean, clue: Any): Unit = macro AssertionsMacro.assertWithClue
 
@@ -662,7 +661,7 @@ trait Assertions extends TripleEquals {
    * @param condition the boolean condition to assume
    * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestCanceledException if the condition is <code>false</code>.
-   * @throws NullPointerException if <code>message</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
   def assume(condition: Boolean, clue: Any): Unit = macro AssertionsMacro.assumeWithClue
 
@@ -779,7 +778,7 @@ trait Assertions extends TripleEquals {
    * </pre>
    * 
    * @param left the object whose type to convert to <code>Equalizer</code>.
-   * @throws NullPointerException if <code>left</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>left</code> is <code>null</code>.
    */
   // implicit def convertToEqualizer(left: Any) = new Equalizer(left)
 
@@ -1118,12 +1117,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * message, to indicate a test failed.
    *
    * @param message A message describing the failure.
-   * @throws NullPointerException if <code>message</code> is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
   def fail(message: String): Nothing = {
 
-    if (message == null)
-        throw new NullPointerException("message is null")
+    requireNonNull(message)
      
     throw newAssertionFailedException(Some(message),  None, failStackDepth)
   }
@@ -1135,15 +1133,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    *
    * @param message A message describing the failure.
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
-   * @throws NullPointerException if <code>message</code> or <code>cause</code> is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
   def fail(message: String, cause: Throwable): Nothing = {
 
-    if (message == null)
-      throw new NullPointerException("message is null")
-
-    if (cause == null)
-      throw new NullPointerException("cause is null")
+    requireNonNull(message, cause)
 
     throw newAssertionFailedException(Some(message), Some(cause), failStackDepth)
   }
@@ -1155,12 +1149,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * will return <code>cause.toString</code>.
    *
    * @param cause a <code>Throwable</code> that indicates the cause of the failure.
-   * @throws NullPointerException if <code>cause</code> is <code>null</code>
+   * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
   def fail(cause: Throwable): Nothing = {
 
-    if (cause == null)
-      throw new NullPointerException("cause is null")
+    requireNonNull(cause)
         
     throw newAssertionFailedException(None, Some(cause), failStackDepth)
   }
@@ -1176,12 +1169,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * message, to indicate a test was canceled.
    *
    * @param message A message describing the cancellation.
-   * @throws NullPointerException if <code>message</code> is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
   def cancel(message: String): Nothing = {
 
-    if (message == null)
-        throw new NullPointerException("message is null")
+    requireNonNull(message)
      
     throw newTestCanceledException(Some(message),  None, cancelStackDepth)
   }
@@ -1193,15 +1185,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    *
    * @param message A message describing the failure.
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
-   * @throws NullPointerException if <code>message</code> or <code>cause</code> is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
   def cancel(message: String, cause: Throwable): Nothing = {
 
-    if (message == null)
-      throw new NullPointerException("message is null")
-
-    if (cause == null)
-      throw new NullPointerException("cause is null")
+    requireNonNull(message, cause)
 
     throw newTestCanceledException(Some(message), Some(cause), cancelStackDepth)
   }
@@ -1213,12 +1201,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * will return <code>cause.toString</code>.
    *
    * @param cause a <code>Throwable</code> that indicates the cause of the cancellation.
-   * @throws NullPointerException if <code>cause</code> is <code>null</code>
+   * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
   def cancel(cause: Throwable): Nothing = {
 
-    if (cause == null)
-      throw new NullPointerException("cause is null")
+    requireNonNull(cause)
         
     throw newTestCanceledException(None, Some(cause), cancelStackDepth)
   }
@@ -1253,11 +1240,10 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * (Employee's name was Bob Jones) Expected IllegalArgumentException to be thrown, but no exception was thrown
    * </pre>
    *
-   * @throws NullPointerException if the passed <code>clue</code> is <code>null</code>
+   * @throws NullArgumentException if the passed <code>clue</code> is <code>null</code>
   */
   def withClue[T](clue: Any)(fun: => T): T = {
-    if (clue == null)
-      throw new NullPointerException("clue was null")
+    requireNonNull(clue)
     val prepend = (currentMessage: Option[String]) => {
       currentMessage match {
         case Some(msg) =>

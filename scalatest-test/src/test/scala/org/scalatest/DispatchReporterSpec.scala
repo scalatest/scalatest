@@ -18,6 +18,7 @@ package org.scalatest
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 import org.scalatest.events._
+import org.scalactic.exceptions.NullArgumentException
 import SharedHelpers._
 import concurrent.Eventually._
 import time.SpanSugar._
@@ -56,6 +57,11 @@ class DispatchReporterSpec extends FunSpec {
           )
         )
         (erp, dispatch)
+      }
+      it("should throw NullArgumentException if constructed with a null reporters arg") {
+        intercept[NullArgumentException] {
+          val dispatch = new DispatchReporter(null, Console.err, true, 1, 1)
+        }
       }
       it("should send out AlertProvided events with useful message if a slowpoke is detected") {
         val (erp, dispatch) = fireTestStarting()

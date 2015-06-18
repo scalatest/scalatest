@@ -21,16 +21,16 @@ import org.scalatest.events._
 import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteAborted
+import org.scalactic.Requirements
 
 /**
  * A Rerunner for Suites.
  *
  * @author Bill Venners
  */
-private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner with java.io.Serializable {
+private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner with java.io.Serializable with Requirements {
 
-  if (suiteClassName == null)
-    throw new NullPointerException
+  requireNonNull(suiteClassName)
 
   def apply(report: Reporter, stopper: Stopper, filter: Filter,
             configMap: ConfigMap, distributor: Option[Distributor], tracker: Tracker, loader: ClassLoader) {

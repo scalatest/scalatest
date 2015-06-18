@@ -29,6 +29,7 @@ import org.scalatest.events.TestStarting
 import org.scalatest.events.TestSucceeded
 import org.scalatest.events.TestFailed
 import org.scalatest.events.MotionToSuppress
+import org.scalactic.Requirements
 import Suite.getIndentedTextForTest
 import org.scalatest.events._
 import exceptions._
@@ -336,7 +337,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
     }
 }
 
-private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) extends TestListener {
+private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) extends TestListener with Requirements {
 
   // TODO: worry about threading
   private val failedTestsSet = scala.collection.mutable.Set[Test]()
@@ -361,18 +362,14 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
   // Calling test.toSring gives you testError(org.scalatestexamples.junit.JUnit3ExampleSuite)
   // So that's that old JUnit-style test name thing.
   def startTest(testCase: Test) {
-    if (testCase == null)
-      throw new NullPointerException("testCase was null")
+    requireNonNull(testCase)
     val suiteName = getSuiteNameForTestCase(testCase)
     report(TestStarting(tracker.nextOrdinal(), suiteName, testCase.getClass.getName, Some(testCase.getClass.getName), testCase.toString, testCase.toString, Some(MotionToSuppress), getTopOfMethod(testCase.getClass.getName, testCase.asInstanceOf[TestCase].getName)))
   }
   
   def addError(testCase: Test, throwable: Throwable) {
 
-    if (testCase == null)
-      throw new NullPointerException("testCase was null")
-    if (throwable == null)
-      throw new NullPointerException("throwable was null")
+    requireNonNull(testCase, throwable)
 
     val formatter = getIndentedTextForTest(testCase.toString, 1, true)
     val suiteName = getSuiteNameForTestCase(testCase)
@@ -390,10 +387,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
 
   def addFailure(testCase: Test, assertionFailedError: AssertionFailedError) {
 
-    if (testCase == null)
-      throw new NullPointerException("testCase was null")
-    if (assertionFailedError == null)
-      throw new NullPointerException("throwable was null")
+    requireNonNull(testCase, assertionFailedError)
 
     val formatter = getIndentedTextForTest(testCase.toString, 1, true)
     val suiteName = getSuiteNameForTestCase(testCase)
@@ -407,8 +401,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
     val testHadFailed = failedTestsSet.contains(testCase)
 
     if (!testHadFailed) {
-      if (testCase == null)
-        throw new NullPointerException("testCase was null")
+      requireNonNull(testCase)
       val formatter = getIndentedTextForTest(testCase.toString, 1, true)
       val suiteName = getSuiteNameForTestCase(testCase)
       report(TestSucceeded(tracker.nextOrdinal(), suiteName, testCase.getClass.getName, Some(testCase.getClass.getName), testCase.toString, testCase.toString, Vector.empty, None, Some(formatter), getTopOfMethod(testCase.getClass.getName, testCase.asInstanceOf[TestCase].getName)))

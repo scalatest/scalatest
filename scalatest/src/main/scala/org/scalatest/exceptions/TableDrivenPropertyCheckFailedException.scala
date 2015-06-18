@@ -33,7 +33,7 @@ package exceptions
  * @param namesOfArgs a list of string names for the arguments
  * @param row the index of the table row that failed the property check, causing this exception to be thrown
  *
- * @throws NullPointerException if any parameter is <code>null</code> or <code>Some(null)</code>.
+ * @throws NullArgumentException if any parameter is <code>null</code> or <code>Some(null)</code>.
  *
  * @author Bill Venners
  */

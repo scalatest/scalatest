@@ -54,6 +54,7 @@ import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
 import scala.util.control.NonFatal
 import Suite.getTopOfMethod
+import org.scalactic.Requirements
 
 // SKIP-SCALATESTJS-START
 import tools.SuiteDiscoveryHelper
@@ -542,7 +543,7 @@ import Suite.getMethodForTestName
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.MethodFinder"))
-trait Suite extends Assertions with Serializable { thisSuite =>
+trait Suite extends Assertions with Serializable with Requirements { thisSuite =>
 
   import Suite.TestMethodPrefix, Suite.InformerInParens, Suite.IgnoreAnnotation
 
@@ -762,7 +763,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param fullstacks a boolean that configures whether full stack traces should be printed for test failures
    * @param stats a boolean that configures whether test and suite statistics are printed to the standard output
    *
-   * @throws NullPointerException if the passed <code>configMap</code> parameter is <code>null</code>.
+   * @throws NullArgumentException if the passed <code>configMap</code> parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
@@ -775,8 +776,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     fullstacks: Boolean = false,
     stats: Boolean = false
   ) {
-    if (configMap == null)
-      throw new NullPointerException("configMap was null")
+    requireNonNull(configMap)
     val SelectedTag = "Selected"
     val SelectedSet = Set(SelectedTag)
     val desiredTests: Set[String] =
@@ -1034,7 +1034,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
+   * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
@@ -1043,10 +1043,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   // SKIP-SCALATESTJS-START
   private[scalatest] def yeOldeRunTest(testName: String, args: Args): Status = {
 
-    if (testName == null)
-      throw new NullPointerException("testName was null")
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(testName, args)
     
     import args._
 
@@ -1188,16 +1185,13 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if any of the passed parameters is <code>null</code>.
+   * @throws NullArgumentException if any of the passed parameters is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
   protected def runTests(testName: Option[String], args: Args): Status = {
 
-    if (testName == null)
-      throw new NullPointerException("testName was null")
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(testName, args)
 
     // SKIP-SCALATESTJS-START
     if (!this.isInstanceOf[Spec] && yeOldeTestNames.nonEmpty) {
@@ -1293,16 +1287,13 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
    *         
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */
   def run(testName: Option[String], args: Args): Status = {
 
-    if (testName == null)
-      throw new NullPointerException("testName was null")
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(testName, args)
 
     import args._
 
@@ -1358,12 +1349,11 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all nested suites started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    */
   protected def runNestedSuites(args: Args): Status = {
 
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(args)
 
     import args._
 

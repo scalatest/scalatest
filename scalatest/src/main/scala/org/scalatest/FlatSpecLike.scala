@@ -127,7 +127,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @param testFun the test function
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-   * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
+   * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Unit) {
     // SKIP-SCALATESTJS-START
@@ -1628,7 +1628,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @param testFun the test function
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-   * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
+   * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
     // SKIP-SCALATESTJS-START
@@ -1667,7 +1667,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
+   * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
@@ -1741,7 +1741,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, <code>tagsToInclude</code>,
+   * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, <code>tagsToInclude</code>,
    *     <code>tagsToExclude</code>, or <code>configMap</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {

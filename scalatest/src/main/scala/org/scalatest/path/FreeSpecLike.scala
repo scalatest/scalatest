@@ -113,7 +113,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @param testFun the test function
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-   * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
+   * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
     // SKIP-SCALATESTJS-START
@@ -142,7 +142,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @param testFun the test function
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-   * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
+   * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
     // SKIP-SCALATESTJS-START
@@ -527,7 +527,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
    *
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
+   * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
   final protected override def runTest(testName: String, args: Args): Status = {
@@ -598,7 +598,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
    * @param args the <code>Args</code> for this run
    *
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */

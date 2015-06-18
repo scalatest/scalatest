@@ -18,6 +18,7 @@ package org.scalatest.tools
 import org.scalatest._
 import Suite.unparsedXml
 import Suite.xmlContent
+import org.scalactic.Requirements
 import java.awt.BorderLayout
 import java.awt.Container
 import java.awt.Dimension
@@ -1587,10 +1588,9 @@ private[scalatest] class RunnerJFrame(
     }
   }
 
-  private class RerunnerThread(rerun: Rerunner) extends Thread {
+  private class RerunnerThread(rerun: Rerunner) extends Thread with Requirements {
 
-    if (rerun == null)
-      throw new NullPointerException
+    requireNonNull(rerun)
 
     override def run() {
   

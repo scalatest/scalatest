@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.Requirements
+
 /**
  * Trait that causes the nested suites of any suite it is mixed into to be run sequentially even if
  * a <code>Distributor</code> is passed to <code>runNestedSuites</code>. This trait overrides the 
@@ -23,7 +25,7 @@ package org.scalatest
  * Mix in this trait into any suite whose nested suites need to be run sequentially even with the rest of the
  * run is being executed concurrently.
  */
-trait SequentialNestedSuiteExecution extends SuiteMixin { this: Suite =>
+trait SequentialNestedSuiteExecution extends SuiteMixin with Requirements { this: Suite =>
 
   /**
    * This trait's implementation of <code>runNestedSuites</code>s invokes <code>runNestedSuites</code> on <code>super</code>,
@@ -32,11 +34,10 @@ trait SequentialNestedSuiteExecution extends SuiteMixin { this: Suite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all nested suites started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    */
   abstract override protected def runNestedSuites(args: Args): Status = {
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(args)
 
     super.runNestedSuites(args.copy(distributor = None))
   }

@@ -18,6 +18,7 @@ package org.scalatest.tools
 import java.util.regex.Pattern
 import org.scalatest._
 import java.io.File
+import org.scalactic.exceptions.NullArgumentException
 
 class ArgsParserSpec extends FunSpec {
 
@@ -1183,7 +1184,7 @@ class ArgsParserSpec extends FunSpec {
 
   it("parseConfigSet should work correctly") {
 
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseConfigSet(null)
     }
     intercept[IllegalArgumentException] {
@@ -1257,10 +1258,10 @@ class ArgsParserSpec extends FunSpec {
   }
 
   it("parseSuiteArgsIntoClassNameStrings should work correctly") {
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseSuiteArgsIntoNameStrings(null, "-j")
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseSuiteArgsIntoNameStrings(List("-j", null, "-j"), "-j")
     }
     intercept[IllegalArgumentException] {
@@ -1279,10 +1280,10 @@ class ArgsParserSpec extends FunSpec {
 
   // SKIP-SCALATESTJS-START
   it("parseReporterArgsIntoSpecs should work correctly") {
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseReporterArgsIntoConfigurations(null)
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseReporterArgsIntoConfigurations(List("Hello", null, "World"))
     }
     intercept[IllegalArgumentException] {
@@ -1411,13 +1412,13 @@ class ArgsParserSpec extends FunSpec {
   }
 
   it("parseRunpathArgIntoList should work correctly") {
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseRunpathArgIntoList(null)
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseRunpathArgIntoList(List("-R", null))
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseRunpathArgIntoList(List(null, "serviceuitest-1.1beta4.jar myjini http://myhost:9998/myfile.jar"))
     }
     intercept[IllegalArgumentException] {
@@ -1451,10 +1452,10 @@ class ArgsParserSpec extends FunSpec {
   // SKIP-SCALATESTJS-END
 
   it("parsePropertiesArgsIntoMap should work correctly") {
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parsePropertiesArgsIntoMap(null)
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parsePropertiesArgsIntoMap(List("-Da=b", null))
     }
     intercept[IllegalArgumentException] {
@@ -1497,10 +1498,10 @@ class ArgsParserSpec extends FunSpec {
 
   // SKIP-SCALATESTJS-START
   it("parseSuiteArgs should work correctly") {
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseSuiteArgs(null)
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       ArgsParser.parseSuiteArgs(List("-s", null, "-s", "suite2"))
     }
     intercept[IllegalArgumentException] {

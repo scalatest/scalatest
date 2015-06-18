@@ -141,7 +141,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @param testFun the test function
      * @throws DuplicateTestNameException if a test with the same name has been registered previously
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-     * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
+     * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
       // SKIP-SCALATESTJS-START
@@ -259,7 +259,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @param testFun the test function
      * @throws DuplicateTestNameException if a test with the same name has been registered previously
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-     * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
+     * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(testText: String, testTags: Tag*)(testFun: => Unit) {
       handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
@@ -344,7 +344,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * @param testFun the test function
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
-   * @throws NullPointerException if <code>specText</code> or any passed test tag is <code>null</code>
+   * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit) {
     // SKIP-SCALATESTJS-START
@@ -525,7 +525,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * @param reporter the <code>Reporter</code> to which results will be reported
    * @param stopper the <code>Stopper</code> that will be consulted to determine whether to stop execution early.
    * @param configMap a <code>Map</code> of properties that can be used by this <code>FreeSpec</code>'s executing tests.
-   * @throws NullPointerException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
+   * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
   final protected override def runTest(testName: String, args: Args): Status = {
@@ -596,7 +596,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
    * @param args the <code>Args</code> for this run
    *
-   *@throws NullPointerException if any passed parameter is <code>null</code>.
+   *@throws NullArgumentException if any passed parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */

@@ -1388,8 +1388,8 @@ import exceptions.TestFailedException
  * </pre>
  * 
  * <p>
- * If <code>map</code> is <code>null</code>, the test will indeed fail, but with a <code>NullPointerException</code>, not a
- * <code>TestFailedException</code>. Here, the <code>NullPointerException</code> is the visible right-hand side effect. To get a
+ * If <code>map</code> is <code>null</code>, the test will indeed fail, but with a <code>NullArgumentException</code>, not a
+ * <code>TestFailedException</code>. Here, the <code>NullArgumentException</code> is the visible right-hand side effect. To get a
  * <code>TestFailedException</code>, you would need to check each assertion separately:
  * </p>
  *

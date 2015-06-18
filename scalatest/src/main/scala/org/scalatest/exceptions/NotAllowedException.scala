@@ -15,6 +15,9 @@
  */
 package org.scalatest.exceptions
 
+import org.scalactic.Requirements
+import org.scalactic.exceptions.NullArgumentException
+
 /**
  * Exception that indicates something was attempted in test code that is not allowed.
  * For example, in a <a href="../FeatureSpec.html"><code>FeatureSpec</code></a>, it is not allowed to nest a <code>feature</code>
@@ -26,15 +29,14 @@ package org.scalatest.exceptions
  * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *    something not allowed resides.
  *
- * @throws NullPointerException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
+ * @throws NullArgumentException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
  *
  * @author Bill Venners
  */
 class NotAllowedException(message: String, cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int)
-    extends StackDepthException(Some(message), cause, failedCodeStackDepthFun) {
+    extends StackDepthException(Some(message), cause, failedCodeStackDepthFun) with Requirements {
 
-  if (message == null) throw new NullPointerException("message was null")
-  if (failedCodeStackDepthFun == null) throw new NullPointerException("failedCodeStackDepthFun was null")
+  requireNonNull(message, failedCodeStackDepthFun)
 
   /**
    * Constructs a <code>NotAllowedException</code> with pre-determined <code>message</code> and
@@ -44,7 +46,7 @@ class NotAllowedException(message: String, cause: Option[Throwable], failedCodeS
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of code that attempted
    *    something not allowed resides.
    *
-   * @throws NullPointerException if <code>message</code> is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
   def this(message: String, failedCodeStackDepth: Int) = this(message, None, e => failedCodeStackDepth)
 
@@ -55,7 +57,7 @@ class NotAllowedException(message: String, cause: Option[Throwable], failedCodeS
    * @param message the exception's detail message
    * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
    *
-   * @throws NullPointerException if <code>message</code> is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
   def this(message: String, failedCodeStackDepthFun: StackDepthException => Int) = this(message, None, failedCodeStackDepthFun)
 

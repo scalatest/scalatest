@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.Requirements
+
 /**
  * Trait that facilitates a style of testing in which each test is run in its own instance
  * of the suite class to isolate each test from the side effects of the other tests in the
@@ -80,7 +82,7 @@ package org.scalatest
  * 
  * @author Bill Venners
  */
-trait OneInstancePerTest extends SuiteMixin {
+trait OneInstancePerTest extends SuiteMixin with Requirements {
   
   this: Suite =>
 
@@ -168,6 +170,9 @@ trait OneInstancePerTest extends SuiteMixin {
    *     is empty.
    */
   protected abstract override def runTests(testName: Option[String], args: Args): Status = {
+
+    requireNonNull(testName)
+    requireNonNull(args)
 
     if (args.runTestInNewInstance) {
       if (testName.isEmpty)

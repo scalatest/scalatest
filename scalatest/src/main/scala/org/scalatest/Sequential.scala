@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.Requirements
+
 /**
  * A <code>Suite</code> class mixing in <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a> that takes
  * zero to many <code>Suite</code>s, which will be returned from its <code>nestedSuites</code> method.
@@ -55,16 +57,15 @@ package org.scalatest
  * 
  * @param suitesToNest a sequence of <code>Suite</code>s to nest.
  *
- * @throws NullPointerException if <code>suitesToNest</code>, or any suite
+ * @throws NullArgumentException if <code>suitesToNest</code>, or any suite
  * it contains, is <code>null</code>.
  *
  * @author Bill Venners
  */
-class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteExecution { thisSuite => 
+class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteExecution with Requirements { thisSuite => 
 
   for (s <- suitesToNest) {
-    if (s == null)
-      throw new NullPointerException("A passed suite was null")
+    requireNonNull(s)
   }
 
   /**

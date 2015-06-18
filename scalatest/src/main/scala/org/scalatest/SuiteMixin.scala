@@ -67,7 +67,7 @@ trait SuiteMixin { this: Suite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    */
   def run(testName: Option[String], args: Args): Status
 
@@ -77,7 +77,7 @@ trait SuiteMixin { this: Suite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all nested suites started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if <code>args</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>args</code> is <code>null</code>.
    */
   protected def runNestedSuites(args: Args): Status
 
@@ -89,7 +89,7 @@ trait SuiteMixin { this: Suite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if either <code>testName</code> or <code>args</code> is <code>null</code>.
+   * @throws NullArgumentException if either <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected def runTests(testName: Option[String], args: Args): Status
 
@@ -100,7 +100,7 @@ trait SuiteMixin { this: Suite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
+   * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected def runTest(
     testName: String,

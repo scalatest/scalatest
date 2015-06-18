@@ -50,7 +50,7 @@ import collection.mutable.ListBuffer
  *
  * @param suitesToNest a sequence of <code>Suite</code>s to nest.
  *
- * @throws NullPointerException if <code>suitesToNest</code>, or any suite
+ * @throws NullArgumentException if <code>suitesToNest</code>, or any suite
  * it contains, is <code>null</code>.
  *
  * @author Bill Venners

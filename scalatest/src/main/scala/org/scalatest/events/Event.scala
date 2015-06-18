@@ -21,6 +21,7 @@ import scala.xml.Elem
 import java.io.StringWriter
 import java.io.PrintWriter
 import java.io.BufferedWriter
+import org.scalactic.Requirements
 
 import exceptions.StackDepthException
 
@@ -264,30 +265,19 @@ final case class TestStarting (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (testName == null)
-    throw new NullPointerException("testName was null")
-  if (testText == null)
-    throw new NullPointerException("testText was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (rerunner == null)
-    throw new NullPointerException("rerunner was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 testName,
+                 testText,
+                 formatter,
+                 location,
+                 rerunner,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -371,32 +361,20 @@ final case class TestSucceeded (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (testName == null)
-    throw new NullPointerException("testName was null")
-  if (testText == null)
-    throw new NullPointerException("testText was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (rerunner == null)
-    throw new NullPointerException("rerunner was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 testName,
+                 testText,
+                 duration,
+                 formatter,
+                 location,
+                 rerunner,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -486,36 +464,22 @@ final case class TestFailed (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with ExceptionalEvent {
+) extends Event with ExceptionalEvent with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (testName == null)
-    throw new NullPointerException("testName was null")
-  if (testText == null)
-    throw new NullPointerException("testText was null")
-  if (throwable == null)
-    throw new NullPointerException("throwable was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (rerunner == null)
-    throw new NullPointerException("rerunner was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 testName,
+                 testText,
+                 throwable,
+                 duration,
+                 formatter,
+                 location,
+                 rerunner,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -596,28 +560,18 @@ final case class TestIgnored (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
     
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (testName == null)
-    throw new NullPointerException("testName was null")
-  if (testText == null)
-    throw new NullPointerException("testText was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 testName,
+                 testText,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -691,30 +645,19 @@ final case class TestPending (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (testName == null)
-    throw new NullPointerException("testName was null")
-  if (testText == null)
-    throw new NullPointerException("testText was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 testName,
+                 testText,
+                 duration,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -798,38 +741,23 @@ final case class TestCanceled (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with ExceptionalEvent {
+) extends Event with ExceptionalEvent with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (testName == null)
-    throw new NullPointerException("testName was null")
-  if (testText == null)
-    throw new NullPointerException("testText was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (throwable == null)
-    throw new NullPointerException("throwable was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (rerunner == null)
-    throw new NullPointerException("rerunner was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 testName,
+                 testText,
+                 duration,
+                 throwable,
+                 duration,
+                 formatter,
+                 location,
+                 rerunner,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -908,26 +836,17 @@ final case class SuiteStarting (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (rerunner == null)
-    throw new NullPointerException("rerunner was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 formatter,
+                 location,
+                 rerunner,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1003,28 +922,18 @@ final case class SuiteCompleted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (rerunner == null)
-    throw new NullPointerException("rerunner was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 duration,
+                 formatter,
+                 location,
+                 rerunner,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1108,32 +1017,20 @@ final case class SuiteAborted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with ExceptionalEvent {
+) extends Event with ExceptionalEvent with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (suiteName == null)
-    throw new NullPointerException("suiteName was null")
-  if (suiteId == null)
-    throw new NullPointerException("suiteId was null")
-  if (suiteClassName == null)
-    throw new NullPointerException("suiteClassName was null")
-  if (throwable == null)
-    throw new NullPointerException("throwable was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (rerunner == null)
-    throw new NullPointerException("rerunner was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 suiteName,
+                 suiteId,
+                 suiteClassName,
+                 throwable,
+                 duration,
+                 formatter,
+                 location,
+                 rerunner,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1198,22 +1095,17 @@ final case class RunStarting (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
     
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
+  requireNonNull(ordinal,
+                 configMap,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
+
   if (testCount < 0)
     throw new IllegalArgumentException("testCount was less than zero: " + testCount)
-  if (configMap == null)
-    throw new NullPointerException("configMap was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1296,22 +1188,15 @@ final case class RunCompleted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (summary == null)
-    throw new NullPointerException("summary was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 duration,
+                 summary,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1386,22 +1271,15 @@ final case class RunStopped (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (summary == null)
-    throw new NullPointerException("summary was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 duration,
+                 summary,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1471,26 +1349,17 @@ final case class RunAborted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (throwable == null)
-    throw new NullPointerException("throwable was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (summary == null)
-    throw new NullPointerException("summary was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 throwable,
+                 duration,
+                 summary,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1557,24 +1426,16 @@ final case class InfoProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends RecordableEvent {
+) extends RecordableEvent with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (nameInfo == null)
-    throw new NullPointerException("nameInfo was null")
-  if (throwable == null)
-    throw new NullPointerException("throwable was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 nameInfo,
+                 throwable,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1650,24 +1511,16 @@ final case class AlertProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends NotificationEvent {
+) extends NotificationEvent with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (nameInfo == null)
-    throw new NullPointerException("nameInfo was null")
-  if (throwable == null)
-    throw new NullPointerException("throwable was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 nameInfo,
+                 throwable,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1743,24 +1596,16 @@ final case class NoteProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends NotificationEvent {
+) extends NotificationEvent with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (nameInfo == null)
-    throw new NullPointerException("nameInfo was null")
-  if (throwable == null)
-    throw new NullPointerException("throwable was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 nameInfo,
+                 throwable,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1823,22 +1668,15 @@ final case class MarkupProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends RecordableEvent {
+) extends RecordableEvent with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (text == null)
-    throw new NullPointerException("message was null")
-  if (nameInfo == null)
-    throw new NullPointerException("nameInfo was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 text,
+                 nameInfo,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1898,22 +1736,15 @@ final case class ScopeOpened (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (nameInfo == null)
-    throw new NullPointerException("nameInfo was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 nameInfo,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -1973,22 +1804,15 @@ final case class ScopeClosed (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (nameInfo == null)
-    throw new NullPointerException("nameInfo was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 nameInfo,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -2046,22 +1870,15 @@ final case class ScopePending (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (message == null)
-    throw new NullPointerException("message was null")
-  if (nameInfo == null)
-    throw new NullPointerException("nameInfo was null")
-  if (formatter == null)
-    throw new NullPointerException("formatter was null")
-  if (location == null)
-    throw new NullPointerException("location was null")
-  if (payload == null)
-    throw new NullPointerException("payload was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 message,
+                 nameInfo,
+                 formatter,
+                 location,
+                 payload,
+                 threadName)
   
   import EventXmlHelper._
   private [scalatest] def toXml = 
@@ -2095,14 +1912,11 @@ final case class DiscoveryStarting (
   configMap: ConfigMap,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
  
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (configMap == null)
-    throw new NullPointerException("configMap was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 configMap,
+                 threadName)
 
   /**
    * <code>Location</code> in a <code>DiscoveryStarting</code> is always set to <code>None</code>.
@@ -2157,14 +1971,11 @@ final case class DiscoveryCompleted (
   duration: Option[Long] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event {
+) extends Event with Requirements {
 
-  if (ordinal == null)
-    throw new NullPointerException("ordinal was null")
-  if (duration == null)
-    throw new NullPointerException("duration was null")
-  if (threadName == null)
-    throw new NullPointerException("threadName was null")
+  requireNonNull(ordinal,
+                 duration,
+                 threadName)
 
   /**
    * <code>Location</code> in a <code>DiscoveryCompleted</code> is always set to <code>None</code>.

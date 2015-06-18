@@ -50,9 +50,11 @@ package org.scalatest
  * @param distributedSuiteSorter an optional <a href="DistributedSuiteSorter.html"><code>DistributedSuiteSorter</code></a> used by <code>ParallelTestExecution</code> to ensure the events
  *                              for the parallel-executed suites are sorted back into sequential order, with a timeout in case a suite takes to long to complete, even when tests are executed in parallel
  *
- * @throws NullPointerException if any passed parameter is <code>null</code>.
+ * @throws NullArgumentException if any passed parameter is <code>null</code>.
  *
  */
+import org.scalactic.Requirements
+
 case class Args(
   reporter: Reporter,
   stopper: Stopper = Stopper.default,
@@ -64,23 +66,7 @@ case class Args(
   runTestInNewInstance: Boolean = false,
   distributedTestSorter: Option[DistributedTestSorter] = None,
   distributedSuiteSorter: Option[DistributedSuiteSorter] = None
-) {
-  if (reporter == null)
-    throw new NullPointerException("reporter was null")
-  if (stopper == null)
-    throw new NullPointerException("stopper was null")
-  if (filter == null)
-    throw new NullPointerException("filter was null")
-  if (configMap == null)
-    throw new NullPointerException("configMap was null")
-  if (distributor == null)
-    throw new NullPointerException("distributor was null")
-  if (tracker == null)
-    throw new NullPointerException("tracker was null")
-  if (chosenStyles == null)
-    throw new NullPointerException("chosenStyles was null")
-  if (distributedTestSorter == null)
-    throw new NullPointerException("distributedTestSorter was null")
-  if (distributedSuiteSorter == null)
-    throw new NullPointerException("distributedSuiteSorter was null")
+) extends Requirements {
+    requireNonNull(reporter, stopper, filter, configMap, distributor, tracker,
+                   chosenStyles, distributedTestSorter, distributedSuiteSorter)
 }

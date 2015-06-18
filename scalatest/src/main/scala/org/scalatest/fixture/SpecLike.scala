@@ -280,7 +280,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
-   * @throws NullPointerException if <code>testName</code> or <code>args</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
@@ -364,7 +364,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Spec</code>.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
-   * @throws NullPointerException if any of the passed parameters is <code>null</code>.
+   * @throws NullArgumentException if any of the passed parameters is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Spec</code>
    */
@@ -402,7 +402,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>fixture.SpecLike</code>.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */

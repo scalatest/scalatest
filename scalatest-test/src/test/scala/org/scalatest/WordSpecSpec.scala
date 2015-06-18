@@ -28,6 +28,7 @@ import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.exceptions.NotAllowedException
+import org.scalactic.exceptions.NullArgumentException
 
 class WordSpecSpec extends FunSpec with GivenWhenThen {
 
@@ -465,74 +466,74 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         assert(indentedText === IndentedText("  + " + spec.msg, spec.msg, 1))
       }
     }
-    it("should throw NullPointerException if a null test tag is provided") {
+    it("should throw NullArgumentException if a null test tag is provided") {
       // it
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new WordSpec {
           "hi" taggedAs(null) in {}
         }
       }
-      val caught = intercept[NullPointerException] {
+      val caught = intercept[NullArgumentException] {
         new WordSpec {
           "hi" taggedAs(mytags.SlowAsMolasses, null) in {}
         }
       }
       assert(caught.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new WordSpec {
           "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in {}
         }
       }
 
       // ignore
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new WordSpec {
           "hi" taggedAs(null) ignore {}
         }
       }
-      val caught2 = intercept[NullPointerException] {
+      val caught2 = intercept[NullArgumentException] {
         new WordSpec {
           "hi" taggedAs(mytags.SlowAsMolasses, null) ignore {}
         }
       }
       assert(caught2.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new WordSpec {
           "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore {}
         }
       }
 
       // registerTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new WordSpec {
           registerTest("hi", null) {}
         }
       }
-      val caught3 = intercept[NullPointerException] {
+      val caught3 = intercept[NullArgumentException] {
         new WordSpec {
           registerTest("hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught3.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new WordSpec {
           registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }
       }
 
       // registerIgnoredTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new WordSpec {
           registerIgnoredTest("hi", null) {}
         }
       }
-      val caught4 = intercept[NullPointerException] {
+      val caught4 = intercept[NullArgumentException] {
         new WordSpec {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught4.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new WordSpec {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }

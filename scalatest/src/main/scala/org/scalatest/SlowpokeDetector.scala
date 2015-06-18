@@ -20,8 +20,9 @@ import time.SpanSugar._
 import java.util.concurrent.ConcurrentSkipListSet
 import scala.collection.JavaConverters._
 import java.io.PrintStream
+import org.scalactic.Requirements
 
-private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStream = Console.err) { // Default timeout is 1 minute
+private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStream = Console.err) extends Requirements { // Default timeout is 1 minute
 
   // SKIP-SCALATESTJS-START
   private final val runningTests = new ConcurrentSkipListSet[RunningTest]
@@ -29,7 +30,7 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
   //SCALATESTJS-ONLY private final val runningTests = new scala.collection.mutable.TreeSet[RunningTest]
 
   def testStarting(suiteName: String, suiteId: String, testName: String, timeStamp: Long): Unit = {
-    if (suiteName == null || suiteId == null || testName == null) throw new NullPointerException
+    requireNonNull(suiteName, suiteId, testName)
     require(timeStamp >= 0, "timeStamp must be >= 0")
     runningTests.add(
       new RunningTest(
@@ -41,7 +42,7 @@ private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStrea
     )
   }
   def testFinished(suiteName: String, suiteId: String, testName: String): Unit = {
-    if (suiteName == null || suiteId == null || testName == null) throw new NullPointerException
+    requireNonNull(suiteName, suiteId, testName)
     val wasRemoved =
       runningTests.remove( // removal uses equality, which is determined only by suite ID and test name
         new RunningTest(

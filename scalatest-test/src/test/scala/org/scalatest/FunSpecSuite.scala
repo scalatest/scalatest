@@ -17,6 +17,7 @@ package org.scalatest
 
 import SharedHelpers._
 import org.scalatest.events._
+import org.scalactic.exceptions.NullArgumentException
 
 class FunSpecSuite extends FunSuite {
 
@@ -1381,12 +1382,12 @@ class FunSpecSuite extends FunSuite {
   }
 
   test("that a null specText results in a thrown NPE at construction time") {
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       new FunSpec {
         it(null) {}
       }
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       new FunSpec {
         ignore(null) {}
       }

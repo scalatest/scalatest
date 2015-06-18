@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.Requirements
+
 /**
  * Superclass for the possible outcomes of running a test.
  *
@@ -472,7 +474,7 @@ case class Canceled(exception: exceptions.TestCanceledException) extends Excepti
  * provided by the compiler given its companion is a case class, a second factory method 
  * that produces a <code>Canceled</code> outcome given a string message.
  */
-object Canceled {
+object Canceled extends Requirements {
 
   // SKIP-SCALATESTJS-START
   protected[scalatest] val stackDepth = 1
@@ -519,8 +521,7 @@ object Canceled {
    * </pre>
    */
   def apply(message: String): Canceled = {
-    if (message == null)
-      throw new NullPointerException("message was null")
+    requireNonNull(message)
     val e = new exceptions.TestCanceledException(message, stackDepth)
     //e.fillInStackTrace()
     Canceled(e)

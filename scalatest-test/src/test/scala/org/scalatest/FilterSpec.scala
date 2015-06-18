@@ -16,6 +16,7 @@
 package org.scalatest
 
 import scala.collection.immutable.TreeSet
+import org.scalactic.exceptions.NullArgumentException
 
 class FilterSpec extends FunSpec {
   
@@ -28,26 +29,26 @@ class FilterSpec extends FunSpec {
       assertCompiles("bippy(Filter.default)")
     }
 
-    it("should throw NPEs if constructed with nulls") {
-      intercept[NullPointerException] {
+    it("should throw NAEs if constructed with nulls") {
+      intercept[NullArgumentException] {
         Filter(null, null)
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         Filter(None, null)
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         Filter(null, Set())
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         Filter(None, Set(), false, null)
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         Filter(None, Set(), false, DynaTags(null, null))
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         Filter(None, Set(), false, DynaTags(Map.empty, null))
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         Filter(None, Set(), false, DynaTags(null, Map.empty))
       }
     }

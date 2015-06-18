@@ -18,6 +18,7 @@ package org.scalatest
 import java.util.concurrent.CountDownLatch
 import java.io.PrintStream
 import org.scalatest.events._
+import org.scalactic.Requirements
 import Reporter.propagateDispose
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.TimerTask
@@ -38,7 +39,7 @@ import tools.StringReporter.makeDurationString
  *
  * @param reporters the initial <code>Reporter</code>s list for this
  * <code>DispatchReporter</code>
- * @throws NullPointerException if <code>reporters</code> is <code>null</code>.
+ * @throws NullArgumentException if <code>reporters</code> is <code>null</code>.
  * @author Bill Venners
  */
 private[scalatest] class DispatchReporter(
@@ -47,7 +48,9 @@ private[scalatest] class DispatchReporter(
   detectSlowpokes: Boolean = false,
   slowpokeDetectionDelay: Long = 60000,
   slowpokeDetectionPeriod: Long = 60000
-) extends CatchReporter { thisDispatchReporter =>
+) extends CatchReporter with Requirements { thisDispatchReporter =>
+
+  requireNonNull(reporters)
 
   private case object Dispose
 

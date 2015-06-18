@@ -139,7 +139,7 @@ trait Documenter extends (String => Unit) {
    * @param text an string of markup text that will be forwarded to the wrapped <code>Reporter</code>
    *   via a <code>MarkupProvided</code> event.
    *
-   * @throws NullPointerException if <code>message</code> reference is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> reference is <code>null</code>
    */
   def apply(text: String): Unit
 }

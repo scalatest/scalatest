@@ -17,6 +17,8 @@ package org.scalatest.junit
 
 import _root_.junit.framework.AssertionFailedError
 import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, ModifiableMessage}
+import org.scalactic.Requirements
+import org.scalactic.exceptions.NullArgumentException
 
 /**
  * Exception that indicates a test failed.
@@ -61,25 +63,24 @@ import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, Mo
  * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param payload an optional payload, which ScalaTest will include in a resulting <code>JUnitTestFailedError</code> event
  *
- * @throws NullPointerException if either <code>message</code> or <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
+ * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
  *
  * @author Bill Venners
  */
 class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwable], val failedCodeStackDepth: Int, val payload: Option[Any])
-    extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnitTestFailedError]  with PayloadField with ModifiablePayload[JUnitTestFailedError] {
+    extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnitTestFailedError]  with PayloadField with ModifiablePayload[JUnitTestFailedError] with Requirements {
 
   // TODO: CHange above to a message.getOrElse(""), and same in other exceptions most likely
   // TODO: Possibly change stack depth to stackDepthFun like in TFE, consider messageFun like in TDE
 
-  if (message == null) throw new NullPointerException("message was null")
+  requireNonNull(message, cause)
   message match {
-    case Some(null) => throw new NullPointerException("message was a Some(null)")
+    case Some(null) => throw new NullArgumentException("message was a Some(null)")
     case _ =>
   }
 
-  if (cause == null) throw new NullPointerException("cause was null")
   cause match {
-    case Some(null) => throw new NullPointerException("cause was a Some(null)")
+    case Some(null) => throw new NullArgumentException("cause was a Some(null)")
     case _ =>
   }
 
@@ -106,12 +107,12 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * @param message A detail message for this <code>JUnitTestFailedError</code>.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if <code>message</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
   def this(message: String, failedCodeStackDepth: Int) =
     this(
       {
-        if (message == null) throw new NullPointerException("message was null")
+        if (message == null) throw new NullArgumentException("message was null")
         Some(message)
       },
       None,
@@ -127,12 +128,12 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * @param cause the cause, the <code>Throwable</code> that caused this <code>JUnitTestFailedError</code> to be thrown.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if <code>cause</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>cause</code> is <code>null</code>.
    */
   def this(cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
-        if (cause == null) throw new NullPointerException("cause was null")
+        if (cause == null) throw new NullArgumentException("cause was null")
         Some(if (cause.getMessage == null) "" else cause.getMessage)
       },
       Some(cause),
@@ -152,16 +153,16 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * @param cause the cause, the <code>Throwable</code> that caused this <code>JUnitTestFailedError</code> to be thrown.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if either <code>message</code> or <code>cause</code> is <code>null</code>.
+   * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>.
    */
   def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
-        if (message == null) throw new NullPointerException("message was null")
+        if (message == null) throw new NullArgumentException("message was null")
         Some(message)
       },
       {
-        if (cause == null) throw new NullPointerException("cause was null")
+        if (cause == null) throw new NullArgumentException("cause was null")
         Some(cause)
       },
       failedCodeStackDepth,

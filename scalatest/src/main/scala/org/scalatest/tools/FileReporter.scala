@@ -27,7 +27,7 @@ import java.io.IOException
  * default character encoding.
  *
  * @param filename the <code>String</code> name of the file to which to print reported info
- * @exception NullPointerException if passed <code>file</code> reference is <code>null</code>
+ * @exception NullArgumentException if passed <code>file</code> reference is <code>null</code>
  * @exception IOException if unable to open the specified file for writing
  *
  * @author Bill Venners

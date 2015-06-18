@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalactic.Prettifier
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
+import org.scalactic.Requirements
 
 /**
  * Sub-trait of <code>Assertions</code> that override <code>assert</code> and <code>assume</code> methods to include
@@ -151,7 +152,7 @@ import collection.immutable.TreeMap
  *
  * <p>Trait <code>DiagrammedAssertions</code> was inspired by Peter Niederwieser's work in <a href="http://code.google.com/p/spock/">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
  */
-trait DiagrammedAssertions extends Assertions {
+trait DiagrammedAssertions extends Assertions with Requirements {
 
   import language.experimental.macros
 
@@ -238,8 +239,7 @@ trait DiagrammedAssertions extends Assertions {
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
     def macroAssert(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
+      requireNonNull(clue)
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
@@ -255,8 +255,7 @@ trait DiagrammedAssertions extends Assertions {
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
     def macroAssume(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String) {
-      if (clue == null)
-        throw new NullPointerException("clue was null")
+      requireNonNull(clue)
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
@@ -307,7 +306,7 @@ trait DiagrammedAssertions extends Assertions {
    * @param condition the boolean condition to assert
    * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestFailedException if the condition is <code>false</code>.
-   * @throws NullPointerException if <code>message</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
   override def assert(condition: Boolean, clue: Any): Unit = macro DiagrammedAssertionsMacro.assertWithClue
 
@@ -348,7 +347,7 @@ trait DiagrammedAssertions extends Assertions {
    * @param condition the boolean condition to assume
    * @param clue An objects whose <code>toString</code> method returns a message to include in a failure report.
    * @throws TestCanceledException if the condition is <code>false</code>.
-   * @throws NullPointerException if <code>message</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
   override def assume(condition: Boolean, clue: Any): Unit = macro DiagrammedAssertionsMacro.assumeWithClue
 }

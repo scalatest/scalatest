@@ -15,6 +15,8 @@
  */
 package org.scalatest.exceptions
 
+import org.scalactic.exceptions.NullArgumentException
+
 /**
  * Exception that indicates a test failed.
  *
@@ -37,7 +39,7 @@ package org.scalatest.exceptions
  * @param failedCodeStackDepthFun a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
  *
- * @throws NullPointerException if either <code>messageFun</code>, <code>cause</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>, or <code>Some(null)</code>.
+ * @throws NullArgumentException if either <code>messageFun</code>, <code>cause</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>, or <code>Some(null)</code>.
  *
  * @author Bill Venners
  */
@@ -56,7 +58,7 @@ class TestFailedException(
    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestFailedException</code> to be thrown.
    * @param failedCodeStackDepthFun a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
+   * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
   def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
     this(messageFun, cause, failedCodeStackDepthFun, None)
@@ -69,7 +71,7 @@ class TestFailedException(
    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestFailedException</code> to be thrown.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
+   * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
   def this(message: Option[String], cause: Option[Throwable], failedCodeStackDepth: Int) =
     this(
@@ -93,12 +95,12 @@ class TestFailedException(
    * @param message A detail message for this <code>TestFailedException</code>.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if <code>message</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
   def this(message: String, failedCodeStackDepth: Int) =
     this(
       {
-        if (message == null) throw new NullPointerException("message was null")
+        if (message == null) throw new NullArgumentException("message was null")
         Some(message)
       },
       None,
@@ -113,12 +115,12 @@ class TestFailedException(
    * @param cause the cause, the <code>Throwable</code> that caused this <code>TestFailedException</code> to be thrown.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if <code>cause</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>cause</code> is <code>null</code>.
    */
   def this(cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
-        if (cause == null) throw new NullPointerException("cause was null")
+        if (cause == null) throw new NullArgumentException("cause was null")
         if (cause.getMessage == null) None else Some(cause.getMessage)
       },
       Some(cause),
@@ -137,16 +139,16 @@ class TestFailedException(
    * @param cause the cause, the <code>Throwable</code> that caused this <code>TestFailedException</code> to be thrown.
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
-   * @throws NullPointerException if either <code>message</code> or <code>cause</code> is <code>null</code>.
+   * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>.
    */
   def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
-        if (message == null) throw new NullPointerException("message was null")
+        if (message == null) throw new NullArgumentException("message was null")
         Some(message)
       },
       {
-        if (cause == null) throw new NullPointerException("cause was null")
+        if (cause == null) throw new NullArgumentException("cause was null")
         Some(cause)
       },
       failedCodeStackDepth

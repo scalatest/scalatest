@@ -16,6 +16,7 @@
 package org.scalatest.tools
 
 import org.scalatest._
+import org.scalactic.Requirements
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 import java.util.concurrent.LinkedBlockingQueue
@@ -25,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue
  *
  * @author Bill Venners
  */
-private[scalatest] class ConcurrentDistributor(args: Args, execSvc: ExecutorService) extends Distributor {
+private[scalatest] class ConcurrentDistributor(args: Args, execSvc: ExecutorService) extends Distributor with Requirements {
 
   private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]
 
@@ -34,10 +35,7 @@ private[scalatest] class ConcurrentDistributor(args: Args, execSvc: ExecutorServ
   }
  
   def apply(suite: Suite, args: Args): Status = {
-    if (suite == null)
-      throw new NullPointerException("suite is null")
-    if (args == null)
-      throw new NullPointerException("args is null")
+    requireNonNull(suite, args)
     val status = new ScalaTestStatefulStatus
     val suiteRunner = new SuiteRunner(suite, args, status)
     val future: Future[_] = execSvc.submit(suiteRunner)

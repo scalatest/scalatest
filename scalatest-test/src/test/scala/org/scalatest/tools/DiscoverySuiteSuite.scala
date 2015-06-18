@@ -18,6 +18,7 @@ package org.scalatest.tools
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest._
 import org.scalatest.events._
+import org.scalactic.exceptions.NullArgumentException
 
 /*
 I can't get this to work and have no more time. Will make nestedSuiteNames package access.
@@ -38,13 +39,13 @@ class DiscoverySuiteSuite extends FunSpec {
   val loader = DiscoverySuite.getClass.getClassLoader
 
   it("test constructor") {
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       new DiscoverySuite(null, Set(), false, loader)
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       new DiscoverySuite("hi", null, false, loader)
     }
-    intercept[NullPointerException] {
+    intercept[NullArgumentException] {
       new DiscoverySuite(null, Set(), false, null)
     }
     assertResult(Nil) {

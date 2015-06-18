@@ -19,6 +19,7 @@ import time._
 import SpanSugar._
 import Matchers._
 import Now._
+import org.scalactic.exceptions.NullArgumentException
 
 class SlowpokeDetectorSpec extends FunSpec with Now {
 
@@ -37,7 +38,7 @@ class SlowpokeDetectorSpec extends FunSpec with Now {
         testName = "the test name",
         timeStamp = 10
       )
-      a [NullPointerException] should be thrownBy {
+      a [NullArgumentException] should be thrownBy {
         spd.testStarting(
           suiteId = null,
           suiteName = "the suite ID",
@@ -45,7 +46,7 @@ class SlowpokeDetectorSpec extends FunSpec with Now {
           timeStamp = 10
         )
       }
-      a [NullPointerException] should be thrownBy {
+      a [NullArgumentException] should be thrownBy {
         spd.testStarting(
           suiteId = "the suite name",
           suiteName = null,
@@ -53,7 +54,7 @@ class SlowpokeDetectorSpec extends FunSpec with Now {
           timeStamp = 10
         )
       }
-      a [NullPointerException] should be thrownBy {
+      a [NullArgumentException] should be thrownBy {
         spd.testStarting(
           suiteId = "the suite name",
           suiteName = "the suite ID",
@@ -77,21 +78,21 @@ class SlowpokeDetectorSpec extends FunSpec with Now {
         suiteName = "the suite ID",
         testName = "the test name"
       )
-      a [NullPointerException] should be thrownBy {
+      a [NullArgumentException] should be thrownBy {
         spd.testFinished(
           suiteId = null,
           suiteName = "the suite ID",
           testName = "the test name"
         )
       }
-      a [NullPointerException] should be thrownBy {
+      a [NullArgumentException] should be thrownBy {
         spd.testFinished(
           suiteId = "the suite name",
           suiteName = null,
           testName = "the test name"
         )
       }
-      a [NullPointerException] should be thrownBy {
+      a [NullArgumentException] should be thrownBy {
         spd.testFinished(
           suiteId = "the suite name",
           suiteName = "the suite ID",

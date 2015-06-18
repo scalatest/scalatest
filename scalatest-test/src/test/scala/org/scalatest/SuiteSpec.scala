@@ -21,6 +21,7 @@ import scala.reflect.NameTransformer.encode
 import SharedHelpers._
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
+import org.scalactic.exceptions.NullArgumentException
 
 protected[scalatest] class MandarinOrangeFunSuite(ns: Suite*) extends FunSuite {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
@@ -377,9 +378,9 @@ class SuiteSpec extends FunSpec {
   }
   // SKIP-SCALATESTJS-START
   describe("A Suite's execute method") {
-    it("should throw NPE if passed null for configMap") {
+    it("should throw NAE if passed null for configMap") {
       class MySuite extends Suite
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         (new MySuite).execute(configMap = null)
       }
     }
