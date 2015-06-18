@@ -550,6 +550,15 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                             val generatedValName = func.children(0).asInstanceOf[ValDef].name.decoded  // safe cast because it already passed isPlaceHolder
 
                             qualifier match {
+                              /**
+                               * support for a.exists(_ == 2), generate AST for the following code:
+                               *
+                               * {
+                               *   val $org_scalatest_assert_macro_left = a
+                               *   val $org_scalatest_assert_macro_right = 2
+                               *   [code generated from existsMacroBool]
+                               * }
+                               */
                               case Ident(name) if name.decoded == generatedValName =>
                                 Block(
                                   valDef("$org_scalatest_assert_macro_left", leftTree),
@@ -559,6 +568,15 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
 
                               case _ =>
                                 boolExprApply.args(0) match {
+                                  /**
+                                   * support for a.exists(2 == _), generate AST for the following code:
+                                   *
+                                   * {
+                                   *   val $org_scalatest_assert_macro_left = a
+                                   *   val $org_scalatest_assert_macro_right = 2
+                                   *   [code generated from existsMacroBool]
+                                   * }
+                                   */
                                   case Ident(name) if name.decoded == generatedValName =>
                                     Block(
                                       valDef("$org_scalatest_assert_macro_left", leftTree),
