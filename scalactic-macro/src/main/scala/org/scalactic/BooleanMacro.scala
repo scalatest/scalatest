@@ -448,11 +448,12 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
   }
 
   // helper method to check if the given tree represent a place holder syntax
-  private def isPlaceHolder(tree: Tree): Boolean =
+  private def isPlaceHolder(tree: Tree): Boolean = {
     tree match {
       case valDef: ValDef => valDef.rhs == EmptyTree
       case _ => false
     }
+  }
 
   /**
    * Transform the passed in boolean expression, see comment in different case for details
@@ -545,21 +546,31 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                     boolExpr match {
                       case boolExprApply: Apply if boolExprApply.args.size == 1 =>
                         boolExprApply.fun match {
-                          case boolExprApplySelect: Select if boolExprApplySelect.name.decoded == "==" =>
-                            /**
-                             * support for a.exists(_ == 2), generate AST for the following code:
-                             *
-                             * {
-                             *   val $org_scalatest_assert_macro_left = a
-                             *   val $org_scalatest_assert_macro_right = _ == 2  // after desugar
-                             *   [code generated from existsMacroBool]
-                             * }
-                             */
-                            Block(
-                              valDef("$org_scalatest_assert_macro_left", leftTree),
-                              valDef("$org_scalatest_assert_macro_right", boolExprApply.args(0).duplicate),
-                              existsMacroBool(select.duplicate, func.duplicate)
-                            )
+                          case Select(qualifier, equalEqual) if equalEqual.decoded == "==" =>
+                            val generatedValName = func.children(0).asInstanceOf[ValDef].name.decoded  // safe cast because it already passed isPlaceHolder
+
+                            qualifier match {
+                              case Ident(name) if name.decoded == generatedValName =>
+                                Block(
+                                  valDef("$org_scalatest_assert_macro_left", leftTree),
+                                  valDef("$org_scalatest_assert_macro_right", boolExprApply.args(0).duplicate),
+                                  existsMacroBool(select.duplicate, func.duplicate)
+                                )
+
+                              case _ =>
+                                boolExprApply.args(0) match {
+                                  case Ident(name) if name.decoded == generatedValName =>
+                                    Block(
+                                      valDef("$org_scalatest_assert_macro_left", leftTree),
+                                      valDef("$org_scalatest_assert_macro_right", qualifier.duplicate),
+                                      existsMacroBool(select.duplicate, func.duplicate)
+                                    )
+
+                                  case _ =>
+                                    simpleMacroBool(tree.duplicate, getText(tree))
+                                }
+                            }
+
                           case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
                         }
                       case _ => simpleMacroBool(tree.duplicate, getText(tree)) // something else, just call simpleMacroBool
