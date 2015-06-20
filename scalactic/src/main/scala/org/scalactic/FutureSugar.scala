@@ -28,53 +28,53 @@ import exceptions.ValidationFailedException
  *
  * <p>
  * Here's an example validation method, which passes if the given <code>Int</code> is evenly
- * divisible by 10 (<em>i.e.</em>, the result will be <code>Pass</code>). If the value does not pass
- * this test, the result is a <code>Fail</code> containing a helpful error message string.
+ * divisible by 10 (<em>i.e.</em>, the result will be [[org.scalactic.Pass <code>Pass</code>]]). If the value does not pass
+ * this test, the result is a [[org.scalactic.Fail <code>Fail</code>]] containing a helpful error message string.
  * </p>
  *
  * <pre class="stREPL">
  * scala&gt; import org.scalactic._
  * import org.scalactic._
- * 
+ *
  * scala&gt; import FutureSugar._
  * import org.scalactic.FutureSugar._
- * 
+ *
  * scala&gt; import scala.concurrent.Future
  * import scala.concurrent.Future
- * 
+ *
  * scala&gt; import scala.concurrent.ExecutionContext.Implicits.global
  * import scala.concurrent.ExecutionContext.Implicits.global
- * 
+ *
  * scala&gt; def isRound(i: Int): Validation[ErrorMessage] =
  *      |   if (i % 10 == 0) Pass else Fail(i + " was not a round number")
  * isRound: (i: Int)org.scalactic.Validation[org.scalactic.ErrorMessage]
  * </pre>
- * 
+ *
  * <p>
- * Validation will be attempted on a successful future. If the validation also succeeds, the
- * resulting future will be the same successful <code>Future</code> with the same value. (A
- * "validation" only transforms the future if the validation fails, otherwise it is the
+ * Validation will be attempted on a successful <code>Try</code>. If the validation succeeds, the
+ * resulting <code>Future</code> will be the same successful <code>Future</code> with the same value. (A
+ * "validation" only transforms the <code>Future</code> if the validation fails, otherwise it is the
  * same <code>Future</code>. The only difference is its value has now been proven <em>valid</em>.)
  * In the following example, a successful <code>Future[Int]</code> with the value 100
  * passes the validation (which checks whether 100 is evenly divisible by 10), therefore
  * the result of the <code>validating</code> call is the same successful <code>Future</code>
  * with the same value.
  * </p>
- * 
+ *
  * <pre class="stREPL">
  * scala&gt; val fut100 = Future(100)
  * fut100: scala.concurrent.Future[Int] = scala.concurrent.impl.Promise$DefaultPromise@67f9c9c6
- * 
+ *
  * scala&gt; fut100.value
  * res0: Option[scala.util.Try[Int]] = Some(Success(100))
  *
  * scala&gt; val round100 = fut100.validating(isRound)
  * round100: scala.concurrent.Future[Int] = scala.concurrent.impl.Promise$DefaultPromise@1ac2f0d1
- * 
+ *
  * scala&gt; round100.value
  * res1: Option[scala.util.Try[Int]] = Some(Success(100))
  * </pre>
- * 
+ *
  * <p>
  * If validation fails, the successful <code>Future</code> will be transformed into a failed one, with
  * a <code>ValidationFailedException</code> that contains the error message
@@ -85,13 +85,13 @@ import exceptions.ValidationFailedException
  * <pre class="stREPL">
  * scala&gt; val fut42 = Future(42)
  * fut42: scala.concurrent.Future[Int] = scala.concurrent.impl.Promise$DefaultPromise@19c6e4d1
- * 
+ *
  * scala&gt; fut42.value
  * res2: Option[scala.util.Try[Int]] = Some(Success(42))
  *
  * scala&gt; val round42 = fut42.validating(isRound)
  * round42: scala.concurrent.Future[Int] = scala.concurrent.impl.Promise$DefaultPromise@b5175d
- * 
+ *
  * scala&gt; round42.value
  * res3: Option[scala.util.Try[Int]] = Some(Failure(org.scalactic.exceptions.ValidationFailedException: 42 was not a round number))
  * </pre>
@@ -106,14 +106,14 @@ import exceptions.ValidationFailedException
  *
  * scala&gt; futEx.value
  * res4: Option[scala.util.Try[Int]] = Some(Failure(java.lang.Exception: oops!))
- * 
+ *
  * scala&gt; val roundEx = futEx.validating(isRound)
  * roundEx: scala.concurrent.Future[Int] = scala.concurrent.impl.Promise$DefaultPromise@22bf1acf
- * 
+ *
  * scala&gt; roundEx.value
  * res5: Option[scala.util.Try[Int]] = Some(Failure(java.lang.Exception: oops!))
  * </pre>
- * 
+ *
  * <p>
  * The <code>validating</code> method accepts one or more validation functions. If you 
  * pass more than one, they will be tried in order up until the first failure, whose
@@ -177,50 +177,8 @@ trait FutureSugar {
   }
 }
 
+/**
+ * Companion object for <code>FutureSugar</code> enabling its members to be
+ * imported as an alternative to mixing them in.
+ */
 object FutureSugar extends FutureSugar
-/*
-import org.scalactic._
-
-import FutureSugar._
-
-import scala.concurrent.Future
-
-def isRound(i: Int): Validation[ErrorMessage] =
-  if (i % 10 == 0) Pass else Fail(i + " was not a round number")
-
-import scala.concurrent.ExecutionContext.Implicits.global
-
-val fut100 = Future(100)
-
-fut100.value
-
-val round100 = fut100.validating(isRound)
-
-round100.value
-
-val fut42 = Future(42)
-
-fut42.value
-
-val round42 = fut42.validating(isRound)
-
-round42.value
-
-val futEx = Future[Int] { throw new Exception("oops!") }
-
-futEx.value
-
-val roundEx = futEx.validating(isRound)
-
-roundEx.value
-
-def isDivBy3(i: Int): Validation[ErrorMessage] =
-  if (i % 3 == 0) Pass else Fail(i + " was not divisible by 3")
-
-def isAnswerToLifeTheUniverseAndEverything(i: Int): Validation[ErrorMessage] =
-  if (i == 42) Pass else Fail(i + "did not equal 42")
-
-fut100.validating(isRound, isDivBy3, isAnswerToLifeTheUniverseAndEverything)
-
-*/
-
