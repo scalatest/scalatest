@@ -15,5 +15,18 @@
  */
 package org.scalactic.exceptions
 
+/**
+ * Exception that indicates a passed argument was <code>null</code>.
+ *
+ * <p>
+ * Prior to ScalaTest and Scalactic 3.0.0, a <code>null</code> argument (where non-<code>null</code> was required)
+ * would result in a <code>NullPointerException</code>. Although throwing <code>NullPointerException</code> is the
+ * tradition in Java APIs, Scala.js does not support a <code>NullPointerException</code>. To make the behavior
+ * the same on both the JVM and Scala.js, the change to throwing <code>NullArgumentException</code> was made throughout 
+ * the ScalaTest and Scalactic, including the <code>requireNonNull</code> method of trait [[org.scalactic.Requirements <code>Requirements</code>]].
+ * </p>
+ *
+ * @param message the detail message
+ */
 class NullArgumentException(message: String) extends IllegalArgumentException(message)
 
