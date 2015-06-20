@@ -32,7 +32,7 @@ import StringReporter.fragmentsForEvent
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import ArgsParser._
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * <p>
@@ -261,7 +261,7 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean
-  ) extends Distributor with Requirements {
+  ) extends Distributor {
 
     private val taskQueue = new LinkedBlockingQueue[Task]()
 

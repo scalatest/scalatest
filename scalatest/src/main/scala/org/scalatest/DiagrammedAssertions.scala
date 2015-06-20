@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalactic.Prettifier
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Sub-trait of <code>Assertions</code> that override <code>assert</code> and <code>assume</code> methods to include
@@ -152,7 +152,7 @@ import org.scalactic.Requirements
  *
  * <p>Trait <code>DiagrammedAssertions</code> was inspired by Peter Niederwieser's work in <a href="http://code.google.com/p/spock/">Spock</a> and <a href="https://github.com/pniederw/expecty">Expecty</a>.
  */
-trait DiagrammedAssertions extends Assertions with Requirements {
+trait DiagrammedAssertions extends Assertions {
 
   import language.experimental.macros
 

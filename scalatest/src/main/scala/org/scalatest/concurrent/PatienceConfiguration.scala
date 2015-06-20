@@ -18,7 +18,7 @@ package org.scalatest.concurrent
 import org.scalatest._
 import time.Span
 import PatienceConfiguration._
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Trait providing methods and classes used to configure timeouts and, where relevant, the interval
@@ -132,7 +132,7 @@ object PatienceConfiguration {
    *
    * @author Bill Venners
    */
-  final case class Timeout(value: Span) extends PatienceConfigParam with Requirements {
+  final case class Timeout(value: Span) extends PatienceConfigParam {
     requireNonNull(value)
   }
 
@@ -145,7 +145,7 @@ object PatienceConfiguration {
    *
    * @author Bill Venners
    */
-  final case class Interval(value: Span) extends PatienceConfigParam with Requirements {
+  final case class Interval(value: Span) extends PatienceConfigParam {
     requireNonNull(value)
   }
 }

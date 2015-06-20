@@ -21,6 +21,7 @@ import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteAborted
 import collection.mutable.ListBuffer
 import org.scalatest.events._
+import org.scalactic.Requirements._
 
 /**
  * Trait that causes the nested suites of any suite it is mixed into to be run sequentially even if

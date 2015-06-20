@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Trait that facilitates a style of testing in which each test is run in its own instance
@@ -82,7 +82,7 @@ import org.scalactic.Requirements
  * 
  * @author Bill Venners
  */
-trait OneInstancePerTest extends SuiteMixin with Requirements {
+trait OneInstancePerTest extends SuiteMixin {
   
   this: Suite =>
 

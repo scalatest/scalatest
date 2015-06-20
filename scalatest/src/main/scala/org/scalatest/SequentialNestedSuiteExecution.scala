@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Trait that causes the nested suites of any suite it is mixed into to be run sequentially even if
@@ -25,7 +25,7 @@ import org.scalactic.Requirements
  * Mix in this trait into any suite whose nested suites need to be run sequentially even with the rest of the
  * run is being executed concurrently.
  */
-trait SequentialNestedSuiteExecution extends SuiteMixin with Requirements { this: Suite =>
+trait SequentialNestedSuiteExecution extends SuiteMixin { this: Suite =>
 
   /**
    * This trait's implementation of <code>runNestedSuites</code>s invokes <code>runNestedSuites</code> on <code>super</code>,

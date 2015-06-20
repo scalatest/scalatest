@@ -16,7 +16,7 @@
 package org.scalatest
 
 import exceptions.ModifiableMessage
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Trait providing an implicit conversion that allows clues to be placed after a block of code.
@@ -100,7 +100,7 @@ import org.scalactic.Requirements
  *
  * @author Bill Venners
  */
-trait AppendedClues extends Requirements {
+trait AppendedClues {
 
   /**
    * Class that provides a <code>withClue</code> method that appends clue strings to any

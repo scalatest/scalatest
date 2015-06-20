@@ -21,7 +21,7 @@ import scala.xml.Elem
 import java.io.StringWriter
 import java.io.PrintWriter
 import java.io.BufferedWriter
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 import exceptions.StackDepthException
 
@@ -265,7 +265,7 @@ final case class TestStarting (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  suiteName,
@@ -361,7 +361,7 @@ final case class TestSucceeded (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  suiteName,
@@ -464,7 +464,7 @@ final case class TestFailed (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with ExceptionalEvent with Requirements {
+) extends Event with ExceptionalEvent {
 
   requireNonNull(ordinal,
                  message,
@@ -560,7 +560,7 @@ final case class TestIgnored (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
     
   requireNonNull(ordinal,
                  suiteName,
@@ -645,7 +645,7 @@ final case class TestPending (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  suiteName,
@@ -741,7 +741,7 @@ final case class TestCanceled (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with ExceptionalEvent with Requirements {
+) extends Event with ExceptionalEvent {
 
   requireNonNull(ordinal,
                  message,
@@ -836,7 +836,7 @@ final case class SuiteStarting (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  suiteName,
@@ -922,7 +922,7 @@ final case class SuiteCompleted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  suiteName,
@@ -1017,7 +1017,7 @@ final case class SuiteAborted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with ExceptionalEvent with Requirements {
+) extends Event with ExceptionalEvent {
 
   requireNonNull(ordinal,
                  message,
@@ -1095,7 +1095,7 @@ final case class RunStarting (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
     
   requireNonNull(ordinal,
                  configMap,
@@ -1188,7 +1188,7 @@ final case class RunCompleted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  duration,
@@ -1271,7 +1271,7 @@ final case class RunStopped (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  duration,
@@ -1349,7 +1349,7 @@ final case class RunAborted (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  message,
@@ -1426,7 +1426,7 @@ final case class InfoProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends RecordableEvent with Requirements {
+) extends RecordableEvent {
 
   requireNonNull(ordinal,
                  message,
@@ -1511,7 +1511,7 @@ final case class AlertProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends NotificationEvent with Requirements {
+) extends NotificationEvent {
 
   requireNonNull(ordinal,
                  message,
@@ -1596,7 +1596,7 @@ final case class NoteProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends NotificationEvent with Requirements {
+) extends NotificationEvent {
 
   requireNonNull(ordinal,
                  message,
@@ -1668,7 +1668,7 @@ final case class MarkupProvided (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends RecordableEvent with Requirements {
+) extends RecordableEvent {
 
   requireNonNull(ordinal,
                  text,
@@ -1736,7 +1736,7 @@ final case class ScopeOpened (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  message,
@@ -1804,7 +1804,7 @@ final case class ScopeClosed (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  message,
@@ -1870,7 +1870,7 @@ final case class ScopePending (
   payload: Option[Any] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  message,
@@ -1912,7 +1912,7 @@ final case class DiscoveryStarting (
   configMap: ConfigMap,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
  
   requireNonNull(ordinal,
                  configMap,
@@ -1971,7 +1971,7 @@ final case class DiscoveryCompleted (
   duration: Option[Long] = None,
   threadName: String = Thread.currentThread.getName,
   timeStamp: Long = (new Date).getTime
-) extends Event with Requirements {
+) extends Event {
 
   requireNonNull(ordinal,
                  duration,

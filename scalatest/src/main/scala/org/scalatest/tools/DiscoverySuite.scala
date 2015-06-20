@@ -17,7 +17,7 @@ package org.scalatest.tools
 
 import org.scalatest._
 import java.util.UUID
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * A Suite that contains as nested suites accessible suites on the runpath whose fully qualified
@@ -27,7 +27,7 @@ import org.scalactic.Requirements
  *
  * @author Bill Venners
  */
-private[scalatest] class DiscoverySuite(path: String, accessibleSuites: Set[String], wildcard: Boolean, runpathClassLoader: ClassLoader)  extends Suite with Requirements {
+private[scalatest] class DiscoverySuite(path: String, accessibleSuites: Set[String], wildcard: Boolean, runpathClassLoader: ClassLoader)  extends Suite {
 
   requireNonNull(path, accessibleSuites, runpathClassLoader)
 

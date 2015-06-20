@@ -54,7 +54,7 @@ import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
 import scala.util.control.NonFatal
 import Suite.getTopOfMethod
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 // SKIP-SCALATESTJS-START
 import tools.SuiteDiscoveryHelper
@@ -543,7 +543,7 @@ import Suite.getMethodForTestName
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.MethodFinder"))
-trait Suite extends Assertions with Serializable with Requirements { thisSuite =>
+trait Suite extends Assertions with Serializable { thisSuite =>
 
   import Suite.TestMethodPrefix, Suite.InformerInParens, Suite.IgnoreAnnotation
 

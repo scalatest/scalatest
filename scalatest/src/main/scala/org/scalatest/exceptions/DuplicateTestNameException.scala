@@ -16,7 +16,7 @@
 package org.scalatest.exceptions
 
 import org.scalatest.Resources
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Exception that indicates an attempt was made to register a test that had the same name as a test
@@ -38,7 +38,7 @@ class   DuplicateTestNameException(testName: String, failedCodeStackDepthFun: St
       Some(Resources.duplicateTestName(testName)),
       None,
       failedCodeStackDepthFun
-    ) with Requirements {
+    ) {
   
   requireNonNull(testName)
 

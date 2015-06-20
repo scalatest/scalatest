@@ -18,7 +18,7 @@ package org.scalatest
 import java.util.concurrent.CountDownLatch
 import java.io.PrintStream
 import org.scalatest.events._
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 import Reporter.propagateDispose
 import java.util.concurrent.LinkedBlockingQueue
 import java.util.TimerTask
@@ -48,7 +48,7 @@ private[scalatest] class DispatchReporter(
   detectSlowpokes: Boolean = false,
   slowpokeDetectionDelay: Long = 60000,
   slowpokeDetectionPeriod: Long = 60000
-) extends CatchReporter with Requirements { thisDispatchReporter =>
+) extends CatchReporter { thisDispatchReporter =>
 
   requireNonNull(reporters)
 

@@ -15,7 +15,7 @@
  */
 package org.scalatest.exceptions
 
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 
 /**
@@ -54,7 +54,7 @@ import org.scalactic.exceptions.NullArgumentException
  * @author Bill Venners
  */
 class TestRegistrationClosedException(message: String, failedCodeStackDepthFun: StackDepthException => Int)
-    extends StackDepthException(Some(message), None, failedCodeStackDepthFun) with Requirements {
+    extends StackDepthException(Some(message), None, failedCodeStackDepthFun) {
 
   requireNonNull(message, failedCodeStackDepthFun)
 

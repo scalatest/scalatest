@@ -16,7 +16,7 @@
 package org.scalatest
 package exceptions
 
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 
 /**
@@ -42,7 +42,7 @@ abstract class PropertyCheckFailedException(
   val undecoratedMessage: String,
   val args: List[Any],
   optionalArgNames: Option[List[String]]
-) extends TestFailedException(sde => Some(messageFun(sde)), cause, failedCodeStackDepthFun, payload) with Requirements {
+) extends TestFailedException(sde => Some(messageFun(sde)), cause, failedCodeStackDepthFun, payload) {
 
   requireNonNull(
     messageFun, cause, failedCodeStackDepthFun, undecoratedMessage, args,

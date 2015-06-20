@@ -29,7 +29,7 @@ import org.scalatest.events.TestStarting
 import org.scalatest.events.TestSucceeded
 import org.scalatest.events.TestFailed
 import org.scalatest.events.MotionToSuppress
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 import Suite.getIndentedTextForTest
 import org.scalatest.events._
 import exceptions._
@@ -337,7 +337,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
     }
 }
 
-private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) extends TestListener with Requirements {
+private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) extends TestListener {
 
   // TODO: worry about threading
   private val failedTestsSet = scala.collection.mutable.Set[Test]()

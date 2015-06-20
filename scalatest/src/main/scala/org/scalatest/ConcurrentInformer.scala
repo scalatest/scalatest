@@ -25,7 +25,7 @@ import org.scalatest.events.RecordableEvent
 import org.scalatest.events.NoteProvided
 import org.scalatest.events.AlertProvided
 import org.scalatest.events.NotificationEvent
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /*
  This is used by Suite and test informers created as tests run, which therefore have
@@ -78,7 +78,7 @@ private[scalatest] class ConcurrentMessageSender(fire: ConcurrentMessageFiringFu
 }
 */
 
-private[scalatest] class ConcurrentInformer(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Informer with Requirements {
+private[scalatest] class ConcurrentInformer(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Informer {
   def apply(message: String, payload: Option[Any] = None) = {
     requireNonNull(message, payload)
     fire(message, payload, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2))
@@ -89,7 +89,7 @@ private[scalatest] object ConcurrentInformer {
   def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentInformer(fire)
 }
 
-private[scalatest] class ConcurrentNotifier(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Notifier with Requirements {
+private[scalatest] class ConcurrentNotifier(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Notifier {
   def apply(message: String, payload: Option[Any] = None) = {
     requireNonNull(message, payload)
     fire(message, payload, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2))
@@ -100,7 +100,7 @@ private[scalatest] object ConcurrentNotifier {
   def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentNotifier(fire)
 }
 
-private[scalatest] class ConcurrentAlerter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Alerter with Requirements {
+private[scalatest] class ConcurrentAlerter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Alerter {
   def apply(message: String, payload: Option[Any] = None) = {
     requireNonNull(message, payload)
     fire(message, payload, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2))
@@ -111,7 +111,7 @@ private[scalatest] object ConcurrentAlerter {
   def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentAlerter(fire)
 }
 
-private[scalatest] class ConcurrentDocumenter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Documenter with Requirements {
+private[scalatest] class ConcurrentDocumenter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Documenter {
   def apply(text: String) = {
     requireNonNull(text)
     fire(text, None, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2)) // Fire the info provided event using the passed function
@@ -130,7 +130,7 @@ private[scalatest] object ConcurrentDocumenter {
 // This kind of informer is only used during the execution of tests, to delay the printing out of info's fired
 // during tests until after the test succeeded, failed, or pending gets sent out.
 //
-private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAwareness with Requirements {
+private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAwareness {
 
   private var messages = List[(String, Option[Any], RecordedMessageEventFun, Option[Location])]()
 
@@ -197,7 +197,7 @@ private[scalatest] object MessageRecorder {
 
 // For path traits, need a message recording informer that only later gets 
 // (theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, theTest: TestLeaf, includeIcon: Boolean. thread: Thread)
-private[scalatest] class PathMessageRecordingInformer(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) extends ThreadAwareness with Informer with Requirements {
+private[scalatest] class PathMessageRecordingInformer(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) extends ThreadAwareness with Informer {
 
   import scala.collection.mutable.SynchronizedBuffer
   import scala.collection.mutable.ArrayBuffer
@@ -228,7 +228,7 @@ private[scalatest] object PathMessageRecordingInformer {
   def apply(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) = new PathMessageRecordingInformer(eventFun)
 }
 
-private[scalatest] class PathMessageRecordingNotifier(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => NoteProvided) extends ThreadAwareness with Notifier with Requirements {
+private[scalatest] class PathMessageRecordingNotifier(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => NoteProvided) extends ThreadAwareness with Notifier {
 
   import scala.collection.mutable.SynchronizedBuffer
   import scala.collection.mutable.ArrayBuffer
@@ -259,7 +259,7 @@ private[scalatest] object PathMessageRecordingNotifier {
   def apply(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => NoteProvided) = new PathMessageRecordingNotifier(eventFun)
 }
 
-private[scalatest] class PathMessageRecordingAlerter(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => AlertProvided) extends ThreadAwareness with Alerter with Requirements {
+private[scalatest] class PathMessageRecordingAlerter(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => AlertProvided) extends ThreadAwareness with Alerter {
 
   import scala.collection.mutable.SynchronizedBuffer
   import scala.collection.mutable.ArrayBuffer
@@ -290,7 +290,7 @@ private[scalatest] object PathMessageRecordingAlerter {
   def apply(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => AlertProvided) = new PathMessageRecordingAlerter(eventFun)
 }
 
-private[scalatest] class PathMessageRecordingDocumenter(eventFun: (String, Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) extends ThreadAwareness with Documenter with Requirements {
+private[scalatest] class PathMessageRecordingDocumenter(eventFun: (String, Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) extends ThreadAwareness with Documenter {
 
   import scala.collection.mutable.SynchronizedBuffer
   import scala.collection.mutable.ArrayBuffer

@@ -20,9 +20,9 @@ import time.SpanSugar._
 import java.util.concurrent.ConcurrentSkipListSet
 import scala.collection.JavaConverters._
 import java.io.PrintStream
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
-private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStream = Console.err) extends Requirements { // Default timeout is 1 minute
+private[scalatest] class SlowpokeDetector(timeout: Long = 60000, out: PrintStream = Console.err) { // Default timeout is 1 minute
 
   // SKIP-SCALATESTJS-START
   private final val runningTests = new ConcurrentSkipListSet[RunningTest]

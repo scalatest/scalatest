@@ -16,7 +16,7 @@
 package org.scalatest
 
 import Filter.IgnoreTag
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Filter whose <code>apply</code> method determines which of the passed tests to run and ignore based on tags to include and exclude passed as
@@ -45,7 +45,7 @@ import org.scalactic.Requirements
  * @throws NullArgumentException if either <code>tagsToInclude</code> or <code>tagsToExclude</code> are null
  * @throws IllegalArgumentException if <code>tagsToInclude</code> is defined, but contains an empty set
  */
-final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToExclude: Set[String], val excludeNestedSuites: Boolean, val dynaTags: DynaTags) extends Serializable with Requirements {
+final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToExclude: Set[String], val excludeNestedSuites: Boolean, val dynaTags: DynaTags) extends Serializable {
 
   requireNonNull(tagsToInclude, tagsToExclude, dynaTags)
 

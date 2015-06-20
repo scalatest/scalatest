@@ -22,7 +22,7 @@ import Spec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Implementation trait for class <code>Spec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -41,7 +41,7 @@ import org.scalactic.Requirements
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting with Requirements { thisSuite =>
+trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "SpecLike")
   import engine._

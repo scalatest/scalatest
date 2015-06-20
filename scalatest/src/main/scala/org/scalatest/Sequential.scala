@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * A <code>Suite</code> class mixing in <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a> that takes
@@ -62,7 +62,7 @@ import org.scalactic.Requirements
  *
  * @author Bill Venners
  */
-class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteExecution with Requirements { thisSuite => 
+class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteExecution { thisSuite => 
 
   for (s <- suitesToNest) {
     requireNonNull(s)

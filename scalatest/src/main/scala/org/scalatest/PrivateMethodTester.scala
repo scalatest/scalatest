@@ -16,7 +16,7 @@
 package org.scalatest
 
 import java.lang.reflect.{InvocationTargetException, Method, Modifier}
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Trait that facilitates the testing of private methods.
@@ -92,7 +92,7 @@ trait PrivateMethodTester {
    * @param methodName a <code>Symbol</code> representing the name of the private method to invoke
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class PrivateMethod[T] private (methodName: Symbol) extends Requirements {
+  final class PrivateMethod[T] private (methodName: Symbol) {
 
     requireNonNull(methodName)
 
@@ -133,14 +133,14 @@ trait PrivateMethodTester {
    * @param args zero to many arguments to pass to the private method when invoked
    * @throws NullArgumentException if <code>methodName</code> is <code>null</code>
    */
-  final class Invocation[T](val methodName: Symbol, val args: Any*) extends Requirements {
+  final class Invocation[T](val methodName: Symbol, val args: Any*) {
     requireNonNull(methodName)
   }
 
   /**
    * Class used via an implicit conversion to enable private methods to be tested.
    */
-  final class Invoker(target: AnyRef) extends Requirements {
+  final class Invoker(target: AnyRef) {
 
     requireNonNull(target)
     

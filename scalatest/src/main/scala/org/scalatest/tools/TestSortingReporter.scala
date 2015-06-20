@@ -23,9 +23,9 @@ import org.scalatest.time.Span
 import java.util.UUID
 import scala.annotation.tailrec
 import java.io.PrintStream
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
-private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter, sortingTimeout: Span, testCount: Int, suiteSorter: Option[DistributedSuiteSorter], val out: PrintStream) extends CatchReporter with DistributedTestSorter with Requirements {
+private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter, sortingTimeout: Span, testCount: Int, suiteSorter: Option[DistributedSuiteSorter], val out: PrintStream) extends CatchReporter with DistributedTestSorter {
 
   suiteSorter match {
     case Some(suiteSorter) => 

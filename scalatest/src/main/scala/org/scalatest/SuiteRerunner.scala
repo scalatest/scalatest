@@ -21,14 +21,14 @@ import org.scalatest.events._
 import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteAborted
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * A Rerunner for Suites.
  *
  * @author Bill Venners
  */
-private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner with java.io.Serializable with Requirements {
+private[scalatest] class SuiteRerunner(suiteClassName: String) extends Rerunner with java.io.Serializable {
 
   requireNonNull(suiteClassName)
 

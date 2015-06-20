@@ -17,14 +17,14 @@ package org.scalatest
 
 import java.lang.reflect.Method
 import org.scalatest.events._
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * A rerunner for test methods.
  *
  * @author Bill Venners
  */
-private[scalatest] class TestRerunner(suiteClassName: String, testName: String) extends Rerunner with java.io.Serializable with Requirements {
+private[scalatest] class TestRerunner(suiteClassName: String, testName: String) extends Rerunner with java.io.Serializable {
 
   requireNonNull(suiteClassName, testName)
 

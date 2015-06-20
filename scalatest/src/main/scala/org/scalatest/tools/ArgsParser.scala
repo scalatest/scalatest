@@ -18,14 +18,14 @@ package org.scalatest.tools
 import java.io.File
 import java.net.URL
 import java.util.regex.Pattern
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 
 import org.scalatest.{ConfigMap, Resources}
 
 import scala.collection.mutable.ListBuffer
 
-private[tools] object ArgsParser extends Requirements {
+private[tools] object ArgsParser {
 
   // Returns an Option[String]. Some is an error message. None means no error.
   private[scalatest] def checkArgsForValidity(args: Array[String]) = {

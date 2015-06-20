@@ -38,7 +38,7 @@ import org.scalatest.junit.JUnitWrapperSuite
 import org.scalatest.testng.TestNGWrapperSuite
 import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
 import ArgsParser._
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /*
 Command line args:
@@ -736,7 +736,7 @@ private[tools] case class SlowpokeConfig(delayInMillis: Long, periodInMillis: Lo
  * @author Josh Cough
  * @author Chee Seng
  */
-object Runner extends Requirements {
+object Runner {
 
   private val RUNNER_JFRAME_START_X: Int = 150
   private val RUNNER_JFRAME_START_Y: Int = 100

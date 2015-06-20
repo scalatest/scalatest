@@ -16,7 +16,7 @@
 package org.scalatest.tools
 
 import org.scalatest._
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 import java.util.concurrent.LinkedBlockingQueue
@@ -26,7 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue
  *
  * @author Bill Venners
  */
-private[scalatest] class ConcurrentDistributor(args: Args, execSvc: ExecutorService) extends Distributor with Requirements {
+private[scalatest] class ConcurrentDistributor(args: Args, execSvc: ExecutorService) extends Distributor {
 
   private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]
 

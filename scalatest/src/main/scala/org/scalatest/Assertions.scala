@@ -24,7 +24,7 @@ import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
 import org.scalactic.{Prettifier, Bool}
 import exceptions.TestFailedException
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -379,7 +379,7 @@ import org.scalactic.Requirements
  *
  * @author Bill Venners
  */
-trait Assertions extends TripleEquals with Requirements {
+trait Assertions extends TripleEquals {
 
   import language.experimental.macros
 

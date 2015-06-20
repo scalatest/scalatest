@@ -18,7 +18,7 @@ package org.scalatest.tools
 import org.scalatest._
 import org.scalatest.events._
 import EventHolder.suiteAndTestName
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Used to hold Reports in the GUI, so that I can keep track of which report method was called
@@ -27,7 +27,7 @@ import org.scalactic.Requirements
  * @author Bill Venners
  */
 private[tools] class EventHolder(val event: Event, val message: Option[String], val throwable: Option[Throwable],
-    val rerunner: Option[String], val summary: Option[Summary], val isRerun: Boolean) extends Requirements {
+    val rerunner: Option[String], val summary: Option[Summary], val isRerun: Boolean) {
 
   requireNonNull(event, message, throwable, rerunner, summary)
  

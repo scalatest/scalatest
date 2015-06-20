@@ -17,7 +17,7 @@ package org.scalatest.junit
 
 import _root_.junit.framework.AssertionFailedError
 import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, ModifiableMessage}
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 
 /**
@@ -68,7 +68,7 @@ import org.scalactic.exceptions.NullArgumentException
  * @author Bill Venners
  */
 class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwable], val failedCodeStackDepth: Int, val payload: Option[Any])
-    extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnitTestFailedError]  with PayloadField with ModifiablePayload[JUnitTestFailedError] with Requirements {
+    extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnitTestFailedError]  with PayloadField with ModifiablePayload[JUnitTestFailedError] {
 
   // TODO: CHange above to a message.getOrElse(""), and same in other exceptions most likely
   // TODO: Possibly change stack depth to stackDepthFun like in TFE, consider messageFun like in TDE

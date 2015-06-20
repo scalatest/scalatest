@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 /**
  * Dynamic tags for a run.
@@ -32,6 +32,6 @@ import org.scalactic.Requirements
  * @throws NullPointerException if either <code>suiteTags</code> or <code>testTags</code> is <code>null</code>
  *
  */
-final case class DynaTags(suiteTags: Map[String, Set[String]], testTags: Map[String, Map[String, Set[String]]]) extends Serializable with Requirements {
+final case class DynaTags(suiteTags: Map[String, Set[String]], testTags: Map[String, Map[String, Set[String]]]) extends Serializable {
   requireNonNull(suiteTags, testTags)
 }

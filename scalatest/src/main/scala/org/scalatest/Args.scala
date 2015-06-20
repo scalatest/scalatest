@@ -53,7 +53,7 @@ package org.scalatest
  * @throws NullArgumentException if any passed parameter is <code>null</code>.
  *
  */
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 
 case class Args(
   reporter: Reporter,
@@ -66,7 +66,7 @@ case class Args(
   runTestInNewInstance: Boolean = false,
   distributedTestSorter: Option[DistributedTestSorter] = None,
   distributedSuiteSorter: Option[DistributedSuiteSorter] = None
-) extends Requirements {
+) {
     requireNonNull(reporter, stopper, filter, configMap, distributor, tracker,
                    chosenStyles, distributedTestSorter, distributedSuiteSorter)
 }

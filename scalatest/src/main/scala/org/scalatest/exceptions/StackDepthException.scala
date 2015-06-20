@@ -15,7 +15,7 @@
  */
 package org.scalatest.exceptions
 
-import org.scalactic.Requirements
+import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 
 /**
@@ -37,7 +37,7 @@ abstract class StackDepthException(
   val messageFun: StackDepthException => Option[String],
   val cause: Option[Throwable],
   val failedCodeStackDepthFun: StackDepthException => Int
-) extends RuntimeException(if (cause != null && cause.isDefined) cause.get else null) with StackDepth with Requirements {
+) extends RuntimeException(if (cause != null && cause.isDefined) cause.get else null) with StackDepth {
 
   requireNonNull(messageFun, cause, failedCodeStackDepthFun)
 
