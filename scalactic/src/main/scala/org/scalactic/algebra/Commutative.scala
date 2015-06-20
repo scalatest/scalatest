@@ -27,7 +27,7 @@ import scala.language.implicitConversions
  * </p>
  *
  * <pre>
- * (a op b) === (b op a)
+ * (a combine b) === (b combine a)
  * </pre>
  *
  */
@@ -38,7 +38,7 @@ trait Commutative[A] {
    *
    * See the main documentation for this trait for more detail.
    */ 
-  def op(a1: A, a2: A): A
+  def combine(a1: A, a2: A): A
 }
 
 /**
@@ -63,7 +63,7 @@ object Commutative {
      *
      * See the main documentation for trait <a href="Commutative.html"><code>Commutative</code></a> for more detail.
      */ 
-    def op(a2: A): A = commutative.op(underlying, a2)
+    def combine(a2: A): A = commutative.combine(underlying, a2)
   }
 
   /**

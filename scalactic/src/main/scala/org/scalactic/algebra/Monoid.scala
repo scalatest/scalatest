@@ -28,7 +28,7 @@ import scala.language.implicitConversions
  * </p>
  *
  * <pre>
- * ((a op b) op c) === (a op (b op c))
+ * ((a combine b) combine c) === (a combine (b combine c))
  * </pre>
  *
  * <p>
@@ -37,7 +37,7 @@ import scala.language.implicitConversions
  * </p>
  *
  * <pre>
- * (z op a) === a
+ * (z combine a) === a
  * </pre>
  *
  * <p>
@@ -45,7 +45,7 @@ import scala.language.implicitConversions
  * </p>
  *
  * <pre>
- * (a op z) === a
+ * (a combine z) === a
  * </pre>
  *
  */
@@ -54,7 +54,7 @@ trait Monoid[A] extends Associative[A] {
     /**
      * The identity element.
      *
-     * Passing the identity element, <code>z</code>, to <code>op</code> along with any other value, <code>a</code>, of type <code>A</code>
+     * Passing the identity element, <code>z</code>, to <code>combine</code> along with any other value, <code>a</code>, of type <code>A</code>
      * will result in the same value, <code>a</code>. See the main documentation for this trait for more detail.
      */
     def z: A
@@ -80,7 +80,7 @@ object Monoid {
      *
      * See the main documentation for trait <a href="Monoid.html"><code>Monoid</code></a> for more detail.
      */ 
-    def op(a2: A): A = monoid.op(underlying, a2)
+    def combine(a2: A): A = monoid.combine(underlying, a2)
   }
 
   /**

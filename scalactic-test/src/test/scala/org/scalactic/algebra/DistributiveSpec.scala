@@ -22,39 +22,39 @@ class DistributiveSpec extends UnitSpec {
   
   // removing a list of elements is distributive over concatination
   class ListRemoveDistributive[A] extends Distributive[List[A]] {
-    def op(a: List[A], b: List[A]): List[A] = a ++ b
-    def dop(as: List[A], bs: List[A]): List[A] = bs.filter(b => !as.contains(b)) 
+    def combine(a: List[A], b: List[A]): List[A] = a ++ b
+    def dcombine(as: List[A], bs: List[A]): List[A] = bs.filter(b => !as.contains(b)) 
   }
   
   // Int multiplication over addition is distributive
   class IntMultiOverAdditionDistributive extends Distributive[Int] {
-    def op(a: Int, b: Int): Int = a + b
-    def dop(a: Int, b: Int): Int = a * b
+    def combine(a: Int, b: Int): Int = a + b
+    def dcombine(a: Int, b: Int): Int = a * b
   }
   
   "Removing a list of elemenents and concatination " should  
-  "be distributive where remove is the distributive dop and concat is op which is distributed over " in {
+  "be distributive where remove is the distributive dcombine and concat is combine which is distributed over " in {
     implicit val dist = new ListRemoveDistributive[Int]
     import Distributive.adapters
     val as = List(1,2,3)
     val bs = List(2,3,4,5)
     val cs = List()
     
-    val op = dist.op _
-    val dop = dist.dop _
+    val combine = dist.combine _
+    val dcombine = dist.dcombine _
     val fn: (Int => Int) = x => x + 1
     
-    (as dop (bs op cs)) shouldEqual ((as dop bs) op (as dop cs))
+    (as dcombine (bs combine cs)) shouldEqual ((as dcombine bs) combine (as dcombine cs))
    }
    
   "Int multiplication over addition distributive " should  
-  "have a binary operation 'op' and another binary operation (dop) that distributes over 'op'" in {
+  "have a binary operation 'combine' and another binary operation (dcombine) that distributes over 'combine'" in {
     implicit val dist = new IntMultiOverAdditionDistributive
     import Distributive.adapters
     val a = 64
     val b = 256
     val c = 32
-    (a dop (b op c)) shouldEqual ((a dop b) op (a dop c))
+    (a dcombine (b combine c)) shouldEqual ((a dcombine b) combine (a dcombine c))
    }
    
 }

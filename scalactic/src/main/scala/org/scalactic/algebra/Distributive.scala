@@ -20,14 +20,14 @@ import scala.language.implicitConversions
 
 /**
  * Typeclass trait representing two binary operations that obeys the distributive law:
- * one, <code>dop</code> that does the distributing, and the other <code>op</code> binary op that dop is applied to.
+ * one, <code>dcombine</code> that does the distributing, and the other <code>combine</code> binary combine that dcombine is applied to.
  *
  * <p>
  * The distributive law states that given values <code>a</code>, <code>b</code>, <code>c</code>
  * </p>
  *
  * <pre>
- * a dop (b op c) === (a dop b) op (a dop c)
+ * a dcombine (b combine c) === (a dcombine b) combine (a dcombine c)
  * </pre>
  *
  */
@@ -36,14 +36,14 @@ trait Distributive[A] {
  /**
   * A binary  operation to be distributed over.
   */
-  def op(a1: A, a2: A): A
+  def combine(a1: A, a2: A): A
   
   /**
    * A binary operation that does the distributing, "distributing op."
    * 
    * See the main documentation for this trait for more detail.
    */ 
-  def dop(a1: A, a2: A): A
+  def dcombine(a1: A, a2: A): A
 }
 
 /**
@@ -64,18 +64,18 @@ object Distributive {
   class Adapter[A](val underlying: A)(implicit val distributive: Distributive[A]) {
 
     /**
-     * A binary operation to be distributed over: used with dop.
+     * A binary operation to be distributed over: used with dcombine.
      *
      * See the main documentation for trait <a href="Distributive.html"><code>Distributive</code></a> for more detail.
      */ 
-    def op(a2: A): A = distributive.op(underlying, a2)
+    def combine(a2: A): A = distributive.combine(underlying, a2)
     
     /**
      * A binary operation that does the distributing.
      *
      * See the main documentation for trait <a href="Distributive.html"><code>Distributive</code></a> for more detail.
      */
-    def dop(a2: A): A = distributive.dop(underlying, a2)
+    def dcombine(a2: A): A = distributive.dcombine(underlying, a2)
   }
 
   /**

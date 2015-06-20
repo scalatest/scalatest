@@ -27,7 +27,7 @@ import scala.language.implicitConversions
  * </p>
  *
  * <pre>
- * ((a op b) op c) === (a op (b op c))
+ * ((a combine b) combine c) === (a combine (b combine c))
  * </pre>
  *
  * <p>
@@ -42,7 +42,7 @@ trait Associative[A] {
    *
    * See the main documentation for this trait for more detail.
    */ 
-  def op(a1: A, a2: A): A
+  def combine(a1: A, a2: A): A
 }
 
 /**
@@ -67,7 +67,7 @@ object Associative {
      *
      * See the main documentation for trait <a href="Associative.html"><code>Associative</code></a> for more detail.
      */ 
-    def op(a2: A): A = associative.op(underlying, a2)
+    def combine(a2: A): A = associative.combine(underlying, a2)
   }
 
   /**

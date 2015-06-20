@@ -22,24 +22,24 @@ class AssociativeSpec extends UnitSpec {
   
   // Every Associative
   class EveryAssociative[A] extends Associative[Every[A]] {
-    def op(a: Every[A], b: Every[A]): Every[A] = a ++ b
+    def combine(a: Every[A], b: Every[A]): Every[A] = a ++ b
   }
 
   // Int Multiplication Associatvie
   class IntMultiAssociative extends Associative[Int] {
-    def op(a: Int, b: Int): Int = a * b
+    def combine(a: Int, b: Int): Int = a * b
   }
 
-  "An Every Associative (Semigroup)" should "have a binary associative op" in {
+  "An Every Associative (Semigroup)" should "have a binary associative combine" in {
     implicit val assoc = new EveryAssociative[Int]
     import Associative.adapters
     val a = Every(1,2)
     val b = Every(5,6,7)
     val c = Every(9,9)
-    ((a op b) op c) shouldEqual (a op (b op c))
+    ((a combine b) combine c) shouldEqual (a combine (b combine c))
   }
   
-  "An Int Associative (Semigroup)" should  "have a binary associative op" in {
+  "An Int Associative (Semigroup)" should  "have a binary associative combine" in {
     implicit val assoc = new IntMultiAssociative
     import Associative.adapters
     val intAssoc = new IntMultiAssociative()
@@ -47,13 +47,13 @@ class AssociativeSpec extends UnitSpec {
     val a = 1
     val b = 64
     val c = 256
-    ((a op b) op c) shouldEqual (a op (b op c))
+    ((a combine b) combine c) shouldEqual (a combine (b combine c))
    }
     
   "A BadSubstractionAssociative" should  "fail to be associative" in {
     // Bad case Substraction Associative, should fail.
     class BadSubstractionAssociative extends Associative[Int] {
-      def op(a: Int, b: Int): Int = a - b
+      def combine(a: Int, b: Int): Int = a - b
     }
     implicit val assoc = new BadSubstractionAssociative 
     import Associative.adapters
@@ -61,16 +61,16 @@ class AssociativeSpec extends UnitSpec {
     val a = 1
     val b = 64
     val c = 256
-    ((a op b) op c) should not be (a op (b op c))
+    ((a combine b) combine c) should not be (a combine (b combine c))
   }
 
-  "Associative" should "offer an op method directly" in {
+  "Associative" should "offer an combine method directly" in {
     val a = Every(1,2)
     val b = Every(5,6,7)
     val c = Every(9,9)
     val assoc = new EveryAssociative[Int]
-    import assoc.op
-    op(op(a, b), c) shouldEqual op(a, op(b, c))
+    import assoc.combine
+    combine(combine(a, b), c) shouldEqual combine(a, combine(b, c))
   }
 
   it should "provide an parameterless apply method in its companion to summon an implicit" in {

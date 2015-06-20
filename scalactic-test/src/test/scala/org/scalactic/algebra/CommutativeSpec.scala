@@ -22,12 +22,12 @@ class CommutativeSpec extends UnitSpec {
   
   // Set Commutative
   class SetCommutative[A] extends Commutative[Set[A]] {
-    def op(a: Set[A], b: Set[A]): Set[A] = a ++ b
+    def combine(a: Set[A], b: Set[A]): Set[A] = a ++ b
   }
   
   // Int Multiplication Commutative
   class IntMultiCommutative extends Commutative[Int] {
-    def op(a: Int, b: Int): Int = a * b
+    def combine(a: Int, b: Int): Int = a * b
   }
   
   "Sets addition " should  " be commutative " in {
@@ -35,36 +35,36 @@ class CommutativeSpec extends UnitSpec {
     import Commutative.adapters
     val as = Set(1,2,3)
     val bs = Set(2,3,4,5)
-    // (adapters[Set[_]](as) op bs) shouldEqual (adapters[Set[_]](bs) op as)
-    (as op bs) shouldEqual (bs op as)
+    // (adapters[Set[_]](as) combine bs) shouldEqual (adapters[Set[_]](bs) combine as)
+    (as combine bs) shouldEqual (bs combine as)
    }
    
-  "An Int Commutative " should  "have a binary commutative op" in {
+  "An Int Commutative " should  "have a binary commutative combine" in {
     implicit val commut = new IntMultiCommutative
     import Commutative.adapters
     val a = 64
     val b = 256
-    (a op b) shouldEqual (b op a)
+    (a combine b) shouldEqual (b combine a)
    }
     
   "A BadSubstractionCommutative" should  "fail to be commutative" in {
     // Bad case Substraction Associative, should fail.
     class BadSubstractionCommutative extends Commutative[Int] {
-      def op(a: Int, b: Int): Int = a - b
+      def combine(a: Int, b: Int): Int = a - b
     }
     implicit val commut = new BadSubstractionCommutative
     import Commutative.adapters
     val a = 64
     val b = 256
-    (a op b) should not be (b op a)
+    (a combine b) should not be (b combine a)
   }
 
-  "Commutative " should "offer an op method directly" in {
+  "Commutative " should "offer an combine method directly" in {
     val a = 64
     val b = 256
     val commut = new IntMultiCommutative()
-    import commut.op
-    op(a, b) shouldEqual op(b, a)
+    import commut.combine
+    combine(a, b) shouldEqual combine(b, a)
   }
 
   it should "provide a parameterless apply method in its companion to summon an implicit" in {
