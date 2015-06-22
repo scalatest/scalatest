@@ -516,7 +516,7 @@ import scala.annotation.tailrec
  * Trait containing methods that faciliate property checks against tables of data.
  *
  * <p>
- * This trait contains one <code>forAll</code> method for each <code>TableForN</code> class, <code>TableFor1</code>
+ * This trait contains one <code>exists</code>, <code>forAll</code>, and <code>forEvery</code> method for each <code>TableForN</code> class, <code>TableFor1</code>
  * through <code>TableFor22</code>, which allow properties to be checked against the rows of a table. It also
  * contains a <code>wherever</code> method that can be used to indicate a property need only hold whenever some
  * condition is true.
@@ -606,8 +606,8 @@ import scala.annotation.tailrec
  * </pre>
  *
  * <p>
- * Trait <code>TableDrivenPropertyChecks</code> provides 22 overloaded <code>forAll</code> and <code>forEvery</code> methods
- * that allow you to check properties using the data provided by a table. Each <code>forAll</code> or <code>forEvery</code>
+ * Trait <code>TableDrivenPropertyChecks</code> provides 22 overloaded <code>exists</code>, <code>forAll</code>, and <code>forEvery</code> methods
+ * that allow you to check properties using the data provided by a table. Each <code>exists</code>, <code>forAll</code>, and <code>forEvery</code>
  * method takes two parameter lists. The first parameter list is a table. The second parameter list
  * is a function whose argument types and number matches that of the tuples in the table. For
  * example, if the tuples in the table supplied to <code>forAll</code> each contain an
@@ -616,7 +616,7 @@ import scala.annotation.tailrec
  * and a <code>List[Char]</code>. The <code>forAll</code> method will pass each row of data to
  * the function, and generate a <code>TableDrivenPropertyCheckFailedException</code> if the function
  * completes abruptly for any row of data with any exception that would <a href="../Suite.html#errorHandling">normally cause</a> a test to
- * fail in ScalaTest other than <code>DiscardedEvaluationException</code>. An
+ * fail in ScalaTest other than <code>DiscardedEvaluationException</code>. A
  * <code>DiscardedEvaluationException</code>,
  * which is thrown by the <code>whenever</code> method (also defined in this trait) to indicate
  * a condition required by the property function is not met by a row
@@ -628,8 +628,11 @@ import scala.annotation.tailrec
  * </p>
  *
  * <ul>
+ * <li><code>exists</code> - succeeds if the assertion holds true for at least one element</li>
  * <li><code>forAll</code> - succeeds if the assertion holds true for every element</li>
- * <li><code>forEvery</code> - same as <code>forAll</code>, but lists all failing elements if it fails (whereas <code>forAll</code> just reports the first failing element) and throws <code>TestFailedException</code> with the first failed checks as the cause.</li>
+ * <li><code>forEvery</code> - same as <code>forAll</code>, but lists all failing elements if it fails (whereas
+ *    <code>forAll</code> just reports the first failing element) and throws <code>TestFailedException</code> with
+ *    the first failed check as the cause.</li>
  * </ul>
  *
  * <a name="testingStatefulFunctions"></a><h2>Testing stateful functions</h2>
@@ -902,7 +905,7 @@ val propertyCheckForEveryPreamble = """
                           failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
 
 
-  def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
+  private[scalatest] def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) = {
     import InspectorsHelper.{shouldPropagate, indentErrorMessages}
     @tailrec
     def innerRunAndCollectResult[T <: Product](itr: Iterator[T], result: ForResult[T], index: Int)(fun: T => Unit): ForResult[T] = {
