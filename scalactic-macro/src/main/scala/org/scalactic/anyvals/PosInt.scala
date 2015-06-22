@@ -841,4 +841,12 @@ object PosInt {
    *     widened to <code>Double</code> and wrapped in a <code>PosZDouble</code>.
    */
   implicit def widenToPosZDouble(pos: PosInt): PosZDouble = PosZDouble.from(pos.value).get
+
+  /**
+   * Implicit Ordering instance.
+   */
+  implicit val posIntOrd: Ordering[PosInt] =
+    new Ordering[PosInt] {
+      def compare(x: PosInt, y: PosInt): Int = x - y
+    } 
 }

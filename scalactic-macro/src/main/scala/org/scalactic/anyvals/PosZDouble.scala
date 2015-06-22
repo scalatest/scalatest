@@ -505,5 +505,13 @@ object PosZDouble {
    *     <code>PosZDouble</code>.
    */
   implicit def widenToDouble(poz: PosZDouble): Double = poz.value
+
+  /**
+   * Implicit Ordering instance.
+   */
+  implicit val posZDoubleOrd: Ordering[PosZDouble] =
+    new Ordering[PosZDouble] {
+      def compare(x: PosZDouble, y: PosZDouble): Int = x.toDouble.compare(y)
+    } 
 }
 

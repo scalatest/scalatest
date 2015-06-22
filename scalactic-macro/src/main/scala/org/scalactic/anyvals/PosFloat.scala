@@ -567,5 +567,13 @@ object PosFloat {
    *     <code>PosZDouble</code>.
    */
   implicit def widenToPosZDouble(pos: PosFloat): PosZDouble = PosZDouble.from(pos.value).get
+
+  /**
+   * Implicit Ordering instance.
+   */
+  implicit val posFloatOrd: Ordering[PosFloat] =
+    new Ordering[PosFloat] {
+      def compare(x: PosFloat, y: PosFloat): Int = x.toFloat.compare(y)
+    } 
 }
 
