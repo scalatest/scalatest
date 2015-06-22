@@ -95,6 +95,14 @@ class PosZDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyC
       "PosZDouble(3.0): PosZFloat" shouldNot typeCheck
       (PosZDouble(3.0): PosZDouble) shouldEqual PosZDouble(3.0)
     }
+
+    it("should be sortable") {
+      val xs = List(PosZDouble(2.2), PosZDouble(0.0), PosZDouble(1.1),
+                    PosZDouble(3.3))
+      xs.sorted shouldEqual List(PosZDouble(0.0), PosZDouble(1.1),
+                                 PosZDouble(2.2), PosZDouble(3.3))
+    }
+
     describe("when a compatible AnyVal is passed to a + method invoked on it") {
       it("should give the same AnyVal type back at compile time, and correct value at runtime") {
         // When adding a "primitive"

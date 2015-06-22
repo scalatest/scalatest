@@ -75,6 +75,14 @@ class PosFloatSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChe
       (PosFloat(3.0F): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosFloat(3.0F): PosZDouble) shouldEqual PosZDouble(3.0)
     }
+
+    it("should be sortable") {
+      val xs = List(PosFloat(2.2F), PosFloat(4.4F), PosFloat(1.1F),
+                    PosFloat(3.3F))
+      xs.sorted shouldEqual List(PosFloat(1.1F), PosFloat(2.2F), PosFloat(3.3F),
+                                 PosFloat(4.4F))
+    }
+
     describe("when a compatible AnyVal is passed to a + method invoked on it") {
       it("should give the same AnyVal type back at compile time, and correct value at runtime") {
         // When adding a "primitive"

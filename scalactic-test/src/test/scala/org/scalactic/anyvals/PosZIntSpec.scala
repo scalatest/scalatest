@@ -99,6 +99,12 @@ class PosZIntSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       (PosZInt(3): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosZInt(3): PosZDouble) shouldEqual PosZDouble(3.0)
     }
+
+    it("should be sortable") {
+      val xs = List(PosZInt(2), PosZInt(0), PosZInt(1), PosZInt(3))
+      xs.sorted shouldEqual List(PosZInt(0), PosZInt(1), PosZInt(2), PosZInt(3))
+    }
+
     describe("when a compatible AnyVal is passed to a + method invoked on it") {
       it("should give the same AnyVal type back at compile time, and correct value at runtime") {
         // When adding a "primitive"

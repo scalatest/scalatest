@@ -97,6 +97,12 @@ class PosLongSpec extends FunSpec with Matchers with GeneratorDrivenPropertyChec
       (PosLong(3L): PosZFloat) shouldEqual PosZFloat(3.0F)
       (PosLong(3L): PosZDouble) shouldEqual PosZDouble(3.0)
     }
+
+    it("should be sortable") {
+      val xs = List(PosLong(2), PosLong(4), PosLong(1), PosLong(3))
+      xs.sorted shouldEqual List(PosLong(1), PosLong(2), PosLong(3), PosLong(4))
+    }
+
     describe("when a compatible AnyVal is passed to a + method invoked on it") {
       it("should give the same AnyVal type back at compile time, and correct value at runtime") {
         // When adding a "primitive"
