@@ -21,6 +21,7 @@ import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
+import org.scalactic.exceptions.NullArgumentException
 
 class ShouldBeNullSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
@@ -78,12 +79,12 @@ class ShouldBeNullSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
       assert(caught6.getMessage === "null was not equal to Map(1 -> \"one\", 2 -> \"two\")")
     }
 
-    it("should throw a NullPointerException if they try to short circuit with a null check first") {
+    it("should throw a NullArgumentException if they try to short circuit with a null check first") {
       // The reason I check this is I warn that this will happen in the ShouldMatcher scaladoc
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         nullMap should (not be (null) and contain key (7))
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         nullMap should (be (null) and contain key (7))
       }
     }

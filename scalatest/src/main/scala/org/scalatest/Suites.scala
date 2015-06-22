@@ -53,7 +53,6 @@ import org.scalactic.exceptions.NullArgumentException
  * @author Bill Venners
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-
 class Suites(suitesToNest: Suite*) extends Suite { thisSuite =>
 
   requireNonNull(suitesToNest)
