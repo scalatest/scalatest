@@ -29,6 +29,7 @@ import java.awt.AWTError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
+import org.scalactic.exceptions.NullArgumentException
 
 class SpecSpec extends FunSpec with PrivateMethodTester {
 
@@ -1893,9 +1894,9 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   }
   
   describe("A Suite's execute method") {
-    it("should throw NPE if passed null for configMap") {
+    it("should throw NAE if passed null for configMap") {
       class MySpec extends Spec
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         (new MySpec).execute(configMap = null)
       }
     }

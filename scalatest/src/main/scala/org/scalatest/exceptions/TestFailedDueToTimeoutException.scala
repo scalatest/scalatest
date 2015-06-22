@@ -32,7 +32,7 @@ import org.scalatest.time.Span
  * @param failedCodeStackDepthFun a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param timeout the timeout that expired
  *
- * @throws NullPointerException if either <code>messageFun</code>, <code>cause</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>, or <code>Some(null)</code>.
+ * @throws NullArgumentException if either <code>messageFun</code>, <code>cause</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>, or <code>Some(null)</code>.
  *
  * @author Bill Venners
  */

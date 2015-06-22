@@ -38,6 +38,7 @@ import org.scalatest.junit.JUnitWrapperSuite
 import org.scalatest.testng.TestNGWrapperSuite
 import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
 import ArgsParser._
+import org.scalactic.Requirements._
 
 /*
 Command line args:
@@ -1099,38 +1100,22 @@ object Runner {
   ): Unit = {
 
     // TODO: add more, and to RunnerThread too
-    if (dispatch == null)
-      throw new NullPointerException
-    if (suitesList == null)
-      throw new NullPointerException
-    if (agains == null)
-      throw new NullPointerException
-    if (testSpecs == null)
-      throw new NullPointerException
-    if (junitsList == null)
-      throw new NullPointerException
-    if (stopper == null)
-      throw new NullPointerException
-    if (tagsToIncludeSet == null)
-      throw new NullPointerException
-    if (tagsToExcludeSet == null)
-      throw new NullPointerException
-    if (configMap == null)
-      throw new NullPointerException
-    if (membersOnlyList == null)
-      throw new NullPointerException
-    if (wildcardList == null)
-      throw new NullPointerException
-    if (testNGList == null)
-      throw new NullPointerException
-    if (runpath == null)
-      throw new NullPointerException
-    if (loader == null)
-      throw new NullPointerException
-    if (doneListener == null)
-      throw new NullPointerException
-    if (chosenStyleSet == null)
-      throw new NullPointerException
+    requireNonNull(dispatch,
+                   suitesList,
+                   agains,
+                   testSpecs,
+                   junitsList,
+                   stopper,
+                   tagsToIncludeSet,
+                   tagsToExcludeSet,
+                   configMap,
+                   membersOnlyList,
+                   wildcardList,
+                   testNGList,
+                   runpath,
+                   loader,
+                   doneListener,
+                   chosenStyleSet)
 
     val (globSuites, nonGlobSuites) = suitesList.partition(_.isGlob)
 
@@ -1531,8 +1516,8 @@ object Runner {
 
   private[scalatest] def getRunpathClassLoader(runpathList: List[String]): ClassLoader = {
 
-    if (runpathList == null)
       throw new NullPointerException
+    requireNonNull(runpathList)
     if (runpathList.isEmpty) {
       classOf[Suite].getClassLoader // Could this be null technically?
     }

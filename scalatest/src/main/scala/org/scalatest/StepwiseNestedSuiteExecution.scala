@@ -21,6 +21,7 @@ import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteAborted
 import collection.mutable.ListBuffer
 import org.scalatest.events._
+import org.scalactic.Requirements._
 
 /**
  * Trait that causes the nested suites of any suite it is mixed into to be run sequentially even if
@@ -39,12 +40,11 @@ trait StepwiseNestedSuiteExecution extends SuiteMixin { thisSuite: Suite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all nested suites started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    */
   abstract override protected def runNestedSuites(args: Args): Status = {
 
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(args)
 
     import args._
 

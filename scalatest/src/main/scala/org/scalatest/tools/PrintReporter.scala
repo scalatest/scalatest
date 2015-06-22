@@ -63,7 +63,7 @@ private[scalatest] abstract class PrintReporter(
   * default character encoding.
   *
   * @param os the <code>OutputStream</code> to which to print reported info
-  * @throws NullPointerException if passed <code>os</code> reference is <code>null</code>
+  * @throws NullArgumentException if passed <code>os</code> reference is <code>null</code>
   */
   def this( // Used by subclasses StandardOutReporter and StandardErrReporter
     os: OutputStream,
@@ -102,7 +102,7 @@ private[scalatest] abstract class PrintReporter(
   * default character encoding.
   *
   * @param filename the <code>String</code> name of the file to which to print reported info
-  * @throws NullPointerException if passed <code>filename</code> reference is <code>null</code>
+  * @throws NullArgumentException if passed <code>filename</code> reference is <code>null</code>
   * @throws IOException if unable to open the specified file for writing
   */
   def this( // Used by subclass FileReporter

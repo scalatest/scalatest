@@ -21,6 +21,7 @@ import Matchers._
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalactic.exceptions.NullArgumentException
 
 class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
@@ -439,106 +440,106 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       assert(testStartingOption.isDefined)
       assert(testStartingOption.get.asInstanceOf[TestStarting].testName === "can I am shared")
     }
-    it("should throw NullPointerException if a null test tag is provided") {
+    it("should throw NullArgumentException if a null test tag is provided") {
       // it
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           it should "hi" taggedAs(null) in {}
         }
       }
-      val caught = intercept[NullPointerException] {
+      val caught = intercept[NullArgumentException] {
         new FlatSpec {
           it should "hi" taggedAs(mytags.SlowAsMolasses, null) in {}
         }
       }
       assert(caught.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           it should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in {}
         }
       }
 
       // ignore
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           ignore should "hi" taggedAs(null) in {}
         }
       }
-      val caught2 = intercept[NullPointerException] {
+      val caught2 = intercept[NullArgumentException] {
         new FlatSpec {
           ignore should "hi" taggedAs(mytags.SlowAsMolasses, null) in {}
         }
       }
       assert(caught2.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           ignore should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in {}
         }
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           it should "hi" taggedAs(null) ignore {}
         }
       }
-      val caught3 = intercept[NullPointerException] {
+      val caught3 = intercept[NullArgumentException] {
         new FlatSpec {
           it should "hi" taggedAs(mytags.SlowAsMolasses, null) ignore {}
         }
       }
       assert(caught3.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           it should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore {}
         }
       }
 
       // registerTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           registerTest("should hi", null) {}
         }
       }
-      val caught4 = intercept[NullPointerException] {
+      val caught4 = intercept[NullArgumentException] {
         new FlatSpec {
           registerTest("should hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught4.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           registerTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }
       }
 
       // registerIgnoredTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           registerIgnoredTest("should hi", null) {}
         }
       }
-      val caught5 = intercept[NullPointerException] {
+      val caught5 = intercept[NullArgumentException] {
         new FlatSpec {
           registerIgnoredTest("should hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught5.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           registerIgnoredTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           registerIgnoredTest("should hi", null) {}
         }
       }
-      val caught6 = intercept[NullPointerException] {
+      val caught6 = intercept[NullArgumentException] {
         new FlatSpec {
           registerIgnoredTest("should hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught6.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           registerIgnoredTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }

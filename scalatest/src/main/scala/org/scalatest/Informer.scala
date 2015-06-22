@@ -89,7 +89,7 @@ trait Informer {
    * @param payload an optional object which will be forwarded to the wrapped <code>Reporter</code>
    *   as a payload via an <code>InfoProvided</code> event.
    *
-   * @throws NullPointerException if <code>message</code> or <code>payload</code> reference is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> or <code>payload</code> reference is <code>null</code>
    */
   def apply(message: String, payload: Option[Any] = None): Unit
   
@@ -101,7 +101,7 @@ trait Informer {
    * @param payload an object which will be forwarded to the wrapped <code>Reporter</code> 
    *   via an <code>InfoProvided</code> event.
    *
-   * @throws NullPointerException if <code>message</code> reference is <code>null</code>
+   * @throws NullArgumentException if <code>message</code> reference is <code>null</code>
    */
   //def apply(message: String, payload: Any): Unit
 }

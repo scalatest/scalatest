@@ -27,6 +27,7 @@ import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalactic.exceptions.NullArgumentException
 
 class FunSpecSpec extends FunSpec with GivenWhenThen {
 
@@ -370,74 +371,74 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(testStartingOption.get.asInstanceOf[TestStarting].testName === "should be that I am shared")
     }
 
-    it("should throw NullPointerException if a null test tag is provided") {
+    it("should throw NullArgumentException if a null test tag is provided") {
       // it
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FunSpec {
           it("hi", null) {}
         }
       }
-      val caught = intercept[NullPointerException] {
+      val caught = intercept[NullArgumentException] {
         new FunSpec {
           it("hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FunSpec {
           it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }
       }
 
       // ignore
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FunSpec {
           ignore("hi", null) {}
         }
       }
-      val caught2 = intercept[NullPointerException] {
+      val caught2 = intercept[NullArgumentException] {
         new FunSpec {
           ignore("hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught2.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FunSpec {
           ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }
       }
 
       // registerTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FunSpec {
           registerTest("hi", null) {}
         }
       }
-      val caught3 = intercept[NullPointerException] {
+      val caught3 = intercept[NullArgumentException] {
         new FunSpec {
           registerTest("hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught3.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FunSpec {
           registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }
       }
 
       // registerIgnoredTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FunSpec {
           registerIgnoredTest("hi", null) {}
         }
       }
-      val caught4 = intercept[NullPointerException] {
+      val caught4 = intercept[NullArgumentException] {
         new FunSpec {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {}
         }
       }
       assert(caught4.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FunSpec {
           registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }

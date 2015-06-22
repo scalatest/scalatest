@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import events._
 import SharedHelpers._
+import org.scalactic.exceptions.NullArgumentException
 
 class TopLevelSpec extends FunSpec with OneInstancePerTest {
   import TopLevelSpec.sideEffectWasNotSeen
@@ -171,6 +172,25 @@ class OneInstancePerTestSpec extends FunSpec {
       val aSpec = new ASpec
       intercept[IllegalArgumentException] {
         aSpec.invokeRunTests()
+      }
+    }
+    
+    it("should throw NullArgumentException from runTests if either passed-in argument is null") {
+      class ASpec extends WordSpec with OneInstancePerTest {
+        "test this" ignore { }
+        "test that" in { }
+        override def newInstance = new ASpec
+        def invokeRunTests(testName: Option[String], args: Args) {
+          this.runTests(testName, args)
+        }
+      }
+
+      val aSpec = new ASpec
+      intercept[NullArgumentException] {
+          aSpec.invokeRunTests(Some("aTestName"), null)
+      }
+      intercept[NullArgumentException] {
+          aSpec.invokeRunTests(null, Args(SilentReporter))
       }
     }
     

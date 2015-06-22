@@ -64,7 +64,7 @@ trait NonImplicitAssertions extends Assertions {
    * modifier (if present) to remove the method from the space of implicit conversions.
    *
    * @param left the object whose type to convert to <code>Equalizer</code>.
-   * @throws NullPointerException if <code>left</code> is <code>null</code>.
+   * @throws NullArgumentException if <code>left</code> is <code>null</code>.
    */
   override def convertToEqualizer[T](left: T): Equalizer[T] = new Equalizer(left)
   override def convertToCheckingEqualizer[T](left: T): CheckingEqualizer[T] = new CheckingEqualizer(left)

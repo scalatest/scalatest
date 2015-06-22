@@ -17,6 +17,7 @@ package org.scalatest
 
 import java.lang.reflect.Method
 import org.scalatest.events._
+import org.scalactic.Requirements._
 
 /**
  * A rerunner for test methods.
@@ -25,8 +26,7 @@ import org.scalatest.events._
  */
 private[scalatest] class TestRerunner(suiteClassName: String, testName: String) extends Rerunner with java.io.Serializable {
 
-  if (suiteClassName == null || testName == null)
-    throw new NullPointerException
+  requireNonNull(suiteClassName, testName)
 
   // [bv: I wasn't sure if I need to say override here.]
   def apply(report: Reporter, stopper: Stopper, filter: Filter, configMap: ConfigMap,

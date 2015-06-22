@@ -30,6 +30,7 @@ import org.scalatest.SharedHelpers._
 import org.scalatest.Suite.CHOSEN_STYLES
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.SharedHelpers._
+import org.scalactic.exceptions.NullArgumentException
 import java.lang.annotation.AnnotationFormatError
 import java.awt.AWTError
 import java.nio.charset.CoderMalfunctionError
@@ -1998,9 +1999,9 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   }
   
   describe("A Suite's execute method") {
-    it("should throw NPE if passed null for configMap") {
+    it("should throw NAE if passed null for configMap") {
       class MySpec extends Spec with StringFixture
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         (new MySpec).execute(configMap = null)
       }
     }

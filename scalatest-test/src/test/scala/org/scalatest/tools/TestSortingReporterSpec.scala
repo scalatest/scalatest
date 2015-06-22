@@ -32,6 +32,7 @@ import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 import org.scalatest.DistributedSuiteSorter
 import scala.collection.mutable.ListBuffer
+import org.scalactic.exceptions.NullArgumentException
 
 class TestSortingReporterSpec extends FunSpec with Matchers {
 
@@ -236,13 +237,13 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
     it("should throw an NPE from completedTest if null is passed") {
       val recordingReporter = new EventRecordingReporter()
       val tsr = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
-      an [NullPointerException] should be thrownBy { tsr.completedTest(null) }
+      an [NullArgumentException] should be thrownBy { tsr.completedTest(null) }
     }
 
     it("should throw an NPE from distributingTest if null is passed") {
       val recordingReporter = new EventRecordingReporter()
       val tsr = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
-      a [NullPointerException] should be thrownBy { tsr.distributingTest(null) }
+      a [NullArgumentException] should be thrownBy { tsr.distributingTest(null) }
     }
 
     it("should throw an IAE from distributingTest if that test was already passed to distributingTest and it hasn't completed") {
@@ -271,9 +272,9 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
     it("should throw an NPE from apply(String, Event) if null is passed for either param") {
       val recordingReporter = new EventRecordingReporter()
       val tsr = new TestSortingReporter("aSuite", recordingReporter, Span(3, Seconds), 7, None, new PrintStream(new ByteArrayOutputStream))
-      a [NullPointerException] should be thrownBy { tsr.apply(null, scope1Opened) }
-      a [NullPointerException] should be thrownBy { tsr.apply("howdy", null) }
-      a [NullPointerException] should be thrownBy { tsr.apply(null, null) }
+      a [NullArgumentException] should be thrownBy { tsr.apply(null, scope1Opened) }
+      a [NullArgumentException] should be thrownBy { tsr.apply("howdy", null) }
+      a [NullArgumentException] should be thrownBy { tsr.apply(null, null) }
     }
 
     // SKIP-SCALATESTJS-START

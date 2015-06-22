@@ -17,6 +17,7 @@ package org.scalatest.tools
 
 import org.scalatest._
 import java.util.UUID
+import org.scalactic.Requirements._
 
 /**
  * A Suite that contains as nested suites accessible suites on the runpath whose fully qualified
@@ -28,8 +29,7 @@ import java.util.UUID
  */
 private[scalatest] class DiscoverySuite(path: String, accessibleSuites: Set[String], wildcard: Boolean, runpathClassLoader: ClassLoader)  extends Suite {
 
-  if (path == null || accessibleSuites == null || runpathClassLoader == null)
-    throw new NullPointerException
+  requireNonNull(path, accessibleSuites, runpathClassLoader)
 
   override val suiteId = getClass.getName + "-" + UUID.randomUUID.toString
     
@@ -38,10 +38,7 @@ private[scalatest] class DiscoverySuite(path: String, accessibleSuites: Set[Stri
       yield DiscoverySuite.getSuiteInstance(suiteClassName, runpathClassLoader)
      // TODO: probably override run to just call runNestedSuites
   override protected def runTests(testName: Option[String], args: Args): Status = {
-    if (testName == null)
-      throw new NullPointerException("testName was null")
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(testName, args)
     SucceededStatus
   }
 

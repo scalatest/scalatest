@@ -16,6 +16,7 @@
 package org.scalatest
 
 import Filter.IgnoreTag
+import org.scalactic.Requirements._
 
 /**
  * Filter whose <code>apply</code> method determines which of the passed tests to run and ignore based on tags to include and exclude passed as
@@ -41,17 +42,12 @@ import Filter.IgnoreTag
  * @param excludeNestedSuites a <code>Boolean</code> to indicate whether to run nested suites
  * @param dynaTags dynamic tags for the filter
  *
- * @throws NullPointerException if either <code>tagsToInclude</code> or <code>tagsToExclude</code> are null
+ * @throws NullArgumentException if either <code>tagsToInclude</code> or <code>tagsToExclude</code> are null
  * @throws IllegalArgumentException if <code>tagsToInclude</code> is defined, but contains an empty set
  */
 final class Filter private (val tagsToInclude: Option[Set[String]], val tagsToExclude: Set[String], val excludeNestedSuites: Boolean, val dynaTags: DynaTags) extends Serializable {
 
-  if (tagsToInclude == null)
-    throw new NullPointerException("tagsToInclude was null")
-  if (tagsToExclude == null)
-    throw new NullPointerException("tagsToExclude was null")
-  if (dynaTags == null)
-    throw new NullPointerException("dynaTags was null")
+  requireNonNull(tagsToInclude, tagsToExclude, dynaTags)
 
   tagsToInclude match {
     case Some(tagsToInclude) =>
@@ -264,7 +260,7 @@ object Filter {
  * @param excludeNestedSuites a <code>Boolean</code> to indicate whether to run nested suites
  * @param dynaTags dynamic tags for the filter
  *
- * @throws NullPointerException if either <code>tagsToInclude</code> or <code>tagsToExclude</code> are null
+ * @throws NullArgumentException if either <code>tagsToInclude</code> or <code>tagsToExclude</code> are null
  * @throws IllegalArgumentException if <code>tagsToInclude</code> is defined, but contains an empty set
  */
   def apply(tagsToInclude: Option[Set[String]] = None, tagsToExclude: Set[String] = Set(IgnoreTag), excludeNestedSuites: Boolean = false, dynaTags: DynaTags = DynaTags(Map.empty, Map.empty)) =

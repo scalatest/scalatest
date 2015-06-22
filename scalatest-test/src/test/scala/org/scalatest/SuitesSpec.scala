@@ -18,6 +18,7 @@ package org.scalatest
 import SharedHelpers._
 import Suite.CHOSEN_STYLES
 import org.scalatest.exceptions.NotAllowedException
+import org.scalactic.exceptions.NullArgumentException
 
 class SuitesSpec extends FunSpec {
 
@@ -33,10 +34,10 @@ class SuitesSpec extends FunSpec {
       assert(f.nestedSuites == List(a, b, c, d, e))
       val g = new Suites(Array(a, b, c, d, e): _*)
       assert(g.nestedSuites == List(a, b, c, d, e))
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new Suites(a, b, null, d, e)
       }
-      intercept[IllegalArgumentException] {
+      intercept[NullArgumentException] {
         val aNull: Array[Suite] = null
         new Suites(aNull: _*)
       }

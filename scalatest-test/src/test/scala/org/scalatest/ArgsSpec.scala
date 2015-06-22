@@ -19,10 +19,11 @@ import prop.TableDrivenPropertyChecks
 import SharedHelpers._
 import TableDrivenPropertyChecks._
 import Matchers._
+import org.scalactic.exceptions.NullArgumentException
 
 class ArgsSpec extends WordSpec with SeveredStackTraces {
   "The Args constructor" should {
-    "throw NullPointerExcepion when passed a null" in {
+    "throw NullArgumentException when passed a null" in {
 
       val rep = SilentReporter
       val stp = Stopper.default
@@ -45,7 +46,7 @@ class ArgsSpec extends WordSpec with SeveredStackTraces {
         )
 
       forAll (invalidCombos) { (reporter, stopper, filter, configMap, distributor, tracker, chosenStyles) =>
-        a [NullPointerException] should be thrownBy {
+        a [NullArgumentException] should be thrownBy {
           Args(reporter, stopper, filter, configMap, distributor, tracker, chosenStyles)
         }
       }

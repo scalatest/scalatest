@@ -330,7 +330,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws NullPointerException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
+   * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in this <code>Suite</code>
    */

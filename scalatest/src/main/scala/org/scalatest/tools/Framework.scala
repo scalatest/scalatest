@@ -32,6 +32,7 @@ import StringReporter.fragmentsForEvent
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import ArgsParser._
+import org.scalactic.Requirements._
 
 /**
  * <p>
@@ -269,10 +270,7 @@ class Framework extends SbtFramework {
     }
 
     def apply(suite: Suite, args: Args): Status = {
-      if (suite == null)
-        throw new NullPointerException("suite is null")
-      if (args == null)
-        throw new NullPointerException("args is null")
+      requireNonNull(suite, args)
       val status = new ScalaTestStatefulStatus
       val nestedTask =
         new ScalaTestNestedTask(

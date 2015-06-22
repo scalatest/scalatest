@@ -24,6 +24,7 @@ import org.scalatest.exceptions.TestCanceledException
 import OptionValues._
 import java.util.Date
 import org.scalactic.Prettifier
+import org.scalactic.exceptions.NullArgumentException
 
 class AssertionsSpec extends FunSpec {
   
@@ -1684,8 +1685,8 @@ class AssertionsSpec extends FunSpec {
     val bob = "bob"
     val alice = "alice"
 
-    it("should throw NullPointerException when null is passed in as clue") {
-      val e = intercept[NullPointerException] {
+    it("should throw NullArgumentException when null is passed in as clue") {
+      val e = intercept[NullArgumentException] {
         assert(a == 3, null)
       }
       assert(e.getMessage == "clue was null")
@@ -4388,8 +4389,8 @@ class AssertionsSpec extends FunSpec {
     val bob = "bob"
     val alice = "alice"
 
-    it("should throw NullPointerException when null is passed in as clue") {
-      val e = intercept[NullPointerException] {
+    it("should throw NullArgumentException when null is passed in as clue") {
+      val e = intercept[NullArgumentException] {
         assume(a == 3, null)
       }
       assert(e.getMessage == "clue was null")

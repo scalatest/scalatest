@@ -16,6 +16,9 @@
 package org.scalatest
 package exceptions
 
+import org.scalactic.Requirements._
+import org.scalactic.exceptions.NullArgumentException
+
 /**
  * Exception that indicates a property check failed.
  *
@@ -27,7 +30,7 @@ package exceptions
  * @param args the argument values that caused the property check to fail.
  * @param optionalArgNames an optional list of string names for the arguments.
  *
- * @throws NullPointerException if any parameter is <code>null</code> or <code>Some(null)</code>.
+ * @throws NullArgumentException if any parameter is <code>null</code> or <code>Some(null)</code>.
  *
  * @author Bill Venners
  */
@@ -41,24 +44,17 @@ abstract class PropertyCheckFailedException(
   optionalArgNames: Option[List[String]]
 ) extends TestFailedException(sde => Some(messageFun(sde)), cause, failedCodeStackDepthFun, payload) {
 
-  if (messageFun == null) throw new NullPointerException("messageFun was null")
+  requireNonNull(
+    messageFun, cause, failedCodeStackDepthFun, undecoratedMessage, args,
+    optionalArgNames)
 
-  if (cause == null) throw new NullPointerException("cause was null")
   cause match {
-    case Some(null) => throw new NullPointerException("cause was a Some(null)")
+    case Some(null) => throw new NullArgumentException("cause was a Some(null)")
     case _ =>
   }
 
-  if (failedCodeStackDepthFun == null) throw new NullPointerException("failedCodeStackDepthFun was null")
-
-  if (undecoratedMessage == null) throw new NullPointerException("undecoratedMessage was null")
-
-  if (args == null) throw new NullPointerException("args was null")
-
-  if (optionalArgNames == null) throw new NullPointerException("optionalArgNames was null")
-
   optionalArgNames match {
-    case Some(null) => throw new NullPointerException("optionalArgNames was a Some(null)")
+    case Some(null) => throw new NullArgumentException("optionalArgNames was a Some(null)")
     case _ =>
   }
 

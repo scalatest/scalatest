@@ -227,6 +227,7 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
           1 should equal (2)
         }
       }
+        System.err.println("gcbx e [" + e + "]");
       serializeRoundtrip(e)
     }
   }

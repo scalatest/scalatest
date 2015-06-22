@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalactic.exceptions.NullArgumentException
 
 class ExamplesSuite extends FunSuite {
 
@@ -75,7 +76,7 @@ class ExamplesSuite extends FunSuite {
       def examples() {
         it(null) {}
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         examples()
       }
     }

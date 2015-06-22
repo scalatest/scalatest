@@ -32,9 +32,11 @@ import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalactic.Requirements._
+import org.scalactic.exceptions.NullArgumentException
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
-private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String)  {
+private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
 
   sealed abstract class Node(val parentOption: Option[Branch]) {
     def indentationLevel: Int = {
@@ -122,10 +124,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   class RegistrationInformer extends Informer {
 
     def apply(message: String, payload: Option[Any] = None) {
-      if (message == null)
-        throw new NullPointerException
-      if (payload == null)
-        throw new NullPointerException
+      requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
       currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
@@ -136,10 +135,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   class RegistrationNotifier extends Notifier {
 
     def apply(message: String, payload: Option[Any] = None) {
-      if (message == null)
-        throw new NullPointerException
-      if (payload == null)
-        throw new NullPointerException
+      requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
       currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
@@ -150,10 +146,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   class RegistrationAlerter extends Alerter {
 
     def apply(message: String, payload: Option[Any] = None) {
-      if (message == null)
-        throw new NullPointerException
-      if (payload == null)
-        throw new NullPointerException
+      requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
       currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
@@ -163,8 +156,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   class RegistrationDocumenter extends Documenter {
     def apply(message: String) {
-      if (message == null)
-        throw new NullPointerException
+      requireNonNull(message)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
       currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, getLineInFile(Thread.currentThread().getStackTrace, 2))
@@ -186,10 +178,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   final val zombieInformer =
     new Informer {
       def apply(message: String, payload: Option[Any] = None) {
-        if (message == null)
-          throw new NullPointerException
-        if (payload == null)
-          throw new NullPointerException
+        requireNonNull(message, payload)
         println(Resources.infoProvided(message))
         payload match {
           case Some(p) => println(Resources.payloadToString(payload.get.toString))
@@ -201,10 +190,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   final val zombieNotifier =
     new Notifier {
       def apply(message: String, payload: Option[Any] = None) {
-        if (message == null)
-          throw new NullPointerException
-        if (payload == null)
-          throw new NullPointerException
+        requireNonNull(message, payload)
         println(Resources.noteProvided(message))
         payload match {
           case Some(p) => println(Resources.payloadToString(payload.get.toString))
@@ -216,10 +202,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   final val zombieAlerter =
     new Alerter {
       def apply(message: String, payload: Option[Any] = None) {
-        if (message == null)
-          throw new NullPointerException
-        if (payload == null)
-          throw new NullPointerException
+        requireNonNull(message, payload)
         println(Resources.alertProvided(message))
         payload match {
           case Some(p) => println(Resources.payloadToString(payload.get.toString))
@@ -231,17 +214,15 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   final val zombieDocumenter =
     new Documenter {
       def apply(message: String) {
-        if (message == null)
-          throw new NullPointerException
+        requireNonNull(message)
         println(Resources.markupProvided(message))
       }
     }
 
   private def checkTestOrIgnoreParamsForNull(testName: String, testTags: Tag*) {
-    if (testName == null)
-      throw new NullPointerException("testName was null")
+    requireNonNull(testName)
     if (testTags.exists(_ == null))
-      throw new NullPointerException("a test tag was null")
+      throw new NullArgumentException("a test tag was null")
   }
 
   def runTestImpl(
@@ -252,10 +233,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     invokeWithFixture: TestLeaf => Outcome
   ): Status = {
 
-    if (testName == null)
-      throw new NullPointerException("testName was null")
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(testName, args)
     
     import args._
 
@@ -449,10 +427,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     includeIcon: Boolean,
     runTest: (String, Args) => Status
   ): Status = {
-    if (testName == null)
-      throw new NullPointerException("testName was null")
-    if (args == null)
-      throw new NullPointerException("args was null")
+    requireNonNull(testName, args)
 
     import args._
 
@@ -721,10 +696,9 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     Resources.prefixSuffix(getTestNamePrefix(parent), testText.trim).trim
 
   private def checkRegisterTestParamsForNull(testText: String, testTags: Tag*) {
-    if (testText == null)
-      throw new NullPointerException("testText was null")
+    requireNonNull(testText)
     if (testTags.exists(_ == null))
-      throw new NullPointerException("a test tag was null")
+      throw new NullArgumentException("a test tag was null")
   }
   
   private[scalatest] def testPath(testName: String): List[Int] = {

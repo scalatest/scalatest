@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.Requirements._
+
 /**
  * Superclass for the possible outcomes of running a test.
  *
@@ -519,8 +521,7 @@ object Canceled {
    * </pre>
    */
   def apply(message: String): Canceled = {
-    if (message == null)
-      throw new NullPointerException("message was null")
+    requireNonNull(message)
     val e = new exceptions.TestCanceledException(message, stackDepth)
     //e.fillInStackTrace()
     Canceled(e)

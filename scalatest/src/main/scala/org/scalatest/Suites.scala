@@ -15,6 +15,9 @@
  */
 package org.scalatest
 
+import org.scalactic.Requirements._
+import org.scalactic.exceptions.NullArgumentException
+
 /**
  * A <code>Suite</code> class that takes zero to many <code>Suite</code>s in its constructor,
  *  which will be returned from its <code>nestedSuites</code> method.
@@ -52,12 +55,11 @@ package org.scalatest
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 class Suites(suitesToNest: Suite*) extends Suite { thisSuite =>
 
-  if (suitesToNest == null)
-    throw new IllegalArgumentException("Passed suitesToNest was null")
+  requireNonNull(suitesToNest)
 
   for (s <- suitesToNest) {
     if (s == null)
-      throw new NullPointerException("A passed suite was null")
+      throw new NullArgumentException("A passed suite was null")
   }
 
   /**

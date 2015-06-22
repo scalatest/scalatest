@@ -21,6 +21,7 @@ import events.TestFailed
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalactic.exceptions.NullArgumentException
 
 class PropSpecSpec extends org.scalatest.FunSpec {
 
@@ -125,16 +126,16 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       assert(!rep.eventsReceived.exists(_.isInstanceOf[TestFailed]))
     }
 
-    it("should throw NullPointerException if a null test tag is provided") {
+    it("should throw NullArgumentException if a null test tag is provided") {
       // test
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           property("hi", null) { fixture => }
         }
       }
-      val caught = intercept[NullPointerException] {
+      val caught = intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -142,7 +143,7 @@ class PropSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -151,14 +152,14 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       }
 
       // ignore
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore("hi", null) { fixture => }
         }
       }
-      val caught2 = intercept[NullPointerException] {
+      val caught2 = intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -166,7 +167,7 @@ class PropSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught2.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -175,14 +176,14 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       }
 
       // registerTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerTest("hi", null) { fixture => }
         }
       }
-      val caught3 = intercept[NullPointerException] {
+      val caught3 = intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -190,7 +191,7 @@ class PropSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught3.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -199,14 +200,14 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       }
 
       // registerIgnoredTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerIgnoredTest("hi", null) { fixture => }
         }
       }
-      val caught4 = intercept[NullPointerException] {
+      val caught4 = intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -214,7 +215,7 @@ class PropSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught4.getMessage === "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new PropSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded

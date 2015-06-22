@@ -22,6 +22,7 @@ import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalatest.events.InfoProvided
+import org.scalactic.exceptions.NullArgumentException
 
 object SlowTest extends Tag("SlowTest")
 
@@ -192,16 +193,16 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
       assert(testStartingOption.isDefined)
       assert(testStartingOption.get.asInstanceOf[TestStarting].testName === "can I am shared")
     }
-    it("should throw NullPointerException if a null test tag is provided") {
+    it("should throw NullArgumentException if a null test tag is provided") {
       // it
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           it should "hi" taggedAs(null) in { fixture => }
         }
       }
-      val caught = intercept[NullPointerException] {
+      val caught = intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -209,7 +210,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -217,14 +218,14 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         }
       }
       // ignore
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore should "hi" taggedAs(null) in { fixture => }
         }
       }
-      val caught2 = intercept[NullPointerException] {
+      val caught2 = intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -232,21 +233,21 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught2.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           ignore should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in { fixture => }
         }
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           it should "hi" taggedAs(null) ignore { fixture => }
         }
       }
-      val caught3 = intercept[NullPointerException] {
+      val caught3 = intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -254,7 +255,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught3.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -263,14 +264,14 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
       }
 
       // registerTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerTest("should hi", null) { fixture => }
         }
       }
-      val caught4 = intercept[NullPointerException] {
+      val caught4 = intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -278,7 +279,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught4.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -287,14 +288,14 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
       }
 
       // registerIgnoredTest
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerIgnoredTest("should hi", null) { fixture => }
         }
       }
-      val caught5 = intercept[NullPointerException] {
+      val caught5 = intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -302,21 +303,21 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught5.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerIgnoredTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => }
         }
       }
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
           registerIgnoredTest("should hi", null) { fixture => }
         }
       }
-      val caught6 = intercept[NullPointerException] {
+      val caught6 = intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
@@ -324,7 +325,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         }
       }
       assert(caught6.getMessage == "a test tag was null")
-      intercept[NullPointerException] {
+      intercept[NullArgumentException] {
         new FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded

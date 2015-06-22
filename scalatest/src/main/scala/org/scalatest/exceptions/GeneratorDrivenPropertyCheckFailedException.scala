@@ -30,7 +30,7 @@ import org.scalatest._
  * @param namesOfArgs an optional list of string names for the arguments.
  * @param labels the labels, if any (see the ScalaCheck user guide for information on labels)
  *
- * @throws NullPointerException if any parameter is <code>null</code> or <code>Some(null)</code>.
+ * @throws NullArgumentException if any parameter is <code>null</code> or <code>Some(null)</code>.
  *
  * @author Bill Venners
  */

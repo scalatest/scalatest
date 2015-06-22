@@ -22,6 +22,7 @@ import Spec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
+import org.scalactic.Requirements._
 
 /**
  * Implementation trait for class <code>Spec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -255,6 +256,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
+    requireNonNull(testName, args)
 
     ensureScopesAndTestsRegistered()
 

@@ -131,7 +131,7 @@ final class ConfigMapWrapperSuite(clazz: Class[_ <: Suite]) extends Suite {
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests and nested suites started by this method have completed, and whether or not a failure occurred.
    *
-   * @throws NullPointerException if any passed parameter is <code>null</code>.
+   * @throws NullArgumentException if any passed parameter is <code>null</code>.
    * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
    *     exists in the <code>Suite</code>
    */

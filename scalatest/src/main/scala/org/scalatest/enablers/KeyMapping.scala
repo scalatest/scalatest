@@ -21,6 +21,7 @@ import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
+import org.scalactic.Requirements._
 
 /**
  * Supertrait for typeclasses that enable <code>contain key</code> matcher syntax.
@@ -69,7 +70,7 @@ object KeyMapping {
   implicit def keyMappingNatureOfGenMap[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]](implicit equality: Equality[K]): KeyMapping[MAP[K, V]] = 
     new KeyMapping[MAP[K, V]] {
       def containsKey(map: MAP[K, V], key: Any): Boolean = {
-        //SCALATESTJS-ONLY if (map == null) throw new NullPointerException
+        requireNonNull(map)
         map.keySet.exists((k: K) => equality.areEqual(k, key))
       }
     }
