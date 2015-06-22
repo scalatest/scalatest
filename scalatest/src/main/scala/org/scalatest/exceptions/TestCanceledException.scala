@@ -16,6 +16,7 @@
 package org.scalatest.exceptions
 
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.Requirements._
 
 /**
  * Exception thrown to indicate a test has been canceled.
@@ -102,7 +103,7 @@ class TestCanceledException(
   def this(cause: Throwable, failedCodeStackDepth: Int) =
     this(
     {
-      if (cause == null) throw new NullArgumentException("cause was null")
+      requireNonNull(cause)
       if (cause.getMessage == null) None else Some(cause.getMessage)
     },
     Some(cause),
@@ -126,10 +127,10 @@ class TestCanceledException(
   def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
     this(
     {
-      if (message == null) throw new NullArgumentException("message was null")
+      requireNonNull(message)
       Some(message)
     }, {
-      if (cause == null) throw new NullArgumentException("cause was null")
+      requireNonNull(cause)
       Some(cause)
     },
     failedCodeStackDepth

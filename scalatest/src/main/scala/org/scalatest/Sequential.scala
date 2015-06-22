@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalactic.Requirements._
+import org.scalactic.exceptions.NullArgumentException
 
 /**
  * A <code>Suite</code> class mixing in <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a> that takes
@@ -64,8 +65,11 @@ import org.scalactic.Requirements._
  */
 class Sequential(suitesToNest: Suite*) extends Suite with SequentialNestedSuiteExecution { thisSuite => 
 
+  requireNonNull(suitesToNest)
+
   for (s <- suitesToNest) {
-    requireNonNull(s)
+    if (s == null)
+      throw new NullArgumentException("A passed suite was null")
   }
 
   /**

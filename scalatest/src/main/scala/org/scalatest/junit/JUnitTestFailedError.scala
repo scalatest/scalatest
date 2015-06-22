@@ -112,7 +112,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
   def this(message: String, failedCodeStackDepth: Int) =
     this(
       {
-        if (message == null) throw new NullArgumentException("message was null")
+        requireNonNull(message)
         Some(message)
       },
       None,
@@ -133,7 +133,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
   def this(cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
-        if (cause == null) throw new NullArgumentException("cause was null")
+        requireNonNull(cause)
         Some(if (cause.getMessage == null) "" else cause.getMessage)
       },
       Some(cause),
@@ -158,11 +158,11 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
   def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
-        if (message == null) throw new NullArgumentException("message was null")
+        requireNonNull(message)
         Some(message)
       },
       {
-        if (cause == null) throw new NullArgumentException("cause was null")
+        requireNonNull(cause)
         Some(cause)
       },
       failedCodeStackDepth,

@@ -171,8 +171,7 @@ trait OneInstancePerTest extends SuiteMixin {
    */
   protected abstract override def runTests(testName: Option[String], args: Args): Status = {
 
-    requireNonNull(testName)
-    requireNonNull(args)
+    requireNonNull(testName, args)
 
     if (args.runTestInNewInstance) {
       if (testName.isEmpty)

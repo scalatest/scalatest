@@ -92,16 +92,4 @@ trait Informer {
    * @throws NullArgumentException if <code>message</code> or <code>payload</code> reference is <code>null</code>
    */
   def apply(message: String, payload: Option[Any] = None): Unit
-  
-  /**
-   * Provide information and additional payload to the <code>Reporter</code> as the .
-   *
-   * @param message an object whose <code>toString</code> result will be forwarded to the wrapped <code>Reporter</code>
-   *   via an <code>InfoProvided</code> event.
-   * @param payload an object which will be forwarded to the wrapped <code>Reporter</code> 
-   *   via an <code>InfoProvided</code> event.
-   *
-   * @throws NullArgumentException if <code>message</code> reference is <code>null</code>
-   */
-  //def apply(message: String, payload: Any): Unit
 }

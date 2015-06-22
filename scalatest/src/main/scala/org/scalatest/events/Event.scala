@@ -752,7 +752,6 @@ final case class TestCanceled (
                  testText,
                  duration,
                  throwable,
-                 duration,
                  formatter,
                  location,
                  rerunner,

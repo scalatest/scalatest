@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 
 /**
@@ -61,6 +62,8 @@ import org.scalactic.exceptions.NullArgumentException
  * @author Bill Venners
  */
 class Stepwise(suitesToNest: Suite*) extends Suite with StepwiseNestedSuiteExecution { thisSuite => 
+
+  requireNonNull(suitesToNest)
 
   for (s <- suitesToNest) {
     if (s == null)
