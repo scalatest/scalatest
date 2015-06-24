@@ -15,9 +15,13 @@
  */
 package org.scalatest.tools
 
+import java.io.File
+
 import org.scalatest._
 import SharedHelpers._
 import org.scalatest.events._
+
+import scala.io.Source
 
 class HtmlReporterSpec extends FunSpec {
 
@@ -97,7 +101,40 @@ class HtmlReporterSpec extends FunSpec {
       htmlRep(suiteCompleted)
       htmlRep.dispose()
     }
+
+    it("should produce UTF-8 encoded output") {
+      val tempDir = createTempDirectory()
+      val htmlRep = new HtmlReporter(tempDir.getAbsolutePath, false, None, None)
+      val suiteStarting =
+        SuiteStarting(
+          new Ordinal(99),
+          "TestSuit\u20ac",
+          "TestSuite",
+          Some("TestSuite")
+        )
+      val suiteCompleted =
+        SuiteCompleted(
+          new Ordinal(99),
+          "TestSuit\u20ac",
+          "TestSuite",
+          Some("TestSuite")
+        )
+      htmlRep(suiteStarting)
+      htmlRep(suiteCompleted)
+      htmlRep.dispose()
+
+      val indexFile = new File(tempDir, "index.html")
+      assert(indexFile.exists())
+      val fromIndexFile = Source.fromFile(indexFile, "UTF-8").mkString
+      assert(fromIndexFile.contains("TestSuit\u20ac"))
+
+      val suiteFile = new File(tempDir, "TestSuite.html")
+      assert(suiteFile.exists())
+      val fromSuiteFile = Source.fromFile(suiteFile, "UTF-8").mkString
+      assert(fromSuiteFile.contains("TestSuit\u20ac"))
+    }
   }
+
   describe("HtmlReporter's convertSingleParaToDefinition method") {
     it("should leave strings that contain no <p> alone") {
       assert(HtmlReporter.convertSingleParaToDefinition("") === "")
