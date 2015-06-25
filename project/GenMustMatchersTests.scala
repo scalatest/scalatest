@@ -106,21 +106,6 @@ trait GenMustMatchersTestsBase {
         }
       }
     }
-
-    // For those under org.scalatest.matchers
-    val matchersSourceDir = new File(sourceBaseDir, "matchers")
-    for (shouldFile <- matchersSourceDir.listFiles) {
-      if (includeFile(shouldFile)) {
-        val shouldFileName = shouldFile.getName
-
-        if (!scalaJS || !scalaJSSkipList.contains(shouldFileName)) {
-          val mustFileName = shouldFileName.replace("Should", "Must")
-
-          val mustMatchersFile = new File(matchersDir, mustFileName)
-          transformFile(new File(matchersSourceDir, shouldFileName), mustMatchersFile)
-        }
-      }
-    }
   }
 
   def genTest(targetBaseDir: File, version: String, scalaVersion: String): Unit = {
