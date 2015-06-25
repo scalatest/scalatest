@@ -844,7 +844,13 @@ sealed abstract class Or[+G,+B] {
    */
   def fold[V](gf: G => V, bf: B => V): V
 
-  @deprecated("This is no longer necessary. Please just delete invocations of asOr")
+   /**
+    * <strong>The <code>asOr</code> method has been deprecated and will be removed in a future version of Scalactic.
+    * Please remove invocations of <code>asOr</code> in expressions of type <code>Good(value).orBad[Type]</code> and
+    * <code>Good[Type].orBad(value)</code> (which now return a type already widened to <code>Or</code>), otherwise please
+    * use a type annotation to widen the type, such as: <code>(Good(3): Int Or ErrorMessage)</code>.</strong>
+    */
+  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).")
   def asOr: G Or B = this
 }
 
@@ -1091,7 +1097,7 @@ object Or {
 final case class Good[+G](g: G) extends Or[G,Nothing] {
   override val isGood: Boolean = true
 
-  /**
+  /*
    * Returns this <code>Good</code> with the type widened to <code>Or</code>.
    *
    * <p>
@@ -1156,6 +1162,13 @@ final case class Good[+G](g: G) extends Or[G,Nothing] {
    * res3: org.scalactic.Or[Int,org.scalactic.ErrorMessage] = Good(9)
    * </pre>
    */
+   /**
+    * <strong>The <code>asOr</code> method has been deprecated and will be removed in a future version of Scalactic.
+    * Please remove invocations of <code>asOr</code> in expressions of type <code>Good(value).orBad[Type]</code> and
+    * <code>Good[Type].orBad(value)</code> (which now return a type already widened to <code>Or</code>), otherwise please
+    * use a type annotation to widen the type, such as: <code>(Good(3): Int Or ErrorMessage)</code>.</strong>
+    */
+  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).")
   override def asOr: G Or Nothing = this
 
   /**
@@ -1181,7 +1194,7 @@ final case class Good[+G](g: G) extends Or[G,Nothing] {
    * res1: org.scalactic.Good[Int,String] = Good(3)
    * </pre>
    */
-  def orBad[C]: G Or C = this.asInstanceOf[Or[G, C]]
+  def orBad[C]: G Or C = this
   def get: G = g
   def map[H](f: G => H): H Or Nothing = Good(f(g))
   def badMap[C](f: Nothing => C): G Or C = this.asInstanceOf[G Or C]
@@ -1284,7 +1297,7 @@ object Good {
 final case class Bad[+B](b: B) extends Or[Nothing,B] {
   override val isBad: Boolean = true
 
-  /**
+  /*
    * Returns this <code>Bad</code> with the type widened to <code>Or</code>.
    *
    * <p>
@@ -1336,6 +1349,13 @@ final case class Bad[+B](b: B) extends Or[Nothing,B] {
    * res5: org.scalactic.Or[Int,ErrorMessage] = Bad(No even nums)
    * </pre>
    */
+   /**
+    * <strong>The <code>asOr</code> method has been deprecated and will be removed in a future version of Scalactic.
+    * Please remove invocations of <code>asOr</code> in expressions of type <code>Good(value).orBad[Type]</code> and
+    * <code>Good[Type].orBad(value)</code> (which now return a type already widened to <code>Or</code>), otherwise please
+    * use a type annotation to widen the type, such as: <code>(Good(3): Int Or ErrorMessage)</code>.</strong>
+    */
+  @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).")
   override def asOr: Nothing Or B = this
   def get: Nothing = throw new NoSuchElementException("Bad(" + b + ").get")
   def map[H](f: Nothing => H): H Or B = this.asInstanceOf[H Or B]
