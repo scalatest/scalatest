@@ -274,6 +274,6 @@ object Filter {
    */
   def default: Filter = apply()
 
-  @deprecated("This implicit conversion was added in 2.3 because we dropped the inheritance relationship between Filter and Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]].")
+  @deprecated("This implicit conversion was added in ScalaTest 3.0.0 because the inheritance relationship between Filter and Function2[Set[String], Map[String, Set[String]], List[(String, Boolean)]] was dropped. Please use the apply method that takes a suiteId instead, the one with this signature: def apply(testNames: Set[String], testTags: Map[String, Set[String]], suiteId: String): List[(String, Boolean)].")
   implicit def convertFilterToFunction2(filter: Filter): (Set[String], Map[String, Set[String]]) => List[(String, Boolean)] = (set, map) => filter.apply(set, map)
 }
