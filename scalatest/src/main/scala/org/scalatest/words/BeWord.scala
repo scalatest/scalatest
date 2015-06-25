@@ -237,7 +237,7 @@ final class BeWord {
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def ===(right: Any): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
-                                  getStackDepthFun("BeWord.scala", "==="))  // TODO: Change that to encoded name.
+                                  getStackDepthFun("BeWord.scala", "$eq$eq$eq"))
   }
 
   // SKIP-SCALATESTJS-START
