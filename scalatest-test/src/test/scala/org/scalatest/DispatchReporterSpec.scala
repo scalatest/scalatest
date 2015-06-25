@@ -45,7 +45,7 @@ class DispatchReporterSpec extends FunSpec {
     describe("when slowpoke detection is enabled") {
       def fireTestStarting(): (EventRecordingReporter, DispatchReporter) = {
         val erp = new EventRecordingReporter
-        val dispatch = new DispatchReporter(List(erp, NoisyReporter), Console.err, true, 1, 1)
+        val dispatch = new DispatchReporter(List(erp, SilentReporter), Console.err, true, 1, 1)
         dispatch(
           TestStarting(
             ordinal = TestStartingOrdinal,
