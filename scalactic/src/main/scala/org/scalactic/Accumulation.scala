@@ -326,7 +326,7 @@ trait Accumulation {
    * of the main documentation for class <code>Or</code>.
    * </p>
    */
-  @deprecated("Please use map on Or instead")
+  @deprecated("Please call map on the Or passed as the first argument to withGood, passing to map the function passed as the second argument to withGood, instead")
   def withGood[A, ERR, RESULT](
     a: A Or Every[ERR]
   )(
