@@ -16,6 +16,7 @@
 package org.scalatest
 
 import exceptions.TestCanceledException
+import exceptions.TestPendingException
 import scala.reflect.ClassTag
 import Assertions.areEqualComparingArraysStructurally
 import org.scalactic.TripleEquals
@@ -1278,6 +1279,92 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     fun
   }
 */
+  /**
+   * Throws <code>TestPendingException</code> to indicate a test is pending.
+   *
+   * <p>
+   * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
+   * pending tests is to facilitate a style of testing in which documentation of behavior is sketched
+   * out before tests are written to verify that behavior (and often, the before the behavior of
+   * the system being tested is itself implemented). Such sketches form a kind of specification of
+   * what tests and functionality to implement later.
+   * </p>
+   *
+   * <p>
+   * To support this style of testing, a test can be given a name that specifies one
+   * bit of behavior required by the system being tested. The test can also include some code that
+   * sends more information about the behavior to the reporter when the tests run. At the end of the test,
+   * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
+   * Because tests in ScalaTest can be designated as pending with <code>TestPendingException</code>, both the test name and any information
+   * sent to the reporter when running the test can appear in the report of a test run. (In other words,
+   * the code of a pending test is executed just like any other test.) However, because the test completes abruptly
+   * with <code>TestPendingException</code>, the test will be reported as pending, to indicate
+   * the actual test, and possibly the functionality it is intended to test, has not yet been implemented.
+   * </p>
+   *
+   * <p>
+   * Note: This method always completes abruptly with a <code>TestPendingException</code>. Thus it always has a side
+   * effect. Methods with side effects are usually invoked with parentheses, as in <code>pending()</code>. This
+   * method is defined as a parameterless method, in flagrant contradiction to recommended Scala style, because it 
+   * forms a kind of DSL for pending tests. It enables tests in suites such as <code>FunSuite</code> or <code>FunSpec</code>
+   * to be denoted by placing "<code>(pending)</code>" after the test name, as in:
+   * </p>
+   *
+   * <pre class="stHighlight">
+   * test("that style rules are not laws") (pending)
+   * </pre>
+   *
+   * <p>
+   * Readers of the code see "pending" in parentheses, which looks like a little note attached to the test name to indicate
+   * it is pending. Whereas "<code>(pending())</code> looks more like a method call, "<code>(pending)</code>" lets readers
+   * stay at a higher level, forgetting how it is implemented and just focusing on the intent of the programmer who wrote the code.
+   * </p>
+   */
+  def pending: PendingNothing = { throw new TestPendingException }
+
+  /**
+   * Execute the passed block of code, and if it completes abruptly, throw <code>TestPendingException</code>, else
+   * throw <code>TestFailedException</code>.
+   *
+   * <p>
+   * This method can be used to temporarily change a failing test into a pending test in such a way that it will
+   * automatically turn back into a failing test once the problem originally causing the test to fail has been fixed.
+   * At that point, you need only remove the <code>pendingUntilFixed</code> call. In other words, a
+   * <code>pendingUntilFixed</code> surrounding a block of code that isn't broken is treated as a test failure.
+   * The motivation for this behavior is to encourage people to remove <code>pendingUntilFixed</code> calls when
+   * there are no longer needed.
+   * </p>
+   *
+   * <p>
+   * This method facilitates a style of testing in which tests are written before the code they test. Sometimes you may
+   * encounter a test failure that requires more functionality than you want to tackle without writing more tests. In this
+   * case you can mark the bit of test code causing the failure with <code>pendingUntilFixed</code>. You can then write more
+   * tests and functionality that eventually will get your production code to a point where the original test won't fail anymore.
+   * At this point the code block marked with <code>pendingUntilFixed</code> will no longer throw an exception (because the
+   * problem has been fixed). This will in turn cause <code>pendingUntilFixed</code> to throw <code>TestFailedException</code>
+   * with a detail message explaining you need to go back and remove the <code>pendingUntilFixed</code> call as the problem orginally
+   * causing your test code to fail has been fixed.
+   * </p>
+   *
+   * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code> 
+   * @throws TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
+   */
+  def pendingUntilFixed(f: => Unit) {
+    val isPending =
+      try {
+        f
+        false
+      }
+      catch {
+        case _: Exception => true
+        case _: AssertionError => true
+      }
+      if (isPending)
+        throw new TestPendingException
+      else
+        throw new TestFailedException(Resources.pendingUntilFixed, 2)
+  }
+
 }
 
 /**
