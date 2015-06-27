@@ -327,7 +327,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
     }
 
@@ -457,7 +457,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(string, List(), "is", unusedFixtureParam => testFun)
     }
 

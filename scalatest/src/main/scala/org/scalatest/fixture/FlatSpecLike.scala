@@ -328,7 +328,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
     }
 
@@ -496,7 +496,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
     }
 
@@ -863,7 +863,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
     }
 
@@ -1031,7 +1031,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
     }
 
@@ -1408,7 +1408,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
     }
   }
@@ -1534,7 +1534,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
     }
 
@@ -2002,7 +2002,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
       //SCALATESTJS-ONLY val stackDepth = 8
       registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
-        def is(testFun: => PendingNothing) {
+        def is(testFun: => PendingStatement) {
           registerTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)
         }
         def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -2010,7 +2010,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
           new ResultOfTaggedAsInvocation(verb, rest, tagList) {
             // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
             //                                                            ^
-            def is(testFun: => PendingNothing) {
+            def is(testFun: => PendingStatement) {
               registerTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun _))
             }
           }

@@ -256,7 +256,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
     }
 
@@ -413,7 +413,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(string, List(), "is", unusedFixtureParam => testFun)
     }
 

@@ -73,4 +73,7 @@ package object scalatest {
    * @return the ScalaTest version number.
    */
   val ScalaTestVersion: String = ScalaTestVersions.ScalaTestVersion
+
+  @deprecated("Please use PendingStatement instead")
+  type PendingNothing = PendingStatement
 }

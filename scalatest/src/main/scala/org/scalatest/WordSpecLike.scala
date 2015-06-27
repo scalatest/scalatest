@@ -293,7 +293,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(specText, tags, "is", testFun _)
     }
 
@@ -391,7 +391,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def is(f: => PendingNothing) {
+    def is(f: => PendingStatement) {
       registerTestToRun(string, List(), "is", f _)
     }
 
