@@ -341,6 +341,12 @@ object Exceptional {
 }
 
 /**
+ * Marker trait that serves as the result type of <code>assert</code> and <code>assume</code> methods of
+ * trait <code>Assertions</code>, which return its only subtype, <code>Succeeded.type</code>.
+ */
+sealed trait Assertion
+
+/**
  * Outcome for a test that succeeded.
  *
  * <p>
@@ -352,7 +358,7 @@ object Exceptional {
  * about something larger: multiple tests or an entire suite.
  * </p>
  */
-case object Succeeded extends Outcome {
+case object Succeeded extends Outcome with Assertion {
 
   /**
    * Indicates that this <code>Outcome</code> represents a test that succeeded.
