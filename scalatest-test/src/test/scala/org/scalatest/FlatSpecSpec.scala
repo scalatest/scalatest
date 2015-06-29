@@ -1264,6 +1264,28 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 2)
     }
+    it("should allow is pendingUntilFixed to be used after is") {
+
+      val a = new FlatSpec {
+
+        it should "do this" is pendingUntilFixed {
+          fail("i meant to do that")
+        }
+
+        it should "do that" in {
+          assert(2 + 2 === 4)
+        }
+
+        it should "do something else" in {
+          assert(2 + 2 === 4)
+          pending
+        }
+      }
+      val rep = new EventRecordingReporter
+      a.run(None, Args(rep))
+      val tp = rep.testPendingEventsReceived
+      assert(tp.size === 2)
+    }
     it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
             "known in JDK 1.5, excluding AssertionError") {
       val a = new FlatSpec {
