@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2014 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest
 
-import org.scalatest.Outcome
-import org.scalatest.OutcomeOf.outcomeOf
-import org.scalatest.AsyncOutcome
-import org.scalatest.PastOutcome
-
-private[scalatest] case class Transformer[FixtureParam](exceptionalTestFun: FixtureParam => Any) extends (FixtureParam => AsyncOutcome) {
-  def apply(fixture: FixtureParam): AsyncOutcome = {
-    PastOutcome {
-      outcomeOf { exceptionalTestFun(fixture) }
-    }
-  }
+/**
+ * Trait for classic tests that returns `Unit` from test..
+ */
+trait ClassicTests extends TestRegistration { this: Suite =>
+  type Registration = Unit
 }
