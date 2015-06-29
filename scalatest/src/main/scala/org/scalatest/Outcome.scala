@@ -342,27 +342,10 @@ object Exceptional {
 
 /**
  * Marker trait that serves as the result type of <code>assert</code> and <code>assume</code> methods of
- * trait <code>Assertions</code>, which return its only subtype, <code>Succeeded.type</code>.
+ * trait <code>Assertions</code>, which return its only subtype, <code>Succeeded.type</code>, or throw
+ * an exception that indicates a failed, canceled, or pending test.
  */
-sealed trait Assertion
-
-/**
- * The result type of the <code>pending</code> statement of trait <code>Assertions</code>, which always throws <code>TestPendingException</code>. 
- *
- * <p>
- * This type is used primarily to facilitate the <code>is (pending)</code> syntax of
- * traits <a href="FlatSpec.html"><code>FlatSpec</code></a>, <a href="WordSpec.html"><code>WordSpec</code></a>, and
- * <a href="FlatSpec.html"><code>FLatSpec</code></a> as well the
- * <code>is (pending)</code> or <code>(pending)</code> syntax of sibling traits
- * in the <code>org.scalatest.fixture</code> package. Because the <code>pending</code>
- * method in <code>Assertions</code> always completes abruptly with an exception, its
- * type would be inferred to be <code>Nothing</code>, which is a relatively common
- * type. To make sure syntax like <code>is (pending)</code> only works with
- * method <code>pending</code>, it is helpful to have a specially named
- * "<code>Nothing</code>" type.
- * </p>
- */
-sealed trait PendingStatement extends Assertion
+sealed trait Assertion extends Outcome
 
 /**
  * Outcome for a test that succeeded.
