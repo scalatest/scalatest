@@ -1349,7 +1349,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code> 
    * @throws TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
    */
-  def pendingUntilFixed(f: => Unit) {
+  def pendingUntilFixed(f: => Unit): Assertion with PendingStatement = {
     val isPending =
       try {
         f
