@@ -1044,6 +1044,26 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       val tp = rep.testPendingEventsReceived
       assert(tp.size === 2)
     }
+    it("should allow is pendingUntilFixed to be used after is") {
+      val a = new FreeSpec {
+
+        "should do this" is pendingUntilFixed {
+          fail("i meant to do that")
+        }
+
+        "should do that" in {
+          assert(2 + 2 === 4)
+        }
+        "should do something else" in {
+          assert(2 + 2 === 4)
+          pending
+        }
+      }
+      val rep = new EventRecordingReporter
+      a.run(None, Args(rep))
+      val tp = rep.testPendingEventsReceived
+      assert(tp.size === 2)
+    }
     it("should generate a TestCanceled message when the test body includes a cancel() invocation") {
       val a = new FreeSpec {
 
@@ -1247,6 +1267,27 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       assert(rep.testCanceledEventsReceived(0).testName == "test 4")
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+    }
+
+    it("should allow pendingUntilFixed to be used after is") {
+      val a = new FreeSpec {
+
+        "should do this" is pendingUntilFixed {
+          fail("i meant to do that")
+        }
+
+        "should do that" in {
+          assert(2 + 2 === 4)
+        }
+        "should do something else" in {
+          assert(2 + 2 === 4)
+          pending
+        }
+      }
+      val rep = new EventRecordingReporter
+      a.run(None, Args(rep))
+      val tp = rep.testPendingEventsReceived
+      assert(tp.size === 2)
     }
   }
   
