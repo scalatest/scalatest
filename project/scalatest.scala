@@ -22,7 +22,8 @@ object ScalatestBuild extends Build {
   val buildScalaVersion = "2.11.6"
 
   val releaseVersion = "3.0.0-M5"
-  val githubTag = "release-3.0.0-M4-for-scala-2.11-and-2.10" // for scaladoc source urls
+
+  val githubTag = "release-3.0.0-M5-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -228,7 +229,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
-      "-oDI"))
+      "-oDIF"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
