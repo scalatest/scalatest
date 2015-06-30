@@ -14,6 +14,7 @@ private[scalatest] trait AsyncOutcome {
 }
 
 private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
+
   def onComplete(f: Try[Outcome] => Unit) = {
     f(new Success(past))
   }
@@ -30,6 +31,7 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
 
   private final val queue = new ConcurrentLinkedQueue[Try[Outcome] => Unit]
   private final val status = new ScalaTestStatefulStatus
+
   future.onComplete {
     case Success(result) =>
       for (f <- queue.iterator)
@@ -59,6 +61,9 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
     }
   }
   def toStatus: Status = status
+  // SKIP-SCALATESTJS-START
   def toOutcome: Outcome = Await.result(future, Duration.Inf)
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY def toOutcome: Outcome = throw new UnsupportedOperationException("Not supported on scalatest-js")
   def toFutureOutcome: Future[Outcome] = future
 }

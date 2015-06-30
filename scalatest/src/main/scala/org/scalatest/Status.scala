@@ -183,11 +183,13 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   }
 
   def setCompleted() {
-    synchronized {
-      latch.countDown()
-    }
     for (f <- queue.iterator)
       f(succeeded)
+    synchronized {
+      // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
+      // for this Status to complete.
+      latch.countDown()
+    }
   }
 
   def whenCompleted(f: Boolean => Unit) {
@@ -272,11 +274,13 @@ final class StatefulStatus extends Status with Serializable {
    * <p>
    */
   def setCompleted() {
-    synchronized {
-      latch.countDown()
-    }
     for (f <- queue.iterator)
       f(succeeded)
+    synchronized {
+      // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
+      // for this Status to complete.
+      latch.countDown()
+    }
   }
 
   /**
