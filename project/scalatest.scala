@@ -12,8 +12,8 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.4
   val buildScalaVersion = "2.11.2"
 
-  val releaseVersion = "2.3.0-SNAP1"
-  val githubTag = "release-2.3.0-SNAP1-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "2.2.6"
+  val githubTag = "release-2.2.6-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -236,6 +236,14 @@ object ScalatestBuild extends Build {
         "org.scalactic",
         "org.scalautils"
       ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
@@ -273,6 +281,14 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
         "org.scalautils"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
