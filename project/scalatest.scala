@@ -302,7 +302,8 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
@@ -332,7 +333,8 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
