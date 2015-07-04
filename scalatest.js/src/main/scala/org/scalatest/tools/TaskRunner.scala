@@ -14,8 +14,14 @@ import sbt.testing._
 import org.scalajs.testinterface.TestUtils
 import org.scalatest._
 import java.util.concurrent.atomic.AtomicInteger
+import scala.concurrent.Promise
+import scala.concurrent.Future
+import scala.concurrent.Await
+import scala.util.Success
+import scala.scalajs.concurrent.JSExecutionContext
 
 import scala.compat.Platform
+import scala.concurrent.duration.Duration
 
 final class TaskRunner(task: TaskDef,
                        cl: ClassLoader,
@@ -38,10 +44,22 @@ final class TaskRunner(task: TaskDef,
   def taskDef(): TaskDef = task
 
   def execute(eventHandler: EventHandler, loggers: Array[Logger], continuation: (Array[Task]) => Unit): Unit = {
-    continuation(execute(eventHandler, loggers))
+    implicit val execCtx = JSExecutionContext.runNow
+    val future = executionFuture(eventHandler, loggers)
+    future.recover { case t =>
+println("GOT TO THIS RECOVER CALL")
+      loggers.foreach(_.trace(t))
+    }.onComplete{ _ =>
+      continuation(Array.empty)
+    }
   }
 
   def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
+    Await.result(executionFuture(eventHandler, loggers), Duration.Inf)
+    Array.empty
+  }
+
+  def executionFuture(eventHandler: EventHandler, loggers: Array[Logger]): Future[Unit] = {
     val suiteStartTime = Platform.currentTime
     val suite = TestUtils.newInstance(task.fullyQualifiedName, cl)(Seq.empty).asInstanceOf[Suite]
     val sbtLogInfoReporter = new SbtLogInfoReporter(
@@ -110,24 +128,29 @@ final class TaskRunner(task: TaskDef,
 
     val args = Args(reporter, Stopper.default, filter, ConfigMap.empty, None, tracker, Set.empty)
 
-    try {
-      suite.run(None, args)
-      val formatter = Suite.formatterForSuiteCompleted(suite)
-      val duration = Platform.currentTime
-      if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-        reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
-    } catch {
-        case e: Throwable =>
-          val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
-          val formatter = Suite.formatterForSuiteAborted(suite, rawString)
+    val future: Future[Unit] =
+      try {
+        val status = suite.run(None, args)
+        val promise = Promise[Unit]
+        status.whenCompleted { _ =>
+          val formatter = Suite.formatterForSuiteCompleted(suite)
+          val duration = Platform.currentTime
+          reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+          promise.complete(Success(()))
+        }
+        promise.future
+      } catch {
+          case e: Throwable =>
+            val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+            val formatter = Suite.formatterForSuiteAborted(suite, rawString)
+  
+            val duration = Platform.currentTime - suiteStartTime
+            // Do fire SuiteAborted even if a DistributedTestRunnerSuite, consistent with SuiteRunner behavior
+            reporter(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+        Future.failed(e)
+      }
 
-          val duration = Platform.currentTime - suiteStartTime
-          // Do fire SuiteAborted even if a DistributedTestRunnerSuite, consistent with SuiteRunner behavior
-          reporter(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
-    }
-
-
-    Array.empty
+    future
   }
 
   private class SbtLogInfoReporter(
