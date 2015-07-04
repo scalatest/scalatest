@@ -43,7 +43,7 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
         f(Failure(ex))
       status.setFailed()
       status.setCompleted()
-  }
+  } /* fills in ctx here */
 
   def onComplete(f: Try[Outcome] => Unit) = {
     var executeLocally = false

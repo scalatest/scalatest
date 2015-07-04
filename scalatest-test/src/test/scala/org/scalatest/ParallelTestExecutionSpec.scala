@@ -51,6 +51,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
 
   describe("ParallelTestExecution") {
 
+    // SKIP-SCALATESTJS-START
     class ControlledOrderDistributor extends Distributor {
       val buf = ListBuffer.empty[(Suite, Args, ScalaTestStatefulStatus)]
       def apply(suite: Suite, args: Args): Status = {
@@ -81,6 +82,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
         throw new UnsupportedOperationException("Hey, we're not supposed to be calling this anymore!")
       }
     }
+    // SKIP-SCALATESTJS-END
 
     // SKIP-SCALATESTJS-START
     class ControlledOrderConcurrentDistributor(poolSize: Int) extends Distributor {
@@ -116,6 +118,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
     }
     // SKIP-SCALATESTJS-END
 
+    // SKIP-SCALATESTJS-START
     it("should have the events reported in correct order when tests are executed in parallel") {
 
       def withDistributor(fun: ControlledOrderDistributor => Unit) {
@@ -148,7 +151,9 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
       withDistributor(_.executeInOrder())
       withDistributor(_.executeInReverseOrder())
     }
+    // SKIP-SCALATESTJS-END
     
+    // SKIP-SCALATESTJS-START
     it("should have InfoProvided fired from before and after block in correct order when tests are executed in parallel") {
       
       def withDistributor(fun: ControlledOrderDistributor => Unit) {
@@ -194,6 +199,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
       withDistributor(_.executeInOrder())
       withDistributor(_.executeInReverseOrder())
     }
+    // SKIP-SCALATESTJS-END
 
     // SKIP-SCALATESTJS-START
     it("should have the blocking test's events fired without waiting when timeout reaches, and when the missing event finally reach later, it should just get fired") {

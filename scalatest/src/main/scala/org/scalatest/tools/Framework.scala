@@ -893,10 +893,6 @@ class Framework extends SbtFramework {
           case Some(thread) =>
             // Need to wait until the server thread is done
             thread.join()
-/*
-            while(thread.isAlive)  // Any better way?
-              Thread.sleep(100)
-*/
           case None =>
         }
 

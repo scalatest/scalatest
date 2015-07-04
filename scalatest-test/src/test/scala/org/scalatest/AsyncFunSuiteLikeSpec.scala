@@ -67,7 +67,9 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSuite
       val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "test 1")
@@ -115,7 +117,9 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSuite
       val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "test 1")
