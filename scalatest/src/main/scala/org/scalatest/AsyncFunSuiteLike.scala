@@ -32,7 +32,7 @@ trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with OneIns
           case tfe: exceptions.TestFailedException => Failed(tfe)
           case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
         }
-      )
+      )/* fills in executionContext here */
     }
 
   private final val engine: Engine = getEngine
@@ -61,7 +61,7 @@ trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with OneIns
               val text = testData.text
               val tags = testData.tags
             }
-          )
+          ) /* fills in executionContext here */
         )
       }
 

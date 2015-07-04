@@ -315,7 +315,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       }
 
     asyncOutcome.onComplete { trial =>
-
+      // println("###onComplete in the FORK!!")
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
       if (shouldBeInformerForThisTest ne informerForThisTest)
         throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
