@@ -1125,7 +1125,7 @@ private[tools] object ArgsParser {
   // See comments for isCompleteToken() below for exceptions.
   //
   private val START_TOKEN_PATTERN = Pattern.compile("""^\s*(.*?)(\s|$)""")
-  private val FULL_TOKEN_PATTERN  = Pattern.compile("""^\s*(.+?)(((?<=[^\\])\s)|$)""")
+  private val FULL_TOKEN_PATTERN  = Pattern.compile("""^\s*(.+?[^\\])(\s|$)""")
   private def splitPath(pathArg: String): List[String] = {
     val path = pathArg.trim
 
