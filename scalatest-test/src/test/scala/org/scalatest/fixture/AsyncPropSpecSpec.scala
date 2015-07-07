@@ -15,17 +15,17 @@
  */
 package org.scalatest.fixture
 
-import scala.concurrent.Future
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
+import scala.concurrent.Future
 
-class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
+class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
-  describe("AsyncFunSuite") {
+  describe("AsyncPropSpec") {
 
     it("can be used for tests that return Future") {
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSpec extends AsyncPropSpec {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -38,25 +38,25 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
         val a = 1
 
-        test("test 1") { fixture =>
+        property("test 1") { fixture =>
           Future {
             assert(a == 1)
           }
         }
 
-        test("test 2") { fixture =>
+        property("test 2") { fixture =>
           Future {
             assert(a == 2)
           }
         }
 
-        test("test 3") { fixture =>
+        property("test 3") { fixture =>
           Future {
             pending
           }
         }
 
-        test("test 4") { fixture =>
+        property("test 4") { fixture =>
           Future {
             cancel
           }
@@ -68,12 +68,12 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSuite
+        override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
-      val suite = new ExampleSuite
-      val status = suite.run(None, Args(reporter = rep))
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
@@ -92,7 +92,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that did not return Future") {
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSpec extends AsyncPropSpec {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -105,19 +105,19 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
         val a = 1
 
-        test("test 1") { fixture =>
+        property("test 1") { fixture =>
           assert(a == 1)
         }
 
-        test("test 2") { fixture =>
+        property("test 2") { fixture =>
           assert(a == 2)
         }
 
-        test("test 3") { fixture =>
+        property("test 3") { fixture =>
           pending
         }
 
-        test("test 4") { fixture =>
+        property("test 4") { fixture =>
           cancel
         }
 
@@ -125,12 +125,12 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
           cancel
         }
 
-        override def newInstance = new ExampleSuite
+        override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
-      val suite = new ExampleSuite
-      val status = suite.run(None, Args(reporter = rep))
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END

@@ -13,67 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest
 
-import scala.concurrent.Future
-import org.scalatest._
 import SharedHelpers.EventRecordingReporter
+import scala.concurrent.Future
 
-class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
+class AsyncFunSpecSpec extends FunSpec {
 
-  describe("AsyncFunSuite") {
+  describe("AsyncFunSpec") {
 
     it("can be used for tests that return Future") {
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSpec extends AsyncFunSpec {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
-          test("testing")
-
         val a = 1
 
-        test("test 1") { fixture =>
+        it("test 1") {
           Future {
             assert(a == 1)
           }
         }
 
-        test("test 2") { fixture =>
+        it("test 2") {
           Future {
             assert(a == 2)
           }
         }
 
-        test("test 3") { fixture =>
+        it("test 3") {
           Future {
             pending
           }
         }
 
-        test("test 4") { fixture =>
+        it("test 4") {
           Future {
             cancel
           }
         }
 
-        ignore("test 5") { fixture =>
+        ignore("test 5") {
           Future {
             cancel
           }
         }
 
-        override def newInstance = new ExampleSuite
+        override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
-      val suite = new ExampleSuite
-      val status = suite.run(None, Args(reporter = rep))
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
@@ -92,45 +87,41 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that did not return Future") {
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSpec extends AsyncFunSpec {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
-        type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
-          test("testing")
-
         val a = 1
 
-        test("test 1") { fixture =>
+        it("test 1") {
           assert(a == 1)
         }
 
-        test("test 2") { fixture =>
+        it("test 2") {
           assert(a == 2)
         }
 
-        test("test 3") { fixture =>
+        it("test 3") {
           pending
         }
 
-        test("test 4") { fixture =>
+        it("test 4") {
           cancel
         }
 
-        ignore("test 5") { fixture =>
+        ignore("test 5") {
           cancel
         }
 
-        override def newInstance = new ExampleSuite
+        override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
-      val suite = new ExampleSuite
-      val status = suite.run(None, Args(reporter = rep))
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END

@@ -15,10 +15,9 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.SharedHelpers.EventRecordingReporter
+import scala.concurrent.Future
 import org.scalatest._
-
-import scala.concurrent.{ExecutionContext, Future}
+import SharedHelpers.EventRecordingReporter
 
 class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
@@ -28,7 +27,10 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike {
 
-        implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-START
+        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -92,7 +94,10 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike {
 
-        implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-START
+        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =

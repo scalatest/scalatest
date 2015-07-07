@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalatest.SharedHelpers.EventRecordingReporter
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class AsyncFunSuiteLikeSpec extends FunSpec {
 
@@ -27,7 +27,10 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike {
 
-        implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-START
+        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         val a = 1
 
@@ -87,7 +90,10 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike {
 
-        implicit val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-START
+        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         val a = 1
 

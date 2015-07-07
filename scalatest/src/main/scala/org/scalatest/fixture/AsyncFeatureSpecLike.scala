@@ -15,12 +15,11 @@
  */
 package org.scalatest.fixture
 
+import scala.concurrent.{Future, ExecutionContext}
 import org.scalatest._
 
-import scala.concurrent.{ExecutionContext, Future}
-
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with org.scalatest.OneInstancePerTest { thisSuite =>
+trait AsyncFeatureSpecLike extends FeatureSpecRegistration with AsyncTests with org.scalatest.OneInstancePerTest { thisSuite =>
 
   implicit def executionContext: ExecutionContext
 
@@ -37,8 +36,7 @@ trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with org.sc
       )
     }
 
-  private final val engine: FixtureEngine[FixtureParam] = getEngine
-
+  private final val engine = getEngine
   import engine._
 
   protected override def runTest(testName: String, args: Args): Status = {
