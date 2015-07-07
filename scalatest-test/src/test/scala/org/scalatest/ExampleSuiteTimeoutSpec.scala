@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalatest.concurrent.SleepHelper
+
 @DoNotDiscover
 protected[scalatest] class ExampleSuiteTimeoutSpec extends FunSpec with ParallelTestExecution {
 
@@ -26,7 +28,7 @@ protected[scalatest] class ExampleSuiteTimeoutSpec extends FunSpec with Parallel
   
   describe("Thing 2") {
     it ("do thing 2a") {}
-    it ("do thing 2b") { Thread.sleep(1300) }
+    it ("do thing 2b") { SleepHelper.sleep(1300) }
   }
 
   //SCALATESTJS-ONLY override def newInstance = new ExampleSuiteTimeoutSpec
