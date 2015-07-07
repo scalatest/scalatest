@@ -51,6 +51,9 @@ import Suite.autoTagClassAnnotations
 trait FreeSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentFreeSpecMod, "FreeSpec")
+
+  protected[scalatest] def getEngine: Engine = engine
+
   import engine._
 
   /**

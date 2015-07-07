@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
-
-import org.scalatest._
+package org.scalatest
 
 import scala.concurrent.{ExecutionContext, Future}
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with org.scalatest.OneInstancePerTest { thisSuite =>
+trait AsyncPropSpecLike extends PropSpecRegistration with AsyncTests with OneInstancePerTest { thisSuite =>
 
   implicit def executionContext: ExecutionContext
 
-  override private[scalatest] def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome =
-    (fixture: FixtureParam) => {
-      val futureUnit = testFun(fixture)
+  override private[scalatest] def transformToOutcome(testFun: => Future[Unit]): () => AsyncOutcome =
+    () => {
+      val futureUnit = testFun
       FutureOutcome(
         futureUnit.map(u => Succeeded).recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
@@ -37,7 +35,7 @@ trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with org.sc
       )
     }
 
-  private final val engine: FixtureEngine[FixtureParam] = getEngine
+  private final val engine: Engine = getEngine
 
   import engine._
 
@@ -55,12 +53,9 @@ trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with org.sc
         val testData = testDataFor(testName, theConfigMap)
         FutureOutcome(
           withAsyncFixture(
-            new OneArgAsyncTest {
+            new NoArgAsyncTest {
               val name = testData.name
-
-              def apply(fixture: FixtureParam): Future[Outcome] =
-                theTest.testFun(fixture).toFutureOutcome
-
+              def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
               val configMap = testData.configMap
               val scopes = testData.scopes
               val text = testData.text
@@ -73,5 +68,4 @@ trait AsyncFunSuiteLike extends FunSuiteRegistration with AsyncTests with org.sc
       runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
     }
   }
-
 }

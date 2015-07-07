@@ -19,13 +19,13 @@ import scala.concurrent.Future
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 
-class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
+class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
 
-  describe("AsyncFunSuite") {
+  describe("AsyncFeatureSpec") {
 
     it("can be used for tests that return Future") {
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSpec extends AsyncFeatureSpec {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -38,25 +38,25 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
         val a = 1
 
-        test("test 1") { fixture =>
+        scenario("test 1") { fixture =>
           Future {
             assert(a == 1)
           }
         }
 
-        test("test 2") { fixture =>
+        scenario("test 2") { fixture =>
           Future {
             assert(a == 2)
           }
         }
 
-        test("test 3") { fixture =>
+        scenario("test 3") { fixture =>
           Future {
             pending
           }
         }
 
-        test("test 4") { fixture =>
+        scenario("test 4") { fixture =>
           Future {
             cancel
           }
@@ -68,31 +68,31 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSuite
+        override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
-      val suite = new ExampleSuite
-      val status = suite.run(None, Args(reporter = rep))
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
-      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
       assert(rep.testFailedEventsReceived.length == 1)
-      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testFailedEventsReceived(0).testName == "Scenario: test 2")
       assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "test 3")
+      assert(rep.testPendingEventsReceived(0).testName == "Scenario: test 3")
       assert(rep.testCanceledEventsReceived.length == 1)
-      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+      assert(rep.testCanceledEventsReceived(0).testName == "Scenario: test 4")
       assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+      assert(rep.testIgnoredEventsReceived(0).testName == "Scenario: test 5")
     }
 
     it("can be used for tests that did not return Future") {
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSpec extends AsyncFeatureSpec {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -105,19 +105,19 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
         val a = 1
 
-        test("test 1") { fixture =>
+        scenario("test 1") { fixture =>
           assert(a == 1)
         }
 
-        test("test 2") { fixture =>
+        scenario("test 2") { fixture =>
           assert(a == 2)
         }
 
-        test("test 3") { fixture =>
+        scenario("test 3") { fixture =>
           pending
         }
 
-        test("test 4") { fixture =>
+        scenario("test 4") { fixture =>
           cancel
         }
 
@@ -125,26 +125,26 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
           cancel
         }
 
-        override def newInstance = new ExampleSuite
+        override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
-      val suite = new ExampleSuite
-      val status = suite.run(None, Args(reporter = rep))
+      val spec = new ExampleSpec
+      val status = spec.run(None, Args(reporter = rep))
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
-      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+      assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
       assert(rep.testFailedEventsReceived.length == 1)
-      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testFailedEventsReceived(0).testName == "Scenario: test 2")
       assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "test 3")
+      assert(rep.testPendingEventsReceived(0).testName == "Scenario: test 3")
       assert(rep.testCanceledEventsReceived.length == 1)
-      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+      assert(rep.testCanceledEventsReceived(0).testName == "Scenario: test 4")
       assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+      assert(rep.testIgnoredEventsReceived(0).testName == "Scenario: test 5")
     }
 
   }
