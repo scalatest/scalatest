@@ -93,7 +93,7 @@ class AssertionsSpec extends FunSpec {
     }
   }
   describe("The intercept method") {
-    it("should  catches subtypes") {
+    it("should catch subtypes") {
       class MyException extends RuntimeException
       class MyExceptionSubClass extends MyException
       intercept[MyException] {
@@ -161,6 +161,67 @@ class AssertionsSpec extends FunSpec {
       // Make sure the result type is the type passed in, so I can 
       // not cast and still invoke any method on it I want
       caught.someRandomMethod()
+    }
+  }
+  describe("The assertThrows method") {
+    it("should catch subtypes") {
+      class MyException extends RuntimeException
+      class MyExceptionSubClass extends MyException
+      assertThrows[MyException] {
+        throw new MyException
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+      assertThrows[MyException] {
+        throw new MyExceptionSubClass
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+      // Try with a trait
+      trait MyTrait {
+        def someRandomMethod() {}
+      }
+      class AnotherException extends RuntimeException with MyTrait
+      assertThrows[MyTrait] {
+        throw new AnotherException
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+    }
+
+    describe("when the bit of code throws the wrong exception") {
+      it("should include that wrong exception as the TFE's cause") {
+        val wrongException = new RuntimeException("oops!")
+        val caught =
+          intercept[TestFailedException] {
+            assertThrows[IllegalArgumentException] {
+              throw wrongException
+            }
+          }
+        assert(caught.cause.value eq wrongException)
+      }
+    }
+    it("should catch subtypes of the given exception type") { // TODO: Are these tests redundant? If so delete
+      class MyException extends RuntimeException
+      class MyExceptionSubClass extends MyException
+      assertThrows[MyException] {
+        throw new MyException
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+      assertThrows[MyException] {
+        throw new MyExceptionSubClass
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+      // Try with a trait
+      trait MyTrait {
+        def someRandomMethod() {}
+      }
+      class AnotherException extends RuntimeException with MyTrait
+      assertThrows[MyTrait] {
+        throw new AnotherException
+        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
+      }
+    }
+    it("should when it succeeds return the Succeeded singleton") {
+      assert(assertThrows[Exception] { throw new Exception } eq Succeeded)
+      pending
     }
   }
   describe("The trap method") {
@@ -1676,6 +1737,10 @@ class AssertionsSpec extends FunSpec {
           |assert(org.exists(_ == 'b'))
         """.stripMargin)
     }
+    it("should when it succeeds return the Succeeded singleton") {
+      // assert(assert(true, "clue") eq Succeeded)
+      pending
+    }
   }
 
   describe("The assert(boolean, clue) method") {
@@ -3031,7 +3096,10 @@ class AssertionsSpec extends FunSpec {
           |assert(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
-
+    it("should when it succeeds return the Succeeded singleton") {
+      // assert(assert(true) eq Succeeded)
+      pending
+    }
   }
 
   describe("The assume(boolean) method") {
@@ -4379,6 +4447,10 @@ class AssertionsSpec extends FunSpec {
           |val org = "abc"
           |assume(org.exists(_ == 'b'))
         """.stripMargin)
+    }
+    it("should when it succeeds return the Succeeded singleton") {
+      // assert(assume(true) eq Succeeded)
+      pending
     }
   }
 
@@ -5735,7 +5807,10 @@ class AssertionsSpec extends FunSpec {
           |assume(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
-
+    it("should when it succeeds return the Succeeded singleton") {
+      // assert(assume(true, "clue") eq Succeeded)
+      pending
+    }
   }
 
   describe("assertTypeError method ") {
@@ -5805,6 +5880,10 @@ class AssertionsSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
     }
+    it("should when it succeeds return the Succeeded singleton") {
+      // assert(assertTypeError("val x: String = 3") eq Succeeded)
+      pending
+    }
   }
 
   describe("assertDoesNotCompile method ") {
@@ -5860,9 +5939,11 @@ class AssertionsSpec extends FunSpec {
             |""".stripMargin
         )
       }
-
     }
-
+    it("should when it succeeds return the Succeeded singleton") {
+      // assert(assertDoesNotCompile("val x: String = 3") eq Succeeded)
+      pending
+    }
   }
 
   describe("assertCompiles method") {
@@ -5936,6 +6017,10 @@ class AssertionsSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
     }
+    it("should when it succeeds return the Succeeded singleton") {
+      // assert(assertCompiles("val x: Int = 3") eq Succeeded)
+      pending
+    }
   }
 
   describe("The assertResult method") {
@@ -5998,6 +6083,10 @@ class AssertionsSpec extends FunSpec {
         assertResult(a) { null }
       }
       assert(e1.message === Some(FailureMessages.expectedButGot(a, null)))
+    }
+    it("should when it succeeds return the Succeeded singleton") {
+      // assertResult(2) { 1 + 1 } eq Succeeded)
+      pending
     }
   }
 
@@ -6086,6 +6175,10 @@ class AssertionsSpec extends FunSpec {
         assertResult(a, "; the clue") { b }
       }
       assert(e4.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + "; the clue"))
+    }
+    it("should when it succeeds return the Succeeded singleton") {
+      // assertResult(2, "clude") { 1 + 1 } eq Succeeded)
+      pending
     }
   }
 }

@@ -888,6 +888,11 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     }
   }
 
+  def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Assertion = {
+    intercept[T](f)
+    Succeeded
+  }
+
   /*
    * Intercept and return an instance of the passed exception class (or an instance of a subclass of the
    * passed class), which is expected to be thrown by the passed function value. This method invokes the passed
