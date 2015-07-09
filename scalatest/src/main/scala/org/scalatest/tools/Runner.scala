@@ -1516,7 +1516,6 @@ object Runner {
 
   private[scalatest] def getRunpathClassLoader(runpathList: List[String]): ClassLoader = {
 
-      throw new NullPointerException
     requireNonNull(runpathList)
     if (runpathList.isEmpty) {
       classOf[Suite].getClassLoader // Could this be null technically?

@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalatest.concurrent.SleepHelper
 import org.scalatest.time.Span
 import org.scalatest.time.Second
 
@@ -23,7 +24,7 @@ protected[scalatest] class ExampleTimeoutParallelSpec extends FunSpec with Paral
 
   describe("Thing 1") {
     it ("do thing 1a") {}
-    it ("do thing 1b") { Thread.sleep(2000) }
+    it ("do thing 1b") { SleepHelper.sleep(2000) }
     it ("do thing 1c") {}
   }
   

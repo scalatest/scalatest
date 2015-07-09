@@ -20,9 +20,13 @@ class StatefulStatusSpec extends fixture.FunSpec {
   protected type FixtureParam = {
     def setCompleted()
     def isCompleted: Boolean
+    // SKIP-SCALATESTJS-START
     def succeeds(): Boolean
+    // SKIP-SCALATESTJS-END
     def setFailed()
+    // SKIP-SCALATESTJS-START
     def waitUntilCompleted()
+    // SKIP-SCALATESTJS-END
     def whenCompleted(f: Boolean => Unit)
   }
 
@@ -48,6 +52,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
       assert(status.isCompleted)
     }
 
+    // SKIP-SCALATESTJS-START
     it("should return true for succeeds() after completes() is called without fails()") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
@@ -60,12 +65,15 @@ class StatefulStatusSpec extends fixture.FunSpec {
       status.setCompleted()
       assert(!status.succeeds)
     }
+    // SKIP-SCALATESTJS-END
 
+    // SKIP-SCALATESTJS-START
     it("waitUntilCompleted should not block after completes() is called") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
       status.waitUntilCompleted()
     }
+    // SKIP-SCALATESTJS-END
 
     it("should throw IllegalStateException when setFailed() is called after setCompleted() is set") { status =>
       import scala.language.reflectiveCalls

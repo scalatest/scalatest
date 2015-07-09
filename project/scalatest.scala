@@ -19,10 +19,11 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.11.6"
+  val buildScalaVersion = "2.11.7"
 
-  val releaseVersion = "3.0.0-M4"
-  val githubTag = "release-3.0.0-M4-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "3.0.0-M6"
+
+  val githubTag = "release-3.0.0-M6-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -172,7 +173,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.3"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.4"
     )
 
   def scalatestTestOptions =
@@ -228,7 +229,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
-      "-oDI"))
+      "-oDIF"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
@@ -302,7 +303,8 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
@@ -332,7 +334,8 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",

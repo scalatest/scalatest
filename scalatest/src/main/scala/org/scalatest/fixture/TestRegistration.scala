@@ -15,12 +15,51 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.Tag
+import org.scalatest.OutcomeOf._
+import org.scalatest.{PastOutcome, AsyncOutcome, Tag}
 
 trait TestRegistration { theSuite: Suite =>
 
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any)
+  /**
+   * The return type of the registered test.
+   */
+  type Registration
 
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any)
+  /**
+   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
+   *
+   * @param testFun test function
+   * @return function that returns `AsyncOutcome`
+   */
+  private[scalatest] def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome = {
+    Transformer(testFun)
+    // The following does not work, why??
+    /*(fixture: FixtureParam) => {
+      PastOutcome {
+        outcomeOf {
+          testFun(fixture)
+        }
+      }
+    }*/
+  }
+
+  /**
+   * Register a test.
+   *
+   * @param testText the test text
+   * @param testTags the test tags
+   * @param testFun the test function
+   */
+  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration)
+
+  /**
+   * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
+   * event to be fired.
+   *
+   * @param testText the test text
+   * @param testTags the test tags
+   * @param testFun the test function
+   */
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration)
 
 }

@@ -17,10 +17,13 @@ package org.scalatest.fixture
 
 import org.scalatest.Outcome
 import org.scalatest.OutcomeOf.outcomeOf
+import org.scalatest.AsyncOutcome
+import org.scalatest.PastOutcome
 
-private[scalatest] case class Transformer[FixtureParam](exceptionalTestFun: FixtureParam => Any) extends (FixtureParam => Outcome) {
-  def apply(fixture: FixtureParam): Outcome = {
-    outcomeOf { exceptionalTestFun(fixture) }
+private[scalatest] case class Transformer[FixtureParam](exceptionalTestFun: FixtureParam => Any) extends (FixtureParam => AsyncOutcome) {
+  def apply(fixture: FixtureParam): AsyncOutcome = {
+    PastOutcome {
+      outcomeOf { exceptionalTestFun(fixture) }
+    }
   }
 }
-
