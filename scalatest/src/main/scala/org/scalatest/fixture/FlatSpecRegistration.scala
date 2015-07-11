@@ -152,7 +152,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     engine.registerTest(specText, transformToOutcome(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
     // TODO: This is what was being used before but it is wrong
     def testRegistrationClosedMessageFun: String =
       methodName match {
@@ -340,7 +340,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
     }
 
@@ -508,7 +508,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
     }
 
@@ -875,7 +875,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
     }
 
@@ -1043,7 +1043,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
     }
 
@@ -1420,7 +1420,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)
     }
   }
@@ -1546,7 +1546,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)
     }
 
@@ -2014,7 +2014,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
       //SCALATESTJS-ONLY val stackDepth = 8
       registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
-        def is(testFun: => PendingNothing) {
+        def is(testFun: => PendingStatement) {
           registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)
         }
         def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -2022,7 +2022,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
           new ResultOfTaggedAsInvocation(verb, rest, tagList) {
             // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
             //                                                            ^
-            def is(testFun: => PendingNothing) {
+            def is(testFun: => PendingStatement) {
               registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun _))
             }
           }
@@ -2089,7 +2089,7 @@ trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 

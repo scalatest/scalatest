@@ -341,10 +341,11 @@ object Exceptional {
 }
 
 /**
- * Marker trait that serves as the result type of <code>assert</code> and <code>assume</code> methods of
- * trait <code>Assertions</code>, which return its only subtype, <code>Succeeded.type</code>.
+ * Marker trait that serves as the result type of <code>assert</code>, <code>assume</code>, and <code>pending</code> methods of
+ * trait <code>Assertions</code>, which return its only instance, the <code>Succeeded</code> singleton, or throw
+ * an exception that indicates a failed, canceled, or pending test.
  */
-sealed trait Assertion
+sealed trait Assertion extends Outcome
 
 /**
  * Outcome for a test that succeeded.
@@ -358,7 +359,7 @@ sealed trait Assertion
  * about something larger: multiple tests or an entire suite.
  * </p>
  */
-case object Succeeded extends Outcome with Assertion {
+case object Succeeded extends Assertion {
 
   /**
    * Indicates that this <code>Outcome</code> represents a test that succeeded.

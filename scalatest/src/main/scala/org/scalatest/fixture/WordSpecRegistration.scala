@@ -146,7 +146,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
     engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
@@ -179,7 +179,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
@@ -337,7 +337,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
     }
 
@@ -467,7 +467,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)
     }
 

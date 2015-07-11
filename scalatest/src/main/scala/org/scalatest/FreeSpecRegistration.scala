@@ -144,7 +144,7 @@ trait FreeSpecRegistration extends Suite with TestRegistration with Informing wi
     engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistration.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement) {
     engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
@@ -178,7 +178,7 @@ trait FreeSpecRegistration extends Suite with TestRegistration with Informing wi
     engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistration.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -236,7 +236,7 @@ trait FreeSpecRegistration extends Suite with TestRegistration with Informing wi
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerPendingTestToRun(specText, tags, "is", testFun _)
     }
 
@@ -353,7 +353,7 @@ trait FreeSpecRegistration extends Suite with TestRegistration with Informing wi
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingNothing) {
+    def is(f: => PendingStatement) {
       registerPendingTestToRun(string, List(), "is", f _)
     }
 

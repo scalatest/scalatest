@@ -1320,7 +1320,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * stay at a higher level, forgetting how it is implemented and just focusing on the intent of the programmer who wrote the code.
    * </p>
    */
-  def pending: PendingNothing = { throw new TestPendingException }
+  def pending: Assertion with PendingStatement = { throw new TestPendingException }
 
   /**
    * Execute the passed block of code, and if it completes abruptly, throw <code>TestPendingException</code>, else

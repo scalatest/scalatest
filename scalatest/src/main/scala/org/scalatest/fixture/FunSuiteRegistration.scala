@@ -295,7 +295,7 @@ trait FunSuiteRegistration extends Suite with TestRegistration with Informing wi
   import scala.language.implicitConversions
 
   /**
-   * Implicitly converts a function that takes no parameters and results in <code>PendingNothing</code> to
+   * Implicitly converts a function that takes no parameters and results in <code>PendingStatement</code> to
    * a function from <code>FixtureParam</code> to <code>Any</code>, to enable pending tests to registered as by-name parameters
    * by methods that require a test function that takes a <code>FixtureParam</code>.
    *
@@ -307,7 +307,7 @@ trait FunSuiteRegistration extends Suite with TestRegistration with Informing wi
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingNothing): (FixtureParam => Any) = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Any) = {
     fixture => f
   }
 
