@@ -101,7 +101,6 @@ trait Inside {
    */
   def inside[T](value: T)(pf: PartialFunction[T, Unit]) {
 
-
     def appendInsideMessage(currentMessage: Option[String]) = {
       val st = Thread.currentThread.getStackTrace
       /*val levelCount =
