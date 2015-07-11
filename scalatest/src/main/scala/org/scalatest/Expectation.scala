@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalactic.Prettifier
 import java.text.MessageFormat
 
-sealed abstract class Fact {
+sealed abstract class Expectation {
     val rawFailureMessage: String
     val rawNegatedFailureMessage: String
     val rawMidSentenceFailureMessage: String
@@ -32,15 +32,15 @@ sealed abstract class Fact {
 
 
   /**
-   * Get a negated version of this Fact, sub type will be negated and all messages field will be substituted with its counter-part.
+   * Get a negated version of this Expectation, sub type will be negated and all messages field will be substituted with its counter-part.
    *
-   * @return a negated version of this Fact
+   * @return a negated version of this Expectation
    */
-    def unary_!(): Fact
+    def unary_!(): Expectation
 
-    def ||(rhs: => Fact): Fact
+    def ||(rhs: => Expectation): Expectation
 
-    def &&(rhs: => Fact): Fact
+    def &&(rhs: => Expectation): Expectation
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
@@ -76,7 +76,7 @@ sealed abstract class Fact {
   }
 }
 
-object Fact {
+object Expectation {
   def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
     case (false,false) => Resources.rawCommaAnd
     case (false,true) => Resources.rawRightParensCommaAnd
@@ -96,30 +96,30 @@ object Fact {
     val nestedArgs: IndexedSeq[Any]
   }
 
-  private[scalatest] case class FailureMessage(fact: Fact) extends LazyMessage {
+  private[scalatest] case class FailureMessage(fact: Expectation) extends LazyMessage {
     val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
     override def toString: String = fact.failureMessage
   }
 
-  private[scalatest] case class NegatedFailureMessage(fact: Fact) extends LazyMessage {
+  private[scalatest] case class NegatedFailureMessage(fact: Expectation) extends LazyMessage {
     val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
     override def toString: String = fact.negatedFailureMessage
   }
 
-  private[scalatest] case class MidSentenceFailureMessage(fact: Fact) extends LazyMessage {
+  private[scalatest] case class MidSentenceFailureMessage(fact: Expectation) extends LazyMessage {
     val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
     override def toString: String = fact.midSentenceFailureMessage
   }
 
-  private[scalatest] case class MidSentenceNegatedFailureMessage(fact: Fact) extends LazyMessage {
+  private[scalatest] case class MidSentenceNegatedFailureMessage(fact: Expectation) extends LazyMessage {
     val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
     override def toString: String = fact.midSentenceNegatedFailureMessage
   }
 }
 
-import org.scalatest.Fact._
+import org.scalatest.Expectation._
 
-case class No(
+case class False(
 	rawFailureMessage: String,
     rawNegatedFailureMessage: String,
     rawMidSentenceFailureMessage: String,
@@ -130,8 +130,8 @@ case class No(
     midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
     composite: Boolean = false,
     prettifier: Prettifier = Prettifier.default
-) extends Fact {
-	def unary_!() = Yes(
+) extends Expectation {
+	def unary_!() = True(
     rawNegatedFailureMessage,
     rawFailureMessage,
     rawMidSentenceNegatedFailureMessage,
@@ -143,9 +143,9 @@ case class No(
     composite,
     prettifier)
 
-  def &&(rhs: => Fact) = this
-  def ||(rhs: => Fact) = rhs match {
-      case yes: Yes => Yes(
+  def &&(rhs: => Expectation) = this
+  def ||(rhs: => Expectation) = rhs match {
+      case yes: True => True(
         commaAnd(this.composite, yes.composite),
         commaAnd(this.composite, yes.composite),
         commaAnd(this.composite, yes.composite),
@@ -156,7 +156,7 @@ case class No(
         Vector(MidSentenceFailureMessage(this), MidSentenceNegatedFailureMessage(yes)),
         true
       )
-      case no:  No  =>  No(
+      case no:  False  =>  False(
         commaAnd(this.composite, no.composite),
         commaAnd(this.composite, no.composite),
         commaAnd(this.composite, no.composite),
@@ -168,18 +168,18 @@ case class No(
         true
       )
   }
-  override def toString: String = s"No($failureMessage)"
+  override def toString: String = s"False($failureMessage)"
 }
 
 /**
- * Companion object for the <code>No</code> case class.
+ * Companion object for the <code>False</code> case class.
  *
  * @author Bill Venners
  */
-object No {
+object False {
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>failureMessage</code>, 
+   * Factory method that constructs a new <code>False</code> with passed <code>failureMessage</code>, 
    * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
    * <code>midSentenceNegatedFailureMessage</code>, <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
    * <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFailureMessageArgs</code>
@@ -191,11 +191,11 @@ object No {
    * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param failureMessageArgs arguments for constructing failure message to report if a match fails
    * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
-   * @return a <code>No</code> instance
+   * @return a <code>False</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): No =
-    new No(
+      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): False =
+    new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawMidSentenceFailureMessage,
@@ -209,20 +209,20 @@ object No {
     )
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>False</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFailureMessage</code>, and
    * <code>rawMidSentenceNegatedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-   * This is suitable to create No with eager error messages, and its mid-sentence messages need to be different.
+   * This is suitable to create False with eager error messages, and its mid-sentence messages need to be different.
    *
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
    * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-   * @return a <code>No</code> instance
+   * @return a <code>False</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String): No =
-    new No(
+      rawMidSentenceNegatedFailureMessage: String): False =
+    new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawMidSentenceFailureMessage,
@@ -236,18 +236,18 @@ object No {
     )
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>, and
+   * Factory method that constructs a new <code>False</code> with passed <code>rawFailureMessage</code>, and
    * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFailureMessage</code> will return the same
    * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
    * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
-   * This is suitable to create No with eager error messages that have same mid-sentence messages.
+   * This is suitable to create False with eager error messages that have same mid-sentence messages.
    *
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-   * @return a <code>No</code> instance
+   * @return a <code>False</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String): No =
-    new No(
+  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String): False =
+    new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawFailureMessage,
@@ -261,19 +261,19 @@ object No {
     )
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>False</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code> and <code>args</code> fields.  The <code>rawMidSentenceFailureMessage</code> will return the same
    * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
    * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will use <code>args</code> as arguments.
-   * This is suitable to create No with lazy error messages that have same mid-sentence messages and arguments.
+   * This is suitable to create False with lazy error messages that have same mid-sentence messages and arguments.
    *
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param args arguments for error messages construction
-   * @return a <code>No</code> instance
+   * @return a <code>False</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, args: IndexedSeq[Any]) =
-    new No(
+    new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawFailureMessage,
@@ -287,23 +287,23 @@ object No {
     )
 
   /**
-   * Factory method that constructs a new <code>No</code> with passed <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>False</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code>, <code>failureMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
    * The <code>rawMidSentenceFailureMessage</code> will return the same string as <code>rawFailureMessage</code>, and the
    * <code>rawMidSentenceNegatedFailureMessage</code> will return the same string as <code>rawNegatedFailureMessage</code>.
    * The <code>midSentenceFailureMessageArgs</code> will return the same as <code>failureMessageArgs</code>, and the
    * <code>midSentenceNegatedFailureMessageArgs</code> will return the same as <code>negatedFailureMessageArgs</code>.
-   * This is suitable to create No with lazy error messages that have same mid-sentence and use different arguments for
+   * This is suitable to create False with lazy error messages that have same mid-sentence and use different arguments for
    * negated messages.
    *
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param failureMessageArgs arguments for constructing failure message to report if a match fails
    * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
-   * @return a <code>No</code> instance
+   * @return a <code>False</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]) =
-    new No(
+    new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawFailureMessage,
@@ -318,7 +318,7 @@ object No {
 }
 
 
-case class Yes(
+case class True(
 	rawFailureMessage: String,
     rawNegatedFailureMessage: String,
     rawMidSentenceFailureMessage: String,
@@ -328,9 +328,9 @@ case class Yes(
     midSentenceFailureMessageArgs: IndexedSeq[Any],
     midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
     composite: Boolean = false,
-    prettifier: Prettifier = Prettifier.default) extends Fact {
+    prettifier: Prettifier = Prettifier.default) extends Expectation {
 
-	def unary_!() = No(
+	def unary_!() = False(
       rawNegatedFailureMessage,
       rawFailureMessage,
       rawMidSentenceNegatedFailureMessage,
@@ -342,8 +342,8 @@ case class Yes(
       composite,
       prettifier)
 
-  def &&(rhs: => Fact) = rhs match {
-      case yes: Yes => Yes(
+  def &&(rhs: => Expectation) = rhs match {
+      case yes: True => True(
         commaBut(this.composite, yes.composite),
         commaAnd(this.composite, yes.composite),
         commaBut(this.composite, yes.composite),
@@ -354,7 +354,7 @@ case class Yes(
         Vector(MidSentenceNegatedFailureMessage(this), MidSentenceNegatedFailureMessage(yes)),
         true
       )
-      case no: No  =>  No(
+      case no: False  =>  False(
         commaBut(this.composite, no.composite),
         commaAnd(this.composite, no.composite),
         commaBut(this.composite, no.composite),
@@ -367,20 +367,20 @@ case class Yes(
       )
   }
 
-  def ||(rhs: => Fact) = this
+  def ||(rhs: => Expectation) = this
 
-  override def toString: String = s"Yes($negatedFailureMessage)"
+  override def toString: String = s"True($negatedFailureMessage)"
 }
 
 /**
- * Companion object for the <code>Yes</code> case class.
+ * Companion object for the <code>True</code> case class.
  *
  * @author Bill Venners
  */
-object Yes {
+object True {
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed code>failureMessage</code>, 
+   * Factory method that constructs a new <code>True</code> with passed code>failureMessage</code>, 
    * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
    * <code>midSentenceNegatedFailureMessage</code>, <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
    * <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFailureMessageArgs</code>
@@ -392,11 +392,11 @@ object Yes {
    * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param failureMessageArgs arguments for constructing failure message to report if a match fails
    * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
-   * @return a <code>Yes</code> instance
+   * @return a <code>True</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): Yes =
-    new Yes(
+      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): True =
+    new True(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawMidSentenceFailureMessage,
@@ -410,20 +410,20 @@ object Yes {
     )
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>True</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFailureMessage</code>, and
    * <code>rawMidSentenceNegatedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-   * This is suitable to create Yes with eager error messages, and its mid-sentence messages need to be different.
+   * This is suitable to create True with eager error messages, and its mid-sentence messages need to be different.
    *
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
    * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-   * @return a <code>Yes</code> instance
+   * @return a <code>True</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String): Yes =
-    new Yes(
+      rawMidSentenceNegatedFailureMessage: String): True =
+    new True(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawMidSentenceFailureMessage,
@@ -437,18 +437,18 @@ object Yes {
     )
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>, and
+   * Factory method that constructs a new <code>True</code> with passed <code>rawFailureMessage</code>, and
    * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFailureMessage</code> will return the same
    * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
    * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
-   * This is suitable to create Yes with eager error messages that have same mid-sentence messages.
+   * This is suitable to create True with eager error messages that have same mid-sentence messages.
    *
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-   * @return a <code>Yes</code> instance
+   * @return a <code>True</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String): Yes =
-    new Yes(
+  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String): True =
+    new True(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawFailureMessage,
@@ -462,19 +462,19 @@ object Yes {
     )
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>True</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code> and <code>args</code> fields.  The <code>rawMidSentenceFailureMessage</code> will return the same
    * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
    * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will use <code>args</code> as arguments.
-   * This is suitable to create Yes with lazy error messages that have same mid-sentence messages and arguments.
+   * This is suitable to create True with lazy error messages that have same mid-sentence messages and arguments.
    *
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param args arguments for error messages construction
-   * @return a <code>Yes</code> instance
+   * @return a <code>True</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, args: IndexedSeq[Any]) =
-    new Yes(
+    new True(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawFailureMessage,
@@ -488,23 +488,23 @@ object Yes {
     )
 
   /**
-   * Factory method that constructs a new <code>Yes</code> with passed <code>rawFailureMessage</code>,
+   * Factory method that constructs a new <code>True</code> with passed <code>rawFailureMessage</code>,
    * <code>rawNegativeFailureMessage</code>, <code>failureMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
    * The <code>rawMidSentenceFailureMessage</code> will return the same string as <code>rawFailureMessage</code>, and the
    * <code>rawMidSentenceNegatedFailureMessage</code> will return the same string as <code>rawNegatedFailureMessage</code>.
    * The <code>midSentenceFailureMessageArgs</code> will return the same as <code>failureMessageArgs</code>, and the
    * <code>midSentenceNegatedFailureMessageArgs</code> will return the same as <code>negatedFailureMessageArgs</code>.
-   * This is suitable to create Yes with lazy error messages that have same mid-sentence and use different arguments for
+   * This is suitable to create True with lazy error messages that have same mid-sentence and use different arguments for
    * negated messages.
    *
    * @param rawFailureMessage raw failure message to report if a match fails
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @param failureMessageArgs arguments for constructing failure message to report if a match fails
    * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
-   * @return a <code>Yes</code> instance
+   * @return a <code>True</code> instance
    */
   def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]) =
-    new Yes(
+    new True(
       rawFailureMessage,
       rawNegatedFailureMessage,
       rawFailureMessage,

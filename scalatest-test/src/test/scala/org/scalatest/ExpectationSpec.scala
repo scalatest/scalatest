@@ -16,17 +16,17 @@
 package org.scalatest
 
 import org.scalactic.PrettyMethods
-import Fact._
+import Expectation._
 
-class FactSpec extends FreeSpec with Matchers with PrettyMethods {
+class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods {
 
-  "A Fact" - {
-    val fact = No("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
+  "A Expectation" - {
+    val fact = False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
     "when negated" - {
       "swaps failure and negated failure messages" in {
-        fact should equal (No("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
-        !fact should equal (Yes("1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
-        val fact2 = Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
+        fact should equal (False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
+        !fact should equal (True("1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
+        val fact2 = True("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
         fact2 should have (
           'failureMessage ("\"howdy\" did not equal null"),
           'negatedFailureMessage ("The reference equaled null"),
@@ -43,7 +43,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
           'composite(false)
         )
         val fact2Negated = !fact2
-         fact2Negated should equal (No("The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
+         fact2Negated should equal (False("The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
         fact2Negated should have (
           'failureMessage ("The reference equaled null"),
           'negatedFailureMessage ("\"howdy\" did not equal null"),
@@ -68,7 +68,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       }
     }
     "should construct localized strings from the raw strings and args" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
+      val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
       fact should have (
         'failureMessage ("1 did not equal 2"),
         'negatedFailureMessage ("1 equaled 2"),
@@ -87,19 +87,19 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
     }
 
     "should use midSentenceFailureMessageArgs to construct midSentenceFailureMessage" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty)
+      val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty)
       fact.midSentenceFailureMessage should be ("1 did not equal 2")
     }
 
     "should use midSentenceNegatedFailureMessageArgs to construct midSentenceNegatedFailureMessage" in {
-      val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
+      val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
       fact.midSentenceNegatedFailureMessage should be ("1 equaled 2")
     }
   }
 
-  "The Fact companion objects factory methods" - {
+  "The Expectation companion objects factory methods" - {
     "that takes two strings should work correctly" in {
-      val fact = Yes("one", "two")
+      val fact = True("one", "two")
       fact should have (
         'failureMessage ("one"),
         'negatedFailureMessage ("two"),
@@ -115,7 +115,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         'midSentenceNegatedFailureMessageArgs(Vector.empty),
         'composite(false)
       )
-      val ms = No("aaa", "bbb")
+      val ms = False("aaa", "bbb")
       ms should have (
         'failureMessage ("aaa"),
         'negatedFailureMessage ("bbb"),
@@ -133,7 +133,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       )
     }
     "that takes four strings should work correctly" in {
-      val fact = Yes("one", "two", "three", "four")
+      val fact = True("one", "two", "three", "four")
       fact should have (
         'failureMessage ("one"),
         'negatedFailureMessage ("two"),
@@ -149,7 +149,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         'midSentenceNegatedFailureMessageArgs(Vector.empty),
         'composite(false)
       )
-      val ms = No("aaa", "bbb", "ccc", "ddd")
+      val ms = False("aaa", "bbb", "ccc", "ddd")
       ms should have (
         'failureMessage ("aaa"),
         'negatedFailureMessage ("bbb"),
@@ -167,7 +167,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       )
     }
     "that takes four strings and two IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", "three", "four", Vector(42), Vector(42.0))
+      val fact = True("one", "two", "three", "four", Vector(42), Vector(42.0))
       fact should have (
         'failureMessage ("one"),
         'negatedFailureMessage ("two"),
@@ -183,7 +183,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         'midSentenceNegatedFailureMessageArgs(Vector(42.0)),
         'composite(false)
       )
-      val ms = No("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
+      val ms = False("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
         'failureMessage ("aaa"),
         'negatedFailureMessage ("bbb"),
@@ -201,7 +201,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       )
     }
     "that takes two strings and one IndexedSeq should work correctly" in {
-      val fact = Yes("one", "two", Vector(42))
+      val fact = True("one", "two", Vector(42))
       fact should have (
         'failureMessage ("one"),
         'negatedFailureMessage ("two"),
@@ -217,7 +217,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         'midSentenceNegatedFailureMessageArgs(Vector(42)),
         'composite(false)
       )
-      val ms = No("aaa", "bbb", Vector("ho", "he"))
+      val ms = False("aaa", "bbb", Vector("ho", "he"))
       ms should have (
         'failureMessage ("aaa"),
         'negatedFailureMessage ("bbb"),
@@ -235,7 +235,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       )
     }
     "that takes two strings and two IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", Vector(42), Vector(42.0))
+      val fact = True("one", "two", Vector(42), Vector(42.0))
       fact should have (
         'failureMessage ("one"),
         'negatedFailureMessage ("two"),
@@ -251,7 +251,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         'midSentenceNegatedFailureMessageArgs(Vector(42.0)),
         'composite(false)
       )
-      val ms = No("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
+      val ms = False("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
         'failureMessage ("aaa"),
         'negatedFailureMessage ("bbb"),
@@ -269,7 +269,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       )
     }
     "that takes four strings and four IndexedSeqs should work correctly" in {
-      val fact = Yes("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
+      val fact = True("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
       fact should have (
         'failureMessage ("one"),
         'negatedFailureMessage ("two"),
@@ -285,7 +285,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         'midSentenceNegatedFailureMessageArgs(Vector(4)),
         'composite(false)
       )
-      val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
+      val ms = False("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
       ms should have (
         'failureMessage ("aaa"),
         'negatedFailureMessage ("bbb"),
@@ -303,7 +303,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       )
     }
     "that takes four strings, four IndexedSeqs and composite should work correctly" in {
-      val fact = Yes("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4), true)
+      val fact = True("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4), true)
           fact should have (
               'failureMessage ("one"),
               'negatedFailureMessage ("two"),
@@ -319,7 +319,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
               'midSentenceNegatedFailureMessageArgs(Vector(4)),
               'composite(true)
               )
-      val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'), true)
+      val ms = False("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'), true)
       ms should have (
           'failureMessage ("aaa"),
           'negatedFailureMessage ("bbb"),
@@ -338,13 +338,13 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
     }
   }
 
-  "The Fact obtained from and-ing two Facts" - {
+  "The Expectation obtained from and-ing two Expectations" - {
     "should be lazy about constructing strings" - {
-      "for No && No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
-        val fact = leftSideNo && rightSideNo
-        fact shouldBe a [No]
+      "for False && False" in {
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideFalse && rightSideFalse
+        fact shouldBe a [False]
         fact.rawFailureMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawNegatedFailureMessage should be (Resources.rawWasGreaterThan)
         fact.rawMidSentenceFailureMessage should be (Resources.rawWasNotGreaterThan)
@@ -358,11 +358,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         fact.composite should be (false)
       }
 
-      "for No && Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
-        val fact = leftSideNo && rightSideYes
-        fact shouldBe a [No]
+      "for False && True" in {
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideTrue = True(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideFalse && rightSideTrue
+        fact shouldBe a [False]
         fact.rawFailureMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawNegatedFailureMessage should be (Resources.rawWasGreaterThan)
         fact.rawMidSentenceFailureMessage should be (Resources.rawWasNotGreaterThan)
@@ -376,11 +376,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         fact.composite should be (false)
       }
 
-      "for Yes && No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
-        val fact = leftSideYes && rightSideNo
-        fact shouldBe a [No]
+      "for True && False" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val fact = leftSideTrue && rightSideFalse
+        fact shouldBe a [False]
         fact.rawFailureMessage should be (Resources.rawCommaBut)
         fact.rawNegatedFailureMessage should be (Resources.rawCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawCommaBut)
@@ -389,18 +389,18 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         fact.negatedFailureMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
         fact.midSentenceFailureMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
         fact.midSentenceNegatedFailureMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.failureMessageArgs should be (Vector(NegatedFailureMessage(leftSideYes), MidSentenceFailureMessage(rightSideNo)))
-        fact.negatedFailureMessageArgs should be (Vector(NegatedFailureMessage(leftSideYes), MidSentenceNegatedFailureMessage(rightSideNo)))
-        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideYes), MidSentenceFailureMessage(rightSideNo)))
-        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideYes), MidSentenceNegatedFailureMessage(rightSideNo)))
+        fact.failureMessageArgs should be (Vector(NegatedFailureMessage(leftSideTrue), MidSentenceFailureMessage(rightSideFalse)))
+        fact.negatedFailureMessageArgs should be (Vector(NegatedFailureMessage(leftSideTrue), MidSentenceNegatedFailureMessage(rightSideFalse)))
+        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideTrue), MidSentenceFailureMessage(rightSideFalse)))
+        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideTrue), MidSentenceNegatedFailureMessage(rightSideFalse)))
         fact.composite should be (true)
       }
 
-      "for Yes && Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
-        val fact = leftSideYes && rightSideYes
-        fact shouldBe a [Yes]
+      "for True && True" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val fact = leftSideTrue && rightSideTrue
+        fact shouldBe a [True]
         fact.rawFailureMessage should be (Resources.rawCommaBut)
         fact.rawNegatedFailureMessage should be (Resources.rawCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawCommaBut)
@@ -409,19 +409,19 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         fact.negatedFailureMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
         fact.midSentenceFailureMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty))) 
         fact.midSentenceNegatedFailureMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.failureMessageArgs should be (Vector(NegatedFailureMessage(leftSideYes), MidSentenceFailureMessage(rightSideYes)))
-        fact.negatedFailureMessageArgs should be (Vector(NegatedFailureMessage(leftSideYes), MidSentenceNegatedFailureMessage(rightSideYes)))
-        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideYes), MidSentenceFailureMessage(rightSideYes)))
-        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideYes), MidSentenceNegatedFailureMessage(rightSideYes)))
+        fact.failureMessageArgs should be (Vector(NegatedFailureMessage(leftSideTrue), MidSentenceFailureMessage(rightSideTrue)))
+        fact.negatedFailureMessageArgs should be (Vector(NegatedFailureMessage(leftSideTrue), MidSentenceNegatedFailureMessage(rightSideTrue)))
+        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideTrue), MidSentenceFailureMessage(rightSideTrue)))
+        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideTrue), MidSentenceNegatedFailureMessage(rightSideTrue)))
         fact.composite should be (true)
       }
     }
 
     "should be parenthesize composite facts" - {
       "for non-composite && composite" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), false)
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
-        val fact = leftSideYes && rightSideYes
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), false)
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
+        val fact = leftSideTrue && rightSideTrue
         fact.rawFailureMessage should be (Resources.rawRightParensCommaBut)
         fact.rawNegatedFailureMessage should be (Resources.rawRightParensCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawRightParensCommaBut)
@@ -430,9 +430,9 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       }
 
       "for composite && non-composite" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), false)
-        val fact = leftSideYes && rightSideYes
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), false)
+        val fact = leftSideTrue && rightSideTrue
         fact.rawFailureMessage should be (Resources.rawLeftParensCommaBut)
         fact.rawNegatedFailureMessage should be (Resources.rawLeftParensCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawLeftParensCommaBut)
@@ -441,9 +441,9 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       }
 
       "for composite && composite" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
-        val fact = leftSideYes && rightSideYes
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
+        val fact = leftSideTrue && rightSideTrue
         fact.rawFailureMessage should be (Resources.rawBothParensCommaBut)
         fact.rawNegatedFailureMessage should be (Resources.rawBothParensCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawBothParensCommaBut)
@@ -452,14 +452,14 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       }
     }
   }
-  "The Fact obtained from or-ing two Facts" - {
+  "The Expectation obtained from or-ing two Expectations" - {
     "should be lazy about constructing strings" - {
 
-      "for No || No" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
-        val fact = leftSideNo || rightSideNo
-        fact shouldBe a [No]
+      "for False || False" in {
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideFalse || rightSideFalse
+        fact shouldBe a [False]
         fact.rawFailureMessage should be (Resources.rawCommaAnd)
         fact.rawNegatedFailureMessage should be (Resources.rawCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawCommaAnd)
@@ -468,18 +468,18 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         fact.negatedFailureMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
         fact.midSentenceFailureMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
         fact.midSentenceNegatedFailureMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.failureMessageArgs should be (Vector(FailureMessage(leftSideNo), MidSentenceFailureMessage(rightSideNo)))
-        fact.negatedFailureMessageArgs should be (Vector(FailureMessage(leftSideNo), MidSentenceNegatedFailureMessage(rightSideNo)))
-        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideNo), MidSentenceFailureMessage(rightSideNo)))
-        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideNo), MidSentenceNegatedFailureMessage(rightSideNo)))
+        fact.failureMessageArgs should be (Vector(FailureMessage(leftSideFalse), MidSentenceFailureMessage(rightSideFalse)))
+        fact.negatedFailureMessageArgs should be (Vector(FailureMessage(leftSideFalse), MidSentenceNegatedFailureMessage(rightSideFalse)))
+        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideFalse), MidSentenceFailureMessage(rightSideFalse)))
+        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideFalse), MidSentenceNegatedFailureMessage(rightSideFalse)))
         fact.composite should be (true)
        }
 
-      "for No || Yes" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
-        val fact = leftSideNo || rightSideYes
-        fact shouldBe a [Yes]
+      "for False || True" in {
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideTrue = True(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideFalse || rightSideTrue
+        fact shouldBe a [True]
         fact.rawFailureMessage should be (Resources.rawCommaAnd)
         fact.rawNegatedFailureMessage should be (Resources.rawCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawCommaAnd)
@@ -488,18 +488,18 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         fact.negatedFailureMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
         fact.midSentenceFailureMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
         fact.midSentenceNegatedFailureMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
-        fact.failureMessageArgs should be (Vector(FailureMessage(leftSideNo), MidSentenceFailureMessage(rightSideYes)))
-        fact.negatedFailureMessageArgs should be (Vector(FailureMessage(leftSideNo), MidSentenceNegatedFailureMessage(rightSideYes)))
-        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideNo), MidSentenceFailureMessage(rightSideYes)))
-        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideNo), MidSentenceNegatedFailureMessage(rightSideYes)))
+        fact.failureMessageArgs should be (Vector(FailureMessage(leftSideFalse), MidSentenceFailureMessage(rightSideTrue)))
+        fact.negatedFailureMessageArgs should be (Vector(FailureMessage(leftSideFalse), MidSentenceNegatedFailureMessage(rightSideTrue)))
+        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideFalse), MidSentenceFailureMessage(rightSideTrue)))
+        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideFalse), MidSentenceNegatedFailureMessage(rightSideTrue)))
         fact.composite should be (true)
       }
 
-      "for Yes || No" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
-        val fact = leftSideYes || rightSideNo
-        fact shouldBe a [Yes]
+      "for True || False" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val fact = leftSideTrue || rightSideFalse
+        fact shouldBe a [True]
         fact.rawFailureMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawNegatedFailureMessage should be (Resources.rawWasGreaterThan)
         fact.rawMidSentenceFailureMessage should be (Resources.rawWasNotGreaterThan)
@@ -513,11 +513,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
         fact.composite should be (false)
       }
 
-      "for Yes || Yes" in {
-        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
-        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
-        val fact = leftSideYes || rightSideYes
-        fact shouldBe a [Yes]
+      "for True || True" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val fact = leftSideTrue || rightSideTrue
+        fact shouldBe a [True]
         fact.rawFailureMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawNegatedFailureMessage should be (Resources.rawWasGreaterThan)
         fact.rawMidSentenceFailureMessage should be (Resources.rawWasNotGreaterThan)
@@ -534,9 +534,9 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
 
     "should be parenthesize composite facts" - {
       "for non-composite || composite" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), false)
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
-        val fact = leftSideNo || rightSideNo
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), false)
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
+        val fact = leftSideFalse || rightSideFalse
         fact.rawFailureMessage should be (Resources.rawRightParensCommaAnd)
         fact.rawNegatedFailureMessage should be (Resources.rawRightParensCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawRightParensCommaAnd)
@@ -545,9 +545,9 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       }
 
       "for composite || non-composite" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), false)
-        val fact = leftSideNo || rightSideNo
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), false)
+        val fact = leftSideFalse || rightSideFalse
         fact.rawFailureMessage should be (Resources.rawLeftParensCommaAnd)
         fact.rawNegatedFailureMessage should be (Resources.rawLeftParensCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawLeftParensCommaAnd)
@@ -556,9 +556,9 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods {
       }
 
       "for composite || composite" in {
-        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
-        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
-        val fact = leftSideNo || rightSideNo
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
+        val fact = leftSideFalse || rightSideFalse
         fact.rawFailureMessage should be (Resources.rawBothParensCommaAnd)
         fact.rawNegatedFailureMessage should be (Resources.rawBothParensCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawBothParensCommaAnd)
