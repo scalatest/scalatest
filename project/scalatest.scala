@@ -132,7 +132,7 @@ object ScalatestBuild extends Build {
   )
 
   def scalacheckDependency(config: String) =
-    "org.scalacheck" %% "scalacheck" % "1.12.3" % config
+    "org.scalacheck" %% "scalacheck" % "1.12.4" % config
 
   def crossBuildLibraryDependencies(theScalaVersion: String) =
     CrossVersion.partialVersion(theScalaVersion) match {
@@ -362,6 +362,7 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
       jsDependencies += RuntimeDOM % "test",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test",
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -477,7 +478,7 @@ object ScalatestBuild extends Build {
         </dependency>,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.3",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "optional",
       jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
@@ -550,6 +551,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test",
       jsDependencies += RuntimeDOM % "test",
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
