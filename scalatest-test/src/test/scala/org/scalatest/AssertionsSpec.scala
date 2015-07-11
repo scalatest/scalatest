@@ -27,7 +27,7 @@ import org.scalactic.Prettifier
 import org.scalactic.exceptions.NullArgumentException
 
 class AssertionsSpec extends FunSpec {
-  
+
   val fileName: String = "AssertionsSpec.scala"
 
   describe("The === method") {
@@ -3031,7 +3031,6 @@ class AssertionsSpec extends FunSpec {
           |assert(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
-
   }
 
   describe("The assume(boolean) method") {
@@ -5735,7 +5734,6 @@ class AssertionsSpec extends FunSpec {
           |assume(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
-
   }
 
   describe("assertTypeError method ") {
@@ -5860,9 +5858,7 @@ class AssertionsSpec extends FunSpec {
             |""".stripMargin
         )
       }
-
     }
-
   }
 
   describe("assertCompiles method") {
@@ -6086,6 +6082,12 @@ class AssertionsSpec extends FunSpec {
         assertResult(a, "; the clue") { b }
       }
       assert(e4.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + "; the clue"))
+    }
+  }
+  describe("The Assertions trait") {
+    import enablers.Asserting
+    it("should provide an implicit Asserting[Assertion]") {
+      assertCompiles("implicitly[Asserting[Assertion]]")
     }
   }
 }
