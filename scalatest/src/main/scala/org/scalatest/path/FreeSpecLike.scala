@@ -213,7 +213,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(specText, tags, "is", testFun _)
     }
 
@@ -352,7 +352,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingNothing) {
+    def is(f: => PendingStatement) {
       registerTestToRun(string, List(), "is", f _)
     }
 

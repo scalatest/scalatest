@@ -18,7 +18,7 @@ package org.scalatest
 import org.scalactic.PrettyMethods
 import Expectation._
 
-class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods {
+class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
 
   "A Expectation" - {
     val fact = False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
@@ -28,61 +28,61 @@ class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods {
         !fact should equal (True("1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
         val fact2 = True("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
         fact2 should have (
-          'failureMessage ("\"howdy\" did not equal null"),
-          'negatedFailureMessage ("The reference equaled null"),
-          'midSentenceFailureMessage ("\"howdy\" did not equal null"),
-          'midSentenceNegatedFailureMessage ("the reference equaled null"),
-          'rawFailureMessage ("{0} did not equal null"),
-          'rawNegatedFailureMessage ("The reference equaled null"),
-          'rawMidSentenceFailureMessage ("{0} did not equal null"),
-          'rawMidSentenceNegatedFailureMessage ("the reference equaled null"),
-          'failureMessageArgs(Vector("howdy")),
-          'negatedFailureMessageArgs(Vector.empty),
-          'midSentenceFailureMessageArgs(Vector("howdy")),
-          'midSentenceNegatedFailureMessageArgs(Vector.empty),
-          'composite(false)
+          failureMessage ("\"howdy\" did not equal null"),
+          negatedFailureMessage ("The reference equaled null"),
+          midSentenceFailureMessage ("\"howdy\" did not equal null"),
+          midSentenceNegatedFailureMessage ("the reference equaled null"),
+          rawFailureMessage ("{0} did not equal null"),
+          rawNegatedFailureMessage ("The reference equaled null"),
+          rawMidSentenceFailureMessage ("{0} did not equal null"),
+          rawMidSentenceNegatedFailureMessage ("the reference equaled null"),
+          failureMessageArgs(Vector("howdy")),
+          negatedFailureMessageArgs(Vector.empty),
+          midSentenceFailureMessageArgs(Vector("howdy")),
+          midSentenceNegatedFailureMessageArgs(Vector.empty),
+          composite(false)
         )
         val fact2Negated = !fact2
          fact2Negated should equal (False("The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
         fact2Negated should have (
-          'failureMessage ("The reference equaled null"),
-          'negatedFailureMessage ("\"howdy\" did not equal null"),
-          'midSentenceFailureMessage ("the reference equaled null"),
-          'midSentenceNegatedFailureMessage ("\"howdy\" did not equal null"),
-          'rawFailureMessage ("The reference equaled null"),
-          'rawNegatedFailureMessage ("{0} did not equal null"),
-          'rawMidSentenceFailureMessage ("the reference equaled null"),
-          'rawMidSentenceNegatedFailureMessage ("{0} did not equal null"),
-          'failureMessageArgs(Vector.empty),
-          'negatedFailureMessageArgs(Vector("howdy")),
-          'midSentenceFailureMessageArgs(Vector.empty),
-          'midSentenceNegatedFailureMessageArgs(Vector("howdy")),
-          'composite(false)
+          failureMessage ("The reference equaled null"),
+          negatedFailureMessage ("\"howdy\" did not equal null"),
+          midSentenceFailureMessage ("the reference equaled null"),
+          midSentenceNegatedFailureMessage ("\"howdy\" did not equal null"),
+          rawFailureMessage ("The reference equaled null"),
+          rawNegatedFailureMessage ("{0} did not equal null"),
+          rawMidSentenceFailureMessage ("the reference equaled null"),
+          rawMidSentenceNegatedFailureMessage ("{0} did not equal null"),
+          failureMessageArgs(Vector.empty),
+          negatedFailureMessageArgs(Vector("howdy")),
+          midSentenceFailureMessageArgs(Vector.empty),
+          midSentenceNegatedFailureMessageArgs(Vector("howdy")),
+          composite(false)
         )
       }
       "should maintain the same composite state" in {
-        !fact should have ('composite(false))
+        !fact should have (composite(false))
         
         val factCopy = fact.copy(composite = true)
-        !factCopy should have ('composite(true))
+        !factCopy should have (composite(true))
       }
     }
     "should construct localized strings from the raw strings and args" in {
       val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
       fact should have (
-        'failureMessage ("1 did not equal 2"),
-        'negatedFailureMessage ("1 equaled 2"),
-        'midSentenceFailureMessage ("1 did not equal 2"),
-        'midSentenceNegatedFailureMessage ("1 equaled 2"),
-        'rawFailureMessage ("{0} did not equal {1}"),
-        'rawNegatedFailureMessage ("{0} equaled {1}"),
-        'rawMidSentenceFailureMessage ("{0} did not equal {1}"),
-        'rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
-        'failureMessageArgs(Vector(1, 2)),
-        'negatedFailureMessageArgs(Vector(1, 2)),
-        'midSentenceFailureMessageArgs(Vector(1, 2)),
-        'midSentenceNegatedFailureMessageArgs(Vector(1, 2)),
-        'composite(false)
+        failureMessage ("1 did not equal 2"),
+        negatedFailureMessage ("1 equaled 2"),
+        midSentenceFailureMessage ("1 did not equal 2"),
+        midSentenceNegatedFailureMessage ("1 equaled 2"),
+        rawFailureMessage ("{0} did not equal {1}"),
+        rawNegatedFailureMessage ("{0} equaled {1}"),
+        rawMidSentenceFailureMessage ("{0} did not equal {1}"),
+        rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
+        failureMessageArgs(Vector(1, 2)),
+        negatedFailureMessageArgs(Vector(1, 2)),
+        midSentenceFailureMessageArgs(Vector(1, 2)),
+        midSentenceNegatedFailureMessageArgs(Vector(1, 2)),
+        composite(false)
       )
     }
 
@@ -101,239 +101,239 @@ class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods {
     "that takes two strings should work correctly" in {
       val fact = True("one", "two")
       fact should have (
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("one"),
-        'midSentenceNegatedFailureMessage ("two"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("one"),
-        'rawMidSentenceNegatedFailureMessage ("two"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty),
-        'composite(false)
+        failureMessage ("one"),
+        negatedFailureMessage ("two"),
+        midSentenceFailureMessage ("one"),
+        midSentenceNegatedFailureMessage ("two"),
+        rawFailureMessage ("one"),
+        rawNegatedFailureMessage ("two"),
+        rawMidSentenceFailureMessage ("one"),
+        rawMidSentenceNegatedFailureMessage ("two"),
+        failureMessageArgs(Vector.empty),
+        negatedFailureMessageArgs(Vector.empty),
+        midSentenceFailureMessageArgs(Vector.empty),
+        midSentenceNegatedFailureMessageArgs(Vector.empty),
+        composite(false)
       )
       val ms = False("aaa", "bbb")
       ms should have (
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("aaa"),
-        'midSentenceNegatedFailureMessage ("bbb"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("aaa"),
-        'rawMidSentenceNegatedFailureMessage ("bbb"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty),
-        'composite(false)
+        failureMessage ("aaa"),
+        negatedFailureMessage ("bbb"),
+        midSentenceFailureMessage ("aaa"),
+        midSentenceNegatedFailureMessage ("bbb"),
+        rawFailureMessage ("aaa"),
+        rawNegatedFailureMessage ("bbb"),
+        rawMidSentenceFailureMessage ("aaa"),
+        rawMidSentenceNegatedFailureMessage ("bbb"),
+        failureMessageArgs(Vector.empty),
+        negatedFailureMessageArgs(Vector.empty),
+        midSentenceFailureMessageArgs(Vector.empty),
+        midSentenceNegatedFailureMessageArgs(Vector.empty),
+        composite(false)
       )
     }
     "that takes four strings should work correctly" in {
       val fact = True("one", "two", "three", "four")
       fact should have (
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("three"),
-        'midSentenceNegatedFailureMessage ("four"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("three"),
-        'rawMidSentenceNegatedFailureMessage ("four"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty),
-        'composite(false)
+        failureMessage ("one"),
+        negatedFailureMessage ("two"),
+        midSentenceFailureMessage ("three"),
+        midSentenceNegatedFailureMessage ("four"),
+        rawFailureMessage ("one"),
+        rawNegatedFailureMessage ("two"),
+        rawMidSentenceFailureMessage ("three"),
+        rawMidSentenceNegatedFailureMessage ("four"),
+        failureMessageArgs(Vector.empty),
+        negatedFailureMessageArgs(Vector.empty),
+        midSentenceFailureMessageArgs(Vector.empty),
+        midSentenceNegatedFailureMessageArgs(Vector.empty),
+        composite(false)
       )
       val ms = False("aaa", "bbb", "ccc", "ddd")
       ms should have (
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("ccc"),
-        'midSentenceNegatedFailureMessage ("ddd"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("ccc"),
-        'rawMidSentenceNegatedFailureMessage ("ddd"),
-        'failureMessageArgs(Vector.empty),
-        'negatedFailureMessageArgs(Vector.empty),
-        'midSentenceFailureMessageArgs(Vector.empty),
-        'midSentenceNegatedFailureMessageArgs(Vector.empty),
-        'composite(false)
+        failureMessage ("aaa"),
+        negatedFailureMessage ("bbb"),
+        midSentenceFailureMessage ("ccc"),
+        midSentenceNegatedFailureMessage ("ddd"),
+        rawFailureMessage ("aaa"),
+        rawNegatedFailureMessage ("bbb"),
+        rawMidSentenceFailureMessage ("ccc"),
+        rawMidSentenceNegatedFailureMessage ("ddd"),
+        failureMessageArgs(Vector.empty),
+        negatedFailureMessageArgs(Vector.empty),
+        midSentenceFailureMessageArgs(Vector.empty),
+        midSentenceNegatedFailureMessageArgs(Vector.empty),
+        composite(false)
       )
     }
     "that takes four strings and two IndexedSeqs should work correctly" in {
       val fact = True("one", "two", "three", "four", Vector(42), Vector(42.0))
       fact should have (
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("three"),
-        'midSentenceNegatedFailureMessage ("four"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("three"),
-        'rawMidSentenceNegatedFailureMessage ("four"),
-        'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42.0)),
-        'midSentenceFailureMessageArgs(Vector(42)),
-        'midSentenceNegatedFailureMessageArgs(Vector(42.0)),
-        'composite(false)
+        failureMessage ("one"),
+        negatedFailureMessage ("two"),
+        midSentenceFailureMessage ("three"),
+        midSentenceNegatedFailureMessage ("four"),
+        rawFailureMessage ("one"),
+        rawNegatedFailureMessage ("two"),
+        rawMidSentenceFailureMessage ("three"),
+        rawMidSentenceNegatedFailureMessage ("four"),
+        failureMessageArgs(Vector(42)),
+        negatedFailureMessageArgs(Vector(42.0)),
+        midSentenceFailureMessageArgs(Vector(42)),
+        midSentenceNegatedFailureMessageArgs(Vector(42.0)),
+        composite(false)
       )
       val ms = False("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("ccc"),
-        'midSentenceNegatedFailureMessage ("ddd"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("ccc"),
-        'rawMidSentenceNegatedFailureMessage ("ddd"),
-        'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("foo", "fie")),
-        'midSentenceFailureMessageArgs(Vector("ho", "he")),
-        'midSentenceNegatedFailureMessageArgs(Vector("foo", "fie")),
-        'composite(false)
+        failureMessage ("aaa"),
+        negatedFailureMessage ("bbb"),
+        midSentenceFailureMessage ("ccc"),
+        midSentenceNegatedFailureMessage ("ddd"),
+        rawFailureMessage ("aaa"),
+        rawNegatedFailureMessage ("bbb"),
+        rawMidSentenceFailureMessage ("ccc"),
+        rawMidSentenceNegatedFailureMessage ("ddd"),
+        failureMessageArgs(Vector("ho", "he")),
+        negatedFailureMessageArgs(Vector("foo", "fie")),
+        midSentenceFailureMessageArgs(Vector("ho", "he")),
+        midSentenceNegatedFailureMessageArgs(Vector("foo", "fie")),
+        composite(false)
       )
     }
     "that takes two strings and one IndexedSeq should work correctly" in {
       val fact = True("one", "two", Vector(42))
       fact should have (
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("one"),
-        'midSentenceNegatedFailureMessage ("two"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("one"),
-        'rawMidSentenceNegatedFailureMessage ("two"),
-        'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42)),
-        'midSentenceFailureMessageArgs(Vector(42)),
-        'midSentenceNegatedFailureMessageArgs(Vector(42)),
-        'composite(false)
+        failureMessage ("one"),
+        negatedFailureMessage ("two"),
+        midSentenceFailureMessage ("one"),
+        midSentenceNegatedFailureMessage ("two"),
+        rawFailureMessage ("one"),
+        rawNegatedFailureMessage ("two"),
+        rawMidSentenceFailureMessage ("one"),
+        rawMidSentenceNegatedFailureMessage ("two"),
+        failureMessageArgs(Vector(42)),
+        negatedFailureMessageArgs(Vector(42)),
+        midSentenceFailureMessageArgs(Vector(42)),
+        midSentenceNegatedFailureMessageArgs(Vector(42)),
+        composite(false)
       )
       val ms = False("aaa", "bbb", Vector("ho", "he"))
       ms should have (
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("aaa"),
-        'midSentenceNegatedFailureMessage ("bbb"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("aaa"),
-        'rawMidSentenceNegatedFailureMessage ("bbb"),
-        'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("ho", "he")),
-        'midSentenceFailureMessageArgs(Vector("ho", "he")),
-        'midSentenceNegatedFailureMessageArgs(Vector("ho", "he")),
-        'composite(false)
+        failureMessage ("aaa"),
+        negatedFailureMessage ("bbb"),
+        midSentenceFailureMessage ("aaa"),
+        midSentenceNegatedFailureMessage ("bbb"),
+        rawFailureMessage ("aaa"),
+        rawNegatedFailureMessage ("bbb"),
+        rawMidSentenceFailureMessage ("aaa"),
+        rawMidSentenceNegatedFailureMessage ("bbb"),
+        failureMessageArgs(Vector("ho", "he")),
+        negatedFailureMessageArgs(Vector("ho", "he")),
+        midSentenceFailureMessageArgs(Vector("ho", "he")),
+        midSentenceNegatedFailureMessageArgs(Vector("ho", "he")),
+        composite(false)
       )
     }
     "that takes two strings and two IndexedSeqs should work correctly" in {
       val fact = True("one", "two", Vector(42), Vector(42.0))
       fact should have (
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("one"),
-        'midSentenceNegatedFailureMessage ("two"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("one"),
-        'rawMidSentenceNegatedFailureMessage ("two"),
-        'failureMessageArgs(Vector(42)),
-        'negatedFailureMessageArgs(Vector(42.0)),
-        'midSentenceFailureMessageArgs(Vector(42)),
-        'midSentenceNegatedFailureMessageArgs(Vector(42.0)),
-        'composite(false)
+        failureMessage ("one"),
+        negatedFailureMessage ("two"),
+        midSentenceFailureMessage ("one"),
+        midSentenceNegatedFailureMessage ("two"),
+        rawFailureMessage ("one"),
+        rawNegatedFailureMessage ("two"),
+        rawMidSentenceFailureMessage ("one"),
+        rawMidSentenceNegatedFailureMessage ("two"),
+        failureMessageArgs(Vector(42)),
+        negatedFailureMessageArgs(Vector(42.0)),
+        midSentenceFailureMessageArgs(Vector(42)),
+        midSentenceNegatedFailureMessageArgs(Vector(42.0)),
+        composite(false)
       )
       val ms = False("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("aaa"),
-        'midSentenceNegatedFailureMessage ("bbb"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("aaa"),
-        'rawMidSentenceNegatedFailureMessage ("bbb"),
-        'failureMessageArgs(Vector("ho", "he")),
-        'negatedFailureMessageArgs(Vector("foo", "fie")),
-        'midSentenceFailureMessageArgs(Vector("ho", "he")),
-        'midSentenceNegatedFailureMessageArgs(Vector("foo", "fie")),
-        'composite(false)
+        failureMessage ("aaa"),
+        negatedFailureMessage ("bbb"),
+        midSentenceFailureMessage ("aaa"),
+        midSentenceNegatedFailureMessage ("bbb"),
+        rawFailureMessage ("aaa"),
+        rawNegatedFailureMessage ("bbb"),
+        rawMidSentenceFailureMessage ("aaa"),
+        rawMidSentenceNegatedFailureMessage ("bbb"),
+        failureMessageArgs(Vector("ho", "he")),
+        negatedFailureMessageArgs(Vector("foo", "fie")),
+        midSentenceFailureMessageArgs(Vector("ho", "he")),
+        midSentenceNegatedFailureMessageArgs(Vector("foo", "fie")),
+        composite(false)
       )
     }
     "that takes four strings and four IndexedSeqs should work correctly" in {
       val fact = True("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
       fact should have (
-        'failureMessage ("one"),
-        'negatedFailureMessage ("two"),
-        'midSentenceFailureMessage ("three"),
-        'midSentenceNegatedFailureMessage ("four"),
-        'rawFailureMessage ("one"),
-        'rawNegatedFailureMessage ("two"),
-        'rawMidSentenceFailureMessage ("three"),
-        'rawMidSentenceNegatedFailureMessage ("four"),
-        'failureMessageArgs(Vector(1)),
-        'negatedFailureMessageArgs(Vector(2)),
-        'midSentenceFailureMessageArgs(Vector(3)),
-        'midSentenceNegatedFailureMessageArgs(Vector(4)),
-        'composite(false)
+        failureMessage ("one"),
+        negatedFailureMessage ("two"),
+        midSentenceFailureMessage ("three"),
+        midSentenceNegatedFailureMessage ("four"),
+        rawFailureMessage ("one"),
+        rawNegatedFailureMessage ("two"),
+        rawMidSentenceFailureMessage ("three"),
+        rawMidSentenceNegatedFailureMessage ("four"),
+        failureMessageArgs(Vector(1)),
+        negatedFailureMessageArgs(Vector(2)),
+        midSentenceFailureMessageArgs(Vector(3)),
+        midSentenceNegatedFailureMessageArgs(Vector(4)),
+        composite(false)
       )
       val ms = False("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
       ms should have (
-        'failureMessage ("aaa"),
-        'negatedFailureMessage ("bbb"),
-        'midSentenceFailureMessage ("ccc"),
-        'midSentenceNegatedFailureMessage ("ddd"),
-        'rawFailureMessage ("aaa"),
-        'rawNegatedFailureMessage ("bbb"),
-        'rawMidSentenceFailureMessage ("ccc"),
-        'rawMidSentenceNegatedFailureMessage ("ddd"),
-        'failureMessageArgs(Vector('A')),
-        'negatedFailureMessageArgs(Vector('B')),
-        'midSentenceFailureMessageArgs(Vector('C')),
-        'midSentenceNegatedFailureMessageArgs(Vector('D')),
-        'composite(false)
+        failureMessage ("aaa"),
+        negatedFailureMessage ("bbb"),
+        midSentenceFailureMessage ("ccc"),
+        midSentenceNegatedFailureMessage ("ddd"),
+        rawFailureMessage ("aaa"),
+        rawNegatedFailureMessage ("bbb"),
+        rawMidSentenceFailureMessage ("ccc"),
+        rawMidSentenceNegatedFailureMessage ("ddd"),
+        failureMessageArgs(Vector('A')),
+        negatedFailureMessageArgs(Vector('B')),
+        midSentenceFailureMessageArgs(Vector('C')),
+        midSentenceNegatedFailureMessageArgs(Vector('D')),
+        composite(false)
       )
     }
     "that takes four strings, four IndexedSeqs and composite should work correctly" in {
       val fact = True("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4), true)
           fact should have (
-              'failureMessage ("one"),
-              'negatedFailureMessage ("two"),
-              'midSentenceFailureMessage ("three"),
-              'midSentenceNegatedFailureMessage ("four"),
-              'rawFailureMessage ("one"),
-              'rawNegatedFailureMessage ("two"),
-              'rawMidSentenceFailureMessage ("three"),
-              'rawMidSentenceNegatedFailureMessage ("four"),
-              'failureMessageArgs(Vector(1)),
-              'negatedFailureMessageArgs(Vector(2)),
-              'midSentenceFailureMessageArgs(Vector(3)),
-              'midSentenceNegatedFailureMessageArgs(Vector(4)),
-              'composite(true)
+              failureMessage ("one"),
+              negatedFailureMessage ("two"),
+              midSentenceFailureMessage ("three"),
+              midSentenceNegatedFailureMessage ("four"),
+              rawFailureMessage ("one"),
+              rawNegatedFailureMessage ("two"),
+              rawMidSentenceFailureMessage ("three"),
+              rawMidSentenceNegatedFailureMessage ("four"),
+              failureMessageArgs(Vector(1)),
+              negatedFailureMessageArgs(Vector(2)),
+              midSentenceFailureMessageArgs(Vector(3)),
+              midSentenceNegatedFailureMessageArgs(Vector(4)),
+              composite(true)
               )
       val ms = False("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'), true)
       ms should have (
-          'failureMessage ("aaa"),
-          'negatedFailureMessage ("bbb"),
-          'midSentenceFailureMessage ("ccc"),
-          'midSentenceNegatedFailureMessage ("ddd"),
-          'rawFailureMessage ("aaa"),
-          'rawNegatedFailureMessage ("bbb"),
-          'rawMidSentenceFailureMessage ("ccc"),
-          'rawMidSentenceNegatedFailureMessage ("ddd"),
-          'failureMessageArgs(Vector('A')),
-          'negatedFailureMessageArgs(Vector('B')),
-          'midSentenceFailureMessageArgs(Vector('C')),
-          'midSentenceNegatedFailureMessageArgs(Vector('D')),
-          'composite(true)
+          failureMessage ("aaa"),
+          negatedFailureMessage ("bbb"),
+          midSentenceFailureMessage ("ccc"),
+          midSentenceNegatedFailureMessage ("ddd"),
+          rawFailureMessage ("aaa"),
+          rawNegatedFailureMessage ("bbb"),
+          rawMidSentenceFailureMessage ("ccc"),
+          rawMidSentenceNegatedFailureMessage ("ddd"),
+          failureMessageArgs(Vector('A')),
+          negatedFailureMessageArgs(Vector('B')),
+          midSentenceFailureMessageArgs(Vector('C')),
+          midSentenceNegatedFailureMessageArgs(Vector('D')),
+          composite(true)
           )
     }
   }
