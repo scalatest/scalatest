@@ -80,24 +80,6 @@ sealed abstract class Expectation {
   def midSentenceNegatedFailureMessage: String
 }
 
-object Expectation {
-  def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
-    case (false,false) => Resources.rawCommaAnd
-    case (false,true) => Resources.rawRightParensCommaAnd
-    case (true,false) => Resources.rawLeftParensCommaAnd
-    case (true,true) => Resources.rawBothParensCommaAnd
-  }
-
-  def commaBut(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
-    case (false,false) => Resources.rawCommaBut
-    case (false,true) => Resources.rawRightParensCommaBut
-    case (true,false) => Resources.rawLeftParensCommaBut
-    case (true,true) => Resources.rawBothParensCommaBut
-  }
-}
-
-import org.scalatest.Expectation._
-
 sealed abstract class Fact extends Expectation {
 
   final def toBoolean: Boolean = isTrue
@@ -594,6 +576,20 @@ object Fact {
     def ||(rhs: => org.scalatest.Expectation): org.scalatest.Fact = ???
 
     def unary_!(): org.scalatest.Fact = underlying
+  }
+
+  def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
+    case (false,false) => Resources.rawCommaAnd
+    case (false,true) => Resources.rawRightParensCommaAnd
+    case (true,false) => Resources.rawLeftParensCommaAnd
+    case (true,true) => Resources.rawBothParensCommaAnd
+  }
+
+  def commaBut(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
+    case (false,false) => Resources.rawCommaBut
+    case (false,true) => Resources.rawRightParensCommaBut
+    case (true,false) => Resources.rawLeftParensCommaBut
+    case (true,true) => Resources.rawBothParensCommaBut
   }
 
   // Idea is to override toString each time it is used.

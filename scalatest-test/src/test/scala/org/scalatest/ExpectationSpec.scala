@@ -16,7 +16,6 @@
 package org.scalatest
 
 import org.scalactic.PrettyMethods
-import Expectation._
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers.thisLineNumber
 
