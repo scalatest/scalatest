@@ -94,31 +94,6 @@ object Expectation {
     case (true,false) => Resources.rawLeftParensCommaBut
     case (true,true) => Resources.rawBothParensCommaBut
   }
-
-  // Idea is to override toString each time it is used.
-  private[scalatest] sealed abstract class LazyMessage {
-    val nestedArgs: IndexedSeq[Any]
-  }
-
-  private[scalatest] case class FailureMessage(fact: Expectation) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
-    override def toString: String = fact.failureMessage
-  }
-
-  private[scalatest] case class NegatedFailureMessage(fact: Expectation) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
-    override def toString: String = fact.negatedFailureMessage
-  }
-
-  private[scalatest] case class MidSentenceFailureMessage(fact: Expectation) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
-    override def toString: String = fact.midSentenceFailureMessage
-  }
-
-  private[scalatest] case class MidSentenceNegatedFailureMessage(fact: Expectation) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
-    override def toString: String = fact.midSentenceNegatedFailureMessage
-  }
 }
 
 import org.scalatest.Expectation._
@@ -619,5 +594,30 @@ object Fact {
     def ||(rhs: => org.scalatest.Expectation): org.scalatest.Fact = ???
 
     def unary_!(): org.scalatest.Fact = underlying
+  }
+
+  // Idea is to override toString each time it is used.
+  private[scalatest] sealed abstract class LazyMessage {
+    val nestedArgs: IndexedSeq[Any]
+  }
+
+  private[scalatest] case class FailureMessage(fact: Expectation) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
+    override def toString: String = fact.failureMessage
+  }
+
+  private[scalatest] case class NegatedFailureMessage(fact: Expectation) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
+    override def toString: String = fact.negatedFailureMessage
+  }
+
+  private[scalatest] case class MidSentenceFailureMessage(fact: Expectation) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
+    override def toString: String = fact.midSentenceFailureMessage
+  }
+
+  private[scalatest] case class MidSentenceNegatedFailureMessage(fact: Expectation) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
+    override def toString: String = fact.midSentenceNegatedFailureMessage
   }
 }

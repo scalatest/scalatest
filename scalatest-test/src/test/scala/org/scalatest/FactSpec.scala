@@ -127,6 +127,120 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
     }
   }
+  "The Fact obtained from and-ing two Facts" - {
+    "should be lazy about constructing strings" - {
+      "for False && False" in {
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideFalse && rightSideFalse
+        fact shouldBe a [False]
+        fact.rawFailureMessage should be (Resources.rawWasNotGreaterThan)
+        fact.rawNegatedFailureMessage should be (Resources.rawWasGreaterThan)
+        fact.rawMidSentenceFailureMessage should be (Resources.rawWasNotGreaterThan)
+        fact.rawMidSentenceNegatedFailureMessage should be (Resources.rawWasGreaterThan)
+        fact.failureMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
+        fact.negatedFailureMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.midSentenceFailureMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
+        fact.midSentenceNegatedFailureMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.failureMessageArgs should be (Vector('a', 'b'))
+        fact.negatedFailureMessageArgs should be (Vector('a', 'b'))
+        fact.composite should be (false)
+      }
+
+      "for False && True" in {
+        val leftSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideTrue = True(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideFalse && rightSideTrue
+        fact shouldBe a [False]
+        fact.rawFailureMessage should be (Resources.rawWasNotGreaterThan)
+        fact.rawNegatedFailureMessage should be (Resources.rawWasGreaterThan)
+        fact.rawMidSentenceFailureMessage should be (Resources.rawWasNotGreaterThan)
+        fact.rawMidSentenceNegatedFailureMessage should be (Resources.rawWasGreaterThan)
+        fact.failureMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
+        fact.negatedFailureMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.midSentenceFailureMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
+        fact.midSentenceNegatedFailureMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.failureMessageArgs should be (Vector('a', 'b'))
+        fact.negatedFailureMessageArgs should be (Vector('a', 'b'))
+        fact.composite should be (false)
+      }
+
+      "for True && False" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val fact = leftSideTrue && rightSideFalse
+        fact shouldBe a [False]
+        fact.rawFailureMessage should be (Resources.rawCommaBut)
+        fact.rawNegatedFailureMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFailureMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceNegatedFailureMessage should be (Resources.rawCommaAnd)
+        fact.failureMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.negatedFailureMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceFailureMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceNegatedFailureMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.failureMessageArgs should be (Vector(NegatedFailureMessage(leftSideTrue), MidSentenceFailureMessage(rightSideFalse)))
+        fact.negatedFailureMessageArgs should be (Vector(NegatedFailureMessage(leftSideTrue), MidSentenceNegatedFailureMessage(rightSideFalse)))
+        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideTrue), MidSentenceFailureMessage(rightSideFalse)))
+        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideTrue), MidSentenceNegatedFailureMessage(rightSideFalse)))
+        fact.composite should be (true)
+      }
+
+      "for True && True" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val fact = leftSideTrue && rightSideTrue
+        fact shouldBe a [True]
+        fact.rawFailureMessage should be (Resources.rawCommaBut)
+        fact.rawNegatedFailureMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFailureMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceNegatedFailureMessage should be (Resources.rawCommaAnd)
+        fact.failureMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.negatedFailureMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.midSentenceFailureMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty))) 
+        fact.midSentenceNegatedFailureMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.failureMessageArgs should be (Vector(NegatedFailureMessage(leftSideTrue), MidSentenceFailureMessage(rightSideTrue)))
+        fact.negatedFailureMessageArgs should be (Vector(NegatedFailureMessage(leftSideTrue), MidSentenceNegatedFailureMessage(rightSideTrue)))
+        fact.midSentenceFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideTrue), MidSentenceFailureMessage(rightSideTrue)))
+        fact.midSentenceNegatedFailureMessageArgs should be (Vector(MidSentenceNegatedFailureMessage(leftSideTrue), MidSentenceNegatedFailureMessage(rightSideTrue)))
+        fact.composite should be (true)
+      }
+    }
+
+    "should be parenthesize composite facts" - {
+      "for non-composite && composite" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), false)
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
+        val fact = leftSideTrue && rightSideTrue
+        fact.rawFailureMessage should be (Resources.rawRightParensCommaBut)
+        fact.rawNegatedFailureMessage should be (Resources.rawRightParensCommaAnd)
+        fact.rawMidSentenceFailureMessage should be (Resources.rawRightParensCommaBut)
+        fact.rawMidSentenceNegatedFailureMessage should be (Resources.rawRightParensCommaAnd)
+        fact.composite should be (true)
+      }
+
+      "for composite && non-composite" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), false)
+        val fact = leftSideTrue && rightSideTrue
+        fact.rawFailureMessage should be (Resources.rawLeftParensCommaBut)
+        fact.rawNegatedFailureMessage should be (Resources.rawLeftParensCommaAnd)
+        fact.rawMidSentenceFailureMessage should be (Resources.rawLeftParensCommaBut)
+        fact.rawMidSentenceNegatedFailureMessage should be (Resources.rawLeftParensCommaAnd)
+        fact.composite should be (true)
+      }
+
+      "for composite && composite" in {
+        val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
+        val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
+        val fact = leftSideTrue && rightSideTrue
+        fact.rawFailureMessage should be (Resources.rawBothParensCommaBut)
+        fact.rawNegatedFailureMessage should be (Resources.rawBothParensCommaAnd)
+        fact.rawMidSentenceFailureMessage should be (Resources.rawBothParensCommaBut)
+        fact.rawMidSentenceNegatedFailureMessage should be (Resources.rawBothParensCommaAnd)
+        fact.composite should be (true)
+      }
+    }
+  }
   "The True and False companion objects factory methods" - {
     "that takes two strings should work correctly" in {
       val fact = True("one", "two")
