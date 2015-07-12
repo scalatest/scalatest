@@ -151,22 +151,10 @@ object Fact {
   
     def toAssertion: Assertion = throw new TestFailedException(failureMessage, 2)
   
-    def unary_!() =
-      True(
-        rawNegatedFailureMessage,
-        rawFailureMessage,
-        rawMidSentenceNegatedFailureMessage,
-        rawMidSentenceFailureMessage,
-        negatedFailureMessageArgs,
-        failureMessageArgs,
-        midSentenceNegatedFailureMessageArgs,
-        midSentenceFailureMessageArgs,
-        composite,
-        prettifier
-      )
-  
+    def unary_!() = Unary_!(this)
+
     def &&(rhs: => Expectation) = this
-  
+
     def ||(rhs: => Expectation) =
       rhs match {
         case yes: True => True(
@@ -192,17 +180,17 @@ object Fact {
           true
         )
     }
-  
+
     override def toString: String = s"False($failureMessage)"
   }
-  
+
   /**
    * Companion object for the <code>False</code> case class.
    *
    * @author Bill Venners
    */
   object False {
-  
+
     /**
      * Factory method that constructs a new <code>False</code> with passed <code>failureMessage</code>, 
      * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
@@ -384,19 +372,7 @@ object Fact {
   
     def toAssertion: Assertion = Succeeded
   
-    def unary_!() =
-      False(
-        rawNegatedFailureMessage,
-        rawFailureMessage,
-        rawMidSentenceNegatedFailureMessage,
-        rawMidSentenceFailureMessage,
-        negatedFailureMessageArgs,
-        failureMessageArgs,
-        midSentenceNegatedFailureMessageArgs,
-        midSentenceFailureMessageArgs,
-        composite,
-        prettifier
-      )
+    def unary_!() = Unary_!(this)
   
     def &&(rhs: => Expectation) =
       rhs match {
@@ -584,5 +560,31 @@ object Fact {
         false,
         Prettifier.default
       )
+  }
+
+  case class Unary_!(underlying: Fact) extends Fact {
+
+    val rawFailureMessage: String = underlying.rawNegatedFailureMessage
+    val rawNegatedFailureMessage: String = underlying.rawFailureMessage
+    val rawMidSentenceFailureMessage: String = underlying.rawMidSentenceNegatedFailureMessage
+    val rawMidSentenceNegatedFailureMessage: String = underlying.rawMidSentenceFailureMessage
+    val failureMessageArgs: IndexedSeq[Any] = underlying.negatedFailureMessageArgs
+    val negatedFailureMessageArgs: IndexedSeq[Any] = underlying.failureMessageArgs
+    val midSentenceFailureMessageArgs: IndexedSeq[Any] = underlying.midSentenceNegatedFailureMessageArgs
+    val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = underlying.midSentenceFailureMessageArgs
+    val composite: Boolean = underlying.composite
+    val prettifier: Prettifier = underlying.prettifier
+
+    def isTrue: Boolean = ???
+
+    def isFalse: Boolean = ???
+
+    def toAssertion: Assertion = ???
+
+    def &&(rhs: => org.scalatest.Expectation): org.scalatest.Expectation = ???
+
+    def ||(rhs: => org.scalatest.Expectation): org.scalatest.Expectation = ???
+
+    def unary_!(): org.scalatest.Expectation = ??? // underlying
   }
 }

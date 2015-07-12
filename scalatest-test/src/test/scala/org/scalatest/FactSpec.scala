@@ -72,7 +72,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "when negated" - {
       "swaps failure and negated failure messages" in {
         falseFact should equal (False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
-        !falseFact should equal (True("1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
+        !falseFact should equal (Unary_!(False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")))
         val fact2 = True("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
         fact2 should have (
           failureMessage ("\"howdy\" did not equal null"),
@@ -90,7 +90,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           composite(false)
         )
         val fact2Negated = !fact2
-         fact2Negated should equal (False("The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
+         fact2Negated should equal (Unary_!(True("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)))
         fact2Negated should have (
           failureMessage ("The reference equaled null"),
           negatedFailureMessage ("\"howdy\" did not equal null"),
