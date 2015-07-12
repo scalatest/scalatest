@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalactic.Prettifier
 import java.text.MessageFormat
+import org.scalatest.exceptions.TestFailedException
 
 sealed abstract class Expectation {
 
@@ -34,6 +35,8 @@ sealed abstract class Expectation {
   def isTrue: Boolean
 
   def isFalse: Boolean
+
+  def toAssertion: Assertion
 
   /**
    * Get a negated version of this Expectation, sub type will be negated and all messages field will be substituted with its counter-part.
@@ -139,6 +142,8 @@ case class False(
   def isTrue: Boolean = false
 
   def isFalse: Boolean = true
+
+  def toAssertion: Assertion = throw new TestFailedException(failureMessage, 2)
 
   def unary_!() = True(
     rawNegatedFailureMessage,
@@ -343,6 +348,8 @@ case class True(
   def isTrue: Boolean = true
 
   def isFalse: Boolean = false
+
+  def toAssertion: Assertion = Succeeded
 
   def unary_!() =
     False(

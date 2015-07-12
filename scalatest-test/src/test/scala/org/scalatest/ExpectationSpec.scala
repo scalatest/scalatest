@@ -17,6 +17,8 @@ package org.scalatest
 
 import org.scalactic.PrettyMethods
 import Expectation._
+import org.scalatest.exceptions.TestFailedException
+import SharedHelpers.thisLineNumber
 
 class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
 
@@ -96,13 +98,23 @@ class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods with Exp
       fact.midSentenceNegatedFailureMessage should be ("1 equaled 2")
     }
 
-    "should have isTrue and isFalse methods" - {
+    "should have isTrue and isFalse methods" in {
       val falseFact = fact
       val trueFact = !fact
-      assert(!(falseFact.isTrue))
-      assert(falseFact.isFalse)
-      assert(trueFact.isTrue)
-      assert(!(trueFact.isFalse))
+      falseFact.isTrue shouldBe false
+      falseFact.isFalse shouldBe true
+      trueFact.isTrue shouldBe true
+      trueFact.isFalse shouldBe false
+    }
+
+    "should have a toAssertion method that either returns Succeeded or throws TestFailedException with the correct error message and stack depth" in {
+      val falseFact = fact
+      val trueFact = !fact
+      trueFact.toAssertion shouldBe Succeeded
+      val caught = the [TestFailedException] thrownBy falseFact.toAssertion
+      caught should have message "1 did not equal 2"
+      caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
+      caught.failedCodeFileName shouldBe Some("ExpectationSpec.scala")
     }
   }
 
