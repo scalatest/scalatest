@@ -585,6 +585,6 @@ object Fact {
 
     def ||(rhs: => org.scalatest.Expectation): org.scalatest.Expectation = ???
 
-    def unary_!(): org.scalatest.Expectation = ??? // underlying
+    def unary_!(): org.scalatest.Expectation = underlying
   }
 }

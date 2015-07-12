@@ -113,6 +113,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val factCopy = falseFact.copy(composite = true)
         !factCopy should have (composite(true))
       }
+      "should return the original object when negated yet again" in {
+        val notTrueFact = !trueFact
+        !notTrueFact should be theSameInstanceAs trueFact
+      }
     }
   }
   "The True and False companion objects factory methods" - {
