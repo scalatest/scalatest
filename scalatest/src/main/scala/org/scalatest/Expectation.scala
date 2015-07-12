@@ -578,14 +578,14 @@ object Fact {
     def unary_!(): org.scalatest.Fact = underlying
   }
 
-  def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
+  private[scalatest] def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
     case (false,false) => Resources.rawCommaAnd
     case (false,true) => Resources.rawRightParensCommaAnd
     case (true,false) => Resources.rawLeftParensCommaAnd
     case (true,true) => Resources.rawBothParensCommaAnd
   }
 
-  def commaBut(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
+  private[scalatest] def commaBut(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
     case (false,false) => Resources.rawCommaBut
     case (false,true) => Resources.rawRightParensCommaBut
     case (true,false) => Resources.rawLeftParensCommaBut
