@@ -44,8 +44,17 @@ class ExpectationsSpec extends FunSpec with Expectations {
         ).isTrue
       )
     }
+    it("should include the expected exception as the cause so that it will be there if negated") {
+        val expectedException = new IllegalArgumentException("I meant to do that!")
+        val fact =
+          expectThrows[IllegalArgumentException] {
+            throw expectedException
+          }
+        assert(fact.cause.value eq expectedException)
+        assert((!fact).asInstanceOf[Fact.Unary_!].underlying.cause.value eq expectedException)
+    }
     describe("when the bit of code throws the wrong exception") {
-      it("should include that wrong exception as the TFE's cause") {
+      it("should include that wrong exception as the Fact's cause") {
         val wrongException = new RuntimeException("oops!")
         val fact =
           expectThrows[IllegalArgumentException] {

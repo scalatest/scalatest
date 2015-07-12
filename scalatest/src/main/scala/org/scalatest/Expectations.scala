@@ -58,8 +58,9 @@ trait Expectations {
             failureMessageArgs = Vector(clazz.getName),
             negatedFailureMessageArgs = Vector(clazz.getName),
             midSentenceFailureMessageArgs = Vector(clazz.getName),
-            midSentenceNegatedFailureMessageArgs = Vector(clazz.getName)
-          ) // Will need to add u as the cause in case this is inverted
+            midSentenceNegatedFailureMessageArgs = Vector(clazz.getName),
+            cause = Some(u)
+          )
       }
     }
   }
