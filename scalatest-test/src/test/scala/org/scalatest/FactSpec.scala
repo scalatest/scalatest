@@ -69,6 +69,51 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
       fact.midSentenceNegatedFailureMessage should be ("1 equaled 2")
     }
+    "when negated" - {
+      "swaps failure and negated failure messages" in {
+        falseFact should equal (False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
+        !falseFact should equal (True("1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
+        val fact2 = True("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
+        fact2 should have (
+          failureMessage ("\"howdy\" did not equal null"),
+          negatedFailureMessage ("The reference equaled null"),
+          midSentenceFailureMessage ("\"howdy\" did not equal null"),
+          midSentenceNegatedFailureMessage ("the reference equaled null"),
+          rawFailureMessage ("{0} did not equal null"),
+          rawNegatedFailureMessage ("The reference equaled null"),
+          rawMidSentenceFailureMessage ("{0} did not equal null"),
+          rawMidSentenceNegatedFailureMessage ("the reference equaled null"),
+          failureMessageArgs(Vector("howdy")),
+          negatedFailureMessageArgs(Vector.empty),
+          midSentenceFailureMessageArgs(Vector("howdy")),
+          midSentenceNegatedFailureMessageArgs(Vector.empty),
+          composite(false)
+        )
+        val fact2Negated = !fact2
+         fact2Negated should equal (False("The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
+        fact2Negated should have (
+          failureMessage ("The reference equaled null"),
+          negatedFailureMessage ("\"howdy\" did not equal null"),
+          midSentenceFailureMessage ("the reference equaled null"),
+          midSentenceNegatedFailureMessage ("\"howdy\" did not equal null"),
+          rawFailureMessage ("The reference equaled null"),
+          rawNegatedFailureMessage ("{0} did not equal null"),
+          rawMidSentenceFailureMessage ("the reference equaled null"),
+          rawMidSentenceNegatedFailureMessage ("{0} did not equal null"),
+          failureMessageArgs(Vector.empty),
+          negatedFailureMessageArgs(Vector("howdy")),
+          midSentenceFailureMessageArgs(Vector.empty),
+          midSentenceNegatedFailureMessageArgs(Vector("howdy")),
+          composite(false)
+        )
+      }
+      "should maintain the same composite state" in {
+        !falseFact should have (composite(false))
+        
+        val factCopy = falseFact.copy(composite = true)
+        !factCopy should have (composite(true))
+      }
+    }
   }
   "The True and False companion objects factory methods" - {
     "that takes two strings should work correctly" in {
