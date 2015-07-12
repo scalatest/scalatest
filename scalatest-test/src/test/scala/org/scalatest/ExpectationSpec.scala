@@ -70,60 +70,6 @@ class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods with Exp
         !factCopy should have (composite(true))
       }
     }
-    "should construct localized strings from the raw strings and args" in {
-      val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
-      fact should have (
-        failureMessage ("1 did not equal 2"),
-        negatedFailureMessage ("1 equaled 2"),
-        midSentenceFailureMessage ("1 did not equal 2"),
-        midSentenceNegatedFailureMessage ("1 equaled 2"),
-        rawFailureMessage ("{0} did not equal {1}"),
-        rawNegatedFailureMessage ("{0} equaled {1}"),
-        rawMidSentenceFailureMessage ("{0} did not equal {1}"),
-        rawMidSentenceNegatedFailureMessage ("{0} equaled {1}"),
-        failureMessageArgs(Vector(1, 2)),
-        negatedFailureMessageArgs(Vector(1, 2)),
-        midSentenceFailureMessageArgs(Vector(1, 2)),
-        midSentenceNegatedFailureMessageArgs(Vector(1, 2)),
-        composite(false)
-      )
-    }
-
-    "should use midSentenceFailureMessageArgs to construct midSentenceFailureMessage" in {
-      val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty)
-      fact.midSentenceFailureMessage should be ("1 did not equal 2")
-    }
-
-    "should use midSentenceNegatedFailureMessageArgs to construct midSentenceNegatedFailureMessage" in {
-      val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
-      fact.midSentenceNegatedFailureMessage should be ("1 equaled 2")
-    }
-
-    "should have isTrue and isFalse methods" in {
-      val falseFact = fact
-      val trueFact = !fact
-      falseFact.isTrue shouldBe false
-      falseFact.isFalse shouldBe true
-      trueFact.isTrue shouldBe true
-      trueFact.isFalse shouldBe false
-    }
-
-    "should have a toAssertion method that either returns Succeeded or throws TestFailedException with the correct error message and stack depth" in {
-      val falseFact = fact
-      val trueFact = !fact
-      trueFact.toAssertion shouldBe Succeeded
-      val caught = the [TestFailedException] thrownBy falseFact.toAssertion
-      caught should have message "1 did not equal 2"
-      caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
-      caught.failedCodeFileName shouldBe Some("ExpectationSpec.scala")
-    }
-
-    "should offer a toBoolean method, even though it is redundant with isTrue" in {
-      val falseFact = fact
-      val trueFact = !fact
-      falseFact.toBoolean shouldBe false
-      trueFact.toBoolean shouldBe true
-    }
   }
 
   "The Expectation companion objects factory methods" - {
