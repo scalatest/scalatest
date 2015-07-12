@@ -15,6 +15,9 @@
  */
 package org.scalatest
 
+import exceptions.TestFailedException
+import OptionValues._
+
 class ExpectationsSpec extends FunSpec with Expectations {
 
   describe("The expectThrows method") {
@@ -42,44 +45,14 @@ class ExpectationsSpec extends FunSpec with Expectations {
       )
     }
     describe("when the bit of code throws the wrong exception") {
-      it("should include that wrong exception as the TFE's cause") { pending // Dang, need to an a cause: Option[Throwabe] to Expectation
-/*
+      it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")
-        val caught =
-          expectThrows[TestFailedException] {
-            expectThrows[IllegalArgumentException] {
-              throw wrongException
-            }
+        val fact =
+          expectThrows[IllegalArgumentException] {
+            throw wrongException
           }
-        assert(caught.cause.value eq wrongException)
-*/
+        assert(fact.cause.value eq wrongException)
       }
-    }
-    it("should catch subtypes of the given exception type") { pending
-/*
-      class MyException extends RuntimeException
-      class MyExceptionSubClass extends MyException
-      expectThrows[MyException] {
-        throw new MyException
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
-      }
-      expectThrows[MyException] {
-        throw new MyExceptionSubClass
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
-      }
-      // Try with a trait
-      trait MyTrait {
-        def someRandomMethod() {}
-      }
-      class AnotherException extends RuntimeException with MyTrait
-      val caught = expectThrows[MyTrait] {
-        throw new AnotherException
-        new AnyRef // This is needed because right now Nothing doesn't overload as an Any
-      }
-      // Make sure the result type is the type passed in, so I can 
-      // not cast and still invoke any method on it I want
-      caught.someRandomMethod()
-*/
     }
   }
 }

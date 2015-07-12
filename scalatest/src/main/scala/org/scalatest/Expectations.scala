@@ -46,8 +46,9 @@ trait Expectations {
             failureMessageArgs = Vector(clazz.getName),
             negatedFailureMessageArgs = Vector(clazz.getName),
             midSentenceFailureMessageArgs = Vector(clazz.getName),
-            midSentenceNegatedFailureMessageArgs = Vector(clazz.getName)
-          )  // Todo add u as cause
+            midSentenceNegatedFailureMessageArgs = Vector(clazz.getName),
+            cause = Some(u)
+          ) 
         else
           True(
             rawFailureMessage = Resources.rawExceptionExpected,

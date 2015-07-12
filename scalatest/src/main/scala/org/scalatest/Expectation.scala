@@ -32,13 +32,15 @@ sealed abstract class Expectation {
   val composite: Boolean
   val prettifier: Prettifier
 
+  val cause: Option[Throwable]
+
   def isTrue: Boolean
 
   def isFalse: Boolean
 
-  def toAssertion: Assertion
-
   def toBoolean: Boolean
+
+  def toAssertion: Assertion
 
   /**
    * Get a negated version of this Expectation, sub type will be negated and all messages field will be substituted with its counter-part.
@@ -85,6 +87,8 @@ sealed abstract class Fact extends Expectation {
   final def toBoolean: Boolean = isTrue
 
   final def isFalse: Boolean = !isTrue
+
+  val cause: Option[Throwable] = None
 
   def unary_!(): Fact = Fact.Unary_!(this)
 
@@ -138,6 +142,7 @@ object Fact {
     midSentenceFailureMessageArgs: IndexedSeq[Any],
     midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
     composite: Boolean = false,
+    override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
   ) extends Fact {
 
@@ -188,6 +193,7 @@ object Fact {
         failureMessageArgs,
         negatedFailureMessageArgs,
         false,
+        None,
         Prettifier.default
       )
   
@@ -219,6 +225,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         false,
+        None,
         Prettifier.default
       )
   
@@ -247,6 +254,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         false,
+        None,
         Prettifier.default
       )
   
@@ -277,6 +285,7 @@ object Fact {
         args,
         args,
         false,
+        None,
         Prettifier.default
       )
   
@@ -312,6 +321,7 @@ object Fact {
         failureMessageArgs,
         negatedFailureMessageArgs,
         false,
+        None,
         Prettifier.default
       )
   }
@@ -326,6 +336,7 @@ object Fact {
     midSentenceFailureMessageArgs: IndexedSeq[Any],
     midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
     composite: Boolean = false,
+    override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
   ) extends Fact {
   
@@ -375,6 +386,7 @@ object Fact {
         failureMessageArgs,
         negatedFailureMessageArgs,
         false,
+        None,
         Prettifier.default
       )
   
@@ -405,6 +417,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         false,
+        None,
         Prettifier.default
       )
   
@@ -433,6 +446,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         false,
+        None,
         Prettifier.default
       )
   
@@ -448,7 +462,11 @@ object Fact {
      * @param args arguments for error messages construction
      * @return a <code>True</code> instance
      */
-    def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, args: IndexedSeq[Any]) =
+    def apply(
+      rawFailureMessage: String,
+      rawNegatedFailureMessage: String,
+      args: IndexedSeq[Any]
+    ) =
       new True(
         rawFailureMessage,
         rawNegatedFailureMessage,
@@ -459,6 +477,7 @@ object Fact {
         args,
         args,
         false,
+        None,
         Prettifier.default
       )
   
@@ -478,7 +497,12 @@ object Fact {
      * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
      * @return a <code>True</code> instance
      */
-    def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]) =
+    def apply(
+      rawFailureMessage: String,
+      rawNegatedFailureMessage: String,
+      failureMessageArgs: IndexedSeq[Any],
+      negatedFailureMessageArgs: IndexedSeq[Any]
+    ) =
       new True(
         rawFailureMessage,
         rawNegatedFailureMessage,
@@ -489,6 +513,7 @@ object Fact {
         failureMessageArgs,
         negatedFailureMessageArgs,
         false,
+        None,
         Prettifier.default
       )
   }
