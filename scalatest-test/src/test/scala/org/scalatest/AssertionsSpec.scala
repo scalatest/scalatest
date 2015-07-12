@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2015 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@ class AssertionsSpec extends FunSpec {
     }
   }
   describe("The intercept method") {
-    it("should  catches subtypes") {
+    it("should catch subtypes") {
       class MyException extends RuntimeException
       class MyExceptionSubClass extends MyException
       intercept[MyException] {

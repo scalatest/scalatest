@@ -95,6 +95,15 @@ class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods with Exp
       val fact = False("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
       fact.midSentenceNegatedFailureMessage should be ("1 equaled 2")
     }
+
+    "should have isTrue and isFalse methods" - {
+      val falseFact = fact
+      val trueFact = !fact
+      assert(!(falseFact.isTrue))
+      assert(falseFact.isFalse)
+      assert(trueFact.isTrue)
+      assert(!(trueFact.isFalse))
+    }
   }
 
   "The Expectation companion objects factory methods" - {

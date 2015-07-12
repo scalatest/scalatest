@@ -19,28 +19,32 @@ import org.scalactic.Prettifier
 import java.text.MessageFormat
 
 sealed abstract class Expectation {
-    val rawFailureMessage: String
-    val rawNegatedFailureMessage: String
-    val rawMidSentenceFailureMessage: String
-    val rawMidSentenceNegatedFailureMessage: String
-    val failureMessageArgs: IndexedSeq[Any]
-    val negatedFailureMessageArgs: IndexedSeq[Any]
-    val midSentenceFailureMessageArgs: IndexedSeq[Any]
-    val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any]
-    val composite: Boolean
-    val prettifier: Prettifier
 
+  val rawFailureMessage: String
+  val rawNegatedFailureMessage: String
+  val rawMidSentenceFailureMessage: String
+  val rawMidSentenceNegatedFailureMessage: String
+  val failureMessageArgs: IndexedSeq[Any]
+  val negatedFailureMessageArgs: IndexedSeq[Any]
+  val midSentenceFailureMessageArgs: IndexedSeq[Any]
+  val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any]
+  val composite: Boolean
+  val prettifier: Prettifier
+
+  def isTrue: Boolean
+
+  def isFalse: Boolean
 
   /**
    * Get a negated version of this Expectation, sub type will be negated and all messages field will be substituted with its counter-part.
    *
    * @return a negated version of this Expectation
    */
-    def unary_!(): Expectation
+  def unary_!(): Expectation
 
-    def ||(rhs: => Expectation): Expectation
+  def ||(rhs: => Expectation): Expectation
 
-    def &&(rhs: => Expectation): Expectation
+  def &&(rhs: => Expectation): Expectation
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
@@ -120,18 +124,23 @@ object Expectation {
 import org.scalatest.Expectation._
 
 case class False(
-	rawFailureMessage: String,
-    rawNegatedFailureMessage: String,
-    rawMidSentenceFailureMessage: String,
-    rawMidSentenceNegatedFailureMessage: String,
-    failureMessageArgs: IndexedSeq[Any],
-    negatedFailureMessageArgs: IndexedSeq[Any],
-    midSentenceFailureMessageArgs: IndexedSeq[Any],
-    midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
-    composite: Boolean = false,
-    prettifier: Prettifier = Prettifier.default
+  rawFailureMessage: String,
+  rawNegatedFailureMessage: String,
+  rawMidSentenceFailureMessage: String,
+  rawMidSentenceNegatedFailureMessage: String,
+  failureMessageArgs: IndexedSeq[Any],
+  negatedFailureMessageArgs: IndexedSeq[Any],
+  midSentenceFailureMessageArgs: IndexedSeq[Any],
+  midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
+  composite: Boolean = false,
+  prettifier: Prettifier = Prettifier.default
 ) extends Expectation {
-	def unary_!() = True(
+
+  def isTrue: Boolean = false
+
+  def isFalse: Boolean = true
+
+  def unary_!() = True(
     rawNegatedFailureMessage,
     rawFailureMessage,
     rawMidSentenceNegatedFailureMessage,
@@ -319,18 +328,24 @@ object False {
 
 
 case class True(
-	rawFailureMessage: String,
-    rawNegatedFailureMessage: String,
-    rawMidSentenceFailureMessage: String,
-    rawMidSentenceNegatedFailureMessage: String,
-    failureMessageArgs: IndexedSeq[Any],
-    negatedFailureMessageArgs: IndexedSeq[Any],
-    midSentenceFailureMessageArgs: IndexedSeq[Any],
-    midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
-    composite: Boolean = false,
-    prettifier: Prettifier = Prettifier.default) extends Expectation {
+  rawFailureMessage: String,
+  rawNegatedFailureMessage: String,
+  rawMidSentenceFailureMessage: String,
+  rawMidSentenceNegatedFailureMessage: String,
+  failureMessageArgs: IndexedSeq[Any],
+  negatedFailureMessageArgs: IndexedSeq[Any],
+  midSentenceFailureMessageArgs: IndexedSeq[Any],
+  midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
+  composite: Boolean = false,
+  prettifier: Prettifier = Prettifier.default
+) extends Expectation {
 
-	def unary_!() = False(
+  def isTrue: Boolean = true
+
+  def isFalse: Boolean = false
+
+  def unary_!() =
+    False(
       rawNegatedFailureMessage,
       rawFailureMessage,
       rawMidSentenceNegatedFailureMessage,
@@ -340,7 +355,8 @@ case class True(
       midSentenceNegatedFailureMessageArgs,
       midSentenceFailureMessageArgs,
       composite,
-      prettifier)
+      prettifier
+    )
 
   def &&(rhs: => Expectation) = rhs match {
       case yes: True => True(
