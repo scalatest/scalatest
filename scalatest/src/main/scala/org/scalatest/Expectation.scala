@@ -575,9 +575,9 @@ object Fact {
     val composite: Boolean = underlying.composite
     val prettifier: Prettifier = underlying.prettifier
 
-    def isTrue: Boolean = ???
+    def isTrue: Boolean = !(underlying.isTrue)
 
-    def isFalse: Boolean = ???
+    def isFalse: Boolean = !(underlying.isFalse)
 
     def toAssertion: Assertion = ???
 

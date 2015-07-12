@@ -117,6 +117,14 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val notTrueFact = !trueFact
         !notTrueFact should be theSameInstanceAs trueFact
       }
+      "should return the opposite of underlying from its isTrue method" in {
+        val notTrueFact = !trueFact
+        notTrueFact.isTrue should equal (!(trueFact.isTrue))
+      }
+      "should return the opposite of underlying from its isFalse method" in {
+        val notTrueFact = !trueFact
+        notTrueFact.isFalse should equal (!(trueFact.isFalse))
+      }
     }
   }
   "The True and False companion objects factory methods" - {
