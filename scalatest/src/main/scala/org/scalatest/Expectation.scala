@@ -38,7 +38,7 @@ sealed abstract class Expectation {
 
   def toAssertion: Assertion
 
-  final def toBoolean: Boolean = isTrue
+  def toBoolean: Boolean
 
   /**
    * Get a negated version of this Expectation, sub type will be negated and all messages field will be substituted with its counter-part.
@@ -56,33 +56,28 @@ sealed abstract class Expectation {
    *
    * @return failure message to report if a fact fails
    */
-  def failureMessage: String = if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs)
+  def failureMessage: String
 
   /**
    * Construct message with a meaning opposite to that of the failure message, using <code>rawNegatedFailureMessage</code>, <code>negatedFailureMessageArgs</code> and <code>prettifier</code>
    *
    * @return message with a meaning opposite to that of the failure message
    */
-  def negatedFailureMessage: String = if (negatedFailureMessageArgs.isEmpty) rawNegatedFailureMessage else makeString(rawNegatedFailureMessage, negatedFailureMessageArgs)
+  def negatedFailureMessage: String
 
   /**
    * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFailureMessage</code>, <code>midSentenceFailureMessageArgs</code> and <code>prettifier</code>
    *
    * @return failure message suitable for appearing mid-sentence
    */
-  def midSentenceFailureMessage: String = if (midSentenceFailureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, midSentenceFailureMessageArgs)
+  def midSentenceFailureMessage: String
 
   /**
    * Construct negated failure message suitable for appearing mid-sentence, using <code>rawMidSentenceNegatedFailureMessage</code>, <code>midSentenceNegatedFailureMessageArgs</code> and <code>prettifier</code>
    *
    * @return negated failure message suitable for appearing mid-sentence
    */
-  def midSentenceNegatedFailureMessage: String = if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
-
-  private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
-    val msgFmt = new MessageFormat(rawString)
-    msgFmt.format(args.map(prettifier).toArray)
-  }
+  def midSentenceNegatedFailureMessage: String
 }
 
 object Expectation {
@@ -128,7 +123,43 @@ object Expectation {
 
 import org.scalatest.Expectation._
 
-sealed trait Fact extends Expectation
+sealed trait Fact extends Expectation {
+  final def toBoolean: Boolean = isTrue
+  final def isFalse: Boolean = !isTrue
+
+  /**
+   * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
+   *
+   * @return failure message to report if a fact fails
+   */
+  def failureMessage: String = if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs)
+
+  /**
+   * Construct message with a meaning opposite to that of the failure message, using <code>rawNegatedFailureMessage</code>, <code>negatedFailureMessageArgs</code> and <code>prettifier</code>
+   *
+   * @return message with a meaning opposite to that of the failure message
+   */
+  def negatedFailureMessage: String = if (negatedFailureMessageArgs.isEmpty) rawNegatedFailureMessage else makeString(rawNegatedFailureMessage, negatedFailureMessageArgs)
+
+  /**
+   * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFailureMessage</code>, <code>midSentenceFailureMessageArgs</code> and <code>prettifier</code>
+   *
+   * @return failure message suitable for appearing mid-sentence
+   */
+  def midSentenceFailureMessage: String = if (midSentenceFailureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, midSentenceFailureMessageArgs)
+
+  /**
+   * Construct negated failure message suitable for appearing mid-sentence, using <code>rawMidSentenceNegatedFailureMessage</code>, <code>midSentenceNegatedFailureMessageArgs</code> and <code>prettifier</code>
+   *
+   * @return negated failure message suitable for appearing mid-sentence
+   */
+  def midSentenceNegatedFailureMessage: String = if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
+
+  private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
+    val msgFmt = new MessageFormat(rawString)
+    msgFmt.format(args.map(prettifier).toArray)
+  }
+}
 
 object Fact {
 
@@ -146,8 +177,6 @@ object Fact {
   ) extends Fact {
   
     def isTrue: Boolean = false
-  
-    def isFalse: Boolean = true
   
     def toAssertion: Assertion = throw new TestFailedException(failureMessage, 2)
   
@@ -368,8 +397,6 @@ object Fact {
   
     def isTrue: Boolean = true
   
-    def isFalse: Boolean = false
-  
     def toAssertion: Assertion = Succeeded
   
     def unary_!() = Unary_!(this)
@@ -576,8 +603,6 @@ object Fact {
     val prettifier: Prettifier = underlying.prettifier
 
     def isTrue: Boolean = !(underlying.isTrue)
-
-    def isFalse: Boolean = !(underlying.isFalse)
 
     def toAssertion: Assertion = ???
 
