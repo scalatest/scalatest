@@ -22,6 +22,7 @@ import SharedHelpers.thisLineNumber
 
 class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
 
+/*
   "A Expectation" - {
     val fact = False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
     "when negated" - {
@@ -595,4 +596,5 @@ class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods with Exp
       }
     }
   }
+*/
 }

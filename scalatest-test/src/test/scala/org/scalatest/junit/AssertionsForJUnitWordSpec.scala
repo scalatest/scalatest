@@ -63,14 +63,14 @@ trait AssertionsForJUnit3SharedTests { this: WordSpec =>
           "hi".charAt(-1)
         }
       }
-      assert(caught1.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but java.lang.StringIndexOutOfBoundsException was thrown.")
+      assert(caught1.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but java.lang.StringIndexOutOfBoundsException was thrown")
       
       val caught2 = intercept[AssertionFailedError] {
         intercept[IllegalArgumentException] {
           "hi"
         }
       }
-      assert(caught2.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but no exception was thrown.")
+      assert(caught2.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but no exception was thrown")
     }
 
     "from fail" in {

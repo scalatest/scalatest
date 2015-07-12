@@ -28,14 +28,14 @@ class ShouldThrowSpec extends FunSpec {
       val caught1 = intercept[TestFailedException] {
         an [UnsupportedOperationException] should be thrownBy { "hi".toInt }
       }
-      assert(caught1.getMessage === "Expected exception java.lang.UnsupportedOperationException to be thrown, but java.lang.NumberFormatException was thrown.")
+      assert(caught1.getMessage === "Expected exception java.lang.UnsupportedOperationException to be thrown, but java.lang.NumberFormatException was thrown")
     }
 
     it("fail if no exception is thrown") {
       val caught2 = intercept[TestFailedException] {
         an [IllegalArgumentException] should be thrownBy { "hi" }
       }
-      assert(caught2.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but no exception was thrown.")
+      assert(caught2.getMessage === "Expected exception java.lang.IllegalArgumentException to be thrown, but no exception was thrown")
     }
 
     it("succeed if the expected exception is thrown") {
