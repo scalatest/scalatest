@@ -316,7 +316,6 @@ object Fact {
       )
   }
   
-  
   case class True(
     rawFailureMessage: String,
     rawNegatedFailureMessage: String,

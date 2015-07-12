@@ -17,7 +17,6 @@ package org.scalatest
 
 class ExpectationsSpec extends FunSpec with Expectations {
 
-/*
   describe("The expectThrows method") {
     it("should catch subtypes") {
       class MyException extends RuntimeException
@@ -83,5 +82,4 @@ class ExpectationsSpec extends FunSpec with Expectations {
 */
     }
   }
-*/
 }
