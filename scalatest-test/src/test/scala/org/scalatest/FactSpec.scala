@@ -22,8 +22,8 @@ import Fact._
 
 class FactSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
   "A Fact" - {
-    val falseFact = False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
-    val trueFact = True("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
+    val falseFact: Expectation = False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
+    val trueFact: Expectation = True("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
     "should have isTrue and isFalse methods" in {
       falseFact.isTrue shouldBe false
       falseFact.isFalse shouldBe true
@@ -110,7 +110,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       "should maintain the same composite state" in {
         !falseFact should have (composite(false))
         
-        val factCopy = falseFact.copy(composite = true)
+        val factCopy = falseFact.asInstanceOf[False].copy(composite = true)
         !factCopy should have (composite(true))
       }
       "should return the original object when negated yet again" in {
@@ -169,7 +169,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
         val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
         val fact = leftSideTrue && rightSideFalse
-        fact shouldBe a [False]
+        fact shouldBe a [Binary_&&]
+        fact.isFalse shouldBe true
         fact.rawFailureMessage should be (Resources.rawCommaBut)
         fact.rawNegatedFailureMessage should be (Resources.rawCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawCommaBut)
@@ -189,7 +190,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val leftSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
         val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideTrue && rightSideTrue
-        fact shouldBe a [True]
+        fact shouldBe a [Binary_&&]
+        fact.isTrue shouldBe true
         fact.rawFailureMessage should be (Resources.rawCommaBut)
         fact.rawNegatedFailureMessage should be (Resources.rawCommaAnd)
         fact.rawMidSentenceFailureMessage should be (Resources.rawCommaBut)

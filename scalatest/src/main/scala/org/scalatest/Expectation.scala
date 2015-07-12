@@ -86,11 +86,11 @@ sealed abstract class Fact extends Expectation {
 
   final def isFalse: Boolean = !isTrue
 
-  def unary_!(): Fact
+  def unary_!(): Fact = Fact.Unary_!(this)
 
   def ||(rhs: => Expectation): Fact
 
-  def &&(rhs: => Expectation): Fact
+  def &&(rhs: => Expectation): Fact = if (isFalse) this else Fact.Binary_&&(this, rhs)
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
@@ -140,14 +140,10 @@ object Fact {
     composite: Boolean = false,
     prettifier: Prettifier = Prettifier.default
   ) extends Fact {
-  
-    def isTrue: Boolean = false
-  
-    def toAssertion: Assertion = throw new TestFailedException(failureMessage, 2)
-  
-    def unary_!(): Fact = Unary_!(this)
 
-    def &&(rhs: => Expectation): Fact = this
+    def isTrue: Boolean = false
+
+    def toAssertion: Assertion = throw new TestFailedException(failureMessage, 2)
 
     def ||(rhs: => Expectation): Fact =
       rhs match {
@@ -364,8 +360,7 @@ object Fact {
   
     def toAssertion: Assertion = Succeeded
   
-    def unary_!(): Fact = Unary_!(this)
-  
+/* DELME
     def &&(rhs: => Expectation): Fact =
       rhs match {
         case yes: True => True(
@@ -391,6 +386,7 @@ object Fact {
           true
         )
       }
+*/
   
     def ||(rhs: => Expectation): Fact = this
   
@@ -571,11 +567,33 @@ object Fact {
 
     def toAssertion: Assertion = ???
 
-    def &&(rhs: => org.scalatest.Expectation): org.scalatest.Fact = ???
-
     def ||(rhs: => org.scalatest.Expectation): org.scalatest.Fact = ???
 
-    def unary_!(): org.scalatest.Fact = underlying
+    override def unary_!(): org.scalatest.Fact = underlying
+  }
+
+  class Binary_&&(left: Fact, right: => Expectation) extends Fact {
+
+    val rawFailureMessage: String = commaBut(left.composite, right.composite)
+    val rawNegatedFailureMessage: String = commaAnd(left.composite, right.composite)
+    val rawMidSentenceFailureMessage: String = commaBut(left.composite, right.composite)
+    val rawMidSentenceNegatedFailureMessage: String = commaAnd(left.composite, right.composite)
+    val failureMessageArgs: IndexedSeq[Any] = Vector(NegatedFailureMessage(left), MidSentenceFailureMessage(right))
+    val negatedFailureMessageArgs: IndexedSeq[Any] = Vector(NegatedFailureMessage(left), MidSentenceNegatedFailureMessage(right))
+    val midSentenceFailureMessageArgs: IndexedSeq[Any] = Vector(MidSentenceNegatedFailureMessage(left), MidSentenceFailureMessage(right))
+    val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = Vector(MidSentenceNegatedFailureMessage(left), MidSentenceNegatedFailureMessage(right))
+    val composite: Boolean = true
+    val prettifier: Prettifier = left.prettifier
+
+    def isTrue: Boolean = left.isTrue && right.isTrue
+
+    def toAssertion: Assertion = ???
+
+    def ||(rhs: => org.scalatest.Expectation): org.scalatest.Fact = ???
+  }
+
+  object Binary_&& {
+    def apply(left: Fact, right: => Expectation): Fact = new Binary_&&(left, right)
   }
 
   private[scalatest] def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
