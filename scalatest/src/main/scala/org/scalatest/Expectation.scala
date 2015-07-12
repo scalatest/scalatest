@@ -38,6 +38,8 @@ sealed abstract class Expectation {
 
   def toAssertion: Assertion
 
+  final def toBoolean: Boolean = isTrue
+
   /**
    * Get a negated version of this Expectation, sub type will be negated and all messages field will be substituted with its counter-part.
    *

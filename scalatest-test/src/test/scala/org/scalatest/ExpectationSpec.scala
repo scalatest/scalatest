@@ -116,6 +116,13 @@ class ExpectationSpec extends FreeSpec with Matchers with PrettyMethods with Exp
       caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
       caught.failedCodeFileName shouldBe Some("ExpectationSpec.scala")
     }
+
+    "should offer a toBoolean method, even though it is redundant with isTrue" in {
+      val falseFact = fact
+      val trueFact = !fact
+      falseFact.toBoolean shouldBe false
+      trueFact.toBoolean shouldBe true
+    }
   }
 
   "The Expectation companion objects factory methods" - {
