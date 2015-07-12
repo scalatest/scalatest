@@ -123,9 +123,17 @@ object Expectation {
 
 import org.scalatest.Expectation._
 
-sealed trait Fact extends Expectation {
+sealed abstract class Fact extends Expectation {
+
   final def toBoolean: Boolean = isTrue
+
   final def isFalse: Boolean = !isTrue
+
+  def unary_!(): Fact
+
+  def ||(rhs: => Expectation): Fact
+
+  def &&(rhs: => Expectation): Fact
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
@@ -180,11 +188,11 @@ object Fact {
   
     def toAssertion: Assertion = throw new TestFailedException(failureMessage, 2)
   
-    def unary_!() = Unary_!(this)
+    def unary_!(): Fact = Unary_!(this)
 
-    def &&(rhs: => Expectation) = this
+    def &&(rhs: => Expectation): Fact = this
 
-    def ||(rhs: => Expectation) =
+    def ||(rhs: => Expectation): Fact =
       rhs match {
         case yes: True => True(
           commaAnd(this.composite, yes.composite),
@@ -399,9 +407,9 @@ object Fact {
   
     def toAssertion: Assertion = Succeeded
   
-    def unary_!() = Unary_!(this)
+    def unary_!(): Fact = Unary_!(this)
   
-    def &&(rhs: => Expectation) =
+    def &&(rhs: => Expectation): Fact =
       rhs match {
         case yes: True => True(
           commaBut(this.composite, yes.composite),
@@ -427,7 +435,7 @@ object Fact {
         )
       }
   
-    def ||(rhs: => Expectation) = this
+    def ||(rhs: => Expectation): Fact = this
   
     override def toString: String = s"True($negatedFailureMessage)"
   }
@@ -606,10 +614,10 @@ object Fact {
 
     def toAssertion: Assertion = ???
 
-    def &&(rhs: => org.scalatest.Expectation): org.scalatest.Expectation = ???
+    def &&(rhs: => org.scalatest.Expectation): org.scalatest.Fact = ???
 
-    def ||(rhs: => org.scalatest.Expectation): org.scalatest.Expectation = ???
+    def ||(rhs: => org.scalatest.Expectation): org.scalatest.Fact = ???
 
-    def unary_!(): org.scalatest.Expectation = underlying
+    def unary_!(): org.scalatest.Fact = underlying
   }
 }
