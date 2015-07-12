@@ -44,7 +44,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
   def failWith(e: Throwable) { throw e }
 
-  it should "return the new exception with the clue string appended, separated by a space char if passed a function that does that" in {
+  "The withClue construct" should "return the new exception with the clue string appended, separated by a space char if passed a function that does that" in {
     forAll (examples) { e =>
       val clue = "clue"
       val fun: (Option[String] => Option[String]) =
@@ -56,7 +56,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
     }
   }
 
-  "The withClue construct" should "allow any non-ModifiableMessage exception to pass through" in {
+  it should "allow any non-ModifiableMessage exception to pass through" in {
     val iae = new IllegalArgumentException
     val caught = intercept[IllegalArgumentException] {
       { failWith(iae) } withClue "howdy"
