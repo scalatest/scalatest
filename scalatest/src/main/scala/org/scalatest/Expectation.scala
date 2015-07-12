@@ -145,20 +145,24 @@ case class False(
 
   def toAssertion: Assertion = throw new TestFailedException(failureMessage, 2)
 
-  def unary_!() = True(
-    rawNegatedFailureMessage,
-    rawFailureMessage,
-    rawMidSentenceNegatedFailureMessage,
-    rawMidSentenceFailureMessage,
-    negatedFailureMessageArgs,
-    failureMessageArgs,
-    midSentenceNegatedFailureMessageArgs,
-    midSentenceFailureMessageArgs,
-    composite,
-    prettifier)
+  def unary_!() =
+    True(
+      rawNegatedFailureMessage,
+      rawFailureMessage,
+      rawMidSentenceNegatedFailureMessage,
+      rawMidSentenceFailureMessage,
+      negatedFailureMessageArgs,
+      failureMessageArgs,
+      midSentenceNegatedFailureMessageArgs,
+      midSentenceFailureMessageArgs,
+      composite,
+      prettifier
+    )
 
   def &&(rhs: => Expectation) = this
-  def ||(rhs: => Expectation) = rhs match {
+
+  def ||(rhs: => Expectation) =
+    rhs match {
       case yes: True => True(
         commaAnd(this.composite, yes.composite),
         commaAnd(this.composite, yes.composite),
@@ -182,6 +186,7 @@ case class False(
         true
       )
   }
+
   override def toString: String = s"False($failureMessage)"
 }
 
@@ -207,8 +212,14 @@ object False {
    * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
    * @return a <code>False</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): False =
+  def apply(
+    rawFailureMessage: String,
+    rawNegatedFailureMessage: String,
+    rawMidSentenceFailureMessage: String,
+    rawMidSentenceNegatedFailureMessage: String,
+    failureMessageArgs: IndexedSeq[Any],
+    negatedFailureMessageArgs: IndexedSeq[Any]
+  ): False =
     new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
@@ -234,8 +245,12 @@ object False {
    * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @return a <code>False</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String): False =
+  def apply(
+    rawFailureMessage: String,
+    rawNegatedFailureMessage: String,
+    rawMidSentenceFailureMessage: String,
+    rawMidSentenceNegatedFailureMessage: String
+  ): False =
     new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
@@ -260,7 +275,10 @@ object False {
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @return a <code>False</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String): False =
+  def apply(
+    rawFailureMessage: String,
+    rawNegatedFailureMessage: String
+  ): False =
     new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
@@ -286,7 +304,11 @@ object False {
    * @param args arguments for error messages construction
    * @return a <code>False</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, args: IndexedSeq[Any]) =
+  def apply(
+    rawFailureMessage: String,
+    rawNegatedFailureMessage: String,
+    args: IndexedSeq[Any]
+  ) =
     new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
@@ -316,7 +338,12 @@ object False {
    * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
    * @return a <code>False</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]) =
+  def apply(
+    rawFailureMessage: String,
+    rawNegatedFailureMessage: String,
+    failureMessageArgs: IndexedSeq[Any],
+    negatedFailureMessageArgs: IndexedSeq[Any]
+  ) =
     new False(
       rawFailureMessage,
       rawNegatedFailureMessage,
@@ -365,7 +392,8 @@ case class True(
       prettifier
     )
 
-  def &&(rhs: => Expectation) = rhs match {
+  def &&(rhs: => Expectation) =
+    rhs match {
       case yes: True => True(
         commaBut(this.composite, yes.composite),
         commaAnd(this.composite, yes.composite),
@@ -388,7 +416,7 @@ case class True(
         Vector(MidSentenceNegatedFailureMessage(this), MidSentenceNegatedFailureMessage(no)),
         true
       )
-  }
+    }
 
   def ||(rhs: => Expectation) = this
 
@@ -417,8 +445,13 @@ object True {
    * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
    * @return a <code>True</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String, failureMessageArgs: IndexedSeq[Any], negatedFailureMessageArgs: IndexedSeq[Any]): True =
+  def apply(rawFailureMessage: String,
+    rawNegatedFailureMessage: String,
+    rawMidSentenceFailureMessage: String,
+    rawMidSentenceNegatedFailureMessage: String,
+    failureMessageArgs: IndexedSeq[Any],
+    negatedFailureMessageArgs: IndexedSeq[Any]
+  ): True =
     new True(
       rawFailureMessage,
       rawNegatedFailureMessage,
@@ -444,8 +477,11 @@ object True {
    * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @return a <code>True</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String, rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String): True =
+  def apply(rawFailureMessage: String,
+    rawNegatedFailureMessage: String,
+    rawMidSentenceFailureMessage: String,
+    rawMidSentenceNegatedFailureMessage: String
+  ): True =
     new True(
       rawFailureMessage,
       rawNegatedFailureMessage,
@@ -470,7 +506,10 @@ object True {
    * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
    * @return a <code>True</code> instance
    */
-  def apply(rawFailureMessage: String, rawNegatedFailureMessage: String): True =
+  def apply(
+    rawFailureMessage: String,
+    rawNegatedFailureMessage: String
+  ): True =
     new True(
       rawFailureMessage,
       rawNegatedFailureMessage,
