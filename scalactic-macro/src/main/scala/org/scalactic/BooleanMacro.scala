@@ -801,7 +801,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
    *   [code generated from callHelper]
    * }
    */
-  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[Unit] = {
+  def genMacro[T](booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[T] = {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =
       context.Expr(

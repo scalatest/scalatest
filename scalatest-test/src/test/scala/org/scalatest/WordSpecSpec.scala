@@ -2664,7 +2664,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(trce.getMessage === "A they clause must only appear after a top level subject clause.")
         }
 
-        it("should generate NotAllowedException wrapping a TestFailedException when assert fails in should scope") {
+        /*it("should generate NotAllowedException wrapping a TestFailedException when assert fails in should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {
               val a = 1
@@ -3743,7 +3743,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             new TestSpec
           }
           assert(e.getMessage == "on purpose")
-        }
+        }*/
         // SKIP-SCALATESTJS-END
       }
     }

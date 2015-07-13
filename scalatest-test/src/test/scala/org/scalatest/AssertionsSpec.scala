@@ -170,7 +170,7 @@ class AssertionsSpec extends FunSpec {
       assert(trappedEx.isInstanceOf[TestFailedException])
       assert(trappedEx.getMessage == "12 did not equal 13")
       val trappedUnit = trap { assert(a == 12) }
-      assert(trappedUnit == NormalResult(()))
+      assert(trappedUnit == NormalResult(Succeeded))
       val trappedInt = trap { 12 }
       assert(trappedInt == NormalResult(12))
       val trappedString = trap { "12" }
