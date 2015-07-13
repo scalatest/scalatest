@@ -698,7 +698,7 @@ trait Assertions extends TripleEquals {
    *
    * @param code the snippet of code that should not type check
    */
-  def assertTypeError(code: String): Unit = macro CompileMacro.assertTypeErrorImpl
+  def assertTypeError(code: String): Assertion = macro CompileMacro.assertTypeErrorImpl
 
   /**
    * Asserts that a given string snippet of code does not pass either the Scala parser or type checker.
@@ -729,7 +729,7 @@ trait Assertions extends TripleEquals {
    *
    * @param code the snippet of code that should not type check
    */
-  def assertDoesNotCompile(code: String): Unit = macro CompileMacro.assertDoesNotCompileImpl
+  def assertDoesNotCompile(code: String): Assertion = macro CompileMacro.assertDoesNotCompileImpl
 
   /**
    * Asserts that a given string snippet of code passes both the Scala parser and type checker.
@@ -750,7 +750,7 @@ trait Assertions extends TripleEquals {
    *
    * @param code the snippet of code that should compile
    */
-  def assertCompiles(code: String): Unit = macro CompileMacro.assertCompilesImpl
+  def assertCompiles(code: String): Assertion = macro CompileMacro.assertCompilesImpl
 
   /* *
    * Implicit conversion from <code>Any</code> to <code>Equalizer</code>, used to enable
@@ -1037,13 +1037,14 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any, clue: Any)(actual: Any) {
+  def assertResult(expected: Any, clue: Any)(actual: Any): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(exp, act)
       val fullMsg = AppendedClues.appendClue(s, clue.toString)
       throw newAssertionFailedException(Some(fullMsg), None, failStackDepth)
     }
+    Succeeded
   }
 
   /** 
@@ -1057,12 +1058,13 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any)(actual: Any) {
+  def assertResult(expected: Any)(actual: Any): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(exp, act)
       throw newAssertionFailedException(Some(s), None, failStackDepth)
     }
+    Succeeded
   }
   
 /*

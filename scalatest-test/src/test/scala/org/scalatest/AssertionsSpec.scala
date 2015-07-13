@@ -1676,6 +1676,10 @@ class AssertionsSpec extends FunSpec {
           |assert(org.exists(_ == 'b'))
         """.stripMargin)
     }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assert(x + 1 == 2) eq Succeeded)
+    }
   }
 
   describe("The assert(boolean, clue) method") {
@@ -3031,6 +3035,10 @@ class AssertionsSpec extends FunSpec {
           |assert(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assert(x + 1 == 2, "clue") eq Succeeded)
+    }
   }
 
   describe("The assume(boolean) method") {
@@ -4378,6 +4386,10 @@ class AssertionsSpec extends FunSpec {
           |val org = "abc"
           |assume(org.exists(_ == 'b'))
         """.stripMargin)
+    }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assume(x + 1 == 2) eq Succeeded)
     }
   }
 
@@ -5734,6 +5746,10 @@ class AssertionsSpec extends FunSpec {
           |assume(org.exists(_ == 'b'), ", dude")
         """.stripMargin)
     }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assume(x + 1 == 2, "clue") eq Succeeded)
+    }
   }
 
   describe("assertTypeError method ") {
@@ -5803,6 +5819,9 @@ class AssertionsSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
     }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      assert(assertTypeError("val x: String = 1") eq Succeeded)
+    }
   }
 
   describe("assertDoesNotCompile method ") {
@@ -5858,6 +5877,9 @@ class AssertionsSpec extends FunSpec {
             |""".stripMargin
         )
       }
+    }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      assert(assertDoesNotCompile("val x: String = 1") eq Succeeded)
     }
   }
 
@@ -5932,6 +5954,9 @@ class AssertionsSpec extends FunSpec {
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 10)))
       }
     }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      assert(assertCompiles("val x: Int = 1") eq Succeeded)
+    }
   }
 
   describe("The assertResult method") {
@@ -5994,6 +6019,10 @@ class AssertionsSpec extends FunSpec {
         assertResult(a) { null }
       }
       assert(e1.message === Some(FailureMessages.expectedButGot(a, null)))
+    }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assertResult(2) { x + 1 } eq Succeeded)
     }
   }
 
@@ -6082,6 +6111,10 @@ class AssertionsSpec extends FunSpec {
         assertResult(a, "; the clue") { b }
       }
       assert(e4.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + "; the clue"))
+    }
+    it("should result in type Assertion and, on success, return the Succeeded value") {
+      val x = 1
+      assert(assertResult(2, "clue") { x + 1 } eq Succeeded)
     }
   }
   describe("The Assertions trait") {

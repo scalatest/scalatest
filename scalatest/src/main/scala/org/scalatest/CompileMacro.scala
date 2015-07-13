@@ -52,7 +52,7 @@ private[scalatest] object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
+  def assertTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Assertion] = {
     import c.universe._
 
     // extract code snippet
@@ -68,7 +68,8 @@ private[scalatest] object CompileMacro {
     } catch {
       case e: TypecheckException =>
         reify {
-          // type check failed as expected, generate code to do nothing
+          // type check failed as expected, generate code to return Succeeded
+          Succeeded
         }
       case e: ParseException =>
         // parse error, generate code to throw TestFailedException
@@ -80,7 +81,7 @@ private[scalatest] object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
-  def assertDoesNotCompileImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
+  def assertDoesNotCompileImpl(c: Context)(code: c.Expr[String]): c.Expr[Assertion] = {
     import c.universe._
 
     // extract code snippet
@@ -96,17 +97,19 @@ private[scalatest] object CompileMacro {
     } catch {
       case e: TypecheckException =>
         reify {
-          // type check error, code snippet does not compile as expected, generate code to do nothing
+          // type check error, code snippet does not compile as expected, generate code to return Succeeded
+          Succeeded
         }
       case e: ParseException =>
         reify {
-          // parse error, code snippet does not compile as expected, generate code to do nothing
+          // parse error, code snippet does not compile as expected, generate code to return Succeeded
+          Succeeded
         }
     }
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
-  def assertCompilesImpl(c: Context)(code: c.Expr[String]): c.Expr[Unit] = {
+  def assertCompilesImpl(c: Context)(code: c.Expr[String]): c.Expr[Assertion] = {
     import c.universe._
 
     // extract code snippet
@@ -114,9 +117,9 @@ private[scalatest] object CompileMacro {
 
     try {
       c.typeCheck(c.parse("{ " + codeStr + " }")) // parse and type check code snippet
-      // Both parse and type check succeeded, the code snippet compiles as expected, generate code to do nothing
+      // Both parse and type check succeeded, the code snippet compiles as expected, generate code to return Succeeded
       reify {
-        // Do nothing
+        Succeeded
       }
     } catch {
       case e: TypecheckException =>
