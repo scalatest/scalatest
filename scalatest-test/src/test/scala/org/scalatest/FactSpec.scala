@@ -19,8 +19,11 @@ import org.scalactic.PrettyMethods
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers.thisLineNumber
 import Fact._
+import prop.TableDrivenPropertyChecks._
+import prop.TableFor1
 
 class FactSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
+
   "A Fact" - {
     val falseFact: Expectation = False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
     val trueFact: Expectation = True("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
@@ -600,4 +603,19 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           )
     }
   }
+
+  def examples: TableFor1[Expectation] =
+    Table(
+      "fact",
+      False("message", "negated message"),
+      True("message", "negated message"),
+      !(False("message", "negated message")),
+      !(True("message", "negated message")),
+      False("message", "negated message") && True("message", "negated message"),
+      True("message", "negated message") && True("message", "negated message"),
+      True("message", "negated message") && False("message", "negated message"),
+      True("message", "negated message") || False("message", "negated message"),
+      False("message", "negated message") || True("message", "negated message"),
+      False("message", "negated message") || False("message", "negated message")
+    )
 }
