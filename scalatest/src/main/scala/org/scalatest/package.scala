@@ -78,4 +78,11 @@ package object scalatest {
   type PendingNothing = PendingStatement
 
   type Expectation = Fact
+
+  /**
+   * Marker trait that serves as the result type of <code>assert</code>, <code>assume</code>, and <code>pending</code> methods of
+   * trait <code>Assertions</code>, which return its only instance, the <code>Succeeded</code> singleton, or throw
+   * an exception that indicates a failed, canceled, or pending test.
+   */
+  type Assertion = Succeeded.type
 }
