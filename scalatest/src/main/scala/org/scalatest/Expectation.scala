@@ -19,7 +19,7 @@ import org.scalactic.Prettifier
 import java.text.MessageFormat
 import org.scalatest.exceptions.TestFailedException
 
-sealed abstract class Expectation {
+sealed abstract class Fact {
 
   val rawFailureMessage: String
   val rawNegatedFailureMessage: String
@@ -32,69 +32,26 @@ sealed abstract class Expectation {
   val composite: Boolean
   val prettifier: Prettifier
 
-  val cause: Option[Throwable]
+  val cause: Option[Throwable] = None
 
   def isTrue: Boolean
 
-  def isFalse: Boolean
+  final def isFalse: Boolean = !isTrue
 
-  def toBoolean: Boolean
+  final def toBoolean: Boolean = isTrue
 
   def toAssertion: Assertion
 
   /**
-   * Get a negated version of this Expectation, sub type will be negated and all messages field will be substituted with its counter-part.
+   * Get a negated version of this Fact, sub type will be negated and all messages field will be substituted with its counter-part.
    *
-   * @return a negated version of this Expectation
+   * @return a negated version of this Fact
    */
-  def unary_!(): Expectation
-
-  def ||(rhs: => Expectation): Expectation
-
-  def &&(rhs: => Expectation): Expectation
-
-  /**
-   * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
-   *
-   * @return failure message to report if a fact fails
-   */
-  def failureMessage: String
-
-  /**
-   * Construct message with a meaning opposite to that of the failure message, using <code>rawNegatedFailureMessage</code>, <code>negatedFailureMessageArgs</code> and <code>prettifier</code>
-   *
-   * @return message with a meaning opposite to that of the failure message
-   */
-  def negatedFailureMessage: String
-
-  /**
-   * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFailureMessage</code>, <code>midSentenceFailureMessageArgs</code> and <code>prettifier</code>
-   *
-   * @return failure message suitable for appearing mid-sentence
-   */
-  def midSentenceFailureMessage: String
-
-  /**
-   * Construct negated failure message suitable for appearing mid-sentence, using <code>rawMidSentenceNegatedFailureMessage</code>, <code>midSentenceNegatedFailureMessageArgs</code> and <code>prettifier</code>
-   *
-   * @return negated failure message suitable for appearing mid-sentence
-   */
-  def midSentenceNegatedFailureMessage: String
-}
-
-sealed abstract class Fact extends Expectation {
-
-  final def toBoolean: Boolean = isTrue
-
-  final def isFalse: Boolean = !isTrue
-
-  val cause: Option[Throwable] = None
-
   def unary_!(): Fact = Fact.Unary_!(this)
 
-  def ||(rhs: => Expectation): Fact = if (isTrue) this else Fact.Binary_||(this, rhs)
+  def ||(rhs: => Fact): Fact = if (isTrue) this else Fact.Binary_||(this, rhs)
 
-  def &&(rhs: => Expectation): Fact = if (isFalse) this else Fact.Binary_&&(this, rhs)
+  def &&(rhs: => Fact): Fact = if (isFalse) this else Fact.Binary_&&(this, rhs)
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
@@ -538,7 +495,7 @@ object Fact {
     override def unary_!(): org.scalatest.Fact = underlying
   }
 
-  class Binary_&&(left: Fact, right: => Expectation) extends Fact {
+  class Binary_&&(left: Fact, right: => Fact) extends Fact {
 
     val rawFailureMessage: String = commaBut(left.composite, right.composite)
     val rawNegatedFailureMessage: String = commaAnd(left.composite, right.composite)
@@ -557,10 +514,10 @@ object Fact {
   }
 
   object Binary_&& {
-    def apply(left: Fact, right: => Expectation): Fact = new Binary_&&(left, right)
+    def apply(left: Fact, right: => Fact): Fact = new Binary_&&(left, right)
   }
 
-  class Binary_||(left: Fact, right: => Expectation) extends Fact {
+  class Binary_||(left: Fact, right: => Fact) extends Fact {
 
     val rawFailureMessage: String = commaAnd(left.composite, right.composite)
     val rawNegatedFailureMessage: String = commaAnd(left.composite, right.composite)
@@ -579,7 +536,7 @@ object Fact {
   }
 
   object Binary_|| {
-    def apply(left: Fact, right: => Expectation): Fact = new Binary_||(left, right)
+    def apply(left: Fact, right: => Fact): Fact = new Binary_||(left, right)
   }
 
   private[scalatest] def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
@@ -601,22 +558,22 @@ object Fact {
     val nestedArgs: IndexedSeq[Any]
   }
 
-  private[scalatest] case class FailureMessage(fact: Expectation) extends LazyMessage {
+  private[scalatest] case class FailureMessage(fact: Fact) extends LazyMessage {
     val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
     override def toString: String = fact.failureMessage
   }
 
-  private[scalatest] case class NegatedFailureMessage(fact: Expectation) extends LazyMessage {
+  private[scalatest] case class NegatedFailureMessage(fact: Fact) extends LazyMessage {
     val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
     override def toString: String = fact.negatedFailureMessage
   }
 
-  private[scalatest] case class MidSentenceFailureMessage(fact: Expectation) extends LazyMessage {
+  private[scalatest] case class MidSentenceFailureMessage(fact: Fact) extends LazyMessage {
     val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
     override def toString: String = fact.midSentenceFailureMessage
   }
 
-  private[scalatest] case class MidSentenceNegatedFailureMessage(fact: Expectation) extends LazyMessage {
+  private[scalatest] case class MidSentenceNegatedFailureMessage(fact: Fact) extends LazyMessage {
     val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
     override def toString: String = fact.midSentenceNegatedFailureMessage
   }

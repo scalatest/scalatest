@@ -76,4 +76,6 @@ package object scalatest {
 
   @deprecated("Please use PendingStatement instead")
   type PendingNothing = PendingStatement
+
+  type Expectation = Fact
 }
