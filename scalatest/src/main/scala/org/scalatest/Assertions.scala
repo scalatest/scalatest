@@ -25,6 +25,7 @@ import Assertions.NormalResult
 import org.scalactic.{Prettifier, Bool}
 import exceptions.TestFailedException
 import org.scalactic.Requirements._
+import org.scalactic.exceptions.NullArgumentException
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -465,7 +466,8 @@ trait Assertions extends TripleEquals {
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
     def macroAssert(bool: Bool, clue: Any) {
-      requireNonNull(clue)
+      if (clue == null)
+        throw new NullArgumentException(FailureMessages.variableNasNull(UnquotedString("clue")))
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
@@ -479,7 +481,8 @@ trait Assertions extends TripleEquals {
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
     def macroAssume(bool: Bool, clue: Any) {
-      requireNonNull(clue)
+      if (clue == null)
+        throw new NullArgumentException(FailureMessages.variableNasNull(UnquotedString("clue")))
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
@@ -1243,7 +1246,8 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
    * @throws NullArgumentException if the passed <code>clue</code> is <code>null</code>
   */
   def withClue[T](clue: Any)(fun: => T): T = {
-    requireNonNull(clue)
+    if (clue == null)
+      throw new NullArgumentException(FailureMessages.variableNasNull(UnquotedString("clue")))
     val prepend = (currentMessage: Option[String]) => {
       currentMessage match {
         case Some(msg) =>

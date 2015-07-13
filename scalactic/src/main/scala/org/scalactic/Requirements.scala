@@ -180,7 +180,7 @@ trait Requirements {
      * @param variableNames names of variable passed as appear in source
      * @param arguments arguments to check for <code>null</code> value
      */
-    def macroRequireNonNull(variableNames: Array[String], arguments: Array[Any]) {
+    def macroRequireNonNull(variableNames: Array[String], arguments: Array[AnyRef]) {
       val nullList = arguments.zipWithIndex.filter { case (e, idx) =>
         e == null
       }
@@ -294,7 +294,7 @@ trait Requirements {
    * @param arguments arguments to check for <code>null</code> value
    * @throws NullArgumentException if any of the arguments are <code>null</code>.
    */
-  def requireNonNull(arguments: Any*): Unit = macro RequirementsMacro.requireNonNull
+  def requireNonNull(arguments: AnyRef*): Unit = macro RequirementsMacro.requireNonNull
 }
 
 /**
@@ -351,7 +351,7 @@ private[scalactic] object RequirementsMacro {
    * @param arguments original arguments expression(s)
    * @return transformed expression that performs the requirement check and throw <code>NullArgumentException</code> with rich error message if requirement failed
    */
-  def requireNonNull(context: Context)(arguments: context.Expr[Any]*): context.Expr[Unit] = {
+  def requireNonNull(context: Context)(arguments: context.Expr[AnyRef]*): context.Expr[Unit] = {
     import context.universe._
 
     // generate AST that create array containing the argument name in source (get from calling 'show')

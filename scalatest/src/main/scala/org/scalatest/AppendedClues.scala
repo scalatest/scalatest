@@ -17,6 +17,7 @@ package org.scalatest
 
 import exceptions.ModifiableMessage
 import org.scalactic.Requirements._
+import org.scalactic.exceptions.NullArgumentException
 
 /**
  * Trait providing an implicit conversion that allows clues to be placed after a block of code.
@@ -141,7 +142,8 @@ trait AppendedClues {
      * @throws NullArgumentException if the passed <code>clue</code> is <code>null</code>
      */
     def withClue(clue: Any): T = {
-      requireNonNull(clue)
+      if (clue == null)
+        throw new NullArgumentException(FailureMessages.variableNasNull(UnquotedString("clue")))
       def append(currentMessage: Option[String]) =
         currentMessage match {
           case Some(msg) => Some(AppendedClues.appendClue(msg, clue.toString))

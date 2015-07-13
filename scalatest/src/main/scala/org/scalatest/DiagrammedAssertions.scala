@@ -19,6 +19,7 @@ import org.scalactic.Prettifier
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 import org.scalactic.Requirements._
+import org.scalactic.exceptions.NullArgumentException
 
 /**
  * Sub-trait of <code>Assertions</code> that override <code>assert</code> and <code>assume</code> methods to include
@@ -239,7 +240,8 @@ trait DiagrammedAssertions extends Assertions {
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
     def macroAssert(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String) {
-      requireNonNull(clue)
+      if (clue == null)
+        throw new NullArgumentException(FailureMessages.variableNasNull(UnquotedString("clue")))
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
@@ -255,7 +257,8 @@ trait DiagrammedAssertions extends Assertions {
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
     def macroAssume(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String) {
-      requireNonNull(clue)
+      if (clue == null)
+        throw new NullArgumentException(FailureMessages.variableNasNull(UnquotedString("clue")))
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
