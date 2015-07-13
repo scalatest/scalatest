@@ -19,7 +19,7 @@ import org.scalactic.Prettifier
 import java.text.MessageFormat
 import org.scalatest.exceptions.TestFailedException
 
-sealed abstract class Fact {
+private[scalatest] sealed abstract class Fact {
 
   val rawFailureMessage: String
   val rawNegatedFailureMessage: String
@@ -87,7 +87,7 @@ sealed abstract class Fact {
   }
 }
 
-object Fact {
+private[scalatest] object Fact {
 
   case class False(
     rawFailureMessage: String,
