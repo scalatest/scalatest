@@ -115,6 +115,12 @@ class AssertionsSpec extends FunSpec {
       caught.someRandomMethod()
     }
 
+    it("should throw TFE if no exception is thrown") {
+      assertThrows[TestFailedException] {
+        intercept[IllegalArgumentException] { "hi" }
+      }
+    }
+
     it("should return the caught exception") {
       val e = new RuntimeException
       val result = intercept[RuntimeException] {
@@ -122,6 +128,7 @@ class AssertionsSpec extends FunSpec {
       }
       assert(result eq e)
     }
+
     describe("when the bit of code throws the wrong exception") {
       it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")
@@ -162,6 +169,15 @@ class AssertionsSpec extends FunSpec {
       }
       assert(result eq Succeeded)
     }
+
+    it("should throw TFE if no exception is thrown") {
+      val caught =
+        intercept[TestFailedException] {
+          assertThrows[Exception] { "hi" }
+        }
+      assert(caught.isInstanceOf[TestFailedException])
+    }
+
     describe("when the bit of code throws the wrong exception") {
       it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")

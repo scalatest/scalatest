@@ -811,19 +811,26 @@ trait Assertions extends TripleEquals {
 
   def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Assertion = {
     val clazz = classTag.runtimeClass
-    try {
-      f
-      val message = Resources.exceptionExpected(clazz.getName)
-      throw newAssertionFailedException(Some(message), None, failStackDepth)
-    }
-    catch {
-      case u: Throwable => {
-        if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), failStackDepth)
-        }
-        else Succeeded
+    val threwExpectedException =
+      try {
+        f
+        false
       }
+      catch {
+          case u: Throwable => {
+          if (!clazz.isAssignableFrom(u.getClass)) {
+            val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+            throw newAssertionFailedException(Some(s), Some(u), failStackDepth)
+          }
+          else true
+        }
+      }
+    if (threwExpectedException) {
+      Succeeded
+    }
+    else {
+        val message = Resources.exceptionExpected(clazz.getName)
+        throw newAssertionFailedException(Some(message), None, failStackDepth)
     }
   }
 
