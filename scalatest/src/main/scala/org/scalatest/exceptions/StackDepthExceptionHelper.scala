@@ -146,6 +146,4 @@ object StackDepthExceptionHelper {
     }
     else None
   }
-
-  val macroCodeStackDepth: Int = 0
 }

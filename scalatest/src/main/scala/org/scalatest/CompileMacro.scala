@@ -26,9 +26,9 @@ import org.scalatest.words.{TypeCheckWord, CompileWord}
 private[scalatest] object CompileMacro {
 
   // SKIP-SCALATESTJS-START
-  private[scalatest] val stackDepth = 0
+  val stackDepth = 0
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val stackDepth = 9
+  //SCALATESTJS-ONLY val stackDepth = 9
 
   // extract the code string from the AST
   def getCodeStringFromCodeExpression(c: Context)(methodName: String, code: c.Expr[String]): String = {
@@ -63,7 +63,7 @@ private[scalatest] object CompileMacro {
       // If reach here, type check passes, let's generate code to throw TestFailedException
       val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(codeStr))
       reify {
-        throw new exceptions.TestFailedException(messageExpr.splice, StackDepthExceptionHelper.macroCodeStackDepth)
+        throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
       }
     } catch {
       case e: TypecheckException =>
@@ -75,7 +75,7 @@ private[scalatest] object CompileMacro {
         // parse error, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException(messageExpr.splice, StackDepthExceptionHelper.macroCodeStackDepth)
+          throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
         }
     }
   }
@@ -92,7 +92,7 @@ private[scalatest] object CompileMacro {
       // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
       val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(codeStr))
       reify {
-        throw new exceptions.TestFailedException(messageExpr.splice, StackDepthExceptionHelper.macroCodeStackDepth)
+        throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
       }
     } catch {
       case e: TypecheckException =>
@@ -126,13 +126,13 @@ private[scalatest] object CompileMacro {
         // type check error, compiles fails, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException(messageExpr.splice, StackDepthExceptionHelper.macroCodeStackDepth)
+          throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
         }
       case e: ParseException =>
         // parse error, compiles fails, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException(messageExpr.splice, StackDepthExceptionHelper.macroCodeStackDepth)
+          throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
         }
     }
   }
