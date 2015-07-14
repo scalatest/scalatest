@@ -100,7 +100,7 @@ trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
    * all threads are up and ready to go.
    * @param f the function to be executed by the thread
    */
-  protected def thread[T](f: => T): Thread = conductor.get.thread{ f }
+  protected def thread(f: => Unit): Thread = conductor.get.thread{ f }
 
   /**
    * Create a new thread that will execute the given function.
@@ -110,7 +110,9 @@ trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
    * @param name the name of the thread
    * @param f the function to be executed by the thread
    */
-  protected def thread[T](name: String)(f: => T): Thread = conductor.get.thread(name){ f }
+  protected def threadNamed(name: String)(f: => Unit): Thread = conductor.get.threadNamed(name){ f }
+
+  // protected def thread(name: String)(f: => Unit): Thread = conductor.get.thread(name){ f }
 
   /*
    * Create a new thread that will execute the given Runnable
@@ -143,13 +145,13 @@ trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
    * specified value, at which point the current thread is unblocked.
    * @param c the tick value to wait for
    */
-  protected def waitForBeat(beat:Int) = conductor.get.waitForBeat(beat)
+  protected def waitForBeat(beat:Int): Succeeded.type = conductor.get.waitForBeat(beat)
 
   /**
    * Run the passed function, ensuring the clock does not advance while the function is running
    * (has not yet returned or thrown an exception).
    */
-  protected def withConductorFrozen[T](f: => T) = conductor.get.withConductorFrozen(f)
+  protected def withConductorFrozen[T](f: => T): T = conductor.get.withConductorFrozen(f)
 
   /**
    * Check if the clock has been frozen by any threads. (The only way a thread
@@ -161,12 +163,12 @@ trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
    * Gets the current value of the clock. Primarily useful in assert statements.
    * @return the current tick value
    */
-  protected def beat = conductor.get.beat
+  protected def beat: Int = conductor.get.beat
 
   /**
    * Register a function to be executed after the simulation has finished.
    */
-  protected def whenFinished(fun: => Unit) = conductor.get.whenFinished { fun }
+  protected def whenFinished(fun: => Assertion): Assertion = conductor.get.whenFinished { fun }
 
   /**
    * Creates and initializes a private instance variable with a new Conductor,

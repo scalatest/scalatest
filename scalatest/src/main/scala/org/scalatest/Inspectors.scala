@@ -649,7 +649,7 @@ private[scalatest] object InspectorsHelper {
         Resources.forAssertionsIndexLabel(elements.mkString(", "))
   }
   
-  def doForAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => Unit) {
+  def doForAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => Unit): Assertion = {
     val xsIsMap = isMap(original)
     val result = 
       runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
@@ -665,9 +665,10 @@ private[scalatest] object InspectorsHelper {
         Some(result.failedElements(0)._3),
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
+    else Succeeded
   }
   
-  def doForAtLeast[T](min: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForAtLeast[T](min: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Assertion = {
     @tailrec
     def forAtLeastAcc(itr: Iterator[T], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): (Int, IndexedSeq[String]) = {
       if (itr.hasNext) {
@@ -718,9 +719,10 @@ private[scalatest] object InspectorsHelper {
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
+    else Succeeded
   }
   
-  def doForEvery[T](xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForEvery[T](xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Assertion = {
     @tailrec
     def runAndCollectErrorMessage[T](itr: Iterator[T], messageList: IndexedSeq[String], index: Int)(fun: T => Unit): IndexedSeq[String] = {
       if (itr.hasNext) {
@@ -759,9 +761,10 @@ private[scalatest] object InspectorsHelper {
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
+    else Succeeded
   }
   
-  def doForExactly[T](succeededCount: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForExactly[T](succeededCount: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Assertion = {
     if (succeededCount <= 0)
       throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
     
@@ -794,9 +797,10 @@ private[scalatest] object InspectorsHelper {
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
+    else Succeeded
   }
 
-  def doForNo[T](xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForNo[T](xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Assertion = {
     val xsIsMap = isMap(original)
     val result =
       runFor(xs.toIterator, xsIsMap, 0, new ForResult[T], fun, _.passedCount != 0)
@@ -812,9 +816,10 @@ private[scalatest] object InspectorsHelper {
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
+    else Succeeded
   }
 
-  def doForBetween[T](from: Int, upTo: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForBetween[T](from: Int, upTo: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Assertion = {
     if (from < 0)
       throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
     if (upTo <= 0)
@@ -851,9 +856,10 @@ private[scalatest] object InspectorsHelper {
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
+    else Succeeded
   }
 
-  def doForAtMost[T](max: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit) {
+  def doForAtMost[T](max: Int, xs: GenTraversable[T], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Unit): Assertion = {
     if (max <= 0)
       throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
 
@@ -872,5 +878,6 @@ private[scalatest] object InspectorsHelper {
         None,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
+    else Succeeded
   }
 }

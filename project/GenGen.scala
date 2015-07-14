@@ -700,11 +700,11 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A](fun: (A) => Unit)
+    def apply[A](fun: (A) => Assertion)
       (implicit
         config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A]
-      ) {
+      ): Assertion = {
         val propF = { (a: A) =>
           val (unmetCondition, exception) =
             try {
@@ -741,12 +741,12 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B](fun: (A, B) => Unit)
+    def apply[A, B](fun: (A, B) => Assertion)
       (implicit
         config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
       arbB: Arbitrary[B], shrB: Shrink[B]
-      ) {
+      ): Assertion = {
         val propF = { (a: A, b: B) =>
           val (unmetCondition, exception) =
             try {
@@ -783,13 +783,13 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B, C](fun: (A, B, C) => Unit)
+    def apply[A, B, C](fun: (A, B, C) => Assertion)
       (implicit
         config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
       arbB: Arbitrary[B], shrB: Shrink[B],
       arbC: Arbitrary[C], shrC: Shrink[C]
-      ) {
+      ): Assertion = {
         val propF = { (a: A, b: B, c: C) =>
           val (unmetCondition, exception) =
             try {
@@ -826,14 +826,14 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B, C, D](fun: (A, B, C, D) => Unit)
+    def apply[A, B, C, D](fun: (A, B, C, D) => Assertion)
       (implicit
         config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
       arbB: Arbitrary[B], shrB: Shrink[B],
       arbC: Arbitrary[C], shrC: Shrink[C],
       arbD: Arbitrary[D], shrD: Shrink[D]
-      ) {
+      ): Assertion = {
         val propF = { (a: A, b: B, c: C, d: D) =>
           val (unmetCondition, exception) =
             try {
@@ -870,7 +870,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B, C, D, E](fun: (A, B, C, D, E) => Unit)
+    def apply[A, B, C, D, E](fun: (A, B, C, D, E) => Assertion)
       (implicit
         config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
@@ -878,7 +878,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
       arbC: Arbitrary[C], shrC: Shrink[C],
       arbD: Arbitrary[D], shrD: Shrink[D],
       arbE: Arbitrary[E], shrE: Shrink[E]
-      ) {
+      ): Assertion = {
         val propF = { (a: A, b: B, c: C, d: D, e: E) =>
           val (unmetCondition, exception) =
             try {
@@ -915,7 +915,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Unit)
+    def apply[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Assertion)
       (implicit
         config: PropertyCheckConfigurable,
       arbA: Arbitrary[A], shrA: Shrink[A],
@@ -924,7 +924,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
       arbD: Arbitrary[D], shrD: Shrink[D],
       arbE: Arbitrary[E], shrE: Shrink[E],
       arbF: Arbitrary[F], shrF: Shrink[F]
-      ) {
+      ): Assertion = {
         val propF = { (a: A, b: B, c: C, d: D, e: E, f: F) =>
           val (unmetCondition, exception) =
             try {
@@ -963,11 +963,11 @@ val propertyCheckForAllTemplate = """
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$](fun: ($alphaUpper$) => Unit)
+  def forAll[$alphaUpper$](fun: ($alphaUpper$) => Assertion)
     (implicit
       config: PropertyCheckConfigurable,
 $arbShrinks$
-    ) {
+    ): Assertion = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
           try {
@@ -1003,11 +1003,11 @@ $arbShrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+  def forAll[$alphaUpper$]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Assertion)
     (implicit
       config: PropertyCheckConfigurable,
 $arbShrinks$
-    ) {
+    ): Assertion = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
           try {
@@ -1050,11 +1050,11 @@ $arbShrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+  def forAll[$alphaUpper$]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Assertion)
     (implicit
       config: PropertyCheckConfigurable,
 $shrinks$
-    ) {
+    ): Assertion = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
           try {
@@ -1097,11 +1097,11 @@ $shrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Unit)
+  def forAll[$alphaUpper$]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Assertion)
     (implicit
       config: PropertyCheckConfigurable,
 $shrinks$
-    ) {
+    ): Assertion = {
 
 $tupleBusters$
 

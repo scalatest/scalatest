@@ -49,7 +49,7 @@ class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers
   // until then, may as well ignore it.
   ignore("metronome order") {
 
-    thread("t1") {
+    threadNamed("t1") {
       waitForBeat(1)
       aa should be (false)
       bb should be (false)
@@ -87,7 +87,7 @@ class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers
       ff = true
     }
 
-    thread("t2") {
+    threadNamed("t2") {
       waitForBeat(2)
       aa should be (true) // failed here once
       bb should be (false)
@@ -125,7 +125,7 @@ class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers
       hh = true
     }
 
-    thread("t3") {
+    threadNamed("t3") {
       waitForBeat(4)
       aa should be (true)
       bb should be (true)

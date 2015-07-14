@@ -368,7 +368,7 @@ trait Checkers extends Configuration {
  */
 object Checkers extends Checkers {
 
-  private[prop] def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None) {
+  private[prop] def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Assertion = {
 
     val result = Test.check(prms, p)
     if (!result.passed) {
@@ -450,6 +450,7 @@ object Checkers extends Checkers {
           )
       }
     }
+    else Succeeded
   }
   
   private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]) = {

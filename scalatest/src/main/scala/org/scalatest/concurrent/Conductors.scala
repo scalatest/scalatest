@@ -522,7 +522,7 @@ trait Conductors extends PatienceConfiguration {
      * @param fun the function to be executed by the newly created thread
      * @return the newly created thread
      */
-    def thread(fun: => Unit): Thread = thread("Conductor-Thread-" + threads.size) { fun }
+    def thread(fun: => Unit): Thread = threadNamed("Conductor-Thread-" + threads.size) { fun }
 
     /**
      * Creates a new thread with the specified name that will execute the specified function.
@@ -535,7 +535,7 @@ trait Conductors extends PatienceConfiguration {
      * @param fun the function to be executed by the newly created thread
      * @return the newly created thread
      */
-    def thread(name: String)(fun: => Unit): Thread = {
+    def threadNamed(name: String)(fun: => Unit): Thread = {
       currentState.get match {
         case TestFinished =>
           throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, getStackDepthFun("Conductors.scala", "thread"))
@@ -565,7 +565,7 @@ trait Conductors extends PatienceConfiguration {
       // Indicate a TestThread has been created that has not yet started running
       testThreadsStartingCounter.increment()
 
-      override def run() {
+      override def run(): Unit = {
         try {
           // Indicate to the TestThreadsStartingCounter that one more thread is ready to go
           testThreadsStartingCounter.decrement()
@@ -634,7 +634,7 @@ trait Conductors extends PatienceConfiguration {
      *   instantiated this <code>Conductor</code>, or if <code>conduct</code> has already
      *    been invoked on this conductor.
      */
-    def whenFinished(fun: => Unit) {
+    def whenFinished(fun: => Assertion): Assertion = {
 
       if (Thread.currentThread != mainThread)
         throw new NotAllowedException(Resources.whenFinishedCanOnlyBeCalledByMainThread, getStackDepthFun("Conductors.scala", "whenFinished"))
@@ -654,7 +654,7 @@ trait Conductors extends PatienceConfiguration {
      * @param beat the tick value to wait for
      * @throws NotAllowedException if the a <code>beat</code> less than or equal to zero is passed
      */
-    def waitForBeat(beat: Int) {
+    def waitForBeat(beat: Int): Succeeded.type = {
       if (beat == 0)
         throw new NotAllowedException(Resources.cannotWaitForBeatZero, getStackDepthFun("Conductors.scala", "waitForBeat"))
       if (beat < 0)
@@ -681,7 +681,7 @@ trait Conductors extends PatienceConfiguration {
      *
      * @param fun the function to execute while the <code>Conductor</code> is frozen.
      */
-    def withConductorFrozen[T](fun: => T) { clock.withClockFrozen(fun) }
+    def withConductorFrozen[T](fun: => T): T = { clock.withClockFrozen(fun) }
 
     /**
      * Indicates whether the conductor has been frozen.
@@ -708,7 +708,7 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> and
      *          <code>interval</code> parameters used to configure the multi-threaded test
      */
-    def conduct()(implicit config: PatienceConfig) {
+    def conduct()(implicit config: PatienceConfig): Assertion = {
       conductImpl(config.timeout, config.interval)
     }
 
@@ -726,7 +726,7 @@ trait Conductors extends PatienceConfiguration {
      * @param timeout the <code>Timeout</code> configuration parameter
      * @param interval the <code>Interval</code> configuration parameter
      */
-    def conduct(timeout: Timeout, interval: Interval) {
+    def conduct(timeout: Timeout, interval: Interval): Assertion = {
       conductImpl(timeout.value, interval. value)
     }
 
@@ -745,7 +745,7 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the (unused) <code>timeout</code> and
      *          (used) <code>interval</code> parameters
      */
-    def conduct(timeout: Timeout)(implicit config: PatienceConfig) {
+    def conduct(timeout: Timeout)(implicit config: PatienceConfig): Assertion = {
       conductImpl(timeout.value, config.interval)
     }
 
@@ -764,7 +764,7 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the (used) <code>timeout</code> and
      *          (unused) <code>interval</code> parameters
      */
-    def conduct(interval: Interval)(implicit config: PatienceConfig) {
+    def conduct(interval: Interval)(implicit config: PatienceConfig): Assertion = {
       conductImpl(config.timeout, interval.value)
     }
 
@@ -784,7 +784,7 @@ trait Conductors extends PatienceConfiguration {
      */
     def conductingHasBegun: Boolean = currentState.get.testWasStarted
 
-    private def conductImpl(timeout: Span, clockInterval: Span) {
+    private def conductImpl(timeout: Span, clockInterval: Span): Assertion = {
 
       // if the test was started already, explode
       // otherwise, change state to TestStarted
@@ -813,6 +813,7 @@ trait Conductors extends PatienceConfiguration {
 
       if (!firstExceptionThrown.isEmpty)
         throw firstExceptionThrown.peek
+      else Succeeded
     }
 
     /**
@@ -831,7 +832,7 @@ trait Conductors extends PatienceConfiguration {
     // returns, and after that the error gets into the errors. Because if you look in run() in the
     // thread inside createTestThread, the signaling error happens in a catch Throwable block before the thread
     // returns.
-    private def waitForThreads {
+    private def waitForThreads: Succeeded.type = {
       var interrupted = false
       while(!interrupted && threadGroup.areAnyThreadsAlive) {
         threadGroup.getThreads.foreach { t =>
@@ -849,6 +850,7 @@ trait Conductors extends PatienceConfiguration {
             }
         }
       }
+      Succeeded
     }
 
 
@@ -909,13 +911,14 @@ trait Conductors extends PatienceConfiguration {
        * has the clock frozen. Other methods also grab the read lock, like time (which gets
        * the current beat.)
        */
-      def advance() {
+      def advance(): Succeeded.type = {
         lock.synchronized {
           rwLock.write {
             currentTime += 1
           }
           lock.notifyAll()
         }
+        Succeeded
       }
 
       /**
@@ -930,7 +933,7 @@ trait Conductors extends PatienceConfiguration {
        * When wait for beat is called, the current thread will block until
        * the given beat is reached by the clock.
        */
-      def waitForBeat(beat: Int) {
+      def waitForBeat(beat: Int): Succeeded.type = {
         lock.synchronized {
           if (beat > highestBeatBeingWaitedOn)
             highestBeatBeingWaitedOn = beat
@@ -942,6 +945,7 @@ trait Conductors extends PatienceConfiguration {
             }         // Actually I"m not sure. Maybe should reset the interupted status
           }
         }
+        Succeeded
       }
 
       // The reason there's no race condition between calling currentBeat in the while and calling
@@ -953,7 +957,7 @@ trait Conductors extends PatienceConfiguration {
       /**
        * Returns true if any thread is waiting for a beat in the future (greater than the current beat)
        */
-      def isAnyThreadWaitingForABeat = {
+      def isAnyThreadWaitingForABeat: Boolean = {
         lock.synchronized { highestBeatBeingWaitedOn > currentTime }
       }
 
@@ -1036,7 +1040,7 @@ trait Conductors extends PatienceConfiguration {
       /**
        * Runs the steps described in the main documentation for class <code>ClockThread</code>.
        */
-      override def run {
+      override def run(): Unit = {
 
         // While there are threads that are not NEW or TERMINATED. (A thread is
         // NEW after it has been instantiated, but run() hasn't been called yet.)
@@ -1080,12 +1084,12 @@ trait Conductors extends PatienceConfiguration {
        * The number of seconds since the last progress are more
        * than the allowed maximum run time.
        */
-      private def runningTooLong = System.nanoTime - lastProgress > timeout.totalNanos
+      private def runningTooLong: Boolean = System.nanoTime - lastProgress > timeout.totalNanos
 
       /**
        * Stop the test due to a timeout.
        */
-      private def stopDueToTimeout() {
+      private def stopDueToTimeout(): Unit = {
         val errorMessage = Resources.testTimedOut(timeout.prettyString)
         // The mainThread is likely joined to some test thread, so wake it up. It will look and
         // notice that the firstExceptionThrown is no longer empty, and will stop all live test threads,
@@ -1097,7 +1101,7 @@ trait Conductors extends PatienceConfiguration {
       /**
        * Determine if there is a deadlock and if so, stop the test.
        */
-      private def detectDeadlock() {
+      private def detectDeadlock(): Unit = {
         // Should never get to >= before ==, but just playing it safe
         if (deadlockCount >= MaxDeadlockDetectionsBeforeDeadlock) {
           val errorMessage = Resources.suspectedDeadlock(MaxDeadlockDetectionsBeforeDeadlock.toString, (clockInterval scaledBy MaxDeadlockDetectionsBeforeDeadlock).prettyString)

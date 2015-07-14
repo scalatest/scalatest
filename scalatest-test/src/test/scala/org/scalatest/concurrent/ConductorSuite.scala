@@ -55,7 +55,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
     conductor.conduct
     val caught =
       intercept[NotAllowedException] {
-        conductor.thread("name") { 1 should be (1) }
+        conductor.threadNamed("name") { 1 should be (1) }
       }
     caught.getMessage should be ("Cannot invoke the thread method on Conductor after its multi-threaded test has completed.")
     caught.failedCodeFileNameAndLineNumberString match {
@@ -70,7 +70,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
     conductor.conduct
     val caught =
       intercept[NotAllowedException] {
-        conductor.thread("name") { 1 should be (1) }
+        conductor.threadNamed("name") { 1 should be (1) }
       }
     caught.getMessage should be ("Cannot invoke the thread method on Conductor after its multi-threaded test has completed.")
     caught.failedCodeFileNameAndLineNumberString match {
@@ -99,10 +99,10 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
           "must have a unique name") {
 
     val conductor = new Conductor
-    conductor.thread("Fiesta del Mar") { 1 should be (1) }
+    conductor.threadNamed("Fiesta del Mar") { 1 should be (1) }
     val caught =
       intercept[NotAllowedException] {
-        conductor.thread("Fiesta del Mar") { 2 should be (2) }
+        conductor.threadNamed("Fiesta del Mar") { 2 should be (2) }
       }
     caught.getMessage should be ("Cannot register two threads with the same name. Duplicate name: Fiesta del Mar.")
     caught.failedCodeFileNameAndLineNumberString match {

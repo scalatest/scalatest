@@ -3162,7 +3162,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   
   import InspectorsHelper._
   
-  private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, methodName: String, stackDepth: Int)(fun: T => Unit) {
+  private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, methodName: String, stackDepth: Int)(fun: T => Unit): Assertion = {
     collected match {
       case AllCollected =>
         doForAll(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
@@ -5169,7 +5169,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def should(rightMatcher: Matcher[T]) {
+    def should(rightMatcher: Matcher[T]): Assertion = {
       doCollected(collected, xs, original, "should", outerStackDepth) { e =>
         rightMatcher(e) match {
           case MatchFailed(failureMessage) =>
@@ -5187,7 +5187,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def shouldEqual(right: Any)(implicit equality: Equality[T]) {
+    def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {
       doCollected(collected, xs, original, "shouldEqual", outerStackDepth) { e =>
         if (!equality.areEqual(e, right)) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
@@ -5204,7 +5204,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^doCollected
      * </pre>
      */
-    def shouldEqual(spread: Spread[T]) {
+    def shouldEqual(spread: Spread[T]): Assertion = {
       doCollected(collected, xs, original, "shouldEqual", outerStackDepth) { e =>
         if (!spread.isWithin(e)) {
           throw newTestFailedException(FailureMessages.didNotEqualPlusOrMinus(e, spread.pivot, spread.tolerance), None, innerStackDepth)
@@ -5220,7 +5220,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]) {
+    def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!sortable.isSorted(e))
           throw newTestFailedException(FailureMessages.wasNotSorted(e), None, innerStackDepth)
@@ -5235,13 +5235,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(readableWord: ReadableWord)(implicit readability: Readability[T]) {
+    def shouldBe(readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!readability.isReadable(e))
           throw newTestFailedException(FailureMessages.wasNotReadable(e), None, innerStackDepth)
       }
     }
-    
+ 
     /**
      * This method enables the following syntax:
      *
@@ -5250,13 +5250,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(writableWord: WritableWord)(implicit writability: Writability[T]) {
+    def shouldBe(writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!writability.isWritable(e))
           throw newTestFailedException(FailureMessages.wasNotWritable(e), None, innerStackDepth)
       }
     }
-    
+
     /**
      * This method enables the following syntax:
      *
@@ -5265,7 +5265,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]) {
+    def shouldBe(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!emptiness.isEmpty(e))
           throw newTestFailedException(FailureMessages.wasNotEmpty(e), None, innerStackDepth)
@@ -5280,7 +5280,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(definedWord: DefinedWord)(implicit definition: Definition[T]) {
+    def shouldBe(definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!definition.isDefined(e))
           throw newTestFailedException(FailureMessages.wasNotDefined(e), None, innerStackDepth)
@@ -5295,7 +5295,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(aType: ResultOfATypeInvocation[_]) {
+    def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!aType.clazz.isAssignableFrom(e.getClass))
           throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, innerStackDepth)
@@ -5310,7 +5310,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(anType: ResultOfAnTypeInvocation[_]) {
+    def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!anType.clazz.isAssignableFrom(e.getClass))
           throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, innerStackDepth)
@@ -5325,7 +5325,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldEqual(right: Null)(implicit ev: T <:< AnyRef) { 
+    def shouldEqual(right: Null)(implicit ev: T <:< AnyRef): Assertion = { 
       doCollected(collected, xs, original, "shouldEqual", outerStackDepth) { e =>
         if (e != null) {
           throw newTestFailedException(FailureMessages.didNotEqualNull(e), None, innerStackDepth)
@@ -5341,7 +5341,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
+    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, original, "should", outerStackDepth) { e =>
         rightMatcher(e) match {
@@ -5360,7 +5360,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
+    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
       val rightMatcher = rightMatcherFactory2.matcher
       doCollected(collected, xs, original, "should", outerStackDepth) { e =>
         rightMatcher(e) match {
@@ -5379,7 +5379,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def should(beWord: BeWord) = new ResultOfBeWordForCollectedAny[T](collected, xs, original, true)
+    def should(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
+      new ResultOfBeWordForCollectedAny[T](collected, xs, original, true)
 
     /**
      * This method enables syntax such as the following:
@@ -5413,7 +5414,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def shouldBe(right: Any) {
+    def shouldBe(right: Any): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (e != right) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
@@ -5430,7 +5431,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *              ^
      * </pre> 
      */
-    def shouldBe(comparison: ResultOfLessThanComparison[T]) {
+    def shouldBe(comparison: ResultOfLessThanComparison[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!comparison(e)) {
           throw newTestFailedException(
@@ -5453,7 +5454,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *              ^
      * </pre> 
      */
-    def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]) {
+    def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!comparison(e)) {
           throw newTestFailedException(
@@ -5476,7 +5477,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *               ^
      * </pre> 
      */
-    def shouldBe(comparison: ResultOfGreaterThanComparison[T]) {
+    def shouldBe(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!comparison(e)) {
           throw newTestFailedException(
@@ -5499,7 +5500,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *               ^
      * </pre> 
      */
-    def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]) {
+    def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!comparison(e)) {
           throw newTestFailedException(
@@ -5522,7 +5523,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(beMatcher: BeMatcher[T]) {
+    def shouldBe(beMatcher: BeMatcher[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val result = beMatcher.apply(e)
         if (!result.matches)
@@ -5538,7 +5539,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(spread: Spread[T]) {
+    def shouldBe(spread: Spread[T]): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (!spread.isWithin(e))
           throw newTestFailedException(FailureMessages.wasNotPlusOrMinus(e, spread.pivot, spread.tolerance), None, innerStackDepth)
@@ -5553,7 +5554,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef) {
+    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (toAnyRef(e) ne resultOfSameInstanceAsApplication.right)
           throw newTestFailedException(
@@ -5576,7 +5577,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, 6)
         if (!matcherResult.matches) 
@@ -5592,7 +5593,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, 6)
         if (!matcherResult.matches) {
@@ -5609,7 +5610,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, 6)
         if (!matcherResult.matches) {
@@ -5627,7 +5628,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(o: Null)(implicit ev: T <:< AnyRef) {
+    def shouldBe(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (e != null)
          throw newTestFailedException(FailureMessages.wasNotNull(e), None, innerStackDepth)
@@ -5642,7 +5643,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef) { // TODO: Try supporting this with 2.10 AnyVals
+    def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting this with 2.10 AnyVals
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches) 
@@ -5658,7 +5659,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try supporting this with 2.10 AnyVals
+    def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val result = resultOfAWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
@@ -5674,7 +5675,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try supporting this with 2.10 AnyVals
+    def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val result = resultOfAnWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
@@ -5690,7 +5691,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldNot[U <: T](rightMatcherX1: Matcher[U]) {
+    def shouldNot[U <: T](rightMatcherX1: Matcher[U]): Assertion = {
       doCollected(collected, xs, original, "shouldNot", outerStackDepth) { e =>
         val result = 
           try rightMatcherX1.apply(e.asInstanceOf[U])
@@ -5711,7 +5712,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
+    def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, original, "shouldNot", outerStackDepth) { e =>
         rightMatcher(e) match {
@@ -5730,7 +5731,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U) {
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U): Assertion = {
       doCollected(collected, xs, original, "should", outerStackDepth) { e =>
         if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
           throw newTestFailedException(
@@ -5752,7 +5753,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *          ^
      * </pre>
      */
-    def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]) {
+    def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]): Assertion = {
       doCollected(collected, xs, original, "should", outerStackDepth) { e =>
         if ((inv.spread.isWithin(e)) != inv.expectingEqual)
           throw newTestFailedException(
@@ -5809,7 +5810,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def should(existWord: ExistWord)(implicit existence: Existence[T]) {
+    def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
       doCollected(collected, xs, original, "should", outerStackDepth) { e =>
         if (!existence.exists(e))
           throw newTestFailedException(
@@ -5828,7 +5829,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]) {
+    def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
       doCollected(collected, xs, original, "should", outerStackDepth) { e =>
         if (existence.exists(e))
           throw newTestFailedException(
@@ -5847,7 +5848,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]) {
+    def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
       doCollected(collected, xs, original, "shouldNot", outerStackDepth) { e =>
         if (existence.exists(e))
           throw newTestFailedException(
@@ -5977,7 +5978,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                      ^
      * </pre>
      */
-    def length(expectedLength: Long)(implicit len: Length[A]) {
+    def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
       doCollected(collected, xs, original, "length", outerStackDepth) { e =>
         val eLength = len.lengthOf(e)
         if ((eLength == expectedLength) != shouldBeTrue)
@@ -6000,7 +6001,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                      ^
      * </pre>
      */
-    def size(expectedSize: Long)(implicit sz: Size[A]) {
+    def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
       doCollected(collected, xs, original, "size", outerStackDepth) { e =>
         val eSize = sz.sizeOf(e)
         if ((eSize == expectedSize) != shouldBeTrue)
@@ -6046,7 +6047,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def regex(rightRegexString: String) { checkRegex(rightRegexString.r) }
+    def regex(rightRegexString: String): Assertion = { checkRegex(rightRegexString.r) }
 
     /**
      * This method enables the following syntax: 
@@ -6056,7 +6057,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups) { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+    def regex(regexWithGroups: RegexWithGroups): Assertion = { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
 
     /**
      * This method enables the following syntax: 
@@ -6066,9 +6067,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def regex(rightRegex: Regex) { checkRegex(rightRegex) }
+    def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
     
-    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
+    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
       doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
         val result = startWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
@@ -6112,7 +6113,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(rightRegexString: String) { checkRegex(rightRegexString.r) }
+    def regex(rightRegexString: String): Assertion = { checkRegex(rightRegexString.r) }
 
     /**
      * This method enables the following syntax: 
@@ -6122,7 +6123,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups) { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+    def regex(regexWithGroups: RegexWithGroups): Assertion = { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
 
     /**
      * This method enables the following syntax: 
@@ -6132,9 +6133,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(rightRegex: Regex) { checkRegex(rightRegex) }
+    def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
     
-    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
+    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
       doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
         val result = includeRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
@@ -6178,7 +6179,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(rightRegexString: String) { checkRegex(rightRegexString.r) }
+    def regex(rightRegexString: String): Assertion = { checkRegex(rightRegexString.r) }
 
     /**
      * This method enables the following syntax: 
@@ -6188,7 +6189,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups) { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+    def regex(regexWithGroups: RegexWithGroups): Assertion = { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
 
     /**
      * This method enables the following syntax: 
@@ -6198,9 +6199,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                            ^
      * </pre>
      */
-    def regex(rightRegex: Regex) { checkRegex(rightRegex) }
+    def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
     
-    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
+    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
       doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
         val result = endWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
@@ -6244,7 +6245,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def regex(rightRegexString: String) { checkRegex(rightRegexString.r) }
+    def regex(rightRegexString: String): Assertion = { checkRegex(rightRegexString.r) }
 
     /**
      * This method enables the following syntax: 
@@ -6254,7 +6255,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                              ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups) { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
+    def regex(regexWithGroups: RegexWithGroups): Assertion = { checkRegex(regexWithGroups.regex, regexWithGroups.groups) }
 
     /**
      * This method enables the following syntax: 
@@ -6264,9 +6265,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                               ^
      * </pre>
      */
-    def regex(rightRegex: Regex) { checkRegex(rightRegex) }
+    def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
     
-    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty) {
+    private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
       doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
         val result = fullyMatchRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
@@ -6554,21 +6555,21 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   private object ShouldMethodHelper {
     // SKIP-SCALATESTJS-START
-    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0) {
+    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 10) {
+    //SCALATESTJS-ONLY def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 10): Assertion = {
       rightMatcher(left) match {
         case MatchFailed(failureMessage) => throw newTestFailedException(failureMessage, None, stackDepthAdjustment)
-        case _ => ()
+        case _ => Succeeded
       }
     }
     // SKIP-SCALATESTJS-START
-    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0) {
+    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 10) {
+    //SCALATESTJS-ONLY def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 10): Assertion = {
       rightMatcher(left) match {
         case MatchSucceeded(negatedFailureMessage) => throw newTestFailedException(negatedFailureMessage, None, stackDepthAdjustment)
-        case _ => ()
+        case _ => Succeeded
       }
     }
   }
@@ -6594,7 +6595,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(rightMatcherX1: Matcher[T]) {
+    def should(rightMatcherX1: Matcher[T]): Assertion = {
       ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1)
     }
 
@@ -6606,7 +6607,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
+    def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
       ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory1.matcher)
     }
 
@@ -6618,7 +6619,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]) {
+    def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
       ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory2.matcher)
     }
 
@@ -6630,11 +6631,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre>
      */
-    def shouldEqual(right: Any)(implicit equality: Equality[T]) {
+    def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {
       if (!equality.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages.didNotEqual(leftee, rightee))
       }
+      else Succeeded
     }
 
     /**
@@ -6645,10 +6647,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldEqual(spread: Spread[T]) {
+    def shouldEqual(spread: Spread[T]): Assertion = {
       if (!spread.isWithin(leftSideValue)) {
         throw newTestFailedException(FailureMessages.didNotEqualPlusOrMinus(leftSideValue, spread.pivot, spread.tolerance))
       }
+      else Succeeded
     }
 
     /**
@@ -6659,10 +6662,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldEqual(right: Null)(implicit ev: T <:< AnyRef) { 
+    def shouldEqual(right: Null)(implicit ev: T <:< AnyRef): Assertion = { 
       if (leftSideValue != null) {
         throw newTestFailedException(FailureMessages.didNotEqualNull(leftSideValue))
       }
+      else Succeeded
     }
 
     /**
@@ -6684,7 +6688,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U) {
+    def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U): Assertion = {
       if ((constraint.areEqual(leftSideValue, inv.right)) != inv.expectingEqual)
         throw newTestFailedException(
           if (inv.expectingEqual)
@@ -6692,6 +6696,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           else
             FailureMessages.equaled(leftSideValue, inv.right)
         )
+      else Succeeded
     }
 
     /**
@@ -6702,7 +6707,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]) {
+    def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]): Assertion = {
       if ((inv.spread.isWithin(leftSideValue)) != inv.expectingEqual)
         throw newTestFailedException(
           if (inv.expectingEqual)
@@ -6710,6 +6715,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           else
             FailureMessages.equaledPlusOrMinus(leftSideValue, inv.spread.pivot, inv.spread.tolerance)
         )
+      else Succeeded
     }
 
     // TODO: Need to make sure this works in inspector shorthands. I moved this
@@ -6732,11 +6738,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(right: Any) {
+    def shouldBe(right: Any): Assertion = {
       if (!areEqualComparingArraysStructurally(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
         throw newTestFailedException(FailureMessages.wasNotEqualTo(leftee, rightee))
       }
+      else Succeeded
     }
 
     /**
@@ -6747,7 +6754,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre>
      */
-    def shouldBe(comparison: ResultOfLessThanComparison[T]) {
+    def shouldBe(comparison: ResultOfLessThanComparison[T]): Assertion = {
       if (!comparison(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages.wasNotLessThan(
@@ -6756,6 +6763,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
         ) 
       }
+      else Succeeded
     }
     
     /**
@@ -6766,7 +6774,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre> 
      */
-    def shouldBe(comparison: ResultOfGreaterThanComparison[T]) {
+    def shouldBe(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
       if (!comparison(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages.wasNotGreaterThan(
@@ -6775,6 +6783,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
         ) 
       }
+      else Succeeded
     }
     
     /**
@@ -6785,7 +6794,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre> 
      */
-    def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]) {
+    def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
       if (!comparison(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages.wasNotLessThanOrEqualTo(
@@ -6794,6 +6803,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
         ) 
       }
+      else Succeeded
     }
     
     /**
@@ -6804,7 +6814,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre> 
      */
-    def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]) {
+    def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
       if (!comparison(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages.wasNotGreaterThanOrEqualTo(
@@ -6813,6 +6823,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
         ) 
       }
+      else Succeeded
     }
     
     /**
@@ -6823,10 +6834,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *   ^
      * </pre>
      */
-    def shouldBe(beMatcher: BeMatcher[T]) {
+    def shouldBe(beMatcher: BeMatcher[T]): Assertion = {
       val result = beMatcher.apply(leftSideValue)
       if (!result.matches)
         throw newTestFailedException(result.failureMessage)
+      else Succeeded
     }
 
     /**
@@ -6837,10 +6849,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(spread: Spread[T]) {
+    def shouldBe(spread: Spread[T]): Assertion = {
       if (!spread.isWithin(leftSideValue)) {
         throw newTestFailedException(FailureMessages.wasNotPlusOrMinus(leftSideValue, spread.pivot, spread.tolerance))
       }
+      else Succeeded
     }
 
     /**
@@ -6851,9 +6864,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(right: SortedWord)(implicit sortable: Sortable[T]) {
+    def shouldBe(right: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
       if (!sortable.isSorted(leftSideValue))
         throw newTestFailedException(FailureMessages.wasNotSorted(leftSideValue))
+      else Succeeded
     }
     
     /**
@@ -6884,9 +6898,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(right: ReadableWord)(implicit readability: Readability[T]) {
+    def shouldBe(right: ReadableWord)(implicit readability: Readability[T]): Assertion = {
       if (!readability.isReadable(leftSideValue))
         throw newTestFailedException(FailureMessages.wasNotReadable(leftSideValue))
+      else Succeeded
     }
     
     /**
@@ -6897,9 +6912,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(right: WritableWord)(implicit writability: Writability[T]) {
+    def shouldBe(right: WritableWord)(implicit writability: Writability[T]): Assertion = {
       if (!writability.isWritable(leftSideValue))
         throw newTestFailedException(FailureMessages.wasNotWritable(leftSideValue))
+      else Succeeded
     }
     
     /**
@@ -6910,9 +6926,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(right: EmptyWord)(implicit emptiness: Emptiness[T]) {
+    def shouldBe(right: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
       if (!emptiness.isEmpty(leftSideValue))
         throw newTestFailedException(FailureMessages.wasNotEmpty(leftSideValue))
+      else Succeeded
     }
     
     /**
@@ -6923,9 +6940,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(right: DefinedWord)(implicit definition: Definition[T]) {
+    def shouldBe(right: DefinedWord)(implicit definition: Definition[T]): Assertion = {
       if (!definition.isDefined(leftSideValue))
         throw newTestFailedException(FailureMessages.wasNotDefined(leftSideValue))
+      else Succeeded
     }
 
     /**
@@ -6946,7 +6964,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(rightMatcherX1: Matcher[T]) {
+    def shouldNot(rightMatcherX1: Matcher[T]): Assertion = {
       ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1)
     }
     
@@ -6958,7 +6976,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]) {
+    def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
       ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory1.matcher)
     }
     
@@ -6998,10 +7016,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(right: Null)(implicit ev: T <:< AnyRef) {
+    def shouldBe(right: Null)(implicit ev: T <:< AnyRef): Assertion = {
       if (leftSideValue != null) {
         throw newTestFailedException(FailureMessages.wasNotNull(leftSideValue))
       }
+      else Succeeded
     }
 
     /**
@@ -7012,7 +7031,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef) {
+    def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       if (resultOfSameInstanceAsApplication.right ne toAnyRef(leftSideValue)) {
         throw newTestFailedException(
           FailureMessages.wasNotSameInstanceAs(
@@ -7021,6 +7040,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
           )
         )
       }
+      else Succeeded
     }
 
     // SKIP-SCALATESTJS-START
@@ -7033,10 +7053,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true)
       if (!matcherResult.matches) 
         throw newTestFailedException(matcherResult.failureMessage)
+      else Succeeded
     }
 
     /**
@@ -7047,13 +7068,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true)
       if (!matcherResult.matches) {
         throw newTestFailedException(
           matcherResult.failureMessage
         )
       }
+      else Succeeded
     }
 
     /**
@@ -7064,13 +7086,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef) {
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false)
       if (!matcherResult.matches) {
         throw newTestFailedException(
           matcherResult.failureMessage
         )
       }
+      else Succeeded
     }
     // SKIP-SCALATESTJS-END
     
@@ -7082,10 +7105,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                    ^
      * </pre>
      */
-    def shouldBe(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) { // TODO: Try expanding this to 2.10 AnyVal
+    def shouldBe(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVal
       val result = bePropertyMatcher(leftSideValue)
       if (!result.matches) 
         throw newTestFailedException(FailureMessages.wasNot(leftSideValue, UnquotedString(result.propertyName)))
+      else Succeeded
     }
     
     /**
@@ -7096,11 +7120,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                    ^
      * </pre>
      */
-    def shouldBe[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try expanding this to 2.10 AnyVal
+    def shouldBe[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try expanding this to 2.10 AnyVal
       val result = resultOfAWordApplication.bePropertyMatcher(leftSideValue)
-        if (!result.matches) {
-          throw newTestFailedException(FailureMessages.wasNotA(leftSideValue, UnquotedString(result.propertyName)))
-        }
+      if (!result.matches) {
+        throw newTestFailedException(FailureMessages.wasNotA(leftSideValue, UnquotedString(result.propertyName)))
+      }
+      else Succeeded
     }
     
     /**
@@ -7111,11 +7136,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                    ^
      * </pre>
      */
-    def shouldBe[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef) {// TODO: Try expanding this to 2.10 AnyVal
+    def shouldBe[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try expanding this to 2.10 AnyVal
       val result = resultOfAnWordApplication.bePropertyMatcher(leftSideValue)
-        if (!result.matches) {
-          throw newTestFailedException(FailureMessages.wasNotAn(leftSideValue, UnquotedString(result.propertyName)))
-        }
+      if (!result.matches) {
+        throw newTestFailedException(FailureMessages.wasNotAn(leftSideValue, UnquotedString(result.propertyName)))
+      }
+      else Succeeded
     }
 
 /*
@@ -7157,9 +7183,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def should(existWord: ExistWord)(implicit existence: Existence[T]) {
+    def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
       if (!existence.exists(leftSideValue))
         throw newTestFailedException(FailureMessages.doesNotExist(leftSideValue))
+      else Succeeded
     }
     
     /**
@@ -7170,9 +7197,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]) {
+    def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
       if (existence.exists(leftSideValue))
         throw newTestFailedException(FailureMessages.exists(leftSideValue))
+      else Succeeded
     }
     
     /**
@@ -7183,9 +7211,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]) {
+    def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
       if (existence.exists(leftSideValue))
         throw newTestFailedException(FailureMessages.exists(leftSideValue))
+      else Succeeded
     }
 
     // From StringShouldWrapper
@@ -7280,7 +7309,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                          ^
      * </pre>
      */
-    def withGroup(group: String) = 
+    def withGroup(group: String): RegexWithGroups = 
       new RegexWithGroups(leftSideString.r, IndexedSeq(group))
 
     /**
@@ -7291,7 +7320,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                             ^
      * </pre>
      */
-    def withGroups(groups: String*) =
+    def withGroups(groups: String*): RegexWithGroups =
       new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
 
     /**
@@ -7325,7 +7354,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(compileWord: CompileWord): Unit = macro CompileMacro.shouldCompileImpl
+    def should(compileWord: CompileWord): Assertion = macro CompileMacro.shouldCompileImpl
 
     /**
      * This method enables syntax such as the following:
@@ -7335,7 +7364,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(compileWord: CompileWord): Unit = macro CompileMacro.shouldNotCompileImpl
+    def shouldNot(compileWord: CompileWord): Assertion = macro CompileMacro.shouldNotCompileImpl
 
     /**
      * This method enables syntax such as the following:
@@ -7345,7 +7374,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(typeCheckWord: TypeCheckWord): Unit = macro CompileMacro.shouldNotTypeCheckImpl
+    def shouldNot(typeCheckWord: TypeCheckWord): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
 
 /*
     /**
@@ -7416,7 +7445,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                          ^
      * </pre>
      */
-    def withGroup(group: String) = 
+    def withGroup(group: String): RegexWithGroups = 
       new RegexWithGroups(leftSideString.r, IndexedSeq(group))
 
     /**
@@ -7427,7 +7456,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                             ^
      * </pre>
      */
-    def withGroups(groups: String*) = 
+    def withGroups(groups: String*): RegexWithGroups = 
       new RegexWithGroups(leftSideString.r, IndexedSeq(groups: _*))
 
     /**
@@ -7497,7 +7526,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                         ^
      * </pre>
      */
-    def withGroup(group: String) = 
+    def withGroup(group: String): RegexWithGroups = 
       new RegexWithGroups(regex, IndexedSeq(group))
 
     /**
@@ -7508,7 +7537,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *                                            ^
      * </pre>
      */
-    def withGroups(groups: String*) = 
+    def withGroups(groups: String*): RegexWithGroups = 
       new RegexWithGroups(regex, IndexedSeq(groups: _*))
   }
 
