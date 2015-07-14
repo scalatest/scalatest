@@ -752,87 +752,6 @@ trait Assertions extends TripleEquals {
    */
   def assertCompiles(code: String): Assertion = macro CompileMacro.assertCompilesImpl
 
-  /* *
-   * Implicit conversion from <code>Any</code> to <code>Equalizer</code>, used to enable
-   * assertions with <code>===</code> comparisons.
-   *
-   * <p>
-   * For more information
-   * on this mechanism, see the <a href="Suite.Equalizer.html">documentation for </code>Equalizer</code></a>.
-   * </p>
-   *
-   * <p>
-   * Because trait <code>Suite</code> mixes in <code>Assertions</code>, this implicit conversion will always be
-   * available by default in ScalaTest <code>Suite</code>s. This is the only implicit conversion that is in scope by default in every
-   * ScalaTest <code>Suite</code>. Other implicit conversions offered by ScalaTest, such as those that support the matchers DSL
-   * or <code>invokePrivate</code>, must be explicitly invited into your test code, either by mixing in a trait or importing the
-   * members of its companion object. The reason ScalaTest requires you to invite in implicit conversions (with the exception of the
-   * implicit conversion for <code>===</code> operator)  is because if one of ScalaTest's implicit conversions clashes with an
-   * implicit conversion used in the code you are trying to test, your program won't compile. Thus there is a chance that if you
-   * are ever trying to use a library or test some code that also offers an implicit conversion involving a <code>===</code> operator,
-   * you could run into the problem of a compiler error due to an ambiguous implicit conversion. If that happens, you can turn off
-   * the implicit conversion offered by this <code>convertToEqualizer</code> method simply by overriding the method in your
-   * <code>Suite</code> subclass, but not marking it as implicit:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * // In your Suite subclass
-   * override def convertToEqualizer(left: Any) = new Equalizer(left)
-   * </pre>
-   * 
-   * @param left the object whose type to convert to <code>Equalizer</code>.
-   * @throws NullArgumentException if <code>left</code> is <code>null</code>.
-   */
-  // implicit def convertToEqualizer(left: Any) = new Equalizer(left)
-
-  /*
-   * Intercept and return an instance of the passed exception class (or an instance of a subclass of the
-   * passed class), which is expected to be thrown by the passed function value. This method invokes the passed
-   * function. If it throws an exception that's an instance of the passed class or one of its
-   * subclasses, this method returns that exception. Else, whether the passed function returns normally
-   * or completes abruptly with a different exception, this method throws <code>TestFailedException</code>
-   * whose detail message includes the <code>String</code> obtained by invoking <code>toString</code> on the passed <code>clue</code>.
-   *
-   * <p>
-   * Note that the passed <code>Class</code> may represent any type, not just <code>Throwable</code> or one of its subclasses. In
-   * Scala, exceptions can be caught based on traits they implement, so it may at times make sense to pass in a class instance for
-   * a trait. If a class instance is passed for a type that could not possibly be used to catch an exception (such as <code>String</code>,
-   * for example), this method will complete abruptly with a <code>TestFailedException</code>.
-   * </p>
-   *
-   * @param message An object whose <code>toString</code> method returns a message to include in a failure report.
-   * @param f the function value that should throw the expected exception
-   * @return the intercepted exception, if it is of the expected type
-   * @throws TestFailedException if the passed function does not result in a value equal to the
-   *     passed <code>expected</code> value.
-  def intercept[T <: AnyRef](message: Any)(f: => Any)(implicit manifest: Manifest[T]): T = {
-    val clazz = manifest.erasure.asInstanceOf[Class[T]]
-    val messagePrefix = if (message.toString.trim.isEmpty) "" else (message +"\n")
-    val caught = try {
-      f
-      None
-    }
-    catch {
-      case u: Throwable => {
-        if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(messagePrefix + s), Some(u), 4)
-        }
-        else {
-          Some(u)
-        }
-      }
-    }
-    caught match {
-      case None =>
-        val message = messagePrefix + Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, 4)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
-    }
-  }
-THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR JUST LEAVE IT OUT. FOR NOW I'LL LEAVE IT OUT.
-   */
-
   // SKIP-SCALATESTJS-START
   private[scalatest] val failStackDepth = 4
   private[scalatest] val cancelStackDepth = 3
@@ -890,40 +809,23 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
     }
   }
 
-  /*
-   * Intercept and return an instance of the passed exception class (or an instance of a subclass of the
-   * passed class), which is expected to be thrown by the passed function value. This method invokes the passed
-   * function. If it throws an exception that's an instance of the passed class or one of its
-   * subclasses, this method returns that exception. Else, whether the passed function returns normally
-   * or completes abruptly with a different exception, this method throws <code>TestFailedException</code>.
-   *
-   * <p>
-   * Note that the passed <code>Class</code> may represent any type, not just <code>Throwable</code> or one of its subclasses. In
-   * Scala, exceptions can be caught based on traits they implement, so it may at times make sense to pass in a class instance for
-   * a trait. If a class instance is passed for a type that could not possibly be used to catch an exception (such as <code>String</code>,
-   * for example), this method will complete abruptly with a <code>TestFailedException</code>.
-   * </p>
-   *
-   * @param clazz a type to which the expected exception class is assignable, i.e., the exception should be an instance of the type represented by <code>clazz</code>.
-   * @param f the function value that should throw the expected exception
-   * @return the intercepted exception, if 
-   * @throws TestFailedException if the passed function does not complete abruptly with an exception that is assignable to the 
-   *     passed <code>Class</code>.
-   * @throws IllegalArgumentException if the passed <code>clazz</code> is not <code>Throwable</code> or
-   *     one of its subclasses.
-   */
-
-/*
-  def intercept[T <: AnyRef](clazz: java.lang.Class[T])(f: => Unit): T = {
-    // intercept(clazz)(f)(manifest)
-    "hi".asInstanceOf[T]
+  def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Assertion = {
+    val clazz = classTag.runtimeClass
+    try {
+      f
+      val message = Resources.exceptionExpected(clazz.getName)
+      throw newAssertionFailedException(Some(message), None, failStackDepth)
+    }
+    catch {
+      case u: Throwable => {
+        if (!clazz.isAssignableFrom(u.getClass)) {
+          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+          throw newAssertionFailedException(Some(s), Some(u), failStackDepth)
+        }
+        else Succeeded
+      }
+    }
   }
-*/
-/*
-  def intercept[T <: AnyRef](clazz: java.lang.Class[T])(f: => Unit)(implicit manifest: Manifest[T]): T = {
-    intercept(clazz)(f)(manifest)
-  }
-*/
 
   /**
    * Trap and return any thrown exception that would normally cause a ScalaTest test to fail, or create and return a new <code>RuntimeException</code>
