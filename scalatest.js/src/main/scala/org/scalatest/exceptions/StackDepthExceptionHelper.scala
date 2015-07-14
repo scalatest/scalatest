@@ -37,6 +37,4 @@ private[scalatest] object StackDepthExceptionHelper {
     }
     else None
   }
-
-  val macroCodeStackDepth: Int = 9
 }
