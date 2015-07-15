@@ -6881,7 +6881,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(aType: ResultOfATypeInvocation[_]) = macro TypeMatcherMacro.shouldBeATypeImpl
+    def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = macro TypeMatcherMacro.shouldBeATypeImpl
     
     /**
      * This method enables syntax such as the following:
@@ -6891,7 +6891,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(anType: ResultOfAnTypeInvocation[_]) = macro TypeMatcherMacro.shouldBeAnTypeImpl
+    def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = macro TypeMatcherMacro.shouldBeAnTypeImpl
     
     /**
      * This method enables syntax such as the following:
