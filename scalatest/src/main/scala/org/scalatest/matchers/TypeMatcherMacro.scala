@@ -322,7 +322,7 @@ private[scalatest] object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe a [type]' syntax
-  def shouldBeATypeImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Unit] = {
+  def shouldBeATypeImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[org.scalatest.Assertion] = {
 
     import context.universe._
 
@@ -364,7 +364,7 @@ private[scalatest] object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'mustBe a [type]' syntax
-  def mustBeATypeImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[Unit] = {
+  def mustBeATypeImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[org.scalatest.Assertion] = {
 
     import context.universe._
 
@@ -406,7 +406,7 @@ private[scalatest] object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAType, used by 'shouldBe an [type]' syntax
-  def shouldBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Unit] = {
+  def shouldBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Assertion] = {
 
     import context.universe._
 
@@ -448,7 +448,7 @@ private[scalatest] object TypeMatcherMacro {
   }
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnType, used by 'mustBe an [type]' syntax
-  def mustBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[Unit] = {
+  def mustBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Assertion] = {
 
     import context.universe._
 
