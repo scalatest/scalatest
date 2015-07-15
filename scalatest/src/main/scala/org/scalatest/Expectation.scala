@@ -16,7 +16,6 @@
 package org.scalatest
 
 import org.scalactic.Prettifier
-import java.text.MessageFormat
 import org.scalatest.exceptions.TestFailedException
 
 private[scalatest] sealed abstract class Fact {
@@ -81,10 +80,8 @@ private[scalatest] sealed abstract class Fact {
    */
   def midSentenceNegatedFailureMessage: String = if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
 
-  private def makeString(rawString: String, args: IndexedSeq[Any]): String = {
-    val msgFmt = new MessageFormat(rawString)
-    msgFmt.format(args.map(prettifier).toArray)
-  }
+  private def makeString(raw: String, args: IndexedSeq[Any]): String =
+    Resources.formatString(raw, args.map(Prettifier.default).toArray)
 }
 
 private[scalatest] object Fact {
