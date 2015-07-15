@@ -2729,7 +2729,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * <code>scala.Seq</code>, <code>java.lang.String</code>, and <code>java.util.List</code>.
      * </p>
      */
-    def length(expectedLength: Long)(implicit len: Length[A]) {
+    def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
       val leftLength = len.lengthOf(left)
       if ((leftLength == expectedLength) != shouldBeTrue)
         throw newTestFailedException(
@@ -2738,6 +2738,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.hadLength(left, expectedLength)
         )
+      else Succeeded
     }
 
     /**
@@ -2755,7 +2756,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * <code>Traversable</code> and <code>java.util.Collection</code>.
      * </p>
      */
-    def size(expectedSize: Long)(implicit sz: Size[A]) {
+    def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
       val leftSize = sz.sizeOf(left)
       if ((leftSize == expectedSize) != shouldBeTrue)
         throw newTestFailedException(
@@ -2764,6 +2765,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.hadSize(left, expectedSize)
         )
+      else Succeeded
     }
 
     /**
@@ -2774,7 +2776,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def message(expectedMessage: String)(implicit messaging: Messaging[A]) {
+    def message(expectedMessage: String)(implicit messaging: Messaging[A]): Assertion = {
       val actualMessage = messaging.messageOf(left)
       if ((actualMessage== expectedMessage) != shouldBeTrue)
         throw newTestFailedException(
@@ -2783,6 +2785,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.hadExpectedMessage(left, expectedMessage)
         )
+      else Succeeded
     }
 
     /**

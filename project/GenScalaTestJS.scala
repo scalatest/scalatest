@@ -209,8 +209,7 @@ object GenScalaTestJS {
         "JavaClassesWrappers.scala",
         "Shell.scala",
         "SuiteRerunner.scala",
-        "run.scala",
-        "package.scala"
+        "run.scala"
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,

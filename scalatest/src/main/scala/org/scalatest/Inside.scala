@@ -99,7 +99,7 @@ trait Inside {
    * @param pf the partial function to use to inspect inside the passed value
    * @throws TestFailedException if the passed partial function is not defined at the passed value
    */
-  def inside[T](value: T)(pf: PartialFunction[T, Unit]) {
+  def inside[T, U](value: T)(pf: PartialFunction[T, U]): U = {
 
     def appendInsideMessage(currentMessage: Option[String]) = {
       val st = Thread.currentThread.getStackTrace
@@ -124,8 +124,9 @@ trait Inside {
 
     if (pf.isDefinedAt(value)) {
       try {
-        pf(value)
+        val result = pf(value)
         Inside.level.set(Inside.level.get - 1)
+        result
       }
       catch {
         case e: org.scalatest.exceptions.ModifiableMessage[_] =>

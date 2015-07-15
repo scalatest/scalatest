@@ -3071,8 +3071,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           val cause = causeThrowable.asInstanceOf[RuntimeException]
           assert(cause.getMessage == "on purpose")
         }
+*/
 
         // SKIP-SCALATESTJS-START
+/*
         it("should propagate AnnotationFormatError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {

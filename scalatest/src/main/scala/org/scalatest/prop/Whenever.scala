@@ -106,7 +106,7 @@ trait Whenever {
    *    <code>fun</code> function (<code>condition</code> is true) or throws <code>DiscardedEvaluationException</code> (<code>condition</code> is false)
    * @param fun the function to evaluate if the specified <code>condition</code> is true
    */
-  def whenever(condition: Boolean)(fun: => Unit) {
+  def whenever[T](condition: Boolean)(fun: => T): T = {
     if (!condition)
       throw new DiscardedEvaluationException
     else

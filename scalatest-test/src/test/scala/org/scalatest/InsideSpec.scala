@@ -118,6 +118,27 @@ class InsideSpec extends FunSpec {
       caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("InsideSpec.scala")
     }
+    it("should infer the result type from the block, and pass the value through") {
+
+      inside(rec) { case Record(name, _, _) => name } shouldBe Name("Sally", "Mary", "Jones")
+      (inside(rec) { case Record(name, _, _) => name }: Name) shouldBe a [Name]
+
+      inside (rec) { case Record(name, _, _) =>
+        inside (name) { case Name(first, _, _) => first }
+      } shouldBe "Sally"
+
+      (inside (rec) { case Record(name, _, _) =>
+        inside (name) { case Name(first, _, _) => first }
+      }: String) shouldBe a [String]
+
+      inside (rec) { case Record(name, _, _) =>
+        inside (name) { case Name(first, _, _) => (first should have length 5) }
+      } shouldBe Succeeded
+
+      (inside (rec) { case Record(name, _, _) =>
+        inside (name) { case Name(first, _, _) => (first should have length 5) }
+      }: Assertion) shouldBe an [Assertion]
+    }
   }
 }
 

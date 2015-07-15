@@ -3393,8 +3393,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[RuntimeException]
           assert(cause.getMessage == "on purpose")
         }
+*/
 
         // SKIP-SCALATESTJS-START
+/*
         it("should propagate AnnotationFormatError when it is thrown inside should scope") {
           class TestSpec extends WordSpec {
             type FixtureParam = String
