@@ -63,6 +63,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
    *                       ^
    * </pre>
    */
+// XXX TODO: THIS LOOKS LIKE A BUG. RESULT TYPE IS UNIT. WRITE A TEST.
   def shouldBe(thrownBy: ResultOfThrownByApplication) {
     
     val caught = try {
@@ -120,6 +121,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
    *                       ^
    * </pre>
    */
+// XXX TODO: THIS LOOKS LIKE A BUG. RESULT TYPE IS UNIT. WRITE A TEST.
   def mustBe(thrownBy: ResultOfThrownByApplication) {
 
     val caught = try {

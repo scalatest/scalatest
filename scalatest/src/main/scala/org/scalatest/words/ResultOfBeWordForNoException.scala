@@ -16,6 +16,8 @@
 package org.scalatest.words
 
 import org.scalatest.Assertions.checkNoException
+import org.scalatest.Assertion
+import org.scalatest.Succeeded
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -33,7 +35,7 @@ final class ResultOfBeWordForNoException {
    *                       ^
    * </pre>
    */
-  def thrownBy(fun: => Unit) {
+  def thrownBy(fun: => Unit): Assertion = {
     checkNoException(fun)
   }
   

@@ -28,6 +28,7 @@ import org.scalactic.Prettifier
  */
 final class ResultOfLengthWordApplication(val expectedLength: Long) {
 
+  // TODO: SCALADOC
   def apply[T : Length](resultOfOfTypeInvocation: ResultOfOfTypeInvocation[T]): HavePropertyMatcher[T, Long] = {
     new HavePropertyMatcher[T, Long] {
       def apply(t: T): HavePropertyMatchResult[Long] = {
