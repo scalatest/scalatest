@@ -22,7 +22,7 @@ trait AsyncFunSpecLike extends FunSpecRegistration with AsyncTests with OneInsta
 
   implicit def executionContext: ExecutionContext
 
-  override private[scalatest] def transformToOutcome(testFun: => Future[Unit]): () => AsyncOutcome =
+  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
       val futureUnit = testFun
       FutureOutcome(

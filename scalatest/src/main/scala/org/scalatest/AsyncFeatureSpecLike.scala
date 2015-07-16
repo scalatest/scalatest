@@ -22,7 +22,7 @@ trait AsyncFeatureSpecLike extends FeatureSpecRegistration with AsyncTests with 
 
   implicit def executionContext: ExecutionContext
 
-  override private[scalatest] def transformToOutcome(testFun: => Future[Unit]): () => AsyncOutcome =
+  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
       val futureUnit = testFun
       FutureOutcome(
