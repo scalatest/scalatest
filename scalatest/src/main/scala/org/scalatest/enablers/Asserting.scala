@@ -16,11 +16,33 @@
 package org.scalatest.enablers
 
 import org.scalatest.Assertion
+import org.scalatest.Succeeded
+import org.scalatest.PendingStatement
+import org.scalatest.Assertions
 
 trait Asserting[T] {
+  def result: T
 }
 
-object Asserting {
-  implicit val assertingNatureOfAssertion: Asserting[Assertion] = new Asserting[Assertion] {}
+trait LowPriorityAssertingImplicits {
+
+  implicit val assertingNatureOfUnit: Asserting[Unit] =
+    new Asserting[Unit] {
+      def result: Unit = ()
+    }
+
+  implicit val assertingNatureOfAssertionWithPendingStatement: Asserting[Assertion with PendingStatement] =
+    new Asserting[Assertion with PendingStatement] {
+      def result: Assertion with PendingStatement = Assertions.pending // Should never be used
+    }
 }
+
+object Asserting extends LowPriorityAssertingImplicits {
+
+  implicit val assertingNatureOfAssertion: Asserting[Assertion] =
+    new Asserting[Assertion] {
+      def result: Assertion = Succeeded
+    }
+}
+
 

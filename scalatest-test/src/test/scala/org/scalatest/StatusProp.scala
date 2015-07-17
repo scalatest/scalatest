@@ -89,6 +89,7 @@ class StatusProp extends AllSuiteProp {
         assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
         assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
       }
+      else Succeeded
     }
   }
   
@@ -104,6 +105,7 @@ class StatusProp extends AllSuiteProp {
         assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
         assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
       }
+      else Succeeded
     }
   }
   
@@ -119,6 +121,7 @@ class StatusProp extends AllSuiteProp {
         assert(status.isCompleted, "status.isCompleted should be true after distributor.execute(), but we got false")
         assert(!status.succeeds, "status.succeeds should be false after distributor.execute(), but we got false")
       }
+      else Succeeded
     }
   }
 }

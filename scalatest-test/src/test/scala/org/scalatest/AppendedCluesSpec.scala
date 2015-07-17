@@ -194,7 +194,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
   it should "throw NPE if a null clue object is passed" in {
     forAll (examples) { e =>
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         {
           failWith(e)
         } withClue (null)

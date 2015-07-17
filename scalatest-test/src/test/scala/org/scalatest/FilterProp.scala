@@ -33,6 +33,9 @@ class FilterProp extends SuiteProp {
       if (!suite.isInstanceOf[TestNGSuite])
       // SKIP-SCALATESTJS-END
         reporter.suiteStartingEventsReceived.length should be (0)
+      // SKIP-SCALATESTJS-START
+      else Succeeded
+      // SKIP-SCALATESTJS-END
     }
   }
   

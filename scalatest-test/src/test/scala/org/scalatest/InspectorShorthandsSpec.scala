@@ -644,7 +644,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
               case other => fail("Expected cause to be TestFailedException, but got: " + other)
             }
             
-          case None => // Do nothing when the collection cannot contains null value.
+          case None => Succeeded // Do nothing when the collection cannot contains null value.
         }
       }
     }

@@ -161,7 +161,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
   it should "throw NPE if a null clue object is passed" in {
     forAll (examples) { e =>
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         withClue (null) {
           throw e
         }

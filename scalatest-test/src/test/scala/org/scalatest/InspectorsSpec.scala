@@ -115,7 +115,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestPendingException] {
+        assertThrows[exceptions.TestPendingException] {
           forAll(col) { e => pending }
         }
       }
@@ -124,7 +124,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestCanceledException] {
+        assertThrows[exceptions.TestCanceledException] {
           forAll(col) { e => cancel }
         }  
       }
@@ -134,7 +134,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[AnnotationFormatError] {
+        assertThrows[AnnotationFormatError] {
           forAll(col) { e => throw new AnnotationFormatError("test") }
         }
       }
@@ -143,7 +143,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[CoderMalfunctionError] {
+        assertThrows[CoderMalfunctionError] {
           forAll(col) { e => throw new CoderMalfunctionError(new RuntimeException("test")) }
         }
       }
@@ -152,7 +152,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[FactoryConfigurationError] {
+        assertThrows[FactoryConfigurationError] {
           forAll(col) { e => throw new FactoryConfigurationError() }
         }
       }
@@ -161,7 +161,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[LinkageError] {
+        assertThrows[LinkageError] {
           forAll(col) { e => throw new LinkageError() }
         }
       }
@@ -170,7 +170,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[ThreadDeath] {
+        assertThrows[ThreadDeath] {
           forAll(col) { e => throw new ThreadDeath() }
         }
       }
@@ -179,7 +179,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[TransformerFactoryConfigurationError] {
+        assertThrows[TransformerFactoryConfigurationError] {
           forAll(col) { e => throw new TransformerFactoryConfigurationError() }
         }
       }
@@ -188,7 +188,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           forAll(col) { e => throw new VirtualMachineError() {} }
         }
       }
@@ -464,7 +464,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestPendingException] {
+        assertThrows[exceptions.TestPendingException] {
           forAtLeast(1, col) { e => pending }
         }
       }
@@ -473,7 +473,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestCanceledException] {
+        assertThrows[exceptions.TestCanceledException] {
           forAtLeast(1, col) { e => cancel }
         }
       }
@@ -483,7 +483,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[AnnotationFormatError] {
+        assertThrows[AnnotationFormatError] {
           forAtLeast(1, col) { e => throw new AnnotationFormatError("test") }
         }
       }
@@ -492,7 +492,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[CoderMalfunctionError] {
+        assertThrows[CoderMalfunctionError] {
           forAtLeast(1, col) { e => throw new CoderMalfunctionError(new RuntimeException("test")) }
         }
       }
@@ -501,7 +501,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[FactoryConfigurationError] {
+        assertThrows[FactoryConfigurationError] {
           forAtLeast(1, col) { e => throw new FactoryConfigurationError() }
         }
       }
@@ -510,7 +510,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[LinkageError] {
+        assertThrows[LinkageError] {
           forAtLeast(1, col) { e => throw new LinkageError() }
         }
       }
@@ -519,7 +519,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[ThreadDeath] {
+        assertThrows[ThreadDeath] {
           forAtLeast(1, col) { e => throw new ThreadDeath() }
         }
       }
@@ -528,7 +528,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[TransformerFactoryConfigurationError] {
+        assertThrows[TransformerFactoryConfigurationError] {
           forAtLeast(1, col) { e => throw new TransformerFactoryConfigurationError() }
         }
       }
@@ -537,7 +537,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           forAtLeast(1, col) { e => throw new VirtualMachineError() {} }
         }
       }
@@ -612,7 +612,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestPendingException] {
+        assertThrows[exceptions.TestPendingException] {
           forAtMost(1, col) { e => pending }
         }
       }
@@ -621,7 +621,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestCanceledException] {
+        assertThrows[exceptions.TestCanceledException] {
           forAtMost(1, col) { e => cancel }
         }
       }
@@ -631,7 +631,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[AnnotationFormatError] {
+        assertThrows[AnnotationFormatError] {
           forAtMost(1, col) { e => throw new AnnotationFormatError("test") }
         }
       }
@@ -640,7 +640,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[CoderMalfunctionError] {
+        assertThrows[CoderMalfunctionError] {
           forAtMost(1, col) { e => throw new CoderMalfunctionError(new RuntimeException("test")) }
         }
       }
@@ -649,7 +649,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[FactoryConfigurationError] {
+        assertThrows[FactoryConfigurationError] {
           forAtMost(1, col) { e => throw new FactoryConfigurationError() }
         }
       }
@@ -658,7 +658,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[LinkageError] {
+        assertThrows[LinkageError] {
           forAtMost(1, col) { e => throw new LinkageError() }
         }
       }
@@ -667,7 +667,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[ThreadDeath] {
+        assertThrows[ThreadDeath] {
           forAtMost(1, col) { e => throw new ThreadDeath() }
         }
       }
@@ -676,7 +676,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[TransformerFactoryConfigurationError] {
+        assertThrows[TransformerFactoryConfigurationError] {
           forAtMost(1, col) { e => throw new TransformerFactoryConfigurationError() }
         }
       }
@@ -685,7 +685,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           forAtMost(1, col) { e => throw new VirtualMachineError() {} }
         }
       }
@@ -865,7 +865,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestPendingException] {
+        assertThrows[exceptions.TestPendingException] {
           forExactly(1, col) { e => pending }
         }
       }
@@ -874,7 +874,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestCanceledException] {
+        assertThrows[exceptions.TestCanceledException] {
           forExactly(1, col) { e => cancel }
         }
       }
@@ -884,7 +884,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[AnnotationFormatError] {
+        assertThrows[AnnotationFormatError] {
           forExactly(1, col) { e => throw new AnnotationFormatError("test") }
         }
       }
@@ -893,7 +893,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[CoderMalfunctionError] {
+        assertThrows[CoderMalfunctionError] {
           forExactly(1, col) { e => throw new CoderMalfunctionError(new RuntimeException("test")) }
         }
       }
@@ -902,7 +902,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[FactoryConfigurationError] {
+        assertThrows[FactoryConfigurationError] {
           forExactly(1, col) { e => throw new FactoryConfigurationError() }
         }
       }
@@ -911,7 +911,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[LinkageError] {
+        assertThrows[LinkageError] {
           forExactly(1, col) { e => throw new LinkageError() }
         }
       }
@@ -920,7 +920,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[ThreadDeath] {
+        assertThrows[ThreadDeath] {
           forExactly(1, col) { e => throw new ThreadDeath() }
         }
       }
@@ -929,7 +929,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[TransformerFactoryConfigurationError] {
+        assertThrows[TransformerFactoryConfigurationError] {
           forExactly(1, col) { e => throw new TransformerFactoryConfigurationError() }
         }
       }
@@ -938,7 +938,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           forExactly(1, col) { e => throw new VirtualMachineError() {} }
         }
       }
@@ -1003,7 +1003,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestPendingException] {
+        assertThrows[exceptions.TestPendingException] {
           forNo(col) { e => pending }
         }
       }
@@ -1012,7 +1012,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestCanceledException] {
+        assertThrows[exceptions.TestCanceledException] {
           forNo(col) { e => cancel }
         }
       }
@@ -1022,7 +1022,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[AnnotationFormatError] {
+        assertThrows[AnnotationFormatError] {
           forNo(col) { e => throw new AnnotationFormatError("test") }
         }
       }
@@ -1031,7 +1031,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[CoderMalfunctionError] {
+        assertThrows[CoderMalfunctionError] {
           forNo(col) { e => throw new CoderMalfunctionError(new RuntimeException("test")) }
         }
       }
@@ -1040,7 +1040,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[FactoryConfigurationError] {
+        assertThrows[FactoryConfigurationError] {
           forNo(col) { e => throw new FactoryConfigurationError() }
         }
       }
@@ -1049,7 +1049,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[LinkageError] {
+        assertThrows[LinkageError] {
           forNo(col) { e => throw new LinkageError() }
         }
       }
@@ -1058,7 +1058,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[ThreadDeath] {
+        assertThrows[ThreadDeath] {
           forNo(col) { e => throw new ThreadDeath() }
         }
       }
@@ -1067,7 +1067,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[TransformerFactoryConfigurationError] {
+        assertThrows[TransformerFactoryConfigurationError] {
           forNo(col) { e => throw new TransformerFactoryConfigurationError() }
         }
       }
@@ -1076,7 +1076,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           forNo(col) { e => throw new VirtualMachineError() {} }
         }
       }
@@ -1289,7 +1289,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[exceptions.TestPendingException] {
+        assertThrows[exceptions.TestPendingException] {
           forBetween(2, 4, col) { e => pending }
         }
       }
@@ -1298,7 +1298,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[exceptions.TestCanceledException] {
+        assertThrows[exceptions.TestCanceledException] {
           forBetween(2, 4, col) { e => cancel }
         }
       }
@@ -1308,7 +1308,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[AnnotationFormatError] {
+        assertThrows[AnnotationFormatError] {
           forBetween(2, 4, col) { e => throw new AnnotationFormatError("test") }
         }
       }
@@ -1317,7 +1317,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[CoderMalfunctionError] {
+        assertThrows[CoderMalfunctionError] {
           forBetween(2, 4, col) { e => throw new CoderMalfunctionError(new RuntimeException("test")) }
         }
       }
@@ -1326,7 +1326,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[FactoryConfigurationError] {
+        assertThrows[FactoryConfigurationError] {
           forBetween(2, 4, col) { e => throw new FactoryConfigurationError() }
         }
       }
@@ -1335,7 +1335,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[LinkageError] {
+        assertThrows[LinkageError] {
           forBetween(2, 4, col) { e => throw new LinkageError() }
         }
       }
@@ -1344,7 +1344,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[ThreadDeath] {
+        assertThrows[ThreadDeath] {
           forBetween(2, 4, col) { e => throw new ThreadDeath() }
         }
       }
@@ -1353,7 +1353,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[TransformerFactoryConfigurationError] {
+        assertThrows[TransformerFactoryConfigurationError] {
           forBetween(2, 4, col) { e => throw new TransformerFactoryConfigurationError() }
         }
       }
@@ -1362,7 +1362,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3, 4, 5))
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           forBetween(2, 4, col) { e => throw new VirtualMachineError() {} }
         }
       }
@@ -1417,7 +1417,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestPendingException thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[exceptions.TestPendingException] {
+        assertThrows[exceptions.TestPendingException] {
           forEvery(col) { e => pending }
         }
       }
@@ -1426,7 +1426,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate TestCanceledException thrown from assertion") {
       forAll(examples) { colFun =>
         val colFun = Set(1, 2, 3)
-        intercept[exceptions.TestCanceledException] {
+        assertThrows[exceptions.TestCanceledException] {
           forEvery(colFun) { e => cancel }
         }
       }
@@ -1436,7 +1436,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.annotation.AnnotationFormatError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[AnnotationFormatError] {
+        assertThrows[AnnotationFormatError] {
           forEvery(col) { e => throw new AnnotationFormatError("test") }
         }
       }
@@ -1445,7 +1445,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.nio.charset.CoderMalfunctionError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[CoderMalfunctionError] {
+        assertThrows[CoderMalfunctionError] {
           forEvery(col) { e => throw new CoderMalfunctionError(new RuntimeException("test")) }
         }
       }
@@ -1454,7 +1454,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.parsers.FactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[FactoryConfigurationError] {
+        assertThrows[FactoryConfigurationError] {
           forEvery(col) { e => throw new FactoryConfigurationError() }
         }
       }
@@ -1463,7 +1463,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.LinkageError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[LinkageError] {
+        assertThrows[LinkageError] {
           forEvery(col) { e => throw new LinkageError() }
         }
       }
@@ -1472,7 +1472,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.ThreadDeath thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[ThreadDeath] {
+        assertThrows[ThreadDeath] {
           forEvery(col) { e => throw new ThreadDeath() }
         }
       }
@@ -1481,7 +1481,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate javax.xml.transform.TransformerFactoryConfigurationError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[TransformerFactoryConfigurationError] {
+        assertThrows[TransformerFactoryConfigurationError] {
           forEvery(col) { e => throw new TransformerFactoryConfigurationError() }
         }
       }
@@ -1490,7 +1490,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     it("should propagate java.lang.VirtualMachineError thrown from assertion") {
       forAll(examples) { colFun =>
         val col = colFun(Set(1, 2, 3))
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           forEvery(col) { e => throw new VirtualMachineError() {} }
         }
       }

@@ -87,6 +87,7 @@ class StopOnFailureProp extends AllSuiteProp {
         val testIgnoredList = rep.testIgnoredEventsReceived
         assert(testIgnoredList.length === 1)
       }
+      else Succeeded
     }
   }
 }

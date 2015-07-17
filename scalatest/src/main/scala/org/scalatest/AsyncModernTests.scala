@@ -18,14 +18,14 @@ package org.scalatest
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-trait AsyncTests extends SuiteMixin with AsyncFixtures with TestRegistration { this: Suite =>
-  type Registration = Future[Unit]
+trait AsyncModernTests extends SuiteMixin with AsyncFixtures with TestRegistration { this: Suite =>
+  type Registration = Future[Assertion]
 
   import scala.language.implicitConversions
 
   implicit def executionContext: ExecutionContext
 
-  override private[scalatest] def transformToOutcome(testFun: => Future[Unit]): () => AsyncOutcome =
+  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
       val futureUnit = testFun
       FutureOutcome(
@@ -38,5 +38,5 @@ trait AsyncTests extends SuiteMixin with AsyncFixtures with TestRegistration { t
       )
     }
 
-  implicit def convertToFuture(o: Any): Future[Unit] = Future.successful(o)
+  implicit def convertToFuture(o: Assertion): Future[Assertion] = Future.successful(o)
 }
