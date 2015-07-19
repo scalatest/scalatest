@@ -241,7 +241,7 @@ trait Checkers extends Configuration {
       config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty
-    ) {
+    ): Assertion = {
     check(Prop.forAll(f)(p, a1, s1, pp1), configParams: _*)(config)
   }
 
@@ -257,7 +257,7 @@ trait Checkers extends Configuration {
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty
-    ) {
+    ): Assertion = {
     val params = getParams(configParams, config)
     check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), configParams: _*)(config)
   }
@@ -275,7 +275,7 @@ trait Checkers extends Configuration {
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
       a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty
-    ) {
+    ): Assertion = {
     check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), configParams: _*)(config)
   }
 
@@ -293,7 +293,7 @@ trait Checkers extends Configuration {
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
       a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
       a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty
-    ) {
+    ): Assertion = {
     check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), configParams: _*)(config)
   }
 
@@ -312,7 +312,7 @@ trait Checkers extends Configuration {
       a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
       a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty,
       a5: Arbitrary[A5], s5: Shrink[A5], pp5: A5 => Pretty
-    ) {
+    ): Assertion = {
     check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), configParams: _*)(config)
   }
 
@@ -332,7 +332,7 @@ trait Checkers extends Configuration {
       a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty,
       a5: Arbitrary[A5], s5: Shrink[A5], pp5: A5 => Pretty,
       a6: Arbitrary[A6], s6: Shrink[A6], pp6: A6 => Pretty
-    ) {
+    ): Assertion = {
     check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), configParams: _*)(config)
   }
 
@@ -343,7 +343,7 @@ trait Checkers extends Configuration {
    * @param prms the test parameters
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, prms: Test.Parameters) {
+  def check(p: Prop, prms: Test.Parameters): Assertion = {
     Checkers.doCheck(p, prms, "Checkers.scala", "check")
   }
 
@@ -353,7 +353,7 @@ trait Checkers extends Configuration {
    * @param p the property to check
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable) {
+  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable): Assertion = {
     val params = getParams(configParams, config)
     check(p, params)
   }
