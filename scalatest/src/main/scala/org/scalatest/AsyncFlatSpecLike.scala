@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.{ExecutionContext, Future}
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncFlatSpecLike extends FlatSpecRegistration with AsyncTests with OneInstancePerTest { thisSuite =>
+trait AsyncFlatSpecLike extends FlatSpecRegistration with AsyncClassicTests with OneInstancePerTest { thisSuite =>
 
   private final val engine: Engine = getEngine
 

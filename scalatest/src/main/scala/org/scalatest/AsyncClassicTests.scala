@@ -18,7 +18,8 @@ package org.scalatest
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-trait AsyncTests extends SuiteMixin with AsyncFixtures with TestRegistration { this: Suite =>
+trait AsyncClassicTests extends SuiteMixin with AsyncFixtures with TestRegistration { this: Suite =>
+
   type Registration = Future[Unit]
 
   import scala.language.implicitConversions

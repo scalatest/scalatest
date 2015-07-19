@@ -19,6 +19,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
 trait AsyncModernTests extends SuiteMixin with AsyncFixtures with TestRegistration { this: Suite =>
+
   type Registration = Future[Assertion]
 
   import scala.language.implicitConversions
