@@ -415,7 +415,6 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
         traverseSubNodes()
     }
 
-
     def traverseSubNodes() {
       branch.subNodes.reverse.foreach { node =>
         if (!stopper.stopRequested) {
@@ -428,8 +427,29 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
                   val theTest = atomic.get.testsMap(testName)
                   reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
                 }
-                else
+                else {
+                  // Right here, if one after another async, register the last one to run at the end of the previous one?
+                  // Then for my status, I can't get it from runTest. runTest won't run until later. So I need
+                  // somehow to connect it to the, oh, registration function? So maybe this is a new method on
+                  // Status? Because that's what I need to be able to do, something like:
+                  //
+                  //   lastPreviousStatus thenRun { runTest(testName, args) }
+                  //
+                  // where the signature of thenRun would be
+                  //
+                  //   def thenRun(f: => Status): Status
+                  //
+                  // So the code here would end up being:
+                  //
+                  //   statusList += 
+                  //     if (!oneAfterAnotherAsync || statusList.isEmpty) {
+                  //       statusList += runTest(testName, args) // If oneAfterAnotherAsync, first time just go for it
+                  //     }
+                  //     else {
+                  //       statusList.last thenRun { runTest(testName, args) } // Only if oneAfterAnotherAsync, after first Status
+                  //     }
                   statusList += runTest(testName, args)
+                }
 
             case infoLeaf @ InfoLeaf(_, message, payload, location) =>
               reportInfoProvided(theSuite, args.reporter, args.tracker, None, message, payload, infoLeaf.indentationLevel, location, true, includeIcon)
