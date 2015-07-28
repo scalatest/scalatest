@@ -24,13 +24,13 @@ import org.scalatest.OutcomeOf.outcomeOf
 class EngineSpec extends FlatSpec with Matchers {
 
   "EngineSpec.getTestNamePrefix" should "return empty string for Trunk" in {
-    val engine = new Engine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new Engine("concurrentFunSuiteBundleMod")
     import engine._
     getTestNamePrefix(Trunk) should be ("")
   }
 
   it should "return empty string for direct children of Trunk" in {
-    val engine = new Engine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new Engine("concurrentFunSuiteBundleMod")
     import engine._
     val child = DescriptionBranch(Trunk, "Catherine", Some("child prefix"), None)
     Trunk.subNodes ::= child
@@ -38,7 +38,7 @@ class EngineSpec extends FlatSpec with Matchers {
   }
 
   it should "return the parent's description name for DescriptionBranch grandchildren of trunk" in {
-    val engine = new Engine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new Engine("concurrentFunSuiteBundleMod")
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
@@ -48,7 +48,7 @@ class EngineSpec extends FlatSpec with Matchers {
   }
 
   "EngineSpec.getTestName" should "return the prefix, a space, and the testText" in {
-    val engine = new Engine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new Engine("concurrentFunSuiteBundleMod")
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
@@ -57,7 +57,7 @@ class EngineSpec extends FlatSpec with Matchers {
     getTestName("howdy there", grandchild) should be ("child child prefix grandchild howdy there")
   }
   "EngineSpec.getIndentationLevelForNode" should "return the indentation level for a test" in {
-    val engine = new Engine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new Engine("concurrentFunSuiteBundleMod")
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
@@ -79,7 +79,7 @@ class EngineSpec extends FlatSpec with Matchers {
 
   def pathEngine = {
     import scala.collection.mutable.ListBuffer
-    val engine = new Engine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new Engine("concurrentFunSuiteBundleMod")
     engine.registerNestedBranch("Given an empty list", None, {
       val list = ListBuffer[Int]() 
       engine.registerNestedBranch("when 1 is inserted", None, {

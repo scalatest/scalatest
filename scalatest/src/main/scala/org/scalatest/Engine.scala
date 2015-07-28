@@ -38,7 +38,7 @@ import org.scalactic.exceptions.NullArgumentException
 import scala.util.{Failure, Success}
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
-private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
+private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String) {
 
   sealed abstract class Node(val parentOption: Option[Branch]) {
     def indentationLevel: Int = {
@@ -816,16 +816,16 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   }
 }
 
-private[scalatest] class Engine(concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends SuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+private[scalatest] class Engine(concurrentBundleModMessageFun: => String)
+    extends SuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun)
 
-private[scalatest] class FixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends SuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+private[scalatest] class FixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String)
+    extends SuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun)
 
 
 
-private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends Engine(concurrentBundleModMessageFun, simpleClassName) { thisEngine =>
+private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String)
+    extends Engine(concurrentBundleModMessageFun) { thisEngine =>
  
   /*
   Anything that the initial instance sets will need to be made volatile or atomic.
@@ -1169,7 +1169,7 @@ private[scalatest] object PathEngine {
    def getEngine(): PathEngine = {
      val en = engine.get
      engine.set(null)
-     if (en == null) (new PathEngine(Resources.concurrentSpecMod, "Spec")) else en
+     if (en == null) (new PathEngine(Resources.concurrentSpecMod)) else en
    }
    
   /*

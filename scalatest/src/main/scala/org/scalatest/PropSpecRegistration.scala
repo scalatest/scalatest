@@ -41,7 +41,7 @@ import Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
 trait PropSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine(Resources.concurrentPropSpecMod, "PropSpec")
+  private final val engine = new Engine(Resources.concurrentPropSpecMod)
 
   protected[scalatest] def getEngine: Engine = engine
 
