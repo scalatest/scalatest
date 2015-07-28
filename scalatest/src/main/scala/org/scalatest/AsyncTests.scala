@@ -39,10 +39,6 @@ trait AsyncTests extends SuiteMixin with AsyncFixtures { thisSuite: Suite with T
       )
     }
 
-  protected[scalatest] def getEngine: Engine
-
-  private final val engine = getEngine
-
   import engine._
 
   protected override def runTest(testName: String, args: Args): Status = {
@@ -71,7 +67,7 @@ trait AsyncTests extends SuiteMixin with AsyncFixtures { thisSuite: Suite with T
         )
       }
 
-      runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
+      engine.runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
     }
   }
 }

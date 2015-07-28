@@ -46,10 +46,6 @@ import Suite.autoTagClassAnnotations
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine(Resources.concurrentWordSpecMod)
-
-  protected[scalatest] def getEngine: Engine = engine
-
   import engine._
 
   /**

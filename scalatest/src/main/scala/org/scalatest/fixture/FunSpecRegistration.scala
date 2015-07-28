@@ -50,10 +50,6 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 trait FunSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod)
-
-  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
-
   import engine._
 
   private[scalatest] val sourceFileName = "FunSpecRegistration.scala"

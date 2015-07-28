@@ -50,10 +50,6 @@ import org.scalatest.Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 trait FreeSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod)
-
-  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
-
   import engine._
 
   private[scalatest] val sourceFileName = "FreeSpecRegistration.scala"

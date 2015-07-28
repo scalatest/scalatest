@@ -36,7 +36,6 @@ trait AsyncFeatureSpecLike extends FeatureSpecRegistration with AsyncTests with 
       )
     }
 
-  private final val engine = getEngine
   import engine._
 
   protected override def runTest(testName: String, args: Args): Status = {

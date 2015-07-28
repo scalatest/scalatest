@@ -1169,7 +1169,7 @@ private[scalatest] object PathEngine {
    def getEngine(): PathEngine = {
      val en = engine.get
      engine.set(null)
-     if (en == null) (new PathEngine(Resources.concurrentSpecMod)) else en
+     if (en == null) (new PathEngine(Resources.concurrentPathSuiteMod)) else en
    }
    
   /*

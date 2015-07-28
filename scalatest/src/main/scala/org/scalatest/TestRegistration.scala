@@ -39,6 +39,8 @@ trait TestRegistration { theSuite: Suite =>
         outcomeOf { testFun }
       }
 
+  private[scalatest] val engine = new Engine(Resources.concurrentSuiteMod)
+
   /**
    * Register a test.
    *

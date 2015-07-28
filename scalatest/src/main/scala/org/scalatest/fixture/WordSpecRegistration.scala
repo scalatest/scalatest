@@ -51,10 +51,6 @@ import org.scalatest.Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod)
-
-  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
-
   import engine._
 
   private[scalatest] val sourceFileName = "WordSpecRegistration.scala"
