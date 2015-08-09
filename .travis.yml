@@ -1,7 +1,7 @@
 language: scala
 scala:
-  - 2.11.5
-  - 2.10.4
+  - 2.11.7
+  - 2.10.5
 jdk:
   - oraclejdk7
   - openjdk6
@@ -40,6 +40,10 @@ env:
 
 #before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE
+
+branches:
+  only:
+    - 3.0.x
 
 notifications:
   email:
