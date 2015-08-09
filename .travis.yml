@@ -38,6 +38,10 @@ env:
     - MODE=genLoneElementTests
     - MODE=genEmptyTests
 
+branches:
+  only:
+    - 3.0.x
+
 #before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE
 
