@@ -150,9 +150,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
     if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.containedAtLeastOneOf(left, right)
+          FailureMessages.containedAtLeastOneElementOf(left, right)
         else
-          FailureMessages.didNotContainAtLeastOneOf(left, right)
+          FailureMessages.didNotContainAtLeastOneElementOf(left, right)
       )
   }
   

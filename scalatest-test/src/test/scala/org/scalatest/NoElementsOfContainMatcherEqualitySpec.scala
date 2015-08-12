@@ -81,13 +81,13 @@ class NoElementsOfContainMatcherEqualitySpec extends FunSpec with Explicitly {
   describe("noElementsOf ") {
 
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages.containedAtLeastOneOf(left, right)))
+      e.message should be (Some(FailureMessages.containedAtLeastOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("NoElementsOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(left, right)))
+      e.message should be (Some(FailureMessages.didNotContainAtLeastOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("NoElementsOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
