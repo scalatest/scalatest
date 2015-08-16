@@ -25,7 +25,8 @@ trait FastSetView[+T] extends SetView[T] {
   def map[U](f: T => U): FastSetView[U]
   def flatMap[U](f: T => GenIterableOnce[U]): FastSetView[U]
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
-  def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
+  def force: Collections.default.immutable.Set[T]
+  def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.Set[T]
   def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
   def toStandardList: List[T]
   def size: Int
@@ -180,9 +181,10 @@ object FastSetView {
     def map[U](f: T => U): FastSetView[U] = new MapFastSetView(thisFastSetView, f)
     def flatMap[U](f: T => GenIterableOnce[U]): FastSetView[U] = new FlatMapFastSetView(thisFastSetView, f)
     def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = forceInto(toPath)
-    def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = {
-      if (args.isEmpty) toPath.immutable.FastSet.empty[U]
-      else toPath.immutable.FastSet[U](args.head, args.tail: _*)
+    def force: Collections.default.immutable.FastSet[T] = forceInto(Collections.default)
+    def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[T] = {
+      if (args.isEmpty) toPath.immutable.FastSet.empty[T]
+      else toPath.immutable.FastSet[T](args.head, args.tail: _*)
     }
     def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U] = ???
     def toStandardList: List[T] = args
@@ -233,10 +235,11 @@ object FastSetView {
     def map[V](g: U => V): FastSetView[V] = new MapFastSetView[U, V](thisFastSetView, g)
     def flatMap[V](f: U => GenIterableOnce[V]): FastSetView[V] = ???
     def toSet[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = forceInto(toPath)
-    def forceInto[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
+    def force: Collections.default.immutable.FastSet[U] = forceInto(Collections.default)
+    def forceInto[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[U] = {
       val xs = toStandardList
-      if (xs.isEmpty) toPath.immutable.FastSet.empty[V]
-      else toPath.immutable.FastSet[V](xs.head, xs.tail: _*)
+      if (xs.isEmpty) toPath.immutable.FastSet.empty[U]
+      else toPath.immutable.FastSet[U](xs.head, xs.tail: _*)
     }
     def toSortedSet[V >: U](toPath: SortedCollections[V]): toPath.immutable.SortedSet[V] = ???
     def toStandardList: List[U] // This is the lone abstract method

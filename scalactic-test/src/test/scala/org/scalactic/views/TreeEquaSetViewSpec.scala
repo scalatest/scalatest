@@ -20,6 +20,7 @@ import org.scalactic.SortedCollections
 import org.scalactic.StringNormalizations
 import org.scalactic.HashingEquality
 import org.scalactic.OrderingEquality
+import org.scalactic.Collections
 
 class TreeSetViewSpec extends UnitSpec {
 
@@ -180,6 +181,15 @@ class TreeSetViewSpec extends UnitSpec {
     }
     val strictSet = flatMapped.forceInto(number)
     strictSet should equal (number.immutable.TreeSet(1, 2, 3))
+  }
+
+  it should "offer a force method that returns a SortedSet in default Collections" in {
+    val setView = trimmed.immutable.TreeSet("1", "2", "01", "3").view
+    val flatMapped = setView.flatMap { (digit: String) =>
+      FastSetView(digit.toInt)
+    }
+    val strictSet = flatMapped.force
+    strictSet should equal (Collections.default.immutable.FastSet(1, 2, 3))
   }
 }
 

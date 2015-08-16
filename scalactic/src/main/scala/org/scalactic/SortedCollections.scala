@@ -977,5 +977,6 @@ class SortedCollections[E](override val equality: OrderingEquality[E]) extends C
 
 object SortedCollections {
   def apply[T](implicit equality: OrderingEquality[T]): SortedCollections[T] = new SortedCollections(equality)
+  def default[A](implicit ordering: Ordering[A]): SortedCollections[A] = SortedCollections[A](OrderingEquality.default[A])
 }
 
