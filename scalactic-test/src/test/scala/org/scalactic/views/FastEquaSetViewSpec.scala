@@ -163,12 +163,12 @@ class FastSetViewSpec extends UnitSpec {
     scanned.toStandardList should contain theSameElementsAs FastSetView(0, 5, 9, 12, 14, 15).toStandardList
   }
 
-  it should "offer a force method that returns a FastSet" in {
+  it should "offer a forceInto method that returns a FastSet" in {
     val setView = trimmed.immutable.FastSet("1", "2", "01", "3").view
     val flatMapped = setView.flatMap { (digit: String) =>
       FastSetView(digit.toInt)
     }
-    val strictSet = flatMapped.force(number)
+    val strictSet = flatMapped.forceInto(number)
     strictSet should equal (number.immutable.FastSet(1, 2, 3))
   }
 }

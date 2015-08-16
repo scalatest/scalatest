@@ -26,9 +26,9 @@ trait TreeSetView[+T] extends SortedSetView[T] {
 
   def map[U](f: T => U): TreeSetView[U]
   def flatMap[U](f: T => GenIterableOnce[U]): TreeSetView[U]
-  def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
+  def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
-  def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeSet[U]
+  def forceInto[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeSet[U]
   def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
   def toStandardList: List[T]
 
@@ -57,13 +57,13 @@ object TreeSetView {
     def collect[U](pf: PartialFunction[T, U]): TreeSetView[U] = new CollectTreeSetView(thisTreeSetView, pf)
     def map[U](f: T => U): TreeSetView[U] = new MapTreeSetView(thisTreeSetView, f)
     def flatMap[U](f: T => GenIterableOnce[U]): TreeSetView[U] = new FlatMapTreeSetView(thisTreeSetView, f)
-    def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = force(toPath)
-    def force[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = {
+    def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = forceInto(toPath)
+    def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = {
       if (args.isEmpty) toPath.immutable.FastSet.empty[U]
       else toPath.immutable.FastSet(args.head, args.tail: _*)
     }
-    def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U] = force(toPath)
-    def force[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeSet[U] = {
+    def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U] = forceInto(toPath)
+    def forceInto[U >: T](toPath: SortedCollections[U]): toPath.immutable.TreeSet[U] = {
       if (args.isEmpty) toPath.immutable.TreeSet.empty[U]
       else toPath.immutable.TreeSet(args.head, args.tail: _*)
     }
@@ -108,18 +108,18 @@ object TreeSetView {
     def collect[V](pf: PartialFunction[U, V]): TreeSetView[V] = new CollectTreeSetView(thisTreeSetView, pf)
     def map[V](g: U => V): TreeSetView[V] = new MapTreeSetView[U, V](thisTreeSetView, g)
     def flatMap[V](f: U => GenIterableOnce[V]): TreeSetView[V] = new FlatMapTreeSetView(thisTreeSetView, f)
-    def force[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
+    def forceInto[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
       val xs = toStandardList
       if (xs.isEmpty) toPath.immutable.FastSet.empty[V]
       else toPath.immutable.FastSet[V](xs.head, xs.tail: _*)
     }
-    def toSet[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = force(toPath)
-    def force[V >: U](toPath: SortedCollections[V]): toPath.immutable.TreeSet[V] = {
+    def toSet[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = forceInto(toPath)
+    def forceInto[V >: U](toPath: SortedCollections[V]): toPath.immutable.TreeSet[V] = {
       val xs = toStandardList
       if (xs.isEmpty) toPath.immutable.TreeSet.empty[V]
       else toPath.immutable.TreeSet[V](xs.head, xs.tail: _*)
     }
-    def toSortedSet[V >: U](toPath: SortedCollections[V]): toPath.immutable.SortedSet[V] = force(toPath)
+    def toSortedSet[V >: U](toPath: SortedCollections[V]): toPath.immutable.SortedSet[V] = forceInto(toPath)
     def toStandardList: List[U]
 
     def scan[V >: U](z: V)(op: (V, V) ⇒ V): TreeSetView[V] = new ScanTreeSetView(thisTreeSetView, z, op)

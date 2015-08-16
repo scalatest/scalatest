@@ -25,7 +25,7 @@ trait FastSetView[+T] extends SetView[T] {
   def map[U](f: T => U): FastSetView[U]
   def flatMap[U](f: T => GenIterableOnce[U]): FastSetView[U]
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
-  def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
+  def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
   def toStandardList: List[T]
   def size: Int
@@ -179,8 +179,8 @@ object FastSetView {
     def collect[U](pf: PartialFunction[T, U]): FastSetView[U] = new CollectFastSetView(thisFastSetView, pf)
     def map[U](f: T => U): FastSetView[U] = new MapFastSetView(thisFastSetView, f)
     def flatMap[U](f: T => GenIterableOnce[U]): FastSetView[U] = new FlatMapFastSetView(thisFastSetView, f)
-    def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = force(toPath)
-    def force[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = {
+    def toSet[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = forceInto(toPath)
+    def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.FastSet[U] = {
       if (args.isEmpty) toPath.immutable.FastSet.empty[U]
       else toPath.immutable.FastSet[U](args.head, args.tail: _*)
     }
@@ -232,8 +232,8 @@ object FastSetView {
     def collect[V](pf: PartialFunction[U, V]): FastSetView[V] = new CollectFastSetView(thisFastSetView, pf)
     def map[V](g: U => V): FastSetView[V] = new MapFastSetView[U, V](thisFastSetView, g)
     def flatMap[V](f: U => GenIterableOnce[V]): FastSetView[V] = ???
-    def toSet[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = force(toPath)
-    def force[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
+    def toSet[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = forceInto(toPath)
+    def forceInto[V >: U](toPath: Collections[V]): toPath.immutable.FastSet[V] = {
       val xs = toStandardList
       if (xs.isEmpty) toPath.immutable.FastSet.empty[V]
       else toPath.immutable.FastSet[V](xs.head, xs.tail: _*)

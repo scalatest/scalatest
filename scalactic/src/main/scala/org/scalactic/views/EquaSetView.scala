@@ -26,7 +26,7 @@ trait SetView[+T] extends GenIterableOnce[T] {
   def flatMap[U](f: T => GenIterableOnce[U]): SetView[U]
   def toSet[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toSortedSet[U >: T](toPath: SortedCollections[U]): toPath.immutable.SortedSet[U]
-  def force[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
+  def forceInto[U >: T](toPath: Collections[U]): toPath.immutable.Set[U]
   def toStandardList: List[T]
   def size: Int
   /**

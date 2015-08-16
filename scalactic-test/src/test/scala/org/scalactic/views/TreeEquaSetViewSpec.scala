@@ -173,12 +173,12 @@ class TreeSetViewSpec extends UnitSpec {
     scanned.toStandardList shouldBe TreeSetView(15, 14, 12, 9, 5, 0).toStandardList
   }
 
-  it should "offer a force method that returns a SortedSet" in {
+  it should "offer a forceInto method that returns a SortedSet" in {
     val setView = trimmed.immutable.TreeSet("1", "2", "01", "3").view
     val flatMapped = setView.flatMap { (digit: String) =>
       FastSetView(digit.toInt)
     }
-    val strictSet = flatMapped.force(number)
+    val strictSet = flatMapped.forceInto(number)
     strictSet should equal (number.immutable.TreeSet(1, 2, 3))
   }
 }
