@@ -2,6 +2,8 @@ ScalaTest
 =========
 
 [![Build Status](https://travis-ci.org/scalatest/scalatest.png?branch=master)](https://travis-ci.org/scalatest/scalatest)
+[![Join the chat at https://gitter.im/scalatest/scalatest](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/scalatest/scalatest)
+
 
 ScalaTest is a free, open-source testing toolkit for Scala and
 Java programmers.
