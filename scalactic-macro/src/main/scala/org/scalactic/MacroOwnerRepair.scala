@@ -31,7 +31,8 @@ private[org] class MacroOwnerRepair[C <: reflect.macros.Context with Singleton](
 
     // Proactively typecheck the tree. This will assign symbols to
     // DefTrees introduced by the macro.
-    val typed = c.typeCheck(expr.tree).asInstanceOf[symtab.Tree]
+    //val typed = c.typeCheck(expr.tree).asInstanceOf[symtab.Tree]
+    val typed = c.typeCheck(c.universe.atPos(c.macroApplication.pos)(expr.tree)).asInstanceOf[symtab.Tree]
 
     // The current owner at the call site. Symbols owned by this may need
     // to be transplanted.
