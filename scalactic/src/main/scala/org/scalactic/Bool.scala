@@ -260,6 +260,15 @@ object Bool {
   def lengthSizeMacroBool(left: Any, operator: String, actual: Long, expected: Long): Bool =
     new LengthSizeMacroBool(left, operator, actual, expected)
 
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Int, expected: Long): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected)
+
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Long, expected: Int): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected)
+
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Int, expected: Int): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected)
+
   /**
    * Create exists macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
    * represented by <code>exists</code> method call.
