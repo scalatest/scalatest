@@ -10,7 +10,7 @@ object ScalatestBuild extends Build {
 
   val buildScalaVersion = "2.11.2"
 
-  val releaseVersion = "2.2.5"
+  val releaseVersion = "2.2.6-SNAP1"
   val githubTag = "release-2.2.5-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
@@ -123,10 +123,10 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
-          "org.scalacheck" %% "scalacheck" % "1.12.1" % "optional"
+          "org.scalacheck" %% "scalacheck" % "1.12.4" % "optional"
         )
       case _ =>
-        Seq("org.scalacheck" %% "scalacheck" % "1.12.1" % "optional")
+        Seq("org.scalacheck" %% "scalacheck" % "1.12.4" % "optional")
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -185,7 +185,8 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
-     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest,
+                                               "-l", "org.scalatest.tags.Slow",
                                                "-m", "org.scalatest",
                                                "-m", "org.scalactic",
                                                "-m", "org.scalatest.fixture",

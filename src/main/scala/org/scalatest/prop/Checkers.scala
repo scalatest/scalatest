@@ -15,6 +15,7 @@
  */
 package org.scalatest.prop
 
+import org.scalacheck.util.Pretty
 import org.scalatest._
 import org.scalatest.Suite
 import org.scalacheck.Arbitrary
@@ -398,10 +399,12 @@ object Checkers extends Checkers {
           )
 
         case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
-              
+
+          val prettyArgsStr = prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs))
+
           throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => FailureMessages("propertyException", UnquotedString(sde.getClass.getSimpleName)) + "\n" + 
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
+            sde => FailureMessages("propertyException", UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
               "  " + FailureMessages("propertyFailed", result.succeeded) + "\n" +
               (
                 sde match {
@@ -409,21 +412,23 @@ object Checkers extends Checkers {
                     "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
-              ) +
-              "  " + FailureMessages("occurredOnValues") + "\n" + 
-              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-              "  )" + 
+                ) +
+              "  " + FailureMessages("occurredOnValues") + "\n" +
+              prettyArgsStr + "\n" +
+              "  )" +
               getLabelDisplay(scalaCheckLabels),
             None,
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
             None,
             FailureMessages("propertyFailed", result.succeeded),
-            scalaCheckArgs,
+            scalaCheckArgs.map(_.arg),
             None,
             scalaCheckLabels.toList
           )
 
         case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
+
+          val prettyArgsStr = prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs))
 
           throw new GeneratorDrivenPropertyCheckFailedException(
             sde => FailureMessages("propertyException", UnquotedString(e.getClass.getSimpleName)) + "\n" +
@@ -434,16 +439,16 @@ object Checkers extends Checkers {
                     "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
-              ) +
+                ) +
               "  " + FailureMessages("occurredOnValues") + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-              "  )" + 
+              prettyArgsStr + "\n" +
+              "  )" +
               getLabelDisplay(scalaCheckLabels),
             Some(e),
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
             None,
             FailureMessages("propertyException", UnquotedString(e.getClass.getName)),
-            scalaCheckArgs,
+            scalaCheckArgs.map(_.arg),
             None,
             scalaCheckLabels.toList
           )
