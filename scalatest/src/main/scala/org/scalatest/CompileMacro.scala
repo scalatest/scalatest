@@ -26,9 +26,9 @@ import org.scalatest.words.{TypeCheckWord, CompileWord}
 private[scalatest] object CompileMacro {
 
   // SKIP-SCALATESTJS-START
-  private[scalatest] val stackDepth = 0
+  val stackDepth = 0
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val stackDepth = 9
+  //SCALATESTJS-ONLY val stackDepth = 9
 
   // extract the code string from the AST
   def getCodeStringFromCodeExpression(c: Context)(methodName: String, code: c.Expr[String]): String = {
