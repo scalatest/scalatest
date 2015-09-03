@@ -878,6 +878,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
   def rawFailureMessage: String = {
     operator match {
       case "isEmpty" => Resources.rawWasNotEmpty
+      case "nonEmpty" => Resources.rawWasEmpty
       case _ => Resources.rawExpressionWasFalse
     }
   }
@@ -891,6 +892,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
   def rawNegatedFailureMessage: String =
     operator match {
       case "isEmpty" => Resources.rawWasEmpty
+      case "nonEmpty" => Resources.rawWasNotEmpty
       case _ => Resources.rawExpressionWasTrue
     }
 
@@ -917,7 +919,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
    */
   def failureMessageArgs: IndexedSeq[Any] =
     operator match {
-      case "isEmpty" =>
+      case "isEmpty" | "nonEmpty" =>
         Vector(left)
       case _ => Vector.empty
     }
@@ -931,7 +933,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
    */
   def negatedFailureMessageArgs: IndexedSeq[Any] =
     operator match {
-      case "isEmpty" =>
+      case "isEmpty" | "nonEmpty" =>
         Vector(left)
       case _ => Vector.empty
     }

@@ -893,6 +893,50 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == wasEmpty(l2))
     }
 
+    it("should do nothing when is used to check s3.nonEmpty") {
+      require(s3.nonEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s4.nonEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(s4.nonEmpty)
+      }
+      assert(e.getMessage == wasEmpty(s4))
+    }
+
+    it("should do nothing when is used to check !s4.nonEmpty") {
+      require(!s4.nonEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.nonEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s3.nonEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(s3))
+    }
+
+    it("should do nothing when is used to check l1.nonEmpty") {
+      require(l1.nonEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l2.nonEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(l2.nonEmpty)
+      }
+      assert(e.getMessage == wasEmpty(l2))
+    }
+
+    it("should do nothing when is used to check !l2.nonEmpty") {
+      require(!l2.nonEmpty)
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.nonEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.nonEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(l1))
+    }
+
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
       require(s1.isInstanceOf[String])
     }
@@ -1967,6 +2011,50 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == wasEmpty(l2) + ", dude")
     }
 
+    it("should do nothing when is used to check s3.nonEmpty") {
+      require(s3.nonEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check s4.nonEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(s4.nonEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(s4) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s4.nonEmpty") {
+      require(!s4.nonEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.nonEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!s3.nonEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(s3) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.nonEmpty") {
+      require(l1.nonEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check l2.nonEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(l2.nonEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(l2) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l2.nonEmpty") {
+      require(!l2.nonEmpty, ", dude")
+    }
+
+    it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.nonEmpty") {
+      val e = intercept[IllegalArgumentException] {
+        require(!l1.nonEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(l1) + ", dude")
+    }
+
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
       require(s1.isInstanceOf[String], ", dude")
     }
@@ -2999,6 +3087,50 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!l2.isEmpty)
       }
       assert(e.getMessage == wasEmpty(l2))
+    }
+
+    it("should do nothing when is used to check s3.nonEmpty") {
+      requireState(s3.nonEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s4.nonEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(s4.nonEmpty)
+      }
+      assert(e.getMessage == wasEmpty(s4))
+    }
+
+    it("should do nothing when is used to check !s4.nonEmpty") {
+      requireState(!s4.nonEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.nonEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s3.nonEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(s3))
+    }
+
+    it("should do nothing when is used to check l1.nonEmpty") {
+      requireState(l1.nonEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l2.nonEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(l2.nonEmpty)
+      }
+      assert(e.getMessage == wasEmpty(l2))
+    }
+
+    it("should do nothing when is used to check !l2.nonEmpty") {
+      requireState(!l2.nonEmpty)
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.nonEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.nonEmpty)
+      }
+      assert(e.getMessage == wasNotEmpty(l1))
     }
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
@@ -4073,6 +4205,50 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!l2.isEmpty, ", dude")
       }
       assert(e.getMessage == wasEmpty(l2) + ", dude")
+    }
+
+    it("should do nothing when is used to check s3.nonEmpty") {
+      requireState(s3.nonEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check s4.nonEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(s4.nonEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(s4) + ", dude")
+    }
+
+    it("should do nothing when is used to check !s4.nonEmpty") {
+      requireState(!s4.nonEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.nonEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!s3.nonEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(s3) + ", dude")
+    }
+
+    it("should do nothing when is used to check l1.nonEmpty") {
+      requireState(l1.nonEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check l2.nonEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(l2.nonEmpty, ", dude")
+      }
+      assert(e.getMessage == wasEmpty(l2) + ", dude")
+    }
+
+    it("should do nothing when is used to check !l2.nonEmpty") {
+      requireState(!l2.nonEmpty, ", dude")
+    }
+
+    it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.nonEmpty") {
+      val e = intercept[IllegalStateException] {
+        requireState(!l1.nonEmpty, ", dude")
+      }
+      assert(e.getMessage == wasNotEmpty(l1) + ", dude")
     }
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
