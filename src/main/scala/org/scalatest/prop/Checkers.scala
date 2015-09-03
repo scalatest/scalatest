@@ -15,7 +15,6 @@
  */
 package org.scalatest.prop
 
-import org.scalacheck.util.Pretty
 import org.scalatest._
 import org.scalatest.Suite
 import org.scalacheck.Arbitrary
@@ -400,8 +399,6 @@ object Checkers extends Checkers {
 
         case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
 
-          val prettyArgsStr = prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs))
-
           throw new GeneratorDrivenPropertyCheckFailedException(
             sde => FailureMessages("propertyException", UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
@@ -414,21 +411,19 @@ object Checkers extends Checkers {
                 }
                 ) +
               "  " + FailureMessages("occurredOnValues") + "\n" +
-              prettyArgsStr + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
               "  )" +
               getLabelDisplay(scalaCheckLabels),
             None,
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
             None,
             FailureMessages("propertyFailed", result.succeeded),
-            scalaCheckArgs.map(_.arg),
+            scalaCheckArgs,
             None,
             scalaCheckLabels.toList
           )
 
         case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
-
-          val prettyArgsStr = prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs))
 
           throw new GeneratorDrivenPropertyCheckFailedException(
             sde => FailureMessages("propertyException", UnquotedString(e.getClass.getSimpleName)) + "\n" +
@@ -441,14 +436,14 @@ object Checkers extends Checkers {
                 }
                 ) +
               "  " + FailureMessages("occurredOnValues") + "\n" +
-              prettyArgsStr + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
               "  )" +
               getLabelDisplay(scalaCheckLabels),
             Some(e),
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
             None,
             FailureMessages("propertyException", UnquotedString(e.getClass.getName)),
-            scalaCheckArgs.map(_.arg),
+            scalaCheckArgs,
             None,
             scalaCheckLabels.toList
           )

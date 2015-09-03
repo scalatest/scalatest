@@ -929,14 +929,28 @@ class Framework extends SbtFramework {
       import java.net.{ServerSocket, InetAddress}
       import java.io.{ObjectInputStream, ObjectOutputStream}
       import org.scalatest.events._
+
+      class SkeletonObjectInputStream(in: java.io.InputStream, loader: ClassLoader) extends ObjectInputStream(in) {
+
+        override def resolveClass(desc: java.io.ObjectStreamClass): Class[_] = {
+          try {
+            val name = desc.getName
+            Class.forName(name, false, loader);
+          }
+          catch {
+            case e: ClassNotFoundException => super.resolveClass(desc)
+          }
+        }
+
+      }
       
       class Skeleton extends Runnable {
         
         val server = new ServerSocket(0)
-        
+
         def run() {
           val socket = server.accept()
-          val is = new ObjectInputStream(socket.getInputStream)
+          val is = new SkeletonObjectInputStream(socket.getInputStream, getClass.getClassLoader)
 
           try {
 			      (new React(is)).react()
@@ -949,7 +963,7 @@ class Framework extends SbtFramework {
         
         class React(is: ObjectInputStream) {
           @annotation.tailrec 
-          final def react() { 
+          final def react() {
             val event = is.readObject
             event match {
               case e: TestStarting =>
