@@ -398,10 +398,10 @@ object Checkers extends Checkers {
           )
 
         case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
-              
+
           throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => FailureMessages("propertyException", UnquotedString(sde.getClass.getSimpleName)) + "\n" + 
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
+            sde => FailureMessages("propertyException", UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
               "  " + FailureMessages("propertyFailed", result.succeeded) + "\n" +
               (
                 sde match {
@@ -409,10 +409,10 @@ object Checkers extends Checkers {
                     "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
-              ) +
-              "  " + FailureMessages("occurredOnValues") + "\n" + 
+                ) +
+              "  " + FailureMessages("occurredOnValues") + "\n" +
               prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-              "  )" + 
+              "  )" +
               getLabelDisplay(scalaCheckLabels),
             None,
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
@@ -434,10 +434,10 @@ object Checkers extends Checkers {
                     "  " + FailureMessages("thrownExceptionsLocation", UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
-              ) +
+                ) +
               "  " + FailureMessages("occurredOnValues") + "\n" +
               prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-              "  )" + 
+              "  )" +
               getLabelDisplay(scalaCheckLabels),
             Some(e),
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
