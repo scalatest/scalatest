@@ -25,7 +25,7 @@ import org.scalatest.events._
 import Suite.SELECTED_TAG
 import Suite.mergeMap
 import java.io.{StringWriter, PrintWriter}
-import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
 import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
 import scala.collection.JavaConverters._
 import StringReporter.fragmentsForEvent
@@ -117,27 +117,9 @@ import org.scalactic.Requirements._
  * <h3>API to return nested <code>Suite</code>s as sbt <code>Task</code>s</h3>
  *
  * <p>
- * In sbt versions before 0.13, ScalaTest's nested suites were always executed sequentially regardless of the <code>parallelExecution</code> value of the sbt build.
  * In new Framework API, a new concept of <a href="https://github.com/sbt/test-interface/blob/master/src/main/java/sbt/testing/Task.java"><code>Task</code></a>
- * was introduced. A <code>Task</code> has an <code>execute</code> method that can return more <code>Task</code>s for execution.  When <code>parallelExecution</code>
- * is set to <code>true</code> (sbt's default), sbt will execute returned tasks in parallel.
- * </p>
- *
- * <p>
- * Each <code>Suite</code> in ScalaTest maps to a <code>Task</code> in sbt. Any nested suites of a <code>Suite</code> executed by sbt are returned to sbt
- * as <code>Task</code>s so that sbt can execute them using its own thread pool, either in parallel (sbt's default), or on a single thread if sequential execution
- * was requested by the sbt build. The way <code>Framework</code> achieves this behavior is by inserting a <code>Distributor</code> that records any nested suites
- * added to it, passing those <code>Suites</code> back to sbt as <code>Task</code>s.
- * </p>
- *
- * <p>
- * Note that the way nested suites are executed sequentially is different when using sbt than when running directly with ScalaTest. The reason
- * is that when ScalaTest executes sequentially, it passes in <code>None</code> for the <code>Option[Distributor]</code> parameter, where as <code>Framework</code> passes
- * in <code>Some[Distributor]</code> to collect the nested suites so they can be returned to sbt as <code>Task</code>s. As a result, when ScalaTest executes a <code>Suite</code> sequentially,
- * that <code>Suite</code>'s nested suites are executed <em>before</em> its tests. When sbt asks ScalaTest through this <code>Framework</code> class to execute a <code>Suite</code> sequentially,
- * the <code>Suite</code>'s nested suites will be executed <em>after</em> its tests.
- * To make nested suites run sequentially before the tests when using sbt, mix in trait <a href="../SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a>,
- * which overrides <code>runNestedSuites</code> to replace the <code>Some[Distributor]</code> passed in by <code>Framework</code> with <code>None</code>.
+ * was introduced. A <code>Task</code> has an <code>execute</code> method that can return more <code>Task</code>s for execution.  ScalaTest does not utilize this
+ * feature, it always return empty array for sub-tasks.
  * </p>
  *
  * <h3>API to support test execution in <code>fork</code> mode</h3>
@@ -238,74 +220,6 @@ class Framework extends SbtFramework {
         def annotationName = "org.scalatest.WrapWith"
         def isModule = false
       })
-
-  private class RecordingDistributor(
-    taskDefinition: TaskDef, 
-    rerunSuiteId: String,
-    originalReporter: Reporter,
-    args: Args,
-    loader: ClassLoader,
-    tagsToInclude: Set[String],
-    tagsToExclude: Set[String],
-    selectors: Array[Selector],
-    explicitlySpecified: Boolean,
-    summaryCounter: SummaryCounter,
-    statusList: LinkedBlockingQueue[Status],
-    useSbtLogInfoReporter: Boolean,
-    presentAllDurations: Boolean,
-    presentInColor: Boolean,
-    presentShortStackTraces: Boolean, 
-    presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean,
-    presentReminder: Boolean,
-    presentReminderWithShortStackTraces: Boolean,
-    presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
-  ) extends Distributor {
-
-    private val taskQueue = new LinkedBlockingQueue[Task]()
-
-    def apply(suite: Suite, tracker: Tracker) {
-      apply(suite, args.copy(tracker = tracker))
-    }
-
-    def apply(suite: Suite, args: Args): Status = {
-      requireNonNull(suite, args)
-      val status = new ScalaTestStatefulStatus
-      val nestedTask =
-        new ScalaTestNestedTask(
-          taskDefinition,
-          rerunSuiteId,
-          suite,
-          loader,
-          originalReporter,
-          args.tracker,
-          tagsToInclude,
-          tagsToExclude,
-          selectors,
-          explicitlySpecified, 
-          args.configMap,
-          summaryCounter,
-          status,
-          statusList,
-          useSbtLogInfoReporter, 
-          presentAllDurations,
-          presentInColor,
-          presentShortStackTraces,
-          presentFullStackTraces,
-          presentUnformatted,
-          presentReminder,
-          presentReminderWithShortStackTraces,
-          presentReminderWithFullStackTraces,
-          presentReminderWithoutCanceledTests
-        )
-      taskQueue.put(nestedTask)
-      status
-    }
-    
-    def nestedTasks: Array[Task] = 
-      taskQueue.asScala.toArray
-  }
   
   private def createTaskDispatchReporter(
     reporter: Reporter,
@@ -376,7 +290,8 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    execService: ExecutorService
   ): Array[Task] = {
     val suiteStartTime = System.currentTimeMillis
     val suiteClass = suite.getClass
@@ -429,34 +344,16 @@ class Framework extends SbtFramework {
       report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
     val args = Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty)
+
     val distributor =
-      new RecordingDistributor(
-        taskDefinition, 
-        rerunSuiteId,
-        reporter,
-        args,
-        loader,
-        tagsToInclude,
-        tagsToExclude,
-        selectors,
-        explicitlySpecified,
-        summaryCounter,
-        statusList,
-        useSbtLogInfoReporter,
-        presentAllDurations,
-        presentInColor,
-        presentShortStackTraces, 
-        presentFullStackTraces,
-        presentUnformatted,
-        presentReminder,
-        presentReminderWithShortStackTraces,
-        presentReminderWithFullStackTraces,
-        presentReminderWithoutCanceledTests
-      )
-    
+      if (suite.isInstanceOf[ParallelTestExecution])
+        Some(new ConcurrentDistributor(args, execService))
+      else
+        None
+
     try {
-      
-      val status = suite.run(None, args.copy(distributor = Some(distributor)))
+
+      val status = suite.run(None, args.copy(distributor = distributor))
       statusList.put(status)
       val formatter = formatterForSuiteCompleted(suite)
       val duration = System.currentTimeMillis - suiteStartTime
@@ -490,91 +387,17 @@ class Framework extends SbtFramework {
       }
     }
     finally {
+      distributor match {
+        case Some(dist) => dist.waitUntilDone()
+        case None =>
+      }
       statefulStatus match {
         case Some(s) => s.setCompleted()
         case None => // Do nothing
       }
     }
     
-    distributor.nestedTasks
-  }
-  
-  private class ScalaTestNestedTask(
-    taskDefinition: TaskDef, 
-    rerunSuiteId: String,
-    suite: Suite,
-    loader: ClassLoader,
-    reporter: Reporter,
-    tracker: Tracker,
-    tagsToInclude: Set[String],
-    tagsToExclude: Set[String], 
-    selectors: Array[Selector],
-    explicitlySpecified: Boolean, 
-    configMap: ConfigMap,
-    summaryCounter: SummaryCounter,
-    statefulStatus: ScalaTestStatefulStatus,
-    statusList: LinkedBlockingQueue[Status],
-    useSbtLogInfoReporter: Boolean, 
-    presentAllDurations: Boolean,
-    presentInColor: Boolean,
-    presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean,
-    presentReminder: Boolean,
-    presentReminderWithShortStackTraces: Boolean,
-    presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
-  ) extends Task {
-    
-    def tags = 
-      for { 
-        a <- suite.getClass.getAnnotations
-        annotationClass = a.annotationType
-        if (annotationClass.isAnnotationPresent(classOf[TagAnnotation]) || annotationClass.isAssignableFrom(classOf[TagAnnotation])) 
-      } yield {
-        val value = 
-          if (a.isInstanceOf[TagAnnotation])
-            a.asInstanceOf[TagAnnotation].value
-          else
-            annotationClass.getAnnotation(classOf[TagAnnotation]).value
-        if (value == "")
-          annotationClass.getName
-        else
-          value
-      }
-    
-    def execute(eventHandler: EventHandler, loggers: Array[Logger]) = {
-      runSuite(
-        taskDefinition,
-        rerunSuiteId,
-        suite,
-        loader,
-        reporter,
-        tracker,
-        eventHandler,
-        tagsToInclude,
-        tagsToExclude,
-        selectors,
-        explicitlySpecified, 
-        configMap,
-        summaryCounter,
-        Some(statefulStatus),
-        statusList,
-        loggers,
-        useSbtLogInfoReporter,
-        presentAllDurations,
-        presentInColor,
-        presentShortStackTraces,
-        presentFullStackTraces,
-        presentUnformatted,
-        presentReminder,
-        presentReminderWithShortStackTraces,
-        presentReminderWithFullStackTraces,
-        presentReminderWithoutCanceledTests
-      )
-    }
-    
-    def taskDef = taskDefinition
+    Array.empty
   }
       
   private class ScalaTestTask(
@@ -599,7 +422,8 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    configSet: Set[ReporterConfigParam]
+    configSet: Set[ReporterConfigParam],
+    execService: ExecutorService
   ) extends Task {
     
     def loadSuiteClass = {
@@ -700,7 +524,8 @@ class Framework extends SbtFramework {
           presentReminder,
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
-          presentReminderWithoutCanceledTests
+          presentReminderWithoutCanceledTests,
+          execService
         )
       }
        else 
@@ -841,6 +666,22 @@ class Framework extends SbtFramework {
     val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod) 
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
+
+    private val atomicThreadCounter = new AtomicInteger
+
+    val threadFactory =
+      new ThreadFactory {
+        val defaultThreadFactory = Executors.defaultThreadFactory
+        def newThread(runnable: Runnable): Thread = {
+          val thread = defaultThreadFactory.newThread(runnable)
+          thread.setName("ScalaTest-" + atomicThreadCounter.incrementAndGet())
+          thread
+        }
+      }
+
+    val poolSize = Runtime.getRuntime.availableProcessors * 2
+
+    val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize, threadFactory)
     
     private def createTask(td: TaskDef): ScalaTestTask = 
       new ScalaTestTask(
@@ -865,7 +706,8 @@ class Framework extends SbtFramework {
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests,
-          configSet
+          configSet,
+          execSvc
         )
     
     private def filterWildcard(paths: List[String], taskDefs: Array[TaskDef]): Array[TaskDef] = 
