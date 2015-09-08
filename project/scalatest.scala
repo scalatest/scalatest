@@ -9,7 +9,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object ScalatestBuild extends Build {
- 
+
   // To run gentests
   // rm -rf gentests
   // sbt genGenTests/test  (etc., look at specific failures on CI output)
@@ -306,6 +306,14 @@ object ScalatestBuild extends Build {
         "org.scalactic.anyvals",
         "org.scalactic.exceptions"
       ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
         "Bundle-Description" -> "Scalactic is an open-source library for Scala projects.",
@@ -336,6 +344,14 @@ object ScalatestBuild extends Build {
         "org.scalactic",
         "org.scalactic.anyvals",
         "org.scalactic.exceptions"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
@@ -439,6 +455,14 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words"
       ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
@@ -456,7 +480,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
-      testOptions in Test := scalatestTestOptions, 
+      testOptions in Test := scalatestTestOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {}
@@ -532,6 +556,14 @@ object ScalatestBuild extends Build {
         "org.scalatest.tools",
         "org.scalatest.verb",
         "org.scalatest.words"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
@@ -617,6 +649,14 @@ object ScalatestBuild extends Build {
         "org.scalactic",
         "org.scalactic.anyvals"
       ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
@@ -673,6 +713,14 @@ object ScalatestBuild extends Build {
         "org.scalatest.words",
         "org.scalactic",
         "org.scalactic.anyvals"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "ScalaTest",
@@ -919,7 +967,7 @@ object ScalatestBuild extends Build {
   val genRegularTask5 = genRegular5 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenRegularTests5.genTest(new File(testTargetDir, "scala/genregular5"), theVersion, theScalaVersion)
   }
-  
+
   val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")
   val genMustMatchersTask = genMustMatchers <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
     projName match {
@@ -938,28 +986,28 @@ object ScalatestBuild extends Build {
   val genGen = TaskKey[Unit]("gengen", "Generate Property Checks")
   val genGenTask = genGen <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
     projName match {
-      case "scalatest" => 
+      case "scalatest" =>
         GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theVersion, theScalaVersion)
       case "gentests" =>
         GenGen.genTest(new File(testTargetDir, "scala/gengen"), theVersion, theScalaVersion)
     }
   }
-  
+
   val genTables = TaskKey[Unit]("gentables", "Generate Tables")
   val genTablesTask = genTables <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
     projName match {
-      case "scalatest" => 
+      case "scalatest" =>
         GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theVersion, theScalaVersion)
-      case "gentests" => 
+      case "gentests" =>
         GenTable.genTest(new File(testTargetDir, "scala/gentables"), theVersion, theScalaVersion)
     }
   }
-  
+
   val genTheyWord = TaskKey[Unit]("genthey", "Generate They Word tests")
   val genTheyWordTask = genTheyWord <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenTheyWord.genTest(new File(testTargetDir, "scala/genthey"), theVersion, theScalaVersion)
   }
-  
+
   val genInspectors = TaskKey[Unit]("geninspectors", "Generate Inspectors tests")
   val genInspectorsTask = genInspectors <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenInspectors.genTest(new File(testTargetDir, "scala/geninspectors"), theVersion, theScalaVersion)
@@ -974,7 +1022,7 @@ object ScalatestBuild extends Build {
   val genInspectorsShorthandsTask2 = genInspectorsShorthands2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
     GenInspectorsShorthands2.genTest(new File(testTargetDir, "scala/geninspectorsshorthands2"), theVersion, theScalaVersion)
   }
-  
+
   val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
   val genFactoriesTask = genFactories <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)
@@ -989,7 +1037,7 @@ object ScalatestBuild extends Build {
   val genVersionsTask = genVersions <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenVersions.genScalaTestVersions(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
-  
+
   val genContain1 = TaskKey[Unit]("gencontain1", "Generate contain matcher tests 1")
   val genContainTask1 = genContain1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenContain1.genTest(new File(testTargetDir, "scala/gencontain1"), theVersion, theScalaVersion)
@@ -999,17 +1047,17 @@ object ScalatestBuild extends Build {
   val genContainTask2 = genContain2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenContain2.genTest(new File(testTargetDir, "scala/gencontain2"), theVersion, theScalaVersion)
   }
-  
+
   val genSorted = TaskKey[Unit]("gensorted", "Generate sorted matcher tests")
   val genSortedTask = genSorted <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenSorted.genTest(new File(testTargetDir, "scala/gensorted"), theVersion, theScalaVersion)
   }
-  
+
   val genLoneElement = TaskKey[Unit]("genloneelement", "Generate lone element matcher tests")
   val genLoneElementTask = genLoneElement <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenLoneElement.genTest(new File(testTargetDir, "scala/genloneelement"), theVersion, theScalaVersion)
   }
-  
+
   val genEmpty = TaskKey[Unit]("genempty", "Generate empty matcher tests")
   val genEmptyTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenEmpty.genTest(new File(testTargetDir, "scala/genempty"), theVersion, theScalaVersion)
@@ -1026,8 +1074,8 @@ object ScalatestBuild extends Build {
   //
   // Prepares source files for running scaladoc.
   //
-  def genDocSources(srcFiles: Seq[File], 
-                    srcDirs: Seq[File], 
+  def genDocSources(srcFiles: Seq[File],
+                    srcDirs: Seq[File],
                     docsrcDir: File): Seq[File] =
   {
     val scalaFiles =
@@ -1039,7 +1087,7 @@ object ScalatestBuild extends Build {
         val maybeSourceFile = srcDirs.flatMap(srcFile.relativeTo).headOption
         maybeSourceFile match {
           case Some(docsrcFile) => copyDocFile(srcFile, new File(docsrcDir.asFile, docsrcFile.getPath))
-          case None             => 
+          case None             =>
              throw new RuntimeException("unexpected source path ["+ srcPath +"] not relative to " + srcDirs.mkString("[", ", ", "]"))
         }
       }
@@ -1129,13 +1177,13 @@ object ScalatestBuild extends Build {
   val scalatestDocSourcesSetting =
      sources in (Compile, doc) :=
        genDocSources((sources in Compile).value,
-                     Seq((sourceManaged in Compile).value, 
+                     Seq((sourceManaged in Compile).value,
                          baseDirectory.value,
                          file(".").getCanonicalFile),
                      docsrcDir.value)
 
   val docScalacOptionsSetting =
-    scalacOptions in (Compile, doc) ++= 
+    scalacOptions in (Compile, doc) ++=
       Seq[String](
         "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-sourcepath", docsrcDir.value.getAbsolutePath,
