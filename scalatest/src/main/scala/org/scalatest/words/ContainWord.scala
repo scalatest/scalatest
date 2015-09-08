@@ -315,8 +315,8 @@ final class ContainWord {
           def apply(left: T): MatchResult = {
             MatchResult(
               containing.containsNoneOf(left, right.distinct),
-              Resources.rawContainedAtLeastOneOf,
-              Resources.rawDidNotContainAtLeastOneOf,
+              Resources.rawContainedAtLeastOneElementOf,
+              Resources.rawDidNotContainAtLeastOneElementOf,
               Vector(left, right)
             )
           }
