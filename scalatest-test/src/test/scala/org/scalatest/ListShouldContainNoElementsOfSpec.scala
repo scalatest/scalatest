@@ -47,7 +47,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages.containedAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")))
+        e1.message.get should be (FailureMessages.containedAtLeastOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")))
         // Contains duplicate elements in the right list
         fumList should contain noElementsOf Seq("fee", "fam", "foe", "fam")
       }
@@ -83,7 +83,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages.containedAtLeastOneOf(fumList, Seq("fee", "fie", "foe", "fum")))
+        e1.message.get should be (FailureMessages.containedAtLeastOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -116,7 +116,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.didNotContainAtLeastOneElementOf(fumList, Seq("happy", "birthday", "to", "you")))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -149,7 +149,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages.didNotContainAtLeastOneOf(toList, Seq("fee", "fie", "foe", "fum")))
+        e1.message.get should be (FailureMessages.didNotContainAtLeastOneElementOf(toList, Seq("fee", "fie", "foe", "fum")))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -182,7 +182,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages.didNotContainAtLeastOneOf(fumList, Seq("happy", "birthday", "to", "you")))
+        e1.message.get should be (FailureMessages.didNotContainAtLeastOneElementOf(fumList, Seq("happy", "birthday", "to", "you")))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -215,7 +215,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         }
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e1.message.get should be (FailureMessages.didNotContainAtLeastOneOf(toList, Seq("fee", "fie", "foe", "fum")))
+        e1.message.get should be (FailureMessages.didNotContainAtLeastOneElementOf(toList, Seq("fee", "fie", "foe", "fum")))
       }
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
@@ -263,7 +263,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + FailureMessages.containedAtLeastOneOf(lists(2), Seq(2, 3, 4)) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages.containedAtLeastOneElementOf(lists(2), Seq(2, 3, 4)) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -308,7 +308,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + FailureMessages.containedAtLeastOneOf(lists(2), Seq(2, 3, 4)) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 2, " + FailureMessages.containedAtLeastOneElementOf(lists(2), Seq(2, 3, 4)) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(lists)))
       }
 
@@ -349,7 +349,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), Seq("fee", "fie", "foe", "fum")) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneElementOf(toLists(0), Seq("fee", "fie", "foe", "fum")) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       it("should use the implicit Equality in scope") {
@@ -384,7 +384,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), Seq("fee", "fie", "foe", "fum")) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneElementOf(toLists(0), Seq("fee", "fie", "foe", "fum")) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       it("should use the implicit Equality in scope") {
@@ -419,7 +419,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), Seq("fee", "fie", "foe", "fum")) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneElementOf(toLists(0), Seq("fee", "fie", "foe", "fum")) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       it("should use the implicit Equality in scope") {
@@ -454,7 +454,7 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
         e1.failedCodeFileName.get should be ("ListShouldContainNoElementsOfSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + FailureMessages.didNotContainAtLeastOneOf(toLists(0), Seq("fee", "fie", "foe", "fum")) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "  at index 0, " + FailureMessages.didNotContainAtLeastOneElementOf(toLists(0), Seq("fee", "fie", "foe", "fum")) + " (ListShouldContainNoElementsOfSpec.scala:" + (thisLineNumber - 5) + ") \n" +
           "in " + decorateToStringValue(toLists)))
       }
       it("should use the implicit Equality in scope") {
