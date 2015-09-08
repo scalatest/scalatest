@@ -182,6 +182,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest",
       "-m", "org.scalactic",
       "-m", "org.scalactic.anyvals",
+      "-m", "org.scalactic.exceptions",
       "-m", "org.scalactic.algebra",
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
@@ -211,6 +212,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest",
       "-m", "org.scalactic",
       "-m", "org.scalactic.anyvals",
+      "-m", "org.scalactic.exceptions",
       "-m", "org.scalactic.algebra",
       "-m", "org.scalactic.enablers",
       "-m", "org.scalatest.fixture",
@@ -649,7 +651,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -714,7 +717,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
