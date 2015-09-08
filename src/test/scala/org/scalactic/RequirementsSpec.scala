@@ -113,13 +113,13 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
   def wasInstanceOf(left: Any, className: String): String =
     FailureMessages("wasInstanceOf", left, UnquotedString(className))
 
-  def hadLengthInsteadOfExpectedLength(left: Any, actual: Long, expected: Long): String =
+  def hadLengthInsteadOfExpectedLength(left: Any, actual: Any, expected: Any): String =
     FailureMessages("hadLengthInsteadOfExpectedLength", left, actual, expected)
 
   def hadLength(left: Any, actual: Long): String =
     FailureMessages("hadLength", left, actual)
 
-  def hadSizeInsteadOfExpectedSize(left: Any, actual: Long, expected: Long): String =
+  def hadSizeInsteadOfExpectedSize(left: Any, actual: Any, expected: Any): String =
     FailureMessages("hadSizeInsteadOfExpectedSize", left, actual, expected)
 
   def hadSize(left: Any, actual: Long): String =
@@ -159,6 +159,15 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     def contains[E1 >: E](elem: E1): Boolean = elem == element
   }
+
+  class FloatLengthSize(value: Float) {
+
+    val length: Float = value
+
+    val size: Float = value
+  }
+
+  val floatLengthSize = new FloatLengthSize(2.0f)
 
   describe("The require(boolean) method") {
 
@@ -1004,6 +1013,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == hadLength(l1, 3))
     }
 
+    it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
+      require(floatLengthSize.length == 2.0f)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
+      val e = intercept[IllegalArgumentException] {
+        require(floatLengthSize.length == 1.0f)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(floatLengthSize, 2.0f, 1.0f))
+    }
+
     it("should do nothing when is used to check s1.size == 9") {
       require(s1.size == 12)
     }
@@ -1046,6 +1066,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!(l1.size == 3))
       }
       assert(e.getMessage == hadSize(l1, 3))
+    }
+
+    it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
+      require(floatLengthSize.size == 2.0f)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
+      val e = intercept[IllegalArgumentException] {
+        require(floatLengthSize.size == 1.0f)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(floatLengthSize, 2.0f, 1.0f))
     }
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
@@ -2078,6 +2109,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == hadLength(l1, 3) + ", dude")
     }
 
+    it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
+      require(floatLengthSize.length == 2.0f, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
+      val e = intercept[IllegalArgumentException] {
+        require(floatLengthSize.length == 1.0f, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(floatLengthSize, 2.0f, 1.0f) + ", dude")
+    }
+
     it("should do nothing when is used to check s1.size == 9") {
       require(s1.size == 12, ", dude")
     }
@@ -2120,6 +2162,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!(l1.size == 3), ", dude")
       }
       assert(e.getMessage == hadSize(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
+      require(floatLengthSize.size == 2.0f, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
+      val e = intercept[IllegalArgumentException] {
+        require(floatLengthSize.size == 1.0f, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(floatLengthSize, 2.0f, 1.0f) + ", dude")
     }
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
@@ -3112,6 +3165,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == hadLength(l1, 3))
     }
 
+    it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
+      requireState(floatLengthSize.length == 2.0f)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
+      val e = intercept[IllegalStateException] {
+        requireState(floatLengthSize.length == 1.0f)
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(floatLengthSize, 2.0f, 1.0f))
+    }
+
     it("should do nothing when is used to check s1.size == 9") {
       requireState(s1.size == 12)
     }
@@ -3154,6 +3218,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!(l1.size == 3))
       }
       assert(e.getMessage == hadSize(l1, 3))
+    }
+
+    it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
+      requireState(floatLengthSize.size == 2.0f)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
+      val e = intercept[IllegalStateException] {
+        requireState(floatLengthSize.size == 1.0f)
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(floatLengthSize, 2.0f, 1.0f))
     }
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
@@ -4186,6 +4261,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
       assert(e.getMessage == hadLength(l1, 3) + ", dude")
     }
 
+    it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
+      requireState(floatLengthSize.length == 2.0f, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
+      val e = intercept[IllegalStateException] {
+        requireState(floatLengthSize.length == 1.0f, ", dude")
+      }
+      assert(e.getMessage == hadLengthInsteadOfExpectedLength(floatLengthSize, 2.0f, 1.0f) + ", dude")
+    }
+
     it("should do nothing when is used to check s1.size == 9") {
       requireState(s1.size == 12, ", dude")
     }
@@ -4228,6 +4314,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         requireState(!(l1.size == 3), ", dude")
       }
       assert(e.getMessage == hadSize(l1, 3) + ", dude")
+    }
+
+    it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
+      requireState(floatLengthSize.size == 2.0f, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
+      val e = intercept[IllegalStateException] {
+        requireState(floatLengthSize.size == 1.0f, ", dude")
+      }
+      assert(e.getMessage == hadSizeInsteadOfExpectedSize(floatLengthSize, 2.0f, 1.0f) + ", dude")
     }
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
