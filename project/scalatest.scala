@@ -8,10 +8,10 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  val buildScalaVersion = "2.11.2"
+  val buildScalaVersion = "2.11.7"
 
   val releaseVersion = "2.2.6-SNAP1"
-  val githubTag = "release-2.2.5-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val githubTag = "release-2.2.6-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -62,7 +62,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.4"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.10.5"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.5"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
