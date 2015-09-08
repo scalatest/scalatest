@@ -1,11 +1,14 @@
 language: scala
 scala:
-  - 2.11.5
-  - 2.10.4
+  - 2.11.7
+  - 2.10.5
 jdk:
   - oraclejdk7
   - openjdk6
   - oraclejdk8
+
+sudo: false
+
 env:
   #see https://github.com/scalatest/scalatest/pull/245
   #global values should be replaced using http://docs.travis-ci.com/user/encryption-keys/ with valid values
@@ -37,6 +40,10 @@ env:
     - MODE=genSortedTests
     - MODE=genLoneElementTests
     - MODE=genEmptyTests
+
+branches:
+  only:
+    - 3.0.x
 
 #before_script: ./travis_build.sh Compile
 script: ./travis_build.sh $MODE

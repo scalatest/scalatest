@@ -80,7 +80,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
   private val supportedUnaryOperations =
     Set(
       "unary_!",
-      "isEmpty"
+      "isEmpty",
+      "nonEmpty"
     )
 
   private val lengthSizeOperations =

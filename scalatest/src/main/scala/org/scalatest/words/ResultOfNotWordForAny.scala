@@ -810,9 +810,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.containedAtLeastOneOf(left, right)
+          FailureMessages.containedAtLeastOneElementOf(left, right)
         else
-          FailureMessages.didNotContainAtLeastOneOf(left, right)
+          FailureMessages.didNotContainAtLeastOneElementOf(left, right)
       )
   }
   
