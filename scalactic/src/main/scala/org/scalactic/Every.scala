@@ -141,7 +141,7 @@ import scala.annotation.unchecked.{ uncheckedVariance => uV }
  *
  * @tparam T the type of elements contained in this <code>Every</code>
  */
-sealed abstract class Every[+T] protected (underlying: Vector[T]) extends PartialFunction[Int, T] {
+sealed abstract class Every[+T] protected (underlying: Vector[T]) extends PartialFunction[Int, T] with Serializable {
 
 /*
   private def this(firstElement: T, otherElements: T*) = this(Vector(firstElement) ++ otherElements)
