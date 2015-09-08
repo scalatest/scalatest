@@ -52,5 +52,5 @@ private[scalactic] trait EitherSugar {
  * Companion object for <code>EitherSugar</code> enabling its members to be
  * imported as an alternative to mixing them in.
  */
-object EitherSugar extends EitherSugar
+private[scalactic] object EitherSugar extends EitherSugar
 

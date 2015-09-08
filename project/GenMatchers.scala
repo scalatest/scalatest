@@ -87,61 +87,6 @@ object GenMatchers {
       mustMatchersWriter.close()
       println("Generated " + mustMatchersFile.getAbsolutePath)
     }
-
-    val deprecatedMustMatchers = """
-                                   | package org.scalatest.matchers
-                                   |
-                                   | @deprecated("Please use org.scalatest.MustMatchers instead.")
-                                   | trait MustMatchers extends org.scalatest.MustMatchers
-                                   |
-                                   | @deprecated("Please use org.scalatest.MustMatchers instead.")
-                                   | object MustMatchers extends org.scalatest.MustMatchers
-                                 """.stripMargin
-
-    val deprecatedMustMatchersFile = new File(matchersDir, "MustMatchers.scala")
-    val deprecatedMustMatchersWriter = new BufferedWriter(new FileWriter(deprecatedMustMatchersFile))
-    try {
-      deprecatedMustMatchersWriter.write(deprecatedMustMatchers)
-    }
-    finally {
-      deprecatedMustMatchersWriter.flush()
-      deprecatedMustMatchersWriter.close()
-      println("Generated " + deprecatedMustMatchersFile.getAbsolutePath)
-    }
-
-    /*
-        val matchersPackageObject = """
-          | package org.scalatest
-          |
-          | package object matchers {
-          |
-          |   /**
-          |    * Convenience type alias allowing <code>MustMatchers</code> to be used in <code>matchers</code> without qualification or another import
-          |    * after a wildcard import of <code>org.scalatest</code>.
-          |    */
-          |
-          |   /**
-          |    * <p>
-          |    * <strong>This class has been moved to the <code>org.scalatest</code> package. The deprecated type alias that has been left in its place will
-          |    * be removed in a future version of ScalaTest. Please change any uses of <code>org.scalatest.matchers.MustMatchers</code> to <code>org.scalatest.MustMatchers</code>.</strong>
-          |    * </p>
-          |    */
-          |   @deprecated("Please use org.scalatest.MustMatchers instead.")
-          |   type MustMatchers = org.scalatest.MustMatchers
-          | }
-        """.stripMargin
-
-        val matchersPackageObjectFile = new File(matchersDir, "package.scala")
-        val matchersPackageObjectWriter = new BufferedWriter(new FileWriter(matchersPackageObjectFile))
-        try {
-          matchersPackageObjectWriter.write(matchersPackageObject)
-        }
-        finally {
-          matchersPackageObjectWriter.flush()
-          matchersPackageObjectWriter.close()
-          println("Generated " + matchersPackageObjectFile.getAbsolutePath)
-        }
-    */
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String) {

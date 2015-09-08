@@ -55,7 +55,9 @@ class StepwiseNestedSuiteExecutionSpec extends FunSpec {
         val par = new ParSubSuite
         val stp = new SeqSubSuite
         val parStatus = par.run(None, Args(SilentReporter, distributor = Some(new TestConcurrentDistributor(2))))
+        // SKIP-SCALATESTJS-START
         parStatus.waitUntilCompleted()
+        // SKIP-SCALATESTJS-END
         assert(par.superRunNestedSuitesWasInvoked )
         assert(par.distributorWasDefined)
         assert(par.distributorWasPropagated) // This flickers. Is this a problem with volatile?

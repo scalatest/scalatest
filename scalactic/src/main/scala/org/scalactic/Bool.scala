@@ -261,6 +261,45 @@ object Bool {
     new LengthSizeMacroBool(left, operator, actual, expected)
 
   /**
+   * Create macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+   * represented by <code>length</code> and <code>size</code> method call,
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param actual the actual value returned from <code>length</code> or <code>size</code> method call
+   * @param expected the expected value returned from <code>length</code> or <code>size</code> method call
+   * @return a <code>Bool</code> instance that represents a <code>length</code> or <code>size</code> method call
+   */
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Int, expected: Long): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected)
+
+  /**
+   * Create macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+   * represented by <code>length</code> and <code>size</code> method call,
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param actual the actual value returned from <code>length</code> or <code>size</code> method call
+   * @param expected the expected value returned from <code>length</code> or <code>size</code> method call
+   * @return a <code>Bool</code> instance that represents a <code>length</code> or <code>size</code> method call
+   */
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Long, expected: Int): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected)
+
+  /**
+   * Create macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+   * represented by <code>length</code> and <code>size</code> method call,
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param actual the actual value returned from <code>length</code> or <code>size</code> method call
+   * @param expected the expected value returned from <code>length</code> or <code>size</code> method call
+   * @return a <code>Bool</code> instance that represents a <code>length</code> or <code>size</code> method call
+   */
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Int, expected: Int): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected)
+
+  /**
    * Create exists macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
    * represented by <code>exists</code> method call.
    *
@@ -878,6 +917,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
   def rawFailureMessage: String = {
     operator match {
       case "isEmpty" => Resources.rawWasNotEmpty
+      case "nonEmpty" => Resources.rawWasEmpty
       case _ => Resources.rawExpressionWasFalse
     }
   }
@@ -891,6 +931,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
   def rawNegatedFailureMessage: String =
     operator match {
       case "isEmpty" => Resources.rawWasEmpty
+      case "nonEmpty" => Resources.rawWasNotEmpty
       case _ => Resources.rawExpressionWasTrue
     }
 
@@ -917,7 +958,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
    */
   def failureMessageArgs: IndexedSeq[Any] =
     operator match {
-      case "isEmpty" =>
+      case "isEmpty" | "nonEmpty" =>
         Vector(left)
       case _ => Vector.empty
     }
@@ -931,7 +972,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
    */
   def negatedFailureMessageArgs: IndexedSeq[Any] =
     operator match {
-      case "isEmpty" =>
+      case "isEmpty" | "nonEmpty" =>
         Vector(left)
       case _ => Vector.empty
     }

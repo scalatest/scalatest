@@ -19,10 +19,11 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.11.6"
+  val buildScalaVersion = "2.11.7"
 
-  val releaseVersion = "3.0.0-M3"
-  val githubTag = "release-3.0.0-M3-for-scala-2.11-and-2.10" // for scaladoc source urls
+  val releaseVersion = "3.0.0-M8"
+
+  val githubTag = "release-3.0.0-M8-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -131,7 +132,7 @@ object ScalatestBuild extends Build {
   )
 
   def scalacheckDependency(config: String) =
-    "org.scalacheck" %% "scalacheck" % "1.12.3" % config
+    "org.scalacheck" %% "scalacheck" % "1.12.4" % config
 
   def crossBuildLibraryDependencies(theScalaVersion: String) =
     CrossVersion.partialVersion(theScalaVersion) match {
@@ -139,6 +140,7 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
+          "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
           scalacheckDependency("optional")
         )
       case _ =>
@@ -171,7 +173,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.3"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.5"
     )
 
   def scalatestTestOptions =
@@ -227,7 +229,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.time",
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
-      "-oDI"))
+      "-oDIF"))
 
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
@@ -301,7 +303,8 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
@@ -331,7 +334,8 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.additionalHeaders:= Map(
         "Bundle-Name" -> "Scalactic",
@@ -358,6 +362,7 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
       jsDependencies += RuntimeDOM % "test",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test",
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -473,7 +478,7 @@ object ScalatestBuild extends Build {
         </dependency>,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.3",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "optional",
       jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
@@ -546,6 +551,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test",
       jsDependencies += RuntimeDOM % "test",
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,

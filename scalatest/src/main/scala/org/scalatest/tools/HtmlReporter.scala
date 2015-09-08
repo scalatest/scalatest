@@ -197,8 +197,8 @@ private[scalatest] class HtmlReporter(
   
   private def makeSuiteFile(suiteResult: SuiteResult) {
     val name = getSuiteFileName(suiteResult)
-    
-    val pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, name + ".html")), BufferSize))
+
+    val pw = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, name + ".html")), BufferSize), "UTF-8"))
     try {
       pw.println {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\n" + 
@@ -434,7 +434,7 @@ private[scalatest] class HtmlReporter(
   }
   
   private def makeIndexFile(completeMessageFun: => String, completeInMessageFun: String => String, duration: Option[Long]) {
-    val pw = new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, "index.html")), BufferSize))
+    val pw = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File(targetDir, "index.html")), BufferSize), "UTF-8"))
     try {
       pw.println {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
