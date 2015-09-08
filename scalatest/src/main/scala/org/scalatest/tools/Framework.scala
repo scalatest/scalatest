@@ -743,6 +743,9 @@ class Framework extends SbtFramework {
                                   summaryCounter.testsCanceledCount.get, summaryCounter.suitesCompletedCount.get, summaryCounter.suitesAbortedCount.get, summaryCounter.scopesPendingCount.get)
         dispatchReporter(RunCompleted(tracker.nextOrdinal(), Some(duration), Some(summary)))
         dispatchReporter.dispatchDisposeAndWaitUntilDone()
+
+        execSvc.shutdown()
+
         val fragments: Vector[Fragment] =
           StringReporter.summaryFragments(
             true,
