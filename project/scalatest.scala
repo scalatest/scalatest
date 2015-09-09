@@ -5,6 +5,8 @@ import java.io.PrintWriter
 import scala.io.Source
 import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
+import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
+import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
 
 object ScalatestBuild extends Build {
 
@@ -155,6 +157,7 @@ object ScalatestBuild extends Build {
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(sharedSettings: _*)
+   .settings(mimaDefaultSettings: _*)
    .settings(
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
@@ -167,6 +170,7 @@ object ScalatestBuild extends Build {
        </dependency>,
      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
+     previousArtifact := Some("org.scalatest" %% "scalatest" % "2.2.5"), 
      genMustMatchersTask,
      genGenTask,
      genTablesTask,
