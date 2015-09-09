@@ -59,5 +59,22 @@ package object scalactic {
    * @return the Scalactic version number.
    */
   val ScalacticVersion: String = ScalacticVersions.ScalacticVersion
-}
 
+  // We need this for binary compatible of 2.2.x
+  /**
+   * The version number of Scalactic.
+   *
+   * @return the Scalactic version number.
+   */
+  @deprecated("Please use org.scalactic.ScalacticVersion instead.")
+  val version: String = ScalacticVersions.ScalacticVersion
+
+  // We need this for binary compatible of 2.2.x
+  /**
+   * The version of Scala Scalactic is built for.
+   *
+   * @return the scala version number Scalactic is built for.
+   */
+  @deprecated("This field will be removed in the future version of Scalactic, please do not depend on it anymore.")
+  val buildForScalaVersion: String = ScalacticVersions.BuiltForScalaVersion
+}

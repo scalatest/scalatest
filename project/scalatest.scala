@@ -163,9 +163,18 @@ object ScalatestBuild extends Build {
       exclude[MissingMethodProblem]("org.scalatest.tools.Framework.org$scalatest$tools$Framework$$runSuite"),
       exclude[MissingMethodProblem]("org.scalatest.tools.Framework#ScalaTestTask.this"),
       exclude[MissingClassProblem]("org.scalatest.tools.Framework$RecordingDistributor"),
-      exclude[MissingClassProblem]("org.scalatest.tools.Framework$ScalaTestNestedTask")
+      exclude[MissingClassProblem]("org.scalatest.tools.Framework$ScalaTestNestedTask"),
+      exclude[MissingMethodProblem]("org.scalatest.tools.Framework.org$scalatest$tools$Framework$$createTaskDispatchReporter"),
+      exclude[MissingMethodProblem]("org.scalatest.tools.Framework#ScalaTestRunner.this"),
+      exclude[MissingClassProblem]("org.scalactic.XmlEquality"), // private[scalactic] removed in 2.2.1
+      exclude[MissingClassProblem]("org.scalactic.XmlEquality$"),  // private[scalactic] removed in 2.2.1
+      exclude[MissingMethodProblem]("org.scalatest.prop.Checkers.org$scalatest$prop$Checkers$$prettyTestStats"),  // should be fine, as it is a private method.
+      exclude[MissingClassProblem]("org.scalactic.Versions"),  // private class
+      exclude[MissingClassProblem]("org.scalactic.Versions$")  // private class
     )
   }
+
+  val previousVersion = "2.2.5"
 
   lazy val scalatest = Project("scalatest", file("."))
    .settings(sharedSettings: _*)
@@ -182,7 +191,7 @@ object ScalatestBuild extends Build {
        </dependency>,
      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
-     previousArtifact := Some("org.scalatest" %% "scalatest" % "2.2.5"),
+     previousArtifact := Some("org.scalatest" %% "scalatest" % previousVersion),
      binaryIssueFilters ++= ignoredABIProblems,
      genMustMatchersTask,
      genGenTask,
@@ -228,7 +237,8 @@ object ScalatestBuild extends Build {
                                                "-u", "target/junit",
                                                "-fW", "target/result.txt")),
      scalatestDocTaskSetting
-   ).settings(osgiSettings: _*).settings(
+   ).settings(osgiSettings: _*)
+    .settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
         "org.scalatest.concurrent",
@@ -263,6 +273,7 @@ object ScalatestBuild extends Build {
 
   lazy val scalactic = Project("scalactic", file("genscalactic"))
     .settings(sharedSettings: _*)
+    .settings(mimaDefaultSettings: _*)
     .settings(
       projectTitle := "Scalactic",
       organization := "org.scalactic",
@@ -284,7 +295,9 @@ object ScalatestBuild extends Build {
       mappings in (Compile, packageBin) += {
         ((sourceManaged in Compile).value / "resources" / "org" / "scalactic" / "ScalacticBundle.properties") -> "org/scalactic/ScalacticBundle.properties"
       },
-      scalacticDocTaskSetting
+      scalacticDocTaskSetting,
+      previousArtifact := Some("org.scalactic" %% "scalactic" % previousVersion),
+      binaryIssueFilters ++= ignoredABIProblems
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
