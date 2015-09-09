@@ -247,5 +247,21 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
     val result = withClue("a clue") { succeeded }
     result should be theSameInstanceAs succeeded
   }
+
+  it should "throw Serializable TestFailedDueToTimeoutException thrown from withClue wrapping a failing eventually" in {
+
+    import org.scalatest.concurrent.Eventually._
+    import org.scalatest.exceptions.TestFailedDueToTimeoutException
+    import SharedHelpers.serializeRoundtrip
+
+    val result = intercept[TestFailedDueToTimeoutException] {
+      withClue("a clue") {
+        eventually {
+          "a" should equal ("b")
+        }
+      }
+    }
+    serializeRoundtrip(result)
+  }
 }
 
