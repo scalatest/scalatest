@@ -2467,6 +2467,17 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+
+      it("should compile when used with Java static method ") {
+        assertCompiles(
+          """
+            |assert(System.currentTimeMillis() > 0)
+          """.stripMargin)
+        assertCompiles(
+          """
+            |assert(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO)
+          """.stripMargin)
+      }
     }
 
     describe("The assert(boolean, clue) method") {
@@ -4835,6 +4846,17 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should compile when used with Java static method ") {
+        assertCompiles(
+          """
+            |assert(System.currentTimeMillis() > 0, "this is a clue")
+          """.stripMargin)
+        assertCompiles(
+          """
+            |assert(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO, "this is a clue")
+          """.stripMargin)
       }
     }
 
@@ -7205,6 +7227,17 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
       }
+
+      it("should compile when used with Java static method") {
+        assertCompiles(
+          """
+            |assume(System.currentTimeMillis() > 0)
+          """.stripMargin)
+        assertCompiles(
+          """
+            |assume(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO)
+          """.stripMargin)
+      }
     }
 
     describe("The assume(boolean, clue) method") {
@@ -9573,6 +9606,17 @@ class DiagrammedAssertionsSpec extends FunSpec with Matchers with DiagrammedAsse
         )
         e.failedCodeFileName should be (Some(fileName))
         e.failedCodeLineNumber should be (Some(thisLineNumber - 14))
+      }
+
+      it("should compile when used with Java static method") {
+        assertCompiles(
+          """
+            |assume(System.currentTimeMillis() > 0, "this is a clue")
+          """.stripMargin)
+        assertCompiles(
+          """
+            |assume(java.math.BigInteger.ZERO == java.math.BigInteger.ZERO, "this is a clue")
+          """.stripMargin)
       }
     }
 
