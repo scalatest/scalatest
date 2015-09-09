@@ -1458,7 +1458,7 @@ THIS DOESN'T OVERLOAD. I THINK I'LL EITHER NEED TO USE interceptWithMessage OR J
   def withClue[T](clue: Any)(fun: => T): T = {
     if (clue == null)
       throw new NullPointerException("clue was null")
-    def prepend(currentMessage: Option[String]) =
+    val prepend = (currentMessage: Option[String]) =>
       currentMessage match {
         case Some(msg) =>
           if (clue.toString.last.isWhitespace) // TODO: shouldn't I also check if the head of msg isWhite?
