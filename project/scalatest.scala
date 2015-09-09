@@ -7,6 +7,7 @@ import com.typesafe.sbt.osgi.SbtOsgi._
 import com.typesafe.sbt.SbtPgp._
 import com.typesafe.tools.mima.plugin.MimaPlugin.mimaDefaultSettings
 import com.typesafe.tools.mima.plugin.MimaKeys.previousArtifact
+import com.typesafe.tools.mima.plugin.MimaKeys.binaryIssueFilters
 
 object ScalatestBuild extends Build {
 
@@ -155,6 +156,17 @@ object ScalatestBuild extends Build {
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )
 
+  val ignoredABIProblems = {
+    import com.typesafe.tools.mima.core._
+    import com.typesafe.tools.mima.core.ProblemFilters._
+    Seq(
+      exclude[MissingMethodProblem]("org.scalatest.tools.Framework.org$scalatest$tools$Framework$$runSuite"),
+      exclude[MissingMethodProblem]("org.scalatest.tools.Framework#ScalaTestTask.this"),
+      exclude[MissingClassProblem]("org.scalatest.tools.Framework$RecordingDistributor"),
+      exclude[MissingClassProblem]("org.scalatest.tools.Framework$ScalaTestNestedTask")
+    )
+  }
+
   lazy val scalatest = Project("scalatest", file("."))
    .settings(sharedSettings: _*)
    .settings(mimaDefaultSettings: _*)
@@ -170,7 +182,8 @@ object ScalatestBuild extends Build {
        </dependency>,
      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
-     previousArtifact := Some("org.scalatest" %% "scalatest" % "2.2.5"), 
+     previousArtifact := Some("org.scalatest" %% "scalatest" % "2.2.5"),
+     binaryIssueFilters ++= ignoredABIProblems,
      genMustMatchersTask,
      genGenTask,
      genTablesTask,

@@ -264,6 +264,20 @@ object Bool {
   def lengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any): Bool =
     new LengthSizeMacroBool(left, operator, actual, expected)
 
+  // this is kept for binary compatible of older 2.2.x version
+  /**
+   * Create macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
+   * represented by <code>length</code> and <code>size</code> method call,
+   *
+   * @param left the left-hand-side (LHS) of the <code>Boolean</code> expression
+   * @param operator the operator (method name) of the <code>Boolean</code> expression
+   * @param actual the actual value returned from <code>length</code> or <code>size</code> method call
+   * @param expected the expected value returned from <code>length</code> or <code>size</code> method call
+   * @return a <code>Bool</code> instance that represents a <code>length</code> or <code>size</code> method call
+   */
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Long, expected: Long): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected)
+
   /**
    * Create exists macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
    * represented by <code>exists</code> method call.
@@ -1063,6 +1077,11 @@ private[scalactic] class IsInstanceOfMacroBool(left: Any, operator: String, clas
  * @param expected the expected length or size of <code>left</code>
  */
 private[scalactic] class LengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any) extends Bool {
+
+  // this is kept for binary compatible of older 2.2.x version
+  def this(left: Any, operator: String, actual: Long, expected: Long) {
+    this(left, operator, actual: Any, expected: Any)
+  }
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.
