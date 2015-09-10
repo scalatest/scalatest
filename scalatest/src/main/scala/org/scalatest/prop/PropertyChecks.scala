@@ -72,7 +72,7 @@ package prop
  *
  * <p>
  * And you could use a table-driven property check to test that all combinations of invalid values passed to the <code>Fraction</code> constructor
- * produce the expected <code>IllegalArgumentException</code>, like this:
+ * throw the expected <code>IllegalArgumentException</code>, like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -87,9 +87,9 @@ package prop
  *   )
  *
  * forAll (invalidCombos) { (n: Int, d: Int) =&gt;
- *   evaluating {
+ *   an [IllegalArgumentException] should be thrownBy {
  *     new Fraction(n, d)
- *   } should produce [IllegalArgumentException]
+ *   }
  * }
  * </pre>
  *

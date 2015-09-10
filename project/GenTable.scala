@@ -771,14 +771,14 @@ import scala.annotation.tailrec
  * </pre>
  * 
  * <p>
- * Given this table, you could check that all invalid combinations produce <code>IllegalArgumentException</code>, like this:
+ * Given this table, you could check that all invalid combinations throw <code>IllegalArgumentException</code>, like this:
  * </p>
  *
  * <pre class="stHighlight">
  * forAll (invalidCombos) { (n: Int, d: Int) =>
- *   evaluating {
+ *   an [IllegalArgumentException] should be thrownBy {
  *     new Fraction(n, d)
- *   } should produce [IllegalArgumentException]
+ *   }
  * }
  * </pre>
  *
