@@ -49,10 +49,6 @@ import org.scalatest.Suite.autoTagClassAnnotations
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait FlatSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFlatSpecMod, "FixtureFlatSpec")
-
-  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
-
   import engine._
 
   private[scalatest] val sourceFileName = "FlatSpecRegistration.scala"

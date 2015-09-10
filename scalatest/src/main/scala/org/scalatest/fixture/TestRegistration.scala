@@ -16,7 +16,7 @@
 package org.scalatest.fixture
 
 import org.scalatest.OutcomeOf._
-import org.scalatest.{PastOutcome, AsyncOutcome, Tag}
+import org.scalatest._
 
 trait TestRegistration { theSuite: Suite =>
 
@@ -42,6 +42,8 @@ trait TestRegistration { theSuite: Suite =>
       }
     }*/
   }
+
+  private[scalatest] val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSuiteMod)
 
   /**
    * Register a test.
