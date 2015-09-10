@@ -152,7 +152,7 @@ class ScalaTestFramework extends SbtFramework {
             spanScaleFactors, 
             testSortingReporterTimeouts,
             slowpokeArgs
-          ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
+          ) = parseArgs(args)
           
           if (!runpathArgs.isEmpty)
             throw new IllegalArgumentException("-R (runpath) is not supported when runs in SBT.")
