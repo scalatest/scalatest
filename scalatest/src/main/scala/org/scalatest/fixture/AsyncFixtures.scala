@@ -46,4 +46,8 @@ trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
   }
 
   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome]
+
+  import scala.language.implicitConversions
+
+  implicit def convertToFuture(o: Any): Future[Any] = Future.successful(o)
 }

@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.{ExecutionContext, Future}
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncFreeSpecLike extends FreeSpecRegistration with AsyncTests with OneInstancePerTest { thisSuite =>
+trait AsyncFreeSpecLike extends FreeSpecOf[Future[Unit]] with AsyncFixtures with OneInstancePerTest { thisSuite =>
 
   implicit def executionContext: ExecutionContext
 
