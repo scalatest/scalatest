@@ -122,7 +122,7 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.4",
           "org.scalacheck" %% "scalacheck" % "1.12.4" % "optional"
         )
       case _ =>
@@ -212,6 +212,15 @@ object ScalatestBuild extends Build {
                                                "-fW", "target/result.txt")),
      scalatestDocTaskSetting
    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "org.scalautils.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
         "org.scalatest.concurrent",
@@ -269,6 +278,13 @@ object ScalatestBuild extends Build {
       },
       scalacticDocTaskSetting
     ).settings(osgiSettings: _*).settings(
+      OsgiKeys.importPackage := Seq(
+        "org.scalactic.*",
+        "org.scalautils.*",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
         "org.scalautils"
