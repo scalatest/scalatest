@@ -16,7 +16,7 @@
 package org.scalactic
 
 import scala.collection._
-import mutable.WrappedArray
+import collection.mutable.{WrappedArray, ArrayOps}
 import scala.util.Success
 import scala.xml
 
@@ -183,6 +183,7 @@ object Prettifier {
             case many: Many[_] => "Many(" + many.toIterator.map(apply(_)).mkString(", ") + ")"
             case anArray: Array[_] =>  "Array(" + (anArray map apply).mkString(", ") + ")"
             case aWrappedArray: WrappedArray[_] => "Array(" + (aWrappedArray map apply).mkString(", ") + ")"
+            case anArrayOps: ArrayOps[_] => "Array(" + (anArrayOps map apply).mkString(", ") + ")"
             case aGenMap: GenMap[_, _] =>
               aGenMap.stringPrefix + "(" +
               (aGenMap.toIterator.map { case (key, value) => // toIterator is needed for consistent ordering
