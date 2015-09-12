@@ -16,7 +16,7 @@
 package org.scalactic
 
 import org.scalatest._
-import scala.collection.mutable.WrappedArray
+import scala.collection.mutable.{WrappedArray, ArrayOps}
 import scala.util.Success
 import SharedHelpers.{javaList, javaSortedMap}
 // SKIP-SCALATESTJS-START
@@ -213,6 +213,9 @@ class PrettifierSpec extends FunSpec with Matchers {
     }
     it("should pretty print wrapped string arrays") {
       Prettifier.default(WrappedArray.make(Array("1", "2", "3"))) should be ("Array(\"1\", \"2\", \"3\")")
+    }
+    it("should pretty print array ops") {
+      Prettifier.default(new ArrayOps.ofInt(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
     it("should show null as \"null\"") {
       Prettifier.default(null) should be ("null")
