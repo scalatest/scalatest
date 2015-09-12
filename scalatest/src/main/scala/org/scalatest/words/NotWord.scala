@@ -1168,8 +1168,8 @@ final class NotWord {
 
             MatchResult(
               !containing.containsNoneOf(left, right.distinct),
-              Resources.rawDidNotContainAtLeastOneOf,
-              Resources.rawContainedAtLeastOneOf,
+              Resources.rawDidNotContainAtLeastOneElementOf,
+              Resources.rawContainedAtLeastOneElementOf,
               Vector(left, right)
             )
           }

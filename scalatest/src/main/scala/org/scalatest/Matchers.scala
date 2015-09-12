@@ -4016,9 +4016,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (evidence.containsNoneOf(e, right.distinct) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
-              FailureMessages.containedAtLeastOneOf(e, right)
+              FailureMessages.containedAtLeastOneElementOf(e, right)
             else
-              FailureMessages.didNotContainAtLeastOneOf(e, right),
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right),
             None,
             innerStackDepth
           )
@@ -4676,9 +4676,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (containing.containsNoneOf(e, right.distinct) != shouldBeTrue)
           throw newTestFailedException(
             if (shouldBeTrue)
-              FailureMessages.containedAtLeastOneOf(e, right)
+              FailureMessages.containedAtLeastOneElementOf(e, right)
             else
-              FailureMessages.didNotContainAtLeastOneOf(e, right),
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right),
             None,
             innerStackDepth
           )

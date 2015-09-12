@@ -20,6 +20,7 @@ import org.scalatest._
 import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
+import SharedHelpers.serializeRoundtrip
 
 class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
 
@@ -530,6 +531,11 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     Good[Int].orBad("howdy").fold(_ + 1, _.length) shouldBe 5
 
   }
+  it can "be serialized correctly" in {
+    serializeRoundtrip(Or.from(Success(12)) shouldBe Good(12))
+    val ex = new Exception("oops")
+    serializeRoundtrip(Or.from(Failure(ex)) shouldBe Bad(ex))
+  }
   "A Good" can "be widened to an Or type via .asOr" in {
     Good(1).asOr shouldBe Good(1)
     /*
@@ -547,6 +553,9 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     xs.foldLeft(Good(6).orBad[ErrorMessage].asOr) {
       (acc, x) => acc orElse (if (x % 2 == 0) Good(x) else acc)
     } shouldBe Good(6)
+  }
+  it can "be serialized correctly" in {
+    serializeRoundtrip(Good(1))
   }
   "A Bad" can "be widened to an Or type via .asOr" in {
     Bad("oops").asOr shouldBe Bad("oops")
@@ -569,6 +578,9 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     ys.foldLeft(Good[Int].orBad("no evens").asOr) { (acc, x) =>
       acc orElse (if (x % 2 == 0) Good(x) else acc)
     } shouldBe Bad("no evens")
+  }
+  it can "be serialized correctly" in {
+    serializeRoundtrip(Bad("oops"))
   }
   "The Or companion" should "offer a concise type lambda syntax" in {
     trait Functor[Context[_]] {

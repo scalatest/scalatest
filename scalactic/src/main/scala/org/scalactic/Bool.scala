@@ -257,7 +257,7 @@ object Bool {
    * @param expected the expected value returned from <code>length</code> or <code>size</code> method call
    * @return a <code>Bool</code> instance that represents a <code>length</code> or <code>size</code> method call
    */
-  def lengthSizeMacroBool(left: Any, operator: String, actual: Long, expected: Long): Bool =
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any): Bool =
     new LengthSizeMacroBool(left, operator, actual, expected)
 
   /**
@@ -878,6 +878,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
   def rawFailureMessage: String = {
     operator match {
       case "isEmpty" => Resources.rawWasNotEmpty
+      case "nonEmpty" => Resources.rawWasEmpty
       case _ => Resources.rawExpressionWasFalse
     }
   }
@@ -891,6 +892,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
   def rawNegatedFailureMessage: String =
     operator match {
       case "isEmpty" => Resources.rawWasEmpty
+      case "nonEmpty" => Resources.rawWasNotEmpty
       case _ => Resources.rawExpressionWasTrue
     }
 
@@ -917,7 +919,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
    */
   def failureMessageArgs: IndexedSeq[Any] =
     operator match {
-      case "isEmpty" =>
+      case "isEmpty" | "nonEmpty" =>
         Vector(left)
       case _ => Vector.empty
     }
@@ -931,7 +933,7 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
    */
   def negatedFailureMessageArgs: IndexedSeq[Any] =
     operator match {
-      case "isEmpty" =>
+      case "isEmpty" | "nonEmpty" =>
         Vector(left)
       case _ => Vector.empty
     }
@@ -1058,7 +1060,7 @@ private[scalactic] class IsInstanceOfMacroBool(left: Any, operator: String, clas
  * @param actual the actual length or size of <code>left</code>
  * @param expected the expected length or size of <code>left</code>
  */
-private[scalactic] class LengthSizeMacroBool(left: Any, operator: String, actual: Long, expected: Long) extends Bool {
+private[scalactic] class LengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any) extends Bool {
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.
