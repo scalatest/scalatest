@@ -18,7 +18,7 @@ package org.scalatest
 import scala.reflect.ClassTag
 import Fact._
 
-private[scalatest] trait Expectations {
+trait Expectations {
  
   def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Expectation = {
     val clazz = classTag.runtimeClass
@@ -65,4 +65,6 @@ private[scalatest] trait Expectations {
     }
   }
 }
+
+object Expectations extends Expectations
 
