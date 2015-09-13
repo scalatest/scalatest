@@ -17,7 +17,7 @@ class OrderedGenSpec extends FunSpec {
   }
   describe("OrderedGen.orderedLongsEq") {
     it("should generate only Longs where the first value is less than or equal to the second value") {
-      forAll(OrderedGen.orderedLongsEq) { (pair: (Long, Long)) =>
+      forAll(OrderedGen.orderedOrEqualLongs) { (pair: (Long, Long)) =>
         assert(pair._1 <= pair._2)
       }
     }
@@ -32,7 +32,7 @@ class OrderedGenSpec extends FunSpec {
   }
   describe("OrderedGen.orderedIntsEq") {
     it("should generate only Ints where the first value is less than or equal to the second value") {
-      forAll(OrderedGen.orderedIntsEq) { (pair: (Int, Int)) =>
+      forAll(OrderedGen.orderedOrEqualInts) { (pair: (Int, Int)) =>
         assert(pair._1 <= pair._2)
       }
     }
@@ -47,7 +47,7 @@ class OrderedGenSpec extends FunSpec {
   }
   describe("OrderedGen.orderedCharsEq") {
     it("should generate only Chars where the first value is less than or equal to the second value") {
-      forAll(OrderedGen.orderedCharsEq) { (pair: (Char, Char)) =>
+      forAll(OrderedGen.orderedOrEqualChars) { (pair: (Char, Char)) =>
         assert(pair._1 <= pair._2)
       }
     }
@@ -62,7 +62,7 @@ class OrderedGenSpec extends FunSpec {
   }
   describe("OrderedGen.orderedBytesEq") {
     it("should generate only Bytes where the first value is less than or equal to the second value") {
-      forAll(OrderedGen.orderedBytesEq) { (pair: (Byte, Byte)) =>
+      forAll(OrderedGen.orderedOrEqualBytes) { (pair: (Byte, Byte)) =>
         assert(pair._1 <= pair._2)
       }
     }
@@ -77,7 +77,7 @@ class OrderedGenSpec extends FunSpec {
   }
   describe("OrderedGen.orderedDoublesEq") {
     it("should generate only Doubles where the first value is less than or equal to the second value") {
-      forAll(OrderedGen.orderedDoublesEq) { (pair: (Double, Double)) =>
+      forAll(OrderedGen.orderedOrEqualDoubles) { (pair: (Double, Double)) =>
         assert(pair._1 <= pair._2)
       }
     }
@@ -92,7 +92,7 @@ class OrderedGenSpec extends FunSpec {
   }
   describe("OrderedGen.orderedFloatsEq") {
     it("should generate only Floats where the first value is less than or equal to the second value") {
-      forAll(OrderedGen.orderedFloatsEq) { (pair: (Float, Float)) =>
+      forAll(OrderedGen.orderedOrEqualFloats) { (pair: (Float, Float)) =>
         assert(pair._1 <= pair._2)
       }
     }

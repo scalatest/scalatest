@@ -35,21 +35,21 @@ object OrderedGen {
     arb.map { case (a, b) => if ( order.compare(a, b) < 0 ) (a, b) else (b, a) }
   }
 
-  val orderedLongs      = orderedPair[Long](allowEqual = false)
-  val orderedLongsEq    = orderedPair[Long](allowEqual = true)
+  val orderedLongs          = orderedPair[Long](allowEqual = false)
+  val orderedOrEqualLongs   = orderedPair[Long](allowEqual = true)
 
-  val orderedInts       = orderedPair[Int](allowEqual = false)
-  val orderedIntsEq     = orderedPair[Int](allowEqual = true)
+  val orderedInts           = orderedPair[Int](allowEqual = false)
+  val orderedOrEqualInts    = orderedPair[Int](allowEqual = true)
 
-  val orderedChars      = orderedPair[Char](allowEqual = false)
-  val orderedCharsEq    = orderedPair[Char](allowEqual = true)
+  val orderedChars          = orderedPair[Char](allowEqual = false)
+  val orderedOrEqualChars   = orderedPair[Char](allowEqual = true)
 
-  val orderedBytes      = orderedPair[Byte](allowEqual = false)
-  val orderedBytesEq    = orderedPair[Byte](allowEqual = true)
+  val orderedBytes          = orderedPair[Byte](allowEqual = false)
+  val orderedOrEqualBytes   = orderedPair[Byte](allowEqual = true)
 
-  val orderedDoubles    = orderedPair[Double](allowEqual = false)
-  val orderedDoublesEq  = orderedPair[Double](allowEqual = true)
+  val orderedDoubles        = orderedPair[Double](allowEqual = false)
+  val orderedOrEqualDoubles = orderedPair[Double](allowEqual = true)
 
-  val orderedFloats     = orderedPair[Float](allowEqual = false)
-  val orderedFloatsEq   = orderedPair[Float](allowEqual = true)
+  val orderedFloats         = orderedPair[Float](allowEqual = false)
+  val orderedOrEqualFloats  = orderedPair[Float](allowEqual = true)
 }
