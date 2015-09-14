@@ -41,7 +41,9 @@ sealed abstract class Fact {
 
   final def toBoolean: Boolean = isYes
 
-  def toAssertion: Assertion
+  final def toAssertion: Assertion =
+    if (isYes) Succeeded
+    else throw new TestFailedException(factMessage, 2)
 
   /**
    * Get a negated version of this Fact, sub type will be negated and all messages field will be substituted with its counter-part.
@@ -96,7 +98,6 @@ object Fact {
 
     def isYes: Boolean = false
 
-    def toAssertion: Assertion = throw new TestFailedException(factMessage, 2)
   }
 
 /*
@@ -355,8 +356,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
   ) extends Fact {
   
     def isYes: Boolean = true
-  
-    def toAssertion: Assertion = Succeeded
   }
   
   /**
@@ -612,8 +611,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     def isYes: Boolean = !(underlying.isYes)
 
-    def toAssertion: Assertion = ???
-
     override def unary_!(): org.scalatest.Fact = underlying
 
     override def factMessage: String = super.factMessage
@@ -666,8 +663,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     val prettifier: Prettifier = left.prettifier
 
     def isYes: Boolean = left.isYes && rightResult.isYes
-
-    def toAssertion: Assertion = ???
   }
 
   object Binary_&& {
@@ -715,8 +710,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     val prettifier: Prettifier = left.prettifier
 
     def isYes: Boolean = left.isYes || right.isYes
-
-    def toAssertion: Assertion = ???
   }
 
   object Binary_|| {

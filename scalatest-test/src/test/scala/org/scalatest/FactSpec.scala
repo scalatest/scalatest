@@ -27,8 +27,10 @@ import matchers.{ FailureMessage, NegatedFailureMessage, MidSentenceFailureMessa
 class FactSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
 
   "A Fact" - {
-    val noFact: Expectation = No("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
-    val yesFact: Expectation = Yes("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
+    // As if we said expectResult(3) { 1 + 1 }
+    val noFact: Expectation = No("Expected 3, but got 2", "3 did not equal 2", "expected 3, but got 2", "3 did not equal 2")
+    // As if we said expectResult(3) { 1 + 2 }
+    val yesFact: Expectation = Yes("3 equaled 3", "3 equaled 3")
     "should have isYes and isNo methods" in {
       noFact.isYes shouldBe false
       noFact.isNo shouldBe true
@@ -38,7 +40,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "should have a toAssertion method that either returns Succeeded or throws TestFailedException with the correct error message and stack depth" in {
       yesFact.toAssertion shouldBe Succeeded
       val caught = the [TestFailedException] thrownBy noFact.toAssertion
-      caught should have message "false: 1 did not equal 2"
+      caught should have message "false: Expected 3, but got 2"
       caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
       caught.failedCodeFileName shouldBe Some("FactSpec.scala")
     }
@@ -74,8 +76,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     }
     "when negated" - {
       "swaps failure and negated failure messages" in {
-        noFact should equal (No("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
-        !noFact should equal (Unary_!(No("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")))
+        !noFact should equal (Unary_!(noFact))
         val fact2 = Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
         fact2.factMessage shouldBe ("true: \"howdy\" did not equal null")
         fact2.simplifiedFactMessage shouldBe ("true: The reference equaled null")
