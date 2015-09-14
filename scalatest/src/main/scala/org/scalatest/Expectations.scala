@@ -24,7 +24,7 @@ trait Expectations {
     val clazz = classTag.runtimeClass
     try {
       f
-      False(
+      No(
         rawFactMessage = Resources.rawExceptionExpected,
         rawSimplifiedFactMessage = Resources.rawFactNoExceptionWasThrown,
         rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedExceptionWasThrown,
@@ -38,7 +38,7 @@ trait Expectations {
     catch {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass))
-          False(
+          No(
             rawFactMessage = Resources.rawWrongException,
             rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
             rawMidSentenceFactMessage = Resources.rawMidSentenceWrongException,
@@ -50,7 +50,7 @@ trait Expectations {
             cause = Some(u)
           ) 
         else
-          True(
+          Yes(
             rawFactMessage = Resources.rawExceptionExpected,
             rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
             rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedExceptionWasThrown,
