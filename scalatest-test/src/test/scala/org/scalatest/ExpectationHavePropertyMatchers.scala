@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+/*
 import matchers.HavePropertyMatcher
 import matchers.HavePropertyMatchResult
 
@@ -163,3 +164,4 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 }
+*/

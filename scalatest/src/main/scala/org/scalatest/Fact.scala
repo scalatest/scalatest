@@ -20,14 +20,16 @@ import org.scalatest.exceptions.TestFailedException
 
 sealed abstract class Fact {
 
-  val rawFailureMessage: String
-  val rawNegatedFailureMessage: String
-  val rawMidSentenceFailureMessage: String
-  val rawMidSentenceNegatedFailureMessage: String
-  val failureMessageArgs: IndexedSeq[Any]
-  val negatedFailureMessageArgs: IndexedSeq[Any]
-  val midSentenceFailureMessageArgs: IndexedSeq[Any]
-  val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any]
+  val rawFactMessage: String
+  val rawSimplifiedFactMessage: String
+  val rawMidSentenceFactMessage: String
+  val rawMidSentenceSimplifiedFactMessage: String
+
+  val factMessageArgs: IndexedSeq[Any]
+  val simplifiedFactMessageArgs: IndexedSeq[Any]
+  val midSentenceFactMessageArgs: IndexedSeq[Any]
+  val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
+
   val composite: Boolean
   val prettifier: Prettifier
 
@@ -53,48 +55,40 @@ sealed abstract class Fact {
   def &&(rhs: => Fact): Fact = if (isFalse) this else Fact.Binary_&&(this, rhs)
 
   /**
-   * Construct failure message to report if a fact fails, using <code>rawFailureMessage</code>, <code>failureMessageArgs</code> and <code>prettifier</code>
+   * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
    *
    * @return failure message to report if a fact fails
    */
-  def failureMessage: String = if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs)
+  def factMessage: String = isTrue.toString + ": " + (if (factMessageArgs.isEmpty) rawFactMessage else makeString(rawFactMessage, factMessageArgs))
+
+  def simplifiedFactMessage: String = isTrue.toString + ": " + (if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs))
 
   /**
-   * Construct message with a meaning opposite to that of the failure message, using <code>rawNegatedFailureMessage</code>, <code>negatedFailureMessageArgs</code> and <code>prettifier</code>
-   *
-   * @return message with a meaning opposite to that of the failure message
-   */
-  def negatedFailureMessage: String = if (negatedFailureMessageArgs.isEmpty) rawNegatedFailureMessage else makeString(rawNegatedFailureMessage, negatedFailureMessageArgs)
-
-  /**
-   * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFailureMessage</code>, <code>midSentenceFailureMessageArgs</code> and <code>prettifier</code>
+   * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFactMessage</code>, <code>midSentenceFactMessageArgs</code> and <code>prettifier</code>
    *
    * @return failure message suitable for appearing mid-sentence
    */
-  def midSentenceFailureMessage: String = if (midSentenceFailureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, midSentenceFailureMessageArgs)
+  def midSentenceFactMessage: String = isTrue.toString + ": " + (if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs))
 
-  /**
-   * Construct negated failure message suitable for appearing mid-sentence, using <code>rawMidSentenceNegatedFailureMessage</code>, <code>midSentenceNegatedFailureMessageArgs</code> and <code>prettifier</code>
-   *
-   * @return negated failure message suitable for appearing mid-sentence
-   */
-  def midSentenceNegatedFailureMessage: String = if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs)
+  def midSentenceSimplifiedFactMessage: String = isTrue.toString + ": " + (if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs))
 
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(Prettifier.default).toArray)
+
+  override def toString: String = factMessage
 }
 
 object Fact {
 
   case class False(
-    rawFailureMessage: String,
-    rawNegatedFailureMessage: String,
-    rawMidSentenceFailureMessage: String,
-    rawMidSentenceNegatedFailureMessage: String,
-    failureMessageArgs: IndexedSeq[Any],
-    negatedFailureMessageArgs: IndexedSeq[Any],
-    midSentenceFailureMessageArgs: IndexedSeq[Any],
-    midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
+    rawFactMessage: String,
+    rawSimplifiedFactMessage: String,
+    rawMidSentenceFactMessage: String,
+    rawMidSentenceSimplifiedFactMessage: String,
+    factMessageArgs: IndexedSeq[Any],
+    simplifiedFactMessageArgs: IndexedSeq[Any],
+    midSentenceFactMessageArgs: IndexedSeq[Any],
+    midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
     composite: Boolean = false,
     override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
@@ -102,10 +96,12 @@ object Fact {
 
     def isTrue: Boolean = false
 
-    def toAssertion: Assertion = throw new TestFailedException(failureMessage, 2)
-
-    override def toString: String = s"False($failureMessage)"
+    def toAssertion: Assertion = throw new TestFailedException(factMessage, 2)
   }
+
+/*
+factMessage is the simplified one, if need be, and simplifiedFactMessage is a simpler one.
+*/
 
   /**
    * Companion object for the <code>False</code> case class.
@@ -115,65 +111,55 @@ object Fact {
   object False {
 
     /**
-     * Factory method that constructs a new <code>False</code> with passed <code>failureMessage</code>, 
-     * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
-     * <code>midSentenceNegatedFailureMessage</code>, <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
-     * <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFailureMessageArgs</code>
+     * Factory method that constructs a new <code>False</code> with passed <code>factMessage</code>, 
+     * <code>negativeFailureMessage</code>, <code>midSentenceFactMessage</code>, 
+     * <code>midSentenceNegatedFailureMessage</code>, <code>factMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
+     * <code>factMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
      * and <code>midSentenceNegatedFailureMessageArgs</code>.
      *
-     * @param rawFailureMessage raw failure message to report if a match fails
-     * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
-     * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param failureMessageArgs arguments for constructing failure message to report if a match fails
-     * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
+     * @param rawFactMessage raw failure message to report if a match fails
+     * @param rawMidSentenceFactMessage raw failure message to report if a match fails
+     * @param factMessageArgs arguments for constructing failure message to report if a match fails
      * @return a <code>False</code> instance
      */
     def apply(
-      rawFailureMessage: String,
-      rawNegatedFailureMessage: String,
-      rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String,
-      failureMessageArgs: IndexedSeq[Any],
-      negatedFailureMessageArgs: IndexedSeq[Any]
+      rawFactMessage: String,
+      rawMidSentenceFactMessage: String,
+      factMessageArgs: IndexedSeq[Any]
     ): False =
       new False(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawMidSentenceFailureMessage,
-        rawMidSentenceNegatedFailureMessage,
-        failureMessageArgs,
-        negatedFailureMessageArgs,
-        failureMessageArgs,
-        negatedFailureMessageArgs,
+        rawFactMessage,
+        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
+        factMessageArgs,
+        factMessageArgs,
+        factMessageArgs,
+        factMessageArgs,
         false,
         None,
         Prettifier.default
       )
   
     /**
-     * Factory method that constructs a new <code>False</code> with passed <code>rawFailureMessage</code>,
-     * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFailureMessage</code>, and
+     * Factory method that constructs a new <code>False</code> with passed <code>rawFactMessage</code>,
+     * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFactMessage</code>, and
      * <code>rawMidSentenceNegatedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
      * This is suitable to create False with eager error messages, and its mid-sentence messages need to be different.
      *
-     * @param rawFailureMessage raw failure message to report if a match fails
-     * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
-     * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+     * @param rawFactMessage raw failure message to report if a match fails
+     * @param rawMidSentenceFactMessage raw failure message to report if a match fails
      * @return a <code>False</code> instance
      */
     def apply(
-      rawFailureMessage: String,
-      rawNegatedFailureMessage: String,
-      rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String
+      rawFactMessage: String,
+      rawMidSentenceFactMessage: String
     ): False =
       new False(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawMidSentenceFailureMessage,
-        rawMidSentenceNegatedFailureMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -184,25 +170,24 @@ object Fact {
       )
   
     /**
-     * Factory method that constructs a new <code>False</code> with passed <code>rawFailureMessage</code>, and
-     * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFailureMessage</code> will return the same
-     * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
+     * Factory method that constructs a new <code>False</code> with passed <code>rawFactMessage</code>, and
+     * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFactMessage</code> will return the same
+     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
      * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
      * This is suitable to create False with eager error messages that have same mid-sentence messages.
      *
-     * @param rawFailureMessage raw failure message to report if a match fails
+     * @param rawFactMessage raw failure message to report if a match fails
      * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
      * @return a <code>False</code> instance
      */
     def apply(
-      rawFailureMessage: String,
-      rawNegatedFailureMessage: String
+      rawFactMessage: String
     ): False =
       new False(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawFailureMessage,
-        rawNegatedFailureMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -213,67 +198,34 @@ object Fact {
       )
   
     /**
-     * Factory method that constructs a new <code>False</code> with passed <code>rawFailureMessage</code>,
-     * <code>rawNegativeFailureMessage</code> and <code>args</code> fields.  The <code>rawMidSentenceFailureMessage</code> will return the same
-     * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
-     * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will use <code>args</code> as arguments.
-     * This is suitable to create False with lazy error messages that have same mid-sentence messages and arguments.
-     *
-     * @param rawFailureMessage raw failure message to report if a match fails
-     * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param args arguments for error messages construction
-     * @return a <code>False</code> instance
-     */
-    def apply(
-      rawFailureMessage: String,
-      rawNegatedFailureMessage: String,
-      args: IndexedSeq[Any]
-    ) =
-      new False(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        args,
-        args,
-        args,
-        args,
-        false,
-        None,
-        Prettifier.default
-      )
-  
-    /**
-     * Factory method that constructs a new <code>False</code> with passed <code>rawFailureMessage</code>,
-     * <code>rawNegativeFailureMessage</code>, <code>failureMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
-     * The <code>rawMidSentenceFailureMessage</code> will return the same string as <code>rawFailureMessage</code>, and the
+     * Factory method that constructs a new <code>False</code> with passed <code>rawFactMessage</code>,
+     * <code>rawNegativeFailureMessage</code>, <code>factMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
+     * The <code>rawMidSentenceFactMessage</code> will return the same string as <code>rawFactMessage</code>, and the
      * <code>rawMidSentenceNegatedFailureMessage</code> will return the same string as <code>rawNegatedFailureMessage</code>.
-     * The <code>midSentenceFailureMessageArgs</code> will return the same as <code>failureMessageArgs</code>, and the
+     * The <code>midSentenceFactMessageArgs</code> will return the same as <code>factMessageArgs</code>, and the
      * <code>midSentenceNegatedFailureMessageArgs</code> will return the same as <code>negatedFailureMessageArgs</code>.
      * This is suitable to create False with lazy error messages that have same mid-sentence and use different arguments for
      * negated messages.
      *
-     * @param rawFailureMessage raw failure message to report if a match fails
+     * @param rawFactMessage raw failure message to report if a match fails
      * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param failureMessageArgs arguments for constructing failure message to report if a match fails
+     * @param factMessageArgs arguments for constructing failure message to report if a match fails
      * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
      * @return a <code>False</code> instance
      */
     def apply(
-      rawFailureMessage: String,
-      rawNegatedFailureMessage: String,
-      failureMessageArgs: IndexedSeq[Any],
-      negatedFailureMessageArgs: IndexedSeq[Any]
+      rawFactMessage: String,
+      factMessageArgs: IndexedSeq[Any]
     ) =
       new False(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        failureMessageArgs,
-        negatedFailureMessageArgs,
-        failureMessageArgs,
-        negatedFailureMessageArgs,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        factMessageArgs,
+        factMessageArgs,
+        factMessageArgs,
+        factMessageArgs,
         false,
         None,
         Prettifier.default
@@ -281,14 +233,14 @@ object Fact {
   }
   
   case class True(
-    rawFailureMessage: String,
-    rawNegatedFailureMessage: String,
-    rawMidSentenceFailureMessage: String,
-    rawMidSentenceNegatedFailureMessage: String,
-    failureMessageArgs: IndexedSeq[Any],
-    negatedFailureMessageArgs: IndexedSeq[Any],
-    midSentenceFailureMessageArgs: IndexedSeq[Any],
-    midSentenceNegatedFailureMessageArgs: IndexedSeq[Any],
+    rawFactMessage: String,
+    rawSimplifiedFactMessage: String,
+    rawMidSentenceFactMessage: String,
+    rawMidSentenceSimplifiedFactMessage: String,
+    factMessageArgs: IndexedSeq[Any],
+    simplifiedFactMessageArgs: IndexedSeq[Any],
+    midSentenceFactMessageArgs: IndexedSeq[Any],
+    midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
     composite: Boolean = false,
     override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
@@ -297,8 +249,6 @@ object Fact {
     def isTrue: Boolean = true
   
     def toAssertion: Assertion = Succeeded
-  
-    override def toString: String = s"True($negatedFailureMessage)"
   }
   
   /**
@@ -309,63 +259,55 @@ object Fact {
   object True {
   
     /**
-     * Factory method that constructs a new <code>True</code> with passed code>failureMessage</code>, 
-     * <code>negativeFailureMessage</code>, <code>midSentenceFailureMessage</code>, 
-     * <code>midSentenceNegatedFailureMessage</code>, <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
-     * <code>failureMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFailureMessageArgs</code>
+     * Factory method that constructs a new <code>True</code> with passed code>factMessage</code>, 
+     * <code>negativeFailureMessage</code>, <code>midSentenceFactMessage</code>, 
+     * <code>midSentenceNegatedFailureMessage</code>, <code>factMessageArgs</code>, and <code>negatedFailureMessageArgs</code> fields.
+     * <code>factMessageArgs</code>, and <code>negatedFailureMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
      * and <code>midSentenceNegatedFailureMessageArgs</code>.
      *
-     * @param rawFailureMessage raw failure message to report if a match fails
-     * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
-     * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param failureMessageArgs arguments for constructing failure message to report if a match fails
-     * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
+     * @param rawFactMessage raw failure message to report if a match fails
+     * @param rawMidSentenceFactMessage raw failure message to report if a match fails
+     * @param factMessageArgs arguments for constructing failure message to report if a match fails
      * @return a <code>True</code> instance
      */
-    def apply(rawFailureMessage: String,
-      rawNegatedFailureMessage: String,
-      rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String,
-      failureMessageArgs: IndexedSeq[Any],
-      negatedFailureMessageArgs: IndexedSeq[Any]
+    def apply(
+      rawFactMessage: String,
+      rawMidSentenceFactMessage: String,
+      factMessageArgs: IndexedSeq[Any]
     ): True =
       new True(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawMidSentenceFailureMessage,
-        rawMidSentenceNegatedFailureMessage,
-        failureMessageArgs,
-        negatedFailureMessageArgs,
-        failureMessageArgs,
-        negatedFailureMessageArgs,
+        rawFactMessage,
+        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
+        factMessageArgs,
+        factMessageArgs,
+        factMessageArgs,
+        factMessageArgs,
         false,
         None,
         Prettifier.default
       )
   
     /**
-     * Factory method that constructs a new <code>True</code> with passed <code>rawFailureMessage</code>,
-     * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFailureMessage</code>, and
+     * Factory method that constructs a new <code>True</code> with passed <code>rawFactMessage</code>,
+     * <code>rawNegativeFailureMessage</code>, <code>rawMidSentenceFactMessage</code>, and
      * <code>rawMidSentenceNegatedFailureMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
      * This is suitable to create True with eager error messages, and its mid-sentence messages need to be different.
      *
-     * @param rawFailureMessage raw failure message to report if a match fails
-     * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param rawMidSentenceFailureMessage raw failure message to report if a match fails
-     * @param rawMidSentenceNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+     * @param rawFactMessage raw failure message to report if a match fails
+     * @param rawMidSentenceFactMessage raw failure message to report if a match fails
      * @return a <code>True</code> instance
      */
-    def apply(rawFailureMessage: String,
-      rawNegatedFailureMessage: String,
-      rawMidSentenceFailureMessage: String,
-      rawMidSentenceNegatedFailureMessage: String
+    def apply(
+      rawFactMessage: String,
+      rawMidSentenceFactMessage: String
     ): True =
       new True(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawMidSentenceFailureMessage,
-        rawMidSentenceNegatedFailureMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -376,25 +318,23 @@ object Fact {
       )
   
     /**
-     * Factory method that constructs a new <code>True</code> with passed <code>rawFailureMessage</code>, and
-     * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFailureMessage</code> will return the same
-     * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
+     * Factory method that constructs a new <code>True</code> with passed <code>rawFactMessage</code>, and
+     * <code>rawNegativeFailureMessage</code> fields. The <code>rawMidSentenceFactMessage</code> will return the same
+     * string as <code>rawFactMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
      * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will have <code>Vector.empty</code> values.
      * This is suitable to create True with eager error messages that have same mid-sentence messages.
      *
-     * @param rawFailureMessage raw failure message to report if a match fails
-     * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
+     * @param rawFactMessage raw failure message to report if a match fails
      * @return a <code>True</code> instance
      */
     def apply(
-      rawFailureMessage: String,
-      rawNegatedFailureMessage: String
+      rawFactMessage: String
     ): True =
       new True(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawFailureMessage,
-        rawNegatedFailureMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -405,67 +345,32 @@ object Fact {
       )
   
     /**
-     * Factory method that constructs a new <code>True</code> with passed <code>rawFailureMessage</code>,
-     * <code>rawNegativeFailureMessage</code> and <code>args</code> fields.  The <code>rawMidSentenceFailureMessage</code> will return the same
-     * string as <code>rawFailureMessage</code>, and the <code>rawMidSentenceNegatedFailureMessage</code> will return the
-     * same string as <code>rawNegatedFailureMessage</code>.  All argument fields will use <code>args</code> as arguments.
-     * This is suitable to create True with lazy error messages that have same mid-sentence messages and arguments.
-     *
-     * @param rawFailureMessage raw failure message to report if a match fails
-     * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param args arguments for error messages construction
-     * @return a <code>True</code> instance
-     */
-    def apply(
-      rawFailureMessage: String,
-      rawNegatedFailureMessage: String,
-      args: IndexedSeq[Any]
-    ) =
-      new True(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        args,
-        args,
-        args,
-        args,
-        false,
-        None,
-        Prettifier.default
-      )
-  
-    /**
-     * Factory method that constructs a new <code>True</code> with passed <code>rawFailureMessage</code>,
-     * <code>rawNegativeFailureMessage</code>, <code>failureMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
-     * The <code>rawMidSentenceFailureMessage</code> will return the same string as <code>rawFailureMessage</code>, and the
+     * Factory method that constructs a new <code>True</code> with passed <code>rawFactMessage</code>,
+     * <code>rawNegativeFailureMessage</code>, <code>factMessageArgs</code> and <code>negatedFailureMessageArgs</code> fields.
+     * The <code>rawMidSentenceFactMessage</code> will return the same string as <code>rawFactMessage</code>, and the
      * <code>rawMidSentenceNegatedFailureMessage</code> will return the same string as <code>rawNegatedFailureMessage</code>.
-     * The <code>midSentenceFailureMessageArgs</code> will return the same as <code>failureMessageArgs</code>, and the
+     * The <code>midSentenceFactMessageArgs</code> will return the same as <code>factMessageArgs</code>, and the
      * <code>midSentenceNegatedFailureMessageArgs</code> will return the same as <code>negatedFailureMessageArgs</code>.
      * This is suitable to create True with lazy error messages that have same mid-sentence and use different arguments for
      * negated messages.
      *
-     * @param rawFailureMessage raw failure message to report if a match fails
-     * @param rawNegatedFailureMessage raw message with a meaning opposite to that of the failure message
-     * @param failureMessageArgs arguments for constructing failure message to report if a match fails
-     * @param negatedFailureMessageArgs arguments for constructing message with a meaning opposite to that of the failure message
+     * @param rawFactMessage raw failure message to report if a match fails
+     * @param factMessageArgs arguments for constructing failure message to report if a match fails
      * @return a <code>True</code> instance
      */
     def apply(
-      rawFailureMessage: String,
-      rawNegatedFailureMessage: String,
-      failureMessageArgs: IndexedSeq[Any],
-      negatedFailureMessageArgs: IndexedSeq[Any]
+      rawFactMessage: String,
+      factMessageArgs: IndexedSeq[Any]
     ) =
       new True(
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        rawFailureMessage,
-        rawNegatedFailureMessage,
-        failureMessageArgs,
-        negatedFailureMessageArgs,
-        failureMessageArgs,
-        negatedFailureMessageArgs,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        factMessageArgs,
+        factMessageArgs,
+        factMessageArgs,
+        factMessageArgs,
         false,
         None,
         Prettifier.default
@@ -474,14 +379,15 @@ object Fact {
 
   case class Unary_!(underlying: Fact) extends Fact {
 
-    val rawFailureMessage: String = underlying.rawNegatedFailureMessage
-    val rawNegatedFailureMessage: String = underlying.rawFailureMessage
-    val rawMidSentenceFailureMessage: String = underlying.rawMidSentenceNegatedFailureMessage
-    val rawMidSentenceNegatedFailureMessage: String = underlying.rawMidSentenceFailureMessage
-    val failureMessageArgs: IndexedSeq[Any] = underlying.negatedFailureMessageArgs
-    val negatedFailureMessageArgs: IndexedSeq[Any] = underlying.failureMessageArgs
-    val midSentenceFailureMessageArgs: IndexedSeq[Any] = underlying.midSentenceNegatedFailureMessageArgs
-    val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = underlying.midSentenceFailureMessageArgs
+    // Ah, need to do the !({0}) thing
+    val rawFactMessage: String = underlying.rawSimplifiedFactMessage
+    val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
+    val rawMidSentenceFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
+    val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
+    val factMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
+    val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
     val composite: Boolean = underlying.composite
     val prettifier: Prettifier = underlying.prettifier
 
@@ -490,22 +396,57 @@ object Fact {
     def toAssertion: Assertion = ???
 
     override def unary_!(): org.scalatest.Fact = underlying
+
+    override def factMessage: String = "!" + super.factMessage
+
+    override def simplifiedFactMessage: String = "!" + super.simplifiedFactMessage
+
+    override def midSentenceFactMessage: String = "!" + super.midSentenceFactMessage
+
+    override def midSentenceSimplifiedFactMessage: String = "!" + super.midSentenceSimplifiedFactMessage
   }
 
   class Binary_&&(left: Fact, right: => Fact) extends Fact {
 
-    val rawFailureMessage: String = commaBut(left.composite, right.composite)
-    val rawNegatedFailureMessage: String = commaAnd(left.composite, right.composite)
-    val rawMidSentenceFailureMessage: String = commaBut(left.composite, right.composite)
-    val rawMidSentenceNegatedFailureMessage: String = commaAnd(left.composite, right.composite)
-    val failureMessageArgs: IndexedSeq[Any] = Vector(NegatedFailureMessage(left), MidSentenceFailureMessage(right))
-    val negatedFailureMessageArgs: IndexedSeq[Any] = Vector(NegatedFailureMessage(left), MidSentenceNegatedFailureMessage(right))
-    val midSentenceFailureMessageArgs: IndexedSeq[Any] = Vector(MidSentenceNegatedFailureMessage(left), MidSentenceFailureMessage(right))
-    val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = Vector(MidSentenceNegatedFailureMessage(left), MidSentenceNegatedFailureMessage(right))
+    private lazy val rightResult = right
+
+    val rawFactMessage: String = {
+      if (left.isFalse) left.rawFactMessage
+      else Resources.rawCommaDoubleAmpersand
+    }
+    val rawSimplifiedFactMessage: String = {
+      if (left.isFalse) left.rawSimplifiedFactMessage
+      else Resources.rawCommaDoubleAmpersand
+    }
+    val rawMidSentenceFactMessage: String = {
+      if (left.isFalse) left.rawMidSentenceFactMessage
+      else Resources.rawCommaDoubleAmpersand
+    }
+    val rawMidSentenceSimplifiedFactMessage: String = {
+      if (left.isFalse) left.rawMidSentenceSimplifiedFactMessage
+      else Resources.rawCommaDoubleAmpersand
+    }
+    val factMessageArgs: IndexedSeq[Any] = {
+      if (left.isFalse) Vector(FactMessage(left)) // Keep full message if short circuiting the error message
+      else Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult)) // Simplify if combining
+    }
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = {
+      if (left.isFalse) Vector(SimplifiedFactMessage(left))
+      else Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
+    }
+    val midSentenceFactMessageArgs: IndexedSeq[Any] = {
+      if (left.isFalse) Vector(MidSentenceFactMessage(left)) // Keep full message if short circuiting the error message
+      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult)) // Simplify if combining
+    }
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
+      if (left.isFalse) Vector(MidSentenceFactMessage(left))
+      else Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(rightResult))
+    }
+
     val composite: Boolean = true
     val prettifier: Prettifier = left.prettifier
 
-    def isTrue: Boolean = left.isTrue && right.isTrue
+    def isTrue: Boolean = left.isTrue && rightResult.isTrue
 
     def toAssertion: Assertion = ???
   }
@@ -516,14 +457,33 @@ object Fact {
 
   class Binary_||(left: Fact, right: => Fact) extends Fact {
 
-    val rawFailureMessage: String = commaAnd(left.composite, right.composite)
-    val rawNegatedFailureMessage: String = commaAnd(left.composite, right.composite)
-    val rawMidSentenceFailureMessage: String = commaAnd(left.composite, right.composite)
-    val rawMidSentenceNegatedFailureMessage: String = commaAnd(left.composite, right.composite)
-    val failureMessageArgs: IndexedSeq[Any] = Vector(FailureMessage(left), MidSentenceFailureMessage(right))
-    val negatedFailureMessageArgs: IndexedSeq[Any] = Vector(FailureMessage(left), MidSentenceNegatedFailureMessage(right))
-    val midSentenceFailureMessageArgs: IndexedSeq[Any] = Vector(MidSentenceFailureMessage(left), MidSentenceFailureMessage(right))
-    val midSentenceNegatedFailureMessageArgs: IndexedSeq[Any] = Vector(MidSentenceFailureMessage(left), MidSentenceNegatedFailureMessage(right))
+    // Todo: rightResult
+
+    val rawFactMessage: String = {
+      commaAnd(left.composite, right.composite)
+    }
+    val rawSimplifiedFactMessage: String = {
+      commaAnd(left.composite, right.composite)
+    }
+    val rawMidSentenceFactMessage: String = {
+      commaAnd(left.composite, right.composite)
+    }
+    val rawMidSentenceSimplifiedFactMessage: String = {
+      commaAnd(left.composite, right.composite)
+    }
+    val factMessageArgs: IndexedSeq[Any] = {
+      Vector(FactMessage(left), MidSentenceFactMessage(right))
+    }
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = {
+      Vector(FactMessage(left), MidSentenceFactMessage(right))
+    }
+    val midSentenceFactMessageArgs: IndexedSeq[Any] = {
+      Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(right))
+    }
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
+      Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(right))
+    }
+
     val composite: Boolean = true
     val prettifier: Prettifier = left.prettifier
 
@@ -550,28 +510,32 @@ object Fact {
     case (true,true) => Resources.rawBothParensCommaBut
   }
 
+  private[scalatest] class MyLazyMessage(raw: String, args: IndexedSeq[Any]) {
+    override def toString: String = Resources.formatString(raw, args.map(Prettifier.default).toArray)
+  }
+
   // Idea is to override toString each time it is used.
   private[scalatest] sealed abstract class LazyMessage {
     val nestedArgs: IndexedSeq[Any]
   }
 
-  private[scalatest] case class FailureMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
-    override def toString: String = fact.failureMessage
+  private[scalatest] case class FactMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.factMessageArgs
+    override def toString: String = fact.factMessage
   }
 
-  private[scalatest] case class NegatedFailureMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
-    override def toString: String = fact.negatedFailureMessage
+  private[scalatest] case class MidSentenceFactMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.midSentenceFactMessageArgs
+    override def toString: String = fact.midSentenceFactMessage
   }
 
-  private[scalatest] case class MidSentenceFailureMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.failureMessageArgs
-    override def toString: String = fact.midSentenceFailureMessage
+  private[scalatest] case class SimplifiedFactMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.simplifiedFactMessageArgs
+    override def toString: String = fact.simplifiedFactMessage
   }
 
-  private[scalatest] case class MidSentenceNegatedFailureMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.negatedFailureMessageArgs
-    override def toString: String = fact.midSentenceNegatedFailureMessage
+  private[scalatest] case class MidSentenceSimplifiedFactMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.midSentenceSimplifiedFactMessageArgs
+    override def toString: String = fact.midSentenceSimplifiedFactMessage
   }
 }

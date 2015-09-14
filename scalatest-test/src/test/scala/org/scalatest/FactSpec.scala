@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+/*
 import org.scalactic.PrettyMethods
 import org.scalatest.exceptions.TestFailedException
 import SharedHelpers.thisLineNumber
@@ -619,3 +620,4 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       False("message", "negated message") || False("message", "negated message")
     )
 }
+*/
