@@ -56,23 +56,37 @@ sealed abstract class Fact {
 
   def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
+  final val stringPrefix: String = if (isYes) "Yes" else "No"
+
   /**
    * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
    *
    * @return failure message to report if a fact fails
    */
-  def factMessage: String = isYes.toString + ": " + (if (factMessageArgs.isEmpty) rawFactMessage else makeString(rawFactMessage, factMessageArgs))
+  def factMessage: String = {
+    val mainMessage = if (factMessageArgs.isEmpty) rawFactMessage else makeString(rawFactMessage, factMessageArgs)
+    stringPrefix + "(" + mainMessage + ")"
+  }
 
-  def simplifiedFactMessage: String = isYes.toString + ": " + (if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs))
+  def simplifiedFactMessage: String = {
+    val mainMessage = if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs)
+    stringPrefix + "(" + mainMessage + ")"
+  }
 
   /**
    * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFactMessage</code>, <code>midSentenceFactMessageArgs</code> and <code>prettifier</code>
    *
    * @return failure message suitable for appearing mid-sentence
    */
-  def midSentenceFactMessage: String = isYes.toString + ": " + (if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs))
+  def midSentenceFactMessage: String = {
+    val mainMessage = if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs)
+    stringPrefix + "(" + mainMessage + ")"
+  }
 
-  def midSentenceSimplifiedFactMessage: String = isYes.toString + ": " + (if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs))
+  def midSentenceSimplifiedFactMessage: String = {
+    val mainMessage = if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs)
+    stringPrefix + "(" + mainMessage + ")"
+  }
 
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(Prettifier.default).toArray)

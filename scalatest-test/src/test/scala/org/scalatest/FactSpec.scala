@@ -24,6 +24,14 @@ import prop.TableDrivenPropertyChecks._
 import prop.TableFor1
 import matchers.{ FailureMessage, NegatedFailureMessage, MidSentenceFailureMessage, MidSentenceNegatedFailureMessage }
 
+/*
+No(
+  No(!Yes(3 equaled 3)) &&
+  No(4 did not equal 3)
+)
+
+No(4 did not equal 3)
+*/
 class FactSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
 
   "A Fact" - {
@@ -40,7 +48,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     "should have a toAssertion method that either returns Succeeded or throws TestFailedException with the correct error message and stack depth" in {
       yesFact.toAssertion shouldBe Succeeded
       val caught = the [TestFailedException] thrownBy noFact.toAssertion
-      caught should have message "false: Expected 3, but got 2"
+      caught should have message "No(Expected 3, but got 2)"
       caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
       caught.failedCodeFileName shouldBe Some("FactSpec.scala")
     }
@@ -50,10 +58,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     }
     "should construct localized strings from the raw strings and args" in {
       val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
-      fact.factMessage shouldBe ("false: 1 did not equal 2")
-      fact.simplifiedFactMessage shouldBe ("false: 1 equaled 2")
-      fact.midSentenceFactMessage shouldBe ("false: 1 did not equal 2")
-      fact.midSentenceSimplifiedFactMessage shouldBe ("false: 1 equaled 2")
+      fact.factMessage shouldBe ("No(1 did not equal 2)")
+      fact.simplifiedFactMessage shouldBe ("No(1 equaled 2)")
+      fact.midSentenceFactMessage shouldBe ("No(1 did not equal 2)")
+      fact.midSentenceSimplifiedFactMessage shouldBe ("No(1 equaled 2)")
       fact.rawFactMessage shouldBe ("{0} did not equal {1}")
       fact.rawSimplifiedFactMessage shouldBe ("{0} equaled {1}")
       fact.rawMidSentenceFactMessage shouldBe ("{0} did not equal {1}")
@@ -67,21 +75,21 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
 
     "should use midSentenceFactMessageArgs to construct midSentenceFactMessage" in {
       val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector(1, 2), Vector.empty)
-      fact.midSentenceFactMessage should be ("false: 1 did not equal 2")
+      fact.midSentenceFactMessage should be ("No(1 did not equal 2)")
     }
 
     "should use midSentenceSimplifiedFactMessageArgs to construct midSentenceSimplifiedFactMessage" in {
       val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
-      fact.midSentenceSimplifiedFactMessage should be ("false: 1 equaled 2")
+      fact.midSentenceSimplifiedFactMessage should be ("No(1 equaled 2)")
     }
     "when negated" - {
       "swaps failure and negated failure messages" in {
         !noFact should equal (Unary_!(noFact))
         val fact2 = Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
-        fact2.factMessage shouldBe ("true: \"howdy\" did not equal null")
-        fact2.simplifiedFactMessage shouldBe ("true: The reference equaled null")
-        fact2.midSentenceFactMessage shouldBe ("true: \"howdy\" did not equal null")
-        fact2.midSentenceSimplifiedFactMessage shouldBe ("true: the reference equaled null")
+        fact2.factMessage shouldBe ("Yes(\"howdy\" did not equal null)")
+        fact2.simplifiedFactMessage shouldBe ("Yes(The reference equaled null)")
+        fact2.midSentenceFactMessage shouldBe ("Yes(\"howdy\" did not equal null)")
+        fact2.midSentenceSimplifiedFactMessage shouldBe ("Yes(the reference equaled null)")
         fact2.rawFactMessage shouldBe ("{0} did not equal null")
         fact2.rawSimplifiedFactMessage shouldBe ("The reference equaled null")
         fact2.rawMidSentenceFactMessage shouldBe ("{0} did not equal null")
@@ -93,10 +101,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact2.composite shouldBe (false)
         val fact2Negated = !fact2
         fact2Negated should equal (Unary_!(Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)))
-        fact2Negated.factMessage shouldBe ("false: The reference equaled null")
-        fact2Negated.simplifiedFactMessage shouldBe ("false: \"howdy\" did not equal null")
-        fact2Negated.midSentenceFactMessage shouldBe ("false: the reference equaled null")
-        fact2Negated.midSentenceSimplifiedFactMessage shouldBe ("false: \"howdy\" did not equal null")
+        fact2Negated.factMessage shouldBe ("No(The reference equaled null)")
+        fact2Negated.simplifiedFactMessage shouldBe ("No(\"howdy\" did not equal null)")
+        fact2Negated.midSentenceFactMessage shouldBe ("No(the reference equaled null)")
+        fact2Negated.midSentenceSimplifiedFactMessage shouldBe ("No(\"howdy\" did not equal null)")
         fact2Negated.rawFactMessage shouldBe ("The reference equaled null")
         fact2Negated.rawSimplifiedFactMessage shouldBe ("{0} did not equal null")
         fact2Negated.rawMidSentenceFactMessage shouldBe ("the reference equaled null")
@@ -138,10 +146,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
         fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
-        fact.factMessage should be ("false: " + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.simplifiedFactMessage should be ("false: " + Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceFactMessage should be ("false: " + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceSimplifiedFactMessage should be ("false: " + Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.factMessage should be ("No(" + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty) + ")")
+        fact.simplifiedFactMessage should be ("No(" + Resources.wasGreaterThan('a'.pretty, 'b'.pretty) + ")")
+        fact.midSentenceFactMessage should be ("No(" + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty) + ")")
+        fact.midSentenceSimplifiedFactMessage should be ("No(" + Resources.wasGreaterThan('a'.pretty, 'b'.pretty) + ")")
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
         fact.composite should be (false)
@@ -156,10 +164,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
         fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
-        fact.factMessage should be ("false: " + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.simplifiedFactMessage should be ("false: " + Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceFactMessage should be ("false: " + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
-        fact.midSentenceSimplifiedFactMessage should be ("false: " + Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.factMessage should be ("No(" + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty) + ")")
+        fact.simplifiedFactMessage should be ("No(" + Resources.wasGreaterThan('a'.pretty, 'b'.pretty) + ")")
+        fact.midSentenceFactMessage should be ("No(" + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty) + ")")
+        fact.midSentenceSimplifiedFactMessage should be ("No(" + Resources.wasGreaterThan('a'.pretty, 'b'.pretty) + ")")
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
         fact.composite should be (false)
@@ -175,10 +183,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.factMessage should be ("false: " + Resources.commaDoubleAmpersand("true: " + Resources.wasGreaterThan('c'.pretty, 'b'.pretty), "false: " + Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be ("false: " + Resources.commaDoubleAmpersand("true: " + Resources.wasGreaterThan('c'.pretty, 'b'.pretty), "false: " + Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be ("false: " + Resources.commaDoubleAmpersand("true: " + Resources.wasGreaterThan('c'.pretty, 'b'.pretty), "false: " + Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be ("false: " + Resources.commaDoubleAmpersand("true: " + Resources.wasGreaterThan('c'.pretty, 'b'.pretty), "false: " + Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.factMessage should be ("No(" + Resources.commaDoubleAmpersand("Yes(" + Resources.wasGreaterThan('c'.pretty, 'b'.pretty) + ")", "No(" + Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty) + ")") + ")")
+        fact.simplifiedFactMessage should be ("No(" + Resources.commaDoubleAmpersand("Yes(" + Resources.wasGreaterThan('c'.pretty, 'b'.pretty) + ")", "No(" + Resources.wasGreaterThan('c'.pretty, 'd'.pretty) + ")") + ")")
+        fact.midSentenceFactMessage should be ("No(" + Resources.commaDoubleAmpersand("Yes(" + Resources.wasGreaterThan('c'.pretty, 'b'.pretty) + ")", "No(" + Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty) + ")") + ")")
+        fact.midSentenceSimplifiedFactMessage should be ("No(" + Resources.commaDoubleAmpersand("Yes(" + Resources.wasGreaterThan('c'.pretty, 'b'.pretty) + ")", "No(" + Resources.wasGreaterThan('c'.pretty, 'd'.pretty) + ")") + ")")
         fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideNo)))
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideNo)))
@@ -196,10 +204,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.factMessage should be ("true: " + Resources.commaDoubleAmpersand("true: " + Resources.wasGreaterThan('e'.pretty, 'b'.pretty), "true: " + Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be ("true: " + Resources.commaDoubleAmpersand("true: " + Resources.wasGreaterThan('e'.pretty, 'b'.pretty), "true: " + Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be ("true: " + Resources.commaDoubleAmpersand("true: " + Resources.wasGreaterThan('e'.pretty, 'b'.pretty), "true: " + Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be ("true: " + Resources.commaDoubleAmpersand("true: " + Resources.wasGreaterThan('e'.pretty, 'b'.pretty), "true: " + Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.factMessage should be ("Yes(" + Resources.commaDoubleAmpersand("Yes(" + Resources.wasGreaterThan('e'.pretty, 'b'.pretty) + ")", "Yes(" + Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty) + ")") + ")")
+        fact.simplifiedFactMessage should be ("Yes(" + Resources.commaDoubleAmpersand("Yes(" + Resources.wasGreaterThan('e'.pretty, 'b'.pretty) + ")", "Yes(" + Resources.wasGreaterThan('e'.pretty, 'd'.pretty) + ")") + ")")
+        fact.midSentenceFactMessage should be ("Yes(" + Resources.commaDoubleAmpersand("Yes(" + Resources.wasGreaterThan('e'.pretty, 'b'.pretty) + ")", "Yes(" + Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty) + ")") + ")")
+        fact.midSentenceSimplifiedFactMessage should be ("Yes(" + Resources.commaDoubleAmpersand("Yes(" + Resources.wasGreaterThan('e'.pretty, 'b'.pretty) + ")", "Yes(" + Resources.wasGreaterThan('e'.pretty, 'd'.pretty) + ")") + ")")
         fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideYes)))
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideYes)))
@@ -256,8 +264,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoublePipe)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.factMessage should be ("false: " + Resources.commaDoublePipe("false: " + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), "false: " + Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be ("false: " + Resources.commaDoublePipe("false: " + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), "false: " + Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.factMessage should be ("No(" + Resources.commaDoublePipe("No(" + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty) + ")", "No(" + Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty) + ")") + ")")
+        fact.simplifiedFactMessage should be ("No(" + Resources.commaDoublePipe("No(" + Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty) + ")", "No(" + Resources.wasGreaterThan('a'.pretty, 'd'.pretty) + ")") + ")")
         /*fact.midSentenceFactMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
         fact.midSentenceSimplifiedFactMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
         fact.factMessageArgs should be (Vector(FactMessage(leftSideNo), MidSentenceFactMessage(rightSideNo)))
