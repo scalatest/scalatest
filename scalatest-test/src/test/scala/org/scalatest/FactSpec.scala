@@ -82,23 +82,24 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
       fact.midSentenceSimplifiedFactMessage should be ("No(1 equaled 2)")
     }
-    "when negated" - {
-      "swaps failure and negated failure messages" in {
+    "when negated with !" - {
+      "should keep the same main message, but change Yes to No or No to Yes " in {
         !noFact should equal (Unary_!(noFact))
-        val fact2 = Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
-        fact2.factMessage shouldBe ("Yes(\"howdy\" did not equal null)")
-        fact2.simplifiedFactMessage shouldBe ("Yes(The reference equaled null)")
-        fact2.midSentenceFactMessage shouldBe ("Yes(\"howdy\" did not equal null)")
-        fact2.midSentenceSimplifiedFactMessage shouldBe ("Yes(the reference equaled null)")
-        fact2.rawFactMessage shouldBe ("{0} did not equal null")
-        fact2.rawSimplifiedFactMessage shouldBe ("The reference equaled null")
-        fact2.rawMidSentenceFactMessage shouldBe ("{0} did not equal null")
-        fact2.rawMidSentenceSimplifiedFactMessage shouldBe ("the reference equaled null")
-        fact2.factMessageArgs shouldBe (Vector("howdy"))
-        fact2.simplifiedFactMessageArgs shouldBe (Vector.empty)
-        fact2.midSentenceFactMessageArgs shouldBe (Vector("howdy"))
-        fact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
+        val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))
+        fact2.factMessage shouldBe ("No(Expected 3, but got 2)")
+        fact2.simplifiedFactMessage shouldBe ("No(3 did not equal 2)")
+        fact2.midSentenceFactMessage shouldBe ("No(expected 3, but got 2)")
+        fact2.midSentenceSimplifiedFactMessage shouldBe ("No(3 did not equal 2)")
+        fact2.rawFactMessage shouldBe ("Expected {0}, but got {1}")
+        fact2.rawSimplifiedFactMessage shouldBe ("{0} did not equal {1}")
+        fact2.rawMidSentenceFactMessage shouldBe ("expected {0}, but got {1}")
+        fact2.rawMidSentenceSimplifiedFactMessage shouldBe ("{0} did not equal {1}")
+        fact2.factMessageArgs shouldBe (Vector(3, 2))
+        fact2.simplifiedFactMessageArgs shouldBe (Vector(3, 2))
+        fact2.midSentenceFactMessageArgs shouldBe (Vector(3, 2))
+        fact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
         fact2.composite shouldBe (false)
+/*
         val fact2Negated = !fact2
         fact2Negated should equal (Unary_!(Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)))
         fact2Negated.factMessage shouldBe ("No(The reference equaled null)")
@@ -114,6 +115,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact2Negated.midSentenceFactMessageArgs shouldBe (Vector.empty)
         fact2Negated.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("howdy"))
         fact2Negated.composite shouldBe (false)
+*/
       }
       "should maintain the same composite state" in {
         !noFact should have (composite(false))
