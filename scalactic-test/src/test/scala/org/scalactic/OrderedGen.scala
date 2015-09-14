@@ -21,9 +21,6 @@ import Gen._
 /**
  * An assortment of generators that can efficiently produce ordered pairs of various
  * numeric types, including or excluding equality.
- *
- * Generators with a name not ending in 'Eq' will produce ordered pairs (a, b) such that a < b,
- * while those with an 'Eq' suffix will produce pairs (a, b) such that a <= b.
  */
 object OrderedGen {
   
