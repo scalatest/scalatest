@@ -35,11 +35,11 @@ sealed abstract class Fact {
 
   val cause: Option[Throwable] = None
 
-  def isTrue: Boolean
+  def isYes: Boolean
 
-  final def isFalse: Boolean = !isTrue
+  final def isNo: Boolean = !isYes
 
-  final def toBoolean: Boolean = isTrue
+  final def toBoolean: Boolean = isYes
 
   def toAssertion: Assertion
 
@@ -50,27 +50,27 @@ sealed abstract class Fact {
    */
   def unary_!(): Fact = Fact.Unary_!(this)
 
-  def ||(rhs: => Fact): Fact = if (isTrue) this else Fact.Binary_||(this, rhs)
+  def ||(rhs: => Fact): Fact = if (isYes) this else Fact.Binary_||(this, rhs)
 
-  def &&(rhs: => Fact): Fact = if (isFalse) this else Fact.Binary_&&(this, rhs)
+  def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
    *
    * @return failure message to report if a fact fails
    */
-  def factMessage: String = isTrue.toString + ": " + (if (factMessageArgs.isEmpty) rawFactMessage else makeString(rawFactMessage, factMessageArgs))
+  def factMessage: String = isYes.toString + ": " + (if (factMessageArgs.isEmpty) rawFactMessage else makeString(rawFactMessage, factMessageArgs))
 
-  def simplifiedFactMessage: String = isTrue.toString + ": " + (if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs))
+  def simplifiedFactMessage: String = isYes.toString + ": " + (if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs))
 
   /**
    * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFactMessage</code>, <code>midSentenceFactMessageArgs</code> and <code>prettifier</code>
    *
    * @return failure message suitable for appearing mid-sentence
    */
-  def midSentenceFactMessage: String = isTrue.toString + ": " + (if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs))
+  def midSentenceFactMessage: String = isYes.toString + ": " + (if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs))
 
-  def midSentenceSimplifiedFactMessage: String = isTrue.toString + ": " + (if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs))
+  def midSentenceSimplifiedFactMessage: String = isYes.toString + ": " + (if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs))
 
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(Prettifier.default).toArray)
@@ -94,7 +94,7 @@ object Fact {
     prettifier: Prettifier = Prettifier.default
   ) extends Fact {
 
-    def isTrue: Boolean = false
+    def isYes: Boolean = false
 
     def toAssertion: Assertion = throw new TestFailedException(factMessage, 2)
   }
@@ -354,7 +354,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     prettifier: Prettifier = Prettifier.default
   ) extends Fact {
   
-    def isTrue: Boolean = true
+    def isYes: Boolean = true
   
     def toAssertion: Assertion = Succeeded
   }
@@ -610,7 +610,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     val composite: Boolean = underlying.composite
     val prettifier: Prettifier = underlying.prettifier
 
-    def isTrue: Boolean = !(underlying.isTrue)
+    def isYes: Boolean = !(underlying.isYes)
 
     def toAssertion: Assertion = ???
 
@@ -630,42 +630,42 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     private lazy val rightResult = right
 
     val rawFactMessage: String = {
-      if (left.isFalse) left.rawFactMessage
+      if (left.isNo) left.rawFactMessage
       else Resources.rawCommaDoubleAmpersand
     }
     val rawSimplifiedFactMessage: String = {
-      if (left.isFalse) left.rawSimplifiedFactMessage
+      if (left.isNo) left.rawSimplifiedFactMessage
       else Resources.rawCommaDoubleAmpersand
     }
     val rawMidSentenceFactMessage: String = {
-      if (left.isFalse) left.rawMidSentenceFactMessage
+      if (left.isNo) left.rawMidSentenceFactMessage
       else Resources.rawCommaDoubleAmpersand
     }
     val rawMidSentenceSimplifiedFactMessage: String = {
-      if (left.isFalse) left.rawMidSentenceSimplifiedFactMessage
+      if (left.isNo) left.rawMidSentenceSimplifiedFactMessage
       else Resources.rawCommaDoubleAmpersand
     }
     val factMessageArgs: IndexedSeq[Any] = {
-      if (left.isFalse) Vector(FactMessage(left)) // Keep full message if short circuiting the error message
+      if (left.isNo) Vector(FactMessage(left)) // Keep full message if short circuiting the error message
       else Vector(SimplifiedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isFalse) Vector(SimplifiedFactMessage(left))
+      if (left.isNo) Vector(SimplifiedFactMessage(left))
       else Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isFalse) Vector(MidSentenceFactMessage(left)) // Keep full message if short circuiting the error message
+      if (left.isNo) Vector(MidSentenceFactMessage(left)) // Keep full message if short circuiting the error message
       else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
     }
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isFalse) Vector(MidSentenceFactMessage(left))
+      if (left.isNo) Vector(MidSentenceFactMessage(left))
       else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
     }
 
     val composite: Boolean = true
     val prettifier: Prettifier = left.prettifier
 
-    def isTrue: Boolean = left.isTrue && rightResult.isTrue
+    def isYes: Boolean = left.isYes && rightResult.isYes
 
     def toAssertion: Assertion = ???
   }
@@ -679,42 +679,42 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     private lazy val rightResult = right
 
     val rawFactMessage: String = {
-      if (left.isTrue) left.rawFactMessage
+      if (left.isYes) left.rawFactMessage
       else Resources.rawCommaDoublePipe
     }
     val rawSimplifiedFactMessage: String = {
-      if (left.isTrue) left.rawSimplifiedFactMessage
+      if (left.isYes) left.rawSimplifiedFactMessage
       else Resources.rawCommaDoublePipe
     }
     val rawMidSentenceFactMessage: String = {
-      if (left.isTrue) left.rawMidSentenceFactMessage
+      if (left.isYes) left.rawMidSentenceFactMessage
       else Resources.rawCommaDoublePipe
     }
     val rawMidSentenceSimplifiedFactMessage: String = {
-      if (left.isTrue) left.rawMidSentenceSimplifiedFactMessage
+      if (left.isYes) left.rawMidSentenceSimplifiedFactMessage
       else Resources.rawCommaDoublePipe
     }
     val factMessageArgs: IndexedSeq[Any] = {
-      if (left.isTrue) Vector(FactMessage(left))
+      if (left.isYes) Vector(FactMessage(left))
       else Vector(FactMessage(left), MidSentenceFactMessage(rightResult))
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isTrue) Vector(SimplifiedFactMessage(left))
+      if (left.isYes) Vector(SimplifiedFactMessage(left))
       else Vector(FactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isTrue) Vector(MidSentenceFactMessage(left))
+      if (left.isYes) Vector(MidSentenceFactMessage(left))
       else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceFactMessage(rightResult))
     }
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isTrue) Vector(MidSentenceSimplifiedFactMessage(left))
+      if (left.isYes) Vector(MidSentenceSimplifiedFactMessage(left))
       else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
     }
 
     val composite: Boolean = true
     val prettifier: Prettifier = left.prettifier
 
-    def isTrue: Boolean = left.isTrue || right.isTrue
+    def isYes: Boolean = left.isYes || right.isYes
 
     def toAssertion: Assertion = ???
   }

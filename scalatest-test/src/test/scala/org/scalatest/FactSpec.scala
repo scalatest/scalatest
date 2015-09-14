@@ -29,11 +29,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
   "A Fact" - {
     val falseFact: Expectation = False("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
     val trueFact: Expectation = True("1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
-    "should have isTrue and isFalse methods" in {
-      falseFact.isTrue shouldBe false
-      falseFact.isFalse shouldBe true
-      trueFact.isTrue shouldBe true
-      trueFact.isFalse shouldBe false
+    "should have isYes and isNo methods" in {
+      falseFact.isYes shouldBe false
+      falseFact.isNo shouldBe true
+      trueFact.isYes shouldBe true
+      trueFact.isNo shouldBe false
     }
     "should have a toAssertion method that either returns Succeeded or throws TestFailedException with the correct error message and stack depth" in {
       trueFact.toAssertion shouldBe Succeeded
@@ -42,7 +42,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
       caught.failedCodeFileName shouldBe Some("FactSpec.scala")
     }
-    "should offer a toBoolean method, even though it is redundant with isTrue" in {
+    "should offer a toBoolean method, even though it is redundant with isYes" in {
       falseFact.toBoolean shouldBe false
       trueFact.toBoolean shouldBe true
     }
@@ -116,13 +116,13 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val notTrueFact = !trueFact
         !notTrueFact should be theSameInstanceAs trueFact
       }
-      "should return the opposite of underlying from its isTrue method" in {
+      "should return the opposite of underlying from its isYes method" in {
         val notTrueFact = !trueFact
-        notTrueFact.isTrue should equal (!(trueFact.isTrue))
+        notTrueFact.isYes should equal (!(trueFact.isYes))
       }
-      "should return the opposite of underlying from its isFalse method" in {
+      "should return the opposite of underlying from its isNo method" in {
         val notTrueFact = !trueFact
-        notTrueFact.isFalse should equal (!(trueFact.isFalse))
+        notTrueFact.isNo should equal (!(trueFact.isNo))
       }
     }
   }
@@ -169,7 +169,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
         val fact = leftSideTrue && rightSideFalse
         fact shouldBe a [Binary_&&]
-        fact.isFalse shouldBe true
+        fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
@@ -190,7 +190,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val rightSideTrue = True(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideTrue && rightSideTrue
         fact shouldBe a [Binary_&&]
-        fact.isTrue shouldBe true
+        fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
@@ -250,7 +250,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val rightSideFalse = False(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideFalse || rightSideFalse
         fact shouldBe a [Binary_||]
-        fact.isFalse shouldBe true
+        fact.isNo shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaDoublePipe)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoublePipe)
@@ -271,7 +271,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val rightSideTrue = True(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
         val fact = leftSideFalse || rightSideTrue
         fact shouldBe a [Binary_||]
-        fact.isTrue shouldBe true
+        fact.isYes shouldBe true
         fact.rawFactMessage should be (Resources.rawCommaAnd)
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
