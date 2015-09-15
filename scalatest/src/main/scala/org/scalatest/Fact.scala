@@ -88,6 +88,8 @@ sealed abstract class Fact {
     Resources.formatString(raw, args.map(Prettifier.default).toArray)
 
   override def toString: String = stringPrefix + "(" + factMessage + ")"
+
+  def midSentenceToString: String = stringPrefix + "(" + midSentenceFactMessage + ")"
 }
 
 object Fact {
@@ -149,6 +151,38 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         None,
         Prettifier.default
       )
+
+    /**
+     * Factory method that constructs a new <code>No</code> with passed <code>factMessage</code>,
+     * <code>negativeFactMessage</code>, <code>midSentenceFactMessage</code>,
+     * <code>midSentenceSimplifiedFactMessage</code>, <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> fields.
+     * <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
+     * and <code>midSentenceSimplifiedFactMessageArgs</code>.
+     *
+     * @param rawFactMessage raw fact message to report if a match fails
+     * @param rawMidSentenceFactMessage raw mid sentence fact message to report if a match fails
+     * @param factMessageArgs arguments for constructing fact message to report if a match fails
+     * @param midSentenceFactMessageArgs arguments for constructing mid sentence fact message to report if a match fails
+     * @return a <code>No</code> instance
+     */
+    def apply(
+      rawFactMessage: String,
+      rawMidSentenceFactMessage: String,
+      factMessageArgs: IndexedSeq[Any],
+      midSentenceFactMessageArgs: IndexedSeq[Any]
+    ): No =
+      new No(
+        rawFactMessage,
+        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
+        factMessageArgs,
+        factMessageArgs,
+        midSentenceFactMessageArgs,
+        midSentenceFactMessageArgs,
+        None,
+        Prettifier.default
+      )
   
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -167,8 +201,8 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       new No(
         rawFactMessage,
         rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -197,9 +231,9 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     ): No =
       new No(
         rawFactMessage,
-        rawFactMessage,
+        rawSimplifiedFactMessage,
         rawMidSentenceFactMessage,
-        rawMidSentenceFactMessage,
+        rawMidSentenceSimplifiedFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -393,6 +427,38 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
+        None,
+        Prettifier.default
+      )
+
+    /**
+     * Factory method that constructs a new <code>Yes</code> with passed code>factMessage</code>,
+     * <code>negativeFailureMessage</code>, <code>midSentenceFactMessage</code>,
+     * <code>midSentenceSimplifiedFactMessage</code>, <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> fields.
+     * <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
+     * and <code>midSentenceSimplifiedFactMessageArgs</code>.
+     *
+     * @param rawFactMessage raw fact message to report if a match fails
+     * @param rawMidSentenceFactMessage raw mid-sentence fact message to report if a match fails
+     * @param factMessageArgs arguments for constructing fact message to report if a match fails
+     * @param midSentenceFactMessageArgs arguments for constructing mid-sentence fact message to report if a match fails
+     * @return a <code>Yes</code> instance
+     */
+    def apply(
+      rawFactMessage: String,
+      rawMidSentenceFactMessage: String,
+      factMessageArgs: IndexedSeq[Any],
+      midSentenceFactMessageArgs: IndexedSeq[Any]
+    ): Yes =
+      new Yes(
+        rawFactMessage,
+        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
+        factMessageArgs,
+        factMessageArgs,
+        midSentenceFactMessageArgs,
+        midSentenceFactMessageArgs,
         None,
         Prettifier.default
       )
@@ -623,29 +689,78 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     override def midSentenceSimplifiedFactMessage: String = super.midSentenceSimplifiedFactMessage
   }
 
-  class Binary_&&(left: Fact, right: => Fact) extends Fact {
+  private val NEWLINE = scala.compat.Platform.EOL
 
-    private lazy val rightResult = right
+  private def rawDiagram(level: Int, operator: String): String = {
+    val padding = "  " * level
+    padding + "{0} " + operator + NEWLINE +
+    padding + "{1}"
+  }
+
+  private def rawNestedDiagram(isTrue: Boolean, level: Int, operator: String): String = {
+    val padding = "  " * level
+    padding + (if (isTrue) "Yes(" else "No(") + NEWLINE +
+    rawDiagram(level + 1, operator) + NEWLINE +
+    padding + ")"
+  }
+
+  private def diagramToString(fact: Fact, level: Int): String =
+    fact match {
+      case binaryDoubleAmpersand: Binary_&& =>
+        val raw = rawNestedDiagram(fact.isYes, level, "&&")
+        val left = diagramToString(binaryDoubleAmpersand.left, level + 1)
+        val right = diagramToString(binaryDoubleAmpersand.rightResult, level + 1)
+        Resources.formatString(raw, Array(left, right))
+
+      case binaryDoublePipe: Binary_|| =>
+        val raw = rawNestedDiagram(fact.isYes, level, "||")
+        val left = diagramToString(binaryDoublePipe.left, level + 1)
+        val right = diagramToString(binaryDoublePipe.rightResult, level + 1)
+        Resources.formatString(raw, Array(left, right))
+
+      case unaryNot: Unary_! =>
+        ""
+
+      case other => fact.midSentenceToString
+    }
+
+  class Binary_&&(private[scalatest] val left: Fact, right: => Fact) extends Fact {
+
+    private[scalatest] lazy val rightResult = right
 
     val rawFactMessage: String = {
-      if (left.isNo) left.rawFactMessage
-      else Resources.rawCommaDoubleAmpersand
+      if (left.isLeaf && rightResult.isLeaf) {
+        if (left.isNo) left.rawFactMessage
+        else Resources.rawCommaBut
+      }
+      else
+        rawDiagram(0, "&&")
     }
     val rawSimplifiedFactMessage: String = {
       if (left.isNo) left.rawSimplifiedFactMessage
-      else Resources.rawCommaDoubleAmpersand
+      else Resources.rawCommaBut
     }
     val rawMidSentenceFactMessage: String = {
       if (left.isNo) left.rawMidSentenceFactMessage
-      else Resources.rawCommaDoubleAmpersand
+      else Resources.rawCommaBut
     }
     val rawMidSentenceSimplifiedFactMessage: String = {
       if (left.isNo) left.rawMidSentenceSimplifiedFactMessage
-      else Resources.rawCommaDoubleAmpersand
+      else Resources.rawCommaBut
     }
     val factMessageArgs: IndexedSeq[Any] = {
-      if (left.isNo) Vector(FactMessage(left)) // Keep full message if short circuiting the error message
-      else Vector(SimplifiedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
+      if (left.isLeaf && rightResult.isLeaf) {
+        if (left.isNo)
+          Vector(FactMessage(left)) // Keep full message if short circuiting the error message
+        else
+          Vector(
+            SimplifiedFactMessage(left),
+            if (rightResult.isInstanceOf[Unary_!]) MidSentenceFactMessage(rightResult) else MidSentenceSimplifiedFactMessage(rightResult)
+          ) // Simplify if combining
+      }
+      else {
+        Vector(UnquotedString(diagramToString(left, 0)), UnquotedString(diagramToString(rightResult, 0)))
+      }
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
       if (left.isNo) Vector(SimplifiedFactMessage(left))
@@ -670,29 +785,38 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     def apply(left: Fact, right: => Fact): Fact = new Binary_&&(left, right)
   }
 
-  class Binary_||(left: Fact, right: => Fact) extends Fact {
+  class Binary_||(private[scalatest] val left: Fact, right: => Fact) extends Fact {
 
-    private lazy val rightResult = right
+    private[scalatest] lazy val rightResult = right
 
     val rawFactMessage: String = {
-      if (left.isYes) left.rawFactMessage
-      else Resources.rawCommaDoublePipe
+      if (left.isLeaf && rightResult.isLeaf) {
+        if (left.isYes) left.rawFactMessage
+        else Resources.rawCommaAnd
+      }
+      else
+        rawDiagram(0, "||")
     }
     val rawSimplifiedFactMessage: String = {
       if (left.isYes) left.rawSimplifiedFactMessage
-      else Resources.rawCommaDoublePipe
+      else Resources.rawCommaAnd
     }
     val rawMidSentenceFactMessage: String = {
       if (left.isYes) left.rawMidSentenceFactMessage
-      else Resources.rawCommaDoublePipe
+      else Resources.rawCommaAnd
     }
     val rawMidSentenceSimplifiedFactMessage: String = {
       if (left.isYes) left.rawMidSentenceSimplifiedFactMessage
-      else Resources.rawCommaDoublePipe
+      else Resources.rawCommaAnd
     }
     val factMessageArgs: IndexedSeq[Any] = {
-      if (left.isYes) Vector(FactMessage(left))
-      else Vector(FactMessage(left), MidSentenceFactMessage(rightResult))
+      if (left.isLeaf && rightResult.isLeaf) {
+        if (left.isYes) Vector(FactMessage(left))
+        else Vector(FactMessage(left), MidSentenceFactMessage(rightResult))
+      }
+      else {
+        Vector(UnquotedString(diagramToString(left, 0)), UnquotedString(diagramToString(rightResult, 0)))
+      }
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
       if (left.isYes) Vector(SimplifiedFactMessage(left))
@@ -700,11 +824,11 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
       if (left.isYes) Vector(MidSentenceFactMessage(left))
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceFactMessage(rightResult))
+      else Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(rightResult))
     }
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
       if (left.isYes) Vector(MidSentenceSimplifiedFactMessage(left))
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
+      else Vector(MidSentenceFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
     }
 
     val isLeaf: Boolean = false
