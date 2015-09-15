@@ -86,8 +86,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       val fact = No("{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector.empty, Vector.empty, Vector.empty, Vector(1, 2))
       fact.midSentenceSimplifiedFactMessage should be ("1 equaled 2")
     }
-    "when simplified with !" - {
-      "should keep the same main message, but change Yes to No or No to Yes " in {
+    "when inverted with !" - {
+      "should use the simplified message, changing Yes to No or No to Yes" in {
         !noFact should equal (Unary_!(noFact))
         val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))
         fact2.factMessage shouldBe ("Expected 3, but got 2")
@@ -103,23 +103,22 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact2.midSentenceFactMessageArgs shouldBe (Vector(3, 2))
         fact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
         fact2.isLeaf shouldBe (true)
-/*
-        val fact2Simplified = !fact2
-        fact2Simplified should equal (Unary_!(Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)))
-        fact2Simplified.factMessage shouldBe ("The reference equaled null")
-        fact2Simplified.simplifiedFactMessage shouldBe ("\"howdy\" did not equal null")
-        fact2Simplified.midSentenceFactMessage shouldBe ("the reference equaled null")
-        fact2Simplified.midSentenceSimplifiedFactMessage shouldBe ("\"howdy\" did not equal null")
-        fact2Simplified.rawFactMessage shouldBe ("The reference equaled null")
-        fact2Simplified.rawSimplifiedFactMessage shouldBe ("{0} did not equal null")
-        fact2Simplified.rawMidSentenceFactMessage shouldBe ("the reference equaled null")
-        fact2Simplified.rawMidSentenceSimplifiedFactMessage shouldBe ("{0} did not equal null")
-        fact2Simplified.factMessageArgs shouldBe (Vector.empty)
-        fact2Simplified.simplifiedFactMessageArgs shouldBe (Vector("howdy"))
-        fact2Simplified.midSentenceFactMessageArgs shouldBe (Vector.empty)
-        fact2Simplified.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("howdy"))
-        fact2Simplified.isLeaf shouldBe (true)
-*/
+
+        val notFact2 = !fact2
+        notFact2 should equal (Unary_!(No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))))
+        notFact2.factMessage shouldBe ("3 did not equal 2")
+        notFact2.simplifiedFactMessage shouldBe ("Expected 3, but got 2")
+        notFact2.midSentenceFactMessage shouldBe ("3 did not equal 2")
+        notFact2.midSentenceSimplifiedFactMessage shouldBe ("expected 3, but got 2")
+        notFact2.rawFactMessage shouldBe ("{0} did not equal {1}")
+        notFact2.rawSimplifiedFactMessage shouldBe ("Expected {0}, but got {1}")
+        notFact2.rawMidSentenceFactMessage shouldBe ("{0} did not equal {1}")
+        notFact2.rawMidSentenceSimplifiedFactMessage shouldBe ("expected {0}, but got {1}")
+        notFact2.factMessageArgs shouldBe (Vector(3, 2))
+        notFact2.simplifiedFactMessageArgs shouldBe (Vector(3, 2))
+        notFact2.midSentenceFactMessageArgs shouldBe (Vector(3, 2))
+        notFact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
+        notFact2.isLeaf shouldBe (true)
       }
       "should maintain the same isLeaf state" in {
         !noFact should have (isLeaf(true))
