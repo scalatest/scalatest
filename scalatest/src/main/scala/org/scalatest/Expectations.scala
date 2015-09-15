@@ -40,7 +40,21 @@ trait Expectations {
       )
     }
     else {
-      ???
+      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
+      val rawFactMessage = Resources.rawExpectedAndGot
+      val rawSimplifiedFactMessage = Resources.rawEqualed
+      val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedAndGot
+      val rawMidSentenceSimplifiedFactMessage = Resources.rawEqualed
+      No(
+        rawFactMessage,
+        rawSimplifiedFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceSimplifiedFactMessage,
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act)
+      )
     }
   }
 
