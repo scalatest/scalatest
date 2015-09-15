@@ -273,14 +273,14 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideNo || rightSideNo
         fact shouldBe a [Binary_||]
         fact.isNo shouldBe true
-        fact.rawFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.factMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.rawFactMessage should be (Resources.rawCommaAnd)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasGreaterThan('a'.pretty, 'd'.pretty)))
         fact.factMessageArgs should be (Vector(FactMessage(leftSideNo), MidSentenceFactMessage(rightSideNo)))
         fact.simplifiedFactMessageArgs should be (Vector(FactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceFactMessage(leftSideNo), MidSentenceFactMessage(rightSideNo)))
@@ -295,14 +295,14 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideNo || rightSideYes
         fact shouldBe a [Binary_||]
         fact.isYes shouldBe true
-        fact.rawFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.factMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaDoublePipe(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
+        fact.rawFactMessage should be (Resources.rawCommaAnd)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasLessThan('a'.pretty, 'd'.pretty)))
         fact.factMessageArgs should be (Vector(FactMessage(leftSideNo), MidSentenceFactMessage(rightSideYes)))
         fact.simplifiedFactMessageArgs should be (Vector(FactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceFactMessage(leftSideNo), MidSentenceFactMessage(rightSideYes)))
@@ -352,10 +352,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
         val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideNo || rightSideNo
-        fact.rawFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoublePipe)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoublePipe)
+        fact.rawFactMessage should be (Resources.rawCommaAnd)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
         fact.isLeaf should be (false)
       }
 

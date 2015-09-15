@@ -21,6 +21,8 @@ import org.scalatest.Fact.Unary_!
 
 class ExpectationsSpec extends FunSpec with Expectations {
 
+  val NEWLINE = scala.compat.Platform.EOL
+
   describe("The expectResult method") {
     it("should give a correct Fact result when the expectation fails") {
       val fact = expectResult(3) { 2 } 
@@ -102,6 +104,16 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact2.isNo)
       assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
       assert(fact2.toString == "No(3 equaled 3, but 4 equaled 4)")
+    }
+    it("should use vertical diagrammed style of message when one of component in a binary expression is not a leaf") {
+      val fact = (expectResult(3) { 3 } && expectResult(3) { 4 }) || expectResult(5) { 6 }
+      assert(fact.factMessage ==
+        "No(" + NEWLINE +
+        "  Yes(expected 3, and got 3) &&" + NEWLINE +
+        "  No(expected 3, but got 4)" + NEWLINE +
+        ") ||" + NEWLINE +
+        "No(expected 5, but got 6)"
+      )
     }
   }
 
