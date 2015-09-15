@@ -20,6 +20,30 @@ import Fact._
 
 trait Expectations {
  
+  // TODO: Need to make this and assertResult use custom equality I think.
+  def expectResult(expected: Any)(actual: Any): Fact = {
+    if (!Assertions.areEqualComparingArraysStructurally(actual, expected)) {
+      val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
+      val rawFactMessage = Resources.rawExpectedButGot
+      val rawSimplifiedFactMessage = Resources.rawDidNotEqual
+      val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedButGot
+      val rawMidSentenceSimplifiedFactMessage = Resources.rawDidNotEqual
+      No(
+        rawFactMessage,
+        rawSimplifiedFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceSimplifiedFactMessage,
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act),
+        Vector(exp, act)
+      )
+    }
+    else {
+      ???
+    }
+  }
+
   def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Expectation = {
     val clazz = classTag.runtimeClass
     try {

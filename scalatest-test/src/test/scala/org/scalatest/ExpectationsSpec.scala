@@ -20,6 +20,25 @@ import OptionValues._
 
 class ExpectationsSpec extends FunSpec with Expectations {
 
+  describe("The expectResult method") {
+    it("should give a correct Fact result") {
+      val fact = expectResult(3) { 2 } 
+      assert(fact.factMessage  == "Expected 3, but got 2")
+      assert(fact.simplifiedFactMessage == "3 did not equal 2")
+      assert(fact.midSentenceFactMessage == "expected 3, but got 2")
+      assert(fact.midSentenceSimplifiedFactMessage == "3 did not equal 2")
+      assert(fact.rawFactMessage == "Expected {0}, but got {1}")
+      assert(fact.rawSimplifiedFactMessage == "{0} did not equal {1}")
+      assert(fact.rawMidSentenceFactMessage == "expected {0}, but got {1}")
+      assert(fact.rawMidSentenceSimplifiedFactMessage == "{0} did not equal {1}")
+      assert(fact.factMessageArgs == Vector(3, 2))
+      assert(fact.simplifiedFactMessageArgs == Vector(3, 2))
+      assert(fact.midSentenceFactMessageArgs == Vector(3, 2))
+      assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 2))
+      assert(fact.isLeaf == true)
+    }
+  }
+
   describe("The expectThrows method") {
     it("should catch subtypes") {
       class MyException extends RuntimeException
