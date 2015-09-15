@@ -149,6 +149,38 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         None,
         Prettifier.default
       )
+
+    /**
+     * Factory method that constructs a new <code>No</code> with passed <code>factMessage</code>,
+     * <code>negativeFactMessage</code>, <code>midSentenceFactMessage</code>,
+     * <code>midSentenceSimplifiedFactMessage</code>, <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> fields.
+     * <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
+     * and <code>midSentenceSimplifiedFactMessageArgs</code>.
+     *
+     * @param rawFactMessage raw fact message to report if a match fails
+     * @param rawMidSentenceFactMessage raw mid sentence fact message to report if a match fails
+     * @param factMessageArgs arguments for constructing fact message to report if a match fails
+     * @param midSentenceFactMessageArgs arguments for constructing mid sentence fact message to report if a match fails
+     * @return a <code>No</code> instance
+     */
+    def apply(
+      rawFactMessage: String,
+      rawMidSentenceFactMessage: String,
+      factMessageArgs: IndexedSeq[Any],
+      midSentenceFactMessageArgs: IndexedSeq[Any]
+    ): No =
+      new No(
+        rawFactMessage,
+        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
+        factMessageArgs,
+        factMessageArgs,
+        midSentenceFactMessageArgs,
+        midSentenceFactMessageArgs,
+        None,
+        Prettifier.default
+      )
   
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -167,8 +199,8 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       new No(
         rawFactMessage,
         rawFactMessage,
-        rawFactMessage,
-        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -197,9 +229,9 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     ): No =
       new No(
         rawFactMessage,
-        rawFactMessage,
+        rawSimplifiedFactMessage,
         rawMidSentenceFactMessage,
-        rawMidSentenceFactMessage,
+        rawMidSentenceSimplifiedFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -393,6 +425,38 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
+        None,
+        Prettifier.default
+      )
+
+    /**
+     * Factory method that constructs a new <code>Yes</code> with passed code>factMessage</code>,
+     * <code>negativeFailureMessage</code>, <code>midSentenceFactMessage</code>,
+     * <code>midSentenceSimplifiedFactMessage</code>, <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> fields.
+     * <code>factMessageArgs</code>, and <code>simplifiedFactMessageArgs</code> will be used in place of <code>midSentenceFactMessageArgs</code>
+     * and <code>midSentenceSimplifiedFactMessageArgs</code>.
+     *
+     * @param rawFactMessage raw fact message to report if a match fails
+     * @param rawMidSentenceFactMessage raw mid-sentence fact message to report if a match fails
+     * @param factMessageArgs arguments for constructing fact message to report if a match fails
+     * @param midSentenceFactMessageArgs arguments for constructing mid-sentence fact message to report if a match fails
+     * @return a <code>Yes</code> instance
+     */
+    def apply(
+      rawFactMessage: String,
+      rawMidSentenceFactMessage: String,
+      factMessageArgs: IndexedSeq[Any],
+      midSentenceFactMessageArgs: IndexedSeq[Any]
+    ): Yes =
+      new Yes(
+        rawFactMessage,
+        rawFactMessage,
+        rawMidSentenceFactMessage,
+        rawMidSentenceFactMessage,
+        factMessageArgs,
+        factMessageArgs,
+        midSentenceFactMessageArgs,
+        midSentenceFactMessageArgs,
         None,
         Prettifier.default
       )
@@ -700,11 +764,11 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
       if (left.isYes) Vector(MidSentenceFactMessage(left))
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceFactMessage(rightResult))
+      else Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(rightResult))
     }
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
       if (left.isYes) Vector(MidSentenceSimplifiedFactMessage(left))
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
+      else Vector(MidSentenceFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
     }
 
     val isLeaf: Boolean = false
