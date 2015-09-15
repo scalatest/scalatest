@@ -18,7 +18,6 @@ package org.scalatest
 import exceptions.TestFailedException
 import OptionValues._
 
-/*
 class ExpectationsSpec extends FunSpec with Expectations {
 
   describe("The expectThrows method") {
@@ -42,7 +41,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
               throw new AnotherException
             }
           }
-        ).isTrue
+        ).isYes
       )
     }
     it("should include the expected exception as the cause so that it will be there if negated") {
@@ -66,4 +65,3 @@ class ExpectationsSpec extends FunSpec with Expectations {
     }
   }
 }
-*/

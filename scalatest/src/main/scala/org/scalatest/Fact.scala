@@ -590,6 +590,13 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       )
   }
 
+  // The simplified Fact message is used when a Fact is negated, because
+  // sometimes factMessage can include info about what was expected, as in
+  // "Expected 3, but got 4", for expectResult(3) { x } . But if this is inverted
+  // to !expectResult(3) { x }, then it is confusing to say Expected 3 (because
+  // now anything *but* 3 is expected. So the simplified message just says, "3 did not equal 4".
+  // Of course, that means x was 4, and so the inverted form would be a Yes. But if x were 3, then
+  // the regular factMessage would be "Expected 3, but got 3" and the simplified fact message would be "3 equaled 3"
   case class Unary_!(underlying: Fact) extends Fact {
 
     val rawFactMessage: String = underlying.rawSimplifiedFactMessage
