@@ -693,23 +693,28 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     val rawFactMessage: String = {
       if (left.isNo) left.rawFactMessage
-      else Resources.rawCommaDoubleAmpersand
+      else Resources.rawCommaBut
     }
     val rawSimplifiedFactMessage: String = {
       if (left.isNo) left.rawSimplifiedFactMessage
-      else Resources.rawCommaDoubleAmpersand
+      else Resources.rawCommaBut
     }
     val rawMidSentenceFactMessage: String = {
       if (left.isNo) left.rawMidSentenceFactMessage
-      else Resources.rawCommaDoubleAmpersand
+      else Resources.rawCommaBut
     }
     val rawMidSentenceSimplifiedFactMessage: String = {
       if (left.isNo) left.rawMidSentenceSimplifiedFactMessage
-      else Resources.rawCommaDoubleAmpersand
+      else Resources.rawCommaBut
     }
     val factMessageArgs: IndexedSeq[Any] = {
-      if (left.isNo) Vector(FactMessage(left)) // Keep full message if short circuiting the error message
-      else Vector(SimplifiedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
+      if (left.isNo)
+        Vector(FactMessage(left)) // Keep full message if short circuiting the error message
+      else
+        Vector(
+          SimplifiedFactMessage(left),
+          if (rightResult.isInstanceOf[Unary_!]) MidSentenceFactMessage(rightResult) else MidSentenceSimplifiedFactMessage(rightResult)
+        ) // Simplify if combining
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
       if (left.isNo) Vector(SimplifiedFactMessage(left))

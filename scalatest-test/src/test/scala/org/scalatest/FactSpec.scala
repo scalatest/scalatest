@@ -189,15 +189,15 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideYes && rightSideNo
         fact shouldBe a [Binary_&&]
         fact.isNo shouldBe true
-        fact.rawFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.factMessage should be (Resources.commaDoubleAmpersand(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaDoubleAmpersand(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaDoubleAmpersand(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaDoubleAmpersand(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideNo)))
+        fact.rawFactMessage should be (Resources.rawCommaBut)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideNo)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
@@ -210,15 +210,15 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val fact = leftSideYes && rightSideYes
         fact shouldBe a [Binary_&&]
         fact.isYes shouldBe true
-        fact.rawFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.factMessage should be (Resources.commaDoubleAmpersand(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.simplifiedFactMessage should be (Resources.commaDoubleAmpersand(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaDoubleAmpersand(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceSimplifiedFactMessage should be (Resources.commaDoubleAmpersand(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideYes)))
+        fact.rawFactMessage should be (Resources.rawCommaBut)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideYes)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
@@ -231,10 +231,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
         val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes && rightSideYes
-        fact.rawFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
+        fact.rawFactMessage should be (Resources.rawCommaBut)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
         fact.isLeaf should be (false)
       }
 
@@ -242,10 +242,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
         val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes && rightSideYes
-        fact.rawFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
+        fact.rawFactMessage should be (Resources.rawCommaBut)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
         fact.isLeaf should be (false)
       }
 
@@ -253,10 +253,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
         val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes && rightSideYes
-        fact.rawFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
+        fact.rawFactMessage should be (Resources.rawCommaBut)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
         fact.isLeaf should be (false)
       }
     }
