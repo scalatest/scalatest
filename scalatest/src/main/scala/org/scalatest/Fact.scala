@@ -21,14 +21,14 @@ import org.scalatest.exceptions.TestFailedException
 sealed abstract class Fact {
 
   val rawFactMessage: String
-  val rawSimplifiedFactMessage: String
+  val rawNegatedFactMessage: String
   val rawMidSentenceFactMessage: String
-  val rawMidSentenceSimplifiedFactMessage: String
+  val rawMidSentenceNegatedFactMessage: String
 
   val factMessageArgs: IndexedSeq[Any]
-  val simplifiedFactMessageArgs: IndexedSeq[Any]
+  val negatedFactMessageArgs: IndexedSeq[Any]
   val midSentenceFactMessageArgs: IndexedSeq[Any]
-  val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
+  val midSentenceNegatedFactMessageArgs: IndexedSeq[Any]
 
   val composite: Boolean
   val prettifier: Prettifier
@@ -63,48 +63,44 @@ sealed abstract class Fact {
    *
    * @return failure message to report if a fact fails
    */
-  def factMessage: String = {
-    val mainMessage = if (factMessageArgs.isEmpty) rawFactMessage else makeString(rawFactMessage, factMessageArgs)
-    stringPrefix + "(" + mainMessage + ")"
-  }
+  def factMessage: String =
+    if (factMessageArgs.isEmpty) rawFactMessage
+    else makeString(rawFactMessage, factMessageArgs)
 
-  def simplifiedFactMessage: String = {
-    val mainMessage = if (simplifiedFactMessageArgs.isEmpty) rawSimplifiedFactMessage else makeString(rawSimplifiedFactMessage, simplifiedFactMessageArgs)
-    stringPrefix + "(" + mainMessage + ")"
-  }
+  def negatedFactMessage: String =
+    if (negatedFactMessageArgs.isEmpty) rawNegatedFactMessage
+    else makeString(rawNegatedFactMessage, negatedFactMessageArgs)
 
   /**
    * Construct failure message suitable for appearing mid-sentence, using <code>rawMidSentenceFactMessage</code>, <code>midSentenceFactMessageArgs</code> and <code>prettifier</code>
    *
    * @return failure message suitable for appearing mid-sentence
    */
-  def midSentenceFactMessage: String = {
-    val mainMessage = if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs)
-    stringPrefix + "(" + mainMessage + ")"
-  }
+  def midSentenceFactMessage: String =
+    if (midSentenceFactMessageArgs.isEmpty) rawMidSentenceFactMessage
+    else makeString(rawMidSentenceFactMessage, midSentenceFactMessageArgs)
 
-  def midSentenceSimplifiedFactMessage: String = {
-    val mainMessage = if (midSentenceSimplifiedFactMessageArgs.isEmpty) rawMidSentenceSimplifiedFactMessage else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs)
-    stringPrefix + "(" + mainMessage + ")"
-  }
+  def midSentenceNegatedFactMessage: String =
+    if (midSentenceNegatedFactMessageArgs.isEmpty) rawMidSentenceNegatedFactMessage
+    else makeString(rawMidSentenceNegatedFactMessage, midSentenceNegatedFactMessageArgs)
 
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(Prettifier.default).toArray)
 
-  override def toString: String = factMessage
+  override def toString: String = stringPrefix + "(" + factMessage + ")"
 }
 
 object Fact {
 
   case class No(
     rawFactMessage: String,
-    rawSimplifiedFactMessage: String,
+    rawNegatedFactMessage: String,
     rawMidSentenceFactMessage: String,
-    rawMidSentenceSimplifiedFactMessage: String,
+    rawMidSentenceNegatedFactMessage: String,
     factMessageArgs: IndexedSeq[Any],
-    simplifiedFactMessageArgs: IndexedSeq[Any],
+    negatedFactMessageArgs: IndexedSeq[Any],
     midSentenceFactMessageArgs: IndexedSeq[Any],
-    midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
+    midSentenceNegatedFactMessageArgs: IndexedSeq[Any],
     composite: Boolean = false,
     override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
@@ -115,7 +111,7 @@ object Fact {
   }
 
 /*
-factMessage is the simplified one, if need be, and simplifiedFactMessage is a simpler one.
+factMessage is the negated one, if need be, and negatedFactMessage is a simpler one.
 */
 
   /**
@@ -186,21 +182,21 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
-     * <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-     * This is suitable to create No with eager error messages, and its simplified and mid-sentence messages need to be different.
+     * <code>rawNegatedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
+     * <code>rawMidSentenceNegatedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
+     * This is suitable to create No with eager error messages, and its negated and mid-sentence messages need to be different.
      *
      * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified to report for this fact
+     * @param rawNegatedFactMessage raw negated to report for this fact
      * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param rawMidSentenceNegatedFactMessage raw mid-sentence negated message to report for this fact
      * @return a <code>No</code> instance
      */
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
+      rawNegatedFactMessage: String,
       rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String
+      rawMidSentenceNegatedFactMessage: String
     ): No =
       new No(
         rawFactMessage,
@@ -218,35 +214,35 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
-     * <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-     * This is suitable to create No with eager error messages, and its simplified and mid-sentence messages need to be different.
+     * <code>rawNegatedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
+     * <code>rawMidSentenceNegatedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
+     * This is suitable to create No with eager error messages, and its negated and mid-sentence messages need to be different.
      *
      * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified to report for this fact
+     * @param rawNegatedFactMessage raw negated to report for this fact
      * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param rawMidSentenceNegatedFactMessage raw mid-sentence negated message to report for this fact
      * @param factMessageArgs arguments for <code>rawFactMessage</code> and <code>rawMidSentenceFactMessage</code>
-     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code> and <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param negatedFactMessageArgs arguments for <code>rawNegatedFactMessage</code> and <code>rawMidSentenceNegatedFactMessage</code>
      * @return a <code>No</code> instance
      */
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
+      rawNegatedFactMessage: String,
       rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
+      rawMidSentenceNegatedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any]
+      negatedFactMessageArgs: IndexedSeq[Any]
     ): No =
       new No(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawNegatedFactMessage,
         rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
+        rawMidSentenceNegatedFactMessage,
         factMessageArgs,
-        simplifiedFactMessageArgs,
+        negatedFactMessageArgs,
         factMessageArgs,
-        simplifiedFactMessageArgs,
+        negatedFactMessageArgs,
         false,
         None,
         Prettifier.default
@@ -254,39 +250,39 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
-     * <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
-     * This is suitable to create No with eager error messages, and its simplified and mid-sentence messages need to be different.
+     * <code>rawNegatedFactMessage</code>, <code>rawMidSentenceFactMessage</code>, and
+     * <code>rawMidSentenceNegatedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code> values.
+     * This is suitable to create No with eager error messages, and its negated and mid-sentence messages need to be different.
      *
      * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified to report for this fact
+     * @param rawNegatedFactMessage raw negated to report for this fact
      * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param rawMidSentenceNegatedFactMessage raw mid-sentence negated message to report for this fact
      * @param factMessageArgs arguments for <code>rawFactMessage</code>
-     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
+     * @param negatedFactMessageArgs arguments for <code>rawNegatedFactMessage</code>
      * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
-     * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param midSentenceNegatedFactMessageArgs arguments for <code>rawMidSentenceNegatedFactMessage</code>
      * @return a <code>No</code> instance
      */
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
+      rawNegatedFactMessage: String,
       rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
+      rawMidSentenceNegatedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any],
+      negatedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
-      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
+      midSentenceNegatedFactMessageArgs: IndexedSeq[Any]
     ): No =
       new No(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawNegatedFactMessage,
         rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
+        rawMidSentenceNegatedFactMessage,
         factMessageArgs,
-        simplifiedFactMessageArgs,
+        negatedFactMessageArgs,
         midSentenceFactMessageArgs,
-        midSentenceSimplifiedFactMessageArgs,
+        midSentenceNegatedFactMessageArgs,
         false,
         None,
         Prettifier.default
@@ -357,13 +353,13 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
   
   case class Yes(
     rawFactMessage: String,
-    rawSimplifiedFactMessage: String,
+    rawNegatedFactMessage: String,
     rawMidSentenceFactMessage: String,
-    rawMidSentenceSimplifiedFactMessage: String,
+    rawMidSentenceNegatedFactMessage: String,
     factMessageArgs: IndexedSeq[Any],
-    simplifiedFactMessageArgs: IndexedSeq[Any],
+    negatedFactMessageArgs: IndexedSeq[Any],
     midSentenceFactMessageArgs: IndexedSeq[Any],
-    midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
+    midSentenceNegatedFactMessageArgs: IndexedSeq[Any],
     composite: Boolean = false,
     override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
@@ -440,28 +436,28 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
-     * <code>rawFactMessage</code>, <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
-     * values.  This is suitable to create Yes with eager error messages, and its simplified and mid-sentence messages
+     * <code>rawFactMessage</code>, <code>rawNegatedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
+     * <code>rawMidSentenceNegatedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
+     * values.  This is suitable to create Yes with eager error messages, and its negated and mid-sentence messages
      * need to be different.
      *
      * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified message to report for this fact
+     * @param rawNegatedFactMessage raw negated message to report for this fact
      * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param rawMidSentenceNegatedFactMessage raw mid-sentence negated message to report for this fact
      * @return a <code>Yes</code> instance
      */
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
+      rawNegatedFactMessage: String,
       rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String
+      rawMidSentenceNegatedFactMessage: String
     ): Yes =
       new Yes(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawNegatedFactMessage,
         rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
+        rawMidSentenceNegatedFactMessage,
         Vector.empty,
         Vector.empty,
         Vector.empty,
@@ -473,36 +469,36 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
-     * <code>rawFactMessage</code>, <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
-     * values.  This is suitable to create Yes with eager error messages, and its simplified and mid-sentence messages
+     * <code>rawFactMessage</code>, <code>rawNegatedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
+     * <code>rawMidSentenceNegatedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
+     * values.  This is suitable to create Yes with eager error messages, and its negated and mid-sentence messages
      * need to be different.
      *
      * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified message to report for this fact
+     * @param rawNegatedFactMessage raw negated message to report for this fact
      * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param rawMidSentenceNegatedFactMessage raw mid-sentence negated message to report for this fact
      * @param factMessageArgs arguments for <code>rawFactMessage</code> and <code>rawMidSentenceFactMessage</code>
-     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code> and <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param negatedFactMessageArgs arguments for <code>rawNegatedFactMessage</code> and <code>rawMidSentenceNegatedFactMessage</code>
      * @return a <code>Yes</code> instance
      */
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
+      rawNegatedFactMessage: String,
       rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
+      rawMidSentenceNegatedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any]
+      negatedFactMessageArgs: IndexedSeq[Any]
     ): Yes =
       new Yes(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawNegatedFactMessage,
         rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
+        rawMidSentenceNegatedFactMessage,
         factMessageArgs,
-        simplifiedFactMessageArgs,
+        negatedFactMessageArgs,
         factMessageArgs,
-        simplifiedFactMessageArgs,
+        negatedFactMessageArgs,
         false,
         None,
         Prettifier.default
@@ -510,40 +506,40 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
-     * <code>rawFactMessage</code>, <code>rawSimplifiedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
-     * <code>rawMidSentenceSimplifiedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
-     * values.  This is suitable to create Yes with eager error messages, and its simplified and mid-sentence messages
+     * <code>rawFactMessage</code>, <code>rawNegatedFactMessage</code>, <code>rawMidSentenceFactMessage</code> and
+     * <code>rawMidSentenceNegatedFactMessage</code> fields.  All argument fields will have <code>Vector.empty</code>
+     * values.  This is suitable to create Yes with eager error messages, and its negated and mid-sentence messages
      * need to be different.
      *
      * @param rawFactMessage raw message to report for this fact
-     * @param rawSimplifiedFactMessage raw simplified message to report for this fact
+     * @param rawNegatedFactMessage raw negated message to report for this fact
      * @param rawMidSentenceFactMessage raw mid-sentence message to report for this fact
-     * @param rawMidSentenceSimplifiedFactMessage raw mid-sentence simplified message to report for this fact
+     * @param rawMidSentenceNegatedFactMessage raw mid-sentence negated message to report for this fact
      * @param factMessageArgs arguments for <code>rawFactMessage</code>
-     * @param simplifiedFactMessageArgs arguments for <code>rawSimplifiedFactMessage</code>
+     * @param negatedFactMessageArgs arguments for <code>rawNegatedFactMessage</code>
      * @param midSentenceFactMessageArgs arguments for <code>rawMidSentenceFactMessage</code>
-     * @param midSentenceSimplifiedFactMessageArgs arguments for <code>rawMidSentenceSimplifiedFactMessage</code>
+     * @param midSentenceNegatedFactMessageArgs arguments for <code>rawMidSentenceNegatedFactMessage</code>
      * @return a <code>Yes</code> instance
      */
     def apply(
       rawFactMessage: String,
-      rawSimplifiedFactMessage: String,
+      rawNegatedFactMessage: String,
       rawMidSentenceFactMessage: String,
-      rawMidSentenceSimplifiedFactMessage: String,
+      rawMidSentenceNegatedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
-      simplifiedFactMessageArgs: IndexedSeq[Any],
+      negatedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
-      midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
+      midSentenceNegatedFactMessageArgs: IndexedSeq[Any]
     ): Yes =
       new Yes(
         rawFactMessage,
-        rawSimplifiedFactMessage,
+        rawNegatedFactMessage,
         rawMidSentenceFactMessage,
-        rawMidSentenceSimplifiedFactMessage,
+        rawMidSentenceNegatedFactMessage,
         factMessageArgs,
-        simplifiedFactMessageArgs,
+        negatedFactMessageArgs,
         midSentenceFactMessageArgs,
-        midSentenceSimplifiedFactMessageArgs,
+        midSentenceNegatedFactMessageArgs,
         false,
         None,
         Prettifier.default
@@ -612,14 +608,14 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
   case class Unary_!(underlying: Fact) extends Fact {
 
     // Ah, need to do the !({0}) thing
-    val rawFactMessage: String = underlying.rawSimplifiedFactMessage
-    val rawSimplifiedFactMessage: String = underlying.rawFactMessage
-    val rawMidSentenceFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
-    val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceFactMessage
-    val factMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
-    val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceFactMessageArgs
+    val rawFactMessage: String = underlying.rawNegatedFactMessage
+    val rawNegatedFactMessage: String = underlying.rawFactMessage
+    val rawMidSentenceFactMessage: String = underlying.rawMidSentenceNegatedFactMessage
+    val rawMidSentenceNegatedFactMessage: String = underlying.rawMidSentenceFactMessage
+    val factMessageArgs: IndexedSeq[Any] = underlying.negatedFactMessageArgs
+    val negatedFactMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
+    val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceNegatedFactMessageArgs
+    val midSentenceNegatedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceFactMessageArgs
     val composite: Boolean = underlying.composite
     val prettifier: Prettifier = underlying.prettifier
 
@@ -629,11 +625,11 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     override def factMessage: String = super.factMessage
 
-    override def simplifiedFactMessage: String = super.simplifiedFactMessage
+    override def negatedFactMessage: String = super.negatedFactMessage
 
     override def midSentenceFactMessage: String = super.midSentenceFactMessage
 
-    override def midSentenceSimplifiedFactMessage: String = super.midSentenceSimplifiedFactMessage
+    override def midSentenceNegatedFactMessage: String = super.midSentenceNegatedFactMessage
   }
 
   class Binary_&&(left: Fact, right: => Fact) extends Fact {
@@ -644,33 +640,33 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       if (left.isNo) left.rawFactMessage
       else Resources.rawCommaDoubleAmpersand
     }
-    val rawSimplifiedFactMessage: String = {
-      if (left.isNo) left.rawSimplifiedFactMessage
+    val rawNegatedFactMessage: String = {
+      if (left.isNo) left.rawNegatedFactMessage
       else Resources.rawCommaDoubleAmpersand
     }
     val rawMidSentenceFactMessage: String = {
       if (left.isNo) left.rawMidSentenceFactMessage
       else Resources.rawCommaDoubleAmpersand
     }
-    val rawMidSentenceSimplifiedFactMessage: String = {
-      if (left.isNo) left.rawMidSentenceSimplifiedFactMessage
+    val rawMidSentenceNegatedFactMessage: String = {
+      if (left.isNo) left.rawMidSentenceNegatedFactMessage
       else Resources.rawCommaDoubleAmpersand
     }
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isNo) Vector(FactMessage(left)) // Keep full message if short circuiting the error message
-      else Vector(SimplifiedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
+      else Vector(NegatedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isNo) Vector(SimplifiedFactMessage(left))
-      else Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
+    val negatedFactMessageArgs: IndexedSeq[Any] = {
+      if (left.isNo) Vector(NegatedFactMessage(left))
+      else Vector(NegatedFactMessage(left), MidSentenceNegatedFactMessage(rightResult))
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
       if (left.isNo) Vector(MidSentenceFactMessage(left)) // Keep full message if short circuiting the error message
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
+      else Vector(MidSentenceNegatedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
     }
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
+    val midSentenceNegatedFactMessageArgs: IndexedSeq[Any] = {
       if (left.isNo) Vector(MidSentenceFactMessage(left))
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
+      else Vector(MidSentenceNegatedFactMessage(left), MidSentenceNegatedFactMessage(rightResult))
     }
 
     val composite: Boolean = true
@@ -691,33 +687,33 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       if (left.isYes) left.rawFactMessage
       else Resources.rawCommaDoublePipe
     }
-    val rawSimplifiedFactMessage: String = {
-      if (left.isYes) left.rawSimplifiedFactMessage
+    val rawNegatedFactMessage: String = {
+      if (left.isYes) left.rawNegatedFactMessage
       else Resources.rawCommaDoublePipe
     }
     val rawMidSentenceFactMessage: String = {
       if (left.isYes) left.rawMidSentenceFactMessage
       else Resources.rawCommaDoublePipe
     }
-    val rawMidSentenceSimplifiedFactMessage: String = {
-      if (left.isYes) left.rawMidSentenceSimplifiedFactMessage
+    val rawMidSentenceNegatedFactMessage: String = {
+      if (left.isYes) left.rawMidSentenceNegatedFactMessage
       else Resources.rawCommaDoublePipe
     }
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isYes) Vector(FactMessage(left))
       else Vector(FactMessage(left), MidSentenceFactMessage(rightResult))
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isYes) Vector(SimplifiedFactMessage(left))
-      else Vector(FactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
+    val negatedFactMessageArgs: IndexedSeq[Any] = {
+      if (left.isYes) Vector(NegatedFactMessage(left))
+      else Vector(FactMessage(left), MidSentenceNegatedFactMessage(rightResult))
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
       if (left.isYes) Vector(MidSentenceFactMessage(left))
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceFactMessage(rightResult))
+      else Vector(MidSentenceNegatedFactMessage(left), MidSentenceFactMessage(rightResult))
     }
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isYes) Vector(MidSentenceSimplifiedFactMessage(left))
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
+    val midSentenceNegatedFactMessageArgs: IndexedSeq[Any] = {
+      if (left.isYes) Vector(MidSentenceNegatedFactMessage(left))
+      else Vector(MidSentenceNegatedFactMessage(left), MidSentenceNegatedFactMessage(rightResult))
     }
 
     val composite: Boolean = true
@@ -763,13 +759,13 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     override def toString: String = fact.midSentenceFactMessage
   }
 
-  private[scalatest] case class SimplifiedFactMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.simplifiedFactMessageArgs
-    override def toString: String = fact.simplifiedFactMessage
+  private[scalatest] case class NegatedFactMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.negatedFactMessageArgs
+    override def toString: String = fact.negatedFactMessage
   }
 
-  private[scalatest] case class MidSentenceSimplifiedFactMessage(fact: Fact) extends LazyMessage {
-    val nestedArgs: IndexedSeq[Any] = fact.midSentenceSimplifiedFactMessageArgs
-    override def toString: String = fact.midSentenceSimplifiedFactMessage
+  private[scalatest] case class MidSentenceNegatedFactMessage(fact: Fact) extends LazyMessage {
+    val nestedArgs: IndexedSeq[Any] = fact.midSentenceNegatedFactMessageArgs
+    override def toString: String = fact.midSentenceNegatedFactMessage
   }
 }
