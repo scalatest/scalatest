@@ -26,13 +26,13 @@ trait Expectations {
       f
       No(
         rawFactMessage = Resources.rawExceptionExpected,
-        rawNegatedFactMessage = Resources.rawFactNoExceptionWasThrown,
+        rawSimplifiedFactMessage = Resources.rawFactNoExceptionWasThrown,
         rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedExceptionWasThrown,
-        rawMidSentenceNegatedFactMessage = Resources.rawMidSentenceFactNoExceptionWasThrown,
+        rawMidSentenceSimplifiedFactMessage = Resources.rawMidSentenceFactNoExceptionWasThrown,
         factMessageArgs = Vector(clazz.getName),
-        negatedFactMessageArgs = Vector.empty,
+        simplifiedFactMessageArgs = Vector.empty,
         midSentenceFactMessageArgs = Vector(clazz.getName),
-        midSentenceNegatedFactMessageArgs = Vector.empty
+        midSentenceSimplifiedFactMessageArgs = Vector.empty
       ) 
     }
     catch {
@@ -40,25 +40,25 @@ trait Expectations {
         if (!clazz.isAssignableFrom(u.getClass))
           No(
             rawFactMessage = Resources.rawWrongException,
-            rawNegatedFactMessage = Resources.rawFactExceptionWasThrown,
+            rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
             rawMidSentenceFactMessage = Resources.rawMidSentenceWrongException,
-            rawMidSentenceNegatedFactMessage = Resources.rawMidSentenceFactExceptionWasThrown,
+            rawMidSentenceSimplifiedFactMessage = Resources.rawMidSentenceFactExceptionWasThrown,
             factMessageArgs = Vector(clazz.getName, u.getClass.getName),
-            negatedFactMessageArgs = Vector(u.getClass.getName),
+            simplifiedFactMessageArgs = Vector(u.getClass.getName),
             midSentenceFactMessageArgs = Vector(clazz.getName, u.getClass.getName),
-            midSentenceNegatedFactMessageArgs = Vector(u.getClass.getName),
+            midSentenceSimplifiedFactMessageArgs = Vector(u.getClass.getName),
             cause = Some(u)
           ) 
         else
           Yes(
             rawFactMessage = Resources.rawExceptionExpected,
-            rawNegatedFactMessage = Resources.rawFactExceptionWasThrown,
+            rawSimplifiedFactMessage = Resources.rawFactExceptionWasThrown,
             rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedExceptionWasThrown,
-            rawMidSentenceNegatedFactMessage = Resources.rawMidSentenceFactExceptionWasThrown,
+            rawMidSentenceSimplifiedFactMessage = Resources.rawMidSentenceFactExceptionWasThrown,
             factMessageArgs = Vector(clazz.getName),
-            negatedFactMessageArgs = Vector(clazz.getName),
+            simplifiedFactMessageArgs = Vector(clazz.getName),
             midSentenceFactMessageArgs = Vector(clazz.getName),
-            midSentenceNegatedFactMessageArgs = Vector(clazz.getName),
+            midSentenceSimplifiedFactMessageArgs = Vector(clazz.getName),
             cause = Some(u)
           )
       }

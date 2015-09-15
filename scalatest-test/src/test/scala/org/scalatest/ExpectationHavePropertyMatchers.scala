@@ -32,14 +32,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def negatedFactMessage(expectedValue: String) =
+  def simplifiedFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.negatedFactMessage == expectedValue,
-          "negatedFactMessage",
+          exp.simplifiedFactMessage == expectedValue,
+          "simplifiedFactMessage",
           expectedValue,
-          exp.negatedFactMessage
+          exp.simplifiedFactMessage
         )
     }
 
@@ -54,14 +54,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def midSentenceNegatedFactMessage(expectedValue: String) =
+  def midSentenceSimplifiedFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.midSentenceNegatedFactMessage == expectedValue,
-          "midSentenceNegatedFactMessage",
+          exp.midSentenceSimplifiedFactMessage == expectedValue,
+          "midSentenceSimplifiedFactMessage",
           expectedValue,
-          exp.midSentenceNegatedFactMessage
+          exp.midSentenceSimplifiedFactMessage
         )
     }
 
@@ -76,14 +76,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def rawNegatedFactMessage(expectedValue: String) =
+  def rawSimplifiedFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.rawNegatedFactMessage == expectedValue,
-          "rawNegatedFailureMessage",
+          exp.rawSimplifiedFactMessage == expectedValue,
+          "rawSimplifiedFailureMessage",
           expectedValue,
-          exp.rawNegatedFactMessage
+          exp.rawSimplifiedFactMessage
         )
     }
 
@@ -98,14 +98,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def rawMidSentenceNegatedFactMessage(expectedValue: String) =
+  def rawMidSentenceSimplifiedFactMessage(expectedValue: String) =
     new HavePropertyMatcher[Expectation, String] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.rawMidSentenceNegatedFactMessage == expectedValue,
+          exp.rawMidSentenceSimplifiedFactMessage == expectedValue,
           "rawMidSentenceSimplifidFactMessage",
           expectedValue,
-          exp.rawMidSentenceNegatedFactMessage
+          exp.rawMidSentenceSimplifiedFactMessage
         )
     }
 
@@ -120,14 +120,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def negatedFactMessageArgs(expectedValue: IndexedSeq[Any]) =
+  def simplifiedFactMessageArgs(expectedValue: IndexedSeq[Any]) =
     new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.negatedFactMessageArgs == expectedValue,
-          "negatedFactMessageArgs",
+          exp.simplifiedFactMessageArgs == expectedValue,
+          "simplifiedFactMessageArgs",
           expectedValue,
-          exp.negatedFactMessageArgs
+          exp.simplifiedFactMessageArgs
         )
     }
 
@@ -142,14 +142,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def midSentenceNegatedFactMessageArgs(expectedValue: IndexedSeq[Any]) =
+  def midSentenceSimplifiedFactMessageArgs(expectedValue: IndexedSeq[Any]) =
     new HavePropertyMatcher[Expectation, IndexedSeq[Any]] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.midSentenceNegatedFactMessageArgs == expectedValue,
-          "midSentenceNegatedFactMessageArgs",
+          exp.midSentenceSimplifiedFactMessageArgs == expectedValue,
+          "midSentenceSimplifiedFactMessageArgs",
           expectedValue,
-          exp.midSentenceNegatedFactMessageArgs
+          exp.midSentenceSimplifiedFactMessageArgs
         )
     }
 
