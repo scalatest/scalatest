@@ -45,6 +45,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       yesFact.isYes shouldBe true
       yesFact.isNo shouldBe false
     }
+    "should give the correct string prefix" in {
+      noFact.stringPrefix shouldBe "No"
+      yesFact.stringPrefix shouldBe "Yes"
+    }
     "should have a toAssertion method that either returns Succeeded or throws TestFailedException with the correct error message and stack depth" in {
       yesFact.toAssertion shouldBe Succeeded
       val caught = the [TestFailedException] thrownBy noFact.toAssertion

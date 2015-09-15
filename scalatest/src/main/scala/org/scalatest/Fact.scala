@@ -56,7 +56,7 @@ sealed abstract class Fact {
 
   def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
-  final val stringPrefix: String = if (isYes) "Yes" else "No"
+  final def stringPrefix: String = if (isYes) "Yes" else "No"
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
