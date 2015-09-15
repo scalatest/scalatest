@@ -70,7 +70,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.simplifiedFactMessageArgs shouldBe (Vector(1, 2))
       fact.midSentenceFactMessageArgs shouldBe (Vector(1, 2))
       fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(1, 2))
-      fact.composite shouldBe (false)
+      fact.isLeaf shouldBe (true)
     }
 
     "should use midSentenceFactMessageArgs to construct midSentenceFactMessage" in {
@@ -98,7 +98,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact2.simplifiedFactMessageArgs shouldBe (Vector(3, 2))
         fact2.midSentenceFactMessageArgs shouldBe (Vector(3, 2))
         fact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
-        fact2.composite shouldBe (false)
+        fact2.isLeaf shouldBe (true)
 /*
         val fact2Simplified = !fact2
         fact2Simplified should equal (Unary_!(Yes("{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)))
@@ -114,14 +114,14 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact2Simplified.simplifiedFactMessageArgs shouldBe (Vector("howdy"))
         fact2Simplified.midSentenceFactMessageArgs shouldBe (Vector.empty)
         fact2Simplified.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("howdy"))
-        fact2Simplified.composite shouldBe (false)
+        fact2Simplified.isLeaf shouldBe (true)
 */
       }
-      "should maintain the same composite state" in {
-        !noFact should have (composite(false))
+      "should maintain the same isLeaf state" in {
+        !noFact should have (isLeaf(true))
         
-        val factCopy = noFact.asInstanceOf[No].copy(composite = true)
-        !factCopy should have (composite(true))
+        !(noFact || yesFact) should have (isLeaf(false))
+        !(yesFact && yesFact) should have (isLeaf(false))
       }
       "should return the original object when simplified yet again" in {
         val notYesFact = !yesFact
@@ -155,7 +155,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
-        fact.composite should be (false)
+        fact.isLeaf should be (true)
       }
 
       "for No && Yes" in {
@@ -173,7 +173,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceSimplifiedFactMessage should be ("No(" + Resources.wasGreaterThan('a'.pretty, 'b'.pretty) + ")")
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
-        fact.composite should be (false)
+        fact.isLeaf should be (true)
       }
 
       "for Yes && No" in {
@@ -194,7 +194,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideNo)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
 
       "for Yes && Yes" in {
@@ -215,12 +215,12 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideYes)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
     }
 
-    "should be parenthesize composite facts" - {
-      "for non-composite && composite" in {
+    "should be parenthesize non-leaf facts" - {
+      "for leaf && non-leaf" in {
         val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), false)
         val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
         val fact = leftSideYes && rightSideYes
@@ -228,10 +228,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
 
-      "for composite && non-composite" in {
+      "for non-leaf && leaf" in {
         val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
         val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), false)
         val fact = leftSideYes && rightSideYes
@@ -239,10 +239,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
 
-      "for composite && composite" in {
+      "for non-leaf && non-leaf" in {
         val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
         val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
         val fact = leftSideYes && rightSideYes
@@ -250,7 +250,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceFactMessage should be (Resources.rawCommaDoubleAmpersand)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaDoubleAmpersand)
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
     }
   }
@@ -278,7 +278,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.simplifiedFactMessageArgs should be (Vector(FactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceFactMessage(leftSideNo), MidSentenceFactMessage(rightSideNo)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.composite should be (true)*/
+        fact.isLeaf should be (false)*/
        }
 */
 
@@ -300,7 +300,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.simplifiedFactMessageArgs should be (Vector(FailureMessage(leftSideNo), MidSentenceSimplifiedFailureMessage(rightSideYes)))
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideNo), MidSentenceFailureMessage(rightSideYes)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceFailureMessage(leftSideNo), MidSentenceSimplifiedFailureMessage(rightSideYes)))
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
 
       "for Yes || No" in {
@@ -318,7 +318,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('c'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('c', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('c', 'b'))
-        fact.composite should be (false)
+        fact.isLeaf should be (true)
       }
 
       "for Yes || Yes" in {
@@ -336,12 +336,12 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('e'.pretty, 'b'.pretty))
         fact.factMessageArgs should be (Vector('e', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('e', 'b'))
-        fact.composite should be (false)
+        fact.isLeaf should be (true)
       }*/
     }
 
-    /*"should be parenthesize composite facts" - {
-      "for non-composite || composite" in {
+    /*"should be parenthesize non-leaf facts" - {
+      "for leaf || non-leaf" in {
         val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), false)
         val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
         val fact = leftSideNo || rightSideNo
@@ -349,10 +349,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawRightParensCommaAnd)
         fact.rawMidSentenceFactMessage should be (Resources.rawRightParensCommaAnd)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawRightParensCommaAnd)
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
 
-      "for composite || non-composite" in {
+      "for non-leaf || leaf" in {
         val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
         val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), false)
         val fact = leftSideNo || rightSideNo
@@ -360,10 +360,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawLeftParensCommaAnd)
         fact.rawMidSentenceFactMessage should be (Resources.rawLeftParensCommaAnd)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawLeftParensCommaAnd)
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
 
-      "for composite || composite" in {
+      "for non-leaf || leaf" in {
         val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'), true)
         val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'), true)
         val fact = leftSideNo || rightSideNo
@@ -371,7 +371,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawSimplifiedFactMessage should be (Resources.rawBothParensCommaAnd)
         fact.rawMidSentenceFactMessage should be (Resources.rawBothParensCommaAnd)
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawBothParensCommaAnd)
-        fact.composite should be (true)
+        fact.isLeaf should be (false)
       }
     }*/
   }
@@ -392,7 +392,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector.empty),
         midSentenceFactMessageArgs(Vector.empty),
         midSentenceSimplifiedFactMessageArgs(Vector.empty),
-        composite(false)
+        isLeaf(true)
       )
       val ms = No("aaa", "bbb")
       ms should have (
@@ -408,7 +408,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector.empty),
         midSentenceFactMessageArgs(Vector.empty),
         midSentenceSimplifiedFactMessageArgs(Vector.empty),
-        composite(false)
+        isLeaf(true)
       )
     }
     "that takes four strings should work correctly" in {
@@ -426,7 +426,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector.empty),
         midSentenceFactMessageArgs(Vector.empty),
         midSentenceSimplifiedFactMessageArgs(Vector.empty),
-        composite(false)
+        isLeaf(true)
       )
       val ms = No("aaa", "bbb", "ccc", "ddd")
       ms should have (
@@ -442,7 +442,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector.empty),
         midSentenceFactMessageArgs(Vector.empty),
         midSentenceSimplifiedFactMessageArgs(Vector.empty),
-        composite(false)
+        isLeaf(true)
       )
     }
     "that takes four strings and two IndexedSeqs should work correctly" in {
@@ -460,7 +460,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector(42.0)),
         midSentenceFactMessageArgs(Vector(42)),
         midSentenceSimplifiedFactMessageArgs(Vector(42.0)),
-        composite(false)
+        isLeaf(true)
       )
       val ms = No("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
@@ -476,7 +476,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector("foo", "fie")),
         midSentenceFactMessageArgs(Vector("ho", "he")),
         midSentenceSimplifiedFactMessageArgs(Vector("foo", "fie")),
-        composite(false)
+        isLeaf(true)
       )
     }
     "that takes two strings and one IndexedSeq should work correctly" in {
@@ -494,7 +494,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector(42)),
         midSentenceFactMessageArgs(Vector(42)),
         midSentenceSimplifiedFactMessageArgs(Vector(42)),
-        composite(false)
+        isLeaf(true)
       )
       val ms = No("aaa", "bbb", Vector("ho", "he"))
       ms should have (
@@ -510,7 +510,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector("ho", "he")),
         midSentenceFactMessageArgs(Vector("ho", "he")),
         midSentenceSimplifiedFactMessageArgs(Vector("ho", "he")),
-        composite(false)
+        isLeaf(true)
       )
     }
     "that takes two strings and two IndexedSeqs should work correctly" in {
@@ -528,7 +528,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector(42.0)),
         midSentenceFactMessageArgs(Vector(42)),
         midSentenceSimplifiedFactMessageArgs(Vector(42.0)),
-        composite(false)
+        isLeaf(true)
       )
       val ms = No("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
       ms should have (
@@ -544,7 +544,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector("foo", "fie")),
         midSentenceFactMessageArgs(Vector("ho", "he")),
         midSentenceSimplifiedFactMessageArgs(Vector("foo", "fie")),
-        composite(false)
+        isLeaf(true)
       )
     }
     "that takes four strings and four IndexedSeqs should work correctly" in {
@@ -562,7 +562,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector(2)),
         midSentenceFactMessageArgs(Vector(3)),
         midSentenceSimplifiedFactMessageArgs(Vector(4)),
-        composite(false)
+        isLeaf(true)
       )
       val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
       ms should have (
@@ -578,10 +578,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         simplifiedFactMessageArgs(Vector('B')),
         midSentenceFactMessageArgs(Vector('C')),
         midSentenceSimplifiedFactMessageArgs(Vector('D')),
-        composite(false)
+        isLeaf(true)
       )
     }
-    "that takes four strings, four IndexedSeqs and composite should work correctly" in {
+    "that takes four strings, four IndexedSeqs and non-leaf should work correctly" in {
       val fact = Yes("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4), true)
           fact should have (
               factMessage ("one"),
@@ -596,7 +596,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
               simplifiedFactMessageArgs(Vector(2)),
               midSentenceFactMessageArgs(Vector(3)),
               midSentenceSimplifiedFactMessageArgs(Vector(4)),
-              composite(true)
+              isLeaf(false)
               )
       val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'), true)
       ms should have (
@@ -612,7 +612,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           simplifiedFactMessageArgs(Vector('B')),
           midSentenceFactMessageArgs(Vector('C')),
           midSentenceSimplifiedFactMessageArgs(Vector('D')),
-          composite(true)
+          isLeaf(false)
           )
     }
   }*/

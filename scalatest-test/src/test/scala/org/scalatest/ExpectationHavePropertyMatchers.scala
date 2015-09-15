@@ -153,14 +153,14 @@ trait ExpectationHavePropertyMatchers {
         )
     }
 
-  def composite(expectedValue: Boolean) =
+  def isLeaf(expectedValue: Boolean) =
     new HavePropertyMatcher[Expectation, Boolean] {
       def apply(exp: Expectation) =
         HavePropertyMatchResult(
-          exp.composite == expectedValue,
-          "composite",
+          exp.isLeaf == expectedValue,
+          "isLeaf",
           expectedValue,
-          exp.composite
+          exp.isLeaf
         )
     }
 }

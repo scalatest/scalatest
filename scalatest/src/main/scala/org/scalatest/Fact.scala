@@ -30,7 +30,7 @@ sealed abstract class Fact {
   val midSentenceFactMessageArgs: IndexedSeq[Any]
   val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
 
-  val composite: Boolean
+  val isLeaf: Boolean
   val prettifier: Prettifier
 
   val cause: Option[Throwable] = None
@@ -101,13 +101,12 @@ object Fact {
     simplifiedFactMessageArgs: IndexedSeq[Any],
     midSentenceFactMessageArgs: IndexedSeq[Any],
     midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
-    composite: Boolean = false,
     override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
   ) extends Fact {
 
-    def isYes: Boolean = false
-
+    val isLeaf: Boolean = true
+    val isYes: Boolean = false
   }
 
 /*
@@ -147,7 +146,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
-        false,
         None,
         Prettifier.default
       )
@@ -175,7 +173,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector.empty,
         Vector.empty,
         Vector.empty,
-        false,
         None,
         Prettifier.default
       )
@@ -207,7 +204,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector.empty,
         Vector.empty,
         Vector.empty,
-        false,
         None,
         Prettifier.default
       )
@@ -243,7 +239,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         simplifiedFactMessageArgs,
         factMessageArgs,
         simplifiedFactMessageArgs,
-        false,
         None,
         Prettifier.default
       )
@@ -283,7 +278,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         simplifiedFactMessageArgs,
         midSentenceFactMessageArgs,
         midSentenceSimplifiedFactMessageArgs,
-        false,
         None,
         Prettifier.default
       )
@@ -311,7 +305,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector.empty,
         Vector.empty,
         Vector.empty,
-        false,
         None,
         Prettifier.default
       )
@@ -345,7 +338,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
-        false,
         None,
         Prettifier.default
       )
@@ -360,12 +352,12 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     simplifiedFactMessageArgs: IndexedSeq[Any],
     midSentenceFactMessageArgs: IndexedSeq[Any],
     midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
-    composite: Boolean = false,
     override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
   ) extends Fact {
   
-    def isYes: Boolean = true
+    val isYes: Boolean = true
+    val isLeaf: Boolean = true
   }
   
   /**
@@ -401,7 +393,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
-        false,
         None,
         Prettifier.default
       )
@@ -429,7 +420,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector.empty,
         Vector.empty,
         Vector.empty,
-        false,
         None,
         Prettifier.default
       )
@@ -462,7 +452,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector.empty,
         Vector.empty,
         Vector.empty,
-        false,
         None,
         Prettifier.default
       )
@@ -499,7 +488,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         simplifiedFactMessageArgs,
         factMessageArgs,
         simplifiedFactMessageArgs,
-        false,
         None,
         Prettifier.default
       )
@@ -540,7 +528,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         simplifiedFactMessageArgs,
         midSentenceFactMessageArgs,
         midSentenceSimplifiedFactMessageArgs,
-        false,
         None,
         Prettifier.default
       )
@@ -567,7 +554,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector.empty,
         Vector.empty,
         Vector.empty,
-        false,
         None,
         Prettifier.default
       )
@@ -599,7 +585,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
-        false,
         None,
         Prettifier.default
       )
@@ -607,7 +592,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
   case class Unary_!(underlying: Fact) extends Fact {
 
-    // Ah, need to do the !({0}) thing
     val rawFactMessage: String = underlying.rawSimplifiedFactMessage
     val rawSimplifiedFactMessage: String = underlying.rawFactMessage
     val rawMidSentenceFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
@@ -616,7 +600,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
     val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceFactMessageArgs
-    val composite: Boolean = underlying.composite
+    val isLeaf: Boolean = underlying.isLeaf
     val prettifier: Prettifier = underlying.prettifier
 
     def isYes: Boolean = !(underlying.isYes)
@@ -669,7 +653,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
     }
 
-    val composite: Boolean = true
+    val isLeaf: Boolean = false
     val prettifier: Prettifier = left.prettifier
 
     def isYes: Boolean = left.isYes && rightResult.isYes
@@ -716,7 +700,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult))
     }
 
-    val composite: Boolean = true
+    val isLeaf: Boolean = false
     val prettifier: Prettifier = left.prettifier
 
     def isYes: Boolean = left.isYes || right.isYes
