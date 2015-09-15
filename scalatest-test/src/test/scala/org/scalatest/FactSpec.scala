@@ -87,9 +87,10 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.midSentenceSimplifiedFactMessage should be ("1 equaled 2")
     }
     "when inverted with !" - {
+      val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))
+      val notFact2 = !fact2
       "should use the simplified message, changing Yes to No or No to Yes" in {
         !noFact should equal (Unary_!(noFact))
-        val fact2 = No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))
         fact2.factMessage shouldBe ("Expected 3, but got 2")
         fact2.simplifiedFactMessage shouldBe ("3 did not equal 2")
         fact2.midSentenceFactMessage shouldBe ("expected 3, but got 2")
@@ -104,7 +105,6 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
         fact2.isLeaf shouldBe (true)
 
-        val notFact2 = !fact2
         notFact2 should equal (Unary_!(No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))))
         notFact2.factMessage shouldBe ("3 did not equal 2")
         notFact2.simplifiedFactMessage shouldBe ("Expected 3, but got 2")
@@ -120,9 +120,13 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         notFact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
         notFact2.isLeaf shouldBe (true)
       }
+      "should give back the original Fact instance if inverted twice" in {
+        val notNotFact2 = !notFact2
+        notNotFact2 should be theSameInstanceAs fact2
+      }
       "should maintain the same isLeaf state" in {
         !noFact should have (isLeaf(true))
-        
+
         !(noFact || yesFact) should have (isLeaf(false))
         !(yesFact && yesFact) should have (isLeaf(false))
       }
