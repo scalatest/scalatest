@@ -679,14 +679,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     def isYes: Boolean = !(underlying.isYes)
 
     override def unary_!(): org.scalatest.Fact = underlying
-
-    override def factMessage: String = super.factMessage
-
-    override def simplifiedFactMessage: String = super.simplifiedFactMessage
-
-    override def midSentenceFactMessage: String = super.midSentenceFactMessage
-
-    override def midSentenceSimplifiedFactMessage: String = super.midSentenceSimplifiedFactMessage
   }
 
   private val NEWLINE = scala.compat.Platform.EOL
