@@ -23,6 +23,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
   describe("The expectResult method") {
     it("should give a correct Fact result when the expectation fails") {
       val fact = expectResult(3) { 2 } 
+      assert(fact.isNo)
       assert(fact.factMessage  == "Expected 3, but got 2")
       assert(fact.simplifiedFactMessage == "3 did not equal 2")
       assert(fact.midSentenceFactMessage == "expected 3, but got 2")
@@ -39,6 +40,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
     }
     it("should give a correct Fact result when the expectation succeeds") {
       val fact = expectResult(3) { 3 } 
+      assert(fact.isYes)
       assert(fact.factMessage  == "Expected 3, and got 3")
       assert(fact.simplifiedFactMessage == "3 equaled 3")
       assert(fact.midSentenceFactMessage == "expected 3, and got 3")

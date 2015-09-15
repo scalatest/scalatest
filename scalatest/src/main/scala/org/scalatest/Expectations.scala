@@ -45,7 +45,7 @@ trait Expectations {
       val rawSimplifiedFactMessage = Resources.rawEqualed
       val rawMidSentenceFactMessage = Resources.rawMidSentenceExpectedAndGot
       val rawMidSentenceSimplifiedFactMessage = Resources.rawEqualed
-      No(
+      Yes(
         rawFactMessage,
         rawSimplifiedFactMessage,
         rawMidSentenceFactMessage,
