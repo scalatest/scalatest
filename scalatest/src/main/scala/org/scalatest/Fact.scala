@@ -720,50 +720,39 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
-        if (left.isNo) left.rawFactMessage
-        else Resources.rawCommaBut
+        Resources.rawCommaBut
       }
       else
         rawDiagram(0, "&&")
     }
     val rawSimplifiedFactMessage: String = {
-      if (left.isNo) left.rawSimplifiedFactMessage
-      else Resources.rawCommaBut
+      Resources.rawCommaBut
     }
     val rawMidSentenceFactMessage: String = {
-      if (left.isNo) left.rawMidSentenceFactMessage
-      else Resources.rawCommaBut
+      Resources.rawCommaBut
     }
     val rawMidSentenceSimplifiedFactMessage: String = {
-      if (left.isNo) left.rawMidSentenceSimplifiedFactMessage
-      else Resources.rawCommaBut
+      Resources.rawCommaBut
     }
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
-        if (left.isNo)
-          Vector(FactMessage(left)) // Keep full message if short circuiting the error message
-        else {
-          Vector(
-            SimplifiedFactMessage(left),
-            MidSentenceSimplifiedFactMessage(right)
-          ) // Simplify if combining
-        }
+        Vector(
+          SimplifiedFactMessage(left),
+          MidSentenceSimplifiedFactMessage(right)
+        ) // Simplify if combining
       }
       else {
         Vector(UnquotedString(diagramToString(left, 0)), UnquotedString(diagramToString(right, 0)))
       }
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isNo) Vector(SimplifiedFactMessage(left))
-      else Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
+      Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isNo) Vector(MidSentenceFactMessage(left)) // Keep full message if short circuiting the error message
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right)) // Simplify if combining
+      Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right)) // Simplify if combining
     }
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isNo) Vector(MidSentenceFactMessage(left))
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
+      Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
     }
 
     val isLeaf: Boolean = false
@@ -782,44 +771,36 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
-        if (left.isYes) left.rawFactMessage
-        else Resources.rawCommaAnd
+        Resources.rawCommaAnd
       }
       else
         rawDiagram(0, "||")
     }
     val rawSimplifiedFactMessage: String = {
-      if (left.isYes) left.rawSimplifiedFactMessage
-      else Resources.rawCommaAnd
+      Resources.rawCommaAnd
     }
     val rawMidSentenceFactMessage: String = {
-      if (left.isYes) left.rawMidSentenceFactMessage
-      else Resources.rawCommaAnd
+      Resources.rawCommaAnd
     }
     val rawMidSentenceSimplifiedFactMessage: String = {
-      if (left.isYes) left.rawMidSentenceSimplifiedFactMessage
-      else Resources.rawCommaAnd
+      Resources.rawCommaAnd
     }
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
-        if (left.isYes) Vector(FactMessage(left))
-        else Vector(FactMessage(left), MidSentenceFactMessage(right))
+        Vector(FactMessage(left), MidSentenceFactMessage(right))
       }
       else {
         Vector(UnquotedString(diagramToString(left, 0)), UnquotedString(diagramToString(right, 0)))
       }
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isYes) Vector(SimplifiedFactMessage(left))
-      else Vector(FactMessage(left), MidSentenceSimplifiedFactMessage(right))
+      Vector(FactMessage(left), MidSentenceSimplifiedFactMessage(right))
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isYes) Vector(MidSentenceFactMessage(left))
-      else Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(right))
+      Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(right))
     }
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
-      if (left.isYes) Vector(MidSentenceSimplifiedFactMessage(left))
-      else Vector(MidSentenceFactMessage(left), MidSentenceSimplifiedFactMessage(right))
+      Vector(MidSentenceFactMessage(left), MidSentenceSimplifiedFactMessage(right))
     }
 
     val isLeaf: Boolean = false
