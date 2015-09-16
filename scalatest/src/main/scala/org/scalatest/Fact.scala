@@ -89,8 +89,6 @@ sealed abstract class Fact {
 
   private[scalatest] val NEWLINE = scala.compat.Platform.EOL
 
-  override def toString: String = factDiagram(0)
-
   private[scalatest] def rawFactDiagram(level: Int, operator: String): String = {
     val padding = "  " * level
     padding + "{0} " + operator + NEWLINE +
@@ -104,11 +102,15 @@ sealed abstract class Fact {
       padding + ")"
   }
 
-  def factDiagram(level: Int): String =
-    if (midSentenceFactMessage.contains("\n"))
-      stringPrefix + "(" + NEWLINE + midSentenceFactMessage + NEWLINE + ")"
+  def factDiagram(level: Int): String = {
+    val msg = midSentenceFactMessage // just compute this once
+    if (msg.contains("\n"))
+      stringPrefix + "(" + NEWLINE + msg + NEWLINE + ")"
     else
-      stringPrefix + "(" + midSentenceFactMessage + ")"
+      stringPrefix + "(" + msg + ")"
+  }
+
+  override def toString: String = factDiagram(0)
 }
 
 object Fact {
@@ -751,15 +753,11 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     def isYes: Boolean = left.isYes && right.isYes
 
-    private[scalatest] def leftFactDiagram(level: Int): String = left.factDiagram(level + 1)
-
-    private[scalatest] def rightFactDiagram(level: Int): String = right.factDiagram(level + 1)
-
     override def factDiagram(level: Int): String = {
       val raw = rawNestedFactDiagram(this.isYes, level, "&&")
-      val left = leftFactDiagram(level)
-      val right = rightFactDiagram(level)
-      Resources.formatString(raw, Array(left, right))
+      val leftDiagram = left.factDiagram(level + 1)
+      val rightDiagram = right.factDiagram(level + 1)
+      Resources.formatString(raw, Array(leftDiagram, rightDiagram))
     }
   }
 
@@ -805,15 +803,11 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
     def isYes: Boolean = left.isYes || right.isYes
 
-    private[scalatest] def leftFactDiagram(level: Int): String = left.factDiagram(level + 1)
-
-    private[scalatest] def rightFactDiagram(level: Int): String = right.factDiagram(level + 1)
-
     override def factDiagram(level: Int): String = {
       val raw = rawNestedFactDiagram(this.isYes, level, "||")
-      val left = leftFactDiagram(level)
-      val right = rightFactDiagram(level)
-      Resources.formatString(raw, Array(left, right))
+      val leftDiagram = left.factDiagram(level + 1)
+      val rightDiagram = right.factDiagram(level + 1)
+      Resources.formatString(raw, Array(leftDiagram, rightDiagram))
     }
   }
 
