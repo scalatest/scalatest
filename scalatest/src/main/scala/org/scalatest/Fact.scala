@@ -709,7 +709,9 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Resources.formatString(raw, Array(left, right))
 
       case unaryNot: Unary_! =>
-        ""
+        (if (unaryNot.isYes) "Yes(" else "No(") + NEWLINE +
+        ("  " * (level + 1)) + "!" + diagramToString(unaryNot.underlying, level) + NEWLINE +
+        ("  " * level) + ")"
 
       case other => fact.toString
     }
