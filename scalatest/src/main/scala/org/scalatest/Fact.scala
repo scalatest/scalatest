@@ -87,7 +87,13 @@ sealed abstract class Fact {
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(Prettifier.default).toArray)
 
-  override def toString: String = stringPrefix + "(" + midSentenceFactMessage + ")"
+  private val NEWLINE = scala.compat.Platform.EOL
+
+  override def toString: String =
+    if (midSentenceFactMessage.contains("\n"))
+      stringPrefix + "(" + NEWLINE + midSentenceFactMessage + NEWLINE + ")"
+    else
+      stringPrefix + "(" + midSentenceFactMessage + ")"
 }
 
 object Fact {
