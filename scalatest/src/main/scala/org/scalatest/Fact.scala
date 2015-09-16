@@ -52,9 +52,9 @@ sealed abstract class Fact {
    */
   def unary_!(): Fact = Fact.Unary_!(this)
 
-  def ||(rhs: => Fact): Fact = if (isYes) this else Fact.Binary_||(this, rhs)
+  final def ||(rhs: => Fact): Fact = if (isYes) this else Fact.Binary_||(this, rhs)
 
-  def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
+  final def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
   final def stringPrefix: String = if (isYes) "Yes" else "No"
 
