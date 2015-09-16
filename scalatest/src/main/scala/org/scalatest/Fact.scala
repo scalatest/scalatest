@@ -828,20 +828,6 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     def apply(left: Fact, right: => Fact): Fact = new Binary_||(left, right)
   }
 
-  private[scalatest] def commaAnd(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
-    case (false,false) => Resources.rawCommaAnd
-    case (false,true) => Resources.rawRightParensCommaAnd
-    case (true,false) => Resources.rawLeftParensCommaAnd
-    case (true,true) => Resources.rawBothParensCommaAnd
-  }
-
-  private[scalatest] def commaBut(leftComposite: Boolean, rightComposite: Boolean): String = (leftComposite,rightComposite) match {
-    case (false,false) => Resources.rawCommaBut
-    case (false,true) => Resources.rawRightParensCommaBut
-    case (true,false) => Resources.rawLeftParensCommaBut
-    case (true,true) => Resources.rawBothParensCommaBut
-  }
-
   private[scalatest] class MyLazyMessage(raw: String, args: IndexedSeq[Any]) {
     override def toString: String = Resources.formatString(raw, args.map(Prettifier.default).toArray)
   }
