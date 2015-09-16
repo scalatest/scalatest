@@ -87,13 +87,9 @@ sealed abstract class Fact {
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(Prettifier.default).toArray)
 
-  private val NEWLINE = scala.compat.Platform.EOL
+  private[scalatest] val NEWLINE = scala.compat.Platform.EOL
 
-  override def toString: String =
-    if (midSentenceFactMessage.contains("\n"))
-      stringPrefix + "(" + NEWLINE + midSentenceFactMessage + NEWLINE + ")"
-    else
-      stringPrefix + "(" + midSentenceFactMessage + ")"
+  override def toString: String = factDiagram(0)
 
   private[scalatest] def rawFactDiagram(level: Int, operator: String): String = {
     val padding = "  " * level
@@ -101,36 +97,18 @@ sealed abstract class Fact {
       padding + "{1}"
   }
 
-  private def rawNestedFactDiagram(isTrue: Boolean, level: Int, operator: String): String = {
+  private[scalatest] def rawNestedFactDiagram(isTrue: Boolean, level: Int, operator: String): String = {
     val padding = "  " * level
     padding + (if (isTrue) "Yes(" else "No(") + NEWLINE +
       rawFactDiagram(level + 1, operator) + NEWLINE +
       padding + ")"
   }
 
-  private[scalatest] def factDiagram(level: Int): String = {
-    import Fact.{Binary_&&, Binary_||, Unary_!}
-    this match {
-      case binaryDoubleAmpersand: Binary_&& =>
-        val raw = rawNestedFactDiagram(this.isYes, level, "&&")
-        val left = binaryDoubleAmpersand.leftFactDiagram(level)
-        val right = binaryDoubleAmpersand.rightFactDiagram(level)
-        Resources.formatString(raw, Array(left, right))
-
-      case binaryDoublePipe: Binary_|| =>
-        val raw = rawNestedFactDiagram(this.isYes, level, "||")
-        val left = binaryDoublePipe.leftFactDiagram(level)
-        val right = binaryDoublePipe.rightFactDiagram(level)
-        Resources.formatString(raw, Array(left, right))
-
-      case unaryNot: Unary_! =>
-        (if (unaryNot.isYes) "Yes(" else "No(") + NEWLINE +
-          ("  " * (level + 1)) + "!" + unaryNot.underlying.factDiagram(level) + NEWLINE +
-          ("  " * level) + ")"
-
-      case other => toString
-    }
-  }
+  def factDiagram(level: Int): String =
+    if (midSentenceFactMessage.contains("\n"))
+      stringPrefix + "(" + NEWLINE + midSentenceFactMessage + NEWLINE + ")"
+    else
+      stringPrefix + "(" + midSentenceFactMessage + ")"
 }
 
 object Fact {
@@ -720,6 +698,12 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     def isYes: Boolean = !(underlying.isYes)
 
     override def unary_!(): org.scalatest.Fact = underlying
+
+    override def factDiagram(level: Int): String = {
+      (if (isYes) "Yes(" else "No(") + NEWLINE +
+        ("  " * (level + 1)) + "!" + underlying.factDiagram(level) + NEWLINE +
+        ("  " * level) + ")"
+    }
   }
 
   class Binary_&&(left: Fact, right: Fact) extends Fact {
@@ -733,15 +717,9 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       else
         rawFactDiagram(0, "&&")
     }
-    val rawSimplifiedFactMessage: String = {
-      Resources.rawCommaBut
-    }
-    val rawMidSentenceFactMessage: String = {
-      Resources.rawCommaBut
-    }
-    val rawMidSentenceSimplifiedFactMessage: String = {
-      Resources.rawCommaBut
-    }
+    val rawSimplifiedFactMessage: String = rawFactMessage
+    val rawMidSentenceFactMessage: String = rawFactMessage
+    val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(
@@ -753,15 +731,20 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = {
-      Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
-    }
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right)) // Simplify if combining
+      if (left.isLeaf && right.isLeaf) {
+        Vector(
+          MidSentenceSimplifiedFactMessage(left),
+          MidSentenceSimplifiedFactMessage(right)
+        ) // Simplify if combining
+      }
+      else {
+        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
+      }
     }
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
-      Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
-    }
+
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
     val prettifier: Prettifier = left.prettifier
@@ -771,6 +754,13 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     private[scalatest] def leftFactDiagram(level: Int): String = left.factDiagram(level + 1)
 
     private[scalatest] def rightFactDiagram(level: Int): String = right.factDiagram(level + 1)
+
+    override def factDiagram(level: Int): String = {
+      val raw = rawNestedFactDiagram(this.isYes, level, "&&")
+      val left = leftFactDiagram(level)
+      val right = rightFactDiagram(level)
+      Resources.formatString(raw, Array(left, right))
+    }
   }
 
   object Binary_&& {
@@ -788,15 +778,9 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       else
         rawFactDiagram(0, "||")
     }
-    val rawSimplifiedFactMessage: String = {
-      Resources.rawCommaAnd
-    }
-    val rawMidSentenceFactMessage: String = {
-      Resources.rawCommaAnd
-    }
-    val rawMidSentenceSimplifiedFactMessage: String = {
-      Resources.rawCommaAnd
-    }
+    val rawSimplifiedFactMessage: String = rawFactMessage
+    val rawMidSentenceFactMessage: String = rawFactMessage
+    val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
         Vector(FactMessage(left), MidSentenceFactMessage(right))
@@ -805,15 +789,16 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = {
-      Vector(FactMessage(left), MidSentenceSimplifiedFactMessage(right))
-    }
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
-      Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(right))
+      if (left.isLeaf && right.isLeaf) {
+        Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(right))
+      }
+      else {
+        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
+      }
     }
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
-      Vector(MidSentenceFactMessage(left), MidSentenceSimplifiedFactMessage(right))
-    }
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
     val prettifier: Prettifier = left.prettifier
@@ -823,6 +808,13 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     private[scalatest] def leftFactDiagram(level: Int): String = left.factDiagram(level + 1)
 
     private[scalatest] def rightFactDiagram(level: Int): String = right.factDiagram(level + 1)
+
+    override def factDiagram(level: Int): String = {
+      val raw = rawNestedFactDiagram(this.isYes, level, "||")
+      val left = leftFactDiagram(level)
+      val right = rightFactDiagram(level)
+      Resources.formatString(raw, Array(left, right))
+    }
   }
 
   object Binary_|| {
