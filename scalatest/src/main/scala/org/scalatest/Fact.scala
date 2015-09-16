@@ -716,6 +716,8 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
 
   class Binary_&&(private[scalatest] val left: Fact, private[scalatest] val right: Fact) extends Fact {
 
+    require(left.isYes)
+
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
         if (left.isNo) left.rawFactMessage
@@ -775,6 +777,8 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
   }
 
   class Binary_||(private[scalatest] val left: Fact, private[scalatest] val right: Fact) extends Fact {
+
+    require(left.isNo)
 
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
