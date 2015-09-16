@@ -125,12 +125,13 @@ class ExpectationsSpec extends FunSpec with Expectations {
       val fact = (expectResult(3) { 3 } && expectResult(3) { 4 }) || expectResult(5) { 6 }
       assert(fact.factMessage ==
         "No(" + NEWLINE +
-        "  Yes(expected 3, and got 3) &&" + NEWLINE +
-        "  No(expected 3, but got 4)" + NEWLINE +
-        ") ||" + NEWLINE +
-        "No(expected 5, but got 6)"
+        "  No(" + NEWLINE +
+        "    Yes(expected 3, and got 3) &&" + NEWLINE +
+        "    No(expected 3, but got 4)" + NEWLINE +
+        "  ) ||" + NEWLINE +
+        "  No(expected 5, but got 6)" + NEWLINE +
+        ")"
       )
-/*
       assert(fact.toString ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
@@ -140,20 +141,20 @@ class ExpectationsSpec extends FunSpec with Expectations {
         "  No(expected 5, but got 6)" + NEWLINE +
         ")"
       )
-*/
     }
     it("should use vertical diagrammed style of message and prefix Unary_! instance with !") {
       val fact = (expectResult(3) { 3 } && !expectResult(4) { 4 }) || expectResult(5) { 6 }
       assert(fact.factMessage ==
         "No(" + NEWLINE +
-        "  Yes(expected 3, and got 3) &&" + NEWLINE +
         "  No(" + NEWLINE +
-        "    !Yes(expected 4, and got 4)" + NEWLINE +
-        "  )" + NEWLINE +
-        ") ||" + NEWLINE +
-        "No(expected 5, but got 6)"
+        "    Yes(expected 3, and got 3) &&" + NEWLINE +
+        "    No(" + NEWLINE +
+        "      !Yes(expected 4, and got 4)" + NEWLINE +
+        "    )" + NEWLINE +
+        "  ) ||" + NEWLINE +
+        "  No(expected 5, but got 6)" + NEWLINE + 
+        ")"
       )
-/*
       assert(fact.toString ==
         "No(" + NEWLINE +
         "  No(" + NEWLINE +
@@ -165,7 +166,6 @@ class ExpectationsSpec extends FunSpec with Expectations {
         "  No(expected 5, but got 6)" + NEWLINE +
         ")"
       )
-*/
     }
   }
 

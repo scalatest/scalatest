@@ -89,25 +89,14 @@ sealed abstract class Fact {
 
   private[scalatest] val NEWLINE = scala.compat.Platform.EOL
 
-  private[scalatest] def rawFactDiagram(level: Int, operator: String): String = {
-    val padding = "  " * level
-    padding + "{0} " + operator + NEWLINE +
-      padding + "{1}"
-  }
-
-  private[scalatest] def rawNestedFactDiagram(isTrue: Boolean, level: Int, operator: String): String = {
-    val padding = "  " * level
-    padding + (if (isTrue) "Yes(" else "No(") + NEWLINE +
-      rawFactDiagram(level + 1, operator) + NEWLINE +
-      padding + ")"
-  }
-
+  // This one makes sense for Yes and No only. The other subclassess override it.
   def factDiagram(level: Int): String = {
     val msg = midSentenceFactMessage // just compute this once
+    val padding = "  " * level
     if (msg.contains("\n"))
-      stringPrefix + "(" + NEWLINE + msg + NEWLINE + ")"
+      padding + stringPrefix + "(" + NEWLINE + msg + NEWLINE + ")"
     else
-      stringPrefix + "(" + msg + ")"
+      padding + stringPrefix + "(" + msg + ")"
   }
 
   override def toString: String = factDiagram(0)
@@ -131,10 +120,6 @@ object Fact {
     val isLeaf: Boolean = true
     val isYes: Boolean = false
   }
-
-/*
-factMessage is the simplified one, if need be, and simplifiedFactMessage is a simpler one.
-*/
 
   /**
    * Companion object for the <code>No</code> case class.
@@ -702,9 +687,10 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     override def unary_!(): org.scalatest.Fact = underlying
 
     override def factDiagram(level: Int): String = {
-      (if (isYes) "Yes(" else "No(") + NEWLINE +
-        ("  " * (level + 1)) + "!" + underlying.factDiagram(level) + NEWLINE +
-        ("  " * level) + ")"
+      val padding = "  " * level
+      padding + (if (isYes) "Yes(" else "No(") + NEWLINE +
+      padding + "  !" + underlying.factDiagram(0) + NEWLINE +
+      padding + ")"
     }
   }
 
@@ -716,8 +702,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       if (left.isLeaf && right.isLeaf) {
         Resources.rawCommaBut
       }
-      else
-        rawFactDiagram(0, "&&")
+      else factDiagram(0)
     }
     val rawSimplifiedFactMessage: String = rawFactMessage
     val rawMidSentenceFactMessage: String = rawFactMessage
@@ -754,10 +739,11 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     def isYes: Boolean = left.isYes && right.isYes
 
     override def factDiagram(level: Int): String = {
-      val raw = rawNestedFactDiagram(this.isYes, level, "&&")
-      val leftDiagram = left.factDiagram(level + 1)
-      val rightDiagram = right.factDiagram(level + 1)
-      Resources.formatString(raw, Array(leftDiagram, rightDiagram))
+      val padding = "  " * level
+      padding + stringPrefix + "(" + NEWLINE +
+      left.factDiagram(level + 1) + " &&" + NEWLINE +
+      right.factDiagram(level + 1) + NEWLINE +
+      padding + ")"
     }
   }
 
@@ -773,8 +759,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       if (left.isLeaf && right.isLeaf) {
         Resources.rawCommaAnd
       }
-      else
-        rawFactDiagram(0, "||")
+      else factDiagram(0)
     }
     val rawSimplifiedFactMessage: String = rawFactMessage
     val rawMidSentenceFactMessage: String = rawFactMessage
@@ -804,10 +789,11 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     def isYes: Boolean = left.isYes || right.isYes
 
     override def factDiagram(level: Int): String = {
-      val raw = rawNestedFactDiagram(this.isYes, level, "||")
-      val leftDiagram = left.factDiagram(level + 1)
-      val rightDiagram = right.factDiagram(level + 1)
-      Resources.formatString(raw, Array(leftDiagram, rightDiagram))
+      val padding = "  " * level
+      padding + stringPrefix + "(" + NEWLINE +
+      left.factDiagram(level + 1) + " ||" + NEWLINE +
+      right.factDiagram(level + 1) + NEWLINE +
+      padding + ")"
     }
   }
 
