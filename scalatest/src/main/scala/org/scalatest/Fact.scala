@@ -87,7 +87,50 @@ sealed abstract class Fact {
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(Prettifier.default).toArray)
 
-  override def toString: String = stringPrefix + "(" + midSentenceFactMessage + ")"
+  private val NEWLINE = scala.compat.Platform.EOL
+
+  override def toString: String =
+    if (midSentenceFactMessage.contains("\n"))
+      stringPrefix + "(" + NEWLINE + midSentenceFactMessage + NEWLINE + ")"
+    else
+      stringPrefix + "(" + midSentenceFactMessage + ")"
+
+  private[scalatest] def rawFactDiagram(level: Int, operator: String): String = {
+    val padding = "  " * level
+    padding + "{0} " + operator + NEWLINE +
+      padding + "{1}"
+  }
+
+  private def rawNestedFactDiagram(isTrue: Boolean, level: Int, operator: String): String = {
+    val padding = "  " * level
+    padding + (if (isTrue) "Yes(" else "No(") + NEWLINE +
+      rawFactDiagram(level + 1, operator) + NEWLINE +
+      padding + ")"
+  }
+
+  private[scalatest] def factDiagram(level: Int): String = {
+    import Fact.{Binary_&&, Binary_||, Unary_!}
+    this match {
+      case binaryDoubleAmpersand: Binary_&& =>
+        val raw = rawNestedFactDiagram(this.isYes, level, "&&")
+        val left = binaryDoubleAmpersand.leftFactDiagram(level)
+        val right = binaryDoubleAmpersand.rightFactDiagram(level)
+        Resources.formatString(raw, Array(left, right))
+
+      case binaryDoublePipe: Binary_|| =>
+        val raw = rawNestedFactDiagram(this.isYes, level, "||")
+        val left = binaryDoublePipe.leftFactDiagram(level)
+        val right = binaryDoublePipe.rightFactDiagram(level)
+        Resources.formatString(raw, Array(left, right))
+
+      case unaryNot: Unary_! =>
+        (if (unaryNot.isYes) "Yes(" else "No(") + NEWLINE +
+          ("  " * (level + 1)) + "!" + unaryNot.underlying.factDiagram(level) + NEWLINE +
+          ("  " * level) + ")"
+
+      case other => toString
+    }
+  }
 }
 
 object Fact {
@@ -679,42 +722,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     override def unary_!(): org.scalatest.Fact = underlying
   }
 
-  private val NEWLINE = scala.compat.Platform.EOL
-
-  private def rawDiagram(level: Int, operator: String): String = {
-    val padding = "  " * level
-    padding + "{0} " + operator + NEWLINE +
-    padding + "{1}"
-  }
-
-  private def rawNestedDiagram(isTrue: Boolean, level: Int, operator: String): String = {
-    val padding = "  " * level
-    padding + (if (isTrue) "Yes(" else "No(") + NEWLINE +
-    rawDiagram(level + 1, operator) + NEWLINE +
-    padding + ")"
-  }
-
-  private def diagramToString(fact: Fact, level: Int): String =
-    fact match {
-      case binaryDoubleAmpersand: Binary_&& =>
-        val raw = rawNestedDiagram(fact.isYes, level, "&&")
-        val left = diagramToString(binaryDoubleAmpersand.left, level + 1)
-        val right = diagramToString(binaryDoubleAmpersand.right, level + 1)
-        Resources.formatString(raw, Array(left, right))
-
-      case binaryDoublePipe: Binary_|| =>
-        val raw = rawNestedDiagram(fact.isYes, level, "||")
-        val left = diagramToString(binaryDoublePipe.left, level + 1)
-        val right = diagramToString(binaryDoublePipe.right, level + 1)
-        Resources.formatString(raw, Array(left, right))
-
-      case unaryNot: Unary_! =>
-        ""
-
-      case other => fact.toString
-    }
-
-  class Binary_&&(private[scalatest] val left: Fact, private[scalatest] val right: Fact) extends Fact {
+  class Binary_&&(left: Fact, right: Fact) extends Fact {
 
     require(left.isYes)
 
@@ -723,7 +731,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Resources.rawCommaBut
       }
       else
-        rawDiagram(0, "&&")
+        rawFactDiagram(0, "&&")
     }
     val rawSimplifiedFactMessage: String = {
       Resources.rawCommaBut
@@ -742,7 +750,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         ) // Simplify if combining
       }
       else {
-        Vector(UnquotedString(diagramToString(left, 0)), UnquotedString(diagramToString(right, 0)))
+        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
@@ -759,13 +767,17 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     val prettifier: Prettifier = left.prettifier
 
     def isYes: Boolean = left.isYes && right.isYes
+
+    private[scalatest] def leftFactDiagram(level: Int): String = left.factDiagram(level + 1)
+
+    private[scalatest] def rightFactDiagram(level: Int): String = right.factDiagram(level + 1)
   }
 
   object Binary_&& {
     def apply(left: Fact, right: => Fact): Fact = new Binary_&&(left, right)
   }
 
-  class Binary_||(private[scalatest] val left: Fact, private[scalatest] val right: Fact) extends Fact {
+  class Binary_||(left: Fact, right: Fact) extends Fact {
 
     require(left.isNo)
 
@@ -774,7 +786,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Resources.rawCommaAnd
       }
       else
-        rawDiagram(0, "||")
+        rawFactDiagram(0, "||")
     }
     val rawSimplifiedFactMessage: String = {
       Resources.rawCommaAnd
@@ -790,7 +802,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
         Vector(FactMessage(left), MidSentenceFactMessage(right))
       }
       else {
-        Vector(UnquotedString(diagramToString(left, 0)), UnquotedString(diagramToString(right, 0)))
+        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
       }
     }
     val simplifiedFactMessageArgs: IndexedSeq[Any] = {
@@ -807,6 +819,10 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     val prettifier: Prettifier = left.prettifier
 
     def isYes: Boolean = left.isYes || right.isYes
+
+    private[scalatest] def leftFactDiagram(level: Int): String = left.factDiagram(level + 1)
+
+    private[scalatest] def rightFactDiagram(level: Int): String = right.factDiagram(level + 1)
   }
 
   object Binary_|| {

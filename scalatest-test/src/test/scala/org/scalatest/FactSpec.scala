@@ -34,6 +34,8 @@ No(4 did not equal 3)
 */
 class FactSpec extends FreeSpec with Matchers with PrettyMethods with ExpectationHavePropertyMatchers {
 
+  val NEWLINE = scala.compat.Platform.EOL
+
   "A Fact" - {
     // As if we said expectResult(3) { 1 + 1 }
     val noFact: Expectation = No("Expected 3, but got 2", "3 did not equal 2", "expected 3, but got 2", "3 did not equal 2")
@@ -380,6 +382,22 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawBothParensCommaAnd)
         fact.isLeaf should be (false)
       }*/
+    }
+
+    "toString method" - {
+
+      "should display midSentenceFactMessage enclosed with opening and closing bracket" in {
+        val yes = Yes("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message")
+        yes.toString shouldBe "Yes(mid-sentence fact message)"
+
+        val no = No("fact message", "simplified fact message", "mid-sentence fact message", "simplified mid-sentence fact message")
+        no.toString shouldBe "No(mid-sentence fact message)"
+      }
+
+      "should prefix new line to midSentenceFactMessage in toString when the midSentenceFactMessage contains \\n" in {
+        val fact = Yes("fact message", "simplified fact message", "line 1\nline 2\nline 3", "simplified mid-sentence fact message")
+        fact.toString shouldBe "Yes(" + NEWLINE + "line 1\nline 2\nline 3" + NEWLINE + ")"
+      }
     }
   }
 
