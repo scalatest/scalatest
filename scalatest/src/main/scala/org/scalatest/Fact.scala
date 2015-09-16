@@ -87,9 +87,7 @@ sealed abstract class Fact {
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
     Resources.formatString(raw, args.map(Prettifier.default).toArray)
 
-  override def toString: String = stringPrefix + "(" + factMessage + ")"
-
-  def midSentenceToString: String = stringPrefix + "(" + midSentenceFactMessage + ")"
+  override def toString: String = stringPrefix + "(" + midSentenceFactMessage + ")"
 }
 
 object Fact {
@@ -666,13 +664,13 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
   case class Unary_!(underlying: Fact) extends Fact {
 
     val rawFactMessage: String = underlying.rawSimplifiedFactMessage
-    val rawSimplifiedFactMessage: String = underlying.rawFactMessage
+    val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
     val rawMidSentenceFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
-    val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceFactMessage
+    val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
     val factMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
-    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
     val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
-    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceFactMessageArgs
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
     val isLeaf: Boolean = underlying.isLeaf
     val prettifier: Prettifier = underlying.prettifier
 
@@ -713,7 +711,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       case unaryNot: Unary_! =>
         ""
 
-      case other => fact.midSentenceToString
+      case other => fact.toString
     }
 
   class Binary_&&(private[scalatest] val left: Fact, right: => Fact) extends Fact {
@@ -744,11 +742,12 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
       if (left.isLeaf && rightResult.isLeaf) {
         if (left.isNo)
           Vector(FactMessage(left)) // Keep full message if short circuiting the error message
-        else
+        else {
           Vector(
             SimplifiedFactMessage(left),
-            if (rightResult.isInstanceOf[Unary_!]) MidSentenceFactMessage(rightResult) else MidSentenceSimplifiedFactMessage(rightResult)
+            MidSentenceSimplifiedFactMessage(rightResult)
           ) // Simplify if combining
+        }
       }
       else {
         Vector(UnquotedString(diagramToString(left, 0)), UnquotedString(diagramToString(rightResult, 0)))
@@ -760,7 +759,7 @@ factMessage is the simplified one, if need be, and simplifiedFactMessage is a si
     }
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
       if (left.isNo) Vector(MidSentenceFactMessage(left)) // Keep full message if short circuiting the error message
-      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceFactMessage(rightResult)) // Simplify if combining
+      else Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(rightResult)) // Simplify if combining
     }
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = {
       if (left.isNo) Vector(MidSentenceFactMessage(left))
