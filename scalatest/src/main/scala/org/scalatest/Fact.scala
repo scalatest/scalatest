@@ -56,6 +56,10 @@ sealed abstract class Fact {
 
   final def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
+  final def |(rhs: => Fact): Fact = Fact.Binary_|(this, rhs)
+
+  final def &(rhs: => Fact): Fact = Fact.Binary_&(this, rhs)
+
   final def stringPrefix: String = if (isYes) "Yes" else "No"
 
   /**
@@ -694,13 +698,14 @@ object Fact {
     }
   }
 
-  class Binary_&&(left: Fact, right: Fact) extends Fact {
-
-    require(left.isYes)
+  class Binary_&(left: Fact, right: Fact) extends Fact {
 
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
-        Resources.rawCommaBut
+        if (left.isYes && right.isNo)
+          Resources.rawCommaBut
+        else
+          Resources.rawCommaAnd
       }
       else factDiagram(0)
     }
@@ -741,19 +746,25 @@ object Fact {
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
       padding + stringPrefix + "(" + NEWLINE +
-      left.factDiagram(level + 1) + " &&" + NEWLINE +
-      right.factDiagram(level + 1) + NEWLINE +
-      padding + ")"
+        left.factDiagram(level + 1) + " &&" + NEWLINE +
+        right.factDiagram(level + 1) + NEWLINE +
+        padding + ")"
     }
+  }
+
+  object Binary_& {
+    def apply(left: Fact, right: => Fact): Fact = new Binary_&(left, right)
+  }
+
+  class Binary_&&(left: Fact, right: Fact) extends Binary_&(left, right) {
+    require(left.isYes)
   }
 
   object Binary_&& {
     def apply(left: Fact, right: => Fact): Fact = new Binary_&&(left, right)
   }
 
-  class Binary_||(left: Fact, right: Fact) extends Fact {
-
-    require(left.isNo)
+  class Binary_|(left: Fact, right: Fact) extends Fact {
 
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
@@ -766,7 +777,7 @@ object Fact {
     val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
     val factMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
-        Vector(FactMessage(left), MidSentenceFactMessage(right))
+        Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
@@ -775,7 +786,7 @@ object Fact {
     val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
     val midSentenceFactMessageArgs: IndexedSeq[Any] = {
       if (left.isLeaf && right.isLeaf) {
-        Vector(MidSentenceFactMessage(left), MidSentenceFactMessage(right))
+        Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
       }
       else {
         Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
@@ -795,6 +806,14 @@ object Fact {
       right.factDiagram(level + 1) + NEWLINE +
       padding + ")"
     }
+  }
+
+  object Binary_| {
+    def apply(left: Fact, right: => Fact): Fact = new Binary_|(left, right)
+  }
+
+  class Binary_||(left: Fact, right: Fact) extends Binary_|(left, right) {
+    require(left.isNo)
   }
 
   object Binary_|| {
