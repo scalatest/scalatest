@@ -167,6 +167,86 @@ class ExpectationsSpec extends FunSpec with Expectations {
         ")"
       )
     }
+    it("should short-circuit and just return No when used with No && No") {
+      val fact = expectResult(2) {4} && expectResult(3) {5}
+      assert(fact.isInstanceOf[Fact.No])
+      assert(fact.factMessage == "Expected 2, but got 4")
+    }
+    it("should short-circuit and just return No when used with No && Yes") {
+      val fact = expectResult(2) {4} && expectResult(3) {3}
+      assert(fact.isInstanceOf[Fact.No])
+      assert(fact.factMessage == "Expected 2, but got 4")
+    }
+    it("should return Binary_&& when used with Yes && No") {
+      val fact = expectResult(4) {4} && expectResult(3) {5}
+      assert(fact.isInstanceOf[Fact.Binary_&&])
+      assert(fact.factMessage == "4 equaled 4, but 3 did not equal 5")
+    }
+    it("should return Binary_&& when used with Yes && Yes") {
+      val fact = expectResult(4) {4} && expectResult(3) {3}
+      assert(fact.isInstanceOf[Fact.Binary_&&])
+      assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
+    }
+    it("should return Binary_& when used with No & No") {
+      val fact = expectResult(2) {4} & expectResult(3) {5}
+      assert(fact.isInstanceOf[Fact.Binary_&])
+      assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
+    }
+    it("should return Binary_& when used with No & Yes") {
+      val fact = expectResult(2) {4} & expectResult(3) {3}
+      assert(fact.isInstanceOf[Fact.Binary_&])
+      assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
+    }
+    it("should return Binary_& when used with Yes & No") {
+      val fact = expectResult(4) {4} & expectResult(3) {5}
+      assert(fact.isInstanceOf[Fact.Binary_&])
+      assert(fact.factMessage == "4 equaled 4, but 3 did not equal 5")
+    }
+    it("should return Binary_& when used with Yes & Yes") {
+      val fact = expectResult(4) {4} & expectResult(3) {3}
+      assert(fact.isInstanceOf[Fact.Binary_&])
+      assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
+    }
+    it("should return Binary_|| when used with No || No") {
+      val fact = expectResult(2) {4} || expectResult(3) {5}
+      assert(fact.isInstanceOf[Fact.Binary_||])
+      assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
+    }
+    it("should return Binary_|| when used with No || Yes") {
+      val fact = expectResult(2) {4} || expectResult(3) {3}
+      assert(fact.isInstanceOf[Fact.Binary_||])
+      assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
+    }
+    it("should short-circuit and return Yes when used with Yes || No") {
+      val fact = expectResult(4) {4} || expectResult(3) {5}
+      assert(fact.isInstanceOf[Fact.Yes])
+      assert(fact.factMessage == "Expected 4, and got 4")
+    }
+    it("should short-circuit and return Yes when used with Yes || Yes") {
+      val fact = expectResult(4) {4} || expectResult(3) {3}
+      assert(fact.isInstanceOf[Fact.Yes])
+      assert(fact.factMessage == "Expected 4, and got 4")
+    }
+    it("should return Binary_| when used with No | No") {
+      val fact = expectResult(2) {4} | expectResult(3) {5}
+      assert(fact.isInstanceOf[Fact.Binary_|])
+      assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
+    }
+    it("should return Binary_| when used with No | Yes") {
+      val fact = expectResult(2) {4} | expectResult(3) {3}
+      assert(fact.isInstanceOf[Fact.Binary_|])
+      assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
+    }
+    it("should return Binary_| when used with Yes | No") {
+      val fact = expectResult(4) {4} | expectResult(3) {5}
+      assert(fact.isInstanceOf[Fact.Binary_|])
+      assert(fact.factMessage == "4 equaled 4, and 3 did not equal 5")
+    }
+    it("should return Binary_| when used with Yes | Yes") {
+      val fact = expectResult(4) {4} | expectResult(3) {3}
+      assert(fact.isInstanceOf[Fact.Binary_|])
+      assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
+    }
   }
 
   describe("The expectThrows method") {
@@ -211,6 +291,23 @@ class ExpectationsSpec extends FunSpec with Expectations {
           }
         assert(fact.cause.value eq wrongException)
       }
+    }
+  }
+
+  describe("The expect method") {
+
+    val a = 1
+
+    it("should return Yes when used to check a == 1") {
+      val fact = expect(a == 1)
+      assert(fact.isInstanceOf[Fact.Yes])
+      assert(fact.factMessage == "1 equaled 1")
+    }
+
+    it("should return No when used to check a == 2") {
+      val fact = expect(a == 2)
+      assert(fact.isInstanceOf[Fact.No])
+      assert(fact.factMessage == "1 did not equal 2")
     }
   }
 }
