@@ -293,4 +293,21 @@ class ExpectationsSpec extends FunSpec with Expectations {
       }
     }
   }
+
+  describe("The expect method") {
+
+    val a = 1
+
+    it("should return Yes when used to check a == 1") {
+      val fact = expect(a == 1)
+      assert(fact.isInstanceOf[Fact.Yes])
+      assert(fact.factMessage == "1 equaled 1")
+    }
+
+    it("should return No when used to check a == 2") {
+      val fact = expect(a == 2)
+      assert(fact.isInstanceOf[Fact.No])
+      assert(fact.factMessage == "1 did not equal 2")
+    }
+  }
 }

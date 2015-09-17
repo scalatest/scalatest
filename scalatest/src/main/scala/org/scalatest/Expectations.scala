@@ -17,6 +17,7 @@ package org.scalatest
 
 import scala.reflect.ClassTag
 import Fact._
+import org.scalactic.Bool
 
 trait Expectations {
  
@@ -102,6 +103,64 @@ trait Expectations {
       }
     }
   }
+
+  class ExpectationsHelper {
+
+    def macroExpect(bool: Bool, clue: Any): Fact = {
+      //requireNonNull(clue)
+      if (!bool.value)
+        No(
+          bool.rawFailureMessage,
+          bool.rawFailureMessage,
+          bool.rawFailureMessage,
+          bool.rawFailureMessage,
+          bool.failureMessageArgs,
+          bool.failureMessageArgs,
+          bool.failureMessageArgs,
+          bool.failureMessageArgs
+        )
+      else
+        Yes(
+          bool.rawNegatedFailureMessage,
+          bool.rawNegatedFailureMessage,
+          bool.rawNegatedFailureMessage,
+          bool.rawNegatedFailureMessage,
+          bool.negatedFailureMessageArgs,
+          bool.negatedFailureMessageArgs,
+          bool.negatedFailureMessageArgs,
+          bool.negatedFailureMessageArgs
+        )
+    }
+
+  }
+
+  val expectationsHelper = new ExpectationsHelper
+
+  import language.experimental.macros
+
+  def expect(expression: Boolean): Fact = macro ExpectationsMacro.expect
+    /*if (expression)
+      Yes(
+        "Expectation was true",
+        "Expectation was true",
+        "expectation was true",
+        "expectation was true",
+        Vector.empty,
+        Vector.empty,
+        Vector.empty,
+        Vector.empty
+      )
+    else
+      No(
+        "Expectation was false",
+        "Expectation was false",
+        "expectation was false",
+        "expectation was false",
+        Vector.empty,
+        Vector.empty,
+        Vector.empty,
+        Vector.empty
+      )*/
 }
 
 object Expectations extends Expectations
