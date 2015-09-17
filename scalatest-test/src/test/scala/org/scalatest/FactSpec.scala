@@ -185,7 +185,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.isLeaf should be (true)
       }
 
-      "for Yes && No" in pendingUntilFixed {
+      "for Yes && No" in {
         val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
         val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
         val fact = leftSideYes && rightSideNo
@@ -197,16 +197,16 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
         fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
         fact.midSentenceSimplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
         fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideNo)))
+        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
       }
 
-      "for Yes && Yes" in pendingUntilFixed {
+      "for Yes && Yes" in {
         val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
         val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
         val fact = leftSideYes && rightSideYes
@@ -218,11 +218,11 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
         fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
         fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
-        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
         fact.midSentenceSimplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
         fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
-        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceFactMessage(rightSideYes)))
+        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
       }
@@ -262,10 +262,33 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.isLeaf should be (false)
       }
     }
+
+    "should short-circuit correctly" - {
+      "for Yes && Yes" in {
+        var evaluated = false
+        Yes("yes1") && { evaluated = true; Yes("yes2") }
+        assert(evaluated)
+      }
+      "for Yes && No" in {
+        var evaluated = false
+        Yes("yes1") && { evaluated = true; No("no1") }
+        assert(evaluated)
+      }
+      "for No && Yes" in {
+        var evaluated = false
+        No("no1") && { evaluated = true; Yes("yes1") }
+        assert(!evaluated)
+      }
+      "for No && No" in {
+        var evaluated = false
+        No("no1") && { evaluated = true; No("no2") }
+        assert(!evaluated)
+      }
+    }
+
   }
 
-
-  "The Fact obtained from or-ing two Facts" - {
+  "The Fact obtained from or-ing two Facts with ||" - {
     "should be lazy about constructing strings" - {
 
       "for No || No" in {
@@ -383,30 +406,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }*/
     }
 
-    "should short-circuit when used with &&" - {
-      "for Yes && Yes" in {
-        var evaluated = false
-        Yes("yes1") && { evaluated = true; Yes("yes2") }
-        assert(evaluated)
-      }
-      "for Yes && No" in {
-        var evaluated = false
-        Yes("yes1") && { evaluated = true; No("no1") }
-        assert(evaluated)
-      }
-      "for No && Yes" in {
-        var evaluated = false
-        No("no1") && { evaluated = true; Yes("yes1") }
-        assert(!evaluated)
-      }
-      "for No && No" in {
-        var evaluated = false
-        No("no1") && { evaluated = true; No("no2") }
-        assert(!evaluated)
-      }
-    }
-
-    "should short-circuit when used with ||" - {
+    "should short-circuit correctly" - {
       "for Yes || Yes" in {
         var evaluated = false
         Yes("yes1") || { evaluated = true; Yes("yes2") }
