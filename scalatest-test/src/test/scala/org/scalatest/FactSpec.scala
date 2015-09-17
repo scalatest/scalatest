@@ -265,9 +265,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
   }
 
 
-  "The Expectation obtained from or-ing two Expectations" - {
+  "The Fact obtained from or-ing two Facts" - {
     "should be lazy about constructing strings" - {
-
 
       "for No || No" in {
         val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
@@ -382,6 +381,52 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawBothParensCommaAnd)
         fact.isLeaf should be (false)
       }*/
+    }
+
+    "should short-circuit when used with &&" - {
+      "for Yes && Yes" in {
+        var evaluated = false
+        Yes("yes1") && { evaluated = true; Yes("yes2") }
+        assert(evaluated)
+      }
+      "for Yes && No" in {
+        var evaluated = false
+        Yes("yes1") && { evaluated = true; No("no1") }
+        assert(evaluated)
+      }
+      "for No && Yes" in {
+        var evaluated = false
+        No("no1") && { evaluated = true; Yes("yes1") }
+        assert(!evaluated)
+      }
+      "for No && No" in {
+        var evaluated = false
+        No("no1") && { evaluated = true; No("no2") }
+        assert(!evaluated)
+      }
+    }
+
+    "should short-circuit when used with ||" - {
+      "for Yes || Yes" in {
+        var evaluated = false
+        Yes("yes1") || { evaluated = true; Yes("yes2") }
+        assert(!evaluated)
+      }
+      "for Yes || No" in {
+        var evaluated = false
+        Yes("yes1") || { evaluated = true; No("no1") }
+        assert(!evaluated)
+      }
+      "for No || Yes" in {
+        var evaluated = false
+        No("no1") || { evaluated = true; Yes("yes1") }
+        assert(evaluated)
+      }
+      "for No || No" in {
+        var evaluated = false
+        No("no1") || { evaluated = true; No("no2") }
+        assert(evaluated)
+      }
     }
 
     "toString method" - {
