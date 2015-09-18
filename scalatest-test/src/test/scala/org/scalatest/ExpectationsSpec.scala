@@ -354,4 +354,74 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.factMessage == "1 did not equal 2")
     }
   }
+
+  describe("expectDoesNotCompile method") {
+
+    describe("when work with string literal") {
+
+      it("should return Yes with correct fact message when type check failed") {
+        val fact = expectDoesNotCompile("val a: String = 1")
+        assert(fact.isInstanceOf[Fact.Yes])
+        assert(fact.factMessage == Resources.didNotCompile("val a: String = 1"))
+      }
+
+      it("should return No with correct fact message when parse and type check passed") {
+        val fact = expectDoesNotCompile("val a = 1")
+        assert(fact.isInstanceOf[Fact.No])
+        assert(fact.factMessage == Resources.expectedCompileErrorButGotNone("val a = 1"))
+      }
+
+      it("should return Yes with correct fact messsage when parse failed") {
+        val fact = expectDoesNotCompile("println(\"test)")
+        assert(fact.isInstanceOf[Fact.Yes])
+        assert(fact.factMessage == Resources.didNotCompile("println(\"test)"))
+      }
+
+    }
+
+    describe("when used with triple quotes string literal with stripMargin") {
+
+      it("should return Yes with correct fact message when type check failed") {
+        val fact = expectDoesNotCompile(
+          """
+            |val a: String = 2
+            |""".stripMargin
+        )
+        assert(fact.isInstanceOf[Fact.Yes])
+        assert(fact.factMessage == Resources.didNotCompile(
+          """
+            |val a: String = 2
+            |""".stripMargin
+        ))
+      }
+
+      it("should return No with correct fact message when parse and type check passed") {
+        val fact = expectDoesNotCompile(
+          """
+            |val a = 1
+            |""".stripMargin
+        )
+        assert(fact.isInstanceOf[Fact.No])
+        assert(fact.factMessage == Resources.expectedCompileErrorButGotNone(
+          """
+            |val a = 1
+            |""".stripMargin
+        ))
+      }
+
+      it("should return Yes with correct fact message when parse failed ") {
+        val fact = expectDoesNotCompile(
+          """
+            |println(\"test)
+            |""".stripMargin
+        )
+        assert(fact.isInstanceOf[Fact.Yes])
+        assert(fact.factMessage == Resources.didNotCompile(
+          """
+            |println(\"test)
+            |""".stripMargin
+        ))
+      }
+    }
+  }
 }

@@ -139,28 +139,8 @@ trait Expectations {
   import language.experimental.macros
 
   def expect(expression: Boolean): Fact = macro ExpectationsMacro.expect
-    /*if (expression)
-      Yes(
-        "Expectation was true",
-        "Expectation was true",
-        "expectation was true",
-        "expectation was true",
-        Vector.empty,
-        Vector.empty,
-        Vector.empty,
-        Vector.empty
-      )
-    else
-      No(
-        "Expectation was false",
-        "Expectation was false",
-        "expectation was false",
-        "expectation was false",
-        Vector.empty,
-        Vector.empty,
-        Vector.empty,
-        Vector.empty
-      )*/
+
+  def expectDoesNotCompile(code: String): Fact = macro CompileMacro.expectDoesNotCompileImpl
 }
 
 object Expectations extends Expectations

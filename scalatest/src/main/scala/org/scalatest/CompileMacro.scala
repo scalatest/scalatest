@@ -108,6 +108,66 @@ private[scalatest] object CompileMacro {
     }
   }
 
+  // parse and type check a code snippet, generate code to return Fact (Yes or No).
+  def expectDoesNotCompileImpl(c: Context)(code: c.Expr[String]): c.Expr[Fact] = {
+    import c.universe._
+
+    // extract code snippet
+    val codeStr = getCodeStringFromCodeExpression(c)("assertDoesNotCompile", code)
+
+    try {
+      c.typeCheck(c.parse("{ "+codeStr+" }"))  // parse and type check code snippet
+      // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
+      val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(codeStr))
+      reify {
+        Fact.No(
+          messageExpr.splice,
+          messageExpr.splice,
+          messageExpr.splice,
+          messageExpr.splice,
+          Vector.empty,
+          Vector.empty,
+          Vector.empty,
+          Vector.empty
+        )
+        //throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+      }
+    } catch {
+      case e: TypecheckException =>
+        val messageExpr = c.literal(Resources.didNotCompile(codeStr))
+        reify {
+          // type check error, code snippet does not compile as expected, generate code to return Succeeded
+          Fact.Yes(
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )
+          //Succeeded
+        }
+      case e: ParseException =>
+        val messageExpr = c.literal(Resources.didNotCompile(codeStr))
+        reify {
+          // parse error, code snippet does not compile as expected, generate code to return Succeeded
+          Fact.Yes(
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )
+          //Succeeded
+        }
+    }
+  }
+
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
   def assertCompilesImpl(c: Context)(code: c.Expr[String]): c.Expr[Assertion] = {
     import c.universe._
