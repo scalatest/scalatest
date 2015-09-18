@@ -700,6 +700,8 @@ object Fact {
 
   class Binary_&(left: Fact, right: Fact) extends Fact {
 
+    private[scalatest] def operatorName: String = "&"
+
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
         if (left.isYes && right.isNo)
@@ -746,7 +748,7 @@ object Fact {
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
       padding + stringPrefix + "(" + NEWLINE +
-        left.factDiagram(level + 1) + " &&" + NEWLINE +
+        left.factDiagram(level + 1) + " " + operatorName + NEWLINE +
         right.factDiagram(level + 1) + NEWLINE +
         padding + ")"
     }
@@ -758,6 +760,7 @@ object Fact {
 
   class Binary_&&(left: Fact, right: Fact) extends Binary_&(left, right) {
     require(left.isYes)
+    override private[scalatest] def operatorName: String = "&&"
   }
 
   object Binary_&& {
@@ -765,6 +768,8 @@ object Fact {
   }
 
   class Binary_|(left: Fact, right: Fact) extends Fact {
+
+    private[scalatest] def operatorName: String = "|"
 
     val rawFactMessage: String = {
       if (left.isLeaf && right.isLeaf) {
@@ -802,7 +807,7 @@ object Fact {
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
       padding + stringPrefix + "(" + NEWLINE +
-      left.factDiagram(level + 1) + " ||" + NEWLINE +
+      left.factDiagram(level + 1) + " " + operatorName + NEWLINE +
       right.factDiagram(level + 1) + NEWLINE +
       padding + ")"
     }
@@ -814,6 +819,7 @@ object Fact {
 
   class Binary_||(left: Fact, right: Fact) extends Binary_|(left, right) {
     require(left.isNo)
+    override private[scalatest] def operatorName: String = "||"
   }
 
   object Binary_|| {

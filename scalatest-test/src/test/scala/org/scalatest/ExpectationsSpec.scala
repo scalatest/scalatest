@@ -98,7 +98,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         ")"
       )
     }
-    it("should give a basic message for a binary expression with 2 leafs") {
+    it("should give a basic message for a && binary expression with 2 leafs") {
       val fact1 = expectResult(3) { 3 } && expectResult(3) { 4 }
       assert(fact1.isNo)
       assert(fact1.factMessage  == "3 equaled 3, but 3 did not equal 4")
@@ -121,7 +121,30 @@ class ExpectationsSpec extends FunSpec with Expectations {
         ")"
       )
     }
-    it("should use vertical diagrammed style of message when one of component in a binary expression is not a leaf") {
+    it("should give a basic message for a & binary expression with 2 leafs") {
+      val fact1 = expectResult(3) { 3 } & expectResult(3) { 4 }
+      assert(fact1.isNo)
+      assert(fact1.factMessage  == "3 equaled 3, but 3 did not equal 4")
+      assert(fact1.toString ==
+        "No(" + NEWLINE +
+          "  Yes(expected 3, and got 3) &" + NEWLINE +
+          "  No(expected 3, but got 4)" + NEWLINE +
+          ")"
+      )
+
+      val fact2 = expectResult(3) { 3 } & !expectResult(4) { 4 }
+      assert(fact2.isNo)
+      assert(fact2.factMessage  == "3 equaled 3, but 4 equaled 4")
+      assert(fact2.toString ==
+        "No(" + NEWLINE +
+          "  Yes(expected 3, and got 3) &" + NEWLINE +
+          "  No(" + NEWLINE +
+          "    !Yes(expected 4, and got 4)" + NEWLINE +
+          "  )" + NEWLINE +
+          ")"
+      )
+    }
+    it("should use vertical diagrammed style of message when one of component in && and || binary expression is not a leaf") {
       val fact = (expectResult(3) { 3 } && expectResult(3) { 4 }) || expectResult(5) { 6 }
       assert(fact.factMessage ==
         "No(" + NEWLINE +
@@ -140,6 +163,27 @@ class ExpectationsSpec extends FunSpec with Expectations {
         "  ) ||" + NEWLINE +
         "  No(expected 5, but got 6)" + NEWLINE +
         ")"
+      )
+    }
+    it("should use vertical diagrammed style of message when one of component in & and | binary expression is not a leaf") {
+      val fact = (expectResult(3) { 3 } & expectResult(3) { 4 }) | expectResult(5) { 6 }
+      assert(fact.factMessage ==
+        "No(" + NEWLINE +
+          "  No(" + NEWLINE +
+          "    Yes(expected 3, and got 3) &" + NEWLINE +
+          "    No(expected 3, but got 4)" + NEWLINE +
+          "  ) |" + NEWLINE +
+          "  No(expected 5, but got 6)" + NEWLINE +
+          ")"
+      )
+      assert(fact.toString ==
+        "No(" + NEWLINE +
+          "  No(" + NEWLINE +
+          "    Yes(expected 3, and got 3) &" + NEWLINE +
+          "    No(expected 3, but got 4)" + NEWLINE +
+          "  ) |" + NEWLINE +
+          "  No(expected 5, but got 6)" + NEWLINE +
+          ")"
       )
     }
     it("should use vertical diagrammed style of message and prefix Unary_! instance with !") {
