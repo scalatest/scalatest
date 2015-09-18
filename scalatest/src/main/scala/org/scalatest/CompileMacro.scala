@@ -113,7 +113,7 @@ private[scalatest] object CompileMacro {
     import c.universe._
 
     // extract code snippet
-    val codeStr = getCodeStringFromCodeExpression(c)("assertDoesNotCompile", code)
+    val codeStr = getCodeStringFromCodeExpression(c)("expectDoesNotCompile", code)
 
     try {
       c.typeCheck(c.parse("{ "+codeStr+" }"))  // parse and type check code snippet
@@ -193,6 +193,63 @@ private[scalatest] object CompileMacro {
         val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr))
         reify {
           throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+        }
+    }
+  }
+
+  def expectCompilesImpl(c: Context)(code: c.Expr[String]): c.Expr[Fact] = {
+    import c.universe._
+
+    // extract code snippet
+    val codeStr = getCodeStringFromCodeExpression(c)("expectCompiles", code)
+
+    try {
+      c.typeCheck(c.parse("{ " + codeStr + " }")) // parse and type check code snippet
+      // Both parse and type check succeeded, the code snippet compiles as expected, generate code to return Succeeded
+      val messageExpr = c.literal(Resources.compiledSuccessfully(codeStr))
+      reify {
+        Fact.Yes(
+          messageExpr.splice,
+          messageExpr.splice,
+          messageExpr.splice,
+          messageExpr.splice,
+          Vector.empty,
+          Vector.empty,
+          Vector.empty,
+          Vector.empty
+        )
+        //Succeeded
+      }
+    } catch {
+      case e: TypecheckException =>
+        // type check error, compiles fails, generate code to throw TestFailedException
+        val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, codeStr))
+        reify {
+          Fact.No(
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )
+        }
+      case e: ParseException =>
+        // parse error, compiles fails, generate code to throw TestFailedException
+        val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr))
+        reify {
+          Fact.No(
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )
         }
     }
   }

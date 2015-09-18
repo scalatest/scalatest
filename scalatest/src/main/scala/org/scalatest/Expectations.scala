@@ -141,6 +141,8 @@ trait Expectations {
   def expect(expression: Boolean): Fact = macro ExpectationsMacro.expect
 
   def expectDoesNotCompile(code: String): Fact = macro CompileMacro.expectDoesNotCompileImpl
+
+  def expectCompiles(code: String): Fact = macro CompileMacro.expectCompilesImpl
 }
 
 object Expectations extends Expectations
