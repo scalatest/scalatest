@@ -39,7 +39,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecOf[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait PropSpecRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
@@ -96,7 +96,7 @@ trait PropSpecOf[R] extends Suite with TestRegistration with Informing with Noti
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecOf.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
@@ -104,7 +104,7 @@ trait PropSpecOf[R] extends Suite with TestRegistration with Informing with Noti
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecOf.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecRegistering.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -128,7 +128,7 @@ trait PropSpecOf[R] extends Suite with TestRegistration with Informing with Noti
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecOf.scala", "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecRegistering.scala", "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -153,7 +153,7 @@ trait PropSpecOf[R] extends Suite with TestRegistration with Informing with Noti
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, "PropSpecOf.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, "PropSpecRegistering.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

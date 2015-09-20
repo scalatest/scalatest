@@ -19,7 +19,7 @@ import scala.concurrent.{Future, ExecutionContext}
 import org.scalatest._
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncFeatureSpecLike extends FeatureSpecOf[Future[Any]] with AsyncFixtures with org.scalatest.OneInstancePerTest { thisSuite =>
+trait AsyncFeatureSpecLike extends FeatureSpecRegistering[Future[Any]] with AsyncFixtures with org.scalatest.OneInstancePerTest { thisSuite =>
 
   implicit def executionContext: ExecutionContext
 

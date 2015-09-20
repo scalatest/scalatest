@@ -41,7 +41,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait FunSuiteOf[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSuiteRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
@@ -51,7 +51,7 @@ trait FunSuiteOf[R] extends Suite with TestRegistration with Informing with Noti
 
   import engine._
 
-  private[scalatest] val sourceFileName = "FunSuiteOf.scala"
+  private[scalatest] val sourceFileName = "FunSuiteRegistering.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its

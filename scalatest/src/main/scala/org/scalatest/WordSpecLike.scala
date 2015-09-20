@@ -16,4 +16,4 @@
 package org.scalatest
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait WordSpecLike extends WordSpecOf[Unit]
+trait WordSpecLike extends WordSpecRegistering[Unit]

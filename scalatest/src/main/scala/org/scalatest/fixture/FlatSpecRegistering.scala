@@ -47,7 +47,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait FlatSpecOf[R] extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FlatSpecRegistering[R] extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
@@ -57,7 +57,7 @@ trait FlatSpecOf[R] extends Suite with TestRegistration with ShouldVerb with Mus
 
   import engine._
 
-  private[scalatest] val sourceFileName = "FlatSpecOf.scala"
+  private[scalatest] val sourceFileName = "FlatSpecRegistering.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -106,7 +106,7 @@ trait FlatSpecOf[R] extends Suite with TestRegistration with ShouldVerb with Mus
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecOf.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
@@ -114,7 +114,7 @@ trait FlatSpecOf[R] extends Suite with TestRegistration with ShouldVerb with Mus
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecOf.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

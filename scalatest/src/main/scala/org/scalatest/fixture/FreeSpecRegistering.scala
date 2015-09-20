@@ -13,50 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.fixture
 
-import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
-MustVerb, StringVerbBlockRegistration}
+import org.scalatest._
+import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord, MustVerb,
+StringVerbBlockRegistration}
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.events._
-import Suite.anExceptionThatShouldCauseAnAbort
-import Suite.autoTagClassAnnotations
+import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
+import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
- * Implementation trait for class <code>FreeSpec</code>, which
- * facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD),
- * in which tests are nested inside text clauses denoted with the dash
- * operator (<code>-</code>).
+ * Implementation trait for class <code>fixture.FreeSpec</code>, which is
+ * a sister class to <code>org.scalatest.FreeSpec</code> that can pass a
+ * fixture object into its tests.
  *
  * <p>
- * <a href="FreeSpec.html"><code>FreeSpec</code></a> is a class, not a trait,
- * to minimize compile time given there is a slight compiler overhead to
- * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FreeSpec</code> into some other class, you can use this
- * trait instead, because class <code>FreeSpec</code> does nothing more than
- * extend this trait and add a nice <code>toString</code> implementation.
+ * <a href="FreeSpec.html"><code>fixture.FreeSpec</code></a> is a class,
+ * not a trait, to minimize compile time given there is a slight compiler
+ * overhead to mixing in traits compared to extending classes. If you need
+ * to mix the behavior of <code>fixture.FreeSpec</code> into some other
+ * class, you can use this trait instead, because class
+ * <code>fixture.FreeSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
  * See the documentation of the class for a <a href="FreeSpec.html">detailed
- * overview of <code>FreeSpec</code></a>.
+ * overview of <code>fixture.FreeSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FreeSpecRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
-  private final val engine = new Engine(Resources.concurrentFreeSpecMod, "FreeSpec")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
 
-  protected[scalatest] def getEngine: Engine = engine
+  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
 
   import engine._
+
+  private[scalatest] val sourceFileName = "FreeSpecRegistering.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -70,20 +72,20 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
   protected def info: Informer = atomicInformer.get
 
   /**
-   * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
+   * Returns an <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>fixture.FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
   protected def note: Notifier = atomicNotifier.get
 
   /**
-   * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
+   * Returns a <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>fixture.FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -100,20 +102,20 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecOf.scala", "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
     // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecOf.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -135,19 +137,18 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Registration) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Registration = testFun()
-    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecOf.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+    engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecOf.scala", methodName, 4, -3, None, None, None, testTags: _*)
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -169,26 +170,25 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Registration) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
-    val stackDepthAdjustment = -3
+    val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Registration = testFun()
-    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecOf.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+    engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecOf.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingNothing) {
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
+  /*
+ private def registerBranch(description: String, childPrefix: Option[String], fun: () => Unit) {
+
+   // TODO: Fix the resource name and method name
+   registerNestedBranch(description, childPrefix, fun(), "describeCannotAppearInsideAnIt", sourceFileName, "describe")
+ }  */
 
   /**
    * Class that supports the registration of tagged tests.
@@ -198,7 +198,11 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
    * class <code>FreeSpecStringWrapper</code>.
    * </p>
    *
+   * @param specText the specification text
+   * @param tags the list of tags
+   *
    * @author Bill Venners
+   * @author Chee Seng
    */
   protected final class ResultOfTaggedAsInvocationOnString(specText: String, tags: List[Tag]) {
 
@@ -210,16 +214,40 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
      * </p>
      *
      * <pre class="stHighlight">
-     * "complain on peek" taggedAs(SlowTest) in { ... }
+     * "complain on peek" taggedAs(SlowTest) in { fixture => ... }
      *                                       ^
      * </pre>
      *
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
-    def in(testFun: => Registration) {
-      registerTestToRun(specText, tags, "in", testFun _)
+    def in(testFun: FixtureParam => Registration) {
+      registerTestToRun(specText, tags, "in", testFun)
+    }
+
+    /**
+     * Supports tagged test registration, for tests that don't take a fixture.
+     *
+     * <p>
+     * For example, this method supports syntax such as the following:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * "complain on peek" taggedAs(SlowTest) in { () => ... }
+     *                                       ^
+     * </pre>
+     *
+     * <p>
+     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * </p>
+     *
+     * @param testFun the test function
+     */
+    def in(testFun: () => Registration) {
+      registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
     }
 
     /**
@@ -237,9 +265,11 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
     def is(testFun: => PendingNothing) {
-      registerPendingTestToRun(specText, tags, "is", testFun _)
+      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
     }
 
     /**
@@ -250,23 +280,57 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
      * </p>
      *
      * <pre class="stHighlight">
-     * "complain on peek" taggedAs(SlowTest) ignore { ... }
+     * "complain on peek" taggedAs(SlowTest) ignore { fixture => ... }
      *                                       ^
      * </pre>
      *
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
-    def ignore(testFun: => Registration) {
-      registerTestToIgnore(specText, tags, "ignore", testFun _)
+    def ignore(testFun: FixtureParam => Registration) {
+      registerTestToIgnore(specText, tags, "ignore", testFun)
+    }
+
+    /**
+     * Supports registration of tagged, ignored tests that take no fixture parameter.
+     *
+     * <p>
+     * For example, this method supports syntax such as the following:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * "complain on peek" taggedAs(SlowTest) ignore { () => ... }
+     *                                       ^
+     * </pre>
+     *
+     * <p>
+     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * </p>
+     *
+     * @param testFun the test function
+     */
+    def ignore(testFun: () => Registration) {
+      registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
     }
   }
 
   /**
    * A class that via an implicit conversion (named <code>convertToFreeSpecStringWrapper</code>) enables
-   * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
-   * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
+   * methods <code>when</code>, <code>that</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
+   * and <code>ignore</code> to be invoked on <code>String</code>s.
+   *
+   * <p>
+   * This class provides much of the syntax for <code>fixture.FreeSpec</code>, however, it does not add
+   * the verb methods (<code>should</code>, <code>must</code>, and <code>can</code>) to <code>String</code>.
+   * Instead, these are added via the <code>ShouldVerb</code>, <code>MustVerb</code>, and <code>CanVerb</code>
+   * traits, which <code>fixture.FreeSpec</code> mixes in, to avoid a conflict with implicit conversions provided
+   * in <code>ShouldMatchers</code> and <code>MustMatchers</code>.
+   * </p>
+   *
+   * @param string the string that is wrapped
    *
    * @author Bill Venners
    */
@@ -288,7 +352,7 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
       //SCALATESTJS-ONLY val errorStackDepth = 10
 
       try {
-        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecOf.scala", "-", stackDepth, -2, None)
+        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, sourceFileName, "-", stackDepth, -2, None)
       }
       catch {
         case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
@@ -307,36 +371,40 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
      * </p>
      *
      * <pre class="stHighlight">
-     * "complain on peek" in { ... }
+     * "complain on peek" in { fixture => ... }
      *                    ^
      * </pre>
      *
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
-    def in(f: => Registration) {
-      registerTestToRun(string, List(), "in", f _)
+    def in(testFun: FixtureParam => Registration) {
+      registerTestToRun(string, List(), "in", testFun)
     }
 
     /**
-     * Supports ignored test registration.
+     * Supports registration of tests that take no fixture.
      *
      * <p>
      * For example, this method supports syntax such as the following:
      * </p>
      *
      * <pre class="stHighlight">
-     * "complain on peek" ignore { ... }
+     * "complain on peek" in { () => ... }
      *                    ^
      * </pre>
      *
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
-    def ignore(f: => Registration) {
-      registerTestToIgnore(string, List(), "ignore", f _)
+    def in(testFun: () => Registration) {
+      registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
     }
 
     /**
@@ -354,9 +422,55 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param testFun the test function
      */
-    def is(f: => PendingNothing) {
-      registerPendingTestToRun(string, List(), "is", f _)
+    def is(testFun: => PendingNothing) {
+      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)
+    }
+
+    /**
+     * Supports ignored test registration.
+     *
+     * <p>
+     * For example, this method supports syntax such as the following:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * "complain on peek" ignore { fixture => ... }
+     *                    ^
+     * </pre>
+     *
+     * <p>
+     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * </p>
+     *
+     * @param testFun the test function
+     */
+    def ignore(testFun: FixtureParam => Registration) {
+      registerTestToIgnore(string, List(), "ignore", testFun)
+    }
+
+    /**
+     * Supports registration of ignored tests that take no fixture.
+     *
+     * <p>
+     * For example, this method supports syntax such as the following:
+     * </p>
+     *
+     * <pre class="stHighlight">
+     * "complain on peek" ignore { () => ... }
+     *                    ^
+     * </pre>
+     *
+     * <p>
+     * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
+     * </p>
+     *
+     * @param testFun the test function
+     */
+    def ignore(testFun: () => Registration) {
+      registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
     }
 
     /**
@@ -367,13 +481,16 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
      * </p>
      *
      * <pre class="stHighlight">
-     * "complain on peek" taggedAs(SlowTest) in { ... }
+     * "complain on peek" taggedAs(SlowTest) in { fixture => ... }
      *                    ^
      * </pre>
      *
      * <p>
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
+     *
+     * @param firstTestTag the first mandatory test tag
+     * @param otherTestTags the others additional test tags
      */
     def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
       val tagList = firstTestTag :: otherTestTags.toList
@@ -385,24 +502,23 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
 
   /**
    * Implicitly converts <code>String</code>s to <code>FreeSpecStringWrapper</code>, which enables
-   * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
-   * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
+   * methods <code>when</code>, <code>that</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
+   * and <code>ignore</code> to be invoked on <code>String</code>s.
    */
   protected implicit def convertToFreeSpecStringWrapper(s: String) = new FreeSpecStringWrapper(s)
 
   /**
-   * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>FreeSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FreeSpec</code> belong, and values
+   * the <code>Set</code> of test names that belong to each tag. If this <code>FreeSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
-   * <code>taggedAs</code>.
+   * methods <code>test</code> and <code>ignore</code>.
    * </p>
    *
    * <p>
    * In addition, this trait's implementation will also auto-tag tests with class level annotations.
-   * For example, if you annotate <code>@Ignore</code> at the class level, all test methods in the class will be auto-annotated with
-   * <code>org.scalatest.Ignore</code>.
+   * For example, if you annotate @Ignore at the class level, all test methods in the class will be auto-annotated with @Ignore.
    * </p>
    */
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
@@ -410,32 +526,32 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
   /**
    * Run a test. This trait's implementation runs the test registered with the name specified by
    * <code>testName</code>. Each test's name is a concatenation of the text of all describers surrounding a test,
-   * from outside in, and the test's  spec text, with one space placed between each item. (See the documentation
+   * from outside in, and the test's  spec text, with one space placed between each item. (See the documenation
    * for <code>testNames</code> for an example.)
    *
    * @param testName the name of one test to execute.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
-   *
-   * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
-   *     is <code>null</code>.
+   * @throws NullArgumentException if <code>testName</code> or <code><args/code> is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
 
     def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
-      val theConfigMap = args.configMap
-      val testData = testDataFor(testName, theConfigMap)
       PastOutcome(
-        withFixture(
-          new NoArgTest {
-            val name = testData.name
-            def apply(): Outcome = { theTest.testFun().toOutcome }
-            val configMap = testData.configMap
-            val scopes = testData.scopes
-            val text = testData.text
-            val tags = testData.tags
-          }
-        )
+        theTest.testFun match {
+          case transformer: org.scalatest.fixture.Transformer[_] =>
+            transformer.exceptionalTestFun match {
+              case wrapper: NoArgTestWrapper[_, _] =>
+                withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
+              case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
+            }
+          case other =>
+            other match {
+              case wrapper: NoArgTestWrapper[_, _] =>
+                withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
+              case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
+            }
+        }
       )
     }
 
@@ -443,24 +559,18 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
   }
 
   /**
+   * <p>
    * Run zero to many of this <code>FreeSpec</code>'s tests.
+   * </p>
    *
    * <p>
    * This method takes a <code>testName</code> parameter that optionally specifies a test to invoke.
    * If <code>testName</code> is <code>Some</code>, this trait's implementation of this method
-   * invokes <code>runTest</code> on this object, passing in:
+   * invokes <code>runTest</code> on this object with passed <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> value of the <code>testName</code> <code>Option</code> passed
-   *   to this method</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
    * <p>
-   * This method takes a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
+   * This method takes an <code>args</code> that contains a <code>Set</code> of tag names that should be included (<code>tagsToInclude</code>), and a <code>Set</code>
    * that should be excluded (<code>tagsToExclude</code>), when deciding which of this <code>Suite</code>'s tests to execute.
    * If <code>tagsToInclude</code> is empty, all tests will be executed
    * except those those belonging to tags listed in the <code>tagsToExclude</code> <code>Set</code>. If <code>tagsToInclude</code> is non-empty, only tests
@@ -478,64 +588,31 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
    * For each test in the <code>testName</code> <code>Set</code>, in the order
    * they appear in the iterator obtained by invoking the <code>elements</code> method on the <code>Set</code>, this trait's implementation
    * of this method checks whether the test should be run based on the <code>tagsToInclude</code> and <code>tagsToExclude</code> <code>Set</code>s.
-   * If so, this implementation invokes <code>runTest</code>, passing in:
+   * If so, this implementation invokes <code>runTest</code> via passed in <code>args</code>.
    * </p>
    *
-   * <ul>
-   * <li><code>testName</code> - the <code>String</code> name of the test to run (which will be one of the names in the <code>testNames</code> <code>Set</code>)</li>
-   * <li><code>reporter</code> - the <code>Reporter</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>stopper</code> - the <code>Stopper</code> passed to this method, or one that wraps and delegates to it</li>
-   * <li><code>configMap</code> - the <code>configMap</code> passed to this method, or one that wraps and delegates to it</li>
-   * </ul>
-   *
-   * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
-   *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
+   * @param testName an optional name of one test to execute. If <code>None</code>, all relevant tests should be executed.
+   *                 I.e., <code>None</code> acts like a wildcard that means execute all relevant tests in this <code>fixture.FreeSpec</code>.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when all tests started by this method have completed, and whether or not a failure occurred.
-   *
-   * @throws NullArgumentException if any of the passed parameters is <code>null</code>.
-   * @throws IllegalArgumentException if <code>testName</code> is defined, but no test with the specified test name
-   *     exists in this <code>Suite</code>
+   * @throws NullArgumentException if <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
     runTestsImpl(thisSuite, testName, args, info, true, runTest)
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>FreeSpec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>fixture.FreeSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>FreeSpec</code>:
+   * example itself, with all components separated by a space.
    * </p>
    *
-   * <pre class="stHighlight">
-   * import org.scalatest.FreeSpec
-   *
-   * class StackSpec extends FreeSpec {
-   *   "A Stack" - {
-   *     "when not empty" - {
-   *       "must allow me to pop" in {}
-   *     }
-   *     "when not full" - {
-   *       "must allow me to push" in {}
-   *     }
-   *   }
-   * }
-   * </pre>
-   *
-   * <p>
-   * Invoking <code>testNames</code> on this <code>FreeSpec</code> will yield a set that contains the following
-   * two test name strings:
-   * </p>
-   *
-   * <pre>
-   * "A Stack when not empty must allow me to pop"
-   * "A Stack when not full must allow me to push"
-   * </pre>
+   * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
@@ -547,7 +624,7 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
   }
 
   /**
-   * Supports shared test registration in <code>FreeSpec</code>s.
+   * Supports shared test registration in <code>fixture.FreeSpec</code>s.
    *
    * <p>
    * This field enables syntax such as the following:
@@ -559,16 +636,18 @@ trait FreeSpecOf[R] extends Suite with TestRegistration with Informing with Noti
    * </pre>
    *
    * <p>
-   * For more information and examples of the use of <cod>behave</code>, see the <a href="#sharedTests">Shared tests section</a>
-   * in the main documentation for this trait.
+   * For more information and examples of the use of <cod>behave</code>, see the <a href="../FreeSpec.html#SharedTests">Shared tests section</a>
+   * in the main documentation for trait <code>FreeSpec</code>.
    * </p>
    */
   protected val behave = new BehaveWord
 
   /**
    * Suite style name.
+   *
+   * @return <code>org.scalatest.fixture.FreeSpec</code>
    */
-  final override val styleName: String = "org.scalatest.FreeSpec"
+  final override val styleName: String = "org.scalatest.fixture.FreeSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

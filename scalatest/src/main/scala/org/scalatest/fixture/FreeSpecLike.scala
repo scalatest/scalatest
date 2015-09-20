@@ -16,4 +16,4 @@
 package org.scalatest.fixture
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FreeSpecLike extends FreeSpecOf[Any]
+trait FreeSpecLike extends FreeSpecRegistering[Any]

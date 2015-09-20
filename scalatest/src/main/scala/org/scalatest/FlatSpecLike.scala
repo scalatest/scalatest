@@ -16,4 +16,4 @@
 package org.scalatest
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FlatSpecLike extends FlatSpecOf[Unit]
+trait FlatSpecLike extends FlatSpecRegistering[Unit]

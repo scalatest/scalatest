@@ -16,4 +16,4 @@
 package org.scalatest.fixture
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FunSpecLike extends FunSpecOf[Any]
+trait FunSpecLike extends FunSpecRegistering[Any]

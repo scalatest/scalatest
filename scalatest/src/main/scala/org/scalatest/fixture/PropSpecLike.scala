@@ -16,4 +16,4 @@
 package org.scalatest.fixture
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait PropSpecLike extends PropSpecOf[Any]
+trait PropSpecLike extends PropSpecRegistering[Any]

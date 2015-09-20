@@ -16,4 +16,4 @@
 package org.scalatest
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FeatureSpecLike extends FeatureSpecOf[Unit]
+trait FeatureSpecLike extends FeatureSpecRegistering[Unit]

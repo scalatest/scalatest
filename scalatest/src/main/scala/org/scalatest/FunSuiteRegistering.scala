@@ -39,7 +39,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait FunSuiteOf[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSuiteRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
@@ -96,11 +96,11 @@ trait FunSuiteOf[R] extends Suite with TestRegistration with Informing with Noti
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteOf.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteOf.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteRegistering.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
   /**
@@ -124,7 +124,7 @@ trait FunSuiteOf[R] extends Suite with TestRegistration with Informing with Noti
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, "FunSuiteOf.scala", "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, "FunSuiteRegistering.scala", "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -149,7 +149,7 @@ trait FunSuiteOf[R] extends Suite with TestRegistration with Informing with Noti
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, "FunSuiteOf.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, "FunSuiteRegistering.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
