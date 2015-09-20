@@ -43,7 +43,7 @@ sealed abstract class Fact {
 
   final def toAssertion: Assertion =
     if (isYes) Succeeded
-    else throw new TestFailedException(factMessage, 2)
+    else throw new TestFailedException(factMessage, 3)
 
   /**
    * Get a simplified version of this Fact, sub type will be simplified and all messages field will be substituted with its counter-part.
