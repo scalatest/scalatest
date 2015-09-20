@@ -48,7 +48,9 @@ import org.scalatest.exceptions.TestRegistrationClosedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+
+  type Registration = R
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 
@@ -56,7 +58,7 @@ trait FunSpecRegistration extends Suite with TestRegistration with Informing wit
 
   import engine._
 
-  private[scalatest] val sourceFileName = "FunSpecRegistration.scala"
+  private[scalatest] val sourceFileName = "FunSpecRegistering.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its

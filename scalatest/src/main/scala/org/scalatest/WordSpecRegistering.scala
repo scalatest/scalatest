@@ -44,7 +44,9 @@ import Suite.autoTagClassAnnotations
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait WordSpecRegistering[R] extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+
+  type Registration = R
 
   private final val engine = new Engine(Resources.concurrentWordSpecMod, "WordSpecLike")
 
@@ -99,7 +101,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecRegistration.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
@@ -107,7 +109,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecRegistration.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecRegistering.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -137,11 +139,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     def transformToOutcomeParam: Registration = testFun()
-    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistration.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement) {
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistration.scala", methodName, 4, -3, None, None, None, testTags: _*)
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistering.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -171,11 +173,11 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     def transformToOutcomeParam: Registration = testFun()
-    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "WordSpecRegistration.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "WordSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecRegistration.scala", methodName, 4, -3, None, testTags: _*)
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecRegistering.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
@@ -210,7 +212,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
       }
 
     try {
-      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistration.scala", methodName, stackDepth, adjustment, None)
+      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistering.scala", methodName, stackDepth, adjustment, None)
     }
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
@@ -246,7 +248,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
                   case "must" => Resources.mustCannotAppearInsideAnIn
                   case "can" => Resources.canCannotAppearInsideAnIn
                 }
-              registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistration.scala", methodName, stackDepth, adjustment, None)
+              registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistering.scala", methodName, stackDepth, adjustment, None)
             case _ =>
               throw new exceptions.NotAllowedException(notAllowMessage, notAllowStackDepth)
           }

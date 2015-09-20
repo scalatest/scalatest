@@ -19,29 +19,31 @@ import scala.collection.immutable.ListSet
 import Suite.autoTagClassAnnotations
 
 /**
- * Implementation trait for class <code>PropSpec</code>, which represents
- * a suite of property-based tests.
+ * Implementation trait for class <code>FunSuite</code>, which represents
+ * a suite of tests in which each test is represented as a function value.
  *
  * <p>
- * <a href="PropSpec.html"><code>PropSpec</code></a> is a class, not a trait,
+ * <a href="FunSuite.html"><code>FunSuite</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>PropSpec</code> into some other class, you can use this
- * trait instead, because class <code>PropSpec</code> does nothing more than
+ * behavior of <code>FunSuite</code> into some other class, you can use this
+ * trait instead, because class <code>FunSuite</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="PropSpec.html">detailed
- * overview of <code>PropSpec</code></a>.
+ * See the documentation of the class for a <a href="FunSuite.html">detailed
+ * overview of <code>FunSuite</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
-@Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+@Finders(Array("org.scalatest.finders.FunSuiteFinder"))
+trait FunSuiteRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine(Resources.concurrentPropSpecMod, "PropSpec")
+  type Registration = R
+
+  private final val engine = new Engine(Resources.concurrentFunSuiteMod, "FunSuite")
 
   protected[scalatest] def getEngine: Engine = engine
 
@@ -59,20 +61,20 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
   protected def info: Informer = atomicInformer.get
 
   /**
-   * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
+   * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>PropSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
   protected def note: Notifier = atomicNotifier.get
 
   /**
-   * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
+   * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>PropSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>FunSuite</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -94,48 +96,44 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecRegistration.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
-    // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecRegistration.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteRegistering.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
   }
 
   /**
-   * Register a property-based test with the specified name, optional tags, and function value that takes no arguments.
+   * Register a test with the specified name, optional tags, and function value that takes no arguments.
    * This method will register the test for later execution via an invocation of one of the <code>run</code>
    * methods. The passed test name must not have been registered previously on
-   * this <code>PropSpec</code> instance.
+   * this <code>FunSuite</code> instance.
    *
-   * @param testName the name of the property
-   * @param testTags the optional list of tags for this property
-   * @param testFun the property function
+   * @param testName the name of the test
+   * @param testTags the optional list of tags for this test
+   * @param testFun the test function
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
    */
-  protected def property(testName: String, testTags: Tag*)(testFun: => Registration) {
+  protected def test(testName: String, testTags: Tag*)(testFun: => Registration) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecRegistration.scala", "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, "FunSuiteRegistering.scala", "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
-   * Register a property-based test to ignore, which has the specified name, optional tags, and function value that takes no arguments.
+   * Register a test to ignore, which has the specified name, optional tags, and function value that takes no arguments.
    * This method will register the test for later ignoring via an invocation of one of the <code>run</code>
    * methods. This method exists to make it easy to ignore an existing test by changing the call to <code>test</code>
    * to <code>ignore</code> without deleting or commenting out the actual test code. The test will not be run, but a
    * report will be sent that indicates the test was ignored. The passed test name must not have been registered previously on
-   * this <code>PropSpec</code> instance.
+   * this <code>FunSuite</code> instance.
    *
    * @param testName the name of the test
    * @param testTags the optional list of tags for this test
@@ -147,15 +145,15 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
   protected def ignore(testName: String, testTags: Tag*)(testFun: => Registration) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, "PropSpecRegistration.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, "FunSuiteRegistering.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
-   * An immutable <code>Set</code> of test names. If this <code>PropSpec</code> contains no tests, this method returns an empty <code>Set</code>.
+   * An immutable <code>Set</code> of test names. If this <code>FunSuite</code> contains no tests, this method returns an empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's iterator will
@@ -174,7 +172,7 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
    *
-   * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>PropSpec</code>
+   * @throws IllegalArgumentException if <code>testName</code> is defined but a test with that name does not exist on this <code>FunSuite</code>
    * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
    *     is <code>null</code>.
    */
@@ -202,11 +200,11 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>PropSpec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>FunSuite</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation returns tags that were passed as strings contained in <code>Tag</code> objects passed to
-   * methods <code>property</code> and <code>ignore</code>.
+   * methods <code>test</code> and <code>ignore</code>.
    * </p>
    *
    * <p>
@@ -218,7 +216,7 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
   override def tags: Map[String, Set[String]] = autoTagClassAnnotations(atomic.get.tagsMap, this)
 
   /**
-   * Run zero to many of this <code>PropSpec</code>'s tests.
+   * Run zero to many of this <code>FunSuite</code>'s tests.
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
@@ -241,11 +239,11 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    * Registers shared tests.
    *
    * <p>
-   * This method enables the following syntax for shared tests in a <code>PropSpec</code>:
+   * This method enables the following syntax for shared tests in a <code>FunSuite</code>:
    * </p>
    *
    * <pre class="stHighlight">
-   * propertiesFor(nonEmptyStack(lastValuePushed))
+   * testsFor(nonEmptyStack(lastValuePushed))
    * </pre>
    *
    * <p>
@@ -256,12 +254,13 @@ trait PropSpecRegistration extends Suite with TestRegistration with Informing wi
    * <a href="#sharedTests">Shared tests section</a> in the main documentation for this trait.
    * </p>
    */
-  protected def propertiesFor(unit: Unit) {}
+  protected def testsFor(unit: Unit) {}
 
   /**
    * Suite style name.
    */
-  final override val styleName: String = "org.scalatest.PropSpec"
+  final override val styleName: String = "org.scalatest.FunSuite"
 
+  // Inherits scaladoc
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

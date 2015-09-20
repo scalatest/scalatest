@@ -49,7 +49,9 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait WordSpecRegistering[R] extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+
+  type Registration = R
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod, "FixtureWordSpec")
 
@@ -57,7 +59,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
 
   import engine._
 
-  private[scalatest] val sourceFileName = "WordSpecRegistration.scala"
+  private[scalatest] val sourceFileName = "WordSpecRegistering.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -251,7 +253,7 @@ trait WordSpecRegistration extends Suite with TestRegistration with ShouldVerb w
                   case "must" => Resources.mustCannotAppearInsideAnIn
                   case "can" => Resources.canCannotAppearInsideAnIn
                 }
-              registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistration.scala", methodName, stackDepth, adjustment, None)
+              registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistering.scala", methodName, stackDepth, adjustment, None)
             case _ =>
               throw new exceptions.NotAllowedException(notAllowMessageFun, notAllowStackDepth)
           }

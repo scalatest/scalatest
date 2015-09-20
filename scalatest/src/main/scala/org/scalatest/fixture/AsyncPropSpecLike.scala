@@ -19,7 +19,7 @@ import scala.concurrent.{Future, ExecutionContext}
 import org.scalatest._
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncPropSpecLike extends PropSpecRegistration with AsyncClassicTests with org.scalatest.OneInstancePerTest { thisSuite =>
+trait AsyncPropSpecLike extends PropSpecRegistering[Future[Any]] with AsyncFixtures with org.scalatest.OneInstancePerTest { thisSuite =>
 
   implicit def executionContext: ExecutionContext
 

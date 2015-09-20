@@ -18,7 +18,22 @@ package org.scalatest
 import scala.concurrent.{ExecutionContext, Future}
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncFreeSpecLike extends FreeSpecRegistration with AsyncClassicTests with OneInstancePerTest { thisSuite =>
+trait AsyncFreeSpecLike extends FreeSpecRegistering[Future[Unit]] with AsyncFixtures with OneInstancePerTest { thisSuite =>
+
+  implicit def executionContext: ExecutionContext
+
+  override private[scalatest] def transformToOutcome(testFun: => Future[Unit]): () => AsyncOutcome =
+    () => {
+      val futureUnit = testFun
+      FutureOutcome(
+        futureUnit.map(u => Succeeded).recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
 
   private final val engine: Engine = getEngine
 

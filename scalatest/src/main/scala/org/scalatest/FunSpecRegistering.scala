@@ -42,7 +42,9 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecRegistration extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+
+  type Registration = R
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "FunSpec")
 
@@ -51,7 +53,7 @@ trait FunSpecRegistration extends Suite with TestRegistration with Informing wit
   import engine._
 
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
-  private[scalatest] val sourceFileName = "FunSpecRegistration.scala"
+  private[scalatest] val sourceFileName = "FunSpecRegistering.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
