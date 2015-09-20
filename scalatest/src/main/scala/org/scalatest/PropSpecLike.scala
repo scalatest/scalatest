@@ -16,4 +16,4 @@
 package org.scalatest
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait PropSpecLike extends PropSpecRegistering[Unit]
+trait PropSpecLike extends PropSpecRegistering[Assertion] with Compatibility

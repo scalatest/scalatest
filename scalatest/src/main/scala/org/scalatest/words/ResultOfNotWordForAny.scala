@@ -942,7 +942,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     else Succeeded
   }
   
-  def contain(only: ResultOfInOrderApplication)(implicit sequencing: Sequencing[T]) {
+  def contain(only: ResultOfInOrderApplication)(implicit sequencing: Sequencing[T]): Assertion = {
 
     val right = only.right
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)

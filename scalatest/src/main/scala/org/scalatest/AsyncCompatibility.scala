@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2015 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,5 +15,17 @@
  */
 package org.scalatest
 
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FreeSpecLike extends FreeSpecRegistering[Assertion] with Compatibility
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
+
+trait LowPriorityAsyncCompatibility extends Compatibility {
+
+  implicit def executionContext: ExecutionContext
+
+  implicit def convertFutureOfTToFutureOfAssertion[T](o: Future[T]): Future[Assertion] = o.map(t => Succeeded)
+}
+
+trait AsyncCompatibility extends LowPriorityAsyncCompatibility {
+
+  implicit def convertFutureOfExpectationToFutureOfAssertion(o: Future[Expectation]): Future[Assertion] = o.map(e => e.toAssertion)
+}

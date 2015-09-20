@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2014 Artima, Inc.
+ * Copyright 2001-2015 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,5 +15,11 @@
  */
 package org.scalatest
 
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FreeSpecLike extends FreeSpecRegistering[Assertion] with Compatibility
+trait LowPriorityCompatibility {
+  implicit def convertAnyToAssertion(o: Any): Assertion = Succeeded
+}
+
+trait Compatibility extends LowPriorityCompatibility {
+  implicit def convertExpectationToAssertion(o: Expectation): Assertion = o.toAssertion
+}
+
