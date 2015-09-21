@@ -103,8 +103,10 @@ sealed abstract class Fact {
   def factDiagram(level: Int): String = {
     val msg = midSentenceFactMessage // just compute this once
     val padding = "  " * level
-    if (msg.contains("\n"))
-      padding + stringPrefix + "(" + NEWLINE + msg + NEWLINE + ")"
+    if (msg.contains("\n")) {
+      val padding = "  " * (level)
+      padding + stringPrefix + "(" + NEWLINE + msg.split("\n").map(l => padding + "  " + l).mkString("\n") + NEWLINE + ")"
+    }
     else
       padding + stringPrefix + "(" + msg + ")"
   }
