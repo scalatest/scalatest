@@ -63,8 +63,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
    *                       ^
    * </pre>
    */
-// XXX TODO: THIS LOOKS LIKE A BUG. RESULT TYPE IS UNIT. WRITE A TEST.
-  def shouldBe(thrownBy: ResultOfThrownByApplication) {
+  def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     
     val caught = try {
       thrownBy.execute()
@@ -81,12 +80,10 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
         }
       }
     }
-    caught match {
-      case None =>
-        val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, stackDepth)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
-    }
+    if (caught.isEmpty) {
+      val message = Resources.exceptionExpected(clazz.getName)
+      throw newAssertionFailedException(Some(message), None, stackDepth)
+    } else org.scalatest.Succeeded
   }
 
   /**
@@ -121,8 +118,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
    *                       ^
    * </pre>
    */
-// XXX TODO: THIS LOOKS LIKE A BUG. RESULT TYPE IS UNIT. WRITE A TEST.
-  def mustBe(thrownBy: ResultOfThrownByApplication) {
+  def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
 
     val caught = try {
       thrownBy.execute()
@@ -139,12 +135,10 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
         }
       }
     }
-    caught match {
-      case None =>
-        val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, stackDepth)
-      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
-    }
+    if (caught.isDefined) {
+      val message = Resources.exceptionExpected(clazz.getName)
+      throw newAssertionFailedException(Some(message), None, stackDepth)
+    } else org.scalatest.Succeeded
   }
   
   override def toString: String = "an [" + clazz.getName + "]"
