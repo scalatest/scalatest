@@ -87,7 +87,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                   ^
    * </pre>
    */
-  def be(right: Any) {
+  def be(right: Any): Assertion = {
     if ((left == right) != shouldBeTrue)
       throw newTestFailedException(
         if (shouldBeTrue)

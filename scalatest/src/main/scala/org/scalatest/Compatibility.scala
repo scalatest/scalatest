@@ -20,6 +20,6 @@ trait LowPriorityCompatibility {
 }
 
 trait Compatibility extends LowPriorityCompatibility {
-  implicit def convertExpectationToAssertion(o: Expectation): Assertion = o.toAssertion
+  implicit def convertExpectationToAssertion(o: Expectation): Assertion = o.internalToAssertion
 }
 

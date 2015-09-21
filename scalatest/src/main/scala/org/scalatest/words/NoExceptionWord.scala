@@ -50,9 +50,10 @@ final class NoExceptionWord {
    *             ^
    * </pre>
    */
-  def shouldBe(thrownBy: ResultOfThrownByApplication) {
-    val caught = try {
+  def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
+    try {
       thrownBy.execute()
+      org.scalatest.Succeeded
     }
     catch {
       case u: Throwable => {
@@ -81,9 +82,10 @@ final class NoExceptionWord {
    *             ^
    * </pre>
    */
-  def mustBe(thrownBy: ResultOfThrownByApplication) {
-    val caught = try {
+  def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
+    try {
       thrownBy.execute()
+      org.scalatest.Succeeded
     }
     catch {
       case u: Throwable => {

@@ -1955,13 +1955,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *             ^
      * </pre>
      */
-    def a(aMatcher: AMatcher[T]) {
+    def a(aMatcher: AMatcher[T]): Assertion = {
       val matcherResult = aMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
         throw newTestFailedException(
           if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
         )
-      }
+      } else Succeeded
     }
     
     /**
@@ -1972,13 +1972,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *             ^
      * </pre>
      */
-    def an(anMatcher: AnMatcher[T]) {
+    def an(anMatcher: AnMatcher[T]): Assertion = {
       val matcherResult = anMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
         throw newTestFailedException(
           if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
         )
-      }
+      } else Succeeded
     }
 
     /**
@@ -1989,7 +1989,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                  ^
      * </pre>
      */
-    def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef) {
+    def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       if ((toAnyRef(left) eq right) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
@@ -1997,6 +1997,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.wasSameInstanceAs(left, right)
         )
+      else Succeeded
     }
 
     /* *
@@ -2028,13 +2029,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
+    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true)
       if (matcherResult.matches != shouldBeTrue) {
         throw newTestFailedException(
           if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
         )
-      }
+      } else Succeeded
     }
     // SKIP-SCALATESTJS-END
 
@@ -2048,7 +2049,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def a(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) { // TODO: Try expanding this to 2.10 AnyVals
+    def a(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
       val result = bePropertyMatcher(left)
       if (result.matches != shouldBeTrue) {
         throw newTestFailedException(
@@ -2057,7 +2058,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.wasA(left, UnquotedString(result.propertyName))
         )
-      }
+      } else Succeeded
     }
 
     // SKIP-SCALATESTJS-START
@@ -2070,13 +2071,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                 ^
      * </pre>
      */
-    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef) {
+    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false)
       if (matcherResult.matches != shouldBeTrue) {
         throw newTestFailedException(
           if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage
         )
-      }
+      } else Succeeded
     }
     // SKIP-SCALATESTJS-END
 
@@ -2089,7 +2090,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                ^
      * </pre>
      */ 
-    def an(beTrueMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef) { // TODO: Try expanding this to 2.10 AnyVals
+    def an(beTrueMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
       val beTrueMatchResult = beTrueMatcher(left)
       if (beTrueMatchResult.matches != shouldBeTrue) {
         throw newTestFailedException(
@@ -2098,7 +2099,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.wasAn(left, UnquotedString(beTrueMatchResult.propertyName))
         )
-      }
+      } else Succeeded
     }
 
     /**
@@ -2109,7 +2110,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]) {
+    def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
       if (left.isDefinedAt(right) != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
@@ -2117,6 +2118,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.wasDefinedAt(left, right)
         )
+      else Succeeded
     }
 
     /**
@@ -2188,7 +2190,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def regex(rightRegexString: String) { regex(rightRegexString.r) }
+    def regex(rightRegexString: String): Assertion = regex(rightRegexString.r)
 
     /**
      * This method enables the following syntax: 
@@ -2198,12 +2200,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups) {
+    def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
        throw newTestFailedException(
          if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
        )
+      else Succeeded
     }
 
     /**
@@ -2214,7 +2217,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def regex(rightRegex: Regex) {
+    def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.findFirstIn(left).isDefined != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
@@ -2222,6 +2225,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.includedRegex(left, rightRegex)
         )
+      else Succeeded
     }
 
     /**
@@ -2248,7 +2252,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    def regex(rightRegexString: String) { regex(rightRegexString.r) }
+    def regex(rightRegexString: String): Assertion = regex(rightRegexString.r)
 
     /**
      * This method enables the following syntax: 
@@ -2258,12 +2262,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups) {
+    def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
        throw newTestFailedException(
          if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
        )
+      else Succeeded
     }
 
     /**
@@ -2274,7 +2279,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    def regex(rightRegex: Regex) {
+    def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).lookingAt != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
@@ -2282,6 +2287,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.startedWithRegex(left, rightRegex)
         )
+      else Succeeded
     }
 
     /**
@@ -2308,7 +2314,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def regex(rightRegexString: String) { regex(rightRegexString.r) }
+    def regex(rightRegexString: String): Assertion = regex(rightRegexString.r)
     
     /**
      * This method enables the following syntax: 
@@ -2318,12 +2324,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups) {
+    def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
        throw newTestFailedException(
          if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
        )
+      else Succeeded
     }
 
     /**
@@ -2334,7 +2341,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                       ^
      * </pre>
      */
-    def regex(rightRegex: Regex) {
+    def regex(rightRegex: Regex): Assertion = {
       val allMatches = rightRegex.findAllIn(left)
       if ((allMatches.hasNext && (allMatches.end == left.length)) != shouldBeTrue)
         throw newTestFailedException(
@@ -2343,6 +2350,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.endedWithRegex(left, rightRegex)
         )
+      else Succeeded
     }
 
     /**
@@ -2369,7 +2377,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    def regex(rightRegexString: String) { regex(rightRegexString.r) }
+    def regex(rightRegexString: String): Assertion = regex(rightRegexString.r)
 
     /**
      * This method enables the following syntax: 
@@ -2379,12 +2387,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                         ^
      * </pre>
      */
-    def regex(regexWithGroups: RegexWithGroups) {
+    def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
        throw newTestFailedException(
          if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage
        )
+      else Succeeded
     }
 
     /**
@@ -2395,7 +2404,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                          ^
      * </pre>
      */
-    def regex(rightRegex: Regex) {
+    def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).matches != shouldBeTrue)
         throw newTestFailedException(
           if (shouldBeTrue)
@@ -2403,6 +2412,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           else
             FailureMessages.fullyMatchedRegex(left, rightRegex)
         )
+      else Succeeded
     }
 
     /**

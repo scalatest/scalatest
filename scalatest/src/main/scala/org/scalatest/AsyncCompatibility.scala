@@ -27,5 +27,5 @@ trait LowPriorityAsyncCompatibility extends Compatibility {
 
 trait AsyncCompatibility extends LowPriorityAsyncCompatibility {
 
-  implicit def convertFutureOfExpectationToFutureOfAssertion(o: Future[Expectation]): Future[Assertion] = o.map(e => e.toAssertion)
+  implicit def convertFutureOfExpectationToFutureOfAssertion(o: Future[Expectation]): Future[Assertion] = o.map(e => e.internalToAssertion)
 }
