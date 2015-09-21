@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalactic.Prettifier
+import org.scalatest.exceptions.StackDepthExceptionHelper
 import org.scalatest.exceptions.TestFailedException
 
 sealed abstract class Fact {
@@ -42,6 +43,11 @@ sealed abstract class Fact {
   final def toBoolean: Boolean = isYes
 
   final def toAssertion: Assertion =
+    if (isYes) Succeeded
+    else throw new TestFailedException(factMessage, 5)
+
+  // This is called internally by implicit conversions, which has different stack depth
+  private[scalatest] final def internalToAssertion: Assertion =
     if (isYes) Succeeded
     else throw new TestFailedException(factMessage, 3)
 
