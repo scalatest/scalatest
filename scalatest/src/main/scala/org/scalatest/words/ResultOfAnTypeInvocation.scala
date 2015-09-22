@@ -86,6 +86,24 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
     } else org.scalatest.Succeeded
   }
 
+  def should(beThrownBy: ResultOfBeThrownBy): org.scalatest.Assertion = {
+    val throwables = beThrownBy.throwables
+    val noThrowable = throwables.find(_.isEmpty)
+    if (noThrowable.isDefined) {
+      val message = Resources.exceptionExpected(clazz.getName)
+      throw newAssertionFailedException(Some(message), None, stackDepth)
+    }
+    else {
+      val unmatch = throwables.map(_.get).find(t => !clazz.isAssignableFrom(t.getClass))
+      if (unmatch.isDefined) {
+        val u = unmatch.get
+        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+        throw newAssertionFailedException(Some(s), Some(u), stackDepth)
+      }
+      else org.scalatest.Succeeded
+    }
+  }
+
   /**
    * This method enables the following syntax:
    *

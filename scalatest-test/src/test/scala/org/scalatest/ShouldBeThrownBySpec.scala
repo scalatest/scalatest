@@ -67,6 +67,129 @@ class ShouldBeThrownBySpec extends FunSpec {
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
+
+    it("should not compile when used with 'should not be thrownBy { \"hi\".charAt(-1) } '") {
+      assertDoesNotCompile("a [RuntimeException] should not be thrownBy { \"hi\".charAt(-1) } ")
+    }
+
+  }
+
+  describe("a [Exception] should (...)") {
+
+    it("do nothing when provided code produce expected exception") {
+      a [RuntimeException] should (be thrownBy {
+        throw new RuntimeException("purposely")
+      })
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce any exception") {
+      val e = intercept[TestFailedException] {
+        a [RuntimeException] should (be thrownBy {
+          assert(1 === 1)
+        })
+      }
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception") {
+      val e = intercept[TestFailedException] {
+        a [RuntimeException] should (be thrownBy {
+          throw new TestException("secret file not found")
+        })
+      }
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[TestException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
+    }
+
+    it("do nothing when provided 2 and-ed code produce expected exception") {
+      a [RuntimeException] should (be thrownBy {
+        throw new RuntimeException("purposely")
+      } and be thrownBy {
+        throw new RuntimeException("purposely 2")
+      })
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when both provided code does not produce any exception") {
+      val e = intercept[TestFailedException] {
+        a [RuntimeException] should (be thrownBy {
+          assert(1 === 1)
+        } and be thrownBy {
+          assert(1 === 1)
+        })
+      }
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when first provided code does not produce any exception") {
+      val e = intercept[TestFailedException] {
+        a [RuntimeException] should (be thrownBy {
+          assert(1 === 1)
+        } and be thrownBy {
+          throw new RuntimeException("purposely")
+        })
+      }
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when second provided code does not produce any exception") {
+      val e = intercept[TestFailedException] {
+        a [RuntimeException] should (be thrownBy {
+          throw new RuntimeException("purposely")
+        } and be thrownBy {
+          assert(1 === 1)
+        })
+      }
+      assert(e.message === Some(exceptionExpected(classOf[RuntimeException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when both provided code does not produce expected exception") {
+      val e = intercept[TestFailedException] {
+        a [RuntimeException] should (be thrownBy {
+          throw new TestException("secret file not found")
+        } and be thrownBy {
+          throw new TestException("secret file not found")
+        })
+      }
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[TestException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when first provided code does not produce expected exception") {
+      val e = intercept[TestFailedException] {
+        a [RuntimeException] should (be thrownBy {
+          throw new TestException("secret file not found")
+        } and be thrownBy {
+          throw new RuntimeException("secret file not found")
+        })
+      }
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[TestException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when second provided code does not produce expected exception") {
+      val e = intercept[TestFailedException] {
+        a [RuntimeException] should (be thrownBy {
+          throw new RuntimeException("secret file not found")
+        } and be thrownBy {
+          throw new TestException("secret file not found")
+        })
+      }
+      assert(e.message === Some(wrongException(classOf[RuntimeException], classOf[TestException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
   }
   
   describe("an [Exception] should") {
@@ -98,6 +221,128 @@ class ShouldBeThrownBySpec extends FunSpec {
       assert(e.failedCodeFileName === Some(fileName))
       assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
     }
+
+    it("should not compile when used with 'should not be thrownBy { \"hi\".charAt(-1) } '") {
+      assertDoesNotCompile("an [ArrayIndexOutOfBoundsException] should not be thrownBy { \"hi\".charAt(-1) } ")
+    }
+  }
+
+  describe("an [Exception] should (...)") {
+
+    it("do nothing when provided code produce expected exception") {
+      an [UnsupportedOperationException] should (be thrownBy {
+        throw new UnsupportedOperationException("purposely")
+      })
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce any exception") {
+      val e = intercept[TestFailedException] {
+        an [UnsupportedOperationException] should (be thrownBy {
+          assert(1 === 1)
+        })
+      }
+      assert(e.message === Some(exceptionExpected(classOf[UnsupportedOperationException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when provided code does not produce expected exception") {
+      val e = intercept[TestFailedException] {
+        an [UnsupportedOperationException] should (be thrownBy {
+          throw new TestException("secret file not found")
+        })
+      }
+      assert(e.message === Some(wrongException(classOf[UnsupportedOperationException], classOf[TestException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 6))
+    }
+
+    it("do nothing when provided 2 and-ed code produce expected exception") {
+      an [UnsupportedOperationException] should (be thrownBy {
+        throw new UnsupportedOperationException("purposely")
+      } and be thrownBy {
+        throw new UnsupportedOperationException("purposely 2")
+      })
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when both provided code does not produce any exception") {
+      val e = intercept[TestFailedException] {
+        an [UnsupportedOperationException] should (be thrownBy {
+          assert(1 === 1)
+        } and be thrownBy {
+          assert(1 === 1)
+        })
+      }
+      assert(e.message === Some(exceptionExpected(classOf[UnsupportedOperationException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when first provided code does not produce any exception") {
+      val e = intercept[TestFailedException] {
+        an [UnsupportedOperationException] should (be thrownBy {
+          assert(1 === 1)
+        } and be thrownBy {
+          throw new UnsupportedOperationException("purposely")
+        })
+      }
+      assert(e.message === Some(exceptionExpected(classOf[UnsupportedOperationException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when second provided code does not produce any exception") {
+      val e = intercept[TestFailedException] {
+        an [UnsupportedOperationException] should (be thrownBy {
+          throw new RuntimeException("purposely")
+        } and be thrownBy {
+          assert(1 === 1)
+        })
+      }
+      assert(e.message === Some(exceptionExpected(classOf[UnsupportedOperationException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when both provided code does not produce expected exception") {
+      val e = intercept[TestFailedException] {
+        an [UnsupportedOperationException] should (be thrownBy {
+          throw new TestException("secret file not found")
+        } and be thrownBy {
+          throw new TestException("secret file not found")
+        })
+      }
+      assert(e.message === Some(wrongException(classOf[UnsupportedOperationException], classOf[TestException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when first provided code does not produce expected exception") {
+      val e = intercept[TestFailedException] {
+        an [UnsupportedOperationException] should (be thrownBy {
+          throw new TestException("secret file not found")
+        } and be thrownBy {
+          throw new UnsupportedOperationException("secret file not found")
+        })
+      }
+      assert(e.message === Some(wrongException(classOf[UnsupportedOperationException], classOf[TestException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
+    it("throw new TestFailedException with correct message and stack depth when second provided code does not produce expected exception") {
+      val e = intercept[TestFailedException] {
+        an [UnsupportedOperationException] should (be thrownBy {
+          throw new UnsupportedOperationException("secret file not found")
+        } and be thrownBy {
+          throw new TestException("secret file not found")
+        })
+      }
+      assert(e.message === Some(wrongException(classOf[UnsupportedOperationException], classOf[TestException])))
+      assert(e.failedCodeFileName === Some(fileName))
+      assert(e.failedCodeLineNumber === Some(thisLineNumber - 8))
+    }
+
   }
   
   describe("the [Exception] should") {
