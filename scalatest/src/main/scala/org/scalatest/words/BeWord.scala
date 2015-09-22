@@ -580,6 +580,8 @@ final class BeWord {
         )
       override def toString: String = "be definedAt " + Prettifier.default(right)
     }
+
+  def thrownBy(code: => Unit) = new ResultOfBeThrownBy(Vector(() => code))
   
   /**
    * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
