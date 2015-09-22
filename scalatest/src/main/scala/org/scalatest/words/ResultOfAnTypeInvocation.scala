@@ -86,6 +86,14 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
     } else org.scalatest.Succeeded
   }
 
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * an [RuntimeException] should (be thrownBy { ... })
+   *                       ^
+   * </pre>
+   */
   def should(beThrownBy: ResultOfBeThrownBy): org.scalatest.Assertion = {
     val throwables = beThrownBy.throwables
     val noThrowable = throwables.find(_.isEmpty)
