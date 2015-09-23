@@ -145,6 +145,8 @@ trait Expectations {
   def expectDoesNotCompile(code: String): Fact = macro CompileMacro.expectDoesNotCompileImpl
 
   def expectCompiles(code: String): Fact = macro CompileMacro.expectCompilesImpl
+
+  def expectTypeError(code: String): Fact = macro CompileMacro.expectTypeErrorImpl
 }
 
 object Expectations extends Expectations
