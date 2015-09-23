@@ -19,6 +19,7 @@ import scala.concurrent.Future
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
+
   final override def withFixture(test: NoArgTest): Outcome = {
     throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncFixtures.scala", "withFixture"))
   }
@@ -41,8 +42,4 @@ trait AsyncFixtures extends SuiteMixin { this: Suite with TestRegistration =>
   def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
     test()
   }
-
-  import scala.language.implicitConversions
-
-  implicit def convertToFuture(o: Any): Future[Assertion] = Future.successful(Succeeded) // How happy is that?
 }

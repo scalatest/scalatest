@@ -18,9 +18,11 @@ package org.scalatest
 import scala.reflect.ClassTag
 import Fact._
 import org.scalactic.Bool
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 trait Expectations {
- 
+  
   // TODO: Need to make this and assertResult use custom equality I think.
   def expectResult(expected: Any)(actual: Any): Fact = {
     if (!Assertions.areEqualComparingArraysStructurally(actual, expected)) {

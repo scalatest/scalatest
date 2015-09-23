@@ -1278,6 +1278,7 @@ trait Assertions extends TripleEquals {
         throw new TestFailedException(Resources.pendingUntilFixed, 2)
   }
 
+  final val succeed: Succeeded.type = Succeeded
 }
 
 /**

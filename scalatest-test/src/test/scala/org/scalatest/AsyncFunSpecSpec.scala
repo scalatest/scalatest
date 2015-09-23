@@ -22,9 +22,9 @@ class AsyncFunSpecSpec extends FunSpec {
 
   describe("AsyncFunSpec") {
 
-    it("can be used for tests that return Future") {
+    it("can be used for tests that return a Future") {
 
-      class ExampleSpec extends AsyncFunSpec {
+      class ExampleSpec extends AsyncFunSpec with Expectations {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -63,6 +63,18 @@ class AsyncFunSpecSpec extends FunSpec {
           }
         }
 
+        it("test 6") {
+          Future {
+            expect(a == 1)
+          }
+        }
+
+        it("test 7") {
+          Future {
+            expect(a == 22)
+          }
+        }
+
         override def newInstance = new ExampleSpec
       }
 
@@ -72,11 +84,16 @@ class AsyncFunSpecSpec extends FunSpec {
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
-      assert(rep.testStartingEventsReceived.length == 4)
-      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testStartingEventsReceived.length == 6)
+      assert(rep.testSucceededEventsReceived.length == 2)
       assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-      assert(rep.testFailedEventsReceived.length == 1)
-      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testSucceededEventsReceived(1).testName == "test 6")
+      assert(rep.testFailedEventsReceived.length == 2)
+      assert { 
+        val zero = rep.testFailedEventsReceived(0).testName
+        val one = rep.testFailedEventsReceived(1).testName
+        (zero == "test 2" && one == "test 7") || (zero == "test 7" && one == "test 2")
+      }
       assert(rep.testPendingEventsReceived.length == 1)
       assert(rep.testPendingEventsReceived(0).testName == "test 3")
       assert(rep.testCanceledEventsReceived.length == 1)
@@ -87,7 +104,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
     it("can be used for tests that did not return Future") {
 
-      class ExampleSpec extends AsyncFunSpec {
+      class ExampleSpec extends AsyncFunSpec with Expectations {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -116,6 +133,17 @@ class AsyncFunSpecSpec extends FunSpec {
           cancel
         }
 
+        it("test 6") {
+          expect(a == 1)
+        }
+
+        it("test 7") {
+          println("!!!!!!!!!!!! GOT HERE !!!!!!!!!!!!")
+          val result = expect(a == 22)
+          println("!!!!!!!!!!!! RESULT: " + result)
+          result
+        }
+
         override def newInstance = new ExampleSpec
       }
 
@@ -125,11 +153,16 @@ class AsyncFunSpecSpec extends FunSpec {
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
-      assert(rep.testStartingEventsReceived.length == 4)
-      assert(rep.testSucceededEventsReceived.length == 1)
+      assert(rep.testStartingEventsReceived.length == 6)
+      assert(rep.testSucceededEventsReceived.length == 2)
       assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-      assert(rep.testFailedEventsReceived.length == 1)
-      assert(rep.testFailedEventsReceived(0).testName == "test 2")
+      assert(rep.testSucceededEventsReceived(1).testName == "test 6")
+      assert(rep.testFailedEventsReceived.length == 2)
+      assert { 
+        val zero = rep.testFailedEventsReceived(0).testName
+        val one = rep.testFailedEventsReceived(1).testName
+        (zero == "test 2" && one == "test 7") || (zero == "test 7" && one == "test 2")
+      }
       assert(rep.testPendingEventsReceived.length == 1)
       assert(rep.testPendingEventsReceived(0).testName == "test 3")
       assert(rep.testCanceledEventsReceived.length == 1)
@@ -137,7 +170,5 @@ class AsyncFunSpecSpec extends FunSpec {
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
-
   }
-
 }

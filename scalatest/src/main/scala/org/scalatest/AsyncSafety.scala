@@ -19,10 +19,10 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions
 
-trait AsyncCompatibility extends AsyncRegistrationPolicy {
+trait AsyncSafety extends AsyncRegistrationPolicy {
 
-  implicit override def convertAnyToFutureAssertion(o: Any): Future[Assertion] = Future.successful(Succeeded) // How happy is that?
-  implicit override def convertFutureTToFutureAssertion[T](o: Future[T]): Future[Assertion] =
+  override def convertAnyToFutureAssertion(o: Any): Future[Assertion] = Future.successful(Succeeded) // How happy is that?
+  override def convertFutureTToFutureAssertion[T](o: Future[T]): Future[Assertion] =
     o.map(_ => Succeeded)
 
   implicit override def convertExpectationToFutureAssertion(e: Expectation): Future[Assertion] = Future { e.internalToAssertion }
