@@ -501,4 +501,78 @@ class ExpectationsSpec extends FunSpec with Expectations {
       }
     }
   }
+
+  describe("assertTypeError method ") {
+
+    describe("when work with string literal") {
+
+      it("should return Yes with correct fact message when type check failed") {
+        val fact = expectTypeError("val a: String = 1")
+        assert(fact.isInstanceOf[Fact.Yes])
+        assert(fact.factMessage == Resources.gotTypeErrorAsExpected("val a: String = 1"))
+      }
+
+      it("should return No with correct fact message when type check passed") {
+        val fact = expectTypeError("val a = 1")
+        assert(fact.isInstanceOf[Fact.No])
+        assert(fact.factMessage == Resources.expectedTypeErrorButGotNone("val a = 1"))
+      }
+
+      it("should return No with correct fact message when parse failed") {
+        val fact = expectTypeError("println(\"test)")
+        assert(fact.isInstanceOf[Fact.No])
+        assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
+      }
+    }
+
+    describe("when used with triple quotes string literal with stripMargin") {
+
+      it("should return Yes with correct fact message when type check failed") {
+        val fact =
+          expectTypeError(
+            """
+              |val a: String = 2
+              |""".stripMargin
+          )
+        assert(fact.isInstanceOf[Fact.Yes])
+        assert(fact.factMessage == Resources.gotTypeErrorAsExpected(
+          """
+            |val a: String = 2
+            |""".stripMargin
+        ))
+      }
+
+      it("should return No with correct fact message when type check passed") {
+        val fact =
+          expectTypeError(
+            """
+              |val a = 1
+              |""".stripMargin
+          )
+        assert(fact.isInstanceOf[Fact.No])
+        assert(fact.factMessage == Resources.expectedTypeErrorButGotNone(
+          """
+            |val a = 1
+            |""".stripMargin
+        ))
+      }
+
+      it("should return No with correct fact message when parse failed ") {
+        val fact =
+          expectTypeError(
+            """
+              |println("test)
+              |""".stripMargin
+          )
+
+        assert(fact.isInstanceOf[Fact.No])
+        assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
+          "unclosed string literal",
+          """
+            |println("test)
+            |""".stripMargin
+        ))
+      }
+    }
+  }
 }
