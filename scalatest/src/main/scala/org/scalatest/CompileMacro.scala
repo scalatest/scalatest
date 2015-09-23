@@ -80,6 +80,62 @@ private[scalatest] object CompileMacro {
     }
   }
 
+  def expectTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Fact] = {
+    import c.universe._
+
+    // extract code snippet
+    val codeStr = getCodeStringFromCodeExpression(c)("expectNoTypeError", code)
+
+    try {
+      c.typeCheck(c.parse("{ "+codeStr+" }"))  // parse and type check code snippet
+      // If reach here, type check passes, let's generate code to throw TestFailedException
+      val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(codeStr))
+      reify {
+        Fact.No(
+          messageExpr.splice,
+          messageExpr.splice,
+          messageExpr.splice,
+          messageExpr.splice,
+          Vector.empty,
+          Vector.empty,
+          Vector.empty,
+          Vector.empty
+        )
+      }
+    } catch {
+      case e: TypecheckException =>
+        val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(codeStr))
+        reify {
+          // type check failed as expected, return Yes
+          Fact.Yes(
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )
+        }
+      case e: ParseException =>
+        // parse error, generate code to throw TestFailedException
+        val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, codeStr))
+        reify {
+          Fact.No(
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            messageExpr.splice,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty,
+            Vector.empty
+          )
+        }
+    }
+  }
+
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
   def assertDoesNotCompileImpl(c: Context)(code: c.Expr[String]): c.Expr[Assertion] = {
     import c.universe._
@@ -147,7 +203,6 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty
           )
-          //Succeeded
         }
       case e: ParseException =>
         val messageExpr = c.literal(Resources.didNotCompile(codeStr))
