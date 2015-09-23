@@ -555,7 +555,7 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     } shouldBe Good(6)
   }
   it can "be serialized correctly" in {
-    serializeRoundtrip(Good(1))
+    serializeRoundtrip(Good(1)) shouldBe Good(1)
   }
   "A Bad" can "be widened to an Or type via .asOr" in {
     Bad("oops").asOr shouldBe Bad("oops")
@@ -580,7 +580,7 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     } shouldBe Bad("no evens")
   }
   it can "be serialized correctly" in {
-    serializeRoundtrip(Bad("oops"))
+    serializeRoundtrip(Bad("oops")) shouldBe Bad("oops")
   }
   "The Or companion" should "offer a concise type lambda syntax" in {
     trait Functor[Context[_]] {

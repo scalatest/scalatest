@@ -1180,7 +1180,7 @@ class EverySpec extends UnitSpec {
     Every(1, 2, 3, 4, 5).zipWithIndex shouldBe Every((1,0), (2,1), (3,2), (4,3), (5,4))
   }
   it should "be serializable" in {
-     serializeRoundtrip(Every(1))
+     serializeRoundtrip(Every(1)) shouldBe Every(1)
   }
   "A One" can "be widened to an Every type via .asEvery" in {
     One(1).asEvery shouldBe One(1)
