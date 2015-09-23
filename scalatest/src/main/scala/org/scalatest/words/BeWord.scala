@@ -580,6 +580,16 @@ final class BeWord {
         )
       override def toString: String = "be definedAt " + Prettifier.default(right)
     }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * a[Exception] should (be thrownBy { "hi".charAt(-1) })
+   *                         ^
+   * </pre>
+   */
+  def thrownBy(code: => Unit) = new ResultOfBeThrownBy(Vector(() => code))
   
   /**
    * This method enables the following syntax, where <code>fraction</code> refers to a <code>PartialFunction</code>:
