@@ -1454,5 +1454,40 @@ class BeWordSpec extends FunSpec with FileMocks {
 
       }
     }
+
+    describe("thrownBy method") {
+
+      it("should return ") {
+        val resultOfBeThrownBy = be thrownBy { "hi".charAt(-1)}
+        assert(resultOfBeThrownBy.throwables.length == 1)
+        assert(resultOfBeThrownBy.throwables(0).isDefined)
+        assert(resultOfBeThrownBy.throwables(0).get.isInstanceOf[StringIndexOutOfBoundsException])
+      }
+
+      it("should be composable with 1 and") {
+        val resultOfBeThrownByAndBeThrownBy = be thrownBy { "hi".charAt(-1)} and be thrownBy { "hi".charAt(2)}
+        assert(resultOfBeThrownByAndBeThrownBy.throwables.length == 2)
+
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(0).isDefined)
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(0).get.isInstanceOf[StringIndexOutOfBoundsException])
+
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(1).isDefined)
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(1).get.isInstanceOf[StringIndexOutOfBoundsException])
+      }
+
+      it("should be composable with 2 and") {
+        val resultOfBeThrownByAndBeThrownBy = be thrownBy { "hi".charAt(-1)} and be thrownBy { "hi".charAt(2) } and be thrownBy { "hi".charAt(3)}
+        assert(resultOfBeThrownByAndBeThrownBy.throwables.length == 3)
+
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(0).isDefined)
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(0).get.isInstanceOf[StringIndexOutOfBoundsException])
+
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(1).isDefined)
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(1).get.isInstanceOf[StringIndexOutOfBoundsException])
+
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(2).isDefined)
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(2).get.isInstanceOf[StringIndexOutOfBoundsException])
+      }
+    }
   }
 }
