@@ -502,7 +502,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
     }
   }
 
-  describe("assertTypeError method ") {
+  describe("expectTypeError method ") {
 
     describe("when work with string literal") {
 
