@@ -77,6 +77,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.midSentenceFactMessageArgs shouldBe (Vector(1, 2))
       fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(1, 2))
       fact.isLeaf shouldBe (true)
+      fact.isYes shouldBe (false)
+      fact.isVacuousYes shouldBe (false)
     }
 
     "should use midSentenceFactMessageArgs to construct midSentenceFactMessage" in {
@@ -106,6 +108,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact2.midSentenceFactMessageArgs shouldBe (Vector(3, 2))
         fact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
         fact2.isLeaf shouldBe (true)
+        fact2.isYes shouldBe (false)
+        fact2.isVacuousYes shouldBe (false)
 
         notFact2 should equal (Unary_!(No("Expected {0}, but got {1}", "{0} did not equal {1}", "expected {0}, but got {1}", "{0} did not equal {1}", Vector(3, 2), Vector(3, 2))))
         notFact2.factMessage shouldBe ("3 did not equal 2")
@@ -121,6 +125,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         notFact2.midSentenceFactMessageArgs shouldBe (Vector(3, 2))
         notFact2.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(3, 2))
         notFact2.isLeaf shouldBe (true)
+        notFact2.isYes shouldBe (true)
+        notFact2.isVacuousYes shouldBe (false)
       }
       "should give back the original Fact instance if inverted twice" in {
         val notNotFact2 = !notFact2
@@ -166,6 +172,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
       }
 
       "for No && Yes" in {
@@ -185,6 +193,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.factMessageArgs should be (Vector('a', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
         fact.isLeaf should be (true)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes && No" in {
@@ -206,6 +216,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes && Yes" in {
@@ -227,6 +239,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (false)
       }
     }
 
@@ -273,6 +287,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
       }
 
       "for No & Yes" in {
@@ -291,6 +307,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes & No" in {
@@ -312,6 +330,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes & Yes" in {
@@ -333,6 +353,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (false)
       }
     }
 
@@ -358,7 +380,6 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         assert(evaluated)
       }
     }
-
   }
 
   "The Fact obtained from or-ing two Facts with ||" - {
@@ -383,6 +404,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
         fact.isLeaf should be (false)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
        }
 
 
@@ -405,6 +428,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
         fact.isLeaf should be (false)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes || No" in {
@@ -424,6 +449,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.factMessageArgs should be (Vector('c', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('c', 'b'))
         fact.isLeaf should be (true)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (false)
       }
 
       "for Yes || Yes" in {
@@ -443,6 +470,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         fact.factMessageArgs should be (Vector('e', 'b'))
         fact.simplifiedFactMessageArgs should be (Vector('e', 'b'))
         fact.isLeaf should be (true)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (false)
       }
     }
 
@@ -491,6 +520,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
           fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
           fact.isLeaf should be (false)
+          fact.isYes shouldBe (false)
+          fact.isVacuousYes shouldBe (false)
         }
 
 
@@ -513,6 +544,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
           fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
           fact.isLeaf should be (false)
+          fact.isYes shouldBe (true)
+          fact.isVacuousYes shouldBe (false)
         }
 
         "for Yes | No" in {
@@ -531,6 +564,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
           fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
           fact.isLeaf should be (false)
+          fact.isYes shouldBe (true)
+          fact.isVacuousYes shouldBe (false)
         }
 
         "for Yes | Yes" in {
@@ -549,6 +584,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
           fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
           fact.isLeaf should be (false)
+          fact.isYes shouldBe (true)
+          fact.isVacuousYes shouldBe (false)
         }
       }
 
@@ -609,6 +646,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.midSentenceFactMessageArgs shouldBe (Vector.empty)
       fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
       fact.isLeaf shouldBe (true)
+      fact.isYes shouldBe (true)
+      fact.isVacuousYes shouldBe (false)
 
       val ms = No("aaa", "bbb")
       ms.factMessage shouldBe ("aaa")
@@ -624,6 +663,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.midSentenceFactMessageArgs shouldBe (Vector.empty)
       ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
       ms.isLeaf shouldBe (true)
+      ms.isYes shouldBe (false)
+      ms.isVacuousYes shouldBe (false)
     }
     "that takes four strings should work correctly" in {
       val fact = Yes("one", "two", "three", "four")
@@ -640,6 +681,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.midSentenceFactMessageArgs shouldBe (Vector.empty)
       fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
       fact.isLeaf shouldBe (true)
+      fact.isYes shouldBe (true)
+      fact.isVacuousYes shouldBe (false)
 
       val ms = No("aaa", "bbb", "ccc", "ddd")
       ms.factMessage shouldBe ("aaa")
@@ -655,6 +698,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.midSentenceFactMessageArgs shouldBe (Vector.empty)
       ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector.empty)
       ms.isLeaf shouldBe (true)
+      ms.isYes shouldBe (false)
+      ms.isVacuousYes shouldBe (false)
     }
     "that takes four strings and two IndexedSeqs should work correctly" in {
       val fact = Yes("one", "two", "three", "four", Vector(42), Vector(42.0))
@@ -671,6 +716,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.midSentenceFactMessageArgs shouldBe (Vector(42))
       fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(42.0))
       fact.isLeaf shouldBe (true)
+      fact.isYes shouldBe (true)
+      fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
@@ -685,6 +732,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.midSentenceFactMessageArgs shouldBe (Vector("ho", "he"))
       ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("foo", "fie"))
       ms.isLeaf shouldBe (true)
+      ms.isYes shouldBe (false)
+      ms.isVacuousYes shouldBe (false)
     }
     "that takes two strings and one IndexedSeq should work correctly" in {
       val fact = Yes("one", "two", Vector(42))
@@ -701,6 +750,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.midSentenceFactMessageArgs shouldBe (Vector(42))
       fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(42))
       fact.isLeaf shouldBe (true)
+      fact.isYes shouldBe (true)
+      fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", Vector("ho", "he"))
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("aaa")
@@ -715,6 +766,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.midSentenceFactMessageArgs shouldBe (Vector("ho", "he"))
       ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("ho", "he"))
       ms.isLeaf shouldBe (true)
+      ms.isYes shouldBe (false)
+      ms.isVacuousYes shouldBe (false)
     }
     "that takes two strings and two IndexedSeqs should work correctly" in {
       val fact = Yes("one", "two", Vector(42), Vector(42.0))
@@ -731,6 +784,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.midSentenceFactMessageArgs shouldBe (Vector(42.0))
       fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(42.0))
       fact.isLeaf shouldBe (true)
+      fact.isYes shouldBe (true)
+      fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("aaa")
@@ -745,6 +800,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.midSentenceFactMessageArgs shouldBe (Vector("foo", "fie"))
       ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector("foo", "fie"))
       ms.isLeaf shouldBe (true)
+      ms.isYes shouldBe (false)
+      ms.isVacuousYes shouldBe (false)
     }
     "that takes four strings and four IndexedSeqs should work correctly" in {
       val fact = Yes("one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
@@ -761,6 +818,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       fact.midSentenceFactMessageArgs shouldBe (Vector(3))
       fact.midSentenceSimplifiedFactMessageArgs shouldBe (Vector(4))
       fact.isLeaf shouldBe (true)
+      fact.isYes shouldBe (true)
+      fact.isVacuousYes shouldBe (false)
       val ms = No("aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
       ms.factMessage shouldBe ("aaa")
       ms.simplifiedFactMessage shouldBe ("bbb")
@@ -775,6 +834,8 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.midSentenceFactMessageArgs shouldBe (Vector('C'))
       ms.midSentenceSimplifiedFactMessageArgs shouldBe (Vector('D'))
       ms.isLeaf shouldBe (true)
+      ms.isYes shouldBe (false)
+      ms.isVacuousYes shouldBe (false)
     }
   }
 

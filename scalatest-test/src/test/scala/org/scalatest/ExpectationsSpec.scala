@@ -39,7 +39,8 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.simplifiedFactMessageArgs == Vector(3, 2))
       assert(fact.midSentenceFactMessageArgs == Vector(3, 2))
       assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 2))
-      assert(fact.isLeaf == true)
+      assert(fact.isLeaf)
+      assert(!fact.isVacuousYes)
     }
     it("should give a correct Fact result when the expectation succeeds") {
       val fact = expectResult(3) { 3 } 
@@ -56,7 +57,8 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.simplifiedFactMessageArgs == Vector(3, 3))
       assert(fact.midSentenceFactMessageArgs == Vector(3, 3))
       assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 3))
-      assert(fact.isLeaf == true)
+      assert(fact.isLeaf)
+      assert(!fact.isVacuousYes)
     }
     it("should give a basic (non-diagrammed) error message for simple leaf nodes") {
       val fact = expectResult(3) { 4 }
@@ -73,7 +75,8 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.simplifiedFactMessageArgs == Vector(3, 4))
       assert(fact.midSentenceFactMessageArgs == Vector(3, 4))
       assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 4))
-      assert(fact.isLeaf == true)
+      assert(fact.isLeaf)
+      assert(!fact.isVacuousYes)
       assert(fact.toString == "No(expected 3, but got 4)")
     }
     it("should still give a basic error message after negating a leaf with !") {
@@ -91,7 +94,8 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.simplifiedFactMessageArgs == Vector(3, 3))
       assert(fact.midSentenceFactMessageArgs == Vector(3, 3))
       assert(fact.midSentenceSimplifiedFactMessageArgs == Vector(3, 3))
-      assert(fact.isLeaf == true)
+      assert(fact.isLeaf)
+      assert(!fact.isVacuousYes)
       assert(fact.toString ==
         "No(" + NEWLINE +
         "  !Yes(expected 3, and got 3)" + NEWLINE +
@@ -108,6 +112,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         "  No(expected 3, but got 4)" + NEWLINE +
         ")"
       )
+      assert(!fact1.isVacuousYes)
 
       val fact2 = expectResult(3) { 3 } && !expectResult(4) { 4 }
       assert(fact2.isNo)
@@ -120,6 +125,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         "  )" + NEWLINE + 
         ")"
       )
+      assert(!fact2.isVacuousYes)
     }
     it("should give a basic message for a & binary expression with 2 leafs") {
       val fact1 = expectResult(3) { 3 } & expectResult(3) { 4 }
@@ -131,6 +137,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
           "  No(expected 3, but got 4)" + NEWLINE +
           ")"
       )
+      assert(!fact1.isVacuousYes)
 
       val fact2 = expectResult(3) { 3 } & !expectResult(4) { 4 }
       assert(fact2.isNo)
@@ -143,6 +150,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
           "  )" + NEWLINE +
           ")"
       )
+      assert(!fact2.isVacuousYes)
     }
     it("should use vertical diagrammed style of message when one of component in && and || binary expression is not a leaf") {
       val fact = (expectResult(3) { 3 } && expectResult(3) { 4 }) || expectResult(5) { 6 }
@@ -164,6 +172,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         "  No(expected 5, but got 6)" + NEWLINE +
         ")"
       )
+      assert(!fact.isVacuousYes)
     }
     it("should use vertical diagrammed style of message when one of component in & and | binary expression is not a leaf") {
       val fact = (expectResult(3) { 3 } & expectResult(3) { 4 }) | expectResult(5) { 6 }
@@ -185,6 +194,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
           "  No(expected 5, but got 6)" + NEWLINE +
           ")"
       )
+      assert(!fact.isVacuousYes)
     }
     it("should use vertical diagrammed style of message and prefix Unary_! instance with !") {
       val fact = (expectResult(3) { 3 } && !expectResult(4) { 4 }) || expectResult(5) { 6 }
@@ -210,90 +220,107 @@ class ExpectationsSpec extends FunSpec with Expectations {
         "  No(expected 5, but got 6)" + NEWLINE +
         ")"
       )
+      assert(!fact.isVacuousYes)
     }
     it("should short-circuit and just return No when used with No && No") {
       val fact = expectResult(2) {4} && expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isNo)
       assert(fact.factMessage == "Expected 2, but got 4")
+      assert(!fact.isVacuousYes)
     }
     it("should short-circuit and just return No when used with No && Yes") {
       val fact = expectResult(2) {4} && expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isNo)
       assert(fact.factMessage == "Expected 2, but got 4")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_&& when used with Yes && No") {
       val fact = expectResult(4) {4} && expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_&&])
       assert(fact.factMessage == "4 equaled 4, but 3 did not equal 5")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_&& when used with Yes && Yes") {
       val fact = expectResult(4) {4} && expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_&&])
       assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_& when used with No & No") {
       val fact = expectResult(2) {4} & expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_&])
       assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_& when used with No & Yes") {
       val fact = expectResult(2) {4} & expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_&])
       assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_& when used with Yes & No") {
       val fact = expectResult(4) {4} & expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_&])
       assert(fact.factMessage == "4 equaled 4, but 3 did not equal 5")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_& when used with Yes & Yes") {
       val fact = expectResult(4) {4} & expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_&])
       assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_|| when used with No || No") {
       val fact = expectResult(2) {4} || expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_||])
       assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_|| when used with No || Yes") {
       val fact = expectResult(2) {4} || expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_||])
       assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
+      assert(!fact.isVacuousYes)
     }
     it("should short-circuit and return Yes when used with Yes || No") {
       val fact = expectResult(4) {4} || expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isYes)
       assert(fact.factMessage == "Expected 4, and got 4")
+      assert(!fact.isVacuousYes)
     }
     it("should short-circuit and return Yes when used with Yes || Yes") {
       val fact = expectResult(4) {4} || expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isYes)
       assert(fact.factMessage == "Expected 4, and got 4")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_| when used with No | No") {
       val fact = expectResult(2) {4} | expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_|])
       assert(fact.factMessage == "2 did not equal 4, and 3 did not equal 5")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_| when used with No | Yes") {
       val fact = expectResult(2) {4} | expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_|])
       assert(fact.factMessage == "2 did not equal 4, and 3 equaled 3")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_| when used with Yes | No") {
       val fact = expectResult(4) {4} | expectResult(3) {5}
       assert(fact.isInstanceOf[Fact.Binary_|])
       assert(fact.factMessage == "4 equaled 4, and 3 did not equal 5")
+      assert(!fact.isVacuousYes)
     }
     it("should return Binary_| when used with Yes | Yes") {
       val fact = expectResult(4) {4} | expectResult(3) {3}
       assert(fact.isInstanceOf[Fact.Binary_|])
       assert(fact.factMessage == "4 equaled 4, and 3 equaled 3")
+      assert(!fact.isVacuousYes)
     }
   }
 
@@ -351,6 +378,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isYes)
       assert(fact.factMessage == "1 equaled 1")
+      assert(!fact.isVacuousYes)
     }
 
     it("should return No when used to check a == 2") {
@@ -358,6 +386,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
       assert(fact.isInstanceOf[Fact.Leaf])
       assert(fact.isNo)
       assert(fact.factMessage == "1 did not equal 2")
+      assert(!fact.isVacuousYes)
     }
   }
 
@@ -370,6 +399,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
         assert(fact.factMessage == Resources.didNotCompile("val a: String = 1"))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when parse and type check passed") {
@@ -377,6 +407,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         assert(fact.factMessage == Resources.expectedCompileErrorButGotNone("val a = 1"))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return Yes with correct fact messsage when parse failed") {
@@ -384,8 +415,8 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
         assert(fact.factMessage == Resources.didNotCompile("println(\"test)"))
+        assert(!fact.isVacuousYes)
       }
-
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -403,6 +434,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
             |val a: String = 2
             |""".stripMargin
         ))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when parse and type check passed") {
@@ -418,6 +450,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
             |val a = 1
             |""".stripMargin
         ))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return Yes with correct fact message when parse failed ") {
@@ -433,6 +466,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
             |println(\"test)
             |""".stripMargin
         ))
+        assert(!fact.isVacuousYes)
       }
     }
   }
@@ -446,6 +480,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
         assert(fact.factMessage == Resources.compiledSuccessfully("val a = 1"))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when type check failed") {
@@ -456,11 +491,13 @@ class ExpectationsSpec extends FunSpec with Expectations {
           """type mismatch;
             | found   : Int(2)
             | required: String""".stripMargin, "val a: String = 2"))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when parse failed") {
         val fact = expectCompiles("println(\"test)")
         assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("unclosed string literal", "println(\"test)"))
+        assert(!fact.isVacuousYes)
       }
     }
 
@@ -480,6 +517,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
             |val a = 1
             |""".stripMargin
         ))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when type check failed") {
@@ -498,6 +536,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
           """
             |val a: String = 2
             |""".stripMargin))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when parse failed") {
@@ -515,6 +554,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
             |println("test)
             |""".stripMargin
         ))
+        assert(!fact.isVacuousYes)
       }
     }
   }
@@ -528,6 +568,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isYes)
         assert(fact.factMessage == Resources.gotTypeErrorAsExpected("val a: String = 1"))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when type check passed") {
@@ -535,6 +576,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         assert(fact.factMessage == Resources.expectedTypeErrorButGotNone("val a = 1"))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when parse failed") {
@@ -542,6 +584,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
         assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
+        assert(!fact.isVacuousYes)
       }
     }
 
@@ -561,6 +604,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
             |val a: String = 2
             |""".stripMargin
         ))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when type check passed") {
@@ -577,6 +621,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
             |val a = 1
             |""".stripMargin
         ))
+        assert(!fact.isVacuousYes)
       }
 
       it("should return No with correct fact message when parse failed ") {
@@ -595,6 +640,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
             |println("test)
             |""".stripMargin
         ))
+        assert(!fact.isVacuousYes)
       }
     }
   }

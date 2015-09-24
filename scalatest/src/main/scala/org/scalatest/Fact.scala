@@ -32,6 +32,7 @@ sealed abstract class Fact {
   val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
 
   val isLeaf: Boolean
+  val isVacuousYes: Boolean
   val prettifier: Prettifier
 
   val cause: Option[Throwable] = None
@@ -126,9 +127,11 @@ object Fact {
     midSentenceFactMessageArgs: IndexedSeq[Any],
     midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
     isYes: Boolean,
+    isVacuousYes: Boolean,
     override val cause: Option[Throwable] = None,
     prettifier: Prettifier = Prettifier.default
   ) extends Fact {
+    require(!isVacuousYes || isYes)
     val isLeaf: Boolean = true
   }
 
@@ -161,6 +164,7 @@ object Fact {
         midSentenceFactMessageArgs,
         midSentenceSimplifiedFactMessageArgs,
         false,
+        false,
         cause,
         prettifier
       )
@@ -191,6 +195,7 @@ object Fact {
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
+	false,
         false,
         None,
         Prettifier.default
@@ -225,6 +230,7 @@ object Fact {
         midSentenceFactMessageArgs,
         midSentenceFactMessageArgs,
         false,
+        false,
         None,
         Prettifier.default
       )
@@ -252,6 +258,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         Vector.empty,
+        false,
         false,
         None,
         Prettifier.default
@@ -284,6 +291,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         Vector.empty,
+        false,
         false,
         None,
         Prettifier.default
@@ -320,6 +328,7 @@ object Fact {
         simplifiedFactMessageArgs,
         factMessageArgs,
         simplifiedFactMessageArgs,
+        false,
         false,
         None,
         Prettifier.default
@@ -361,6 +370,7 @@ object Fact {
         midSentenceFactMessageArgs,
         midSentenceSimplifiedFactMessageArgs,
         false,
+        false,
         None,
         Prettifier.default
       )
@@ -388,6 +398,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         Vector.empty,
+        false,
         false,
         None,
         Prettifier.default
@@ -423,6 +434,7 @@ object Fact {
         factMessageArgs,
         factMessageArgs,
         false,
+        false,
         None,
         Prettifier.default
       )
@@ -444,6 +456,7 @@ object Fact {
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
+      isVacuousYes: Boolean = false,
       cause: Option[Throwable] = None,
       prettifier: Prettifier = Prettifier.default
     ): Leaf =
@@ -457,6 +470,7 @@ object Fact {
         midSentenceFactMessageArgs,
         midSentenceSimplifiedFactMessageArgs,
         true,
+        isVacuousYes,
         cause,
         prettifier
       )
@@ -488,6 +502,7 @@ object Fact {
         factMessageArgs,
         factMessageArgs,
         true,
+        false,
         None,
         Prettifier.default
       )
@@ -521,6 +536,7 @@ object Fact {
         midSentenceFactMessageArgs,
         midSentenceFactMessageArgs,
         true,
+        false,
         None,
         Prettifier.default
       )
@@ -549,6 +565,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         true,
+        false,
         None,
         Prettifier.default
       )
@@ -582,6 +599,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         true,
+        false,
         None,
         Prettifier.default
       )
@@ -619,6 +637,7 @@ object Fact {
         factMessageArgs,
         simplifiedFactMessageArgs,
         true,
+        false,
         None,
         Prettifier.default
       )
@@ -660,6 +679,7 @@ object Fact {
         midSentenceFactMessageArgs,
         midSentenceSimplifiedFactMessageArgs,
         true,
+        false,
         None,
         Prettifier.default
       )
@@ -687,6 +707,7 @@ object Fact {
         Vector.empty,
         Vector.empty,
         true,
+        false,
         None,
         Prettifier.default
       )
@@ -719,6 +740,7 @@ object Fact {
         factMessageArgs,
         factMessageArgs,
         true,
+        false,
         None,
         Prettifier.default
       )
@@ -745,6 +767,7 @@ object Fact {
     val prettifier: Prettifier = underlying.prettifier
 
     val isYes: Boolean = !(underlying.isYes)
+    val isVacuousYes: Boolean = false
 
     override def unary_!(): org.scalatest.Fact = underlying
 
@@ -799,6 +822,7 @@ object Fact {
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
+    val isVacuousYes: Boolean = false // TODO
     val prettifier: Prettifier = left.prettifier
 
     val isYes: Boolean = left.isYes && right.isYes
@@ -858,6 +882,7 @@ object Fact {
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
+    val isVacuousYes: Boolean = false // TODO
     val prettifier: Prettifier = left.prettifier
 
     val isYes: Boolean = left.isYes || right.isYes
