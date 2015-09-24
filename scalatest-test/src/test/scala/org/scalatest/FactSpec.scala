@@ -267,6 +267,56 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
     }
 
+    "should propagate VacuousYes correctly" - {
+      import Expectations._
+      val x = 1
+      val vacuousYes = (expect(x == 2) implies expect(x > 0))
+      "for VacuousYes && VacuousYes" in {
+        val result = vacuousYes && vacuousYes
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for VacuousYes && Yes" in {
+        val result = vacuousYes && Yes("yes")
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for Yes && VacuousYes" in {
+        val result = Yes("yes") && vacuousYes
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for VacuousYes && No" in {
+        val result = vacuousYes && No("no")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No && VacuousYes" in {
+        val result = No("no") && vacuousYes
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for Yes && Yes" in {
+        val result = Yes("yes1") && Yes("yes2")
+        assert(result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for Yes && No" in {
+        val result = Yes("yes") && No("no")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No && Yes" in {
+        val result = No("no") && Yes("yes")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No && No" in {
+        val result = No("no1") && No("no2")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+    }
   }
 
   "The Fact obtained from and-ing two Facts with &" - {
@@ -378,6 +428,57 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
         var evaluated = false
         No("no1") & { evaluated = true; No("no2") }
         assert(evaluated)
+      }
+    }
+
+    "should propagate VacuousYes correctly" - {
+      import Expectations._
+      val x = 1
+      val vacuousYes = (expect(x == 2) implies expect(x > 0))
+      "for VacuousYes & VacuousYes" in {
+        val result = vacuousYes & vacuousYes
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for VacuousYes & Yes" in {
+        val result = vacuousYes & Yes("yes")
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for Yes & VacuousYes" in {
+        val result = Yes("yes") & vacuousYes
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for VacuousYes & No" in {
+        val result = vacuousYes & No("no")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No & VacuousYes" in {
+        val result = No("no") & vacuousYes
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for Yes & Yes" in {
+        val result = Yes("yes1") & Yes("yes2")
+        assert(result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for Yes & No" in {
+        val result = Yes("yes") & No("no")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No & Yes" in {
+        val result = No("no") & Yes("yes")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No & No" in {
+        val result = No("no1") & No("no2")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
       }
     }
   }
@@ -498,6 +599,57 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       }
     }
 
+    "should propagate VacuousYes correctly" - {
+      import Expectations._
+      val x = 1
+      val vacuousYes = (expect(x == 2) implies expect(x > 0))
+      "for VacuousYes || VacuousYes" in {
+        val result = vacuousYes || vacuousYes
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for VacuousYes || Yes" in { // Because it short circuits
+        val result = vacuousYes || Yes("yes")
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for Yes || VacuousYes" in {
+        val result = Yes("yes") || vacuousYes
+        assert(result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for VacuousYes || No" in {
+        val result = vacuousYes || No("no")
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for No || VacuousYes" in {
+        val result = No("no") || vacuousYes
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for Yes || Yes" in {
+        val result = Yes("yes1") || Yes("yes2")
+        assert(result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for Yes || No" in {
+        val result = Yes("yes") || No("no")
+        assert(result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No || Yes" in {
+        val result = No("no") || Yes("yes")
+        assert(result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No || No" in {
+        val result = No("no1") || No("no2")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+    }
+
     "The Fact obtained from or-ing two Facts with |" - {
       "should be lazy about constructing strings" - {
 
@@ -609,6 +761,58 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
           var evaluated = false
           No("no1") | { evaluated = true; No("no2") }
           assert(evaluated)
+        }
+      }
+
+
+      "should propagate VacuousYes correctly" - {
+        import Expectations._
+        val x = 1
+        val vacuousYes = (expect(x == 2) implies expect(x > 0))
+        "for VacuousYes | VacuousYes" in {
+          val result = vacuousYes | vacuousYes
+          assert(result.isYes)
+          assert(result.isVacuousYes)
+        }
+        "for VacuousYes | Yes" in { // Because it DOES NOT short circuit
+          val result = vacuousYes | Yes("yes")
+          assert(result.isYes)
+          assert(!result.isVacuousYes)
+        }
+        "for Yes | VacuousYes" in {
+          val result = Yes("yes") | vacuousYes
+          assert(result.isYes)
+          assert(!result.isVacuousYes)
+        }
+        "for VacuousYes | No" in {
+          val result = vacuousYes | No("no")
+          assert(result.isYes)
+          assert(result.isVacuousYes)
+        }
+        "for No | VacuousYes" in {
+          val result = No("no") | vacuousYes
+          assert(result.isYes)
+          assert(result.isVacuousYes)
+        }
+        "for Yes | Yes" in {
+          val result = Yes("yes1") | Yes("yes2")
+          assert(result.isYes)
+          assert(!result.isVacuousYes)
+        }
+        "for Yes | No" in {
+          val result = Yes("yes") | No("no")
+          assert(result.isYes)
+          assert(!result.isVacuousYes)
+        }
+        "for No | Yes" in {
+          val result = No("no") | Yes("yes")
+          assert(result.isYes)
+          assert(!result.isVacuousYes)
+        }
+        "for No | No" in {
+          val result = No("no1") | No("no2")
+          assert(!result.isYes)
+          assert(!result.isVacuousYes)
         }
       }
     }
@@ -836,6 +1040,123 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       ms.isLeaf shouldBe (true)
       ms.isYes shouldBe (false)
       ms.isVacuousYes shouldBe (false)
+    }
+  }
+
+  "The Fact obtained from combining two Facts with implies" - {
+    "should be lazy about constructing strings" - {
+      "for No implies No" in {
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideNo implies rightSideNo
+        fact shouldBe a [VacuousYes]
+        fact.isNo shouldBe false
+        fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
+        fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
+        fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.midSentenceFactMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.factMessageArgs should be (Vector('a', 'b'))
+        fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
+        fact.isLeaf should be (true)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (true)
+        fact.toString should startWith ("VacuousYes")
+      }
+
+      "for No implies Yes" in {
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasLessThan, Resources.rawWasNotLessThan, Resources.rawWasLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideNo implies rightSideYes
+        fact shouldBe a [VacuousYes]
+        fact.isNo shouldBe false
+        fact.rawFactMessage should be (Resources.rawWasNotGreaterThan)
+        fact.rawSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.rawMidSentenceFactMessage should be (Resources.rawWasNotGreaterThan)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawWasGreaterThan)
+        fact.factMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
+        fact.simplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.midSentenceFactMessage should be (Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.wasGreaterThan('a'.pretty, 'b'.pretty))
+        fact.factMessageArgs should be (Vector('a', 'b'))
+        fact.simplifiedFactMessageArgs should be (Vector('a', 'b'))
+        fact.isLeaf should be (true)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (true)
+        fact.toString should startWith ("VacuousYes")
+      }
+
+      "for Yes implies No" in {
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val fact = leftSideYes implies rightSideNo
+        fact shouldBe a [Implies]
+        fact.isNo shouldBe true
+        fact.rawFactMessage should be (Resources.rawCommaBut)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaBut)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaBut)
+        fact.factMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaBut(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.isLeaf should be (false)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
+      }
+
+      "for Yes implies Yes" in {
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val fact = leftSideYes implies rightSideYes
+        fact shouldBe a [Implies]
+        fact.isYes shouldBe true
+        fact.rawFactMessage should be (Resources.rawCommaAnd)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.isLeaf should be (false)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (false)
+      }
+    }
+
+    "should short-circuit correctly" - {
+      "for Yes implies Yes" in {
+        var evaluated = false
+        Yes("yes1") && { evaluated = true; Yes("yes2") }
+        assert(evaluated)
+      }
+      "for Yes implies No" in {
+        var evaluated = false
+        Yes("yes1") && { evaluated = true; No("no1") }
+        assert(evaluated)
+      }
+      "for No implies Yes" in {
+        var evaluated = false
+        No("no1") && { evaluated = true; Yes("yes1") }
+        assert(!evaluated)
+      }
+      "for No implies No" in {
+        var evaluated = false
+        No("no1") && { evaluated = true; No("no2") }
+        assert(!evaluated)
+      }
     }
   }
 

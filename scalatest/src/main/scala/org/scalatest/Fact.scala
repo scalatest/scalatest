@@ -67,7 +67,13 @@ sealed abstract class Fact {
 
   final def &(rhs: => Fact): Fact = Fact.Binary_&(this, rhs)
 
-  final def stringPrefix: String = if (isYes) "Yes" else "No"
+  final def stringPrefix: String =
+    if (isYes) {
+      if (isVacuousYes) "VacuousYes" else "Yes"
+    }
+    else "No"
+
+  final def implies(rhs: => Fact): Fact = if (isNo) Fact.VacuousYes(this) else Fact.Implies(this, rhs)
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
@@ -106,7 +112,7 @@ sealed abstract class Fact {
     val padding = "  " * level
     if (msg.contains("\n")) {
       val padding = "  " * (level)
-      padding + stringPrefix + "(" + NEWLINE + msg.split("\n").map(l => padding + "  " + l).mkString("\n") + NEWLINE + ")"
+      padding + stringPrefix + "(" + NEWLINE + msg.split("\n").map(line => padding + "  " + line).mkString("\n") + NEWLINE + ")"
     }
     else
       padding + stringPrefix + "(" + msg + ")"
@@ -133,6 +139,33 @@ object Fact {
   ) extends Fact {
     require(!isVacuousYes || isYes)
     val isLeaf: Boolean = true
+  }
+
+  class VacuousYes(underlying: Fact) extends Fact {
+
+    require(underlying.isNo)
+    
+    val rawFactMessage: String = underlying.rawFactMessage
+    val rawSimplifiedFactMessage: String = underlying.rawSimplifiedFactMessage
+    val rawMidSentenceFactMessage: String = underlying.rawMidSentenceFactMessage
+    val rawMidSentenceSimplifiedFactMessage: String = underlying.rawMidSentenceSimplifiedFactMessage
+
+    val factMessageArgs: IndexedSeq[Any] = underlying.factMessageArgs
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = underlying.simplifiedFactMessageArgs
+    val midSentenceFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceFactMessageArgs
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = underlying.midSentenceSimplifiedFactMessageArgs
+
+    val isLeaf: Boolean = underlying.isLeaf
+    val prettifier: Prettifier = underlying.prettifier
+
+    override val cause: Option[Throwable] = underlying.cause
+
+    val isYes: Boolean = true
+    val isVacuousYes: Boolean = true
+  }
+
+  object VacuousYes {
+    def apply(underlying: Fact): VacuousYes = new VacuousYes(underlying)
   }
 
   /**
@@ -822,10 +855,10 @@ object Fact {
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
-    val isVacuousYes: Boolean = false // TODO
+    val isYes: Boolean = left.isYes && right.isYes
+    val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
     val prettifier: Prettifier = left.prettifier
 
-    val isYes: Boolean = left.isYes && right.isYes
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
@@ -837,7 +870,7 @@ object Fact {
   }
 
   object Binary_& {
-    def apply(left: Fact, right: => Fact): Fact = new Binary_&(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Binary_&(left, right)
   }
 
   class Binary_&&(left: Fact, right: Fact) extends Binary_&(left, right) {
@@ -846,7 +879,7 @@ object Fact {
   }
 
   object Binary_&& {
-    def apply(left: Fact, right: => Fact): Fact = new Binary_&&(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Binary_&&(left, right)
   }
 
   class Binary_|(left: Fact, right: Fact) extends Fact {
@@ -882,10 +915,9 @@ object Fact {
     val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
 
     val isLeaf: Boolean = false
-    val isVacuousYes: Boolean = false // TODO
-    val prettifier: Prettifier = left.prettifier
-
     val isYes: Boolean = left.isYes || right.isYes
+    val isVacuousYes: Boolean = (left.isVacuousYes && (right.isVacuousYes || right.isNo)) || ((left.isVacuousYes || left.isNo) && right.isVacuousYes)
+    val prettifier: Prettifier = left.prettifier
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
@@ -897,7 +929,7 @@ object Fact {
   }
 
   object Binary_| {
-    def apply(left: Fact, right: => Fact): Fact = new Binary_|(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Binary_|(left, right)
   }
 
   class Binary_||(left: Fact, right: Fact) extends Binary_|(left, right) {
@@ -906,7 +938,72 @@ object Fact {
   }
 
   object Binary_|| {
-    def apply(left: Fact, right: => Fact): Fact = new Binary_||(left, right)
+    def apply(left: Fact, right: Fact): Fact = new Binary_||(left, right)
+  }
+
+/*
+  Yes implies No // x, but y
+  Yes implies Yes // x, and y
+*/
+  class Implies(left: Fact, right: Fact) extends Fact {
+
+    require(left.isYes)
+
+    val rawFactMessage: String = {
+      if (left.isLeaf && right.isLeaf) {
+        if (left.isYes && right.isNo)
+          Resources.rawCommaBut
+        else
+          Resources.rawCommaAnd
+      }
+      else factDiagram(0)
+    }
+    val rawSimplifiedFactMessage: String = rawFactMessage
+    val rawMidSentenceFactMessage: String = rawFactMessage
+    val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
+    val factMessageArgs: IndexedSeq[Any] = {
+      if (left.isLeaf && right.isLeaf) {
+        Vector(
+          SimplifiedFactMessage(left),
+          MidSentenceSimplifiedFactMessage(right)
+        ) // Simplify if combining
+      }
+      else {
+        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
+      }
+    }
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
+    val midSentenceFactMessageArgs: IndexedSeq[Any] = {
+      if (left.isLeaf && right.isLeaf) {
+        Vector(
+          MidSentenceSimplifiedFactMessage(left),
+          MidSentenceSimplifiedFactMessage(right)
+        ) // Simplify if combining
+      }
+      else {
+        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
+      }
+    }
+
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
+
+    val isLeaf: Boolean = false
+    val isVacuousYes: Boolean = false // TODO
+    val prettifier: Prettifier = left.prettifier
+
+    val isYes: Boolean = left.isYes && right.isYes
+
+    override def factDiagram(level: Int): String = {
+      val padding = "  " * level
+      padding + stringPrefix + "(" + NEWLINE +
+        left.factDiagram(level + 1) + " implies" + NEWLINE +
+        right.factDiagram(level + 1) + NEWLINE +
+        padding + ")"
+    }
+  }
+
+  object Implies {
+    def apply(left: Fact, right: Fact): Fact = new Implies(left, right)
   }
 
   private[scalatest] class MyLazyMessage(raw: String, args: IndexedSeq[Any]) {
