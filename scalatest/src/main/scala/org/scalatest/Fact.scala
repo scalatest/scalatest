@@ -63,9 +63,9 @@ sealed abstract class Fact {
 
   final def &&(rhs: => Fact): Fact = if (isNo) this else Fact.Binary_&&(this, rhs)
 
-  final def |(rhs: => Fact): Fact = Fact.Binary_|(this, rhs)
+  final def |(rhs: Fact): Fact = Fact.Binary_|(this, rhs)
 
-  final def &(rhs: => Fact): Fact = Fact.Binary_&(this, rhs)
+  final def &(rhs: Fact): Fact = Fact.Binary_&(this, rhs)
 
   final def stringPrefix: String =
     if (isYes) {
@@ -74,6 +74,8 @@ sealed abstract class Fact {
     else "No"
 
   final def implies(rhs: => Fact): Fact = if (isNo) Fact.VacuousYes(this) else Fact.Implies(this, rhs)
+
+  final def isEqvTo(rhs: Fact): Fact = Fact.IsEqvTo(this, rhs)
 
   /**
    * Construct failure message to report if a fact fails, using <code>rawFactMessage</code>, <code>factMessageArgs</code> and <code>prettifier</code>
@@ -786,6 +788,7 @@ object Fact {
   // now anything *but* 3 is expected. So the simplified message just says, "3 did not equal 4".
   // Of course, that means x was 4, and so the inverted form would be a Yes. But if x were 3, then
   // the regular factMessage would be "Expected 3, but got 3" and the simplified fact message would be "3 equaled 3"
+  // TODO: Write a test that ensures !(!(<vacuous yes>)).isVacuousYes stays true
   case class Unary_!(underlying: Fact) extends Fact {
 
     val rawFactMessage: String = underlying.rawSimplifiedFactMessage
@@ -806,11 +809,17 @@ object Fact {
 
     override def factDiagram(level: Int): String = {
       val padding = "  " * level
-      padding + (if (isYes) "Yes(" else "No(") + NEWLINE +
-      padding + "  !" + underlying.factDiagram(0) + NEWLINE +
+      val msg = underlying.factDiagram(0)
+      padding + (if (isYes) "Yes(" else "No(") + NEWLINE + {
+        if (msg.contains("\n"))
+          ("!" + msg).split("\n").map(line => padding + "  " + line).mkString("\n") + NEWLINE
+        else
+          padding + "  !" + msg + NEWLINE
+      } +
       padding + ")"
     }
   }
+
 
   class Binary_&(left: Fact, right: Fact) extends Fact {
 
@@ -1004,6 +1013,54 @@ object Fact {
 
   object Implies {
     def apply(left: Fact, right: Fact): Fact = new Implies(left, right)
+  }
+
+  class IsEqvTo(left: Fact, right: Fact) extends Fact {
+
+    val rawFactMessage: String = {
+      if (left.isLeaf && right.isLeaf) {
+        Resources.rawCommaAnd
+      }
+      else factDiagram(0)
+    }
+    val rawSimplifiedFactMessage: String = rawFactMessage
+    val rawMidSentenceFactMessage: String = rawFactMessage
+    val rawMidSentenceSimplifiedFactMessage: String = rawFactMessage
+    val factMessageArgs: IndexedSeq[Any] = {
+      if (left.isLeaf && right.isLeaf) {
+        Vector(SimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
+      }
+      else {
+        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
+      }
+    }
+    val simplifiedFactMessageArgs: IndexedSeq[Any] = factMessageArgs
+    val midSentenceFactMessageArgs: IndexedSeq[Any] = {
+      if (left.isLeaf && right.isLeaf) {
+        Vector(MidSentenceSimplifiedFactMessage(left), MidSentenceSimplifiedFactMessage(right))
+      }
+      else {
+        Vector(UnquotedString(left.factDiagram(0)), UnquotedString(right.factDiagram(0)))
+      }
+    }
+    val midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any] = midSentenceFactMessageArgs
+
+    val isLeaf: Boolean = false
+    val isYes: Boolean = (left.isYes && right.isYes) || (left.isNo && right.isNo)
+    val isVacuousYes: Boolean = isYes && (left.isVacuousYes || right.isVacuousYes)
+    val prettifier: Prettifier = left.prettifier
+
+    override def factDiagram(level: Int): String = {
+      val padding = "  " * level
+      padding + stringPrefix + "(" + NEWLINE +
+      left.factDiagram(level + 1) + " isEqvTo" + NEWLINE +
+      right.factDiagram(level + 1) + NEWLINE +
+      padding + ")"
+    }
+  }
+
+  object IsEqvTo {
+    def apply(left: Fact, right: Fact): Fact = new IsEqvTo(left, right)
   }
 
   private[scalatest] class MyLazyMessage(raw: String, args: IndexedSeq[Any]) {

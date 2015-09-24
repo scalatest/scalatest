@@ -1160,6 +1160,170 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     }
   }
 
+  "The Fact obtained from combining two Facts with isEqvTo" - {
+    "should be lazy about constructing strings" - {
+
+      "for No isEqvTo No" in {
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideNo isEqvTo rightSideNo
+        fact shouldBe a [IsEqvTo]
+        fact.rawFactMessage should be (Resources.rawCommaAnd)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotGreaterThan('a'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.isLeaf should be (false)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (false)
+      }
+
+
+      "for No isEqvTo Yes" in {
+        val leftSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasNotGreaterThan, Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'),Vector('a', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Resources.rawWasNotLessThan, Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'),Vector('a', 'd'))
+        val fact = leftSideNo isEqvTo rightSideYes
+        fact shouldBe a [IsEqvTo]
+        fact.rawFactMessage should be (Resources.rawCommaAnd)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.factMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasNotGreaterThan('a'.pretty, 'b'.pretty), Resources.wasNotLessThan('a'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.midSentenceFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.midSentenceSimplifiedFactMessageArgs should be (Vector(MidSentenceSimplifiedFactMessage(leftSideNo), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.isLeaf should be (false)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
+      }
+
+      "for Yes isEqvTo No" in {
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'),Vector('c', 'b'))
+        val rightSideNo = No(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'),Vector('c', 'd'))
+        val fact = leftSideYes isEqvTo rightSideNo
+        fact shouldBe a [IsEqvTo]
+        fact.rawFactMessage should be (Resources.rawCommaAnd)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('c'.pretty, 'b'.pretty), Resources.wasGreaterThan('c'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideNo)))
+        fact.isLeaf should be (false)
+        fact.isYes shouldBe (false)
+        fact.isVacuousYes shouldBe (false)
+      }
+
+      "for Yes isEqvTo Yes" in {
+        val leftSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'),Vector('e', 'b'))
+        val rightSideYes = Yes(Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Resources.rawWasNotGreaterThan, Resources.rawWasGreaterThan, Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'),Vector('e', 'd'))
+        val fact = leftSideYes isEqvTo rightSideYes
+        fact shouldBe a [IsEqvTo]
+        fact.rawFactMessage should be (Resources.rawCommaAnd)
+        fact.rawSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceFactMessage should be (Resources.rawCommaAnd)
+        fact.rawMidSentenceSimplifiedFactMessage should be (Resources.rawCommaAnd)
+        fact.factMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.simplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.midSentenceFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.midSentenceSimplifiedFactMessage should be (Resources.commaAnd(Resources.wasGreaterThan('e'.pretty, 'b'.pretty), Resources.wasGreaterThan('e'.pretty, 'd'.pretty)))
+        fact.factMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.simplifiedFactMessageArgs should be (Vector(SimplifiedFactMessage(leftSideYes), MidSentenceSimplifiedFactMessage(rightSideYes)))
+        fact.isLeaf should be (false)
+        fact.isYes shouldBe (true)
+        fact.isVacuousYes shouldBe (false)
+      }
+    }
+
+    "should short-circuit correctly" - {
+      "for Yes isEqvTo Yes" in {
+        var evaluated = false
+        Yes("yes1") isEqvTo { evaluated = true; Yes("yes2") }
+        assert(evaluated)
+      }
+      "for Yes isEqvTo No" in {
+        var evaluated = false
+        Yes("yes1") isEqvTo { evaluated = true; No("no1") }
+        assert(evaluated)
+      }
+      "for No isEqvTo Yes" in {
+        var evaluated = false
+        No("no1") isEqvTo { evaluated = true; Yes("yes1") }
+        assert(evaluated)
+      }
+      "for No isEqvTo No" in {
+        var evaluated = false
+        No("no1") isEqvTo { evaluated = true; No("no2") }
+        assert(evaluated)
+      }
+    }
+
+    "should propagate VacuousYes correctly" - {
+      import Expectations._
+      val x = 1
+      val vacuousYes = (expect(x == 2) implies expect(x > 0))
+      "for VacuousYes isEqvTo VacuousYes" in {
+        val result = vacuousYes isEqvTo vacuousYes
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for VacuousYes isEqvTo Yes" in {
+        val result = vacuousYes isEqvTo Yes("yes")
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for Yes isEqvTo VacuousYes" in {
+        val result = Yes("yes") isEqvTo vacuousYes
+        assert(result.isYes)
+        assert(result.isVacuousYes)
+      }
+      "for VacuousYes isEqvTo No" in {
+        val result = vacuousYes isEqvTo No("no")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No isEqvTo VacuousYes" in {
+        val result = No("no") isEqvTo vacuousYes
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for Yes isEqvTo Yes" in {
+        val result = Yes("yes1") isEqvTo Yes("yes2")
+        assert(result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for Yes isEqvTo No" in {
+        val result = Yes("yes") isEqvTo No("no")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No isEqvTo Yes" in {
+        val result = No("no") isEqvTo Yes("yes")
+        assert(!result.isYes)
+        assert(!result.isVacuousYes)
+      }
+      "for No isEqvTo No" in {
+        val result = No("no1") isEqvTo No("no2")
+        assert(result.isYes)
+        assert(!result.isVacuousYes)
+      }
+    }
+  }
+
   def examples: TableFor1[Expectation] =
     Table(
       "fact",
