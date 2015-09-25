@@ -126,6 +126,22 @@ object TypeMatcherHelper {
   }
 
   /**
+   * Check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfATypeInvocation</code>.
+   * A <code>Fact.No</code> will be returned if <code>left</code> is not an instance of the type given by <code>ResultOfATypeInvocation</code>.
+   *
+   * @param left the left-hand-side (LHS) to be checked for the type
+   * @param aType an instance of <code>ResultOfATypeInvocation</code>
+   */
+  def expectAType(left: Any, aType: ResultOfATypeInvocation[_]): org.scalatest.Fact = {
+    val clazz = aType.clazz
+    if (!clazz.isAssignableFrom(left.getClass)) {
+      val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
+      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+    }
+    else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))
+  }
+
+  /**
    * Check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfAnTypeInvocation</code>.
    * A <code>TestFailedException</code> will be thrown if <code>left</code> is not an instance of the type given by <code>ResultOfAnTypeInvocation</code>.
    *
