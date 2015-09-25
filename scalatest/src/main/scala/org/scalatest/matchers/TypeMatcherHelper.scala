@@ -116,7 +116,7 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param aType an instance of <code>ResultOfATypeInvocation</code>
    */
-  def checkAType(left: Any, aType: ResultOfATypeInvocation[_]): org.scalatest.Assertion = {
+  def assertAType(left: Any, aType: ResultOfATypeInvocation[_]): org.scalatest.Assertion = {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
@@ -132,7 +132,7 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
    */
-  def checkAnType(left: Any, anType: ResultOfAnTypeInvocation[_]): org.scalatest.Assertion = {
+  def assertAnType(left: Any, anType: ResultOfAnTypeInvocation[_]): org.scalatest.Assertion = {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
