@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-object WillMatchersHelper {
+private[scalatest] object WillMatchersHelper {
 
   def indicateSuccess(message: => String): Fact = Fact.Yes(message)
 
