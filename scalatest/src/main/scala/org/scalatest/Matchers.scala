@@ -43,6 +43,8 @@ import MatchersHelper.fullyMatchRegexWithGroups
 import MatchersHelper.startWithRegexWithGroups
 import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
+import MatchersHelper.indicateSuccess
+import MatchersHelper.indicateFailure
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.NotAllowedException
 import scala.language.experimental.macros
@@ -1931,8 +1933,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         override def toString: String = "HavePropertyMatcher[AnyRef, Any](expectedValue = " + Prettifier.default(expectedValue) + ")"
       }
   }
-
-  import Matchers.{indicateSuccess, indicateFailure}
 
   /**
    * This implicit conversion method converts a <code>Symbol</code> to a
@@ -7410,48 +7410,4 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
  *
  * @author Bill Venners
  */
-object Matchers extends Matchers {
-
-  private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
-
-  private[scalatest] def indicateFailure(failureMessage: => String): Assertion =
-    throw newTestFailedException(failureMessage)
-
-  private[scalatest] def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String): Assertion =
-    throw newTestFailedException(
-      if (shouldBeTrue) failureMessage else negatedFailureMessage
-    )
-
-  private[scalatest] def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Assertion =
-    throw newTestFailedException(
-      if (shouldBeTrue) failureMessage else negatedFailureMessage,
-      None,
-      stackDepthAdjustment
-    )
-
-  private[scalatest] def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], stackDepthAdjustment: Int): Assertion =
-    throw newTestFailedException(
-      failureMessage,
-      optionalCause,
-      stackDepthAdjustment
-    )
-
-  private[scalatest] def indicateFailure(shouldBeTrue: Boolean, withFriendlyReminder: Boolean, failureMessageWithFriendlyReminder: => String, failureMessageWithoutFriendlyReminder: => String,
-                              negatedFailureMessageWithFriendlyReminder: => String, negatedFailureMessageWithoutFriendlyReminder: => String, optionalCause: Option[Throwable],
-                              stackDepthAdjustment: Int): Assertion =
-    throw newTestFailedException(
-      if (shouldBeTrue)
-        if (withFriendlyReminder)
-          failureMessageWithFriendlyReminder
-        else
-          failureMessageWithoutFriendlyReminder
-      else
-      if (withFriendlyReminder)
-        negatedFailureMessageWithFriendlyReminder
-      else
-        negatedFailureMessageWithoutFriendlyReminder,
-      None,
-      stackDepthAdjustment
-    )
-
-}
+object Matchers extends Matchers
