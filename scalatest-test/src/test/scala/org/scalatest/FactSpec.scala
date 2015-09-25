@@ -18,6 +18,7 @@ package org.scalatest
 
 import org.scalactic.PrettyMethods
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestCanceledException
 import SharedHelpers.thisLineNumber
 import Fact._
 import prop.TableDrivenPropertyChecks._
@@ -51,12 +52,25 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
       noFact.stringPrefix shouldBe "No"
       yesFact.stringPrefix shouldBe "Yes"
     }
-    "should have a toAssertion method that either returns Succeeded or throws TestFailedException with the correct error message and stack depth" in {
-      yesFact.toAssertion shouldBe Succeeded
-      val caught = the [TestFailedException] thrownBy noFact.toAssertion
-      caught should have message "Expected 3, but got 2"
-      caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
-      caught.failedCodeFileName shouldBe Some("FactSpec.scala")
+    "should have a toAssertion method that" - {
+      "returns Succeeded if the Fact is a non-vacuous Yes" in {
+        yesFact.toAssertion shouldBe Succeeded
+      }
+      "throws TestFailedException with the correct error message and stack depth if the Fact is a No" in {
+        val caught = the [TestFailedException] thrownBy noFact.toAssertion
+        caught should have message "Expected 3, but got 2"
+        caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
+        caught.failedCodeFileName shouldBe Some("FactSpec.scala")
+      }
+      "throws TestCanceledException with the correct error message and stack depth if the Fact is a vacuous Yes" in {
+        import Expectations._
+        val x = 1
+        val vacuousYes = (expect(x == 2) implies expect(x > 0))
+        val caught = the [TestCanceledException] thrownBy vacuousYes.toAssertion
+        caught should have message "1 did not equal 2"
+        caught.failedCodeLineNumber shouldEqual Some(thisLineNumber - 2)
+        caught.failedCodeFileName shouldBe Some("FactSpec.scala")
+      }
     }
     "should offer a toBoolean method, even though it is redundant with isYes" in {
       noFact.toBoolean shouldBe false
