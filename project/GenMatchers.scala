@@ -43,6 +43,39 @@ object GenMatchers {
       .replaceAll("Matchers.scala", "MustMatchers.scala")
   }
 
+  def translateShouldToWill(shouldLine: String): String = {
+    shouldLine
+      .replaceAll("Trait <a href=\"WillMatchers.html\"><code>WillMatchers</code></a> is an alternative to <code>Matchers</code>", "Trait <code>WillMatchers</code> is an alternative to <a href=\"Matchers.html\"><code>Matchers</code></a>")
+      .replaceAll("WillMatchers", "I_NEED_TO_STAY_WILLMATCHERS")
+      .replaceAll("ShouldMatchers", "I_NEED_TO_STAY_SHOULDMATCHERS")
+      .replaceAll("Assertions", "I_NEED_TO_STAY_ASSERTIONS")
+      .replaceAll("will", "I_NEED_TO_STAY_SMALL_WILL")
+      .replaceAll("Will", "I_NEED_TO_STAY_BIG_WILL")
+      .replaceAll("<!-- PRESERVE --><code>should", "<code>I_NEED_TO_STAY_SMALL_SHOULD")
+      .replaceAll("<!-- PRESERVE -->should", " I_NEED_TO_STAY_SMALL_SHOULD") // Why is there a space in front?
+      .replaceAll("should", "will")
+      .replaceAll("Should", "Will")
+      .replaceAll("trait Matchers", "trait WillMatchers")
+      .replaceAll("object Matchers extends Matchers", "object WillMatchers extends WillMatchers")
+      .replaceAll("import MatchersHelper.indicateSuccess", "import WillMatchersHelper.indicateSuccess")
+      .replaceAll("import MatchersHelper.indicateFailure", "import WillMatchersHelper.indicateFailure")
+      .replaceAll("extends Assertions with", "extends")
+      .replaceAll("Assertion", "Fact")
+      .replaceAll("I_NEED_TO_STAY_SMALL_SHOULD", "should")
+      .replaceAll("I_NEED_TO_STAY_BIG_WILL", "Will")
+      .replaceAll("I_NEED_TO_STAY_SMALL_WILL", "will")
+      .replaceAll("I_NEED_TO_STAY_SHOULDMATCHERS", "ShouldMatchers")
+      .replaceAll("I_NEED_TO_STAY_WILLMATCHERS", "WillMatchers")
+      .replaceAll("I_NEED_TO_STAY_ASSERTIONS", "Assertions")
+      .replaceAll("//CODEGEN_INSERT_FACT_ASSERTING", """implicit val assertingNatureOfFact: Asserting[Fact] =  // TODO: Check with Bill what is the correct thing to do
+                                                       |    new Asserting[Fact] {
+                                                       |      def result: Fact = Fact.Yes(Resources.assertionWasTrue)
+                                                       |    }""".stripMargin)
+      .replaceAll("import Matchers._", "import WillMatchers._")
+      .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.WillMatchers._")
+      .replaceAll("Matchers.scala", "WillMatchers.scala")
+  }
+
   def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
     targetDir.mkdirs()
     val matchersDir = new File(targetDir, "matchers")
@@ -86,6 +119,44 @@ object GenMatchers {
       mustMatchersWriter.flush()
       mustMatchersWriter.close()
       println("Generated " + mustMatchersFile.getAbsolutePath)
+    }
+
+    val willMatchersFile = new File(targetDir, "WillMatchers.scala")
+    val willMatchersWriter = new BufferedWriter(new FileWriter(willMatchersFile))
+    try {
+      val lines = Source.fromFile(new File("scalatest/src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
+      var skipMode = false
+      for (line <- lines) {
+        val willLine: String =
+          if (scalaJS) {
+            if (line.trim == "// SKIP-SCALATESTJS-START") {
+              skipMode = true
+              ""
+            }
+            else if (line.trim == "// SKIP-SCALATESTJS-END") {
+              skipMode = false
+              ""
+            }
+            else if (!skipMode) {
+              if (line.trim.startsWith("//SCALATESTJS-ONLY "))
+                translateShouldToWill(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
+              else
+                translateShouldToWill(line)
+            }
+            else
+              ""
+          }
+          else
+            translateShouldToWill(line)
+
+        willMatchersWriter.write(willLine)
+        willMatchersWriter.newLine()
+      }
+    }
+    finally {
+      willMatchersWriter.flush()
+      willMatchersWriter.close()
+      println("Generated " + willMatchersFile.getAbsolutePath)
     }
   }
 

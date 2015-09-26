@@ -320,4 +320,46 @@ private[scalatest] object MatchersHelper {
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotIncludeRegex, Resources.rawIncludedRegex, Resources.rawIncludedRegexButNotGroupAtIndex,
                                Resources.rawIncludedRegexButNotGroup, Resources.rawIncludedRegexAndGroup)
   }
+
+  def indicateSuccess(message: => String): Assertion = Succeeded
+
+  def indicateFailure(failureMessage: => String): Assertion =
+    throw newTestFailedException(failureMessage)
+
+  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String): Assertion =
+    throw newTestFailedException(
+      if (shouldBeTrue) failureMessage else negatedFailureMessage
+    )
+
+  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Assertion =
+    throw newTestFailedException(
+      if (shouldBeTrue) failureMessage else negatedFailureMessage,
+      None,
+      stackDepthAdjustment
+    )
+
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], stackDepthAdjustment: Int): Assertion =
+    throw newTestFailedException(
+      failureMessage,
+      optionalCause,
+      stackDepthAdjustment
+    )
+
+  def indicateFailure(shouldBeTrue: Boolean, withFriendlyReminder: Boolean, failureMessageWithFriendlyReminder: => String, failureMessageWithoutFriendlyReminder: => String,
+                                         negatedFailureMessageWithFriendlyReminder: => String, negatedFailureMessageWithoutFriendlyReminder: => String, optionalCause: Option[Throwable],
+                                         stackDepthAdjustment: Int): Assertion =
+    throw newTestFailedException(
+      if (shouldBeTrue)
+        if (withFriendlyReminder)
+          failureMessageWithFriendlyReminder
+        else
+          failureMessageWithoutFriendlyReminder
+      else
+      if (withFriendlyReminder)
+        negatedFailureMessageWithFriendlyReminder
+      else
+        negatedFailureMessageWithoutFriendlyReminder,
+      None,
+      stackDepthAdjustment
+    )
 }
