@@ -310,7 +310,7 @@ private[scalatest] object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def notCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Assertion] = {
+  def assertNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Assertion] = {
 
     import c.universe._
 
@@ -389,16 +389,101 @@ private[scalatest] object CompileMacro {
     }
   }
 
-  // used by shouldNot compile syntax, delegate to notCompileImpl to generate code
+  // used by shouldNot compile syntax, delegate to assertNotCompileImpl to generate code
   def shouldNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
-    notCompileImpl(c)(compileWord)("should")
+    assertNotCompileImpl(c)(compileWord)("should")
 
-  // used by mustNot compile syntax, delegate to notCompileImpl to generate code
+  // used by mustNot compile syntax, delegate to assertNotCompileImpl to generate code
   def mustNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
-    notCompileImpl(c)(compileWord)("must")
+    assertNotCompileImpl(c)(compileWord)("must")
+
+  def expectNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] = {
+
+    import c.universe._
+
+    // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
+    def checkNotCompile(code: String): c.Expr[Fact] = {
+      try {
+        c.typeCheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
+        // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
+        val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(code))
+        reify {
+          Fact.No(messageExpr.splice)
+        }
+      } catch {
+        case e: TypecheckException =>
+          val messageExpr = c.literal(Resources.compiledSuccessfully(code))
+          reify {
+            // type check error, compile fails as expected, generate code to return Succeeded
+            Fact.Yes(messageExpr.splice)
+          }
+        case e: ParseException =>
+          val messageExpr = c.literal(Resources.compiledSuccessfully(code))
+          reify {
+            // parse error, compile fails as expected, generate code to return Succeeded
+            Fact.Yes(messageExpr.splice)
+          }
+      }
+    }
+
+    val methodName = "willNot"
+
+    c.macroApplication match {
+      case Apply(
+        Select(
+          Apply(
+            _,
+            List(
+              Literal(Constant(code))
+            )
+          ),
+          methodNameTermName
+        ),
+        _
+      ) if methodNameTermName.decoded == methodName =>
+        // LHS is a normal string literal, call checkNotCompile with the extracted code string to generate code
+        val codeStr = code.toString
+        checkNotCompile(codeStr)
+
+      case Apply(
+        Select(
+          Apply(
+            _,
+            List(
+              Select(
+                Apply(
+                  Select(
+                    _,
+                    augmentStringTermName
+                  ),
+                  List(
+                    Literal(
+                      Constant(code)
+                    )
+                  )
+                ),
+                stripMarginTermName
+              )
+            )
+          ),
+          methodNameTermName
+        ),
+        _
+      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
+        // LHS is a """xxx""".stripMargin string literal, call checkNotCompile with the extracted code string to generate code
+        val codeStr = code.toString.stripMargin
+        checkNotCompile(codeStr)
+
+      case _ => c.abort(c.enclosingPosition, "The 'willNot compile' syntax only works with String literals.")
+    }
+  }
+
+  // used by willNot compile syntax, delegate to expectNotCompileImpl to generate code
+  def willNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] =
+    expectNotCompileImpl(c)(compileWord)
 
   // check that a code snippet does not compile
-  def notTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(shouldOrMust: String): c.Expr[Assertion] = {
+  def assertNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(shouldOrMust: String): c.Expr[Assertion] = {
 
     import c.universe._
 
@@ -478,16 +563,101 @@ private[scalatest] object CompileMacro {
     }
   }
 
-  // used by shouldNot typeCheck syntax, delegate to notTypeCheckImpl to generate code
+  // used by shouldNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
   def shouldNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Assertion] =
-    notTypeCheckImpl(c)(typeCheckWord)("should")
+    assertNotTypeCheckImpl(c)(typeCheckWord)("should")
 
-  // used by mustNot typeCheck syntax, delegate to notTypeCheckImpl to generate code
+  // used by mustNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
   def mustNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Assertion] =
-    notTypeCheckImpl(c)(typeCheckWord)("must")
+    assertNotTypeCheckImpl(c)(typeCheckWord)("must")
+
+  def expectNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Fact] = {
+
+    import c.universe._
+
+    // parse and type check a code snippet, generate code to throw TestFailedException if parse error or both parse and type check succeeded
+    def checkNotTypeCheck(code: String): c.Expr[Fact] = {
+      try {
+        c.typeCheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
+        // both parse and type check succeeded unexpectedly, generate code to throw TestFailedException
+        val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(code))
+        reify {
+          Fact.No(messageExpr.splice)
+        }
+      } catch {
+        case e: TypecheckException =>
+          val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(code))
+          reify {
+            // type check error as expected, generate code to return Succeeded
+            Fact.Yes(messageExpr.splice)
+          }
+        case e: ParseException =>
+          // expect type check error but got parse error, generate code to throw TestFailedException
+          val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, code))
+          reify {
+            Fact.No(messageExpr.splice)
+          }
+      }
+    }
+
+    val methodName = "willNot"
+
+    c.macroApplication match {
+      case Apply(
+        Select(
+          Apply(
+            _,
+            List(
+              Literal(Constant(code))
+            )
+          ),
+          methodNameTermName
+        ),
+        _
+      ) if methodNameTermName.decoded == methodName =>
+        // LHS is a normal string literal, call checkNotTypeCheck with the extracted code string to generate code
+        val codeStr = code.toString
+        checkNotTypeCheck(codeStr)
+
+      case Apply(
+        Select(
+          Apply(
+            _,
+            List(
+              Select(
+                Apply(
+                  Select(
+                    _,
+                    augmentStringTermName
+                  ),
+                  List(
+                    Literal(
+                      Constant(code)
+                    )
+                  )
+                ),
+                stripMarginTermName
+              )
+            )
+          ),
+          methodNameTermName
+        ),
+        _
+      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
+        // LHS is a """xxx""".stripMargin string literal, call checkNotTypeCheck with the extracted code string to generate code
+        val codeStr = code.toString.stripMargin
+        checkNotTypeCheck(codeStr)
+
+      case _ => c.abort(c.enclosingPosition, "The 'willNot typeCheck' syntax only works with String literals.")
+    }
+  }
+
+  // used by willNot typeCheck syntax, delegate to expectNotTypeCheckImpl to generate code
+  def willNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Fact] =
+    expectNotTypeCheckImpl(c)(typeCheckWord)
 
   // check that a code snippet compiles
-  def compileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Assertion] = {
+  def assertCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Assertion] = {
     import c.universe._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if either parse error or type check error
@@ -566,12 +736,96 @@ private[scalatest] object CompileMacro {
     }
   }
 
-  // used by should compile syntax, delegate to compileImpl to generate code
+  // used by should compile syntax, delegate to assertCompileImpl to generate code
   def shouldCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
-    compileImpl(c)(compileWord)("should")
+    assertCompileImpl(c)(compileWord)("should")
 
-  // used by must compile syntax, delegate to compileImpl to generate code
+  // used by must compile syntax, delegate to assertCompileImpl to generate code
   def mustCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
-    compileImpl(c)(compileWord)("must")
+    assertCompileImpl(c)(compileWord)("must")
+
+  def expectCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] = {
+    import c.universe._
+
+    // parse and type check a code snippet, generate code to throw TestFailedException if either parse error or type check error
+    def checkCompile(code: String): c.Expr[Fact] = {
+      try {
+        c.typeCheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
+        val messageExpr = c.literal(Resources.compiledSuccessfully(code))
+        // both parse and type check succeeded, compile succeeded expectedly, generate code to do nothing
+        reify {
+          Fact.Yes(messageExpr.splice)
+        }
+      } catch {
+        case e: TypecheckException =>
+          // type check error, compile fails unexpectedly, generate code to throw TestFailedException
+          val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, code))
+          reify {
+            Fact.No(messageExpr.splice)
+          }
+        case e: ParseException =>
+          // parse error, compile failes unexpectedly, generate code to throw TestFailedException
+          val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, code))
+          reify {
+            Fact.No(messageExpr.splice)
+          }
+      }
+    }
+
+    c.macroApplication match {
+      case Apply(
+        Select(
+          Apply(
+            _,
+            List(
+              Literal(
+                Constant(code)
+              )
+            )
+          ),
+          willTermName
+        ),
+        _
+      ) if willTermName.decoded == "will" =>
+        // LHS is a normal string literal, call checkCompile with the extracted code string to generate code
+        val codeStr = code.toString
+        checkCompile(codeStr)
+
+      case Apply(
+        Select(
+          Apply(
+            _,
+            List(
+              Select(
+                Apply(
+                  Select(
+                    _,
+                    augmentStringTermName
+                  ),
+                  List(
+                    Literal(
+                      Constant(code)
+                    )
+                  )
+                ),
+                stripMarginTermName
+              )
+            )
+          ),
+          willTermName
+        ),
+        _
+      ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && willTermName.decoded == "will" =>
+        // LHS is a """xxx""".stripMargin string literal, call checkCompile with the extracted code string to generate code
+        val codeStr = code.toString.stripMargin
+        checkCompile(codeStr)
+
+      case _ => c.abort(c.enclosingPosition, "The 'will compile' syntax only works with String literals.")
+    }
+  }
+
+  // used by will compile syntax, delegate to expectCompileImpl to generate code
+  def willCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] =
+    willCompileImpl(c)(compileWord)
 
 }
