@@ -3107,6 +3107,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   import InspectorsHelper._
   
   private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, methodName: String, stackDepth: Int)(fun: T => Assertion): Assertion = {
+
+    //CODEGEN_INSERT_FACT_ASSERTING
+
     collected match {
       case AllCollected =>
         doForAll(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
