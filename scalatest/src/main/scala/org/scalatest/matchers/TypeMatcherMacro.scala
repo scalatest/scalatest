@@ -375,6 +375,49 @@ private[scalatest] object TypeMatcherMacro {
   def mustBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Assertion] =
     assertTypeImpl(context)(anType.tree, "mustBe an", "assertAnType")
 
+  def expectTypeImpl(context: Context)(tree: context.Tree, beMethodName: String, assertMethodName: String): context.Expr[org.scalatest.Fact] = {
+    import context.universe._
+
+    // check type parameter
+    checkTypeParameter(context)(tree, "a")
+
+    /**
+     * Generate AST to call TypeMatcherHelper.checkAType:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.checkAType(lhs, aType)
+     */
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Select(
+                Select(
+                  Select(
+                    Ident(newTermName("org")),
+                    newTermName("scalatest")
+                  ),
+                  newTermName("matchers")
+                ),
+                newTermName("TypeMatcherHelper")
+              ),
+              newTermName(assertMethodName)
+            ),
+            List(Select(qualifier, newTermName("leftSideValue")), tree)
+          )
+
+        case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")
+      }
+
+    context.Expr(callHelper)
+  }
+
+  def willBeATypeImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[org.scalatest.Fact] =
+    expectTypeImpl(context)(aType.tree, "willBe a", "expectAType")
+
+  def willBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Fact] =
+    expectTypeImpl(context)(anType.tree, "willBe an", "expectAnType")
+
   def assertTypeShouldBeTrueImpl(context: Context)(tree: context.Tree, beMethodName: String, assertMethodName: String): context.Expr[org.scalatest.Assertion] = {
     import context.universe._
 
