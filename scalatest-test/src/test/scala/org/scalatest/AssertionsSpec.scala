@@ -6465,9 +6465,9 @@ class AssertionsSpec extends FunSpec {
     }
   }
   describe("The Assertions trait") {
-    import enablers.Asserting
-    it("should provide an implicit Asserting[Assertion]") {
-      assertCompiles("implicitly[Asserting[Assertion]]")
+    import enablers.OldAsserting
+    it("should provide an implicit OldAsserting[Assertion]") {
+      assertCompiles("implicitly[OldAsserting[Assertion]]")
     }
   }
 }

@@ -19,30 +19,49 @@ import org.scalatest.Assertion
 import org.scalatest.Succeeded
 import org.scalatest.PendingStatement
 import org.scalatest.Assertions
+import org.scalatest.Expectation
+import org.scalatest.Fact
+import org.scalatest.Succeeded
+import org.scalatest.exceptions.DiscardedEvaluationException
 
-trait Asserting[T] {
-  def result: T
+trait NewAsserting[T] {
+  type Result <: AnyRef
+  def whenever(condition: Boolean)(fun: => T): Result
 }
 
-trait LowPriorityAssertingImplicits {
-
-  implicit val assertingNatureOfUnit: Asserting[Unit] =
-    new Asserting[Unit] {
-      def result: Unit = ()
+trait LowPriorityNewAssertingImplicits {
+  implicit def assertingNatureOfNonExpectation[T]: NewAsserting[T] { type Result = Assertion } =
+    new NewAsserting[T] {
+      type Result = Assertion
+      def whenever(condition: Boolean)(fun: => T): Assertion = {
+      if (!condition)
+        throw new DiscardedEvaluationException
+      else {
+       fun
+       Succeeded
+      }
     }
-
-  implicit val assertingNatureOfAssertionWithPendingStatement: Asserting[Assertion with PendingStatement] =
-    new Asserting[Assertion with PendingStatement] {
-      def result: Assertion with PendingStatement = Assertions.pending // Should never be used
-    }
+  }
 }
 
-object Asserting extends LowPriorityAssertingImplicits {
-
-  implicit val assertingNatureOfAssertion: Asserting[Assertion] =
-    new Asserting[Assertion] {
-      def result: Assertion = Succeeded
+object NewAsserting extends LowPriorityNewAssertingImplicits {
+/*
+  implicit def assertingNatureOfExpectation[T <: Expectation]: NewAsserting[T] { type Result = Expectation } =
+    new NewAsserting[T] {
+      type Result = Expectation
+      def whenever(condition: Boolean)(fun: => T): Expectation = {
+        if (!condition) Fact.VacuousYes(Fact.No("The whenever condition was false", "the whenever condition was false"))
+        else fun
+      }
+    }
+*/
+  implicit val assertingNatureOfExpectation: NewAsserting[Expectation] { type Result = Expectation } =
+    new NewAsserting[Expectation] {
+      type Result = Expectation
+      def whenever(condition: Boolean)(fun: => Expectation): Expectation = {
+        if (!condition) Fact.VacuousYes(Fact.No("The whenever condition was false", "the whenever condition was false"))
+        else fun
+      }
     }
 }
-
 
