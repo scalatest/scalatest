@@ -22,9 +22,9 @@ import org.scalatest.exceptions.TestFailedException
 import scala.collection.mutable.Buffer
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
-class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
-  describe("GenDrivenPropertyChecks") {
-    import GenDrivenPropertyChecks._
+class GeneratorChecksSpec extends FunSpec with Matchers {
+  describe("GeneratorChecks") {
+    import GeneratorChecks._
     it("should provide a forAll that takes one param and produces a GeneratorDrivenPropertyCheckFailedException") {
       forAll { (i: Int) => 
         i + i shouldEqual i * 2
@@ -71,7 +71,7 @@ class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
       forAll (pairs) { case (x, y) => x should be <= y }
     }
     it("should provide a forAll that takes two params") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       forAll { (i: Int, j: Int) => 
         i + j shouldEqual j + i
       }
@@ -82,7 +82,7 @@ class GenDrivenPropertyChecksSpec extends FunSpec with Matchers {
       }
     }
     it("should provide a forAll that takes three params") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       forAll { (i: Int, j: Int, k: Int) => 
         i + j + k shouldEqual k + j + i
       }

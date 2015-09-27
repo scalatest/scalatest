@@ -240,7 +240,7 @@ class RandomizerSpec extends FunSpec with Matchers {
       edges should contain (PosZDouble.MaxValue)
     }
     it("should offer a chooseInt method that initially produces Int values between from and to") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       var rnd = Randomizer.default
       forAll { (i: Int, j: Int) =>
         val (k, nextRandomizer) = rnd.chooseInt(i, j)
@@ -252,7 +252,7 @@ class RandomizerSpec extends FunSpec with Matchers {
       }
     }
     it("should offer a chooseLong method that initially produces Long values between from and to") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       var rnd = Randomizer.default
       forAll { (i: Long, j: Long) =>
         val (k, nextRandomizer) = rnd.chooseLong(i, j)
@@ -265,7 +265,7 @@ class RandomizerSpec extends FunSpec with Matchers {
     }
     it("should offer a nextString method that produces a String of the requested 0 or greater size") {
 
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
 
       an [IllegalArgumentException] should be thrownBy { Randomizer(100).nextString(-1) }
 
@@ -287,7 +287,7 @@ class RandomizerSpec extends FunSpec with Matchers {
     }
     it("should offer a nextList[T] method that produces a List[T] of the requested 0 or greater size") {
 
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
 
       an [IllegalArgumentException] should be thrownBy { Randomizer(100).nextList[Int](-1) }
 

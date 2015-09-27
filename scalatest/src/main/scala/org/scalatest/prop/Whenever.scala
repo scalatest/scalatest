@@ -106,6 +106,6 @@ trait Whenever {
    *    <code>fun</code> function (<code>condition</code> is true) or throws <code>DiscardedEvaluationException</code> (<code>condition</code> is false)
    * @param fun the function to evaluate if the specified <code>condition</code> is true
    */
-  def whenever[T](condition: Boolean)(fun: => T)(implicit asserting: GeneratorChecking[T]): asserting.Result =
-    asserting.whenever(condition)(fun)
+  def whenever[T](condition: Boolean)(fun: => T)(implicit generatorChecking: GeneratorChecking[T]): generatorChecking.Result =
+    generatorChecking.whenever(condition)(fun)
 }

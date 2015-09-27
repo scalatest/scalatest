@@ -230,7 +230,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       a3 shouldEqual b3
     }
     it("should be usable in a forAll") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       forAll { (i: Int) => 
         i + i shouldEqual i * 2
       }
@@ -241,7 +241,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should be used at least minSuccessful times in a forAll") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       var count = 0
       forAll { (i: Int) => 
         count += 1
@@ -260,7 +260,7 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should be used at least maxDiscarded times in a forAll") {
-      import GenDrivenPropertyChecks._
+      import GeneratorChecks._
       var count = 0
       a [TestFailedException] should be thrownBy {
         forAll { (i: Int) => 
