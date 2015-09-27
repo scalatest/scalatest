@@ -24,14 +24,14 @@ import org.scalatest.Fact
 import org.scalatest.Succeeded
 import org.scalatest.exceptions.DiscardedEvaluationException
 
-trait NewAsserting[T] {
+trait GeneratorChecking[T] {
   type Result <: AnyRef
   def whenever(condition: Boolean)(fun: => T): Result
 }
 
-trait LowPriorityNewAssertingImplicits {
-  implicit def assertingNatureOfNonExpectation[T]: NewAsserting[T] { type Result = Assertion } =
-    new NewAsserting[T] {
+trait LowPriorityGeneratorCheckingImplicits {
+  implicit def assertingNatureOfNonExpectation[T]: GeneratorChecking[T] { type Result = Assertion } =
+    new GeneratorChecking[T] {
       type Result = Assertion
       def whenever(condition: Boolean)(fun: => T): Assertion = {
       if (!condition)
@@ -44,10 +44,10 @@ trait LowPriorityNewAssertingImplicits {
   }
 }
 
-object NewAsserting extends LowPriorityNewAssertingImplicits {
+object GeneratorChecking extends LowPriorityGeneratorCheckingImplicits {
 /*
-  implicit def assertingNatureOfExpectation[T <: Expectation]: NewAsserting[T] { type Result = Expectation } =
-    new NewAsserting[T] {
+  implicit def assertingNatureOfExpectation[T <: Expectation]: GeneratorChecking[T] { type Result = Expectation } =
+    new GeneratorChecking[T] {
       type Result = Expectation
       def whenever(condition: Boolean)(fun: => T): Expectation = {
         if (!condition) Fact.VacuousYes(Fact.No("The whenever condition was false", "the whenever condition was false"))
@@ -55,8 +55,8 @@ object NewAsserting extends LowPriorityNewAssertingImplicits {
       }
     }
 */
-  implicit val assertingNatureOfExpectation: NewAsserting[Expectation] { type Result = Expectation } =
-    new NewAsserting[Expectation] {
+  implicit val assertingNatureOfExpectation: GeneratorChecking[Expectation] { type Result = Expectation } =
+    new GeneratorChecking[Expectation] {
       type Result = Expectation
       def whenever(condition: Boolean)(fun: => Expectation): Expectation = {
         if (!condition) Fact.VacuousYes(Fact.No("The whenever condition was false", "the whenever condition was false"))

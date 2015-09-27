@@ -15,7 +15,7 @@
  */
 package org.scalatest.prop
 
-import org.scalatest.enablers.NewAsserting
+import org.scalatest.enablers.GeneratorChecking
 
 /**
  * Trait that contains the <code>whenever</code> clause that can be used in table- or generator-driven property checks.
@@ -106,6 +106,6 @@ trait Whenever {
    *    <code>fun</code> function (<code>condition</code> is true) or throws <code>DiscardedEvaluationException</code> (<code>condition</code> is false)
    * @param fun the function to evaluate if the specified <code>condition</code> is true
    */
-  def whenever[T](condition: Boolean)(fun: => T)(implicit asserting: NewAsserting[T]): asserting.Result =
+  def whenever[T](condition: Boolean)(fun: => T)(implicit asserting: GeneratorChecking[T]): asserting.Result =
     asserting.whenever(condition)(fun)
 }
