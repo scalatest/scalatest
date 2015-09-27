@@ -241,7 +241,7 @@ class TestFailedExceptionWithImportSpec extends FunSpec {
 
     ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") { // TODO: Fix thrownBy off-by-one problem
       try {
-        an [IllegalArgumentException] should be thrownBy { if (false) 1 else throw new RuntimeException }
+        an [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
       }
       catch {
         case e: TestFailedException =>
