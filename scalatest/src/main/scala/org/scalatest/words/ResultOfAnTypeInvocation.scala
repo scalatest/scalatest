@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.Resources
-import org.scalatest.Assertions.newAssertionFailedException
+import org.scalatest.MatchersHelper.{indicateSuccess, indicateFailure}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -27,7 +27,7 @@ import org.scalatest.Assertions.newAssertionFailedException
 final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
 
   // SKIP-SCALATESTJS-START
-  private val stackDepth = 4
+  private val stackDepth = 1
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY private val stackDepth = 12
   
@@ -70,20 +70,19 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
       None
     }
     catch {
-      case u: Throwable => {
-        if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), stackDepth)
-        }
-        else {
-          Some(u)
-        }
-      }
+      case u: Throwable => Some(u)
     }
+
     if (caught.isEmpty) {
       val message = Resources.exceptionExpected(clazz.getName)
-      throw newAssertionFailedException(Some(message), None, stackDepth)
-    } else org.scalatest.Succeeded
+      indicateFailure(message, None, stackDepth)
+    } else {
+      val u = caught.get
+      if (!clazz.isAssignableFrom(u.getClass)) {
+        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+        indicateFailure(s, Some(u), stackDepth)
+      } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
+    }
   }
 
   /**
@@ -99,16 +98,16 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
     val noThrowable = throwables.find(_.isEmpty)
     if (noThrowable.isDefined) {
       val message = Resources.exceptionExpected(clazz.getName)
-      throw newAssertionFailedException(Some(message), None, stackDepth)
+      indicateFailure(message, None, stackDepth)
     }
     else {
       val unmatch = throwables.map(_.get).find(t => !clazz.isAssignableFrom(t.getClass))
       if (unmatch.isDefined) {
         val u = unmatch.get
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        throw newAssertionFailedException(Some(s), Some(u), stackDepth)
+        indicateFailure(s, Some(u), stackDepth)
       }
-      else org.scalatest.Succeeded
+      else indicateSuccess(Resources.exceptionThrown(clazz.getName))
     }
   }
 
@@ -151,20 +150,45 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
       None
     }
     catch {
-      case u: Throwable => {
-        if (!clazz.isAssignableFrom(u.getClass)) {
-          val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), stackDepth)
-        }
-        else {
-          Some(u)
-        }
-      }
+      case u: Throwable => Some(u)
     }
-    if (caught.isDefined) {
+
+    if (caught.isEmpty) {
       val message = Resources.exceptionExpected(clazz.getName)
-      throw newAssertionFailedException(Some(message), None, stackDepth)
-    } else org.scalatest.Succeeded
+      indicateFailure(message, None, stackDepth)
+    } else {
+      val u = caught.get
+      if (!clazz.isAssignableFrom(u.getClass)) {
+        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+        indicateFailure(s, Some(u), stackDepth)
+      } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
+    }
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * an [RuntimeException] must (be thrownBy { ... })
+   *                       ^
+   * </pre>
+   */
+  def must(beThrownBy: ResultOfBeThrownBy): org.scalatest.Assertion = {
+    val throwables = beThrownBy.throwables
+    val noThrowable = throwables.find(_.isEmpty)
+    if (noThrowable.isDefined) {
+      val message = Resources.exceptionExpected(clazz.getName)
+      indicateFailure(message, None, stackDepth)
+    }
+    else {
+      val unmatch = throwables.map(_.get).find(t => !clazz.isAssignableFrom(t.getClass))
+      if (unmatch.isDefined) {
+        val u = unmatch.get
+        val s = Resources.wrongException(clazz.getName, u.getClass.getName)
+        indicateFailure(s, Some(u), stackDepth)
+      }
+      else indicateSuccess(Resources.exceptionThrown(clazz.getName))
+    }
   }
   
   override def toString: String = "an [" + clazz.getName + "]"

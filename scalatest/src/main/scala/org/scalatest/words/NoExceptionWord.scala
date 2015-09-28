@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.Resources
-import org.scalatest.Assertions.newAssertionFailedException
+import org.scalatest.MatchersHelper.{indicateSuccess, indicateFailure}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -27,7 +27,7 @@ import org.scalatest.Assertions.newAssertionFailedException
 final class NoExceptionWord {
 
   // SKIP-SCALATESTJS-START
-  private val stackDepth = 4
+  private val stackDepth = 1
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY private val stackDepth = 12
   
@@ -53,12 +53,12 @@ final class NoExceptionWord {
   def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
-      org.scalatest.Succeeded
+      indicateSuccess(Resources.noExceptionWasThrown)
     }
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw newAssertionFailedException(Some(message), Some(u), stackDepth)
+        indicateFailure(message, Some(u), stackDepth)
       }
     }
   }
@@ -85,12 +85,12 @@ final class NoExceptionWord {
   def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
-      org.scalatest.Succeeded
+      indicateSuccess(Resources.noExceptionWasThrown)
     }
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw newAssertionFailedException(Some(message), Some(u), stackDepth)
+        indicateFailure(message, Some(u), stackDepth)
       }
     }
   }
