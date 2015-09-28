@@ -56,6 +56,7 @@ object GenMatchers {
       .replaceAll("<!-- PRESERVE -->should", " I_NEED_TO_STAY_SMALL_SHOULD") // Why is there a space in front?
       .replaceAll("should", "will")
       .replaceAll("Should", "Will")
+      .replaceAll("InspectorsHelper", "FactInspectorsHelper")
       .replaceAll("object Matchers extends Matchers", "object WillMatchers extends WillMatchers")
       .replaceAll("import MatchersHelper.indicateSuccess", "import WillMatchersHelper.indicateSuccess")
       .replaceAll("import MatchersHelper.indicateFailure", "import WillMatchersHelper.indicateFailure")
