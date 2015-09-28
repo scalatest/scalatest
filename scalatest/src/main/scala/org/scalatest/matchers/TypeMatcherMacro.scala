@@ -455,12 +455,57 @@ private[scalatest] object TypeMatcherMacro {
     context.Expr(callHelper)
   }
 
-  // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkATypeShouldBeTrue
-  def checkATypeShouldBeTrueImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[org.scalatest.Assertion] =
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertATypeShouldBeTrue
+  def assertATypeShouldBeTrueImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[org.scalatest.Assertion] =
     assertTypeShouldBeTrueImpl(context)(aType.tree, "should not be a", "assertATypeShouldBeTrue")
 
-  // Do checking on type parameter and generate AST to call TypeMatcherHelper.checkAnTypeShouldBeTrue
-  def checkAnTypeShouldBeTrueImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Assertion] =
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertAnTypeShouldBeTrue
+  def assertAnTypeShouldBeTrueImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Assertion] =
     assertTypeShouldBeTrueImpl(context)(anType.tree, "should not be an", "assertAnTypeShouldBeTrue")
+
+  def expectTypeShouldBeTrueImpl(context: Context)(tree: context.Tree, beMethodName: String, expectMethodName: String): context.Expr[org.scalatest.Fact] = {
+    import context.universe._
+
+    // check type parameter
+    checkTypeParameter(context)(tree, "a")
+
+    /**
+     * Generate AST to call TypeMatcherHelper.checkATypeShouldBeTrue:
+     *
+     * org.scalatest.matchers.TypeMatcherHelper.checkATypeShouldBeTrue(lhs, aType, shouldBeTrue)
+     */
+    val callHelper =
+      context.macroApplication match {
+        case Apply(Select(qualifier, _), _) =>
+          Apply(
+            Select(
+              Select(
+                Select(
+                  Select(
+                    Ident(newTermName("org")),
+                    newTermName("scalatest")
+                  ),
+                  newTermName("matchers")
+                ),
+                newTermName("TypeMatcherHelper")
+              ),
+              newTermName(expectMethodName)
+            ),
+            List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")))
+          )
+
+        case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")
+      }
+
+    context.Expr(callHelper)
+  }
+
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertATypeShouldBeTrue
+  def expectATypeShouldBeTrueImpl(context: Context)(aType: context.Expr[ResultOfATypeInvocation[_]]): context.Expr[org.scalatest.Fact] =
+    expectTypeShouldBeTrueImpl(context)(aType.tree, "will not be a", "expectATypeShouldBeTrue")
+
+  // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertAnTypeShouldBeTrue
+  def expectAnTypeShouldBeTrueImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Fact] =
+    expectTypeShouldBeTrueImpl(context)(anType.tree, "will not be an", "expectAnTypeShouldBeTrue")
 
 }
