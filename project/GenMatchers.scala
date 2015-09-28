@@ -48,7 +48,7 @@ object GenMatchers {
       .replaceAll("Trait <a href=\"WillMatchers.html\"><code>WillMatchers</code></a> is an alternative to <code>Matchers</code>", "Trait <code>WillMatchers</code> is an alternative to <a href=\"Matchers.html\"><code>Matchers</code></a>")
       .replaceAll("WillMatchers", "I_NEED_TO_STAY_WILLMATCHERS")
       .replaceAll("ShouldMatchers", "I_NEED_TO_STAY_SHOULDMATCHERS")
-      .replaceAll("trait Matchers extends Assertions with Tolerance", "trait WillMatchers extends Tolerance")
+      .replaceAll("trait Matchers extends Assertions", "trait WillMatchers extends Expectations")
       .replaceAll("Assertions", "I_NEED_TO_STAY_ASSERTIONS")
       .replaceAll("will", "I_NEED_TO_STAY_SMALL_WILL")
       .replaceAll("Will", "I_NEED_TO_STAY_BIG_WILL")
