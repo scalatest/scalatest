@@ -26,29 +26,35 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
-class WheneverSpec extends FunSpec with Matchers with Whenever {
+class FactWheneverSpec extends FunSpec with Matchers with Whenever {
 
+/*
   describe("The whenever construct") {
     describe("when the result type of the block is Expectation") {
       describe("when the Boolean condition is true") {
-        it("should, under Compatibility, either return Succeeded or throw TFE") {
+        it("should pass the result of the block through") {
           import Expectations._
-          val res1 = whenever (true) { expect(1 == 1) }
-          assert(res1 eq Succeeded)
-          assertThrows[TestFailedException] {
-            whenever (true) { expect(1 == 2) }
-          }
+          val x = 1
+          val yes = expect(x == 1)
+          val no = expect(x == 2)
+          val res1 = whenever (true) { yes }
+          assert(res1 eq yes)
+          val res2 = whenever (true) { no }
+          assert(res2 eq no)
         }
       }
       describe("when the Boolean condition is false") {
-        it("should throw DiscardedEvaluationException") {
+        it("should return a vacuous Yes") {
           import Expectations._
-          assertThrows[DiscardedEvaluationException] {
-            whenever (false) { expect(1 == 1) }
-          }
-          assertThrows[DiscardedEvaluationException] {
-            whenever (false) { expect(1 == 2) }
-          }
+          val x = 1
+          val yes = expect(x == 1)
+          val no = expect(x == 2)
+          val res1 = whenever (false) { yes }
+          assert(res1.isYes)
+          assert(res1.isVacuousYes)
+          val res2 = whenever (false) { no }
+          assert(res2.isYes)
+          assert(res2.isVacuousYes)
         }
       }
     }
@@ -86,21 +92,6 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
         }
       }
     }
-/*
-    it("should infer the result type from the block, and pass the value through") {
-
-      val x = 1
-      val s = "hi"
-
-      whenever(true) { x } shouldBe 1
-      (whenever(true) { x }: Int) shouldBe an [Integer]
-
-      whenever(true) { s } shouldBe "hi"
-      (whenever(true) { s }: String) shouldBe a [String]
-
-      whenever(true) { assert(x == 1) } shouldBe Succeeded
-      (whenever(true) { assert(x == 1) }: Assertion) shouldBe an [Assertion]
-    }
-*/
   }
+*/
 }
