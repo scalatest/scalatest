@@ -63,6 +63,20 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
     
+    it("should throw NotAllowedException when passed a Fact") {
+      import Expectations._
+      val ex1 = intercept[exceptions.NotAllowedException] {
+        forAll(List(1, 2, 3)) { x => expect(x > 0) }
+      }
+      ex1.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+      ex1.failedCodeLineNumber should be (Some( thisLineNumber - 3))
+      val ex2 = intercept[exceptions.NotAllowedException] {
+        forAll(List(1, 2, 3)) { x => expect(x < 0) }
+      }
+      ex2.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+      ex2.failedCodeLineNumber should be (Some( thisLineNumber - 3))
+    }
+    
     it("should throw TestFailedException with correct stack depth and message when at least one element failed") {
       forAll(examples) { colFun => 
         val col = colFun(Set(1, 2, 3))
