@@ -68,10 +68,6 @@ object GenMatchers {
       .replaceAll("I_NEED_TO_STAY_SHOULDMATCHERS", "ShouldMatchers")
       .replaceAll("I_NEED_TO_STAY_WILLMATCHERS", "WillMatchers")
       .replaceAll("I_NEED_TO_STAY_ASSERTIONS", "Assertions")
-      .replaceAll("//CODEGEN_INSERT_FACT_ASSERTING", """implicit val assertingNatureOfFact: OldAsserting[Fact] =  // TODO: Check with Bill what is the correct thing to do
-                                                       |    new OldAsserting[Fact] {
-                                                       |      def result: Fact = Fact.Yes(Resources.assertionWasTrue)
-                                                       |    }""".stripMargin)
       .replaceAll("import Matchers._", "import WillMatchers._")
       .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.WillMatchers._")
       .replaceAll("Matchers.scala", "WillMatchers.scala")
