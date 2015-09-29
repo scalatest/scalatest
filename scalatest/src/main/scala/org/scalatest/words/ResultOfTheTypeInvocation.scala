@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.Resources
-import org.scalatest.Assertions.checkExpectedException
+import org.scalatest.MatchersHelper.checkExpectedException
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -27,7 +27,7 @@ import org.scalatest.Assertions.checkExpectedException
 final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
 
   // SKIP-SCALATESTJS-START
-  private val stackDepth = 4
+  private val stackDepth = 0
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY private val stackDepth = 13
   
