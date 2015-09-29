@@ -19,6 +19,9 @@ private[scalatest] object WillMatchersHelper {
 
   def indicateSuccess(message: => String): Fact = Fact.Yes(message)
 
+  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Fact =
+    Fact.Yes(if (shouldBeTrue) message else negatedMessage)
+
   def indicateFailure(failureMessage: => String): Fact = Fact.No(failureMessage)
 
   def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String): Fact =

@@ -347,7 +347,7 @@ private[scalatest] object MatchersHelper {
 
   def indicateSuccess(message: => String): Assertion = Succeeded
 
-  def indicateSuccess(shouldBeTrue: Boolean, message: String, negatedMessage: String): Assertion = Succeeded
+  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
 
   def indicateFailure(failureMessage: => String): Assertion =
     throw newTestFailedException(failureMessage)
