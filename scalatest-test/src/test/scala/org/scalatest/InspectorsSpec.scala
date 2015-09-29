@@ -54,7 +54,7 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       ((set: Set[Int]) => mutable.IndexedSeq.empty ++ set)
     )  
   
-  describe("forAll ") {
+  describe("forAll") {
     
     it("should pass when all elements passed") {
       forAll(examples) { colFun =>
@@ -63,18 +63,16 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
       }
     }
     
-    it("should throw NotAllowedException when passed a Fact") {
+    it("should, when passed a Fact, convert that Fact to an Assertion") {
       import Expectations._
-      val ex1 = intercept[exceptions.NotAllowedException] {
-        forAll(List(1, 2, 3)) { x => expect(x > 0) }
-      }
-      ex1.failedCodeFileName should be (Some("InspectorsSpec.scala"))
-      ex1.failedCodeLineNumber should be (Some( thisLineNumber - 3))
-      val ex2 = intercept[exceptions.NotAllowedException] {
+
+      forAll(List(1, 2, 3)) { x => expect(x > 0) } shouldBe Succeeded
+
+      val tfe = intercept[exceptions.TestFailedException] {
         forAll(List(1, 2, 3)) { x => expect(x < 0) }
       }
-      ex2.failedCodeFileName should be (Some("InspectorsSpec.scala"))
-      ex2.failedCodeLineNumber should be (Some( thisLineNumber - 3))
+      tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
+      tfe.failedCodeLineNumber should be (Some( thisLineNumber - 3))
     }
     
     it("should throw TestFailedException with correct stack depth and message when at least one element failed") {
