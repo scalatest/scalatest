@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.Assertions.checkNoException
+import org.scalatest.MatchersHelper.checkNoException
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
 

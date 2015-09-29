@@ -16,8 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.Resources
-import org.scalatest.Assertions.checkExpectedException
-import org.scalatest.Assertions.checkNotException
+import org.scalatest.MatchersHelper.checkExpectedException
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
 
@@ -39,7 +38,7 @@ final class ResultOfBeWordForAType[T](clazz: Class[T]) {
    */
   def thrownBy(fun: => Any): Assertion = {
     // SKIP-SCALATESTJS-START
-    val stackDepth = 5
+    val stackDepth = 1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 14
     checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)

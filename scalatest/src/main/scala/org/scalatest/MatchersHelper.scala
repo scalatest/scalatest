@@ -20,24 +20,7 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
-import scala.collection.Traversable
-import Assertions.areEqualComparingArraysStructurally
 import org.scalatest.exceptions.TestFailedException
-import scala.collection.GenTraversable
-import scala.collection.GenSeq
-import scala.collection.GenMap
-import org.scalactic.Tolerance
-import scala.annotation.tailrec
-import org.scalactic.Equality
-import org.scalatest.words.ShouldVerb
-import org.scalatest.matchers.HavePropertyMatcher
-import org.scalatest.matchers.HavePropertyMatchResult
-import org.scalatest.matchers.BePropertyMatcher
-import org.scalatest.matchers.BePropertyMatchResult
-import org.scalatest.matchers.BeMatcher
-import org.scalatest.matchers.Matcher
-import org.scalatest.matchers.MatchResult
-import words.RegexWithGroups
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -321,9 +304,50 @@ private[scalatest] object MatchersHelper {
                                Resources.rawIncludedRegexButNotGroup, Resources.rawIncludedRegexAndGroup)
   }
 
+  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, stackDepth: Int): T = {
+    val caught = try {
+      f
+      None
+    }
+    catch {
+      case u: Throwable => {
+        if (!clazz.isAssignableFrom(u.getClass)) {
+          val s = wrongExceptionMessageFun(clazz.getName, u.getClass.getName)
+          throw newTestFailedException(s, Some(u), stackDepth)
+        }
+        else {
+          Some(u)
+        }
+      }
+    }
+    caught match {
+      case None =>
+        val message = exceptionExpectedMessageFun(clazz.getName)
+        throw newTestFailedException(message, None, stackDepth)
+      case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
+    }
+  }
+
+  private[scalatest] def checkNoException(fun: => Any): Assertion = {
+    try {
+      fun
+      Succeeded
+    }
+    catch {
+      case u: Throwable => {
+        val message = Resources.exceptionNotExpected(u.getClass.getName)
+        // SKIP-SCALATESTJS-START
+        val stackDepth = 0
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepth = 13
+        throw newTestFailedException(message, Some(u), stackDepth)
+      }
+    }
+  }
+
   def indicateSuccess(message: => String): Assertion = Succeeded
 
-  def indicateSuccess(shouldBeTrue: Boolean, message: String, negatedMessage: String): Assertion = Succeeded
+  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
 
   def indicateFailure(failureMessage: => String): Assertion =
     throw newTestFailedException(failureMessage)
