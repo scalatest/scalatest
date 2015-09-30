@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers._
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -328,7 +329,7 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  private[scalatest] def checkNoException(fun: => Any): Assertion = {
+  def checkNoException(fun: => Any): Assertion = {
     try {
       fun
       Succeeded
@@ -388,4 +389,7 @@ private[scalatest] object MatchersHelper {
       None,
       stackDepthAdjustment
     )
+
+  def indicateFailure(e: TestFailedException): Assertion =
+    throw e
 }

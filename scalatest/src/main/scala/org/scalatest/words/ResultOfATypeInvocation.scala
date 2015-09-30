@@ -17,7 +17,8 @@ package org.scalatest.words
 
 import org.scalatest.MatchersHelper.checkExpectedException
 import org.scalatest.Resources
-import org.scalatest.MatchersHelper.{indicateSuccess, indicateFailure}
+import org.scalatest.MatchersHelper.indicateSuccess
+import org.scalatest.MatchersHelper.indicateFailure
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

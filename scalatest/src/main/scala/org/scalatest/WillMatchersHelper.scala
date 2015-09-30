@@ -15,7 +15,22 @@
  */
 package org.scalatest
 
+import org.scalatest.exceptions.TestFailedException
+
 private[scalatest] object WillMatchersHelper {
+
+  def checkNoException(fun: => Any): Fact = {
+    try {
+      fun
+      Fact.Yes(Resources.noExceptionWasThrown())
+    }
+    catch {
+      case u: Throwable => {
+        val message = Resources.exceptionNotExpected(u.getClass.getName)
+        Fact.No(message)
+      }
+    }
+  }
 
   def indicateSuccess(message: => String): Fact = Fact.Yes(message)
 
@@ -48,5 +63,8 @@ private[scalatest] object WillMatchersHelper {
       else
         negatedFailureMessageWithoutFriendlyReminder
     )
+
+  def indicateFailure(e: TestFailedException): Fact =
+    Fact.No(e.getMessage)
 
 }
