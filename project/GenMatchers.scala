@@ -54,13 +54,17 @@ object GenMatchers {
       .replaceAll("Will", "I_NEED_TO_STAY_BIG_WILL")
       .replaceAll("<!-- PRESERVE --><code>should", "<code>I_NEED_TO_STAY_SMALL_SHOULD")
       .replaceAll("<!-- PRESERVE -->should", " I_NEED_TO_STAY_SMALL_SHOULD") // Why is there a space in front?
+      .replaceAll("assertATypeShouldBeTrueImpl", "expectATypeWillBeTrueImpl")
+      .replaceAll("assertAnTypeShouldBeTrueImpl", "expectAnTypeWillBeTrueImpl")
       .replaceAll("should", "will")
       .replaceAll("Should", "Will")
       .replaceAll("InspectorsHelper", "FactInspectorsHelper")
       .replaceAll("object Matchers extends Matchers", "object WillMatchers extends WillMatchers")
       .replaceAll("import MatchersHelper.indicateSuccess", "import WillMatchersHelper.indicateSuccess")
       .replaceAll("import MatchersHelper.indicateFailure", "import WillMatchersHelper.indicateFailure")
-      //.replaceAll("extends Assertions with", "extends")
+      .replaceAll("import org.scalatest.MatchersHelper.indicateSuccess", "import org.scalatest.WillMatchersHelper.indicateSuccess")
+      .replaceAll("import org.scalatest.MatchersHelper.indicateFailure", "import org.scalatest.WillMatchersHelper.indicateFailure")
+      .replaceAll("import org.scalatest.MatchersHelper.checkNoException", "import org.scalatest.WillMatchersHelper.checkNoException")
       .replaceAll("Assertion", "Fact")
       .replaceAll("I_NEED_TO_STAY_SMALL_SHOULD", "should")
       .replaceAll("I_NEED_TO_STAY_BIG_WILL", "Will")
@@ -71,19 +75,22 @@ object GenMatchers {
       .replaceAll("import Matchers._", "import WillMatchers._")
       .replaceAll("import org.scalatest.Matchers._", "import org.scalatest.WillMatchers._")
       .replaceAll("Matchers.scala", "WillMatchers.scala")
+      .replaceAll("NoExceptionWord", "FactExceptionWord")
+      .replaceAll("ResultOfATypeInvocation", "FactResultOfATypeInvocation")
+      .replaceAll("ResultOfAnTypeInvocation", "FactResultOfAnTypeInvocation")
+      .replaceAll("ResultOfBeWordForAType", "FactResultOfBeWordForAType")
+      .replaceAll("ResultOfBeWordForAnType", "FactResultOfBeWordForAnType")
+      .replaceAll("ResultOfBeWordForNoException", "FactResultOfBeWordForNoException")
+      .replaceAll("ResultOfContainWord", "FactResultOfContainWord")
+      .replaceAll("ResultOfNotWordForAny", "FactResultOfNotWordForAny")
+      .replaceAll("MatcherWords", "FactMatcherWords")
   }
 
-  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
-    targetDir.mkdirs()
-    val matchersDir = new File(targetDir, "matchers")
-    matchersDir.mkdirs()
-    val junitDir = new File(targetDir, "junit")
-    junitDir.mkdirs()
-
-    val mustMatchersFile = new File(targetDir, "MustMatchers.scala")
-    val mustMatchersWriter = new BufferedWriter(new FileWriter(mustMatchersFile))
+  def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): Unit = {
+    val outputFile = new File(targetDir, fileName)
+    val outputWriter = new BufferedWriter(new FileWriter(outputFile))
     try {
-      val lines = Source.fromFile(new File("scalatest/src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
+      val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
       var skipMode = false
       for (line <- lines) {
         val mustLine: String =
@@ -98,63 +105,51 @@ object GenMatchers {
             }
             else if (!skipMode) {
               if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-                translateShouldToMust(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
+                translateFun(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
               else
-                translateShouldToMust(line)
+                translateFun(line)
             }
             else
               ""
           }
           else
-            translateShouldToMust(line)
+            translateFun(line)
 
-        mustMatchersWriter.write(mustLine)
-        mustMatchersWriter.newLine()
+        outputWriter.write(mustLine)
+        outputWriter.newLine()
       }
     }
     finally {
-      mustMatchersWriter.flush()
-      mustMatchersWriter.close()
-      println("Generated " + mustMatchersFile.getAbsolutePath)
+      outputWriter.flush()
+      outputWriter.close()
+      println("Generated " + outputFile.getAbsolutePath)
     }
+  }
 
-    val willMatchersFile = new File(targetDir, "WillMatchers.scala")
-    val willMatchersWriter = new BufferedWriter(new FileWriter(willMatchersFile))
-    try {
-      val lines = Source.fromFile(new File("scalatest/src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
-      var skipMode = false
-      for (line <- lines) {
-        val willLine: String =
-          if (scalaJS) {
-            if (line.trim == "// SKIP-SCALATESTJS-START") {
-              skipMode = true
-              ""
-            }
-            else if (line.trim == "// SKIP-SCALATESTJS-END") {
-              skipMode = false
-              ""
-            }
-            else if (!skipMode) {
-              if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-                translateShouldToWill(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
-              else
-                translateShouldToWill(line)
-            }
-            else
-              ""
-          }
-          else
-            translateShouldToWill(line)
+  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
+    targetDir.mkdirs()
+    val matchersDir = new File(targetDir, "matchers")
+    matchersDir.mkdirs()
+    val junitDir = new File(targetDir, "junit")
+    junitDir.mkdirs()
 
-        willMatchersWriter.write(willLine)
-        willMatchersWriter.newLine()
-      }
-    }
-    finally {
-      willMatchersWriter.flush()
-      willMatchersWriter.close()
-      println("Generated " + willMatchersFile.getAbsolutePath)
-    }
+    translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToMust)
+    translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
+      (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
+        .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
+    )
+    translateFile(targetDir, "FactResultOfAnTypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfAnTypeInvocation.scala", scalaVersion, scalaJS,
+      (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
+                        .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
+    )
+    translateFile(targetDir, "FactResultOfBeWordForAType.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForAType.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfBeWordForAnType.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForAnType.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfBeWordForNoException.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForNoException.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfContainWord.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfContainWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfNotWordForAny.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfNotWordForAny.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactMatcherWords.scala", "scalatest/src/main/scala/org/scalatest/words/MatcherWords.scala", scalaVersion, scalaJS, translateShouldToWill)
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String) {

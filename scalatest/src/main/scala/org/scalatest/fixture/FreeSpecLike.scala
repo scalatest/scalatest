@@ -15,5 +15,7 @@
  */
 package org.scalatest.fixture
 
+import org.scalatest.Assertion
+
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FreeSpecLike extends FreeSpecRegistering[Any]
+trait FreeSpecLike extends FreeSpecRegistering[Assertion] with org.scalatest.Compatibility

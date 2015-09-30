@@ -18,7 +18,7 @@ package org.scalatest.matchers
 import org.scalatest.{UnquotedString, Suite, FailureMessages, Resources}
 import org.scalactic.Prettifier
 import org.scalatest.MatchersHelper._
-import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
+import org.scalatest.words.{FactResultOfAnTypeInvocation, ResultOfAnTypeInvocation, FactResultOfATypeInvocation, ResultOfATypeInvocation}
 
 /**
  * <code>TypeMatcherHelper</code> is called by <code>TypeMatcherMacro</code> to support <code>a [Type]</code> and <code>an [Type]</code> syntax.
@@ -200,7 +200,7 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param aType an instance of <code>ResultOfATypeInvocation</code>
    */
-  def expectATypeShouldBeTrue(left: Any, aType: ResultOfATypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Fact = {
+  def expectATypeWillBeTrue(left: Any, aType: FactResultOfATypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Fact = {
     val clazz = aType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       org.scalatest.Fact.No(
@@ -247,7 +247,7 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
    */
-  def expectAnTypeShouldBeTrue(left: Any, anType: ResultOfAnTypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Fact = {
+  def expectAnTypeWillBeTrue(left: Any, anType: FactResultOfAnTypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Fact = {
     val clazz = anType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       org.scalatest.Fact.No(

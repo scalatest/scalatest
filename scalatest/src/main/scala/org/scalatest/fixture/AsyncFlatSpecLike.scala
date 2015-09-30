@@ -19,11 +19,11 @@ import scala.concurrent.{Future, ExecutionContext}
 import org.scalatest._
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncFlatSpecLike extends FlatSpecRegistering[Future[Any]] with AsyncFixtures with org.scalatest.OneInstancePerTest { thisSuite =>
+trait AsyncFlatSpecLike extends FlatSpecRegistering[Future[Assertion]] with AsyncFixtures with org.scalatest.AsyncCompatibility with org.scalatest.OneInstancePerTest { thisSuite =>
 
   implicit def executionContext: ExecutionContext
 
-  override private[scalatest] def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome =
+  override private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
       val futureUnit = testFun(fixture)
       FutureOutcome(

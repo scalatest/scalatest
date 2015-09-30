@@ -142,6 +142,29 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
    */
   protected final class ItWord {
 
+    class ResultOfItWordApplication(specText: String, testTags: Tag*) {
+
+      def apply(testFun: FixtureParam => Registration) {
+        // SKIP-SCALATESTJS-START
+        val stackDepth = 3
+        val stackDepthAdjustment = -2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepth = 5
+        //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+        engine.registerTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+      }
+
+      def apply(testFun: () => Registration) {
+        // SKIP-SCALATESTJS-START
+        val stackDepth = 3
+        val stackDepthAdjustment = -2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepth = 5
+        //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+        engine.registerTest(specText, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+      }
+    }
+
     /**
      * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
      * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -160,15 +183,8 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-      // SKIP-SCALATESTJS-START
-      val stackDepth = 3
-      val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 5
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
-    }
+    def apply(specText: String, testTags: Tag*): ResultOfItWordApplication =
+      new ResultOfItWordApplication(specText, testTags: _*)
 
     /**
      * Supports the registration of shared tests.
@@ -261,6 +277,23 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
    */
   protected final class TheyWord {
 
+    class ResultOfTheyWordApplication(specText: String, testTags: Tag*) {
+      def apply(testFun: FixtureParam => Registration): Unit = {
+        // SKIP-SCALATESTJS-START
+        val stackDepthAdjustment = -2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepthAdjustment = -3
+        engine.registerTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
+      }
+      def apply(testFun: () => Registration): Unit = {
+        // SKIP-SCALATESTJS-START
+        val stackDepthAdjustment = -2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepthAdjustment = -3
+        engine.registerTest(specText, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
+      }
+    }
+
     /**
      * Register a test with the given spec text, optional tags, and test function value that takes no arguments.
      * An invocation of this method is called an &ldquo;example.&rdquo;
@@ -279,13 +312,8 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-      // SKIP-SCALATESTJS-START
-      val stackDepthAdjustment = -2
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -3
-      engine.registerTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
-    }
+    def apply(specText: String, testTags: Tag*): ResultOfTheyWordApplication =
+      new ResultOfTheyWordApplication(specText, testTags: _*)
 
     /**
      * Supports the registration of shared tests.
@@ -354,6 +382,23 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
    */
   protected val they = new TheyWord
 
+  class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
+    def apply(testFun: FixtureParam => Registration): Unit = {
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 8
+      engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, -3, None, testTags: _*)
+    }
+    def apply(testFun: () => Registration): Unit = {
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 8
+      engine.registerIgnoredTest(specText, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, -3, None, testTags: _*)
+    }
+  }
+
   /**
    * Register a test to ignore, which has the given spec text, optional tags, and test function value that takes no arguments.
    * This method will register the test for later ignoring via an invocation of one of the <code>execute</code>
@@ -372,13 +417,8 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(specText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 6
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 8
-    engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, -2, None, testTags: _*)
-  }
+  protected def ignore(specText: String, testTags: Tag*): ResultOfIgnoreInvocation =
+    new ResultOfIgnoreInvocation(specText, testTags: _*)
 
   /**
    * Register a test to ignore, which has the given spec text and test function value that takes no arguments.
@@ -397,11 +437,13 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
+/*
   protected def ignore(specText: String)(testFun: FixtureParam => Registration) {
     if (atomic.get.registrationClosed)
       throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideAnItOrAThey, getStackDepthFun(sourceFileName, "ignore"))
     ignore(specText, Array[Tag](): _*)(testFun)
   }
+*/
 
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The
@@ -581,8 +623,8 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Any = {
-    fixture => f
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Assertion = {
+    fixture => { f; Succeeded }
   }
 
   /**
@@ -593,8 +635,10 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
    * @param fun a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Any): (FixtureParam => Any) =
+/*
+  protected implicit def convertNoArgToFixtureFunction(fun: () => Assertion): (FixtureParam => Assertion) =
     new NoArgTestWrapper(fun)
+*/
 
   /**
    * Suite style name.

@@ -18,7 +18,9 @@ package org.scalatest.words
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.checkExpectedException
 import org.scalatest.Assertion
-import org.scalatest.Succeeded
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.MatchersHelper.indicateSuccess
+import org.scalatest.MatchersHelper.indicateFailure
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -41,8 +43,13 @@ final class ResultOfBeWordForAType[T](clazz: Class[T]) {
     val stackDepth = 1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 14
-    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
-    Succeeded
+    try {
+      checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
+      indicateSuccess(Resources.exceptionThrown(clazz.getName))
+    }
+    catch {
+      case tfe: TestFailedException => indicateFailure(tfe)
+    }
   }
   
   /**

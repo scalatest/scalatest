@@ -17,7 +17,6 @@ package org.scalatest.words
 
 import org.scalatest.MatchersHelper.checkNoException
 import org.scalatest.Assertion
-import org.scalatest.Succeeded
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

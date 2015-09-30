@@ -95,7 +95,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSuite extends StringFixtureFunSuite {
-      test("fail") { fail }
+      test("fail") { () => fail }
     }
     override def nestedSuites = Vector(new NestedSuite, new AbortNestedSuite, new FailNestedSuite)
   } 
@@ -222,7 +222,7 @@ class LocationSuiteProp extends SuiteProp
     class FailNestedSuite extends StringFixtureFeatureSpec {
       feature("feature") { 
         scenario("fail") {
-          fail
+          () => fail
         }
       }
     }

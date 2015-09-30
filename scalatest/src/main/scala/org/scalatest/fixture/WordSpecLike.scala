@@ -15,5 +15,7 @@
  */
 package org.scalatest.fixture
 
+import org.scalatest.Assertion
+
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait WordSpecLike extends WordSpecRegistering[Any]
+trait WordSpecLike extends WordSpecRegistering[Assertion] with org.scalatest.Compatibility

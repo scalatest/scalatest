@@ -5392,7 +5392,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (e != null) {
           indicateFailure(FailureMessages.didNotEqualNull(e), None, innerStackDepth)
         }
-        else indicateSuccess(FailureMessages.equaledNull())
+        else indicateSuccess(FailureMessages.equaledNull)
       }
     }
 
@@ -5706,7 +5706,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         if (e != null)
          indicateFailure(FailureMessages.wasNotNull(e), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasNull())
+        else indicateSuccess(FailureMessages.wasNull)
       }
     }
 
@@ -6793,7 +6793,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       if (leftSideValue != null) {
         indicateFailure(FailureMessages.didNotEqualNull(leftSideValue))
       }
-      else indicateSuccess(FailureMessages.equaledNull())
+      else indicateSuccess(FailureMessages.equaledNull)
     }
 
     /**
@@ -7155,7 +7155,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       if (leftSideValue != null) {
         indicateFailure(FailureMessages.wasNotNull(leftSideValue))
       }
-      else indicateSuccess(FailureMessages.wasNull())
+      else indicateSuccess(FailureMessages.wasNull)
     }
 
     /**

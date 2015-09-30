@@ -21,15 +21,14 @@ import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.KeyMapping
 import org.scalatest.enablers.ValueMapping
-import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.{Prettifier, Every}
 import org.scalatest.Assertion
-import org.scalatest.Succeeded
-import org.scalatest.MatchersHelper.{indicateSuccess, indicateFailure}
+import org.scalatest.MatchersHelper.indicateSuccess
+import org.scalatest.MatchersHelper.indicateFailure
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
