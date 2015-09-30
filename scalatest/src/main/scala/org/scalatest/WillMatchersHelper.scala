@@ -22,7 +22,7 @@ private[scalatest] object WillMatchersHelper {
   def checkNoException(fun: => Any): Fact = {
     try {
       fun
-      Fact.Yes(Resources.noExceptionWasThrown())
+      Fact.Yes(Resources.noExceptionWasThrown)
     }
     catch {
       case u: Throwable => {
