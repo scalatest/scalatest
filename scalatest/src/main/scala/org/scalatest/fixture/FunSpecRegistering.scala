@@ -385,17 +385,17 @@ trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing w
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
     def apply(testFun: FixtureParam => Registration): Unit = {
       // SKIP-SCALATESTJS-START
-      val stackDepth = 6
+      val stackDepth = 3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 8
-      engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, -2, None, testTags: _*)
+      engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, -3, None, testTags: _*)
     }
     def apply(testFun: () => Registration): Unit = {
       // SKIP-SCALATESTJS-START
-      val stackDepth = 6
+      val stackDepth = 3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 8
-      engine.registerIgnoredTest(specText, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, -2, None, testTags: _*)
+      engine.registerIgnoredTest(specText, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, -3, None, testTags: _*)
     }
   }
 

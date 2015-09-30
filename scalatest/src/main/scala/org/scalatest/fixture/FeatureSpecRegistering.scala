@@ -120,21 +120,21 @@ trait FeatureSpecRegistering[R] extends Suite with TestRegistration with Informi
   class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
     def apply(testFun: FixtureParam => Registration): Unit = {
       // SKIP-SCALATESTJS-START
-      val stackDepth = 4
+      val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "scenario", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+      engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
     def apply(testFun: () => Registration): Unit = {
       // SKIP-SCALATESTJS-START
-      val stackDepth = 4
+      val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(new NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "scenario", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+      engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(new NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
   }
 
@@ -162,21 +162,21 @@ trait FeatureSpecRegistering[R] extends Suite with TestRegistration with Informi
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
     def apply(testFun: FixtureParam => Registration): Unit = {
       // SKIP-SCALATESTJS-START
-      val stackDepth = 4
+      val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
     def apply(testFun: () => Registration): Unit = {
       // SKIP-SCALATESTJS-START
-      val stackDepth = 4
+      val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredTest(Resources.scenario(specText), transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredTest(Resources.scenario(specText), transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   }
 
