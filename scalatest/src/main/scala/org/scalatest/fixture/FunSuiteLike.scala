@@ -15,5 +15,7 @@
  */
 package org.scalatest.fixture
 
+import org.scalatest.Assertion
+
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FunSuiteLike extends FunSuiteRegistering[Any]
+trait FunSuiteLike extends FunSuiteRegistering[Assertion] with org.scalatest.Compatibility

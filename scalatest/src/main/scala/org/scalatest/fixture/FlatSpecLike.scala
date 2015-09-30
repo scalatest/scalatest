@@ -15,5 +15,7 @@
  */
 package org.scalatest.fixture
 
+import org.scalatest.Assertion
+
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FlatSpecLike extends FlatSpecRegistering[Any]
+trait FlatSpecLike extends FlatSpecRegistering[Assertion] with org.scalatest.Compatibility

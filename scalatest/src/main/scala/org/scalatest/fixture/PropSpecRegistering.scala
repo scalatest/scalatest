@@ -111,6 +111,27 @@ trait PropSpecRegistering[R] extends Suite with TestRegistration with Informing 
     engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
+  class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
+    def apply(testFun: FixtureParam => Registration) {
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 4
+      val stackDepthAdjustment = -2
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 6
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+      engine.registerTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    }
+    def apply(testFun: () => Registration) {
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 4
+      val stackDepthAdjustment = -2
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 6
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+      engine.registerTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    }
+  }
+
   /**
    * Register a property-based test with the specified name, optional tags, and function value that takes no arguments.
    * This method will register the test for later execution via an invocation of one of the <code>run</code>
@@ -125,14 +146,28 @@ trait PropSpecRegistering[R] extends Suite with TestRegistration with Informing 
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
    */
-  protected def property(testName: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+  protected def property(testName: String, testTags: Tag*): ResultOfPropertyInvocation =
+    new ResultOfPropertyInvocation(testName, testTags: _*)
+
+  class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
+    def apply(testFun: FixtureParam => Registration) {
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 4
+      val stackDepthAdjustment = -3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 6
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+      engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    }
+    def apply(testFun: () => Registration) {
+      // SKIP-SCALATESTJS-START
+      val stackDepth = 4
+      val stackDepthAdjustment = -3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepth = 6
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+      engine.registerIgnoredTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    }
   }
 
   /**
@@ -150,15 +185,8 @@ trait PropSpecRegistering[R] extends Suite with TestRegistration with Informing 
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
-  protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-    engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
-  }
+  protected def ignore(testName: String, testTags: Tag*): ResultOfIgnoreInvocation =
+    new ResultOfIgnoreInvocation(testName, testTags: _*)
 
   /**
    * An immutable <code>Set</code> of test names. If this <code>fixture.PropSpec</code> contains no tests, this method returns an empty <code>Set</code>.
@@ -311,8 +339,8 @@ trait PropSpecRegistering[R] extends Suite with TestRegistration with Informing 
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Any) = {
-    fixture => f
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Assertion) = {
+    fixture => { f; Succeeded }
   }
 
   /**
@@ -323,8 +351,10 @@ trait PropSpecRegistering[R] extends Suite with TestRegistration with Informing 
    * @param fun a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Any): (FixtureParam => Any) =
+/*
+  protected implicit def convertNoArgToFixtureFunction(fun: () => Assertion): (FixtureParam => Assertion) =
     new NoArgTestWrapper(fun)
+*/
 
   /**
    * Suite style name.

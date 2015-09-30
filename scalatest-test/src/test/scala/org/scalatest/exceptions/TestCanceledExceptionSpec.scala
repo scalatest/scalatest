@@ -246,10 +246,11 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
       }
     }
 
+    // TODO: What is this testing? there should be no TCE thrown by an [IAE] should be thrownBy ....
     it("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
       try {
         an [IllegalArgumentException] should be thrownBy {
-          if (false) 1 else throw new RuntimeException
+          if (false) () else throw new RuntimeException
         }
       }
       catch {
