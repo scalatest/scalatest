@@ -73,17 +73,11 @@ object GenMatchers {
       .replaceAll("Matchers.scala", "WillMatchers.scala")
   }
 
-  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
-    targetDir.mkdirs()
-    val matchersDir = new File(targetDir, "matchers")
-    matchersDir.mkdirs()
-    val junitDir = new File(targetDir, "junit")
-    junitDir.mkdirs()
-
-    val mustMatchersFile = new File(targetDir, "MustMatchers.scala")
-    val mustMatchersWriter = new BufferedWriter(new FileWriter(mustMatchersFile))
+  def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): Unit = {
+    val outputFile = new File(targetDir, fileName)
+    val outputWriter = new BufferedWriter(new FileWriter(outputFile))
     try {
-      val lines = Source.fromFile(new File("scalatest/src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
+      val lines = Source.fromFile(new File(sourceFileName)).getLines.toList
       var skipMode = false
       for (line <- lines) {
         val mustLine: String =
@@ -98,63 +92,36 @@ object GenMatchers {
             }
             else if (!skipMode) {
               if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-                translateShouldToMust(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
+                translateFun(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
               else
-                translateShouldToMust(line)
+                translateFun(line)
             }
             else
               ""
           }
           else
-            translateShouldToMust(line)
+            translateFun(line)
 
-        mustMatchersWriter.write(mustLine)
-        mustMatchersWriter.newLine()
+        outputWriter.write(mustLine)
+        outputWriter.newLine()
       }
     }
     finally {
-      mustMatchersWriter.flush()
-      mustMatchersWriter.close()
-      println("Generated " + mustMatchersFile.getAbsolutePath)
+      outputWriter.flush()
+      outputWriter.close()
+      println("Generated " + outputFile.getAbsolutePath)
     }
+  }
 
-    val willMatchersFile = new File(targetDir, "WillMatchers.scala")
-    val willMatchersWriter = new BufferedWriter(new FileWriter(willMatchersFile))
-    try {
-      val lines = Source.fromFile(new File("scalatest/src/main/scala/org/scalatest/Matchers.scala")).getLines.toList
-      var skipMode = false
-      for (line <- lines) {
-        val willLine: String =
-          if (scalaJS) {
-            if (line.trim == "// SKIP-SCALATESTJS-START") {
-              skipMode = true
-              ""
-            }
-            else if (line.trim == "// SKIP-SCALATESTJS-END") {
-              skipMode = false
-              ""
-            }
-            else if (!skipMode) {
-              if (line.trim.startsWith("//SCALATESTJS-ONLY "))
-                translateShouldToWill(line.substring(line.indexOf("//SCALATESTJS-ONLY ") + 19))
-              else
-                translateShouldToWill(line)
-            }
-            else
-              ""
-          }
-          else
-            translateShouldToWill(line)
+  def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
+    targetDir.mkdirs()
+    val matchersDir = new File(targetDir, "matchers")
+    matchersDir.mkdirs()
+    val junitDir = new File(targetDir, "junit")
+    junitDir.mkdirs()
 
-        willMatchersWriter.write(willLine)
-        willMatchersWriter.newLine()
-      }
-    }
-    finally {
-      willMatchersWriter.flush()
-      willMatchersWriter.close()
-      println("Generated " + willMatchersFile.getAbsolutePath)
-    }
+    translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToMust)
+    translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String) {
