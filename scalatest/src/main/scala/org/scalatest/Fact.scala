@@ -480,6 +480,36 @@ object Fact {
         None,
         Prettifier.default
       )
+
+    /**
+     * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
+     * <code>cause</code> fields. The <code>rawMidSentenceFactMessage</code>, <code>rawSimplifiedFailureMessage</code> and
+     * <code>rawMidSentenceSimplifiedFailureMessage</code>will return the same string as <code>rawFactMessage</code>.
+     * All argument fields will have <code>Vector.empty</code> values.  This is suitable to create No with eager error messages
+     * that have same mid-sentence messages.
+     *
+     * @param rawFactMessage raw fact message
+     * @param cause the causing throwable of this No instance
+     * @return a <code>No</code> instance
+     */
+    def apply(
+      rawFactMessage: String,
+      cause: Throwable
+    ): Leaf =
+      new Leaf(
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        rawFactMessage,
+        Vector.empty,
+        Vector.empty,
+        Vector.empty,
+        Vector.empty,
+        false,
+        false,
+        Some(cause),
+        Prettifier.default
+      )
   }
   
   /**

@@ -1795,6 +1795,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     sortedMap
   }
 
+  // SKIP-SCALATESTJS-START
   def serializeRoundtrip[A](a: A): A = {
     val baos = new java.io.ByteArrayOutputStream
     val oos = new java.io.ObjectOutputStream(baos)
@@ -1803,6 +1804,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     val ois = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(baos.toByteArray))
     ois.readObject.asInstanceOf[A]
   }
+  // SKIP-SCALATESTJS-END
 
   def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int) {
     assert(exception.message === Some(message))

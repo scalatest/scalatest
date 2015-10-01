@@ -27,7 +27,7 @@ private[scalatest] object WillMatchersHelper {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        Fact.No(message)
+        Fact.No(message, u)
       }
     }
   }

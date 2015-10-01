@@ -3156,7 +3156,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     private[scalatest] val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 17
+    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
  
     /**
      * This method enables the following syntax:
@@ -5190,7 +5190,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     private[scalatest] val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 17
+    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
 
 // TODO: shouldBe null works, b ut should be (null) does not when type is Any: 
 /*
@@ -6684,7 +6684,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-SCALATESTJS-START
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 10): Assertion = {
+    //SCALATESTJS-ONLY def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 11): Assertion = {
       rightMatcher(left) match {
         case MatchFailed(failureMessage) => indicateFailure(failureMessage, None, stackDepthAdjustment)
         case result => indicateSuccess(result.negatedFailureMessage)
@@ -6693,7 +6693,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     // SKIP-SCALATESTJS-START
     def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 10): Assertion = {
+    //SCALATESTJS-ONLY def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 11): Assertion = {
       rightMatcher(left) match {
         case MatchSucceeded(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, stackDepthAdjustment)
         case result => indicateSuccess(result.failureMessage)
