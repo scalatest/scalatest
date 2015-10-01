@@ -20,7 +20,9 @@ import org.scalatest._
 import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ListBuffer
+// SKIP-SCALATESTJS-START
 import SharedHelpers.serializeRoundtrip
+// SKIP-SCALATESTJS-END
 
 class EverySpec extends UnitSpec {
   "An Every" can "be constructed as a One" in {
@@ -1179,20 +1181,26 @@ class EverySpec extends UnitSpec {
     Every(99).zipWithIndex shouldBe Every((99,0))
     Every(1, 2, 3, 4, 5).zipWithIndex shouldBe Every((1,0), (2,1), (3,2), (4,3), (5,4))
   }
+  // SKIP-SCALATESTJS-START
   it should "be serializable" in {
      serializeRoundtrip(Every(1)) shouldBe Every(1)
   }
+  // SKIP-SCALATESTJS-END
   "A One" can "be widened to an Every type via .asEvery" in {
     One(1).asEvery shouldBe One(1)
   }
+  // SKIP-SCALATESTJS-START
   it should "be serializable" in {
     serializeRoundtrip(One(1))
   }
+  // SKIP-SCALATESTJS-END
   "A Many" can "be widened to an Every type via .asEvery" in {
     Many(1, 2, 3).asEvery shouldBe Many(1, 2, 3)
   }
+  // SKIP-SCALATESTJS-START
   it should "be serializable" in {
     serializeRoundtrip(Many(1, 2, 3))
   }
+  // SKIP-SCALATESTJS-END
 }
 
