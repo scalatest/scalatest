@@ -29,35 +29,40 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       0 should equal (1)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("0 should === (1)") {
     val e = intercept[exceptions.TestFailedException] {
       0 should === (1)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("0 should be (1)") {
     val e = intercept[exceptions.TestFailedException] {
       0 should be (1)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("0 shouldEqual (1)") {
     val e = intercept[exceptions.TestFailedException] {
       0 shouldEqual (1)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("0 shouldBe (1)") {
     val e = intercept[exceptions.TestFailedException] {
       0 shouldBe (1)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Checking size and length
@@ -66,14 +71,16 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should have length (1)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should have size (1)""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should have size (1)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Checking strings 
@@ -82,21 +89,24 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should startWith ("def")
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should endWith ("def")""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should endWith ("def")
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should include ("def")""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should include ("def")
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should startWith regex "def"""") {
@@ -143,28 +153,32 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should endWith regex ("ab(c*)" withGroups ("ff"))
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should include regex ("ab(c*)" withGroups ("ff"))""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should include regex ("ab(c*)" withGroups ("ff"))
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should fullyMatch regex ("ab(c*)" withGroups ("ff"))""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should fullyMatch regex ("ab(c*)" withGroups ("ff"))
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" shouldBe empty""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" shouldBe empty
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Greater and less than 
@@ -173,28 +187,32 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       10 should be < 7
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("1 should be > 7") {
     val e = intercept[exceptions.TestFailedException] {
       1 should be > 7
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("10 should be <= 7") {
     val e = intercept[exceptions.TestFailedException] {
       10 should be <= 7
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("1 should be >= 7") {
     val e = intercept[exceptions.TestFailedException] {
       1 should be >= 7
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Checking Boolean properties with be
@@ -206,7 +224,8 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       "howdy" should be an emptyString
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Using custom BeMatchers
@@ -223,11 +242,13 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       6 shouldBe odd
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
     val e2 = intercept[exceptions.TestFailedException] {
       6 should be (odd)
     }
-    e2.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Checking object identity 
@@ -237,7 +258,8 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       ref1 should be theSameInstanceAs ref2
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Checking an object's class 
@@ -247,11 +269,13 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       result1 shouldBe a [java.util.Date]
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
     val e2 = intercept[exceptions.TestFailedException] {
       result1 should not be a [String]
     }
-    e2.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e2.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Checking numbers against a range 
@@ -260,35 +284,40 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       1.0 should equal (6.9 +- 0.2)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("1.0 should === (6.9 +- 0.2)") {
     val e = intercept[exceptions.TestFailedException] {
       1.0 should === (6.9 +- 0.2)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("1.0 should be (6.9 +- 0.2)") {
     val e = intercept[exceptions.TestFailedException] {
       1.0 should be (6.9 +- 0.2)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("1.0 shouldEqual (6.9 +- 0.2)") {
     val e = intercept[exceptions.TestFailedException] {
       1.0 shouldEqual 6.9 +- 0.2
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("1.0 shouldBe (6.9 +- 0.2)") {
     val e = intercept[exceptions.TestFailedException] {
       1.0 shouldBe (6.9 +- 0.2)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   // Checking for emptiness
@@ -297,79 +326,126 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       List.empty should not be empty
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("List(1, 2, 3) shouldBe empty") {
     val e = intercept[exceptions.TestFailedException] {
       List(1, 2, 3) shouldBe empty
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("None should not be empty") {
     val e = intercept[exceptions.TestFailedException] {
       None should not be empty
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("Some(1) shouldBe empty") {
     val e = intercept[exceptions.TestFailedException] {
       Some(1) shouldBe empty
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""hello" shouldBe empty""") {
     val e = intercept[exceptions.TestFailedException] {
       "hello" shouldBe empty
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("new java.util.HashMap[Int, Int] should not be empty") {
     val e = intercept[exceptions.TestFailedException] {
       new java.util.HashMap[Int, Int] should not be empty
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test("new { def isEmpty = false} shouldBe empty") {
     val e = intercept[exceptions.TestFailedException] {
       new { def isEmpty = false} shouldBe empty
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-/*
-  test("XXX") {
+  // Working with "containers" 
+
+  // Working with "aggregations" 
+
+  // Working with "sequences" 
+
+  // Working with "sortables" 
+
+  // Working with iterators 
+
+  // Inspector shorthands 
+
+  // Single-element collections 
+
+  // Java collections and maps 
+
+  // Strings and Arrays as collections 
+
+  // be as an equality comparison 
+
+  // Being negative 
+
+  // Checking that a snippet of code does not compile 
+
+  //  Logical expressions with and and or
+
+  // Working with Options 
+
+  // Checking arbitrary properties with have
+
+  // Using length and size with HavePropertyMatchers 
+
+  // Checking that an expression matches a pattern 
+
+  // Using custom matchers
+
+  // Checking for expected exceptions 
+
+  test("""an [IndexOutOfBoundsException] should be thrownBy "hi".charAt(1)""") {
     val e = intercept[exceptions.TestFailedException] {
-      XXX
+      an [IndexOutOfBoundsException] should be thrownBy "hi".charAt(1)
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("XXX") {
+  test("""the [ArithmeticException] thrownBy 0 / 1 should have message "/ by zero"""") {
     val e = intercept[exceptions.TestFailedException] {
-      XXX
+      the [ArithmeticException] thrownBy 0 / 1 should have message "/ by zero"
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("XXX") {
+  test("""the [ArithmeticException] thrownBy 1 / 0 should have message "/ by one"""") {
     val e = intercept[exceptions.TestFailedException] {
-      XXX
+      the [ArithmeticException] thrownBy 1 / 0 should have message "/ by one"
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("XXX") {
+  test("noException should be thrownBy 1 / 0") {
     val e = intercept[exceptions.TestFailedException] {
-      XXX
+      noException should be thrownBy 1 / 0
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
-*/
 }
 
