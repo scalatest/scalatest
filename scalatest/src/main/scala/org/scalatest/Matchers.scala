@@ -2156,6 +2156,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   final class ResultOfIncludeWordForString(left: String, shouldBeTrue: Boolean) {
 
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepth = 0
+    private[scalatest] val withGroupStackDepth = 0
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
+    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+
     /**
      * This method enables the following syntax: 
      *
@@ -2177,7 +2184,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
     }
 
@@ -2191,7 +2198,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.findFirstIn(left).isDefined != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotIncludeRegex(left, rightRegex), FailureMessages.includedRegex(left, rightRegex))
+        indicateFailure(shouldBeTrue, FailureMessages.didNotIncludeRegex(left, rightRegex), FailureMessages.includedRegex(left, rightRegex), None, stackDepth)
       else indicateSuccess(shouldBeTrue, FailureMessages.includedRegex(left, rightRegex), FailureMessages.didNotIncludeRegex(left, rightRegex))
     }
 
@@ -2210,6 +2217,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    */
   final class ResultOfStartWithWordForString(left: String, shouldBeTrue: Boolean) {
+
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepth = 0
+    private[scalatest] val withGroupStackDepth = 0
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
+    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
 
     /**
      * This method enables the following syntax: 
@@ -2232,7 +2246,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
     }
 
@@ -2246,7 +2260,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).lookingAt != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotStartWithRegex(left, rightRegex), FailureMessages.startedWithRegex(left, rightRegex))
+        indicateFailure(shouldBeTrue, FailureMessages.didNotStartWithRegex(left, rightRegex), FailureMessages.startedWithRegex(left, rightRegex), None, stackDepth)
       else indicateSuccess(shouldBeTrue, FailureMessages.startedWithRegex(left, rightRegex), FailureMessages.didNotStartWithRegex(left, rightRegex))
     }
 
@@ -2265,6 +2279,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    */
   final class ResultOfEndWithWordForString(left: String, shouldBeTrue: Boolean) {
+
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepth = 0
+    private[scalatest] val withGroupStackDepth = 0
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
+    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
 
     /**
      * This method enables the following syntax: 
@@ -2287,7 +2308,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
     }
 
@@ -2302,7 +2323,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(rightRegex: Regex): Assertion = {
       val allMatches = rightRegex.findAllIn(left)
       if ((allMatches.hasNext && (allMatches.end == left.length)) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotEndWithRegex(left, rightRegex), FailureMessages.endedWithRegex(left, rightRegex))
+        indicateFailure(shouldBeTrue, FailureMessages.didNotEndWithRegex(left, rightRegex), FailureMessages.endedWithRegex(left, rightRegex), None, stackDepth)
       else indicateSuccess(shouldBeTrue, FailureMessages.endedWithRegex(left, rightRegex), FailureMessages.didNotEndWithRegex(left, rightRegex))
     }
 
@@ -2321,6 +2342,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    */
   final class ResultOfFullyMatchWordForString(left: String, shouldBeTrue: Boolean) {
+
+    // SKIP-SCALATESTJS-START
+    private[scalatest] val stackDepth = 0
+    private[scalatest] val withGroupStackDepth = 0
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
+    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
 
     /**
      * This method enables the following syntax: 
@@ -2343,7 +2371,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
     }
 
@@ -2357,7 +2385,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotFullyMatchRegex(left, rightRegex), FailureMessages.fullyMatchedRegex(left, rightRegex))
+        indicateFailure(shouldBeTrue, FailureMessages.didNotFullyMatchRegex(left, rightRegex), FailureMessages.fullyMatchedRegex(left, rightRegex), None, stackDepth)
       else indicateSuccess(shouldBeTrue, FailureMessages.fullyMatchedRegex(left, rightRegex), FailureMessages.didNotFullyMatchRegex(left, rightRegex))
     }
 
@@ -4411,7 +4439,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     private[scalatest] val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 17
+    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
 
     /**
      * This method enables the following syntax: 
