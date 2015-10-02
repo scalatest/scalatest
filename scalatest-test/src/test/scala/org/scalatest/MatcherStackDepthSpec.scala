@@ -103,35 +103,40 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should startWith regex "def"
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should endWith regex "def"""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should endWith regex "def"
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should include regex "def"""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should include regex "def"
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should fullyMatch regex "def"""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should fullyMatch regex "def"
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should startWith regex ("ab(c*)" withGroups ("ff"))""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should startWith regex ("ab(c*)" withGroups ("ff"))
     }
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
   test(""""abc" should endWith regex ("ab(c*)") withGroups ("ff"))""") {
