@@ -18,6 +18,8 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import matchers.BePropertyMatcher
 import matchers.BePropertyMatchResult
+import matchers.BeMatcher
+import matchers.MatchResult
 
 class MatcherStackDepthSpec extends FunSuite with Matchers {
 
@@ -202,4 +204,167 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
   }
 
+  // Using custom BeMatchers
+  test("6 shouldBe odd") {
+    class OddMatcher extends BeMatcher[Int] {
+      def apply(left: Int) =
+        MatchResult(
+          left % 2 == 1,
+          left.toString + " was even",
+          left.toString + " was odd"
+        )
+    }
+    val odd = new OddMatcher
+    val e = intercept[exceptions.TestFailedException] {
+      6 shouldBe odd
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    val e2 = intercept[exceptions.TestFailedException] {
+      6 should be (odd)
+    }
+    e2.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  // Checking object identity 
+  test("ref1 should be theSameInstanceAs ref2") {
+    val ref1 = "hello"
+    val ref2 = "world"
+    val e = intercept[exceptions.TestFailedException] {
+      ref1 should be theSameInstanceAs ref2
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  // Checking an object's class 
+
+  test("result1 shouldBe a [java.util.Date]") {
+    val result1 = "hello"
+    val e = intercept[exceptions.TestFailedException] {
+      result1 shouldBe a [java.util.Date]
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    val e2 = intercept[exceptions.TestFailedException] {
+      result1 should not be a [String]
+    }
+    e2.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  // Checking numbers against a range 
+
+  test("1.0 should equal (6.9 +- 0.2)") {
+    val e = intercept[exceptions.TestFailedException] {
+      1.0 should equal (6.9 +- 0.2)
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("1.0 should === (6.9 +- 0.2)") {
+    val e = intercept[exceptions.TestFailedException] {
+      1.0 should === (6.9 +- 0.2)
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("1.0 should be (6.9 +- 0.2)") {
+    val e = intercept[exceptions.TestFailedException] {
+      1.0 should be (6.9 +- 0.2)
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("1.0 shouldEqual (6.9 +- 0.2)") {
+    val e = intercept[exceptions.TestFailedException] {
+      1.0 shouldEqual 6.9 +- 0.2
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("1.0 shouldBe (6.9 +- 0.2)") {
+    val e = intercept[exceptions.TestFailedException] {
+      1.0 shouldBe (6.9 +- 0.2)
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  // Checking for emptiness
+
+  test("List.empty should not be empty") {
+    val e = intercept[exceptions.TestFailedException] {
+      List.empty should not be empty
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("List(1, 2, 3) shouldBe empty") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3) shouldBe empty
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("None should not be empty") {
+    val e = intercept[exceptions.TestFailedException] {
+      None should not be empty
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("Some(1) shouldBe empty") {
+    val e = intercept[exceptions.TestFailedException] {
+      Some(1) shouldBe empty
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test(""""hello" shouldBe empty""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "hello" shouldBe empty
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("new java.util.HashMap[Int, Int] should not be empty") {
+    val e = intercept[exceptions.TestFailedException] {
+      new java.util.HashMap[Int, Int] should not be empty
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("new { def isEmpty = false} shouldBe empty") {
+    val e = intercept[exceptions.TestFailedException] {
+      new { def isEmpty = false} shouldBe empty
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+/*
+  test("XXX") {
+    val e = intercept[exceptions.TestFailedException] {
+      XXX
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("XXX") {
+    val e = intercept[exceptions.TestFailedException] {
+      XXX
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("XXX") {
+    val e = intercept[exceptions.TestFailedException] {
+      XXX
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("XXX") {
+    val e = intercept[exceptions.TestFailedException] {
+      XXX
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+*/
 }
+
