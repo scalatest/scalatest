@@ -20,6 +20,11 @@ import matchers.BePropertyMatcher
 import matchers.BePropertyMatchResult
 import matchers.BeMatcher
 import matchers.MatchResult
+import org.scalactic.Explicitly._
+import org.scalactic.StringNormalizations._
+import org.scalatest.Inspectors._
+import collection.JavaConverters._
+import LoneElement._
 
 class MatcherStackDepthSpec extends FunSuite with Matchers {
 
@@ -380,19 +385,577 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
 
   // Working with "containers" 
 
+  test("List(1, 2, 3) should contain (4)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3) should contain (4)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Map('a' -> 1, 'b' -> 2, 'c' -> 3) should contain ('c' -> 2)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Map('a' -> 1, 'b' -> 2, 'c' -> 3) should contain ('c' -> 2)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Set(1, 2, 3) should contain (4)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Set(1, 2, 3) should contain (4)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Array(1, 2, 3) should contain (4)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Array(1, 2, 3) should contain (4)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test(""""123" should contain ('4')""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "123" should contain ('4')
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Some(2) should contain (4)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Some(2) should contain (4)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""(List("Hi", "Di", "Ho") should contain ("dee")) (after being lowerCased)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      (List("Hi", "Di", "Ho") should contain ("dee")) (after being lowerCased)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 4, 5) should contain oneOf (6, 7, 9)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 4, 5) should contain oneOf (6, 7, 9)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Some(8) should contain oneOf (5, 7, 9)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Some(8) should contain oneOf (5, 7, 9)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test(""""yowza" should contain oneOf ('b', 'c', 'd')""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "yowza" should contain oneOf ('b', 'c', 'd')
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3) should contain oneOf (2, 3, 4)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3) should contain oneOf (2, 3, 4)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""(Array("Doe", "Re", "Me") should contain oneOf ("X", "RAY", "BEAM")) (after being lowerCased)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      (Array("Doe", "Re", "Me") should contain oneOf ("X", "RAY", "BEAM")) (after being lowerCased)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 4) should contain oneElementOf List(5, 7, 9)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 4) should contain oneElementOf List(5, 7, 9)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Some(7) should contain oneElementOf Vector(5, 77, 9)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Some(7) should contain oneElementOf Vector(5, 77, 9)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test(""""yowza" should contain oneElementOf Set('x', 'b', 'c', 'd')""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "yowza" should contain oneElementOf Set('x', 'b', 'c', 'd')
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""(Array("Doe", "Ray", "Me") should contain oneElementOf List("X", "RAX", "BEAM")) (after being lowerCased)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      (Array("Doe", "Ray", "Me") should contain oneElementOf List("X", "RAX", "BEAM")) (after being lowerCased)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 4, 5) should contain noneOf (7, 8, 9, 1)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 4, 5) should contain noneOf (7, 8, 9, 1)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Some(0) should contain noneOf (7, 8, 0)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Some(0) should contain noneOf (7, 8, 0)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test(""""1234567" should contain noneOf ('7', '8', '9')""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "1234567" should contain noneOf ('7', '8', '9')
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 4, 5, 6, 7) should contain noElementsOf List(7, 8, 9)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 4, 5, 6, 7) should contain noElementsOf List(7, 8, 9)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Some(8) should contain noElementsOf Vector(7, 8, 9)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Some(8) should contain noElementsOf Vector(7, 8, 9)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test(""""1234567" should contain noElementsOf Set('7', '8', '9')""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "1234567" should contain noElementsOf Set('7', '8', '9')
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
   // Working with "aggregations" 
+
+  test("List(1, 2, 3) should contain atLeastOneOf (4, 5, 6)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3) should contain atLeastOneOf (4, 5, 6)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Array(1, 2, 3) should contain atLeastOneOf (4, 5, 6)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Array(1, 2, 3) should contain atLeastOneOf (4, 5, 6)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test(""""dog" should contain atLeastOneOf ('c', 'a', 't')""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "dog" should contain atLeastOneOf ('c', 'a', 't')
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""(Vector(" A", "B ") should contain atLeastOneOf ("d ", "o", "g")) (after being lowerCased and trimmed)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      (Vector(" A", "B ") should contain atLeastOneOf ("d ", "o", "g")) (after being lowerCased and trimmed)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3) should contain atLeastOneElementOf List(4, 5, 6)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3) should contain atLeastOneElementOf List(4, 5, 6)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("Array(1, 2, 3) should contain atLeastOneElementOf Vector(4, 5, 6)") {
+    val e = intercept[exceptions.TestFailedException] {
+      Array(1, 2, 3) should contain atLeastOneElementOf Vector(4, 5, 6)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test(""""dog" should contain atLeastOneElementOf Set('c', 'a', 't')""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "dog" should contain atLeastOneElementOf Set('c', 'a', 't')
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""(Vector(" A", "B ") should contain atLeastOneElementOf List("d ", "o", "g")) (after being lowerCased and trimmed)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      (Vector(" A", "B ") should contain atLeastOneElementOf List("d ", "o", "g")) (after being lowerCased and trimmed)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 4, 5) should contain atMostOneOf (4, 5, 6, 7)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 4, 5) should contain atMostOneOf (4, 5, 6, 7)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 4, 5) should contain atMostOneElementOf Vector(4, 5, 6, 7)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 4, 5) should contain atMostOneElementOf Vector(4, 5, 6, 7)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 4, 5) should contain allOf (2, 3, 5, 6)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 4, 5) should contain allOf (2, 3, 5, 6)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 4, 5) should contain allElementsOf Array(2, 3, 5, 6)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 4, 5) should contain allElementsOf Array(2, 3, 5, 6)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 3, 2, 1) should contain only (1, 2, 3, 4)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 3, 2, 1) should contain only (1, 2, 3, 4)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 2, 3, 3, 3) should contain theSameElementsAs Vector(3, 2, 3, 1, 2, 3, 5)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 2, 3, 3, 3) should contain theSameElementsAs Vector(3, 2, 3, 1, 2, 3, 5)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(1, 2, 2, 3, 3, 3) should contain theSameElementsAs Vector(3, 2, 3, 1, 2)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 2, 3, 3, 3) should contain theSameElementsAs Vector(3, 2, 3, 1, 2)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
 
   // Working with "sequences" 
 
+  test("List(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 3, 2)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 3, 2)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrder (1, 3, 99)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrder (1, 3, 99)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrderElementsOf Array(1, 2, 3, 99)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(0, 1, 2, 2, 99, 3, 3, 3, 5) should contain inOrderElementsOf Array(1, 2, 3, 99)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("List(3, 2, 1) should contain theSameElementsInOrderAs collection.mutable.TreeSet(3, 2, 1)") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(3, 2, 1) should contain theSameElementsInOrderAs collection.mutable.TreeSet(3, 2, 1)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
   // Working with "sortables" 
+
+  test("List(2, 1, 3) shouldBe sorted") {
+    val e = intercept[exceptions.TestFailedException] {
+      List(2, 1, 3) shouldBe sorted
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
 
   // Working with iterators 
 
+  test("it.toStream should contain (4)") {
+    val e = intercept[exceptions.TestFailedException] {
+      val it = List(1, 2, 3).iterator
+      it.toStream should contain (4)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
   // Inspector shorthands 
+
+  test("forAll (ys) { y => y should be > 0 }") {
+    val e = intercept[exceptions.TestFailedException] {
+      val yss =
+        List(
+          List(1, 2, 3),
+          List(1, 2, 3),
+          List(-11, 2, 3)
+        )
+
+      forAll (yss) { ys =>
+        forAll (ys) { y => y should be > 0 }
+      }
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 5))
+  }
+
+  test("all (xs) should be < 10") {
+    val e = intercept[exceptions.TestFailedException] {
+      val xs = List(1, 2, 30)
+      all (xs) should be < 10
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("atMost (2, xs) should be >= 4") {
+    val e = intercept[exceptions.TestFailedException] {
+      val xs = List(1, 2, 3, 4, 5, 6)
+      atMost (2, xs) should be >= 4
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("atLeast (3, xs) should be < 5") {
+    val e = intercept[exceptions.TestFailedException] {
+      val xs = List(3, 4, 5, 6)
+      atLeast (3, xs) should be < 5
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("between (2, 3, xs) should (be > 1 and be < 5)") {
+    val e = intercept[exceptions.TestFailedException] {
+      val xs = List(1, 4, 5, 6)
+      between (2, 3, xs) should (be > 1 and be < 5)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("exactly (2, xs) should be <= 2") {
+    val e = intercept[exceptions.TestFailedException] {
+      val xs = List(0, 1, 2, 3, 4, 5, 6)
+      exactly (2, xs) should be <= 2
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("every (xs) should be < 10") {
+    val e = intercept[exceptions.TestFailedException] {
+      val xs = List(1, 2, 3, 4, 5, 60)
+      every (xs) should be < 10
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("exactly (2, xs) shouldEqual 2") {
+    val e = intercept[exceptions.TestFailedException] {
+      val xs = List(1, 2, 3, 4, 5, 6)
+      exactly (2, xs) shouldEqual 2
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("all (Array(1, 2, 3)) should be < 3") {
+    val e = intercept[exceptions.TestFailedException] {
+      all (Array(1, 2, 3)) should be < 3
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("all (js) should be < 5") {
+    val e = intercept[exceptions.TestFailedException] {
+      val js = List(1, 2, 3, 4, 5).asJava
+      all (js) should be < 5
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""atLeast(1, jmap) shouldBe Entry("b", 2)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      val jmap = Map("a" -> 1, "bee" -> 2).asJava
+      atLeast(1, jmap) shouldBe Entry("b", 2)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""atLeast(2, "hello, world!") shouldBe 'w'""") {
+    val e = intercept[exceptions.TestFailedException] {
+      atLeast(2, "hello, world!") shouldBe 'w'
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
 
   // Single-element collections 
 
+  test("set.loneElement should be <= 10") {
+    val e = intercept[exceptions.TestFailedException] {
+      val set = Set(1, 2)
+      set.loneElement should be <= 10
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
   // Java collections and maps 
+
+  test("javaCollection should be ('empty)") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaCollection = List(1, 2, 3, 4, 5).asJava
+      javaCollection should be ('empty)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("javaMap should be ('empty)") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaMap = Map("a" -> 1, "bee" -> 2).asJava
+      javaMap should be ('empty)
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("javaList should have length 9") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaList = List(1, 2, 3, 4, 5).asJava
+      javaList should have length 9
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("javaMap should have size 20") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaMap = Map("a" -> 1, "bee" -> 2).asJava
+      javaMap should have size 20
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("javaSet should have size 90") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaSet = Set("a", "bee").asJava
+      javaSet should have size 90
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""javaCollection should contain ("five")""") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaCollection = List("a", "bee").asJava
+      javaCollection should contain ("five")
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("javaMap should contain (Entry(2, 3))") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaMap = Map(2 -> 1, 3 -> 2).asJava
+      javaMap should contain (Entry(2, 3))
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("javaMap should contain oneOf (Entry(2, 3), Entry(3, 4))") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaMap = Map(2 -> 1, 3 -> 2).asJava
+      javaMap should contain oneOf (Entry(2, 3), Entry(3, 4))
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("javaMap should contain key 1") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaMap = Map(2 -> 1, 3 -> 2).asJava
+      javaMap should contain key 1
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""javaMap should contain value "Yowza"""") {
+    val e = intercept[exceptions.TestFailedException] {
+      val javaMap = Map(2 -> "Boy", 3 -> "Howdy").asJava
+      javaMap should contain value "Yowza"
+    }
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
 
   // Strings and Arrays as collections 
 
