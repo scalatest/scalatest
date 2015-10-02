@@ -42,7 +42,7 @@ final class ResultOfBeWordForAType[T](clazz: Class[T]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 1
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 14
+    //SCALATESTJS-ONLY val stackDepth = 10
     try {
       checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
       indicateSuccess(Resources.exceptionThrown(clazz.getName))
