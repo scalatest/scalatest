@@ -340,7 +340,7 @@ private[scalatest] object MatchersHelper {
         // SKIP-SCALATESTJS-START
         val stackDepth = 0
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepth = 13
+        //SCALATESTJS-ONLY val stackDepth = 11
         throw newTestFailedException(message, Some(u), stackDepth)
       }
     }
