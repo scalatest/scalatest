@@ -420,32 +420,135 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     val e = intercept[exceptions.TestFailedException] {
       an [IndexOutOfBoundsException] should be thrownBy "hi".charAt(1)
     }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""a [IndexOutOfBoundsException] should be thrownBy "hi".charAt(1)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      a [IndexOutOfBoundsException] should be thrownBy "hi".charAt(1)
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""an [IndexOutOfBoundsException] shouldBe thrownBy { "hi".charAt(1) }""") {
+    val e = intercept[exceptions.TestFailedException] {
+      an [IndexOutOfBoundsException] shouldBe thrownBy { "hi".charAt(1) }
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""a [IndexOutOfBoundsException] shouldBe thrownBy { "hi".charAt(1) }""") {
+    val e = intercept[exceptions.TestFailedException] {
+      a [IndexOutOfBoundsException] shouldBe thrownBy { "hi".charAt(1) }
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""an [IndexOutOfBoundsException] should (be thrownBy { "hi".charAt(1) })""") {
+    val e = intercept[exceptions.TestFailedException] {
+      an [IndexOutOfBoundsException] should (be thrownBy { "hi".charAt(1) })
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""a [IndexOutOfBoundsException] should (be thrownBy { "hi".charAt(1) })""") {
+    val e = intercept[exceptions.TestFailedException] {
+      a [IndexOutOfBoundsException] should (be thrownBy { "hi".charAt(1) })
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
   }
 
   test("""the [ArithmeticException] thrownBy 0 / 1 should have message "/ by zero"""") {
     val e = intercept[exceptions.TestFailedException] {
       the [ArithmeticException] thrownBy 0 / 1 should have message "/ by zero"
     }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("""the [ArithmeticException] thrownBy 1 / 0 should have message "/ by one"""") {
+  def throwEvenInJavaScript: Int = { throw new Exception("ensure an exception on Javascript too") }
+
+  test("""the [ArithmeticException] thrownBy throwEvenInJavaScript should have message "/ by one"""") {
     val e = intercept[exceptions.TestFailedException] {
-      the [ArithmeticException] thrownBy 1 / 0 should have message "/ by one"
+      the [ArithmeticException] thrownBy throwEvenInJavaScript should have message "/ by one"
     }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  test("noException should be thrownBy 1 / 0") {
+  test("noException should be thrownBy throwEvenInJavaScript") {
     val e = intercept[exceptions.TestFailedException] {
-      noException should be thrownBy 1 / 0
+      noException should be thrownBy throwEvenInJavaScript
     }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
     e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
-    e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
+  }
+
+  test("""an [IndexOutOfBoundsException] must be thrownBy "hi".charAt(1)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      an [IndexOutOfBoundsException] must be thrownBy "hi".charAt(1)
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""a [IndexOutOfBoundsException] must be thrownBy "hi".charAt(1)""") {
+    val e = intercept[exceptions.TestFailedException] {
+      a [IndexOutOfBoundsException] must be thrownBy "hi".charAt(1)
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""an [IndexOutOfBoundsException] mustBe thrownBy { "hi".charAt(1) }""") {
+    val e = intercept[exceptions.TestFailedException] {
+      an [IndexOutOfBoundsException] mustBe thrownBy { "hi".charAt(1) }
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""a [IndexOutOfBoundsException] mustBe thrownBy { "hi".charAt(1) }""") {
+    val e = intercept[exceptions.TestFailedException] {
+      a [IndexOutOfBoundsException] mustBe thrownBy { "hi".charAt(1) }
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""an [IndexOutOfBoundsException] must (be thrownBy { "hi".charAt(1) })""") {
+    val e = intercept[exceptions.TestFailedException] {
+      an [IndexOutOfBoundsException] must (be thrownBy { "hi".charAt(1) })
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("""a [IndexOutOfBoundsException] must (be thrownBy { "hi".charAt(1) })""") {
+    val e = intercept[exceptions.TestFailedException] {
+      a [IndexOutOfBoundsException] must (be thrownBy { "hi".charAt(1) })
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
+  }
+
+  test("noException must be thrownBy throwEvenInJavaScript") {
+    val e = intercept[exceptions.TestFailedException] {
+      noException must be thrownBy throwEvenInJavaScript
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+    e.failedCodeFileName should be (Some("MatcherStackDepthSpec.scala"))
   }
 }
 
+/*
+    println("\n!!!!!!!!!!\n")
+    e.printStackTrace()
+    println("\n!!!!!!!!!!\n")
+*/
