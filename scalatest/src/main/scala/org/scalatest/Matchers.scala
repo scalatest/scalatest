@@ -4439,7 +4439,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     private[scalatest] val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 17
+    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
 
     /**
      * This method enables the following syntax: 
