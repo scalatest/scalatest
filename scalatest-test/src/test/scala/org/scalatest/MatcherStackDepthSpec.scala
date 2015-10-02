@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 package org.scalatest
+
 import SharedHelpers.thisLineNumber
+import matchers.BePropertyMatcher
+import matchers.BePropertyMatchResult
 
 class MatcherStackDepthSpec extends FunSuite with Matchers {
+
+  // Checking equality
 
   test("0 should equal (1)") {
     val e = intercept[exceptions.TestFailedException] {
@@ -53,6 +58,8 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
   }
 
+  // Checking size and length
+
   test(""""abc" should have length (1)""") {
     val e = intercept[exceptions.TestFailedException] {
       "abc" should have length (1)
@@ -66,6 +73,8 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     }
     e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
   }
+
+  // Checking strings 
 
   test(""""abc" should startWith ("def")""") {
     val e = intercept[exceptions.TestFailedException] {
@@ -143,4 +152,54 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     }
     e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
   }
+
+  test(""""abc" shouldBe empty""") {
+    val e = intercept[exceptions.TestFailedException] {
+      "abc" shouldBe empty
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  // Greater and less than 
+ 
+  test("10 should be < 7") {
+    val e = intercept[exceptions.TestFailedException] {
+      10 should be < 7
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("1 should be > 7") {
+    val e = intercept[exceptions.TestFailedException] {
+      1 should be > 7
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("10 should be <= 7") {
+    val e = intercept[exceptions.TestFailedException] {
+      10 should be <= 7
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  test("1 should be >= 7") {
+    val e = intercept[exceptions.TestFailedException] {
+      1 should be >= 7
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
+  // Checking Boolean properties with be
+
+  test(""""howdy should be an emptyString""") {
+    object emptyString extends BePropertyMatcher[String] {
+      def apply(left: String) = BePropertyMatchResult(left.isEmpty, "empty string")
+    }
+    val e = intercept[exceptions.TestFailedException] {
+      "howdy" should be an emptyString
+    }
+    e.failedCodeLineNumber should be (Some(thisLineNumber - 2))
+  }
+
 }
