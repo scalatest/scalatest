@@ -1155,6 +1155,24 @@ class FunSuiteSpec extends FunSpec {
 
     }
 
+    it("should support expectations") {
+      class TestSpec extends FunSuite with Expectations {
+        test("fail scenario") {
+          expect(1 === 2)
+        }
+        test("nested fail scenario") {
+          expect(1 === 2)
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
+    }
   }
   
   describe("when failure happens") {

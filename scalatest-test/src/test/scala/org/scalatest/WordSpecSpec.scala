@@ -1474,6 +1474,26 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       }
 
     }
+    it("should support expectations") {
+      class TestSpec extends WordSpec with Expectations {
+        "it should do something" in {
+          expect(1 === 2)
+        }
+        "a widget" should {
+          "do something" in {
+            expect(1 === 2)
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "WordSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "WordSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
+    }
   }
   
   describe("when failure happens") {

@@ -1426,6 +1426,24 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
+    it("should support expectations") {
+      class TestSpec extends FlatSpec with Expectations {
+        "a widget" should "do something"  in {
+          expect(1 === 2)
+        }
+        it should "do something else" in {
+          expect(1 === 2)
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FlatSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
+    }
   }
   
   describe("when failure happens") {

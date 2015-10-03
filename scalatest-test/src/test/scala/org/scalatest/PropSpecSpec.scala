@@ -1025,6 +1025,24 @@ class PropSpecSpec extends FunSpec {
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
+    it("should support expectations") {
+      class TestSpec extends PropSpec with Expectations {
+        property("fail scenario") {
+          expect(1 === 2)
+        }
+        property("nested fail scenario") {
+          expect(1 === 2)
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "PropSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "PropSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
+    }
   }
   
   describe("when failure happens") {
