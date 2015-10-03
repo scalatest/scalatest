@@ -270,7 +270,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
 
       PastOutcome(
         theTest.testFun match {
-          case transformer: org.scalatest.fixture.Transformer[_] =>
+          case transformer: org.scalatest.fixture.OldTransformer[_] =>
             transformer.exceptionalTestFun match {
               case wrapper: NoArgTestWrapper[_, _] =>
                 withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))

@@ -143,7 +143,7 @@ trait WordSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistering.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, OldTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistering.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -177,7 +177,7 @@ trait WordSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecRegistering.scala", methodName, 4, -3, None, testTags: _*)
+    engine.registerIgnoredTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecRegistering.scala", methodName, 4, -3, None, testTags: _*)
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {

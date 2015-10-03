@@ -161,7 +161,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, OldTransformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -2092,7 +2092,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, testTags: _*)
+    engine.registerIgnoredTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
   /**
@@ -2127,7 +2127,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
     def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
       PastOutcome(
         theTest.testFun match {
-          case transformer: org.scalatest.fixture.Transformer[_] =>
+          case transformer: org.scalatest.fixture.OldTransformer[_] =>
             transformer.exceptionalTestFun match {
               case wrapper: NoArgTestWrapper[_, _] =>
                 withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))

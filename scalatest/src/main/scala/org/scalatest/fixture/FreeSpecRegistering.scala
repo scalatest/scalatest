@@ -148,7 +148,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, OldTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -181,7 +181,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
+    engine.registerIgnoredTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
   /*
  private def registerBranch(description: String, childPrefix: Option[String], fun: () => Unit) {
@@ -539,7 +539,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
     def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
       PastOutcome(
         theTest.testFun match {
-          case transformer: org.scalatest.fixture.Transformer[_] =>
+          case transformer: org.scalatest.fixture.OldTransformer[_] =>
             transformer.exceptionalTestFun match {
               case wrapper: NoArgTestWrapper[_, _] =>
                 withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))

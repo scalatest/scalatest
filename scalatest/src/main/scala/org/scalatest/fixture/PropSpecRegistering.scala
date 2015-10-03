@@ -217,7 +217,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
     def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
       PastOutcome(
         theTest.testFun match {
-          case transformer: org.scalatest.fixture.Transformer[_] =>
+          case transformer: org.scalatest.fixture.OldTransformer[_] =>
             transformer.exceptionalTestFun match {
               case wrapper: NoArgTestWrapper[_, _] =>
                 withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))

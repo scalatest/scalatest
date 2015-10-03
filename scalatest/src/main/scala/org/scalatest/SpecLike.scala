@@ -143,9 +143,9 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
                 case None => methodTags.contains(Suite.IgnoreAnnotation)
               }
               if (isIgnore)
-                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, OldTransformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, OldTransformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
             }
           }
         }

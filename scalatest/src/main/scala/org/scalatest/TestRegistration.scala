@@ -13,35 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+package org.scalatest
 
-import org.scalatest.OutcomeOf._
-import org.scalatest.{PastOutcome, AsyncOutcome, Tag}
-
-trait OldTestRegistration { theSuite: Suite =>
-
-  /**
-   * The return type of the registered test.
-   */
-  type Registration
-
-  /**
-   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
-   *
-   * @param testFun test function
-   * @return function that returns `AsyncOutcome`
-   */
-  private[scalatest] def transformToOutcome(testFun: FixtureParam => Registration): FixtureParam => AsyncOutcome = {
-    OldTransformer(testFun)
-    // The following does not work, why??
-    /*(fixture: FixtureParam) => {
-      PastOutcome {
-        outcomeOf {
-          testFun(fixture)
-        }
-      }
-    }*/
-  }
+/**
+ * Trait for test registration support.
+ */
+trait TestRegistration { theSuite: Suite =>
 
   /**
    * Register a test.
@@ -50,7 +27,7 @@ trait OldTestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration)
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit)
 
   /**
    * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
@@ -60,6 +37,6 @@ trait OldTestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration)
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit)
 
 }
