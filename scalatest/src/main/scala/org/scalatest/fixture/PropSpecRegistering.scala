@@ -41,13 +41,13 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
-  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
+  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
 
-  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
+  protected[scalatest] def getEngine: OldFixtureEngine[FixtureParam] = engine
 
   import engine._
 

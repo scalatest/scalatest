@@ -35,7 +35,7 @@ trait AsyncFunSuiteLike extends FunSuiteRegistering[Future[Assertion]] with Asyn
       )/* fills in executionContext here */
     }
 
-  private final val engine: Engine = getEngine
+  private final val engine: OldEngine = getEngine
 
   import engine._
 

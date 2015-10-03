@@ -36,7 +36,7 @@ trait AsyncFreeSpecLike extends FreeSpecRegistering[Future[Assertion]] with Asyn
       )
     }
 
-  private final val engine: FixtureEngine[FixtureParam] = getEngine
+  private final val engine: OldFixtureEngine[FixtureParam] = getEngine
 
   import engine._
 

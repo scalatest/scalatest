@@ -43,7 +43,7 @@ import org.scalactic.Requirements._
 @Finders(Array("org.scalatest.finders.SpecFinder"))
 trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine(Resources.concurrentSpecMod, "SpecLike")
+  private final val engine = new OldEngine(Resources.concurrentSpecMod, "SpecLike")
   import engine._
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false

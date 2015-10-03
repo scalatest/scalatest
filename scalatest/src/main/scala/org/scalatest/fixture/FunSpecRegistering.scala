@@ -48,13 +48,13 @@ import org.scalatest.exceptions.TestRegistrationClosedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
-  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
+  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 
-  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
+  protected[scalatest] def getEngine: OldFixtureEngine[FixtureParam] = engine
 
   import engine._
 

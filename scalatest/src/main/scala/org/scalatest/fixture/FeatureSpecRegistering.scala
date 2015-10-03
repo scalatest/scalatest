@@ -47,13 +47,13 @@ import org.scalatest.exceptions.NotAllowedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
-  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
+  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
 
-  protected[scalatest] def getEngine: FixtureEngine[FixtureParam] = engine
+  protected[scalatest] def getEngine: OldFixtureEngine[FixtureParam] = engine
 
   import engine._
 

@@ -46,7 +46,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
-  private final val engine = PathEngine.getEngine()
+  private final val engine = OldPathEngine.getEngine()
   import engine._
 
   // SKIP-SCALATESTJS-START

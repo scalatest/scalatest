@@ -44,13 +44,13 @@ import Suite.autoTagClassAnnotations
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait WordSpecRegistering[R] extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait WordSpecRegistering[R] extends Suite with OldTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
-  private final val engine = new Engine(Resources.concurrentWordSpecMod, "WordSpecLike")
+  private final val engine = new OldEngine(Resources.concurrentWordSpecMod, "WordSpecLike")
 
-  protected[scalatest] def getEngine: Engine = engine
+  protected[scalatest] def getEngine: OldEngine = engine
 
   import engine._
 

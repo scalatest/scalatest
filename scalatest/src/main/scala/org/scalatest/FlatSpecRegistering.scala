@@ -46,13 +46,13 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait FlatSpecRegistering[R] extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
-  private final val engine = new Engine(Resources.concurrentSpecMod, "Spec")
+  private final val engine = new OldEngine(Resources.concurrentSpecMod, "Spec")
 
-  protected[scalatest] def getEngine: Engine = engine
+  protected[scalatest] def getEngine: OldEngine = engine
 
   import engine._
 

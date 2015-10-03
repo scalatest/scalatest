@@ -35,7 +35,7 @@ trait AsyncWordSpecLike extends WordSpecRegistering[Future[Assertion]] with Asyn
       )
     }
 
-  private final val engine: Engine = getEngine
+  private final val engine: OldEngine = getEngine
 
   import engine._
 

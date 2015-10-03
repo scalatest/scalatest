@@ -17,7 +17,7 @@ package org.scalatest.path
 
 import org.scalatest.words.BehaveWord
 import scala.collection.immutable.ListSet
-import org.scalatest.PathEngine.isInTargetPath
+import org.scalatest.OldPathEngine.isInTargetPath
 import org.scalatest._
 import org.scalatest.Suite.autoTagClassAnnotations
 
@@ -47,7 +47,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
-  private final val engine = PathEngine.getEngine()
+  private final val engine = OldPathEngine.getEngine()
   import engine._
 
   // SKIP-SCALATESTJS-START

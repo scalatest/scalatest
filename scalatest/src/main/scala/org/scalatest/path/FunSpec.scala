@@ -17,7 +17,7 @@ package org.scalatest.path
 
 import org.scalatest.words.BehaveWord
 import scala.collection.immutable.ListSet
-import org.scalatest.PathEngine.isInTargetPath
+import org.scalatest.OldPathEngine.isInTargetPath
 import org.scalatest._
 import org.scalatest.Suite.autoTagClassAnnotations
 

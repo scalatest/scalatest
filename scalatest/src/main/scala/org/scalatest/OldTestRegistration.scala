@@ -20,7 +20,7 @@ import org.scalatest.OutcomeOf._
 /**
  * Trait for test registration support.
  */
-trait TestRegistration { theSuite: Suite =>
+trait OldTestRegistration { theSuite: Suite =>
 
   /**
    * The return type of the registered test.

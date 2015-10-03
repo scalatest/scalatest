@@ -18,7 +18,7 @@ package org.scalatest.fixture
 import org.scalatest.OutcomeOf._
 import org.scalatest.{PastOutcome, AsyncOutcome, Tag}
 
-trait TestRegistration { theSuite: Suite =>
+trait OldTestRegistration { theSuite: Suite =>
 
   /**
    * The return type of the registered test.

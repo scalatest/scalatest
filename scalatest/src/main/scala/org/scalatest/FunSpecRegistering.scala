@@ -42,13 +42,13 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecRegistering[R] extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   type Registration = R
 
-  private final val engine = new Engine(Resources.concurrentSpecMod, "FunSpec")
+  private final val engine = new OldEngine(Resources.concurrentSpecMod, "FunSpec")
 
-  protected[scalatest] def getEngine: Engine = engine
+  protected[scalatest] def getEngine: OldEngine = engine
 
   import engine._
 

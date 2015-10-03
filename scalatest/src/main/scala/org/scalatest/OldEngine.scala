@@ -24,7 +24,7 @@ import org.scalatest.Suite._
 import org.scalatest.events.LineInFile
 import org.scalatest.events.SeeStackDepthException
 import scala.annotation.tailrec
-import org.scalatest.PathEngine.isInTargetPath
+import org.scalatest.OldPathEngine.isInTargetPath
 import org.scalatest.Suite.checkChosenStyles
 import org.scalatest.events.Event
 import org.scalatest.events.Location
@@ -38,7 +38,7 @@ import org.scalactic.exceptions.NullArgumentException
 import scala.util.{Failure, Success}
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
-private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
+private[scalatest] sealed abstract class OldSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
 
   sealed abstract class Node(val parentOption: Option[Branch]) {
     def indentationLevel: Int = {
@@ -836,16 +836,16 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   }
 }
 
-private[scalatest] class Engine(concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends SuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+private[scalatest] class OldEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
+    extends OldSuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
 
-private[scalatest] class FixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends SuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+private[scalatest] class OldFixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String, simpleClassName: String)
+    extends OldSuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
 
 
 
-private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends Engine(concurrentBundleModMessageFun, simpleClassName) { thisEngine =>
+private[scalatest] class OldPathEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
+    extends OldEngine(concurrentBundleModMessageFun, simpleClassName) { thisEngine =>
  
   /*
   Anything that the initial instance sets will need to be made volatile or atomic.
@@ -903,7 +903,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
         var currentInstance: Suite = callingInstance
         while (nextTargetPath.isDefined) {
           targetPath = Some(nextTargetPath.get)
-          PathEngine.setEngine(thisEngine)
+          OldPathEngine.setEngine(thisEngine)
           currentPath = List.empty[Int]
           usedPathSet = Set.empty[String]
           targetLeafHasBeenReached = false
@@ -1176,20 +1176,20 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
   }
 }
 
-private[scalatest] object PathEngine {
+private[scalatest] object OldPathEngine {
   
-   private[this] val engine = new ThreadLocal[PathEngine]
+   private[this] val engine = new ThreadLocal[OldPathEngine]
 
-   def setEngine(en: PathEngine) {
+   def setEngine(en: OldPathEngine) {
      if (engine.get != null)
        throw new IllegalStateException("Engine was already defined when setEngine was called")
      engine.set(en)
    }
 
-   def getEngine(): PathEngine = {
+   def getEngine(): OldPathEngine = {
      val en = engine.get
      engine.set(null)
-     if (en == null) (new PathEngine(Resources.concurrentSpecMod, "Spec")) else en
+     if (en == null) (new OldPathEngine(Resources.concurrentSpecMod, "Spec")) else en
    }
    
   /*
