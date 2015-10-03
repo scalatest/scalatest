@@ -44,7 +44,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting with Compatibility { thisSuite =>
   
   private final val engine = PathEngine.getEngine()
   import engine._
@@ -115,7 +115,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Assertion) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -144,7 +144,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Assertion) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -186,7 +186,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit) {
+    def in(testFun: => Assertion) {
       registerTestToRun(specText, tags, "in", testFun _)
     }
 
@@ -237,7 +237,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * be executed. Instead, a <code>TestIgnored</code> event will be fired.
      * </p>
      */
-    def ignore(testFun: => Unit) {
+    def ignore(testFun: => Assertion) {
       registerTestToIgnore(specText, tags, "ignore", testFun _)
     }
   }       
@@ -301,7 +301,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def in(f: => Unit) {
+    def in(f: => Assertion) {
       registerTestToRun(string, List(), "in", f _)
     }
 
@@ -325,7 +325,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * be executed. Instead, a <code>TestIgnored</code> event will be fired.
      * </p>
      */
-    def ignore(f: => Unit) {
+    def ignore(f: => Assertion) {
       registerTestToIgnore(string, List(), "ignore", f _)
     }
 

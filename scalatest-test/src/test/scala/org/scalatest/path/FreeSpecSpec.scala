@@ -962,6 +962,28 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
       assert(dura > 80, "duration was: " + dura)
     }
     // SKIP-SCALATESTJS-END
+
+    it("should support expectations") {
+      class TestSpec extends PathFreeSpec with Expectations {
+        "it should do something" in {
+          expect(1 === 2)
+        }
+        "a widget" - {
+          "should do something else" in {
+            expect(1 === 2)
+          }
+        }
+        override def newInstance = new TestSpec
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FreeSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 14)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FreeSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 12)
+    }
   }
   
   describe("when failure happens") {
