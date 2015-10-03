@@ -46,7 +46,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
-  private final val engine = OldPathEngine.getEngine()
+  private final val engine = PathEngine.getEngine()
   import engine._
 
   // SKIP-SCALATESTJS-START
@@ -122,7 +122,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    handleTest(thisSuite, specText, OldTransformer(testFun), Resources.itCannotAppearInsideAnotherIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    handleTest(thisSuite, specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -151,7 +151,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    handleIgnoredTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    handleIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -213,7 +213,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement) {
+    def is(testFun: => PendingNothing) {
       registerTestToRun(specText, tags, "is", testFun _)
     }
 
@@ -352,7 +352,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingStatement) {
+    def is(f: => PendingNothing) {
       registerTestToRun(string, List(), "is", f _)
     }
 
@@ -533,9 +533,9 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
   final protected override def runTest(testName: String, args: Args): Status = {
 
     ensureTestResultsRegistered(thisSuite)
-
-    def dontInvokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
-      PastOutcome(theTest.testFun().toOutcome)
+    
+    def dontInvokeWithFixture(theTest: TestLeaf): Outcome = {
+      theTest.testFun()
     }
 
     runTestImpl(thisSuite, testName, args, true, dontInvokeWithFixture)
