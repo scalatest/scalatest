@@ -1152,7 +1152,6 @@ class FunSuiteSpec extends FunSpec {
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
-
     }
 
     it("should support expectations") {

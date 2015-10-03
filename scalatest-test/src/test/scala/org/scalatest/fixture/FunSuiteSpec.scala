@@ -1326,7 +1326,26 @@ class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
-
+    }
+    it("should support expectations") {
+      class TestSpec extends FunSuite with Expectations {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        test("fail scenario") { fixture =>
+          expect(1 === 2)
+        }
+        test("nested fail scenario") { fixture =>
+          expect(1 === 2)
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
     }
   }
   

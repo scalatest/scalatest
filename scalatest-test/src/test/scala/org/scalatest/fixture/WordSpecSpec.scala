@@ -1672,7 +1672,28 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         assert(trce.failedCodeLineNumber.get === thisLineNumber - 24)
         assert(trce.message == Some("Test cannot be nested inside another test."))
       }
-
+    }
+    it("should support expectations") {
+      class TestSpec extends WordSpec with Expectations {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        "it should do something" in { fixture =>
+          expect(1 === 2)
+        }
+        "a widget" should {
+          "do something" in { fixture =>
+            expect(1 === 2)
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "WordSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "WordSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
     }
   }
   

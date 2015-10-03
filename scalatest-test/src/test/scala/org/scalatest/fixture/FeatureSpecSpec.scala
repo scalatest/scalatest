@@ -1256,6 +1256,28 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         assert(caught.getMessage === "Feature clauses cannot be nested.")
       }
     }
+    it("should support expectations") {
+      class TestSpec extends FeatureSpec with Expectations {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        scenario("fail scenario") { fixture =>
+          expect(1 === 2)
+        }
+        feature("a feature") {
+          scenario("nested fail scenario") { fixture =>
+            expect(1 === 2)
+          }
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s1 = new TestSpec
+      s1.run(None, Args(rep))
+      assert(rep.testFailedEventsReceived.size === 2)
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FeatureSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 13)
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FeatureSpecSpec.scala")
+      assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
+    }
   }
   it("should pass the correct test name in the OneArgTest passed to withFixture") {
     val a = new FeatureSpec {
