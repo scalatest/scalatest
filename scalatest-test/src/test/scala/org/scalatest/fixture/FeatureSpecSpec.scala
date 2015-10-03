@@ -1264,7 +1264,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
           expect(1 === 2)
         }
         feature("a feature") {
-          scenario("nested fail scenario") { fixture =>
+          scenario("nested fail scenario") { () =>
             expect(1 === 2)
           }
         }

@@ -1677,7 +1677,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends WordSpec with Expectations {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "it should do something" in { fixture =>
+        "it should do something" in { () =>
           expect(1 === 2)
         }
         "a widget" should {

@@ -1239,7 +1239,7 @@ class FunSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends FunSpec with Expectations {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        it("fail scenario") { fixture =>
+        it("fail scenario") { () =>
           expect(1 === 2)
         }
         describe("a feature") {

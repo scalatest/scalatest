@@ -1264,7 +1264,7 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       class TestSpec extends PropSpec with Expectations {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        property("fail scenario") { fixture =>
+        property("fail scenario") { () =>
           expect(1 === 2)
         }
         property("nested fail scenario") { fixture =>

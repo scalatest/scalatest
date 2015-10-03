@@ -1735,7 +1735,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         "a widget" should "do something"  in { fixture =>
           expect(1 === 2)
         }
-        it should "do something else" in { fixture =>
+        it should "do something else" in { () =>
           expect(1 === 2)
         }
       }

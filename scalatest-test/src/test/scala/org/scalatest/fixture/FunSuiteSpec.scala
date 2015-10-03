@@ -1334,7 +1334,7 @@ class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
         test("fail scenario") { fixture =>
           expect(1 === 2)
         }
-        test("nested fail scenario") { fixture =>
+        test("nested fail scenario") { () =>
           expect(1 === 2)
         }
       }
