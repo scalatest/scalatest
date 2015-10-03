@@ -43,7 +43,7 @@ import org.scalactic.Requirements._
 @Finders(Array("org.scalatest.finders.SpecFinder"))
 trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new OldEngine(Resources.concurrentSpecMod, "SpecLike")
+  private final val engine = new Engine(Resources.concurrentSpecMod, "SpecLike")
   import engine._
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false
@@ -143,9 +143,9 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
                 case None => methodTags.contains(Suite.IgnoreAnnotation)
               }
               if (isIgnore)
-                registerIgnoredTest(testName, OldTransformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, OldTransformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
             }
           }
         }
@@ -260,20 +260,18 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
 
     ensureScopesAndTestsRegistered()
 
-    def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithFixture(theTest: TestLeaf): Outcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      PastOutcome(
-        withFixture(
-          new NoArgTest {
-            val name = testData.name
-            def apply(): Outcome = { theTest.testFun().toOutcome }
-            val configMap = testData.configMap
-            val scopes = testData.scopes
-            val text = testData.text
-            val tags = testData.tags
-          }
-        )
+      withFixture(
+        new NoArgTest {
+          val name = testData.name
+          def apply(): Outcome = { theTest.testFun() }
+          val configMap = testData.configMap
+          val scopes = testData.scopes
+          val text = testData.text
+          val tags = testData.tags
+        }
       )
     }
 
