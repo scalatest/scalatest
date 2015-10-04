@@ -1458,35 +1458,35 @@ class BeWordSpec extends FunSpec with FileMocks {
     describe("thrownBy method") {
 
       it("should return ") {
-        val resultOfBeThrownBy = be thrownBy { "hi".charAt(-1)}
+        val resultOfBeThrownBy = be thrownBy { assert("hi".length == 3) }
         assert(resultOfBeThrownBy.throwables.length == 1)
         assert(resultOfBeThrownBy.throwables(0).isDefined)
-        assert(resultOfBeThrownBy.throwables(0).get.isInstanceOf[StringIndexOutOfBoundsException])
+        assert(resultOfBeThrownBy.throwables(0).get.isInstanceOf[org.scalatest.exceptions.TestFailedException])
       }
 
       it("should be composable with 1 and") {
-        val resultOfBeThrownByAndBeThrownBy = be thrownBy { "hi".charAt(-1)} and be thrownBy { "hi".charAt(2)}
+        val resultOfBeThrownByAndBeThrownBy = be thrownBy { assert("hi".length == 3) } and be thrownBy { assert("hi".length == 4) }
         assert(resultOfBeThrownByAndBeThrownBy.throwables.length == 2)
 
         assert(resultOfBeThrownByAndBeThrownBy.throwables(0).isDefined)
-        assert(resultOfBeThrownByAndBeThrownBy.throwables(0).get.isInstanceOf[StringIndexOutOfBoundsException])
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(0).get.isInstanceOf[org.scalatest.exceptions.TestFailedException])
 
         assert(resultOfBeThrownByAndBeThrownBy.throwables(1).isDefined)
-        assert(resultOfBeThrownByAndBeThrownBy.throwables(1).get.isInstanceOf[StringIndexOutOfBoundsException])
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(1).get.isInstanceOf[org.scalatest.exceptions.TestFailedException])
       }
 
       it("should be composable with 2 and") {
-        val resultOfBeThrownByAndBeThrownBy = be thrownBy { "hi".charAt(-1)} and be thrownBy { "hi".charAt(2) } and be thrownBy { "hi".charAt(3)}
+        val resultOfBeThrownByAndBeThrownBy = be thrownBy { assert("hi".length == 3) } and be thrownBy { assert("hi".length == 4) } and be thrownBy { assert("hi".length == 5) }
         assert(resultOfBeThrownByAndBeThrownBy.throwables.length == 3)
 
         assert(resultOfBeThrownByAndBeThrownBy.throwables(0).isDefined)
-        assert(resultOfBeThrownByAndBeThrownBy.throwables(0).get.isInstanceOf[StringIndexOutOfBoundsException])
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(0).get.isInstanceOf[org.scalatest.exceptions.TestFailedException])
 
         assert(resultOfBeThrownByAndBeThrownBy.throwables(1).isDefined)
-        assert(resultOfBeThrownByAndBeThrownBy.throwables(1).get.isInstanceOf[StringIndexOutOfBoundsException])
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(1).get.isInstanceOf[org.scalatest.exceptions.TestFailedException])
 
         assert(resultOfBeThrownByAndBeThrownBy.throwables(2).isDefined)
-        assert(resultOfBeThrownByAndBeThrownBy.throwables(2).get.isInstanceOf[StringIndexOutOfBoundsException])
+        assert(resultOfBeThrownByAndBeThrownBy.throwables(2).get.isInstanceOf[org.scalatest.exceptions.TestFailedException])
       }
     }
   }

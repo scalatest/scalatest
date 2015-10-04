@@ -29,7 +29,7 @@ final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
   // SKIP-SCALATESTJS-START
   private val stackDepth = 0
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private val stackDepth = 11
+  //SCALATESTJS-ONLY private val stackDepth = 10
   
   /**
    * This method enables the following syntax: 
