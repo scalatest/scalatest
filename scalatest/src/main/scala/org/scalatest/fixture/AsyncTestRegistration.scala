@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.fixture
 
 import org.scalatest.OutcomeOf._
+import org.scalatest.{PastOutcome, AsyncOutcome, Tag}
+import scala.concurrent.Future
+import org.scalatest.Assertion
 
-/**
- * Trait for test registration support.
- */
-trait OldTestRegistration { theSuite: Suite =>
-
-  /**
-   * The return type of the registered test.
-   */
-  type Registration
+trait AsyncTestRegistration { theSuite: Suite =>
 
   /**
    * Transform the test outcome, `Registration` type to `AsyncOutcome`.
@@ -33,11 +28,17 @@ trait OldTestRegistration { theSuite: Suite =>
    * @param testFun test function
    * @return function that returns `AsyncOutcome`
    */
-  private[scalatest] def transformToOutcome(testFun: => Registration): () => AsyncOutcome =
-    () =>
+  private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome = {
+    OldTransformer(testFun)
+    // The following does not work, why??
+    /*(fixture: FixtureParam) => {
       PastOutcome {
-        outcomeOf { testFun }
+        outcomeOf {
+          testFun(fixture)
+        }
       }
+    }*/
+  }
 
   /**
    * Register a test.
@@ -46,7 +47,7 @@ trait OldTestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Registration)
+  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
 
   /**
    * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
@@ -56,6 +57,5 @@ trait OldTestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration)
-
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
 }

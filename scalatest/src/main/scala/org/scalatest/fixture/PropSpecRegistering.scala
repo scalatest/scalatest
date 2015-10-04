@@ -18,6 +18,7 @@ package org.scalatest.fixture
 import org.scalatest._
 import scala.collection.immutable.ListSet
 import org.scalatest.Suite.autoTagClassAnnotations
+import scala.concurrent.Future
 
 /**
  * Implementation trait for class <code>fixture.PropSpec</code>, which is
@@ -41,9 +42,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
-
-  type Registration = R
+trait PropSpecRegistering extends Suite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
 
@@ -95,7 +94,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -103,7 +102,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
     engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -112,7 +111,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
   }
 
   class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Registration) {
+    def apply(testFun: FixtureParam => Future[Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -121,7 +120,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
-    def apply(testFun: () => Registration) {
+    def apply(testFun: () => Future[Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -150,7 +149,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
     new ResultOfPropertyInvocation(testName, testTags: _*)
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Registration) {
+    def apply(testFun: FixtureParam => Future[Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -159,7 +158,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
       engine.registerIgnoredTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
-    def apply(testFun: () => Registration) {
+    def apply(testFun: () => Future[Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3

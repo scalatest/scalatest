@@ -17,6 +17,7 @@ package org.scalatest
 
 import scala.collection.immutable.ListSet
 import Suite.autoTagClassAnnotations
+import scala.concurrent.Future
 
 /**
  * Implementation trait for class <code>PropSpec</code>, which represents
@@ -39,9 +40,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
-
-  type Registration = R
+trait PropSpecRegistering extends Suite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentPropSpecMod, "PropSpec")
 
@@ -91,7 +90,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -99,7 +98,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
     engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -121,7 +120,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
    */
-  protected def property(testName: String, testTags: Tag*)(testFun: => Registration) {
+  protected def property(testName: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -146,7 +145,7 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
-  protected def ignore(testName: String, testTags: Tag*)(testFun: => Registration) {
+  protected def ignore(testName: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2

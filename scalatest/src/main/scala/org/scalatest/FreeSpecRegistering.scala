@@ -24,6 +24,7 @@ import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
+import scala.concurrent.Future
 
 /**
  * Implementation trait for class <code>FreeSpec</code>, which
@@ -48,9 +49,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
-
-  type Registration = R
+trait FreeSpecRegistering extends Suite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentFreeSpecMod, "FreeSpec")
 
@@ -100,7 +99,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -108,7 +107,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
     engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -135,14 +134,14 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Registration = testFun()
+    def transformToOutcomeParam: Future[Assertion] = testFun()
     engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
@@ -169,14 +168,14 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Registration) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Registration = testFun()
+    def transformToOutcomeParam: Future[Assertion] = testFun()
     engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
@@ -218,7 +217,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Registration) {
+    def in(testFun: => Future[Assertion]) {
       registerTestToRun(specText, tags, "in", testFun _)
     }
 
@@ -258,7 +257,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Registration) {
+    def ignore(testFun: => Future[Assertion]) {
       registerTestToIgnore(specText, tags, "ignore", testFun _)
     }
   }
@@ -315,7 +314,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(f: => Registration) {
+    def in(f: => Future[Assertion]) {
       registerTestToRun(string, List(), "in", f _)
     }
 
@@ -335,7 +334,7 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(f: => Registration) {
+    def ignore(f: => Future[Assertion]) {
       registerTestToIgnore(string, List(), "ignore", f _)
     }
 

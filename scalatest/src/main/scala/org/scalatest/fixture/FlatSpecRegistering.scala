@@ -24,6 +24,7 @@ import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
+import scala.concurrent.Future
 
 /**
  * Implementation trait for class <code>fixture.FlatSpec</code>, which is
@@ -47,9 +48,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
-
-  type Registration = R
+trait FlatSpecRegistering extends Suite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureFlatSpecMod, "FixtureFlatSpec")
 
@@ -101,7 +100,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -109,7 +108,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
     engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -136,7 +135,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Registration) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[Assertion]) {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
@@ -295,8 +294,8 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Registration) {
-      registerTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper[FixtureParam, Registration](testFun))
+    def in(testFun: () => Future[Assertion]) {
+      registerTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper[FixtureParam, Future[Assertion]](testFun))
     }
 
     /**
@@ -318,7 +317,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Registration) {
+    def in(testFun: FixtureParam => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun)
     }
 
@@ -366,7 +365,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Registration) {
+    def ignore(testFun: () => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -391,7 +390,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Registration) {
+    def ignore(testFun: FixtureParam => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun)
     }
   }
@@ -464,7 +463,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Registration) {
+    def in(testFun: () => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -487,7 +486,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Registration) {
+    def in(testFun: FixtureParam => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun)
     }
 
@@ -533,7 +532,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Registration) {
+    def ignore(testFun: () => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -556,7 +555,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Registration) {
+    def ignore(testFun: FixtureParam => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun)
     }
 
@@ -830,7 +829,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Registration) {
+    def in(testFun: () => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -853,7 +852,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Registration) {
+    def in(testFun: FixtureParam => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun)
     }
 
@@ -901,7 +900,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Registration) {
+    def ignore(testFun: () => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -926,7 +925,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Registration) {
+    def ignore(testFun: FixtureParam => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun)
     }
   }
@@ -999,7 +998,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Registration) {
+    def in(testFun: () => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1022,7 +1021,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Registration) {
+    def in(testFun: FixtureParam => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun)
     }
 
@@ -1068,7 +1067,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Registration) {
+    def ignore(testFun: () => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -1091,7 +1090,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Registration) {
+    def ignore(testFun: FixtureParam => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun)
     }
 
@@ -1365,7 +1364,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Registration) {
+    def in(testFun: () => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1390,7 +1389,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Registration) {
+    def in(testFun: FixtureParam => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun)
     }
 
@@ -1493,7 +1492,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Registration) {
+    def in(testFun: () => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1517,7 +1516,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Registration) {
+    def in(testFun: FixtureParam => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun)
     }
 
@@ -1745,7 +1744,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Registration) {
+    def in(testFun: () => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + rest.trim, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1768,7 +1767,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Registration) {
+    def ignore(testFun: () => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -1791,7 +1790,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Registration) {
+    def in(testFun: FixtureParam => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + rest.trim, List(), "in", testFun)
     }
 
@@ -1814,7 +1813,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Registration) {
+    def ignore(testFun: FixtureParam => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun)
     }
   }
@@ -1898,7 +1897,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Registration) {
+    def in(testFun: () => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + rest.trim, tagsList, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1923,7 +1922,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Registration) {
+    def ignore(testFun: () => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -1946,7 +1945,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Registration) {
+    def in(testFun: FixtureParam => Future[Assertion]) {
       registerTestToRun(verb.trim + " " + rest.trim, tagsList, "in", testFun)
     }
 
@@ -1971,7 +1970,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Registration) {
+    def ignore(testFun: FixtureParam => Future[Assertion]) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun)
     }
   }
@@ -2081,7 +2080,7 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Registration) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4

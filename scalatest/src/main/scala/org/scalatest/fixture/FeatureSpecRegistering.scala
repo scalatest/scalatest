@@ -24,6 +24,7 @@ import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest.exceptions.NotAllowedException
+import scala.concurrent.Future
 
 /**
  * Implementation trait for class <code>fixture.FeatureSpec</code>, which is
@@ -47,9 +48,7 @@ import org.scalatest.exceptions.NotAllowedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
-
-  type Registration = R
+trait FeatureSpecRegistering extends Suite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
 
@@ -101,7 +100,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -109,7 +108,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
     engine.registerTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Registration) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -118,7 +117,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
   }
 
   class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Registration): Unit = {
+    def apply(testFun: FixtureParam => Future[Assertion]): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -127,7 +126,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
-    def apply(testFun: () => Registration): Unit = {
+    def apply(testFun: () => Future[Assertion]): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -160,7 +159,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
     new ResultOfScenarioInvocation(specText, testTags: _*)
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Registration): Unit = {
+    def apply(testFun: FixtureParam => Future[Assertion]): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -169,7 +168,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
       engine.registerIgnoredTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
-    def apply(testFun: () => Registration): Unit = {
+    def apply(testFun: () => Future[Assertion]): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3

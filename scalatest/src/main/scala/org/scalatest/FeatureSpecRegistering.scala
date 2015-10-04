@@ -23,6 +23,7 @@ import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import org.scalatest.exceptions.NotAllowedException
+import scala.concurrent.Future
 
 /**
  * Implementation trait for class <code>FeatureSpec</code>, which represents
@@ -46,9 +47,7 @@ import org.scalatest.exceptions.NotAllowedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
-
-  type Registration = R
+trait FeatureSpecRegistering extends Suite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentFeatureSpecMod, "FeatureSpec")
 
@@ -98,7 +97,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Registration) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -106,7 +105,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
     engine.registerTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Registration) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -132,7 +131,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def scenario(specText: String, testTags: Tag*)(testFun: => Registration) {
+  protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -160,7 +159,7 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(specText: String, testTags: Tag*)(testFun: => Registration) {
+  protected def ignore(specText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
