@@ -64,9 +64,11 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           assert(res2 eq Succeeded)
           val res3 = whenever (true) { () }
           assert(res3 eq Succeeded)
+          // SKIP-SCALATESTJS-START
           assertThrows[StringIndexOutOfBoundsException] {
             whenever (true) { "hi".charAt(-1) }
           }
+          // SKIP-SCALATESTJS-END
         }
       }
       describe("when the Boolean condition is false") {
