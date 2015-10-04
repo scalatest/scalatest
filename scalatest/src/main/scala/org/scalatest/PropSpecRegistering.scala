@@ -43,9 +43,9 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
 
   type Registration = R
 
-  private final val engine = new OldEngine(Resources.concurrentPropSpecMod, "PropSpec")
+  private final val engine = new AsyncEngine(Resources.concurrentPropSpecMod, "PropSpec")
 
-  protected[scalatest] def getEngine: OldEngine = engine
+  protected[scalatest] def getEngine: AsyncEngine = engine
 
   import engine._
 

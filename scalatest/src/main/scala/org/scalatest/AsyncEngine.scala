@@ -37,7 +37,7 @@ import org.scalactic.exceptions.NullArgumentException
 import scala.util.{Failure, Success}
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
-private[scalatest] sealed abstract class OldSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
+private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
 
   sealed abstract class Node(val parentOption: Option[Branch]) {
     def indentationLevel: Int = {
@@ -835,9 +835,9 @@ private[scalatest] sealed abstract class OldSuperEngine[T](concurrentBundleModMe
   }
 }
 
-private[scalatest] class OldEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends OldSuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+private[scalatest] class AsyncEngine(concurrentBundleModMessageFun: => String, simpleClassName: String)
+    extends AsyncSuperEngine[() => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
 
-private[scalatest] class OldFixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String, simpleClassName: String)
-    extends OldSuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
+private[scalatest] class AsyncFixtureEngine[FixtureParam](concurrentBundleModMessageFun: => String, simpleClassName: String)
+    extends AsyncSuperEngine[FixtureParam => AsyncOutcome](concurrentBundleModMessageFun, simpleClassName)
 

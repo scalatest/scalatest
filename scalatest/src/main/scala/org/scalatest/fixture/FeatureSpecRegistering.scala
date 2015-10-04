@@ -51,9 +51,9 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
 
   type Registration = R
 
-  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
+  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
 
-  protected[scalatest] def getEngine: OldFixtureEngine[FixtureParam] = engine
+  protected[scalatest] def getEngine: AsyncFixtureEngine[FixtureParam] = engine
 
   import engine._
 

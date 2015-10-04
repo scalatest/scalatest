@@ -52,9 +52,9 @@ trait FunSpecRegistering[R] extends Suite with OldTestRegistration with Informin
 
   type Registration = R
 
-  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
+  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 
-  protected[scalatest] def getEngine: OldFixtureEngine[FixtureParam] = engine
+  protected[scalatest] def getEngine: AsyncFixtureEngine[FixtureParam] = engine
 
   import engine._
 

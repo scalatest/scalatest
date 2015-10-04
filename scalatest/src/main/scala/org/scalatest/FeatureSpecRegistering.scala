@@ -50,9 +50,9 @@ trait FeatureSpecRegistering[R] extends Suite with OldTestRegistration with Info
 
   type Registration = R
 
-  private final val engine = new OldEngine(Resources.concurrentFeatureSpecMod, "FeatureSpec")
+  private final val engine = new AsyncEngine(Resources.concurrentFeatureSpecMod, "FeatureSpec")
 
-  protected[scalatest] def getEngine: OldEngine = engine
+  protected[scalatest] def getEngine: AsyncEngine = engine
 
   import engine._
 

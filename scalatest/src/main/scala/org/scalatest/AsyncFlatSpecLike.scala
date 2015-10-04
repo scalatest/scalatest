@@ -35,7 +35,7 @@ trait AsyncFlatSpecLike extends FlatSpecRegistering[Future[Assertion]] with Asyn
       )
     }
 
-  private final val engine: OldEngine = getEngine
+  private final val engine: AsyncEngine = getEngine
 
   import engine._
 

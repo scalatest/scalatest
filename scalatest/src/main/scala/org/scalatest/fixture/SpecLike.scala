@@ -48,7 +48,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 @Finders(Array("org.scalatest.finders.SpecFinder"))
 trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
 
-  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
+  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
   import engine._
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false

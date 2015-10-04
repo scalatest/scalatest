@@ -35,7 +35,7 @@ trait AsyncFreeSpecLike extends FreeSpecRegistering[Future[Assertion]] with Asyn
       )
     }
 
-  private final val engine: OldEngine = getEngine
+  private final val engine: AsyncEngine = getEngine
 
   import engine._
 

@@ -46,9 +46,9 @@ trait FunSpecRegistering[R] extends Suite with OldTestRegistration with Informin
 
   type Registration = R
 
-  private final val engine = new OldEngine(Resources.concurrentSpecMod, "FunSpec")
+  private final val engine = new AsyncEngine(Resources.concurrentSpecMod, "FunSpec")
 
-  protected[scalatest] def getEngine: OldEngine = engine
+  protected[scalatest] def getEngine: AsyncEngine = engine
 
   import engine._
 

@@ -36,7 +36,7 @@ trait AsyncFunSpecLike extends FunSpecRegistering[Future[Assertion]] with AsyncF
       )
     }
 
-  private final val engine: OldFixtureEngine[FixtureParam] = getEngine
+  private final val engine: AsyncFixtureEngine[FixtureParam] = getEngine
 
   import engine._
 

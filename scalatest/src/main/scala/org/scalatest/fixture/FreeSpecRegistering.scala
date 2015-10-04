@@ -52,9 +52,9 @@ trait FreeSpecRegistering[R] extends Suite with OldTestRegistration with Informi
 
   type Registration = R
 
-  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
+  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
 
-  protected[scalatest] def getEngine: OldFixtureEngine[FixtureParam] = engine
+  protected[scalatest] def getEngine: AsyncFixtureEngine[FixtureParam] = engine
 
   import engine._
 

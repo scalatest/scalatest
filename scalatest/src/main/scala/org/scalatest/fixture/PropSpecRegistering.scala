@@ -45,9 +45,9 @@ trait PropSpecRegistering[R] extends Suite with OldTestRegistration with Informi
 
   type Registration = R
 
-  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
+  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
 
-  protected[scalatest] def getEngine: OldFixtureEngine[FixtureParam] = engine
+  protected[scalatest] def getEngine: AsyncFixtureEngine[FixtureParam] = engine
 
   import engine._
 

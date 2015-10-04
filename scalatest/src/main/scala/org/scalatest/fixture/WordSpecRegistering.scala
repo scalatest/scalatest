@@ -53,9 +53,9 @@ trait WordSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
 
   type Registration = R
 
-  private final val engine = new OldFixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod, "FixtureWordSpec")
+  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod, "FixtureWordSpec")
 
-  protected[scalatest] def getEngine: OldFixtureEngine[FixtureParam] = engine
+  protected[scalatest] def getEngine: AsyncFixtureEngine[FixtureParam] = engine
 
   import engine._
 

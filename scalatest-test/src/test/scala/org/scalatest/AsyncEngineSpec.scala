@@ -21,16 +21,16 @@ import org.scalatest.events.LineInFile
 import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf
 
-class OldEngineSpec extends FlatSpec with Matchers {
+class AsyncEngineSpec extends FlatSpec with Matchers {
 
-  "OldEngine.getTestNamePrefix" should "return empty string for Trunk" in {
-    val engine = new OldEngine("concurrentFunSuiteBundleMod", "FunSuite")
+  "AsyncEngine.getTestNamePrefix" should "return empty string for Trunk" in {
+    val engine = new AsyncEngine("concurrentFunSuiteBundleMod", "FunSuite")
     import engine._
     getTestNamePrefix(Trunk) should be ("")
   }
 
   it should "return empty string for direct children of Trunk" in {
-    val engine = new OldEngine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new AsyncEngine("concurrentFunSuiteBundleMod", "FunSuite")
     import engine._
     val child = DescriptionBranch(Trunk, "Catherine", Some("child prefix"), None)
     Trunk.subNodes ::= child
@@ -38,7 +38,7 @@ class OldEngineSpec extends FlatSpec with Matchers {
   }
 
   it should "return the parent's description name for DescriptionBranch grandchildren of trunk" in {
-    val engine = new OldEngine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new AsyncEngine("concurrentFunSuiteBundleMod", "FunSuite")
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
@@ -48,7 +48,7 @@ class OldEngineSpec extends FlatSpec with Matchers {
   }
 
   "Engine.getTestName" should "return the prefix, a space, and the testText" in {
-    val engine = new OldEngine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new AsyncEngine("concurrentFunSuiteBundleMod", "FunSuite")
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
@@ -57,7 +57,7 @@ class OldEngineSpec extends FlatSpec with Matchers {
     getTestName("howdy there", grandchild) should be ("child child prefix grandchild howdy there")
   }
   "Engine.getIndentationLevelForNode" should "return the indentation level for a test" in {
-    val engine = new OldEngine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new AsyncEngine("concurrentFunSuiteBundleMod", "FunSuite")
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
@@ -79,7 +79,7 @@ class OldEngineSpec extends FlatSpec with Matchers {
 
   def pathEngine = {
     import scala.collection.mutable.ListBuffer
-    val engine = new OldEngine("concurrentFunSuiteBundleMod", "FunSuite")
+    val engine = new AsyncEngine("concurrentFunSuiteBundleMod", "FunSuite")
     engine.registerNestedBranch("Given an empty list", None, {
       val list = ListBuffer[Int]() 
       engine.registerNestedBranch("when 1 is inserted", None, {

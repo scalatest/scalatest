@@ -50,9 +50,9 @@ trait FlatSpecRegistering[R] extends Suite with OldTestRegistration with ShouldV
 
   type Registration = R
 
-  private final val engine = new OldEngine(Resources.concurrentSpecMod, "Spec")
+  private final val engine = new AsyncEngine(Resources.concurrentSpecMod, "Spec")
 
-  protected[scalatest] def getEngine: OldEngine = engine
+  protected[scalatest] def getEngine: AsyncEngine = engine
 
   import engine._
 

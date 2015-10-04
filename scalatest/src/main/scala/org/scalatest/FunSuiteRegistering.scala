@@ -43,9 +43,9 @@ trait FunSuiteRegistering[R] extends Suite with OldTestRegistration with Informi
 
   type Registration = R
 
-  private final val engine = new OldEngine(Resources.concurrentFunSuiteMod, "FunSuite")
+  private final val engine = new AsyncEngine(Resources.concurrentFunSuiteMod, "FunSuite")
 
-  protected[scalatest] def getEngine: OldEngine = engine
+  protected[scalatest] def getEngine: AsyncEngine = engine
 
   import engine._
 
