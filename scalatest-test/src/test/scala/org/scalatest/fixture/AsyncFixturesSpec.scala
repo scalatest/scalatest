@@ -20,6 +20,7 @@ import org.scalatest._
 
 import scala.concurrent.Future
 
+/*
 class AsyncFixturesSpec extends org.scalatest.FunSpec {
 
   describe("AsyncFixtures") {
@@ -95,3 +96,4 @@ class AsyncFixturesSpec extends org.scalatest.FunSpec {
   }
 
 }
+*/
