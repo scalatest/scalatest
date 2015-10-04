@@ -48,7 +48,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 @Finders(Array("org.scalatest.finders.SpecFinder"))
 trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
 
-  private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
+  private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
   import engine._
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false
@@ -160,9 +160,9 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
                 case None => methodTags.contains(IgnoreAnnotation)
               }
               if (isIgnore)
-                registerIgnoredTest(testName, OldTransformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, OldTransformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
             }
           }
         }
@@ -286,21 +286,19 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
 
     ensureScopesAndTestsRegistered()
 
-    def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
+    def invokeWithFixture(theTest: TestLeaf): Outcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      PastOutcome(
-        withFixture(
-          new OneArgTest {
-            val name = testData.name
-            def apply(fixture: FixtureParam): Outcome = { theTest.testFun(fixture).toOutcome }
-            val configMap = testData.configMap
-            val scopes = testData.scopes
-            val text = testData.text
-            val tags = testData.tags
-          }
-          //new TestFunAndConfigMap(testName, theTest.testFun, theConfigMap)
-        )
+      withFixture(
+        new OneArgTest {
+          val name = testData.name
+          def apply(fixture: FixtureParam): Outcome = { theTest.testFun(fixture) }
+          val configMap = testData.configMap
+          val scopes = testData.scopes
+          val text = testData.text
+          val tags = testData.tags
+        }
+        //new TestFunAndConfigMap(testName, theTest.testFun, theConfigMap)
       )
     }
 
