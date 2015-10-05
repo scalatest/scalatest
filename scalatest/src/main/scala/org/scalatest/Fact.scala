@@ -44,12 +44,17 @@ sealed abstract class Fact {
 
   final def toBoolean: Boolean = isYes
 
-  final def toAssertion: Assertion =
+  final def toAssertion: Assertion = {
+    // SKIP-SCALATESTJS-START
+    val stackDepth = 5
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepth = 10
     if (isYes) {
       if (!isVacuousYes) Succeeded
-      else throw new TestCanceledException(factMessage, 5)
+      else throw new TestCanceledException(factMessage, stackDepth)
     }
-    else throw new TestFailedException(factMessage, 5)
+    else throw new TestFailedException(factMessage, stackDepth)
+  }
 
   // This is called internally by implicit conversions, which has different stack depth
   private[scalatest] final def internalToAssertion: Assertion =
