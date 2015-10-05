@@ -21,8 +21,6 @@ import org.scalatest._
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait AsyncFreeSpecLike extends FreeSpecRegistering with org.scalatest.AsyncCompatibility with OneInstancePerTest { thisSuite =>
 
-  implicit def executionContext: ExecutionContext
-
   override private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
       val futureUnit = testFun(fixture)

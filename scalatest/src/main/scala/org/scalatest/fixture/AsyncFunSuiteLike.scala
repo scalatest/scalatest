@@ -22,8 +22,6 @@ import scala.concurrent.{ExecutionContext, Future}
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait AsyncFunSuiteLike extends FunSuiteRegistering with org.scalatest.AsyncCompatibility with org.scalatest.OneInstancePerTest { thisSuite =>
 
-  implicit def executionContext: ExecutionContext
-
   override private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
       val futureUnit = testFun(fixture)
