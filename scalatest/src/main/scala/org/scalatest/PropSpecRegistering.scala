@@ -40,7 +40,7 @@ import scala.concurrent.Future
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecRegistering extends Suite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait PropSpecRegistering extends AsyncSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentPropSpecMod, "PropSpec")
 

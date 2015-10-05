@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.{ExecutionContext, Future}
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncWordSpecLike extends WordSpecRegistering with AsyncFixtures with AsyncCompatibility with OneInstancePerTest { thisSuite =>
+trait AsyncWordSpecLike extends WordSpecRegistering with AsyncCompatibility with OneInstancePerTest { thisSuite =>
 
   implicit def executionContext: ExecutionContext
 
