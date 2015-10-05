@@ -325,7 +325,7 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
           // SKIP-SCALATESTJS-START
           val stackDepth = 2
           // SKIP-SCALATESTJS-END
-          //SCALATESTJS-ONLY val stackDepth = 0
+          //SCALATESTJS-ONLY val stackDepth = 1
 
           throw new TableDrivenPropertyCheckFailedException(
             sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
