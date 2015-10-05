@@ -344,6 +344,7 @@ trait Checkers extends Configuration {
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
   def check(p: Prop, prms: Test.Parameters): Assertion = {
+    println("here11")
     Checkers.doCheck(p, prms, "Checkers.scala", "check")
   }
 
@@ -355,7 +356,8 @@ trait Checkers extends Configuration {
    */
   def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable): Assertion = {
     val params = getParams(configParams, config)
-    check(p, params)
+    //check(p, params)
+    Checkers.doCheck(p, params, "Checkers.scala", "check")
   }
 }
 
@@ -400,6 +402,11 @@ object Checkers extends Checkers {
 
         case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
 
+          // SKIP-SCALATESTJS-START
+          val stackDepth = 0
+          // SKIP-SCALATESTJS-END
+          //SCALATESTJS-ONLY val stackDepth = 1
+
           throw new GeneratorDrivenPropertyCheckFailedException(
             sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
@@ -416,7 +423,7 @@ object Checkers extends Checkers {
               "  )" + 
               getLabelDisplay(scalaCheckLabels),
             None,
-            getStackDepthFun(stackDepthFileName, stackDepthMethodName),
+            getStackDepthFun(stackDepthFileName, stackDepthMethodName, stackDepth),
             None,
             FailureMessages.propertyFailed(result.succeeded),
             scalaCheckArgs,
