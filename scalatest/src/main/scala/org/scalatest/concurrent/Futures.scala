@@ -299,8 +299,14 @@ trait Futures extends PatienceConfiguration {
      * @return
      */
     final def isReadyWithin(timeout: Span)(implicit config: PatienceConfig): Boolean = {
+
+      // SKIP-SCALATESTJS-START
+      val stackDepthAdjustment = 3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+
       try {
-        futureValueImpl("isReadyWithin")(PatienceConfig(timeout, config.interval))
+        futureValueImpl("isReadyWithin", stackDepthAdjustment)(PatienceConfig(timeout, config.interval))
         true
       }
       catch {
@@ -344,8 +350,13 @@ trait Futures extends PatienceConfiguration {
      * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
      *     the specified timeout has been exceeded
      */
-    final def futureValue(timeout: Timeout, interval: Interval): T =
-      futureValueImpl("futureValue")(PatienceConfig(timeout.value, interval.value))
+    final def futureValue(timeout: Timeout, interval: Interval): T = {
+      // SKIP-SCALATESTJS-START
+      val stackDepthAdjustment = 3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+      futureValueImpl("futureValue", stackDepthAdjustment)(PatienceConfig(timeout.value, interval.value))
+    }
 
     /**
      * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
@@ -384,8 +395,13 @@ trait Futures extends PatienceConfiguration {
      * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
      *     the specified timeout has been exceeded
      */
-    final def futureValue(timeout: Timeout)(implicit config: PatienceConfig): T =
-      futureValueImpl("futureValue")(PatienceConfig(timeout.value, config.interval))
+    final def futureValue(timeout: Timeout)(implicit config: PatienceConfig): T = {
+      // SKIP-SCALATESTJS-START
+      val stackDepthAdjustment = 3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+      futureValueImpl("futureValue", stackDepthAdjustment)(PatienceConfig(timeout.value, config.interval))
+    }
 
     /**
      * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
@@ -424,8 +440,13 @@ trait Futures extends PatienceConfiguration {
      * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
      *     the specified timeout has been exceeded
      */
-    final def futureValue(interval: Interval)(implicit config: PatienceConfig): T =
-      futureValueImpl("futureValue")(PatienceConfig(config.timeout, interval.value))
+    final def futureValue(interval: Interval)(implicit config: PatienceConfig): T = {
+      // SKIP-SCALATESTJS-START
+      val stackDepthAdjustment = 3
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+      futureValueImpl("futureValue", stackDepthAdjustment)(PatienceConfig(config.timeout, interval.value))
+    }
 
     /**
      * Returns the result of this <code>FutureConcept</code>, once it is ready, or throws either the
@@ -464,15 +485,15 @@ trait Futures extends PatienceConfiguration {
      * @throws TestFailedException if the future is cancelled, expires, or is still not ready after
      *     the specified timeout has been exceeded
      */
-    def futureValue(implicit config: PatienceConfig): T =
-      futureValueImpl("futureValue")(config)
-
-    private[concurrent] def futureValueImpl(methodName: String)(implicit config: PatienceConfig): T = {
-
+    def futureValue(implicit config: PatienceConfig): T = {
       // SKIP-SCALATESTJS-START
-      val stackDepthAdjustment = 3 + jsAdjustment
+      val stackDepthAdjustment = 3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepthAdjustment = 1 + jsAdjustment
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+      futureValueImpl("futureValue", stackDepthAdjustment)(config)
+    }
+
+    private[concurrent] def futureValueImpl(methodName: String, stackDepthAdjustment: Int)(implicit config: PatienceConfig): T = {
 
       val startNanos = System.nanoTime
 
@@ -577,7 +598,11 @@ trait Futures extends PatienceConfiguration {
    * @return the result of invoking the <code>fun</code> parameter
    */
   final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout, interval: Interval)(fun: T => U)(implicit config: PatienceConfig): U = {
-    val result = future.futureValueImpl("whenReady")(PatienceConfig(timeout.value, interval.value))
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = 3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = 1
+    val result = future.futureValueImpl("whenReady", stackDepthAdjustment)(PatienceConfig(timeout.value, interval.value))
     fun(result)
   }
     // whenReady(future)(fun)(PatienceConfig(timeout.value, interval.value))
@@ -611,7 +636,11 @@ trait Futures extends PatienceConfiguration {
    * @return the result of invoking the <code>fun</code> parameter
    */
   final def whenReady[T, U](future: FutureConcept[T], timeout: Timeout)(fun: T => U)(implicit config: PatienceConfig): U = {
-    val result = future.futureValueImpl("whenReady")(PatienceConfig(timeout.value, config.interval))
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = 3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = 1
+    val result = future.futureValueImpl("whenReady", stackDepthAdjustment)(PatienceConfig(timeout.value, config.interval))
     fun(result)
   }
     // whenReady(future)(fun)(PatienceConfig(timeout.value, config.interval))
@@ -636,7 +665,11 @@ trait Futures extends PatienceConfiguration {
    * @return the result of invoking the <code>fun</code> parameter
    */
   final def whenReady[T, U](future: FutureConcept[T], interval: Interval)(fun: T => U)(implicit config: PatienceConfig): U = {
-    val result = future.futureValueImpl("whenReady")(PatienceConfig(config.timeout, interval.value))
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = 3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = 1
+    val result = future.futureValueImpl("whenReady", stackDepthAdjustment)(PatienceConfig(config.timeout, interval.value))
     fun(result)
   }
     // whenReady(future)(fun)(PatienceConfig(config.timeout, interval.value))
@@ -669,7 +702,11 @@ trait Futures extends PatienceConfiguration {
    * @return the result of invoking the <code>fun</code> parameter
    */
   final def whenReady[T, U](future: FutureConcept[T])(fun: T => U)(implicit config: PatienceConfig): U = {
-    val result = future.futureValueImpl("whenReady")(config)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = 3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = 1
+    val result = future.futureValueImpl("whenReady", stackDepthAdjustment)(config)
     fun(result)
   }
 }
