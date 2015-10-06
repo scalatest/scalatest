@@ -263,29 +263,7 @@ trait FeatureSpecRegistering extends AsyncSuite with Informing with Notifying wi
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-
-
-    def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
-
-      PastOutcome(
-        theTest.testFun match {
-          case transformer: org.scalatest.fixture.OldTransformer[_] =>
-            transformer.exceptionalTestFun match {
-              case wrapper: NoArgTestWrapper[_, _] =>
-                withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
-              case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
-            }
-          case other =>
-            other match {
-              case wrapper: NoArgTestWrapper[_, _] =>
-                withFixture(new FixturelessTestFunAndConfigMap(testName, wrapper.test, args.configMap))
-              case fun => withFixture(new TestFunAndConfigMap(testName, fun, args.configMap))
-            }
-        }
-      )
-    }
-
-    runTestImpl(thisSuite, testName, args, false, invokeWithFixture)
+   throw new Exception("SHOULDNT BE USING THIS: FEATURE SPEC")
   }
 
   /**
