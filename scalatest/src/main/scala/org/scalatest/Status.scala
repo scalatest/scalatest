@@ -216,6 +216,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
     synchronized {
+      // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
       // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
       // for this Status to complete.
       latch.countDown()
@@ -253,7 +254,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
  */
 final class StatefulStatus extends Status with Serializable {
   @transient private final val latch = new CountDownLatch(1)
-  @volatile private var succeeded = true
+  private var succeeded = true
   private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
 
   // SKIP-SCALATESTJS-START
@@ -265,7 +266,7 @@ final class StatefulStatus extends Status with Serializable {
    */
   def succeeds() = {
     waitUntilCompleted()
-    succeeded
+    synchronized { succeeded }
   }
   // SKIP-SCALATESTJS-END
 
@@ -274,7 +275,7 @@ final class StatefulStatus extends Status with Serializable {
    * 
    * @return <code>true</code> if the test or suite run is already completed, <code>false</code> otherwise.
    */
-  def isCompleted = latch.getCount == 0L
+  def isCompleted = synchronized { latch.getCount == 0L }
 
   // SKIP-SCALATESTJS-START
   /**
@@ -297,9 +298,11 @@ final class StatefulStatus extends Status with Serializable {
    * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
    */
   def setFailed() {
-    if (isCompleted)
-      throw new IllegalStateException("status is already completed")
-    succeeded = false
+    synchronized {
+      if (isCompleted)
+        throw new IllegalStateException("status is already completed")
+      succeeded = false
+    }
   }
 
   /**
@@ -310,13 +313,16 @@ final class StatefulStatus extends Status with Serializable {
    * <p>
    */
   def setCompleted() {
+    // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
+    // we are iterating through the list of callbacks prior to adding the last one.
     synchronized {
-      for (f <- queue.iterator)
-        f(succeeded)
+      // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
       // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
       // for this Status to complete.
       latch.countDown()
     }
+    for (f <- queue.iterator)
+      f(succeeded)
   }
 
   /**
