@@ -16,7 +16,7 @@
 package org.scalatest.fixture
 
 import org.scalatest.OutcomeOf._
-import org.scalatest.{PastOutcome, AsyncOutcome, Tag}
+import org.scalatest.{AsyncOutcome, Tag}
 import scala.concurrent.Future
 import org.scalatest.Assertion
 
@@ -29,16 +29,7 @@ trait AsyncTestRegistration { theSuite: Suite =>
    * @return function that returns `AsyncOutcome`
    */
   private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome = {
-    // OldTransformer(testFun)
     throw new Exception("THIS IS NOT BEING USED")
-    // The following does not work, why??
-    /*(fixture: FixtureParam) => {
-      PastOutcome {
-        outcomeOf {
-          testFun(fixture)
-        }
-      }
-    }*/
   }
 
   /**
