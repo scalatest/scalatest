@@ -30,10 +30,7 @@ trait AsyncTestRegistration { theSuite: Suite =>
    * @return function that returns `AsyncOutcome`
    */
   private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
-    () =>
-      PastOutcome {
-        outcomeOf { testFun }
-      }
+    throw new Exception("NOT USING THIS")
 
   /**
    * Register a test.
