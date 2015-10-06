@@ -50,7 +50,7 @@ import scala.concurrent.Future
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait WordSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait WordSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting with AsyncCompatibility { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod, "FixtureWordSpec")
 

@@ -48,7 +48,7 @@ import scala.concurrent.Future
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecRegistering extends AsyncSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FeatureSpecRegistering extends AsyncSuite with Informing with Notifying with Alerting with Documenting with AsyncCompatibility { thisSuite =>
 
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
 

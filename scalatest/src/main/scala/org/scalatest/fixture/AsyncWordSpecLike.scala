@@ -19,7 +19,7 @@ import scala.concurrent.{Future, ExecutionContext}
 import org.scalatest._
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncWordSpecLike extends WordSpecRegistering with org.scalatest.AsyncCompatibility with org.scalatest.OneInstancePerTest { thisSuite =>
+trait AsyncWordSpecLike extends WordSpecRegistering with org.scalatest.OneInstancePerTest { thisSuite =>
 
   override private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
