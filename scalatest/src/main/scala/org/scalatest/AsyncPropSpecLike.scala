@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.{ExecutionContext, Future}
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncPropSpecLike extends PropSpecRegistering with AsyncCompatibility with OneInstancePerTest { thisSuite =>
+trait AsyncPropSpecLike extends PropSpecRegistering with OneInstancePerTest { thisSuite =>
 
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {

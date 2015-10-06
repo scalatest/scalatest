@@ -40,7 +40,7 @@ import scala.concurrent.Future
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait FunSuiteRegistering extends AsyncSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FunSuiteRegistering extends AsyncSuite with Informing with Notifying with Alerting with Documenting with AsyncCompatibility { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentFunSuiteMod, "FunSuite")
 

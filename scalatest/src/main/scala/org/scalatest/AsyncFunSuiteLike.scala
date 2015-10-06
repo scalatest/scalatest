@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.{ExecutionContext, Future}
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait AsyncFunSuiteLike extends FunSuiteRegistering with AsyncCompatibility with OneInstancePerTest { thisSuite =>
+trait AsyncFunSuiteLike extends FunSuiteRegistering with OneInstancePerTest { thisSuite =>
 
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
