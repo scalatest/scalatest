@@ -200,7 +200,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
 
   // SKIP-SCALATESTJS-START
   def waitUntilCompleted() {
-    latch.await()
+    synchronized { latch }.await()
   }
   // SKIP-SCALATESTJS-END
 
@@ -215,13 +215,15 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   def setCompleted() {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
-    synchronized {
-      // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
-      // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
-      // for this Status to complete.
-      latch.countDown()
-    }
-    for (f <- queue.iterator)
+    val it =
+      synchronized {
+        // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
+        // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
+        // for this Status to complete.
+        latch.countDown()
+        queue.iterator
+      }
+    for (f <- it)
       f(succeeded)
   }
 
@@ -282,7 +284,7 @@ final class StatefulStatus extends Status with Serializable {
    * Blocking call that returns only after <code>setCompleted</code> has been invoked on this <code>StatefulStatus</code> instance.
    */
   def waitUntilCompleted() {
-    latch.await()
+    synchronized { latch }.await()
   }
   // SKIP-SCALATESTJS-END
 
@@ -315,13 +317,15 @@ final class StatefulStatus extends Status with Serializable {
   def setCompleted() {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
-    synchronized {
+    val it =
+      synchronized {
       // OLD, OUTDATED COMMENT, left in here to ponder the depths of its meaning a bit longer:
       // Only release the latch after the callbacks finish execution, to avoid race condition with other thread(s) that wait
       // for this Status to complete.
-      latch.countDown()
-    }
-    for (f <- queue.iterator)
+        latch.countDown()
+        queue.iterator
+      }
+    for (f <- it)
       f(succeeded)
   }
 
@@ -386,8 +390,8 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
    * @return <code>true</code> if all composite <code>Status</code>es succeed, <code>false</code> otherwise.
    */
   def succeeds() = {
-    latch.await()
-    statuses.forall(_.succeeds())
+    synchronized { latch }.await()
+    synchronized { statuses }.forall(_.succeeds())
   }
   // SKIP-SCALATESTJS-END
 
@@ -397,7 +401,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
    * 
    * @return <code>true</code> if all composite <code>Status</code>es have completed, <code>false</code> otherwise.
    */
-  def isCompleted = statuses.forall(_.isCompleted)
+  def isCompleted = synchronized { statuses }.forall(_.isCompleted)
 
   // SKIP-SCALATESTJS-START
   /**
@@ -405,7 +409,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
    */
   def waitUntilCompleted() {
     // statuses.foreach(_.waitUntilCompleted())
-    latch.await()
+    synchronized { latch }.await()
   }
   // SKIP-SCALATESTJS-END
 
