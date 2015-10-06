@@ -448,22 +448,23 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                   //     else {
                   //       statusList.last thenRun { runTest(testName, args) } // Only if oneAfterAnotherAsync, after first Status
                   //     }
-                  /*statusList +=
-                    (
-                      if (!oneAfterAnotherAsync || statusList.isEmpty) {
-                        runTest(testName, args) // If oneAfterAnotherAsync, first time just go for it
-                      }
-                      else {
-                        statusList.last thenRun { runTest(testName, args) } // Only if oneAfterAnotherAsync, after first Status
-                      }
-                    )*/
+                  statusList += {
+                    if (!oneAfterAnotherAsync || statusList.isEmpty) {
+                      runTest(testName, args) // If oneAfterAnotherAsync, first time just go for it
+                    }
+                    else {
+                      statusList.last thenRun { runTest(testName, args) } // Only if oneAfterAnotherAsync, after first Status
+                    }
+                  }
                   //statusList += runTest(testName, args)
+/*
                   val testStatus = runTest(testName, args)
                   // SKIP-SCALATESTJS-START
                   if (oneAfterAnotherAsync)
                     testStatus.waitUntilCompleted()
                   // SKIP-SCALATESTJS-END
                   statusList += testStatus
+*/
                 }
 
             case infoLeaf @ InfoLeaf(_, message, payload, location) =>
