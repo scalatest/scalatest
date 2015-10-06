@@ -122,104 +122,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       throw new ConcurrentModificationException(concurrentBundleModMessageFun)
   }
 
-  class RegistrationInformer extends Informer {
-
-    def apply(message: String, payload: Option[Any] = None) {
-      requireNonNull(message, payload)
-      val oldBundle = atomic.get
-      var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
-      updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
-    }
-  }
-
-  class RegistrationNotifier extends Notifier {
-
-    def apply(message: String, payload: Option[Any] = None) {
-      requireNonNull(message, payload)
-      val oldBundle = atomic.get
-      var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
-      updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
-    }
-  }
-
-  class RegistrationAlerter extends Alerter {
-
-    def apply(message: String, payload: Option[Any] = None) {
-      requireNonNull(message, payload)
-      val oldBundle = atomic.get
-      var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
-      updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
-    }
-  }
-
-  class RegistrationDocumenter extends Documenter {
-    def apply(message: String) {
-      requireNonNull(message)
-      val oldBundle = atomic.get
-      var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, getLineInFile(Thread.currentThread().getStackTrace, 2))
-      updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
-    }
-  }
-
-  // The informer will be a registration informer until run is called for the first time. (This
-  // is the registration phase of a style trait's lifecycle.)
-  final val atomicInformer = new AtomicReference[Informer](new RegistrationInformer)
-
-  final val atomicNotifier = new AtomicReference[Notifier](new RegistrationNotifier)
-  final val atomicAlerter = new AtomicReference[Alerter](new RegistrationAlerter)
-
-  // The documenter will be a registration informer until run is called for the first time. (This
-  // is the registration phase of a style trait's lifecycle.)
-  final val atomicDocumenter = new AtomicReference[Documenter](new RegistrationDocumenter)
-
-  final val zombieInformer =
-    new Informer {
-      def apply(message: String, payload: Option[Any] = None) {
-        requireNonNull(message, payload)
-        println(Resources.infoProvided(message))
-        payload match {
-          case Some(p) => println(Resources.payloadToString(payload.get.toString))
-          case _ => 
-        }
-      }
-    }
-
-  final val zombieNotifier =
-    new Notifier {
-      def apply(message: String, payload: Option[Any] = None) {
-        requireNonNull(message, payload)
-        println(Resources.noteProvided(message))
-        payload match {
-          case Some(p) => println(Resources.payloadToString(payload.get.toString))
-          case _ => 
-        }
-      }
-    }
-
-  final val zombieAlerter =
-    new Alerter {
-      def apply(message: String, payload: Option[Any] = None) {
-        requireNonNull(message, payload)
-        println(Resources.alertProvided(message))
-        payload match {
-          case Some(p) => println(Resources.payloadToString(payload.get.toString))
-          case _ => 
-        }
-      }
-    }
-
-  final val zombieDocumenter =
-    new Documenter {
-      def apply(message: String) {
-        requireNonNull(message)
-        println(Resources.markupProvided(message))
-      }
-    }
-
   private def checkTestOrIgnoreParamsForNull(testName: String, testTags: Tag*) {
     requireNonNull(testName)
     if (testTags.exists(_ == null))
@@ -278,11 +180,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         (message, None, isConstructingThread, testWasPending, testWasCanceled, location) => createMarkupProvided(theSuite, report, tracker, Some(testName), message, theTest.indentationLevel + 1, location, isConstructingThread)
       )
 
-    val oldInformer = atomicInformer.getAndSet(informerForThisTest)
-    val oldNotifier = atomicNotifier.getAndSet(updaterForThisTest)
-    val oldAlerter = atomicAlerter.getAndSet(alerterForThisTest)
-    val oldDocumenter = atomicDocumenter.getAndSet(documenterForThisTest)
-
     val asyncOutcome: AsyncOutcome =
       try {
         invokeWithFixture(theTest)
@@ -292,45 +189,10 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         case _: exceptions.TestPendingException => PastOutcome(Pending)
         case tfe: exceptions.TestFailedException => PastOutcome(Failed(tfe))
         case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
-        case ex: Throwable =>
-          val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
-          if (shouldBeInformerForThisTest ne informerForThisTest)
-            throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
-
-          val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
-          if (shouldBeNotifierForThisTest ne updaterForThisTest)
-            throw new ConcurrentModificationException(Resources.concurrentNotifierMod(theSuite.getClass.getName))
-
-          val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
-          if (shouldBeAlerterForThisTest ne alerterForThisTest)
-            throw new ConcurrentModificationException(Resources.concurrentAlerterMod(theSuite.getClass.getName))
-
-          val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
-          if (shouldBeDocumenterForThisTest ne documenterForThisTest)
-            throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
-
-          throw ex
-
       }
 
     asyncOutcome.onComplete { trial =>
       // println("###onComplete in the FORK!!")
-      val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
-      if (shouldBeInformerForThisTest ne informerForThisTest)
-        throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
-
-      val shouldBeNotifierForThisTest = atomicNotifier.getAndSet(oldNotifier)
-      if (shouldBeNotifierForThisTest ne updaterForThisTest)
-        throw new ConcurrentModificationException(Resources.concurrentNotifierMod(theSuite.getClass.getName))
-
-      val shouldBeAlerterForThisTest = atomicAlerter.getAndSet(oldAlerter)
-      if (shouldBeAlerterForThisTest ne alerterForThisTest)
-        throw new ConcurrentModificationException(Resources.concurrentAlerterMod(theSuite.getClass.getName))
-
-      val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
-      if (shouldBeDocumenterForThisTest ne documenterForThisTest)
-        throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
-
       trial match {
         case Success(outcome) =>
           outcome match {
@@ -499,7 +361,6 @@ println("!!!!! GOT TO TOP !!!!: statusList = " + statusList)
     theSuite: Suite,
     testName: Option[String],
     args: Args,
-    info: Informer,
     includeIcon: Boolean,
     oneAfterAnotherAsync: Boolean,
     runTest: (String, Args) => Status
@@ -556,62 +417,7 @@ println("!!!!! GOT TO TOP !!!!: statusList = " + statusList)
 
     val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
 
-    val informerForThisSuite =
-      ConcurrentInformer(
-        (message, payload, isConstructingThread, location) => {
-          reportInfoProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
-        }
-      )
-
-    atomicInformer.set(informerForThisSuite)
-
-    val updaterForThisSuite =
-      ConcurrentNotifier(
-        (message, payload, isConstructingThread, location) => {
-          reportNoteProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
-        }
-      )
-
-    atomicNotifier.set(updaterForThisSuite)
-
-    val alerterForThisSuite =
-      ConcurrentAlerter(
-        (message, payload, isConstructingThread, location) => {
-          reportAlertProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
-        }
-      )
-
-    atomicAlerter.set(alerterForThisSuite)
-
-    val documenterForThisSuite =
-      ConcurrentDocumenter(
-        (message, payload, isConstructingThread, location) => {
-          reportMarkupProvided(theSuite, report, tracker, None, message, 1, location, isConstructingThread)
-        }
-      )
-
-    atomicDocumenter.set(documenterForThisSuite)
-
-    val status = superRun(testName, args.copy(reporter = report))
-    status.whenCompleted { r =>
-      val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
-      if (shouldBeInformerForThisSuite ne informerForThisSuite)
-        throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
-
-      val shouldBeNotifierForThisSuite = atomicNotifier.getAndSet(zombieNotifier)
-      if (shouldBeNotifierForThisSuite ne updaterForThisSuite)
-        throw new ConcurrentModificationException(Resources.concurrentNotifierMod(theSuite.getClass.getName))
-
-      val shouldBeAlerterForThisSuite = atomicAlerter.getAndSet(zombieAlerter)
-      if (shouldBeAlerterForThisSuite ne alerterForThisSuite)
-        throw new ConcurrentModificationException(Resources.concurrentAlerterMod(theSuite.getClass.getName))
-
-      val shouldBeDocumenterForThisSuite = atomicDocumenter.getAndSet(zombieDocumenter)
-      if (shouldBeDocumenterForThisSuite ne documenterForThisSuite)
-        throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
-    }
-
-    status
+    superRun(testName, args.copy(reporter = report))
   }
 
   /*

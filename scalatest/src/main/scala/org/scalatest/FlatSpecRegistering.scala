@@ -47,7 +47,7 @@ import scala.concurrent.Future
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting with AsyncCompatibility { thisSuite =>
+trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with CanVerb with AsyncCompatibility { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentSpecMod, "Spec")
 
@@ -56,48 +56,6 @@ trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with 
   import engine._
 
   private[scalatest] def getOneAfterAnotherAsync: Boolean = false
-
-  /**
-   * Returns an <code>Informer</code> that during test execution will forward strings passed to its
-   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
-   * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
-   * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
-   * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
-   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
-   * This method can be called safely by any thread.
-   */
-  protected def info: Informer = atomicInformer.get
-
-  /**
-   * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
-   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
-   * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FlatSpec</code> is being executed, such as from inside a test function, it will forward the information to
-   * the current reporter immediately. If invoked at any other time, it will
-   * print to the standard output. This method can be called safely by any thread.
-   */
-  protected def note: Notifier = atomicNotifier.get
-
-  /**
-   * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
-   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
-   * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>FlatSpec</code> is being executed, such as from inside a test function, it will forward the information to
-   * the current reporter immediately. If invoked at any other time, it will
-   * print to the standard output. This method can be called safely by any thread.
-   */
-  protected def alert: Alerter = atomicAlerter.get
-
-  /**
-   * Returns a <code>Documenter</code> that during test execution will forward strings passed to its
-   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
-   * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
-   * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
-   * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
-   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
-   * This method can be called safely by any thread.
-   */
-  protected def markup: Documenter = atomicDocumenter.get
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
@@ -1757,7 +1715,7 @@ trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with 
    *     <code>tagsToExclude</code>, or <code>configMap</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, info, true, getOneAfterAnotherAsync, runTest)
+    runTestsImpl(thisSuite, testName, args, true, getOneAfterAnotherAsync, runTest)
   }
 
   /**
