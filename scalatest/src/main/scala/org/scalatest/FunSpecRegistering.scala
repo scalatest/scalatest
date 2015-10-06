@@ -51,6 +51,8 @@ trait FunSpecRegistering extends AsyncSuite with Informing with Notifying with A
 
   import engine._
 
+  private[scalatest] def getOneAfterAnotherAsync: Boolean = false
+
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
   private[scalatest] val sourceFileName = "FunSpecRegistering.scala"
 
@@ -482,7 +484,7 @@ trait FunSpecRegistering extends AsyncSuite with Informing with Notifying with A
    *     exists in this <code>Suite</code>
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, info, true, runTest)
+    runTestsImpl(thisSuite, testName, args, info, true, getOneAfterAnotherAsync, runTest)
   }
 
   override def run(testName: Option[String], args: Args): Status = {

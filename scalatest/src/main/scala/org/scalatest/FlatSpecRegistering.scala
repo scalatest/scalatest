@@ -55,6 +55,8 @@ trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with 
 
   import engine._
 
+  private[scalatest] def getOneAfterAnotherAsync: Boolean = false
+
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
@@ -1755,7 +1757,7 @@ trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with 
    *     <code>tagsToExclude</code>, or <code>configMap</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, info, true, runTest)
+    runTestsImpl(thisSuite, testName, args, info, true, getOneAfterAnotherAsync, runTest)
   }
 
   /**

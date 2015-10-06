@@ -50,6 +50,8 @@ trait FunSuiteRegistering extends AsyncSuite with Informing with Notifying with 
 
   import engine._
 
+  private[scalatest] def getOneAfterAnotherAsync: Boolean = false
+
   private[scalatest] val sourceFileName = "FunSuiteRegistering.scala"
 
   /**
@@ -294,7 +296,7 @@ trait FunSuiteRegistering extends AsyncSuite with Informing with Notifying with 
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, info, true, runTest)
+    runTestsImpl(thisSuite, testName, args, info, true, getOneAfterAnotherAsync, runTest)
   }
 
   override def run(testName: Option[String], args: Args): Status = {

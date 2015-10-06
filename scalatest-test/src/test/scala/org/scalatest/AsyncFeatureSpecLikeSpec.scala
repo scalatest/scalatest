@@ -17,6 +17,7 @@ package org.scalatest
 
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.Future
+import org.scalatest.concurrent.SleepHelper
 
 class AsyncFeatureSpecLikeSpec extends FunSpec {
 
@@ -136,6 +137,102 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       assert(rep.testCanceledEventsReceived(0).testName == "Scenario: test 4")
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "Scenario: test 5")
+    }
+
+    it("should run tests that return Future in serial when oneAfterAnotherAsync is set to true") {
+
+      @volatile var count = 0
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        override protected val oneAfterAnotherAsync: Boolean = true
+
+        // SKIP-SCALATESTJS-START
+        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        scenario("test 1") {
+          Future {
+            SleepHelper.sleep(30)
+            assert(count == 0)
+            count = 1
+          }
+        }
+
+        scenario("test 2") {
+          Future {
+            assert(count == 1)
+            SleepHelper.sleep(50)
+            count = 2
+          }
+        }
+
+        scenario("test 3") {
+          Future {
+            assert(count == 2)
+          }
+        }
+
+        override def newInstance = new ExampleSpec
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived.length == 3)
+
+    }
+
+    it("should run tests that does not return Future in serial when oneAfterAnotherAsync is set to true") {
+
+      @volatile var count = 0
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        override protected val oneAfterAnotherAsync: Boolean = true
+
+        // SKIP-SCALATESTJS-START
+        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        scenario("test 1") {
+          SleepHelper.sleep(30)
+          assert(count == 0)
+          count = 1
+        }
+
+        scenario("test 2") {
+          assert(count == 1)
+          SleepHelper.sleep(50)
+          count = 2
+        }
+
+        scenario("test 3") {
+          assert(count == 2)
+        }
+
+        override def newInstance = new ExampleSpec
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived.length == 3)
+
     }
 
   }
