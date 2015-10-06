@@ -232,25 +232,7 @@ trait FeatureSpecRegistering extends AsyncSuite with Informing with Notifying wi
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-
-    def invokeWithFixture(theTest: TestLeaf): AsyncOutcome = {
-      val theConfigMap = args.configMap
-      val testData = testDataFor(testName, theConfigMap)
-      PastOutcome(
-        withFixture(
-          new NoArgTest {
-            val name = testData.name
-            def apply(): Outcome = { theTest.testFun().toOutcome }
-            val configMap = testData.configMap
-            val scopes = testData.scopes
-            val text = testData.text
-            val tags = testData.tags
-          }
-        )
-      )
-    }
-
-    runTestImpl(thisSuite, testName, args, false, invokeWithFixture)
+   throw new Exception("SHOULDNT BE USING THIS: FEATURE SPEC")
   }
 
   /**
