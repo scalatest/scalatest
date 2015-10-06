@@ -363,12 +363,14 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
 
   for (status <- statuses) {
     status.whenCompleted { st =>
-      synchronized {
-        latch.countDown()
-      }
-      if (!st)
-        succeeded = false
-      if (latch.getCount == 0) {
+      val youCompleteMe =
+        synchronized {
+          latch.countDown()
+          if (!st)
+            succeeded = false
+          latch.getCount == 0
+        }
+      if (youCompleteMe) {
         for (f <- queue.iterator)
           f(succeeded)
       }
