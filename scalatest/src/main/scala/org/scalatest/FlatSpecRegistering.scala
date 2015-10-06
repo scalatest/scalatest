@@ -156,7 +156,7 @@ trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with 
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, OldTransformer(testFun), testRegistrationClosedMessageFun, "FlatSpecRegistering.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, transformToOutcome(testFun), testRegistrationClosedMessageFun, "FlatSpecRegistering.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -1663,7 +1663,7 @@ trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with 
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

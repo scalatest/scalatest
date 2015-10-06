@@ -146,7 +146,7 @@ trait FreeSpecRegistering extends AsyncSuite with Informing with Notifying with 
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerTest(specText, OldTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, None, testTags: _*)
   }
 
   /**
@@ -186,7 +186,7 @@ trait FreeSpecRegistering extends AsyncSuite with Informing with Notifying with 
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
