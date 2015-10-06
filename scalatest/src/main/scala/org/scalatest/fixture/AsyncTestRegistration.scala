@@ -29,7 +29,8 @@ trait AsyncTestRegistration { theSuite: Suite =>
    * @return function that returns `AsyncOutcome`
    */
   private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome = {
-    OldTransformer(testFun)
+    // OldTransformer(testFun)
+    throw new Exception("THIS IS NOT BEING USED")
     // The following does not work, why??
     /*(fixture: FixtureParam) => {
       PastOutcome {
