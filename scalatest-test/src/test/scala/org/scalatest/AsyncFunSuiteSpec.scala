@@ -153,6 +153,7 @@ class AsyncFunSuiteSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         test("test 1") {
+println("FUTURE TEST 1")
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
@@ -161,6 +162,7 @@ class AsyncFunSuiteSpec extends FunSpec {
         }
 
         test("test 2") {
+println("FUTURE TEST 2")
           Future {
             assert(count == 1)
             SleepHelper.sleep(50)
@@ -169,6 +171,7 @@ class AsyncFunSuiteSpec extends FunSpec {
         }
 
         test("test 3") {
+println("FUTURE TEST 2")
           Future {
             assert(count == 2)
           }
@@ -204,18 +207,21 @@ class AsyncFunSuiteSpec extends FunSpec {
         //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         test("test 1") {
+println("NOT FUTURE TEST 1")
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
         }
 
         test("test 2") {
+println("NOT FUTURE TEST 2")
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
         }
 
         test("test 3") {
+println("NOT FUTURE TEST 3")
           assert(count == 2)
         }
 

@@ -450,10 +450,12 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                   //     }
                   statusList += {
                     if (!oneAfterAnotherAsync || statusList.isEmpty) {
+                      println("!!!!! GOT TO FIRST ONE !!!!: statusList = " + statusList)
                       runTest(testName, args) // If oneAfterAnotherAsync, first time just go for it
                     }
                     else {
-                      statusList.last thenRun { runTest(testName, args) } // Only if oneAfterAnotherAsync, after first Status
+println("!!!!! GOT TO TOP !!!!: statusList = " + statusList)
+                      statusList.last thenRun { println("###### GOT INSIDE #######: statusList = " + statusList); runTest(testName, args) } // Only if oneAfterAnotherAsync, after first Status
                     }
                   }
                   //statusList += runTest(testName, args)
