@@ -56,6 +56,8 @@ trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with 
 
   import engine._
 
+  private[scalatest] def getOneAfterAnotherAsync: Boolean = false
+
   private[scalatest] val sourceFileName = "FlatSpecRegistering.scala"
 
   /**
@@ -2185,7 +2187,7 @@ trait FlatSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with 
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, info, true, runTest)
+    runTestsImpl(thisSuite, testName, args, info, true, getOneAfterAnotherAsync, runTest)
   }
 
   /**

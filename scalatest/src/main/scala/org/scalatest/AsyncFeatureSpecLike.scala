@@ -20,6 +20,9 @@ import scala.concurrent.{ExecutionContext, Future}
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait AsyncFeatureSpecLike extends FeatureSpecRegistering with OneInstancePerTest { thisSuite =>
 
+  protected val oneAfterAnotherAsync: Boolean = false
+  final override private[scalatest] def getOneAfterAnotherAsync = oneAfterAnotherAsync
+
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
       val futureAssertion = testFun

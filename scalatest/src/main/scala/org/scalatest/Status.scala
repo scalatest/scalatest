@@ -79,8 +79,7 @@ trait Status {
    */
   def whenCompleted(f: Boolean => Unit)
 
-  /* Thought experiment
-  def thenRun(f: => Status): Status = {
+  /*def thenRun(f: => Status): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { _ =>
       val innerStatus = f
@@ -90,8 +89,7 @@ trait Status {
       }
     }
     returnedStatus
-  }
-  */
+  }*/
 }
 
 /**

@@ -56,6 +56,8 @@ trait FeatureSpecRegistering extends AsyncSuite with Informing with Notifying wi
 
   import engine._
 
+  private[scalatest] def getOneAfterAnotherAsync: Boolean = false
+
   private[scalatest] val sourceFileName = "FeatureSpecRegistering.scala"
 
   /**
@@ -328,7 +330,7 @@ trait FeatureSpecRegistering extends AsyncSuite with Informing with Notifying wi
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, info, false, runTest)
+    runTestsImpl(thisSuite, testName, args, info, false, getOneAfterAnotherAsync, runTest)
   }
 
   /**

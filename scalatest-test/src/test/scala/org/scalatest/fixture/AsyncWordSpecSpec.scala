@@ -18,6 +18,7 @@ package org.scalatest.fixture
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.Future
+import org.scalatest.concurrent.SleepHelper
 
 class AsyncWordSpecSpec extends org.scalatest.FunSpec {
 
@@ -145,6 +146,110 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
       assert(rep.testCanceledEventsReceived(0).testName == "test 4")
       assert(rep.testIgnoredEventsReceived.length == 1)
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+    }
+
+    it("should run tests that return Future in serial when oneAfterAnotherAsync is set to true") {
+
+      @volatile var count = 0
+
+      class ExampleSpec extends AsyncWordSpec {
+
+        override protected val oneAfterAnotherAsync: Boolean = true
+
+        // SKIP-SCALATESTJS-START
+        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
+
+        "test 1" in { fixture =>
+          Future {
+            SleepHelper.sleep(30)
+            assert(count == 0)
+            count = 1
+          }
+        }
+
+        "test 2" in { fixture =>
+          Future {
+            assert(count == 1)
+            SleepHelper.sleep(50)
+            count = 2
+          }
+        }
+
+        "test 3" in { fixture =>
+          Future {
+            assert(count == 2)
+          }
+        }
+
+        override def newInstance = new ExampleSpec
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived.length == 3)
+
+    }
+
+    it("should run tests that does not return Future in serial when oneAfterAnotherAsync is set to true") {
+
+      @volatile var count = 0
+
+      class ExampleSpec extends AsyncWordSpec {
+
+        override protected val oneAfterAnotherAsync: Boolean = true
+
+        // SKIP-SCALATESTJS-START
+        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
+
+        "test 1" in { fixture =>
+          SleepHelper.sleep(30)
+          assert(count == 0)
+          count = 1
+        }
+
+        "test 2" in { fixture =>
+          assert(count == 1)
+          SleepHelper.sleep(50)
+          count = 2
+        }
+
+        "test 3" in { fixture =>
+          assert(count == 2)
+        }
+
+        override def newInstance = new ExampleSpec
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived.length == 3)
+
     }
 
   }
