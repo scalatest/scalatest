@@ -16,21 +16,34 @@
 package org.scalatest
 
 import SharedHelpers.EventRecordingReporter
-import scala.concurrent.Future
+import scala.concurrent.{Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 
-class AsyncFunSpecSpec extends FunSpec {
+class AsyncFunSpecLikeSpec2 extends AsyncFunSpec {
 
-  describe("AsyncFunSpec") {
+  // SKIP-SCALATESTJS-START
+  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-    it("can be used for tests that return a Future") {
+  override def newInstance = new AsyncFunSpecLikeSpec2
 
-      class ExampleSpec extends AsyncFunSpec with Expectations {
+  def toFuture(status: Status): Future[Boolean] = {
+    val promise = Promise[Boolean]
+    status.whenCompleted { s => promise.success(s) }
+    promise.future
+  }
+
+  describe("AsyncFunSpecLike") {
+
+    it("can be used for tests that return Future") {
+
+      class ExampleSpec extends AsyncFunSpecLike {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         val a = 1
 
@@ -64,53 +77,35 @@ class AsyncFunSpecSpec extends FunSpec {
           }
         }
 
-        it("test 6") {
-          Future {
-            expect(a == 1)
-          }
-        }
-
-        it("test 7") {
-          Future {
-            expect(a == 22)
-          }
-        }
-
         override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-      assert(rep.testStartingEventsReceived.length == 6)
-      assert(rep.testSucceededEventsReceived.length == 2)
-      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-      assert(rep.testSucceededEventsReceived(1).testName == "test 6")
-      assert(rep.testFailedEventsReceived.length == 2)
-      assert { 
-        val zero = rep.testFailedEventsReceived(0).testName
-        val one = rep.testFailedEventsReceived(1).testName
-        (zero == "test 2" && one == "test 7") || (zero == "test 7" && one == "test 2")
+      toFuture(status).map { s =>
+        assert(rep.testStartingEventsReceived.length == 4)
+        assert(rep.testSucceededEventsReceived.length == 1)
+        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+        assert(rep.testFailedEventsReceived.length == 1)
+        assert(rep.testFailedEventsReceived(0).testName == "test 2")
+        assert(rep.testPendingEventsReceived.length == 1)
+        assert(rep.testPendingEventsReceived(0).testName == "test 3")
+        assert(rep.testCanceledEventsReceived.length == 1)
+        assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+        assert(rep.testIgnoredEventsReceived.length == 1)
+        assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
       }
-      assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "test 3")
-      assert(rep.testCanceledEventsReceived.length == 1)
-      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
-      assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
     it("can be used for tests that did not return Future") {
 
-      class ExampleSpec extends AsyncFunSpec with Expectations {
+      class ExampleSpec extends AsyncFunSpecLike {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         val a = 1
 
@@ -134,60 +129,46 @@ class AsyncFunSpecSpec extends FunSpec {
           cancel
         }
 
-        it("test 6") {
-          expect(a == 1)
-        }
-
-        it("test 7") {
-          val result = expect(a == 22)
-          result
-        }
-
         override def newInstance = new ExampleSpec
       }
 
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-      assert(rep.testStartingEventsReceived.length == 6)
-      assert(rep.testSucceededEventsReceived.length == 2)
-      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-      assert(rep.testSucceededEventsReceived(1).testName == "test 6")
-      assert(rep.testFailedEventsReceived.length == 2)
-      assert { 
-        val zero = rep.testFailedEventsReceived(0).testName
-        val one = rep.testFailedEventsReceived(1).testName
-        (zero == "test 2" && one == "test 7") || (zero == "test 7" && one == "test 2")
+      toFuture(status).map { s =>
+        assert(rep.testStartingEventsReceived.length == 4)
+        assert(rep.testSucceededEventsReceived.length == 1)
+        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+        assert(rep.testFailedEventsReceived.length == 1)
+        assert(rep.testFailedEventsReceived(0).testName == "test 2")
+        assert(rep.testPendingEventsReceived.length == 1)
+        assert(rep.testPendingEventsReceived(0).testName == "test 3")
+        assert(rep.testCanceledEventsReceived.length == 1)
+        assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+        assert(rep.testIgnoredEventsReceived.length == 1)
+        assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
       }
-      assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "test 3")
-      assert(rep.testCanceledEventsReceived.length == 1)
-      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
-      assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
     it("should run tests that return Future in serial when oneAfterAnotherAsync is set to true") {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFunSpec {
+      class ExampleSpec extends AsyncFunSpecLike {
 
         override protected val oneAfterAnotherAsync: Boolean = true
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         it("test 1") {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            Succeeded
           }
         }
 
@@ -196,6 +177,7 @@ class AsyncFunSpecSpec extends FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            Succeeded
           }
         }
 
@@ -212,38 +194,37 @@ class AsyncFunSpecSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-
-      assert(rep.testStartingEventsReceived.length == 3)
-      assert(rep.testSucceededEventsReceived.length == 3)
-
+      toFuture(status).map { s =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived.length == 3)
+      }
     }
 
     it("should run tests that does not return Future in serial when oneAfterAnotherAsync is set to true") {
 
       @volatile var count = 0
 
-      class ExampleSpec extends AsyncFunSpec {
+      class ExampleSpec extends AsyncFunSpecLike {
 
         override protected val oneAfterAnotherAsync: Boolean = true
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         it("test 1") {
-          SleepHelper.sleep(30)
+          SleepHelper.sleep(3000)
           assert(count == 0)
           count = 1
+          Succeeded
         }
 
         it("test 2") {
           assert(count == 1)
-          SleepHelper.sleep(50)
+          SleepHelper.sleep(5000)
           count = 2
+          Succeeded
         }
 
         it("test 3") {
@@ -257,13 +238,12 @@ class AsyncFunSpecSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-
-      assert(rep.testStartingEventsReceived.length == 3)
-      assert(rep.testSucceededEventsReceived.length == 3)
-
+      toFuture(status).map { s =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived.length == 3)
+      }
     }
+
   }
+
 }

@@ -166,7 +166,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
