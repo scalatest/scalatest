@@ -43,17 +43,29 @@ import scala.concurrent.Future
  *
  * @author Bill Venners
  */
-@Finders(Array("org.scalatest.finders.WordSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait WordSpecRegistering extends AsyncSuite with ShouldVerb with MustVerb with CanVerb with AsyncCompatibility { thisSuite =>
+@Finders(Array("org.scalatest.finders.WordSpecFinder"))
+trait AsyncWordSpecLike extends AsyncSuite with ShouldVerb with MustVerb with CanVerb with AsyncCompatibility with OneInstancePerTest { thisSuite =>
+
+  protected val oneAfterAnotherAsync: Boolean = false
+  final private[scalatest] def getOneAfterAnotherAsync = oneAfterAnotherAsync
+
+  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
+    () => {
+      val futureAssertion = testFun
+      FutureOutcome(
+        futureAssertion.recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
 
   private final val engine = new AsyncEngine(Resources.concurrentWordSpecMod, "WordSpecLike")
 
-  protected[scalatest] def getEngine: AsyncEngine = engine
-
   import engine._
-
-  private[scalatest] def getOneAfterAnotherAsync: Boolean = false
 
   final def registerTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
@@ -1043,7 +1055,33 @@ one error found
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-   throw new Exception("SHOULDNT BE USING THIS: WORD SPEC")
+
+    if (args.runTestInNewInstance) {
+      // In initial instance, so create a new test-specific instance for this test and invoke run on it.
+      val oneInstance = newInstance
+      oneInstance.run(Some(testName), args)
+    }
+    else {
+      // Therefore, in test-specific instance, so run the test.
+      def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+        val theConfigMap = args.configMap
+        val testData = testDataFor(testName, theConfigMap)
+        FutureOutcome(
+          withAsyncFixture(
+            new NoArgAsyncTest {
+              val name = testData.name
+              def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
+              val configMap = testData.configMap
+              val scopes = testData.scopes
+              val text = testData.text
+              val tags = testData.tags
+            }
+          )
+        )
+      }
+
+      runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
+    }
   }
 
   /**

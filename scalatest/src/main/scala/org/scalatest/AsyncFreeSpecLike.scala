@@ -17,56 +17,12 @@ package org.scalatest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-//SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
+/*
 trait AsyncFreeSpecLike extends FreeSpecRegistering with OneInstancePerTest { thisSuite =>
-
-  protected val oneAfterAnotherAsync: Boolean = false
-  final override private[scalatest] def getOneAfterAnotherAsync = oneAfterAnotherAsync
-
-  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
-    () => {
-      val futureAssertion = testFun
-      FutureOutcome(
-        futureAssertion.recover {
-          case ex: exceptions.TestCanceledException => Canceled(ex)
-          case _: exceptions.TestPendingException => Pending
-          case tfe: exceptions.TestFailedException => Failed(tfe)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-        }
-      )
-    }
 
   private final val engine: AsyncEngine = getEngine
 
   import engine._
 
-  protected override def runTest(testName: String, args: Args): Status = {
-
-    if (args.runTestInNewInstance) {
-      // In initial instance, so create a new test-specific instance for this test and invoke run on it.
-      val oneInstance = newInstance
-      oneInstance.run(Some(testName), args)
-    }
-    else {
-      // Therefore, in test-specific instance, so run the test.
-      def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
-        val theConfigMap = args.configMap
-        val testData = testDataFor(testName, theConfigMap)
-        FutureOutcome(
-          withAsyncFixture(
-            new NoArgAsyncTest {
-              val name = testData.name
-              def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
-              val configMap = testData.configMap
-              val scopes = testData.scopes
-              val text = testData.text
-              val tags = testData.tags
-            }
-          )
-        )
-      }
-
-      runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
-    }
-  }
 }
+*/
