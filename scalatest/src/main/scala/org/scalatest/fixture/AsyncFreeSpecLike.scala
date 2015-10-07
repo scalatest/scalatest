@@ -18,6 +18,7 @@ package org.scalatest.fixture
 import scala.concurrent.{ExecutionContext, Future}
 import org.scalatest._
 
+/*
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait AsyncFreeSpecLike extends FreeSpecRegistering with OneInstancePerTest { thisSuite =>
 
@@ -74,3 +75,4 @@ trait AsyncFreeSpecLike extends FreeSpecRegistering with OneInstancePerTest { th
     }
   }
 }
+*/

@@ -17,6 +17,7 @@ package org.scalatest.fixture
 
 import scala.concurrent.{Future, ExecutionContext}
 import org.scalatest._
+/*
 
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait AsyncWordSpecLike extends WordSpecRegistering with org.scalatest.OneInstancePerTest { thisSuite =>
@@ -75,3 +76,4 @@ trait AsyncWordSpecLike extends WordSpecRegistering with org.scalatest.OneInstan
   }
 
 }
+*/

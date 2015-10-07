@@ -19,6 +19,7 @@ import org.scalatest._
 
 import scala.concurrent.{ExecutionContext, Future}
 
+/*
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 trait AsyncFunSuiteLike extends FunSuiteRegistering with org.scalatest.OneInstancePerTest { thisSuite =>
 
@@ -76,3 +77,4 @@ trait AsyncFunSuiteLike extends FunSuiteRegistering with org.scalatest.OneInstan
   }
 
 }
+*/
