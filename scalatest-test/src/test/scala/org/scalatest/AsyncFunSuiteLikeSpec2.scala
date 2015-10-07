@@ -16,21 +16,34 @@
 package org.scalatest
 
 import org.scalatest.SharedHelpers.EventRecordingReporter
-import scala.concurrent.Future
+import scala.concurrent.{Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 
-class AsyncFunSuiteSpec extends FunSpec {
+class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
-  describe("AsyncFunSuite") {
+  // SKIP-SCALATESTJS-START
+  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+
+  override def newInstance = new AsyncFunSuiteLikeSpec2
+
+  def toFuture(status: Status): Future[Boolean] = {
+    val promise = Promise[Boolean]
+    status.whenCompleted { s => promise.success(s) }
+    promise.future
+  }
+
+  describe("AsyncFunSuiteLike") {
 
     it("can be used for tests that return Future") {
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSuite extends AsyncFunSuiteLike {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         val a = 1
 
@@ -70,30 +83,29 @@ class AsyncFunSuiteSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSuite
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-      assert(rep.testStartingEventsReceived.length == 4)
-      assert(rep.testSucceededEventsReceived.length == 1)
-      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-      assert(rep.testFailedEventsReceived.length == 1)
-      assert(rep.testFailedEventsReceived(0).testName == "test 2")
-      assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "test 3")
-      assert(rep.testCanceledEventsReceived.length == 1)
-      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
-      assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+      toFuture(status).map { s =>
+        assert(rep.testStartingEventsReceived.length == 4)
+        assert(rep.testSucceededEventsReceived.length == 1)
+        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+        assert(rep.testFailedEventsReceived.length == 1)
+        assert(rep.testFailedEventsReceived(0).testName == "test 2")
+        assert(rep.testPendingEventsReceived.length == 1)
+        assert(rep.testPendingEventsReceived(0).testName == "test 3")
+        assert(rep.testCanceledEventsReceived.length == 1)
+        assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+        assert(rep.testIgnoredEventsReceived.length == 1)
+        assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+      }
     }
 
     it("can be used for tests that did not return Future") {
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSuite extends AsyncFunSuiteLike {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         val a = 1
 
@@ -123,40 +135,40 @@ class AsyncFunSuiteSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSuite
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-      assert(rep.testStartingEventsReceived.length == 4)
-      assert(rep.testSucceededEventsReceived.length == 1)
-      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-      assert(rep.testFailedEventsReceived.length == 1)
-      assert(rep.testFailedEventsReceived(0).testName == "test 2")
-      assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "test 3")
-      assert(rep.testCanceledEventsReceived.length == 1)
-      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
-      assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+      toFuture(status).map { s =>
+        assert(rep.testStartingEventsReceived.length == 4)
+        assert(rep.testSucceededEventsReceived.length == 1)
+        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+        assert(rep.testFailedEventsReceived.length == 1)
+        assert(rep.testFailedEventsReceived(0).testName == "test 2")
+        assert(rep.testPendingEventsReceived.length == 1)
+        assert(rep.testPendingEventsReceived(0).testName == "test 3")
+        assert(rep.testCanceledEventsReceived.length == 1)
+        assert(rep.testCanceledEventsReceived(0).testName == "test 4")
+        assert(rep.testIgnoredEventsReceived.length == 1)
+        assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+      }
     }
 
     it("should run tests that return Future in serial when oneAfterAnotherAsync is set to true") {
 
       @volatile var count = 0
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSuite extends AsyncFunSuiteLike {
 
         override protected val oneAfterAnotherAsync: Boolean = true
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         test("test 1") {
           Future {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            Succeeded
           }
         }
 
@@ -165,6 +177,7 @@ class AsyncFunSuiteSpec extends FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            Succeeded
           }
         }
 
@@ -181,38 +194,37 @@ class AsyncFunSuiteSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSuite
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-
-      assert(rep.testStartingEventsReceived.length == 3)
-      assert(rep.testSucceededEventsReceived.length == 3)
-
+      toFuture(status).map { s =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived.length == 3)
+      }
     }
 
     it("should run tests that does not return Future in serial when oneAfterAnotherAsync is set to true") {
 
       @volatile var count = 0
 
-      class ExampleSuite extends AsyncFunSuite {
+      class ExampleSuite extends AsyncFunSuiteLike {
 
         override protected val oneAfterAnotherAsync: Boolean = true
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         test("test 1") {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
+          Succeeded
         }
 
         test("test 2") {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
+          Succeeded
         }
 
         test("test 3") {
@@ -226,13 +238,10 @@ class AsyncFunSuiteSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSuite
       val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-
-      assert(rep.testStartingEventsReceived.length == 3)
-      assert(rep.testSucceededEventsReceived.length == 3)
-
+      toFuture(status).map { s =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived.length == 3)
+      }
     }
 
   }

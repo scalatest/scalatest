@@ -290,45 +290,14 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                   reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
                 }
                 else {
-                  // Right here, if one after another async, register the last one to run at the end of the previous one?
-                  // Then for my status, I can't get it from runTest. runTest won't run until later. So I need
-                  // somehow to connect it to the, oh, registration function? So maybe this is a new method on
-                  // Status? Because that's what I need to be able to do, something like:
-                  //
-                  //   lastPreviousStatus thenRun { runTest(testName, args) }
-                  //
-                  // where the signature of thenRun would be
-                  //
-                  //   def thenRun(f: => Status): Status
-                  //
-                  // So the code here would end up being:
-                  //
-                  //   statusList += 
-                  //     if (!oneAfterAnotherAsync || statusList.isEmpty) {
-                  //       statusList += runTest(testName, args) // If oneAfterAnotherAsync, first time just go for it
-                  //     }
-                  //     else {
-                  //       statusList.last thenRun { runTest(testName, args) } // Only if oneAfterAnotherAsync, after first Status
-                  //     }
                   statusList += {
                     if (!oneAfterAnotherAsync || statusList.isEmpty) {
-                      println("!!!!! GOT TO FIRST ONE !!!!: statusList = " + statusList)
                       runTest(testName, args) // If oneAfterAnotherAsync, first time just go for it
                     }
                     else {
-println("!!!!! GOT TO TOP !!!!: statusList = " + statusList)
-                      statusList.last thenRun { println("###### GOT INSIDE #######: statusList = " + statusList); runTest(testName, args) } // Only if oneAfterAnotherAsync, after first Status
+                      statusList.last thenRun runTest(testName, args)  // Only if oneAfterAnotherAsync, after first Status
                     }
                   }
-                  //statusList += runTest(testName, args)
-/*
-                  val testStatus = runTest(testName, args)
-                  // SKIP-SCALATESTJS-START
-                  if (oneAfterAnotherAsync)
-                    testStatus.waitUntilCompleted()
-                  // SKIP-SCALATESTJS-END
-                  statusList += testStatus
-*/
                 }
 
             case infoLeaf @ InfoLeaf(_, message, payload, location) =>
