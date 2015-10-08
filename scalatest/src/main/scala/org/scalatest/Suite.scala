@@ -286,8 +286,8 @@ import Suite.getMethodForTestName
  *     Set.empty.size should equal (0)
  *   }
  *
- *   def &#96;test: invoking head on an empty Set should produce NoSuchElementException&#96; {
- *     evaluating { Set.empty.head } should produce [NoSuchElementException]
+ *   def &#96;test: invoking head on an empty Set should throw a NoSuchElementException&#96; {
+ *     a [NoSuchElementException] should be thrownBy { Set.empty.head }
  *   }
  * }
  * </pre>

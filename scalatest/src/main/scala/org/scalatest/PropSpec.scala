@@ -52,9 +52,9 @@ import Suite.autoTagClassAnnotations
  *     }
  *   }
  * 
- *   property("invoking head on an empty set should produce NoSuchElementException") {
+ *   property("invoking head on an empty set should throw a NoSuchElementException") {
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -78,7 +78,7 @@ import Suite.autoTagClassAnnotations
  * <pre class="stREPL">
  * <span class="stGreen">SetSpec:
  * - an empty Set should have size 0
- * - invoking head on an empty Set should produce NoSuchElementException</span>
+ * - invoking head on an empty Set should throw a NoSuchElementException</span>
  * </pre>
  *
  * <p>
@@ -160,9 +160,9 @@ import Suite.autoTagClassAnnotations
  *     }
  *   }
  * 
- *   property("invoking head on an empty set should produce NoSuchElementException") {
+ *   property("invoking head on an empty set should throw a NoSuchElementException") {
  *     forAll(examples) { set =>
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -183,7 +183,7 @@ import Suite.autoTagClassAnnotations
  * <pre class="stREPL">
  * <span class="stGreen">SetSuite:</span>
  * <span class="stYellow">- an empty Set should have size 0 !!! IGNORED !!!</span>
- * <span class="stGreen">- invoking head on an empty Set should produce NoSuchElementException</span>
+ * <span class="stGreen">- invoking head on an empty Set should throw a NoSuchElementException</span>
  * </pre>
  *
  * <a name="informers"></a><h2>Informers</h2></a>
@@ -474,9 +474,9 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("an empty Set should have size 0") (pending)
  * 
- *   property("invoking head on an empty set should produce NoSuchElementException") {
+ *   property("invoking head on an empty set should throw a NoSuchElementException") {
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -499,7 +499,7 @@ import Suite.autoTagClassAnnotations
  * <pre class="stREPL">
  * <span class="stGreen">SetSuite:</span>
  * <span class="stYellow">- An empty Set should have size 0 (pending)</span>
- * <span class="stGreen">- Invoking head on an empty Set should produce NoSuchElementException</span>
+ * <span class="stGreen">- Invoking head on an empty Set should throw a NoSuchElementException</span>
  * </pre>
  * 
  * <p>
@@ -575,11 +575,11 @@ import Suite.autoTagClassAnnotations
  *     }
  *   }
  * 
- *   property("invoking head on an empty set should produce NoSuchElementException",
+ *   property("invoking head on an empty set should throw a NoSuchElementException",
  *       SlowTest, DbTest) {
  * 
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -748,7 +748,7 @@ import Suite.autoTagClassAnnotations
  * <table style="border-collapse: collapse; border: 1px solid black">
  * <tr><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black">&nbsp;</th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><code>BitSet</code></th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><code>HashSet</code></th><th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black"><code>TreeSet</code></th></tr>
  * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">An empty Set should have size 0</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td></td></tr>
- * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">Invoking head on an empty set should produce NoSuchElementException</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td></td></tr>
+ * <tr><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">Invoking head on an empty set should throw a NoSuchElementException</td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td><td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center"><span class="stGreen">pass</span></td></td></tr>
  * </table>
  *
  * <p>
@@ -837,10 +837,10 @@ import Suite.autoTagClassAnnotations
  *     }
  *   }
  * 
- *   property("invoking head on an empty set should produce NoSuchElementException") {
+ *   property("invoking head on an empty set should throw a NoSuchElementException") {
  *     new EmptySetExamples {
  *       forAll(examples) { set =&gt;
- *         evaluating { set.head } should produce [NoSuchElementException]
+ *         a [NoSuchElementException] should be thrownBy { set.head }
  *       }
  *     }
  *   }
