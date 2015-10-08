@@ -28,12 +28,6 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
 
   override def newInstance = new AsyncFeatureSpecLikeSpec2
 
-  def toFuture(status: Status): Future[Boolean] = {
-    val promise = Promise[Boolean]
-    status.whenCompleted { s => promise.success(s) }
-    promise.future
-  }
-
   describe("AsyncFeatureSpecLike") {
 
     it("can be used for tests that return Future") {
@@ -83,7 +77,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      toFuture(status).map { s =>
+      status.toFuture.map { s =>
         assert(rep.testStartingEventsReceived.length == 4)
         assert(rep.testSucceededEventsReceived.length == 1)
         assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
@@ -136,7 +130,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
 
-      toFuture(status).map { s =>
+      status.toFuture.map { s =>
         assert(rep.testStartingEventsReceived.length == 4)
         assert(rep.testSucceededEventsReceived.length == 1)
         assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
@@ -196,7 +190,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
 
-      toFuture(status).map { s =>
+      status.toFuture.map { s =>
         assert(rep.testStartingEventsReceived.length == 3)
         assert(rep.testSucceededEventsReceived.length == 3)
       }
@@ -241,7 +235,7 @@ class AsyncFeatureSpecLikeSpec2 extends AsyncFunSpec {
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
 
-      toFuture(status).map { s =>
+      status.toFuture.map { s =>
         assert(rep.testStartingEventsReceived.length == 3)
         assert(rep.testSucceededEventsReceived.length == 3)
       }

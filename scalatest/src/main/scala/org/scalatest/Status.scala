@@ -17,6 +17,8 @@ package org.scalatest
 
 import scala.collection.GenSet
 import java.io.Serializable
+import scala.concurrent.Future
+import scala.concurrent.Promise
 
 /**
  * The result status of running a test or a suite.
@@ -79,7 +81,7 @@ trait Status {
    */
   def whenCompleted(f: Boolean => Unit)
 
-  def thenRun(f: => Status): Status = {
+  final def thenRun(f: => Status): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { _ =>
       val innerStatus = f
@@ -89,6 +91,13 @@ trait Status {
       }
     }
     returnedStatus
+  }
+
+  // True means succeeded, false means a test failure or suite abort happened.
+  final def toFuture: Future[Boolean] = {
+    val promise = Promise[Boolean]
+    whenCompleted { s => promise.success(s) }
+    promise.future
   }
 }
 

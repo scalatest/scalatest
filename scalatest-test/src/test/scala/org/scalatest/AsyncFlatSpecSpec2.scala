@@ -28,12 +28,6 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
 
   override def newInstance = new AsyncFlatSpecSpec2
 
-  def toFuture(status: Status): Future[Boolean] = {
-    val promise = Promise[Boolean]
-    status.whenCompleted { s => promise.success(s) }
-    promise.future
-  }
-
   describe("AsyncFlatSpec") {
 
     it("can be used for tests that return Future") {
@@ -83,7 +77,7 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      toFuture(status).map { s =>
+      status.toFuture.map { s =>
         assert(rep.testStartingEventsReceived.length == 4)
         assert(rep.testSucceededEventsReceived.length == 1)
         assert(rep.testSucceededEventsReceived(0).testName == "should test 1")
@@ -135,7 +129,7 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      toFuture(status).map { s =>
+      status.toFuture.map { s =>
         assert(rep.testStartingEventsReceived.length == 4)
         assert(rep.testSucceededEventsReceived.length == 1)
         assert(rep.testSucceededEventsReceived(0).testName == "should test 1")
@@ -194,7 +188,7 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      toFuture(status).map { s =>
+      status.toFuture.map { s =>
         assert(rep.testStartingEventsReceived.length == 3)
         assert(rep.testSucceededEventsReceived.length == 3)
       }
@@ -238,7 +232,7 @@ class AsyncFlatSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      toFuture(status).map { s =>
+      status.toFuture.map { s =>
         assert(rep.testStartingEventsReceived.length == 3)
         assert(rep.testSucceededEventsReceived.length == 3)
       }
