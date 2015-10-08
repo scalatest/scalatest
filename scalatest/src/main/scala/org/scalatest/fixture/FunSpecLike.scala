@@ -383,16 +383,20 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
     def apply(testFun: FixtureParam => Assertion): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
+      val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 8
-      engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, -3, None, testTags: _*)
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -9
+      engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
     def apply(testFun: () => Assertion): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
+      val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 8
-      engine.registerIgnoredTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, -3, None, testTags: _*)
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -9
+      engine.registerIgnoredTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   }
 
