@@ -220,7 +220,40 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
       }
     }
 
-    ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") { // TODO: Fix thrownBy off-by-one problem
+    it("should give the proper line on a [IllegalArgumentException] should be thrownBy {}") {
+      try {
+        a [IllegalArgumentException] should be thrownBy {}
+      }
+      catch {
+        case e: TestFailedException =>
+          e.failedCodeFileNameAndLineNumberString match {
+            case Some(s) => // s should equal ("TestFailedExceptionSpec.scala:" + (baseLineNumber + 204))
+              if (s != ("TestFailedExceptionSpec.scala:" + (thisLineNumber - 6))) {
+                fail("s was: " + s, e)
+              }
+            case None => fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a file name and line number string", e)
+          }
+        case e: Throwable =>
+          fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a TestFailedException", e)
+      }
+    }
+
+    it("should give the proper line on a [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
+      try {
+        a [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
+      }
+      catch {
+        case e: TestFailedException =>
+          e.failedCodeFileNameAndLineNumberString match {
+            case Some(s) => s should equal ("TestFailedExceptionSpec.scala:" + (thisLineNumber - 5))
+            case None => fail("a [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a file name and line number string", e)
+          }
+        case e: Throwable =>
+          fail("a [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a TestFailedException", e)
+      }
+    }
+
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") {
       try {
         an [IllegalArgumentException] should be thrownBy {}
       }
@@ -238,7 +271,7 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
       }
     }
 
-    ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") { // TODO: Fix thrownBy off-by-one problem
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
       try {
         an [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
       }
