@@ -58,10 +58,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   case object Trunk extends Branch(None)
 
-  // Path traits need to register a function that returns a MessageRecordingInformer, because its tests are ru
-  // at construction time when these five args aren't available.
-  // type RecorderFun = (Suite, Reporter, Tracker, String, TestLeaf, Boolean) => MessageRecordingInformer2
-
   case class TestLeaf(
     parent: Branch,
     testName: String, // The full test name
@@ -154,31 +150,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val formatter = getIndentedTextForTest(testTextWithOptionalPrefix, theTest.indentationLevel, includeIcon)
 
     val messageRecorderForThisTest = new MessageRecorder(report)
-    val informerForThisTest =
-      MessageRecordingInformer(
-        messageRecorderForThisTest,
-        (message, payload, isConstructingThread, testWasPending, testWasCanceled, location) => createInfoProvided(theSuite, report, tracker, Some(testName), message, payload, theTest.indentationLevel + 1, location, isConstructingThread, includeIcon)
-      )
-
-    val updaterForThisTest =
-      ConcurrentNotifier(
-        (message, payload, isConstructingThread, location) => {
-          reportNoteProvided(theSuite, report, tracker, Some(testName), message, payload, 1, location, isConstructingThread)
-        }
-      )
-      
-    val alerterForThisTest =
-      ConcurrentAlerter(
-        (message, payload, isConstructingThread, location) => {
-          reportAlertProvided(theSuite, report, tracker, Some(testName), message, payload, 1, location, isConstructingThread)
-        }
-      )
-
-    val documenterForThisTest =
-      MessageRecordingDocumenter(
-        messageRecorderForThisTest,
-        (message, None, isConstructingThread, testWasPending, testWasCanceled, location) => createMarkupProvided(theSuite, report, tracker, Some(testName), message, theTest.indentationLevel + 1, location, isConstructingThread)
-      )
 
     val asyncOutcome: AsyncOutcome =
       try {
