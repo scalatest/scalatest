@@ -96,7 +96,11 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Assertion) {
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, -3, None, testTags: _*)
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = -3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -119,7 +123,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     engine.registerTest(testName, Transformer(testFun _), Resources.testCannotAppearInsideAnotherTest, "FunSuite.scala", "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
@@ -144,7 +148,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
     engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideATest, "FunSuite.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
