@@ -89,23 +89,25 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      status.toFuture.map { s =>
-        assert(rep.testStartingEventsReceived.length == 6)
-        assert(rep.testSucceededEventsReceived.length == 2)
-        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-        assert(rep.testSucceededEventsReceived(1).testName == "test 6")
-        assert(rep.testFailedEventsReceived.length == 2)
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(repo.testStartingEventsReceived.length == 6)
+        assert(repo.testSucceededEventsReceived.length == 2)
+        assert(repo.testSucceededEventsReceived(0).testName == "test 1")
+        assert(repo.testSucceededEventsReceived(1).testName == "test 6")
+        assert(repo.testFailedEventsReceived.length == 2)
         assert {
           val zero = rep.testFailedEventsReceived(0).testName
           val one = rep.testFailedEventsReceived(1).testName
           (zero == "test 2" && one == "test 7") || (zero == "test 7" && one == "test 2")
         }
-        assert(rep.testPendingEventsReceived.length == 1)
-        assert(rep.testPendingEventsReceived(0).testName == "test 3")
-        assert(rep.testCanceledEventsReceived.length == 1)
-        assert(rep.testCanceledEventsReceived(0).testName == "test 4")
-        assert(rep.testIgnoredEventsReceived.length == 1)
-        assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+        assert(repo.testPendingEventsReceived.length == 1)
+        assert(repo.testPendingEventsReceived(0).testName == "test 3")
+        assert(repo.testCanceledEventsReceived.length == 1)
+        assert(repo.testCanceledEventsReceived(0).testName == "test 4")
+        assert(repo.testIgnoredEventsReceived.length == 1)
+        assert(repo.testIgnoredEventsReceived(0).testName == "test 5")
       }
     }
 
@@ -155,23 +157,25 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val spec = new ExampleSpec
       val status = spec.run(None, Args(reporter = rep))
-      status.toFuture.map { s =>
-        assert(rep.testStartingEventsReceived.length == 6)
-        assert(rep.testSucceededEventsReceived.length == 2)
-        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-        assert(rep.testSucceededEventsReceived(1).testName == "test 6")
-        assert(rep.testFailedEventsReceived.length == 2)
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(repo.testStartingEventsReceived.length == 6)
+        assert(repo.testSucceededEventsReceived.length == 2)
+        assert(repo.testSucceededEventsReceived(0).testName == "test 1")
+        assert(repo.testSucceededEventsReceived(1).testName == "test 6")
+        assert(repo.testFailedEventsReceived.length == 2)
         assert {
           val zero = rep.testFailedEventsReceived(0).testName
           val one = rep.testFailedEventsReceived(1).testName
           (zero == "test 2" && one == "test 7") || (zero == "test 7" && one == "test 2")
         }
-        assert(rep.testPendingEventsReceived.length == 1)
-        assert(rep.testPendingEventsReceived(0).testName == "test 3")
-        assert(rep.testCanceledEventsReceived.length == 1)
-        assert(rep.testCanceledEventsReceived(0).testName == "test 4")
-        assert(rep.testIgnoredEventsReceived.length == 1)
-        assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
+        assert(repo.testPendingEventsReceived.length == 1)
+        assert(repo.testPendingEventsReceived(0).testName == "test 3")
+        assert(repo.testCanceledEventsReceived.length == 1)
+        assert(repo.testCanceledEventsReceived(0).testName == "test 4")
+        assert(repo.testIgnoredEventsReceived.length == 1)
+        assert(repo.testIgnoredEventsReceived(0).testName == "test 5")
       }
     }
 
@@ -219,9 +223,11 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      status.toFuture.map { s =>
-        assert(rep.testStartingEventsReceived.length == 3)
-        assert(rep.testSucceededEventsReceived.length == 3)
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(repo.testStartingEventsReceived.length == 3)
+        assert(repo.testSucceededEventsReceived.length == 3)
       }
     }
 
@@ -263,9 +269,11 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
-      status.toFuture.map { s =>
-        assert(rep.testStartingEventsReceived.length == 3)
-        assert(rep.testSucceededEventsReceived.length == 3)
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(repo.testStartingEventsReceived.length == 3)
+        assert(repo.testSucceededEventsReceived.length == 3)
       }
     }
   }
