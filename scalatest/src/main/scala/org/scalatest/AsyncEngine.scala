@@ -67,11 +67,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     recordedDuration: Option[Long] = None
   ) extends Node(Some(parent))
 
-  case class InfoLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
-  case class NoteLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
-  case class AlertLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
-  case class MarkupLeaf(parent: Branch, message: String, location: Option[LineInFile]) extends Node(Some(parent))
-
   case class DescriptionBranch(
     parent: Branch,
     descriptionText: String,
@@ -253,18 +248,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                     }
                   }
                 }
-
-            case infoLeaf @ InfoLeaf(_, message, payload, location) =>
-              reportInfoProvided(theSuite, args.reporter, args.tracker, None, message, payload, infoLeaf.indentationLevel, location, true, includeIcon)
-
-            case noteLeaf @ NoteLeaf(_, message, payload, location) =>
-              reportNoteProvided(theSuite, args.reporter, args.tracker, None, message, payload, noteLeaf.indentationLevel, location, true, includeIcon)
-
-            case alertLeaf @ AlertLeaf(_, message, payload, location) =>
-              reportAlertProvided(theSuite, args.reporter, args.tracker, None, message, payload, alertLeaf.indentationLevel, location, true, includeIcon)
-
-            case markupLeaf @ MarkupLeaf(_, message, location) =>
-              reportMarkupProvided(theSuite, args.reporter, args.tracker, None, message, markupLeaf.indentationLevel, location, true, includeIcon)
 
             case branch: Branch => statusList += runTestsInBranch(theSuite, branch, args, includeIcon, oneAfterAnotherAsync, runTest)
           }
