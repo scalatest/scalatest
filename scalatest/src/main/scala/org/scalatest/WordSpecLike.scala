@@ -161,7 +161,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
