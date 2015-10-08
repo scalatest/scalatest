@@ -78,7 +78,7 @@ trait AsyncFeatureSpecLike extends AsyncSuite with AsyncCompatibility with OneIn
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
@@ -97,7 +97,7 @@ trait AsyncFeatureSpecLike extends AsyncSuite with AsyncCompatibility with OneIn
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+      engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
     def apply(testFun: () => Future[Assertion]): Unit = {
       // SKIP-SCALATESTJS-START
@@ -106,7 +106,7 @@ trait AsyncFeatureSpecLike extends AsyncSuite with AsyncCompatibility with OneIn
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(new NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+      engine.registerTest(Resources.scenario(specText.trim), transformToOutcome(new NoArgTestWrapper(testFun)), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
   }
 

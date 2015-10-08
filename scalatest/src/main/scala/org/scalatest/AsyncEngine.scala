@@ -64,8 +64,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testText: String, // The last portion of the test name that showed up on an inner most nested level
     testFun: T, 
     location: Option[Location],
-    recordedDuration: Option[Long] = None,
-    recordedMessages: Option[PathMessageRecordingInformer] = None
+    recordedDuration: Option[Long] = None
   ) extends Node(Some(parent))
 
   case class InfoLeaf(parent: Branch, message: String, payload: Option[Any], location: Option[LineInFile]) extends Node(Some(parent))
@@ -171,44 +170,28 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
             case Succeeded =>
               val duration = System.currentTimeMillis - testStartTime
               val durationToReport = theTest.recordedDuration.getOrElse(duration)
-              val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++
-                (if (theTest.recordedMessages.isDefined)
-                  theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
-                else
-                  Vector.empty)
+              val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) // TODO: zap this
               reportTestSucceeded(theSuite, report, tracker, testName, theTest.testText, recordEvents, durationToReport, formatter, theSuite.rerunner, theTest.location)
               SucceededStatus
 
             case Pending =>
               val duration = System.currentTimeMillis - testStartTime
               // testWasPending = true so info's printed out in the finally clause show up yellow
-              val recordEvents = messageRecorderForThisTest.recordedEvents(true, false) ++
-                (if (theTest.recordedMessages.isDefined)
-                  theTest.recordedMessages.get.recordedEvents(true, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
-                else
-                  Vector.empty)
+              val recordEvents = messageRecorderForThisTest.recordedEvents(true, false) // TODO: Zap this
               reportTestPending(theSuite, report, tracker, testName, theTest.testText, recordEvents, duration, formatter, theTest.location)
               SucceededStatus
 
             case Canceled(e) =>
               val duration = System.currentTimeMillis - testStartTime
               // testWasCanceled = true so info's printed out in the finally clause show up yellow
-              val recordEvents = messageRecorderForThisTest.recordedEvents(false, true) ++
-                (if (theTest.recordedMessages.isDefined)
-                  theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
-                else
-                  Vector.empty)
+              val recordEvents = messageRecorderForThisTest.recordedEvents(false, true) // TODO: zap this
               reportTestCanceled(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, duration, formatter, theTest.location)
               SucceededStatus
 
             case Failed(e) =>
               val duration = System.currentTimeMillis - testStartTime
               val durationToReport = theTest.recordedDuration.getOrElse(duration)
-              val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) ++
-                (if (theTest.recordedMessages.isDefined)
-                  theTest.recordedMessages.get.recordedEvents(false, theSuite, report, tracker, testName, theTest.indentationLevel + 1, includeIcon)
-                else
-                  Vector.empty)
+              val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) // TODO: Zap this
               reportTestFailed(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, durationToReport, formatter,  Some(SeeStackDepthException))
               FailedStatus
           }
@@ -252,7 +235,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       branch.subNodes.reverse.foreach { node =>
         if (!stopper.stopRequested) {
           node match {
-            case testLeaf @ TestLeaf(_, testName, testText, _, _, _, _) =>
+            case testLeaf @ TestLeaf(_, testName, testText, _, _, _) =>
               val (filterTest, ignoreTest) = args.filter(testName, theSuite.tags, theSuite.suiteId)
               if (!filterTest)
                 if (ignoreTest) {
@@ -447,7 +430,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   }
 
   // Path traits need to register the message recording informer, so it can fire any info events later
-  def registerTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], informer: Option[PathMessageRecordingInformer], testTags: Tag*): String = { // returns testName
+  def registerTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], testTags: Tag*): String = { // returns testName
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -468,7 +451,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         case None => getLineInFile(Thread.currentThread().getStackTrace, stackDepth)
       }
 
-    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, duration, informer)
+    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, duration)
     testsMap += (testName -> testLeaf)
     testNamesList ::= testName
     currentBranch.subNodes ::= testLeaf
@@ -490,7 +473,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 //    if (atomic.get.registrationClosed)
 //      throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideATest, getStackDepth(sourceFileName, "ignore"))
 
-    val testName = registerTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location, None) // Call test without passing the tags
+    val testName = registerTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location) // Call test without passing the tags
 
     val oldBundle = atomic.get
     var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack

@@ -68,7 +68,7 @@ trait AsyncFunSuiteLike extends AsyncSuite with AsyncCompatibility with OneInsta
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
@@ -96,7 +96,7 @@ trait AsyncFunSuiteLike extends AsyncSuite with AsyncCompatibility with OneInsta
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, "FunSuiteRegistering.scala", "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, "FunSuiteRegistering.scala", "test", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   /**

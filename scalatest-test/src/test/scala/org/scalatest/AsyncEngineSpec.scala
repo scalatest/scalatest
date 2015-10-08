@@ -88,16 +88,16 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
           list should be (ListBuffer(1)) 
           list.clear()
           PastOutcome(Succeeded)
-        }, "Anything", "Anything", "Anything", 1, 0, None, None, None)
+        }, "Anything", "Anything", "Anything", 1, 0, None, None)
         engine.registerTest("then the list length = 1", () => {
           PastOutcome(outcomeOf { list.length should be (1) })
-        }, "Anything", "Anything", "Anything", 1, 0, None, None, None)
+        }, "Anything", "Anything", "Anything", 1, 0, None, None)
       }, "Anything", "Anything", "Anything", 1, 0, None)
       engine.registerNestedBranch("when 2 is inserted", None, {
         list += 2
         engine.registerTest("then the list has only 2 in it", () => {
           PastOutcome(outcomeOf { list should be (ListBuffer(2)) })
-        }, "Anything", "Anything", "Anything", 1, 0, None, None, None)
+        }, "Anything", "Anything", "Anything", 1, 0, None, None)
       }, "Anything", "Anything", "Anything", 1, 0, None)
     }, "Anything", "Anything", "Anything", 1, 0, None)
     engine

@@ -74,7 +74,7 @@ trait AsyncFunSpecLike extends AsyncSuite with AsyncCompatibility with OneInstan
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
@@ -138,7 +138,7 @@ trait AsyncFunSpecLike extends AsyncSuite with AsyncCompatibility with OneInstan
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-      engine.registerTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+      engine.registerTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
 
     /**
@@ -250,7 +250,7 @@ trait AsyncFunSpecLike extends AsyncSuite with AsyncCompatibility with OneInstan
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
     def apply(specText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
-      engine.registerTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
+      engine.registerTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, testTags: _*)
     }
 
     /**

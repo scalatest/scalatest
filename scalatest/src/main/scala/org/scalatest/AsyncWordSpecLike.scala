@@ -72,7 +72,7 @@ trait AsyncWordSpecLike extends AsyncSuite with ShouldVerb with MustVerb with Ca
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
@@ -110,11 +110,11 @@ trait AsyncWordSpecLike extends AsyncSuite with ShouldVerb with MustVerb with Ca
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     def transformToOutcomeParam: Future[Assertion] = testFun()
-    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistering.scala", methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**

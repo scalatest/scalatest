@@ -78,7 +78,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with ShouldVerb with MustVerb with Ca
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
@@ -123,7 +123,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with ShouldVerb with MustVerb with Ca
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, transformToOutcome(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(specText, transformToOutcome(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
@@ -133,7 +133,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with ShouldVerb with MustVerb with Ca
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, OldTransformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+    engine.registerTest(specText, OldTransformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**
