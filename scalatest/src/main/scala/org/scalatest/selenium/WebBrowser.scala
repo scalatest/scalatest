@@ -1941,7 +1941,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a email field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a email field
    */
-  final class EmailField(val underlying: WebElement) extends Element with ValueElement {
+  final class EmailField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isEmailField, "email")
   }
 
@@ -1960,7 +1960,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a color field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a color field
    */
-  final class ColorField(val underlying: WebElement) extends Element with ValueElement {
+  final class ColorField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isColorField, "color")
   }
 
@@ -1979,7 +1979,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a date field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a date field
    */
-  final class DateField(val underlying: WebElement) extends Element with ValueElement {
+  final class DateField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isDateField, "date")
   }
 
@@ -1998,7 +1998,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a datetime field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime field
    */
-  final class DateTimeField(val underlying: WebElement) extends Element with ValueElement {
+  final class DateTimeField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isDateTimeField, "datetime")
   }
 
@@ -2017,7 +2017,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a datetime-local field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime-local field
    */
-  final class DateTimeLocalField(val underlying: WebElement) extends Element with ValueElement {
+  final class DateTimeLocalField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isDateTimeLocalField, "datetime-local")
   }
 
@@ -2036,7 +2036,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a month field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a month field
    */
-  final class MonthField(val underlying: WebElement) extends Element with ValueElement {
+  final class MonthField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isMonthField, "month")
   }
 
@@ -2055,7 +2055,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a number field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a number field
    */
-  final class NumberField(val underlying: WebElement) extends Element with ValueElement {
+  final class NumberField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isNumberField, "number")
   }
 
@@ -2074,7 +2074,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a range field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a range field
    */
-  final class RangeField(val underlying: WebElement) extends Element with ValueElement {
+  final class RangeField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isRangeField, "range")
   }
 
@@ -2093,7 +2093,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a search field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a search field
    */
-  final class SearchField(val underlying: WebElement) extends Element with ValueElement {
+  final class SearchField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isSearchField, "search")
   }
 
@@ -2112,7 +2112,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a tel field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a tel field
    */
-  final class TelField(val underlying: WebElement) extends Element with ValueElement {
+  final class TelField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isTelField, "tel")
   }
 
@@ -2131,7 +2131,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a time field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a time field
    */
-  final class TimeField(val underlying: WebElement) extends Element with ValueElement {
+  final class TimeField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isTimeField, "time")
   }
 
@@ -2150,7 +2150,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a url field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a url field
    */
-  final class UrlField(val underlying: WebElement) extends Element with ValueElement {
+  final class UrlField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isUrlField, "url")
   }
 
@@ -2169,7 +2169,7 @@ trait WebBrowser {
    * @param underlying the <code>WebElement</code> representing a week field
    * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a week field
    */
-  final class WeekField(val underlying: WebElement) extends Element with ValueElement {
+  final class WeekField(val underlying: WebElement) extends ValueElement {
     checkCorrectType(isWeekField, "week")
   }
 
