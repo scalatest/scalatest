@@ -246,7 +246,43 @@ class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTrac
       }
     }
 
-    ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") { // TODO: Fix thrownBy off-by-one problem
+    it("should give the proper line on a [IllegalArgumentException] should be thrownBy {}") {
+      try {
+        a [IllegalArgumentException] should be thrownBy {}
+      }
+      catch {
+        case e: TestFailedException =>
+          e.failedCodeFileNameAndLineNumberString match {
+            case Some(s) => // s should equal ("SeveredStackTracesSpec.scala:" + (baseLineNumber + 204))
+              if (s != ("SeveredStackTracesSpec.scala:" + (thisLineNumber - 6))) {
+                fail("s was: " + s, e)
+              }
+              checkFileNameAndLineNumber(e, s)
+            case None => fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a file name and line number string", e)
+          }
+        case e: Throwable =>
+          fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a TestFailedException", e)
+      }
+    }
+
+    it("should give the proper line on a [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
+      try {
+        a [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
+      }
+      catch {
+        case e: TestFailedException =>
+          e.failedCodeFileNameAndLineNumberString match {
+            case Some(s) =>
+              s should equal ("SeveredStackTracesSpec.scala:" + (thisLineNumber - 6))
+              checkFileNameAndLineNumber(e, s)
+            case None => fail("a [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a file name and line number string", e)
+          }
+        case e: Throwable =>
+          fail("a [IllegalArgumentException] should be thrownBy { throw new RuntimeException } didn't produce a TestFailedException", e)
+      }
+    }
+
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") {
       try {
         an [IllegalArgumentException] should be thrownBy {}
       }
@@ -265,7 +301,7 @@ class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTrac
       }
     }
 
-    ignore("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") { // TODO: Fix thrownBy off-by-one problem
+    it("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
       try {
         an [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
       }

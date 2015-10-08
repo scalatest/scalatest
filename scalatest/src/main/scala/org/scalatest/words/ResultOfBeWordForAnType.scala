@@ -40,7 +40,7 @@ final class ResultOfBeWordForAnType[T](clazz: Class[T]) {
    */
   def thrownBy(fun: => Unit): Assertion = {
     // SKIP-SCALATESTJS-START
-    val stackDepth = 1
+    val stackDepth = 0
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 10
     try {
