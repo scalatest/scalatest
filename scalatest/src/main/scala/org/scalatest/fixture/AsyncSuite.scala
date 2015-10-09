@@ -20,11 +20,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper._
 
 import scala.concurrent.Future
 
-trait AsyncSuite extends Suite with AsyncTestRegistration {
-
-  final override def withFixture(test: NoArgTest): Outcome = {
-    throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncFixtures.scala", "withFixture"))
-  }
+trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSuite {
 
   final override def withFixture(test: OneArgTest): Outcome = {
     throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncFixtures.scala", "withFixture"))
@@ -38,11 +34,21 @@ trait AsyncSuite extends Suite with AsyncTestRegistration {
    * <a href="FlatSpec.html#withFixtureNoArgTest">documentation for trait <code>fixture.FlatSpec</code></a>.
    * </p>
    */
-  trait OneArgAsyncTest extends ((FixtureParam) => Future[Outcome]) with TestData {
+  trait OneArgAsyncTest extends (FixtureParam => Future[Outcome]) with TestData { thisOneArgAsyncTest =>
     /**
      * Runs the body of the test, returning an <code>Future[Outcome]</code>.
      */
     def apply(fixture: FixtureParam): Future[Outcome]
+
+    def toNoArgAsyncTest(fixture: FixtureParam): NoArgAsyncTest = 
+      new NoArgAsyncTest {
+        val name = thisOneArgAsyncTest.name
+        val configMap = thisOneArgAsyncTest.configMap
+        def apply(): Future[Outcome] = { thisOneArgAsyncTest(fixture) }
+        val scopes = thisOneArgAsyncTest.scopes
+        val text = thisOneArgAsyncTest.text
+        val tags = thisOneArgAsyncTest.tags
+      }
   }
 
   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome]

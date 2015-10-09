@@ -41,7 +41,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait AsyncFunSuiteLike extends AsyncSuite with AsyncCompatibility with OneInstancePerTest { thisSuite =>
+trait AsyncFunSuiteLike extends AsyncSuite with AsyncTestRegistration with AsyncCompatibility with OneInstancePerTest { thisSuite =>
 
   protected val oneAfterAnotherAsync: Boolean = false
   final private[scalatest] def getOneAfterAnotherAsync = oneAfterAnotherAsync

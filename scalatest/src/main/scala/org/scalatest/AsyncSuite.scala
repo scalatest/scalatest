@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.Future
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
-trait AsyncSuite extends Suite with AsyncTestRegistration {
+trait AsyncSuite extends Suite {
 
   final override def withFixture(test: NoArgTest): Outcome = {
     throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncSuite.scala", "withFixture"))

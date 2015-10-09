@@ -49,7 +49,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait AsyncFlatSpecLike extends AsyncSuite with ShouldVerb with MustVerb with CanVerb with AsyncCompatibility with OneInstancePerTest { thisSuite =>
+trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with AsyncCompatibility with OneInstancePerTest { thisSuite =>
 
   protected val oneAfterAnotherAsync: Boolean = false
   final private[scalatest] def getOneAfterAnotherAsync = oneAfterAnotherAsync
