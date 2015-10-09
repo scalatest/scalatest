@@ -245,7 +245,5 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec {
         assert(repo.testSucceededEventsReceived.length == 3)
       }
     }
-
   }
-
 }

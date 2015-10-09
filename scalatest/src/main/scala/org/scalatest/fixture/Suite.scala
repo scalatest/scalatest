@@ -142,7 +142,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
 
   private[fixture] class TestFunAndConfigMap(val name: String, test: FixtureParam => Any, val configMap: ConfigMap)
     extends OneArgTest {
-    
+
     def apply(fixture: FixtureParam): Outcome = {
       outcomeOf { test(fixture) }
     }
