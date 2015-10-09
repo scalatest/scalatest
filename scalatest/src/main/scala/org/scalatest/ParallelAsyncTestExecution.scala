@@ -19,7 +19,7 @@ import events.Event
 import org.scalatest.time.Span
 import tools.{DistributedTestRunnerSuite, TestSortingReporter}
 
-trait ParallelAsyncTestExecution { this: AsyncSuite =>
+trait ParallelAsyncTestExecution extends ParallelTestExecution { this: AsyncSuite =>
   protected[scalatest] override val parallelAsyncTestExecution = true
 }
 

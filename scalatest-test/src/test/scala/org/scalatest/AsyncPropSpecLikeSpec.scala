@@ -172,8 +172,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -214,8 +212,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
         property("test 3") {
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSpec
 
       }
 

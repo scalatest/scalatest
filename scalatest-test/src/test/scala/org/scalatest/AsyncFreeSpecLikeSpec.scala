@@ -172,8 +172,6 @@ class AsyncFreeSpecLikeSpec extends FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -214,8 +212,6 @@ class AsyncFreeSpecLikeSpec extends FunSpec {
         "test 3" in {
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSpec
 
       }
 

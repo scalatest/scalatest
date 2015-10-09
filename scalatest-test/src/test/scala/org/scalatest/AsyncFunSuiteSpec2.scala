@@ -183,8 +183,6 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelAsyncTestExecution {
           }
         }
 
-        override def newInstance = new ExampleSuite
-
       }
 
       val rep = new EventRecordingReporter
@@ -226,8 +224,6 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelAsyncTestExecution {
         test("test 3") {
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSuite
 
       }
 

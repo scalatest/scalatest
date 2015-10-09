@@ -203,8 +203,6 @@ class AsyncFunSpecSpec extends FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -245,8 +243,6 @@ class AsyncFunSpecSpec extends FunSpec {
         it("test 3") {
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSpec
 
       }
 

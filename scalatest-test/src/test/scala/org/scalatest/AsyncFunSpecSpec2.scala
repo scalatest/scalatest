@@ -26,8 +26,6 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-  override def newInstance = new AsyncFunSpecSpec2
-
   describe("AsyncFunSpec") {
 
     it("can be used for tests that return a Future under parallel async test execution") {
@@ -214,8 +212,6 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
           }
         }
 
-        override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -257,8 +253,6 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
         it("test 3") {
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSpec
 
       }
 

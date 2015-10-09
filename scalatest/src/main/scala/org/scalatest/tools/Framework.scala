@@ -358,10 +358,12 @@ class Framework extends SbtFramework {
       val formatter = formatterForSuiteCompleted(suite)
       val duration = System.currentTimeMillis - suiteStartTime
 
+      // Needs to block here whether or not ConcurrentDistributor is in used.
+      // In case of async if it is not blocked here, sbt will start spitting out the output right after this method
+      // returns, and mix up the result output in the sbt.
+      status.succeeds()
       if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-        status.whenCompleted { succeed =>
-          report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
-        }
+        report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
     }
     catch {       
       case e: Throwable => {
@@ -387,10 +389,6 @@ class Framework extends SbtFramework {
       }
     }
     finally {
-      distributor match {
-        case Some(dist) => dist.waitUntilDone()
-        case None =>
-      }
       statefulStatus match {
         case Some(s) => s.setCompleted()
         case None => // Do nothing
