@@ -9,7 +9,9 @@ import scala.concurrent.duration._
 private[scalatest] trait AsyncOutcome {
   def onComplete(f: Try[Outcome] => Unit)
   def toStatus: Status
+  // SKIP-SCALATESTJS-START
   def toOutcome: Outcome // may block
+  // SKIP-SCALATESTJS-END
   def toFutureOutcome: Future[Outcome]
 }
 
@@ -23,7 +25,9 @@ private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
       case _: Failed => FailedStatus
       case _ => SucceededStatus
     }
+  // SKIP-SCALATESTJS-START
   def toOutcome: Outcome = past
+  // SKIP-SCALATESTJS-END
   def toFutureOutcome: Future[Outcome] = Future.successful(past)
 }
 
@@ -64,6 +68,5 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
   // SKIP-SCALATESTJS-START
   def toOutcome: Outcome = Await.result(future, Duration.Inf)
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY def toOutcome: Outcome = throw new UnsupportedOperationException("Not supported on scalatest-js")
   def toFutureOutcome: Future[Outcome] = future
 }
