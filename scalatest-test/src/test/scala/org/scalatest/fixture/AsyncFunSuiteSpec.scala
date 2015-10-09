@@ -185,8 +185,6 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSuite
-
       }
 
       val rep = new EventRecordingReporter
@@ -231,8 +229,6 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
         test("test 3") { fixture =>
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSuite
 
       }
 

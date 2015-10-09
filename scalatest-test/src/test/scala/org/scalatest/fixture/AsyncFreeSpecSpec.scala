@@ -93,7 +93,7 @@ class AsyncFreeSpecSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFreeSpec {
+      class ExampleSpec extends AsyncFreeSpec with ParallelAsyncTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -185,8 +185,6 @@ class AsyncFreeSpecSpec extends org.scalatest.FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -231,8 +229,6 @@ class AsyncFreeSpecSpec extends org.scalatest.FunSpec {
         "test 3" in { fixture =>
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSpec
 
       }
 

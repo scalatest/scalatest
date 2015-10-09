@@ -65,6 +65,7 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
         }
 
         override def newInstance = new ExampleSpec
+
       }
 
       val rep = new EventRecordingReporter
@@ -118,6 +119,7 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
         }
 
         override def newInstance = new ExampleSpec
+
       }
 
       val rep = new EventRecordingReporter
@@ -172,8 +174,6 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -214,8 +214,6 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
         scenario("test 3") {
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSpec
 
       }
 

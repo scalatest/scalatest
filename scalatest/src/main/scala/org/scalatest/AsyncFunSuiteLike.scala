@@ -41,7 +41,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-trait AsyncFunSuiteLike extends AsyncSuite with AsyncTestRegistration with AsyncCompatibility with OneInstancePerTest { thisSuite =>
+trait AsyncFunSuiteLike extends AsyncSuite with AsyncTestRegistration with AsyncCompatibility { thisSuite =>
 
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
@@ -146,33 +146,24 @@ trait AsyncFunSuiteLike extends AsyncSuite with AsyncTestRegistration with Async
    *     is <code>null</code>.
    */
   protected override def runTest(testName: String, args: Args): Status = {
-
-    if (args.runTestInNewInstance) {
-      // In initial instance, so create a new test-specific instance for this test and invoke run on it.
-      val oneInstance = newInstance
-      oneInstance.run(Some(testName), args)
+    def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
+      val theConfigMap = args.configMap
+      val testData = testDataFor(testName, theConfigMap)
+      FutureOutcome(
+        withAsyncFixture(
+          new NoArgAsyncTest {
+            val name = testData.name
+            def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
+            val configMap = testData.configMap
+            val scopes = testData.scopes
+            val text = testData.text
+            val tags = testData.tags
+          }
+        ) /* fills in executionContext here */
+      )
     }
-    else {
-      // Therefore, in test-specific instance, so run the test.
-      def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
-        val theConfigMap = args.configMap
-        val testData = testDataFor(testName, theConfigMap)
-        FutureOutcome(
-          withAsyncFixture(
-            new NoArgAsyncTest {
-              val name = testData.name
-              def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
-              val configMap = testData.configMap
-              val scopes = testData.scopes
-              val text = testData.text
-              val tags = testData.tags
-            }
-          ) /* fills in executionContext here */
-        )
-      }
 
-      runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
-    }
+    runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
   }
 
   /**

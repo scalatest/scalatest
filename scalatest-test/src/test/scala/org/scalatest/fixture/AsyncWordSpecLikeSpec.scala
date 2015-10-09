@@ -185,8 +185,6 @@ class AsyncWordSpecLikeSpec extends org.scalatest.FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -231,8 +229,6 @@ class AsyncWordSpecLikeSpec extends org.scalatest.FunSpec {
         "test 3" in { fixture =>
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSpec
 
       }
 
