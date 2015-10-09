@@ -56,7 +56,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
 
     event match {
       case e: SuiteCompleted =>
-        writeSuiteFile(e, e.suiteId) // HERE *** 1
+        writeSuiteFile(e, e.suiteId)
 
       case e: SuiteAborted =>
         writeSuiteFile(e, e.suiteId)
@@ -73,9 +73,9 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     require(endEvent.isInstanceOf[SuiteCompleted] ||
             endEvent.isInstanceOf[SuiteAborted])
 
-    val testsuite: Testsuite = getTestsuite(endEvent, suiteId) // HERE *** 2
-    val xmlStr: String = xmlify(testsuite)
-    val filespec: String = directory + "/TEST-" + suiteId + ".xml"
+    val testsuite = getTestsuite(endEvent, suiteId)
+    val xmlStr    = xmlify(testsuite)
+    val filespec  = directory + "/TEST-" + suiteId + ".xml"
 
     val out = new PrintWriter(filespec, "UTF-8")
     out.print(xmlStr)
@@ -157,15 +157,13 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     val testsuite = Testsuite(name, startEvent.timeStamp)
 
     var idx = startIndex + 1
-    println(s"\nstartIndex: $startIndex, endIndex: $endIndex")
     while (idx <= endIndex) {
       val event = orderedEvents(idx)
-      println(s"\nidx: $idx, orderedEvents(idx): ${orderedEvents(idx)}")
       events -= event
 
       event match {
         case e: TestStarting =>
-          val (testEndIndex, testcase) = processTest(orderedEvents, e, idx) // HERE *** 3
+          val (testEndIndex, testcase) = processTest(orderedEvents, e, idx)
           testsuite.testcases += testcase
           if (testcase.failure != None) testsuite.failures += 1
           idx = testEndIndex + 1
@@ -324,7 +322,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
         case e: AlertProvided  => idx += 1
         case e: NoteProvided   => idx += 1
         case e: SuiteCompleted => unexpected(e)
-        case e: TestStarting   => println("\nTHE EVENTS: "); println(orderedEvents.drop(idx).mkString("\n\n")); unexpected(e) // HERE *** 4
+        case e: TestStarting   => unexpected(e)
         case e: TestIgnored    => unexpected(e)
         case e: SuiteStarting  => unexpected(e)
         case e: RunStarting    => unexpected(e)
@@ -494,7 +492,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   // Throws an exception if an unexpected Event is encountered.
   //
   def unexpected(event: Event) {
-    throw new RuntimeException("unexpected event [" + event + "]") // HERE *** 5
+    throw new RuntimeException("unexpected event [" + event + "]")
   }
 
   //
