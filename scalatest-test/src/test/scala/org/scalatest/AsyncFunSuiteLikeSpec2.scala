@@ -30,9 +30,9 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
 
   describe("AsyncFunSuiteLike") {
 
-    it("can be used for tests that return Future") {
+    it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSuite extends AsyncFunSuiteLike {
+      class ExampleSuite extends AsyncFunSuiteLike with ParallelAsyncTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -94,9 +94,9 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
       }
     }
 
-    it("can be used for tests that did not return Future") {
+    it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSuite extends AsyncFunSuiteLike {
+      class ExampleSuite extends AsyncFunSuiteLike with ParallelAsyncTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -148,13 +148,11 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
       }
     }
 
-    it("should run tests that return Future in serial when oneAfterAnotherAsync is set to true") {
+    it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
 
       class ExampleSuite extends AsyncFunSuiteLike {
-
-        override protected val oneAfterAnotherAsync: Boolean = true
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -200,13 +198,11 @@ class AsyncFunSuiteLikeSpec2 extends AsyncFunSpec {
       }
     }
 
-    it("should run tests that does not return Future in serial when oneAfterAnotherAsync is set to true") {
+    it("should run tests that does not return Future in serial by default") {
 
       @volatile var count = 0
 
       class ExampleSuite extends AsyncFunSuiteLike {
-
-        override protected val oneAfterAnotherAsync: Boolean = true
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global

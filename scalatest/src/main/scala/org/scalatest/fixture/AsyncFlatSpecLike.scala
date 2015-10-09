@@ -51,9 +51,6 @@ import scala.concurrent.Future
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with AsyncCompatibility with OneInstancePerTest { thisSuite =>
 
-  protected val oneAfterAnotherAsync: Boolean = false
-  final private[scalatest] def getOneAfterAnotherAsync = oneAfterAnotherAsync
-
   override private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
       val futureUnit = testFun(fixture)
@@ -2167,7 +2164,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
    * @throws NullArgumentException if any of <code>testName</code> or <code>args</code> is <code>null</code>.
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, true, getOneAfterAnotherAsync, runTest)
+    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, runTest)
   }
 
   /**

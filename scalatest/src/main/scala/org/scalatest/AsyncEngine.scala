@@ -201,7 +201,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     branch: Branch,
     args: Args,
     includeIcon: Boolean,
-    oneAfterAnotherAsync: Boolean,
+    parallelAsyncTestExecution: Boolean,
     runTest: (String, Args) => Status
   ): Status = {
 
@@ -240,16 +240,16 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                 }
                 else {
                   statusList += {
-                    if (!oneAfterAnotherAsync || statusList.isEmpty) {
-                      runTest(testName, args) // If oneAfterAnotherAsync, first time just go for it
+                    if (parallelAsyncTestExecution || statusList.isEmpty) {
+                      runTest(testName, args) // Even if serial async test execution (i.e., not parallelAsyncTestExection), first time still just go for it
                     }
                     else {
-                      statusList.last thenRun runTest(testName, args)  // Only if oneAfterAnotherAsync, after first Status
+                      statusList.last thenRun runTest(testName, args)  // Only if serial async test execution (i.e., not parallelAsyncTestExecution), after first Status
                     }
                   }
                 }
 
-            case branch: Branch => statusList += runTestsInBranch(theSuite, branch, args, includeIcon, oneAfterAnotherAsync, runTest)
+            case branch: Branch => statusList += runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, runTest)
           }
         }
       }
@@ -268,7 +268,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testName: Option[String],
     args: Args,
     includeIcon: Boolean,
-    oneAfterAnotherAsync: Boolean,
+    parallelAsyncTestExecution: Boolean,
     runTest: (String, Args) => Status
   ): Status = {
     requireNonNull(testName, args)
@@ -300,7 +300,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
             statusBuffer += runTest(tn, newArgs)
           }
         }
-      case None => statusBuffer += runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, oneAfterAnotherAsync, runTest)
+      case None => statusBuffer += runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, runTest)
     }
     new CompositeStatus(Set.empty ++ statusBuffer)
   }

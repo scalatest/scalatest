@@ -24,9 +24,9 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
 
   describe("AsyncPropSpecLike") {
 
-    it("can be used for tests that return Future") {
+    it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpecLike with ParallelAsyncTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -91,9 +91,9 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
-    it("can be used for tests that did not return Future") {
+    it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncPropSpecLike {
+      class ExampleSpec extends AsyncPropSpecLike with ParallelAsyncTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -148,13 +148,11 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
-    it("should run tests that return Future in serial when oneAfterAnotherAsync is set to true") {
+    it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
 
       class ExampleSpec extends AsyncPropSpecLike {
-
-        override protected val oneAfterAnotherAsync: Boolean = true
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -203,13 +201,11 @@ class AsyncPropSpecLikeSpec extends org.scalatest.FunSpec {
 
     }
 
-    it("should run tests that does not return Future in serial when oneAfterAnotherAsync is set to true") {
+    it("should run tests that does not return Future in serial by default") {
 
       @volatile var count = 0
 
       class ExampleSpec extends AsyncPropSpecLike {
-
-        override protected val oneAfterAnotherAsync: Boolean = true
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global

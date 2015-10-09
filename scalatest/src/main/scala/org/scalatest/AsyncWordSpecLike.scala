@@ -47,9 +47,6 @@ import scala.concurrent.Future
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with AsyncCompatibility with OneInstancePerTest { thisSuite =>
 
-  protected val oneAfterAnotherAsync: Boolean = false
-  final private[scalatest] def getOneAfterAnotherAsync = oneAfterAnotherAsync
-
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
       val futureAssertion = testFun
@@ -1140,7 +1137,7 @@ one error found
    *     exists in this <code>Suite</code>
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, true, getOneAfterAnotherAsync, runTest)
+    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, runTest)
   }
 
   /**

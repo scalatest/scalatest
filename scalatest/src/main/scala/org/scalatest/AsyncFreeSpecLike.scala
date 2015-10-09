@@ -52,9 +52,6 @@ import scala.concurrent.Future
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with AsyncCompatibility with OneInstancePerTest { thisSuite =>
 
-  protected val oneAfterAnotherAsync: Boolean = false
-  final private[scalatest] def getOneAfterAnotherAsync = oneAfterAnotherAsync
-
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
       val futureAssertion = testFun
@@ -478,7 +475,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with Async
    *     exists in this <code>Suite</code>
    */
   protected override def runTests(testName: Option[String], args: Args): Status = {
-    runTestsImpl(thisSuite, testName, args, true, getOneAfterAnotherAsync, runTest)
+    runTestsImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, runTest)
   }
 
   /**
