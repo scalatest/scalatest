@@ -26,8 +26,6 @@ class AsyncWordSpecSpec2 extends AsyncFunSpec {
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-  override def newInstance = new AsyncWordSpecSpec2
-
   describe("AsyncWordSpec") {
 
     it("can be used for tests that return Future under parallel async test execution") {
@@ -183,8 +181,6 @@ class AsyncWordSpecSpec2 extends AsyncFunSpec {
           }
         }
 
-        override def newInstance = new ExampleSpec
-
       }
 
       val rep = new EventRecordingReporter
@@ -226,8 +222,6 @@ class AsyncWordSpecSpec2 extends AsyncFunSpec {
         "test 3" in {
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSpec
 
       }
 

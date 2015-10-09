@@ -172,8 +172,6 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
           }
         }
 
-        override def newInstance = new ExampleSuite
-
       }
 
       val rep = new EventRecordingReporter
@@ -214,8 +212,6 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
         test("test 3") {
           assert(count == 2)
         }
-
-        override def newInstance = new ExampleSuite
 
       }
 
