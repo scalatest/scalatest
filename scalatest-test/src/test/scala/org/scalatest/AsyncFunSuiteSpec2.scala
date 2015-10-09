@@ -19,7 +19,7 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import scala.concurrent.{Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 
-class AsyncFunSuiteSpec2 extends AsyncFunSpec {
+class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelAsyncTestExecution {
 
   // SKIP-SCALATESTJS-START
   implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
