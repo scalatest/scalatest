@@ -280,5 +280,122 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
       a.run(None, Args(StubReporter))
     }
   }
+
+  // SKIP-SCALATESTJS-START
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.annotation.AnnotationFormatError("test")
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[java.lang.annotation.AnnotationFormatError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.nio.charset.CoderMalfunctionError(new RuntimeException("test"))
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[java.nio.charset.CoderMalfunctionError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  // SKIP-SCALATESTJS-START
+  test("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new javax.xml.parsers.FactoryConfigurationError()
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[javax.xml.parsers.FactoryConfigurationError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.LinkageError()
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[java.lang.LinkageError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new javax.xml.transform.TransformerFactoryConfigurationError()
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[javax.xml.transform.TransformerFactoryConfigurationError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
+
+    class ExampleSpec extends FunSuite with BeforeAndAfterEachTestData {
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.VirtualMachineError() {}
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[java.lang.VirtualMachineError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+  // SKIP-SCALATESTJS-END
 }
 

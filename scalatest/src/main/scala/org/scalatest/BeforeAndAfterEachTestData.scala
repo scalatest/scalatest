@@ -194,7 +194,7 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
         super.runTest(testName, args)
       }
       catch {
-        case e: Exception =>  // TODO Change this to catch any exception except Suite.anExceptionThatShouldCauseAnAbort
+        case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
           thrownException = Some(e)
           FailedStatus
       }
@@ -203,7 +203,7 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
       val statusToReturn: Status =
         if (!args.runTestInNewInstance)
           runTestStatus thenRun { afterEach(testDataFor(testName, args.configMap)); SucceededStatus } // Make sure that afterEach is called even if runTest completes abruptly.
-        else 
+        else
           runTestStatus
       thrownException match {
         case Some(e) => throw e
