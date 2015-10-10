@@ -21,6 +21,7 @@ import org.scalatest.events.Ordinal
 import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
+import scala.concurrent.Promise
 
 class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
@@ -108,12 +109,14 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
     assert(a.beforeEachTestDataCalledBeforeRunTest)
   }
-  
+
   test("afterEach gets called after runTest") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    status.toFuture.map { s =>
-      assert(a.afterEachTestDataCalledAfterRunTest)
+    val promise = Promise[MySuite] // Promise...my suite
+    status whenCompleted { _ => promise.success(a) }
+    promise.future.map { mySuite =>
+      assert(mySuite.afterEachTestDataCalledAfterRunTest)
     }
   }
 
@@ -126,8 +129,10 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("afterAll gets called after run") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    status.toFuture.map { s =>
-      assert(a.afterAllConfigCalledAfterExecute)
+    val promise = Promise[MySuite]
+    status whenCompleted { _ => promise.success(a) }
+    promise.future.map { mySuite =>
+      assert(mySuite.afterAllConfigCalledAfterExecute)
     }
   }
   
@@ -140,8 +145,10 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("afterEach(config) gets the config passed to run") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    status.toFuture.map { s =>
-      assert(a.afterEachTestDataGotTheGreeting)
+    val promise = Promise[MySuite]
+    status whenCompleted { _ => promise.success(a) }
+    promise.future.map { mySuite =>
+      assert(mySuite.afterEachTestDataGotTheGreeting)
     }
   }
 
@@ -154,8 +161,10 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("afterAll(config) gets the config passed to run") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    status.toFuture.map { s =>
-      assert(a.afterAllConfigGotTheGreeting)
+    val promise = Promise[MySuite]
+    status whenCompleted { _ => promise.success(a) }
+    promise.future.map { mySuite =>
+      assert(mySuite.afterAllConfigGotTheGreeting)
     }
   }
 
@@ -166,7 +175,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     class MySuite extends Suite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def beforeEach(td: TestData) { throw new NumberFormatException } 
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(Some("july"), Args(StubReporter))
     }
@@ -186,7 +195,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
     assert(a.afterEachCalled)
@@ -207,7 +216,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
     assert(a.afterEachCalled)
@@ -220,7 +229,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       override def afterEach(td: TestData) { throw new NumberFormatException }
       test("test July") {}
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(Some("test July"), Args(StubReporter))
     }
@@ -234,7 +243,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       override def beforeAll(cm: ConfigMap) { throw new NumberFormatException }
       test("test July") {}
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(None, Args(StubReporter))
     }
@@ -257,7 +266,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(None, Args(StubReporter))
     }
     assert(a.afterAllCalled)
@@ -281,7 +290,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(None, Args(StubReporter))
     }
     assert(a.afterAllCalled)
@@ -294,7 +303,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
       test("test July") {}
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(None, Args(StubReporter))
     }
@@ -317,7 +326,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[java.lang.annotation.AnnotationFormatError] {
+    assertThrows[java.lang.annotation.AnnotationFormatError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -339,7 +348,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[java.nio.charset.CoderMalfunctionError] {
+    assertThrows[java.nio.charset.CoderMalfunctionError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -361,7 +370,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[javax.xml.parsers.FactoryConfigurationError] {
+    assertThrows[javax.xml.parsers.FactoryConfigurationError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -383,7 +392,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[java.lang.LinkageError] {
+    assertThrows[java.lang.LinkageError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -405,7 +414,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[javax.xml.transform.TransformerFactoryConfigurationError] {
+    assertThrows[javax.xml.transform.TransformerFactoryConfigurationError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -427,7 +436,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[java.lang.VirtualMachineError] {
+    assertThrows[java.lang.VirtualMachineError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
