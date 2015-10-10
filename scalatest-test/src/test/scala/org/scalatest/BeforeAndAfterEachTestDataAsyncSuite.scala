@@ -22,7 +22,12 @@ import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
 
-class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
+class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
+
+  // SKIP-SCALATESTJS-START
+  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
   class TheSuper extends AsyncFunSuite {
 
@@ -107,8 +112,9 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
   test("afterEach gets called after runTest") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    status.waitUntilCompleted()
-    assert(a.afterEachTestDataCalledAfterRunTest)
+    status.toFuture.map { s =>
+      assert(a.afterEachTestDataCalledAfterRunTest)
+    }
   }
 
   test("beforeAll gets called before run") {
@@ -120,8 +126,9 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
   test("afterAll gets called after run") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    status.waitUntilCompleted()
-    assert(a.afterAllConfigCalledAfterExecute)
+    status.toFuture.map { s =>
+      assert(a.afterAllConfigCalledAfterExecute)
+    }
   }
   
   test("beforeEach(config) gets the config passed to run") {
@@ -133,8 +140,9 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
   test("afterEach(config) gets the config passed to run") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    status.waitUntilCompleted()
-    assert(a.afterEachTestDataGotTheGreeting)
+    status.toFuture.map { s =>
+      assert(a.afterEachTestDataGotTheGreeting)
+    }
   }
 
   test("beforeAll(config) gets the config passed to run") {
@@ -146,8 +154,9 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
   test("afterAll(config) gets the config passed to run") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    status.waitUntilCompleted()
-    assert(a.afterAllConfigGotTheGreeting)
+    status.toFuture.map { s =>
+      assert(a.afterAllConfigGotTheGreeting)
+    }
   }
 
   // test exceptions with runTest
@@ -290,5 +299,139 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
       a.run(None, Args(StubReporter))
     }
   }
+
+  // SKIP-SCALATESTJS-START
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
+
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+
+      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.annotation.AnnotationFormatError("test")
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[java.lang.annotation.AnnotationFormatError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
+
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+
+      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.nio.charset.CoderMalfunctionError(new RuntimeException("test"))
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[java.nio.charset.CoderMalfunctionError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
+
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+
+      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+      var afterAllCalled = false
+      test("test 1") {
+        throw new javax.xml.parsers.FactoryConfigurationError()
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[javax.xml.parsers.FactoryConfigurationError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
+
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+
+      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.LinkageError()
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[java.lang.LinkageError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
+
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+
+      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+      var afterAllCalled = false
+      test("test 1") {
+        throw new javax.xml.transform.TransformerFactoryConfigurationError()
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[javax.xml.transform.TransformerFactoryConfigurationError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
+
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
+
+      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+      var afterAllCalled = false
+      test("test 1") {
+        throw new java.lang.VirtualMachineError() {}
+      }
+      override def afterEach(testData: TestData) {
+        afterAllCalled = true
+      }
+    }
+
+    val a = new ExampleSpec
+    intercept[java.lang.VirtualMachineError] {
+      a.run(None, Args(StubReporter))
+    }
+    assert(!a.afterAllCalled)
+  }
+  // SKIP-SCALATESTJS-END
 }
 
