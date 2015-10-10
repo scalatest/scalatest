@@ -25,7 +25,7 @@ class AsyncFlatSpecLikeSpec extends FunSpec {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFlatSpecLike with ParallelAsyncTestExecution {
+      class ExampleSpec extends AsyncFlatSpecLike with ParallelTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -89,7 +89,7 @@ class AsyncFlatSpecLikeSpec extends FunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFlatSpecLike with ParallelAsyncTestExecution {
+      class ExampleSpec extends AsyncFlatSpecLike with ParallelTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global

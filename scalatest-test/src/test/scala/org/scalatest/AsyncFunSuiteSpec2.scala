@@ -19,7 +19,7 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import scala.concurrent.{Promise, Future}
 import org.scalatest.concurrent.SleepHelper
 
-class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelAsyncTestExecution {
+class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
 
   // SKIP-SCALATESTJS-START
   implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -32,7 +32,7 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelAsyncTestExecution {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSuite extends AsyncFunSuite with ParallelAsyncTestExecution {
+      class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -96,7 +96,7 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelAsyncTestExecution {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSuite extends AsyncFunSuite with ParallelAsyncTestExecution {
+      class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global

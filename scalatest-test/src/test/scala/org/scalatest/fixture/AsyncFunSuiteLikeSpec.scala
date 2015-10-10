@@ -26,7 +26,7 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSuite extends AsyncFunSuiteLike with ParallelAsyncTestExecution {
+      class ExampleSuite extends AsyncFunSuiteLike with ParallelTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -93,7 +93,7 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSuite extends AsyncFunSuiteLike with ParallelAsyncTestExecution {
+      class ExampleSuite extends AsyncFunSuiteLike with ParallelTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global

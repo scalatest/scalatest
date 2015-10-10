@@ -25,7 +25,7 @@ class AsyncWordSpecSpec extends FunSpec {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncWordSpec with ParallelAsyncTestExecution {
+      class ExampleSpec extends AsyncWordSpec with ParallelTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -88,7 +88,7 @@ class AsyncWordSpecSpec extends FunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncWordSpec with ParallelAsyncTestExecution {
+      class ExampleSpec extends AsyncWordSpec with ParallelTestExecution {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
