@@ -106,7 +106,8 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
   
   test("afterEach gets called after runTest") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    status.waitUntilCompleted()
     assert(a.afterEachTestDataCalledAfterRunTest)
   }
 
@@ -118,7 +119,8 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
   
   test("afterAll gets called after run") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    status.waitUntilCompleted()
     assert(a.afterAllConfigCalledAfterExecute)
   }
   
@@ -130,7 +132,8 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
 
   test("afterEach(config) gets the config passed to run") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    status.waitUntilCompleted()
     assert(a.afterEachTestDataGotTheGreeting)
   }
 
@@ -142,7 +145,8 @@ class BeforeAndAfterEachTestDataAsyncSuite extends FunSuite {
 
   test("afterAll(config) gets the config passed to run") {
     val a = new MySuite
-    a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
+    status.waitUntilCompleted()
     assert(a.afterAllConfigGotTheGreeting)
   }
 
