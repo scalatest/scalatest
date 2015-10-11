@@ -21,8 +21,14 @@ import org.scalatest.events.Ordinal
 import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
+import scala.concurrent.Promise
 
-class BeforeAndAfterSuite extends FunSuite {
+class BeforeAndAfterSuite extends AsyncFunSuite {
+
+  // SKIP-SCALATESTJS-START
+  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
   class TheSuper extends FunSpec {
     var runTestWasCalled = false
@@ -137,7 +143,7 @@ class BeforeAndAfterSuite extends FunSuite {
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def beforeEach() { throw new NumberFormatException } 
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(Some("july"), Args(StubReporter))
     }
@@ -157,7 +163,7 @@ class BeforeAndAfterSuite extends FunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
     assert(a.afterEachCalled)
@@ -178,23 +184,26 @@ class BeforeAndAfterSuite extends FunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
     assert(a.afterEachCalled)
   }
   
-  // TODO: Fix this test
-  ignore("If super.runTest returns normally, but afterEach completes abruptly with an " +
+  test("If super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, runTest will complete abruptly with the same exception.") {
        
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterEach() { throw new NumberFormatException }
       it("test July") {}
     }
-    intercept[NumberFormatException] {
-      val a = new MySuite
-      a.run(Some("test July"), Args(StubReporter))
+    val a = new MySuite
+    val status = a.run(Some("test July"), Args(StubReporter))
+    val promise = Promise[Option[Throwable]]
+    status whenCompleted { _ => promise.success(status.unreportedException) }
+    promise.future.map { unrepEx =>
+      import OptionValues._
+      assert(unrepEx.value.isInstanceOf[NumberFormatException] )
     }
   }
  
@@ -206,7 +215,7 @@ class BeforeAndAfterSuite extends FunSuite {
       override def beforeAll() { throw new NumberFormatException }
       it("test July") {}
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(None, Args(StubReporter))
     }
@@ -229,7 +238,7 @@ class BeforeAndAfterSuite extends FunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(None, Args(StubReporter))
     }
     assert(a.afterAllCalled)
@@ -253,7 +262,7 @@ class BeforeAndAfterSuite extends FunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(None, Args(StubReporter))
     }
     assert(a.afterAllCalled)
@@ -266,7 +275,7 @@ class BeforeAndAfterSuite extends FunSuite {
       override def afterAll() { throw new NumberFormatException }
       it("test July") {}
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(None, Args(StubReporter))
     }
