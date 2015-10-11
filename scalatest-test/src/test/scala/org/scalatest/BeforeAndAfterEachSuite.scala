@@ -80,7 +80,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
   }
 
   // test exceptions with runTest
-  ignore("If any invocation of beforeEach completes abruptly with an exception, runTest " +
+  test("If any invocation of beforeEach completes abruptly with an exception, runTest " +
     "will complete abruptly with the same exception.") {
     
     class MySuite extends Suite with BeforeAndAfterEach {
@@ -92,7 +92,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
   }
   
-  ignore("If any call to super.runTest completes abruptly with an exception, runTest " +
+  test("If any call to super.runTest completes abruptly with an exception, runTest " +
     "will complete abruptly with the same exception, however, before doing so, it will invoke afterEach") {
     trait FunkySuite extends Suite {
       protected override def runTest(testName: String, args: Args): Status = {
@@ -112,7 +112,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     assert(a.afterEachCalled)
   }
   
-  ignore("If both super.runTest and afterEach complete abruptly with an exception, runTest " + 
+  test("If both super.runTest and afterEach complete abruptly with an exception, runTest " + 
     "will complete abruptly with the exception thrown by super.runTest.") {
     trait FunkySuite extends Suite {
       protected override def runTest(testName: String, args: Args): Status = {
@@ -133,21 +133,22 @@ class BeforeAndAfterEachSuite extends FunSuite {
     assert(a.afterEachCalled)
   }
   
-  ignore("If super.runTest returns normally, but afterEach completes abruptly with an " +
+  test("If super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, runTest will complete abruptly with the same exception.") {
        
     class MySuite extends FunSuite with BeforeAndAfterEach {
       override def afterEach() { throw new NumberFormatException }
       test("test July") {}
     }
-    intercept[NumberFormatException] {
-      val a = new MySuite
-      a.run(Some("test July"), Args(StubReporter))
-    }
+    val a = new MySuite
+    val status = a.run(Some("test July"), Args(StubReporter))
+    assert(status.isCompleted)
+    import OptionValues._
+    assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
  
   // SKIP-SCALATESTJS-START
-  ignore("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
 
     class ExampleSpec extends FunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
@@ -166,7 +167,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     assert(!a.afterAllCalled)
   }
 
-  ignore("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
+  test("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
 
     class ExampleSpec extends FunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
@@ -186,7 +187,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
   }
 
   // SKIP-SCALATESTJS-START
-  ignore("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
+  test("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
 
     class ExampleSpec extends FunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
@@ -205,7 +206,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     assert(!a.afterAllCalled)
   }
 
-  ignore("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
 
     class ExampleSpec extends FunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
@@ -224,7 +225,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     assert(!a.afterAllCalled)
   }
 
-  ignore("Should propagate and not run afterEach if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
+  test("Should propagate and not run afterEach if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
 
     class ExampleSpec extends FunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
@@ -243,7 +244,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     assert(!a.afterAllCalled)
   }
 
-  ignore("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
+  test("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
 
     class ExampleSpec extends FunSuite with BeforeAndAfterEach {
       var afterAllCalled = false
