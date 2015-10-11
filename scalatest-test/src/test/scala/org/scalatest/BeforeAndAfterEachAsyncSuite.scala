@@ -165,7 +165,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     }
     val a = new MySuite
     val status = a.run(Some("test October"), Args(StubReporter))
-    val promise = Promise[Option[Throwable]] // Promise...my suite
+    val promise = Promise[Option[Throwable]]
     status whenCompleted { _ => promise.success(status.unreportedException) }
     promise.future.map { unrepEx =>
       import OptionValues._
