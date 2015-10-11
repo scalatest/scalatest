@@ -224,16 +224,25 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   }
   
   test("If super.runTest returns normally, but afterEach completes abruptly with an " +
-    "exception, runTest will complete abruptly with the same exception.") {
+    "exception, the status returned by runTest will contain that exception as its unreportedException.") {
+       
+    class MySuite extends AsyncFunSuite with BeforeAndAfterEachTestData {
 
-// TODO: I think these should be AsyncFunSuite.
-    class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
+      // SKIP-SCALATESTJS-START
+      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+
       override def afterEach(td: TestData) { throw new NumberFormatException }
-      test("test July") {}
+      test("test October") {}
     }
-    assertThrows[NumberFormatException] {
-      val a = new MySuite
-      a.run(Some("test July"), Args(StubReporter))
+    val a = new MySuite
+    val status = a.run(Some("test October"), Args(StubReporter))
+    val promise = Promise[Option[Throwable]]
+    status whenCompleted { _ => promise.success(status.unreportedException) }
+    promise.future.map { unrepEx =>
+      import OptionValues._
+      assert(unrepEx.value.isInstanceOf[NumberFormatException] )
     }
   }
  

@@ -201,6 +201,32 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
     // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
     try {
       val statusToReturn: Status =
+        if (!args.runTestInNewInstance) {
+          println ("\n@@@@@@@@@@@@@@@@@@@ TEST NAME: " + testName)
+          println ("@@@@@@@@@@@@@@@@@@@ ABOUT TO ADD THE AFTER EFFECT")
+          runTestStatus withAfterEffect {
+            println("@@@@@@@@@@@@@@@@@@@ RUNNING THE AFTER EFFECT")
+            try {
+              afterEach(testDataFor(testName, args.configMap))
+              println("@@@@@@@@@@@@@@@@@@@ afterEach RETURNED NORMALLY")
+              None
+            }
+            catch { 
+              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
+println("@@@@@@@@@@@@@@@@@@@ GOT HERE WITH EX: " + e.getClass.getName)
+                Some(e)
+            }
+          } // Make sure that afterEach is called even if runTest completes abruptly.
+        }
+        else
+          runTestStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+/*
+      val statusToReturn: Status =
         if (!args.runTestInNewInstance)
           runTestStatus thenRun { afterEach(testDataFor(testName, args.configMap)); SucceededStatus } // Make sure that afterEach is called even if runTest completes abruptly.
         else
@@ -210,6 +236,7 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
         case None =>
       }
       statusToReturn
+*/
     }
     catch {
       case laterException: Exception =>
