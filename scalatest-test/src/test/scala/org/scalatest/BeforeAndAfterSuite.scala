@@ -23,7 +23,7 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
 import scala.concurrent.Promise
 
-class BeforeAndAfterSuite extends AsyncFunSuite {
+class BeforeAndAfterSuite extends FunSuite with Safety {
 
   // SKIP-SCALATESTJS-START
   implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -199,12 +199,9 @@ class BeforeAndAfterSuite extends AsyncFunSuite {
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))
-    val promise = Promise[Option[Throwable]]
-    status whenCompleted { _ => promise.success(status.unreportedException) }
-    promise.future.map { unrepEx =>
-      import OptionValues._
-      assert(unrepEx.value.isInstanceOf[NumberFormatException] )
-    }
+    assert(status.isCompleted)
+    import OptionValues._
+    assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
  
   // test exceptions with run

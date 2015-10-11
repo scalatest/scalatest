@@ -86,7 +86,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     class MySuite extends Suite with BeforeAndAfterEach {
       override def beforeEach() { throw new NumberFormatException } 
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(Some("july"), Args(StubReporter))
     }
@@ -106,7 +106,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
     assert(a.afterEachCalled)
@@ -127,7 +127,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
       }
     }
     val a = new MySuite
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
     assert(a.afterEachCalled)
@@ -161,7 +161,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[java.lang.annotation.AnnotationFormatError] {
+    assertThrows[java.lang.annotation.AnnotationFormatError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -180,7 +180,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[java.nio.charset.CoderMalfunctionError] {
+    assertThrows[java.nio.charset.CoderMalfunctionError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -200,7 +200,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[javax.xml.parsers.FactoryConfigurationError] {
+    assertThrows[javax.xml.parsers.FactoryConfigurationError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -219,7 +219,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[java.lang.LinkageError] {
+    assertThrows[java.lang.LinkageError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -238,7 +238,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[javax.xml.transform.TransformerFactoryConfigurationError] {
+    assertThrows[javax.xml.transform.TransformerFactoryConfigurationError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
@@ -257,7 +257,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
 
     val a = new ExampleSpec
-    intercept[java.lang.VirtualMachineError] {
+    assertThrows[java.lang.VirtualMachineError] {
       a.run(None, Args(StubReporter))
     }
     assert(!a.afterAllCalled)
