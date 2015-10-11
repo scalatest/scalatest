@@ -23,8 +23,8 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
 import scala.concurrent.Promise
 
-// This tests that BeforeAndAfterEachTestData works correctly when mixed into an AsyncSuite
-class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
+// This tests that BeforeAndAfter works correctly when mixed into an AsyncSuite
+class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
 
   // SKIP-SCALATESTJS-START
   implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -50,21 +50,19 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     }
   }
   
-  class MySuite extends TheSuper with BeforeAndAfterEach {
-    @volatile var beforeEachCalledBeforeRunTest = false
-    @volatile var afterEachCalledAfterRunTest = false
+  class MySuite extends TheSuper with BeforeAndAfter {
+    @volatile var beforeCodeCalledBeforeRunTest = false
+    @volatile var afterCodeCalledAfterRunTest = false
 
     test("test something") {}
 
-    override def beforeEach() {
+    before {
       if (!runTestWasCalled)
-        beforeEachCalledBeforeRunTest = true
-      super.beforeEach()
+        beforeCodeCalledBeforeRunTest = true
     }
-    override def afterEach() {
+    after {
       if (runTestWasCalled)
-        afterEachCalledAfterRunTest = true
-      super.afterEach()
+        afterCodeCalledAfterRunTest = true
     }
   }
 
@@ -80,28 +78,28 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     assert(a.runWasCalled)
   }
 
-  test("beforeEach gets called before runTest") {
+  test("before code gets called before runTest") {
     val a = new MySuite
     a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    assert(a.beforeEachCalledBeforeRunTest)
+    assert(a.beforeCodeCalledBeforeRunTest)
   }
   
-  test("afterEach gets called after runTest") {
+  test("after code gets called after runTest") {
     val a = new MySuite
     val status = a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
     val promise = Promise[MySuite] // Promise...my suite
     status whenCompleted { _ => promise.success(a) }
     promise.future.map { mySuite =>
-      assert(mySuite.afterEachCalledAfterRunTest)
+      assert(mySuite.afterCodeCalledAfterRunTest)
     }
   }
 
   // test exceptions with runTest
-  test("If any invocation of beforeEach completes abruptly with an exception, runTest " +
+  test("If any invocation of before code completes abruptly with an exception, runTest " +
     "will complete abruptly with the same exception.") {
     
-    class MySuite extends Suite with BeforeAndAfterEach {
-      override def beforeEach() { throw new NumberFormatException } 
+    class MySuite extends Suite with BeforeAndAfter {
+      before { throw new NumberFormatException } 
     }
     intercept[NumberFormatException] {
       val a = new MySuite
@@ -110,36 +108,36 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
   }
   
   test("If any call to super.runTest completes abruptly with an exception, runTest " +
-    "will complete abruptly with the same exception, however, before doing so, it will invoke afterEach") {
+    "will complete abruptly with the same exception, however, before doing so, it will invoke after code") {
     trait FunkySuite extends Suite {
       protected override def runTest(testName: String, args: Args): Status = {
         throw new NumberFormatException
       }
     }
-    class MySuite extends FunkySuite with BeforeAndAfterEach {
-      var afterEachCalled = false
-      override def afterEach() {
-        afterEachCalled = true
+    class MySuite extends FunkySuite with BeforeAndAfter {
+      var afterCodeCalled = false
+      after {
+        afterCodeCalled = true
       }
     }
     val a = new MySuite
     intercept[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
-    assert(a.afterEachCalled)
+    assert(a.afterCodeCalled)
   }
   
-  test("If both super.runTest and afterEach complete abruptly with an exception, runTest " + 
+  test("If both super.runTest and after code complete abruptly with an exception, runTest " + 
     "will complete abruptly with the exception thrown by super.runTest.") {
     trait FunkySuite extends Suite {
       protected override def runTest(testName: String, args: Args): Status = {
         throw new NumberFormatException
       }
     }
-    class MySuite extends FunkySuite with BeforeAndAfterEach {
-      var afterEachCalled = false
-      override def afterEach() {
-        afterEachCalled = true
+    class MySuite extends FunkySuite with BeforeAndAfter {
+      var afterCodeCalled = false
+      after {
+        afterCodeCalled = true
         throw new IllegalArgumentException
       }
     }
@@ -147,20 +145,20 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     intercept[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
-    assert(a.afterEachCalled)
+    assert(a.afterCodeCalled)
   }
   
-  test("If super.runTest returns normally, but afterEach completes abruptly with an " +
+  test("If super.runTest returns normally, but after code completes abruptly with an " +
     "exception, the status returned by runTest will contain that exception as its unreportedException.") {
        
-    class MySuite extends AsyncFunSuite with BeforeAndAfterEach {
+    class MySuite extends AsyncFunSuite with BeforeAndAfter {
 
       // SKIP-SCALATESTJS-START
       implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-      override def afterEach() { throw new NumberFormatException }
+      after { throw new NumberFormatException }
       test("test October") {}
     }
     val a = new MySuite
@@ -169,14 +167,14 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     status whenCompleted { _ => promise.success(status.unreportedException) }
     promise.future.map { unrepEx =>
       import OptionValues._
-      assert(unrepEx.value.isInstanceOf[NumberFormatException])
+      assert(unrepEx.value.isInstanceOf[NumberFormatException] )
     }
   }
  
   // SKIP-SCALATESTJS-START
-  test("Should propagate and not run afterEach if super.runTest throw java.lang.annotation.AnnotationFormatError") {
+  test("Should propagate and not run after code if super.runTest throw java.lang.annotation.AnnotationFormatError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfter {
 
       implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -184,7 +182,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.annotation.AnnotationFormatError("test")
       }
-      override def afterEach() {
+      after {
         afterAllCalled = true
       }
     }
@@ -196,9 +194,9 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     assert(!a.afterAllCalled)
   }
 
-  test("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
+  test("Should propagate and not run after code if super.runTest throw java.nio.charset.CoderMalfunctionError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfter {
 
       implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -206,7 +204,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.nio.charset.CoderMalfunctionError(new RuntimeException("test"))
       }
-      override def afterEach() {
+      after {
         afterAllCalled = true
       }
     }
@@ -218,9 +216,9 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     assert(!a.afterAllCalled)
   }
 
-  test("Should propagate and not run afterEach if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
+  test("Should propagate and not run after code if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfter {
 
       implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -228,7 +226,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new javax.xml.parsers.FactoryConfigurationError()
       }
-      override def afterEach() {
+      after {
         afterAllCalled = true
       }
     }
@@ -240,9 +238,9 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     assert(!a.afterAllCalled)
   }
 
-  test("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
+  test("Should propagate and not run after code if super.runTest throw java.lang.LinkageError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfter {
 
       implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -250,7 +248,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.LinkageError()
       }
-      override def afterEach() {
+      after {
         afterAllCalled = true
       }
     }
@@ -262,9 +260,9 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     assert(!a.afterAllCalled)
   }
 
-  test("Should propagate and not run afterEach if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
+  test("Should propagate and not run after code if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfter {
 
       implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -272,7 +270,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new javax.xml.transform.TransformerFactoryConfigurationError()
       }
-      override def afterEach() {
+      after {
         afterAllCalled = true
       }
     }
@@ -284,9 +282,9 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     assert(!a.afterAllCalled)
   }
 
-  test("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
+  test("Should propagate and not run after code if super.runTest throw java.lang.VirtualMachineError") {
 
-    class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEach {
+    class ExampleSpec extends AsyncFunSuite with BeforeAndAfter {
 
       implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
@@ -294,7 +292,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.VirtualMachineError() {}
       }
-      override def afterEach() {
+      after {
         afterAllCalled = true
       }
     }

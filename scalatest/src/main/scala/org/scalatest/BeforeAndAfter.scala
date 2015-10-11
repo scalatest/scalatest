@@ -197,33 +197,52 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
       case None =>
     }
 
-    try {
-      super.runTest(testName, args)
-    }
-    catch {
-      case e: Exception => thrownException = Some(e)
-      FailedStatus
-    }
-    finally {
+    val runTestStatus: Status =
       try {
-        // Make sure that afterEach is called even if runTest completes abruptly.
-        afterFunctionAtomic.get match {
-          case Some(fun) => if (!args.runTestInNewInstance) fun()
-          case None =>
-        }
-
-        thrownException match {
-          case Some(e) => throw e
-          case None =>
-        }
+        super.runTest(testName, args)
       }
       catch {
-        case laterException: Exception =>
-          thrownException match { // If both run and afterAll throw an exception, report the test exception
-            case Some(earlierException) => throw earlierException
-            case None => throw laterException
-          }
+        case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
+          thrownException = Some(e)
+          FailedStatus
       }
+    // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
+    try {
+      val statusToReturn: Status =
+        if (!args.runTestInNewInstance) {
+          println ("\n@@@@@@@@@@@@@@@@@@@ TEST NAME: " + testName)
+          println ("@@@@@@@@@@@@@@@@@@@ ABOUT TO ADD THE AFTER EFFECT")
+          runTestStatus withAfterEffect {
+            println("@@@@@@@@@@@@@@@@@@@ RUNNING THE AFTER EFFECT")
+            try {
+              afterFunctionAtomic.get match {
+                case Some(fun) => fun()
+                case None =>
+              }
+              println("@@@@@@@@@@@@@@@@@@@ afterEach RETURNED NORMALLY")
+              None
+            }
+            catch { 
+              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
+println("@@@@@@@@@@@@@@@@@@@ GOT HERE WITH EX: " + e.getClass.getName)
+                Some(e)
+            }
+          } // Make sure that afterEach is called even if runTest completes abruptly.
+        }
+        else
+          runTestStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+    }
+    catch {
+      case laterException: Exception =>
+        thrownException match { // If both run and afterAll throw an exception, report the test exception
+          case Some(earlierException) => throw earlierException
+          case None => throw laterException
+        }
     }
   }
 
