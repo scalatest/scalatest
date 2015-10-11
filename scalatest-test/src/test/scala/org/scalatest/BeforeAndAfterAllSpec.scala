@@ -352,5 +352,28 @@ class BeforeAndAfterAllSpec extends FunSpec {
       spec.afterAllCount.get should be (0)
     }
     // SKIP-SCALATESTJS-END
+
+    // Test exceptions
+    it("should, if any invocation of beforeAll completes abruptly with an exception, run " +
+      "will complete abruptly with the same exception.") (pending)
+    
+    it("should, if any call to super.run completes abruptly with an exception, run " +
+      "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll")  (pending)
+    
+    it("should, if both super.run and afterAll complete abruptly with an exception, run " + 
+      "will complete abruptly with the exception thrown by super.run.") (pending)
+    
+    it("should, if super.run returns normally, but afterEach completes abruptly with an " +
+      "exception, the status returned by run will contain that exception as its unreportedException.") {
+      class MySuite extends FunSuite with BeforeAndAfterAll {
+        override def afterAll() { throw new NumberFormatException }
+        test("test July") {}
+      }
+      val a = new MySuite
+      val status = a.run(Some("test July"), Args(StubReporter))
+      assert(status.isCompleted)
+      import OptionValues._
+      assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
+    }
   }
 }

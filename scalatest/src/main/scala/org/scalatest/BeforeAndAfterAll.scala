@@ -222,9 +222,11 @@ trait BeforeAndAfterAll extends SuiteMixin { this: Suite =>
         try {
           if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
             afterAll() // Make sure that afterAll is called even if run completes abruptly.
+          runStatus
         }
         catch {
           case laterException: Exception => // Do nothing, will need to throw the earlier exception
+          runStatus
         }
         finally {
           throw earlierException
@@ -232,20 +234,21 @@ trait BeforeAndAfterAll extends SuiteMixin { this: Suite =>
       case None =>
         if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
           // runStatus may not be completed, call afterAll only after it is completed
-          runStatus.whenCompleted { succeeded =>
+          runStatus withAfterEffect {
             try {
-                afterAll()
+              afterAll()
+              None
             }
             catch {
               case laterException: Exception =>
                 thrownException match { // If both run and afterAll throw an exception, report the test exception
-                  case Some(earlierException) => throw earlierException
-                  case None => throw laterException
+                  case Some(earlierException) => Some(earlierException)
+                  case None => Some(laterException)
                 }
             }
           }
         }
+        else runStatus
     }
-    runStatus
   }
 }

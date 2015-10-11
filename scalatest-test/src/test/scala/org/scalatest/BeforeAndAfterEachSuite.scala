@@ -134,7 +134,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
   }
   
   test("If super.runTest returns normally, but afterEach completes abruptly with an " +
-    "exception, runTest will complete abruptly with the same exception.") {
+    "exception, the status returned by runTest will contain that exception as its unreportedException.") {
        
     class MySuite extends FunSuite with BeforeAndAfterEach {
       override def afterEach() { throw new NumberFormatException }
