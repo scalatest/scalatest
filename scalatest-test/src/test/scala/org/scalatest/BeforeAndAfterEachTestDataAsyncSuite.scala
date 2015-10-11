@@ -23,6 +23,7 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
 import scala.concurrent.Promise
 
+// This tests that BeforeAndAfterEachTestData works correctly when mixed into an AsyncSuite
 class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
   // SKIP-SCALATESTJS-START
@@ -224,7 +225,8 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   
   test("If super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, runTest will complete abruptly with the same exception.") {
-       
+
+// TODO: I think these should be AsyncFunSuite.
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterEach(td: TestData) { throw new NumberFormatException }
       test("test July") {}

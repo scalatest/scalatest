@@ -179,6 +179,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
   */
+/*
   abstract protected override def runTest(testName: String, args: Args): Status = {
 
     var thrownException: Option[Throwable] = None
@@ -207,6 +208,57 @@ trait BeforeAndAfterEach extends SuiteMixin {
             case None => throw laterException
           }
       }
+    }
+  }
+*/
+  abstract protected override def runTest(testName: String, args: Args): Status = {
+
+    var thrownException: Option[Throwable] = None
+
+    if (!args.runTestInNewInstance) beforeEach()
+    val runTestStatus: Status =
+      try {
+        super.runTest(testName, args)
+      }
+      catch {
+        case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
+          thrownException = Some(e)
+          FailedStatus
+      }
+    // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
+    try {
+      val statusToReturn: Status =
+        if (!args.runTestInNewInstance) {
+          println ("\n@@@@@@@@@@@@@@@@@@@ TEST NAME: " + testName)
+          println ("@@@@@@@@@@@@@@@@@@@ ABOUT TO ADD THE AFTER EFFECT")
+          runTestStatus withAfterEffect {
+            println("@@@@@@@@@@@@@@@@@@@ RUNNING THE AFTER EFFECT")
+            try {
+              afterEach()
+              println("@@@@@@@@@@@@@@@@@@@ afterEach RETURNED NORMALLY")
+              None
+            }
+            catch { 
+              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
+println("@@@@@@@@@@@@@@@@@@@ GOT HERE WITH EX: " + e.getClass.getName)
+                Some(e)
+            }
+          } // Make sure that afterEach is called even if runTest completes abruptly.
+        }
+        else
+          runTestStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+    }
+    catch {
+      case laterException: Exception =>
+        thrownException match { // If both run and afterAll throw an exception, report the test exception
+          case Some(earlierException) => throw earlierException
+          case None => throw laterException
+        }
     }
   }
 }

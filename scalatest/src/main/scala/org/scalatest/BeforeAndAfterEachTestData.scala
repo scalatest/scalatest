@@ -198,7 +198,7 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
           thrownException = Some(e)
           FailedStatus
       }
-    // And if the exception should ause an abort, abort the afterAll too.
+    // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
     try {
       val statusToReturn: Status =
         if (!args.runTestInNewInstance)

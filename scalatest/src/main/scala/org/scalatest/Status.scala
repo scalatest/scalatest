@@ -33,7 +33,7 @@ import scala.concurrent.Promise
  * 
  * @author cheeseng
  */
-trait Status {
+sealed trait Status { thisStatus =>
 
   // SKIP-SCALATESTJS-START
   /**
@@ -98,6 +98,24 @@ trait Status {
     val promise = Promise[Boolean]
     whenCompleted { s => promise.success(s) }
     promise.future
+  }
+
+  def unreportedException: Option[Throwable] = None
+
+  def withAfterEffect(f: => Option[Throwable]): Status = {
+    val returnedStatus = new ScalaTestStatefulStatus
+    whenCompleted { result =>
+      f match {
+        case None =>
+          if (!result) returnedStatus.setFailed()
+          returnedStatus.setCompleted()
+        case Some(ex) =>
+println("%%%%%%%%%%%%% BY GEORGE ABOUT TO SET UNREPORTED EXCEPTION FOR EX: " + ex.getClass.getName)
+          returnedStatus.setUnreportedException(ex)
+          returnedStatus.setCompleted()
+      }
+    }
+    returnedStatus
   }
 }
 
@@ -187,6 +205,39 @@ object FailedStatus extends Status with Serializable {
   def whenCompleted(f: Boolean => Unit) { f(false) }
 }
 
+case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisAbortedStatus =>
+
+  // SKIP-SCALATESTJS-START
+  /**
+   * Always returns <code>false</code>.
+   * 
+   * @return <code>true</code>
+   */
+  def succeeds() = false
+  // SKIP-SCALATESTJS-END
+
+  /**
+   * Always returns <code>true</code>.
+   * 
+   * @return <code>true</code>
+   */
+  def isCompleted = true
+
+  // SKIP-SCALATESTJS-START
+  /**
+   * Always returns immediately.
+   */
+  def waitUntilCompleted() {}
+  // SKIP-SCALATESTJS-END
+
+  /**
+   * Executes the passed function immediately on the calling thread.
+   */
+  def whenCompleted(f: Boolean => Unit) { f(false) }
+
+  override val unreportedException: Option[Throwable] = Some(ex)
+}
+
 // Used internally in ScalaTest. We don't use the StatefulStatus, because
 // then user code could pattern match on it and then access the setCompleted
 // and setFailed methods. We wouldn't want that.
@@ -197,6 +248,15 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   private var succeeded = true
 
   private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
+
+  private var asyncException: Option[Throwable] = None
+
+  override def unreportedException: Option[Throwable] = {
+    synchronized {
+      println("RETURNING ASYNC EXCEPTION FROM UNREPORTEDEXCEPTION: " + asyncException)
+      asyncException
+    }
+  }
 
   // SKIP-SCALATESTJS-START
   def succeeds() = {
@@ -218,6 +278,18 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
       if (isCompleted)
         throw new IllegalStateException("status is already completed")
       succeeded = false
+    }
+  }
+
+  def setUnreportedException(ex: Throwable): Unit = {
+    // TODO: Throw an exception if it is a fatal one?
+    // TODO: Throw an exception if already have an exception in here.
+    synchronized {
+      if (isCompleted)
+        throw new IllegalStateException("status is already completed")
+      succeeded = false
+      asyncException = Some(ex)
+println("SET ASYNC EXCEPTION TO: " + asyncException)
     }
   }
 
@@ -441,5 +513,10 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
     if (executeLocally)
       f(succeeded)
   }
+
+  override def unreportedException: Option[Throwable] =
+    synchronized {
+      statuses.map(_.unreportedException).find(_.isDefined).flatten
+    }
 }
 
