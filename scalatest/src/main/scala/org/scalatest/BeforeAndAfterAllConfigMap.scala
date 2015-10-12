@@ -256,9 +256,11 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
         try {
           if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
             afterAll(args.configMap) // Make sure that afterAll is called even if run completes abruptly.
+          runStatus
         }
         catch {
           case laterException: Exception => // Do nothing, will need to throw the earlier exception
+          runStatus // TODO: do a println here of the swallowed exception
         }
         finally {
           throw earlierException
@@ -266,20 +268,21 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
       case None =>
         if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
           // runStatus may not be completed, call afterAll only after it is completed
-          runStatus.whenCompleted { succeeded =>
+          runStatus withAfterEffect {
             try {
               afterAll(args.configMap)
+              None
             }
             catch {
               case laterException: Exception =>
                 thrownException match { // If both run and afterAll throw an exception, report the test exception
-                  case Some(earlierException) => throw earlierException
-                  case None => throw laterException
+                  case None => Some(laterException)
+                  case someEarlierException => someEarlierException
                 }
             }
           }
         }
+        else runStatus
     }
-    runStatus
   }
 }

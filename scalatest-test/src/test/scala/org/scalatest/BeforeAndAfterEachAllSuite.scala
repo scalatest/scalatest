@@ -66,38 +66,6 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
       if (runWasCalled)
         afterAllCalledAfterExecute = true
     }
-
-/* TODO: DELETE THIS ONCE THE TESTS ARE PASSING. THE
-   DEPRECATION PERIOD FOR THESE METHODS HAS EXPIRED.
-    override def beforeAll(config: ConfigMap) {
-      if (!runWasCalled)
-        beforeAllConfigCalledBeforeExecute = true
-      if (config.contains("hi") && config("hi") == "there")
-        beforeAllConfigGotTheGreeting = true
-      super.beforeAll(config)
-    }
-    override def beforeEach(config: ConfigMap) {
-      if (!runTestWasCalled)
-        beforeEachConfigCalledBeforeRunTest = true
-      if (config.contains("hi") && config("hi") == "there")
-        beforeEachConfigGotTheGreeting = true
-      super.beforeEach(config)
-    }
-    override def afterEach(config: ConfigMap) {
-      if (runTestWasCalled)
-        afterEachConfigCalledAfterRunTest = true
-      if (config.contains("hi") && config("hi") == "there")
-        afterEachConfigGotTheGreeting = true
-      super.afterEach(config)
-    }
-    override def afterAll(config: ConfigMap) {
-      if (runWasCalled)
-        afterAllConfigCalledAfterExecute = true
-      if (config.contains("hi") && config("hi") == "there")
-        afterAllConfigGotTheGreeting = true
-      super.afterAll(config)
-    }
-*/
   }
 
   test("super's runTest must be called") {
@@ -192,8 +160,22 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
   
   test("if super.runTest returns normally, but afterEach completes abruptly with an " +
     "exception, runTest will return a status that contains that exception as an unreportedException.") {
-       
+
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
+      override def afterEach() { throw new NumberFormatException }
+      it("test July") {}
+    }
+    val a = new MySuite
+    val status = a.run(Some("test July"), Args(StubReporter))
+    assert(status.isCompleted)
+    import OptionValues._
+    assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
+  }
+ 
+  test("if super.runTest returns normally, but afterEach completes abruptly with an " +
+    "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
+
+    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
       override def afterEach() { throw new NumberFormatException }
       it("test July") {}
     }
@@ -270,6 +252,20 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterAll() { throw new NumberFormatException }
+      it("test July") {}
+    }
+    val a = new MySuite
+    val status = a.run(Some("test July"), Args(StubReporter))
+    assert(status.isCompleted)
+    import OptionValues._
+    assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
+  }
+
+  test("If super.run returns normally, but afterAll completes abruptly with an " +
+    "exception, the status returned by run will contain that exception as its unreportedException (using BeforeAndAfterAllConfigMap).") {
+
+    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
+      override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
       it("test July") {}
     }
     val a = new MySuite

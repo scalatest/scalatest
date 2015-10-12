@@ -308,16 +308,16 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   }
   
   test("If super.run returns normally, but afterAll completes abruptly with an " +
-    "exception, run will complete abruptly with the same exception.") {
-       
+    "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
       test("test July") {}
     }
-    assertThrows[NumberFormatException] {
-      val a = new MySuite
-      a.run(None, Args(StubReporter))
-    }
+    val a = new MySuite
+    val status = a.run(Some("test July"), Args(StubReporter))
+    assert(status.isCompleted)
+    import OptionValues._
+    assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
 
   // SKIP-SCALATESTJS-START
