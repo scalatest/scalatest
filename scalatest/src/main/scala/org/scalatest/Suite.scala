@@ -1378,8 +1378,16 @@ trait Suite extends Assertions with Serializable { thisSuite =>
           val formatter = formatterForSuiteCompleted(nestedSuite)
 
           val duration = System.currentTimeMillis - suiteStartTime
-          report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
-          SucceededStatus
+
+          status.unreportedException match {
+            case Some(ue) =>
+              report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), nestedSuite.rerunner))
+              FailedStatus
+
+            case None =>
+              report(SuiteCompleted(tracker.nextOrdinal(), nestedSuite.suiteName, nestedSuite.suiteId, Some(nestedSuite.getClass.getName), Some(duration), formatter, Some(TopOfClass(nestedSuite.getClass.getName)), nestedSuite.rerunner))
+              SucceededStatus
+          }
         }
         catch {       
           case e: RuntimeException => {
