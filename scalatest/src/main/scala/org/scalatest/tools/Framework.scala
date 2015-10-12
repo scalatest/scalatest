@@ -362,8 +362,15 @@ class Framework extends SbtFramework {
       // In case of async if it is not blocked here, sbt will start spitting out the output right after this method
       // returns, and mix up the result output in the sbt.
       status.succeeds()
-      if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-        report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+      if (!suite.isInstanceOf[DistributedTestRunnerSuite]) {
+        status.unreportedException match {
+          case Some(ue) =>
+            report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+
+          case None =>
+            report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+        }
+      }
     }
     catch {       
       case e: Throwable => {
