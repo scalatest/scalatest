@@ -53,8 +53,15 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
           val formatter = formatterForSuiteCompleted(suite)
           val duration = System.currentTimeMillis - suiteStartTime
           try {
-            if (!suite.isInstanceOf[DistributedTestRunnerSuite])
-              dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+            if (!suite.isInstanceOf[DistributedTestRunnerSuite]) {
+              runStatus.unreportedException match {
+                case Some(ue) =>
+                  dispatch(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), suite.rerunner))
+
+                case None =>
+                  dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
+              }
+            }
           }
           finally status.setCompleted()
         }

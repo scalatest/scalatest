@@ -96,7 +96,7 @@ class FrameworkSuite extends FunSuite {
   }
 
   test("framework name") {
-    assert(new ScalaTestFramework().name === "ScalaTest")
+    assert(new Framework().name === "ScalaTest")
   }
   
   test("fingerprints contains 2 test fingerprints, they are SubclassFingerprint for org.scalatest.Suite and AnnotatedFingerprint for org.scalatest.WrapWith") {
@@ -1207,6 +1207,111 @@ class FrameworkSuite extends FunSuite {
               assert(e.getMessage === Resources.notTheChosenStyle("org.scalatest.FunSuite", "org.scalatest.FunSpec"))
             case _ => fail("Expected SuiteAborted to carry NotAllowedException, but it did not.")
           }
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when after function in BeforeAndAfter throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when afterAll function in BeforeAndAfterAll throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterAllSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when afterAll function in BeforeAndAfterAllConfigMap throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterAllConfigMapSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when afterEach function in BeforeAndAfterEach throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterEachSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
+        case _ => fail("Expected to find EventRecordingReporter, but not found.")
+      }
+    }
+  }
+
+  test("should fire SuiteAborted event when afterEach function in BeforeAndAfterEachTestData throws RuntimeException") {
+    val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
+    makeSureDone(runner) {
+      val testEventHandler = new TestEventHandler
+      val tasks = runner.tasks(Array(new TaskDef("org.scalatest.tools.scalasbt.FaulthyBeforeAndAfterEachTestDataSuite", subclassFingerprint, false, Array(new SuiteSelector))))
+      val task = tasks(0)
+      task.execute(testEventHandler, Array(new TestLogger))
+      assert(testEventHandler.successEventsReceived.size === 1)
+      assert(runner.isInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner])
+      val scalatestRunner = runner.asInstanceOf[org.scalatest.tools.Framework#ScalaTestRunner]
+      scalatestRunner.done()
+      scalatestRunner.dispatchReporter.reporters.find(_.isInstanceOf[EventRecordingReporter]) match {
+        case Some(recordingRep : EventRecordingReporter) =>
+          assert(recordingRep.testSucceededEventsReceived.size === 1)
+          assert(recordingRep.suiteCompletedEventsReceived.size === 0)
+          assert(recordingRep.suiteAbortedEventsReceived.size === 1)
         case _ => fail("Expected to find EventRecordingReporter, but not found.")
       }
     }

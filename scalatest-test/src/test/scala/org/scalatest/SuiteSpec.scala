@@ -457,5 +457,134 @@ class SuiteSpec extends FunSpec {
       assert(c.sideEffectedFixtureWas === "HI")
     }
   }
+
+  describe("Suite's runNestedSuites method") {
+
+    it("should fire SuiteAborted event when after function in BeforeAndAfter nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfter {
+
+        test("test 1") {}
+
+        after {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+    it("should fire SuiteAborted event when afterAll function in BeforeAndAfterAll nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfterAll {
+
+        test("test 1") {}
+
+        override protected def afterAll() {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+    it("should fire SuiteAborted event when afterAll function in BeforeAndAfterAllConfigMap nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfterAllConfigMap {
+
+        test("test 1") {}
+
+        override protected def afterAll(configMap: ConfigMap) {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+    it("should fire SuiteAborted event when afterAll function in BeforeAndAfterEach nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfterEach {
+
+        test("test 1") {}
+
+        override protected def afterEach() {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+    it("should fire SuiteAborted event when afterAll function in BeforeAndAfterEachTestData nested suite throws RuntimeException") {
+
+      class NestedSuite extends FunSuite with BeforeAndAfterEachTestData {
+
+        test("test 1") {}
+
+        override protected def afterEach(test: TestData) {
+          throw new RuntimeException("oops!")
+        }
+
+      }
+
+      class ExampleSuite extends Suite {
+        override def nestedSuites = Vector(new NestedSuite)
+      }
+
+      val suite = new ExampleSuite
+      val rep = new EventRecordingReporter
+      suite.run(None, Args(rep))
+
+      assert(rep.suiteStartingEventsReceived.length == 1)
+      assert(rep.suiteCompletedEventsReceived.length == 0)
+      assert(rep.suiteAbortedEventsReceived.length == 1)
+    }
+
+  }
 }
 

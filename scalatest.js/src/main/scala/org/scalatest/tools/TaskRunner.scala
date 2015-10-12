@@ -135,8 +135,15 @@ println("GOT TO THIS RECOVER CALL")
         status.whenCompleted { _ =>
           val formatter = Suite.formatterForSuiteCompleted(suite)
           val duration = Platform.currentTime
-          reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
-          promise.complete(Success(()))
+          status.unreportedException match {
+            case Some(ue) =>
+              reporter(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+              promise.complete(scala.util.Failure(ue))
+
+            case None =>
+              reporter(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+              promise.complete(Success(()))
+          }
         }
         promise.future
       } catch {
