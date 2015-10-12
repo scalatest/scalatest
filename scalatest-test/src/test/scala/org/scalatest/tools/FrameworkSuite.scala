@@ -96,7 +96,7 @@ class FrameworkSuite extends FunSuite {
   }
 
   test("framework name") {
-    assert(new ScalaTestFramework().name === "ScalaTest")
+    assert(new Framework().name === "ScalaTest")
   }
   
   test("fingerprints contains 2 test fingerprints, they are SubclassFingerprint for org.scalatest.Suite and AnnotatedFingerprint for org.scalatest.WrapWith") {
