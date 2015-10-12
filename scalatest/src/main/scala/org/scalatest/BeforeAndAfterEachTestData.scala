@@ -202,18 +202,13 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
     try {
       val statusToReturn: Status =
         if (!args.runTestInNewInstance) {
-          println ("\n@@@@@@@@@@@@@@@@@@@ TEST NAME: " + testName)
-          println ("@@@@@@@@@@@@@@@@@@@ ABOUT TO ADD THE AFTER EFFECT")
           runTestStatus withAfterEffect {
-            println("@@@@@@@@@@@@@@@@@@@ RUNNING THE AFTER EFFECT")
             try {
               afterEach(testDataFor(testName, args.configMap))
-              println("@@@@@@@@@@@@@@@@@@@ afterEach RETURNED NORMALLY")
               None
             }
             catch { 
               case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
-println("@@@@@@@@@@@@@@@@@@@ GOT HERE WITH EX: " + e.getClass.getName)
                 Some(e)
             }
           } // Make sure that afterEach is called even if runTest completes abruptly.

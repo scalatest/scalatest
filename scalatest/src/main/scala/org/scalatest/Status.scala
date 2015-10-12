@@ -274,7 +274,6 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
 
   override def unreportedException: Option[Throwable] = {
     synchronized {
-      println("RETURNING ASYNC EXCEPTION FROM UNREPORTEDEXCEPTION: " + asyncException)
       asyncException
     }
   }
@@ -310,7 +309,6 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
         throw new IllegalStateException("status is already completed")
       succeeded = false
       asyncException = Some(ex)
-println("SET ASYNC EXCEPTION TO: " + asyncException)
     }
   }
 
