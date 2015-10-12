@@ -131,17 +131,18 @@ class BeforeAndAfterSuite extends FunSuite {
   }
 
   // temporary ignore this test.
-  ignore("If super.runTest returns normally, but after completes abruptly with an " +
-    "exception, runTest will complete abruptly with the same exception.") {
+  test("If super.runTest returns normally, but after completes abruptly with an " +
+    "exception, runTest will return a status that contains that exception as an unreportedException.") {
 
     class MySuite extends FunSpec with BeforeAndAfter {
       after { throw new NumberFormatException }
       it("test July") {}
     }
-    intercept[NumberFormatException] {
-      val a = new MySuite
-      a.run(Some("test July"), Args(StubReporter))
-    }
+    val a = new MySuite
+    val status = a.run(Some("test July"), Args(StubReporter))
+    assert(status.isCompleted)
+    import OptionValues._
+    assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
  
   // test exceptions with run
