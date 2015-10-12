@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import scala.util.Success
+
 class StatusSpec extends fixture.FunSpec {
   
   protected type FixtureParam = { 
@@ -109,7 +111,7 @@ class StatusSpec extends fixture.FunSpec {
       // register callback
       status.whenCompleted { st =>
         callbackInvoked = true
-        succeeded = st
+        succeeded = (st == Success(true))
       }
 
       // ensure it was executed
@@ -132,13 +134,13 @@ class StatusSpec extends fixture.FunSpec {
       // register callback 1
       status.whenCompleted { st =>
         firstCallbackInvoked = true
-        firstSucceeded = st
+        firstSucceeded = (st == Success(true))
       }
 
       // register callback 2
       status.whenCompleted { st =>
         secondCallbackInvoked = true
-        secondSucceeded = st
+        secondSucceeded = (st == Success(true))
       }
 
       // ensure it was executed
@@ -163,7 +165,7 @@ class StatusSpec extends fixture.FunSpec {
       // register callback
       status.whenCompleted { st =>
         callbackInvoked = true
-        succeeded = st
+        succeeded = (st == Success(true))
       }
 
       // ensure it was executed
@@ -186,13 +188,13 @@ class StatusSpec extends fixture.FunSpec {
       // register callback 1
       status.whenCompleted { st =>
         firstCallbackInvoked = true
-        firstSucceeded = st
+        firstSucceeded = (st == Success(true))
       }
 
       // register callback 2
       status.whenCompleted { st =>
         secondCallbackInvoked = true
-        secondSucceeded = st
+        secondSucceeded = (st == Success(true))
       }
 
       // ensure it was executed
@@ -220,13 +222,13 @@ class StatusSpec extends fixture.FunSpec {
       // register callback 1
       status.whenCompleted { st =>
         firstCallbackInvoked = true
-        firstSucceeded = st
+        firstSucceeded = (st == Success(true))
       }
 
       // register callback 2
       status.whenCompleted { st =>
         secondCallbackInvoked = true
-        secondSucceeded = st
+        secondSucceeded = (st == Success(true))
       }
 
       // ensure they were not executed yet

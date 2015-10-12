@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import scala.util.{Try, Success}
+
 class StatefulStatusSpec extends fixture.FunSpec {
 
   protected type FixtureParam = {
@@ -27,7 +29,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
     // SKIP-SCALATESTJS-START
     def waitUntilCompleted()
     // SKIP-SCALATESTJS-END
-    def whenCompleted(f: Boolean => Unit)
+    def whenCompleted(f: Try[Boolean] => Unit)
   }
 
    override protected def withFixture(test: OneArgTest): Outcome = {
@@ -102,7 +104,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
       // register callback
       status.whenCompleted { st =>
         callbackInvoked = true
-        succeeded = st
+        succeeded = (st == Success(true))
       }
 
       // ensure it was not executed yet
@@ -127,7 +129,7 @@ class StatefulStatusSpec extends fixture.FunSpec {
       // register callback
       status.whenCompleted { st =>
         callbackInvoked = true
-        succeeded = st
+        succeeded = (st == Success(true))
       }
 
       // ensure it was not executed yet
@@ -161,13 +163,13 @@ class StatefulStatusSpec extends fixture.FunSpec {
       // register callback 1
       status.whenCompleted { st =>
         firstCallbackInvoked = true
-        firstSucceeded = st
+        firstSucceeded = (st == Success(true))
       }
 
       // register callback 2
       status.whenCompleted { st =>
         secondCallbackInvoked = true
-        secondSucceeded = st
+        secondSucceeded = (st == Success(true))
       }
 
       // ensure they were not executed yet
@@ -202,13 +204,13 @@ class StatefulStatusSpec extends fixture.FunSpec {
       // register callback 1
       status.whenCompleted { st =>
         firstCallbackInvoked = true
-        firstSucceeded = st
+        firstSucceeded = (st == Success(true))
       }
 
       // register callback 2
       status.whenCompleted { st =>
         secondCallbackInvoked = true
-        secondSucceeded = st
+        secondSucceeded = (st == Success(true))
       }
 
       // ensure they were not executed yet

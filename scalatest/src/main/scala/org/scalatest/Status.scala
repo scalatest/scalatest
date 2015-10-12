@@ -19,6 +19,7 @@ import scala.collection.GenSet
 import java.io.Serializable
 import scala.concurrent.Future
 import scala.concurrent.Promise
+import scala.util.{Try, Success, Failure}
 
 /**
  * The result status of running a test or a suite.
@@ -79,14 +80,21 @@ sealed trait Status { thisStatus =>
    * order.
    * </p>
    */
-  def whenCompleted(f: Boolean => Unit)
+  def whenCompleted(f: Try[Boolean] => Unit)
 
   final def thenRun(f: => Status): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { _ =>
       val innerStatus = f
-      innerStatus.whenCompleted { result =>
-        if (!result) returnedStatus.setFailed()
+      innerStatus.whenCompleted { tri =>
+        tri match {
+          case Success(false) => 
+            returnedStatus.setFailed()
+          case Failure(ex) => 
+            returnedStatus.setFailed()
+            returnedStatus.setUnreportedException(ex)
+          case _ =>
+        }
         returnedStatus.setCompleted()
       }
     }
@@ -96,7 +104,7 @@ sealed trait Status { thisStatus =>
   // True means succeeded, false means a test failure or suite abort happened.
   final def toFuture: Future[Boolean] = {
     val promise = Promise[Boolean]
-    whenCompleted { s => promise.success(s) }
+    whenCompleted { t => promise.complete(t) }
     promise.future
   }
 
@@ -104,15 +112,28 @@ sealed trait Status { thisStatus =>
 
   def withAfterEffect(f: => Option[Throwable]): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
-    whenCompleted { result =>
-      f match {
-        case None =>
-          if (!result) returnedStatus.setFailed()
-          returnedStatus.setCompleted()
-        case Some(ex) =>
-println("%%%%%%%%%%%%% BY GEORGE ABOUT TO SET UNREPORTED EXCEPTION FOR EX: " + ex.getClass.getName)
-          returnedStatus.setUnreportedException(ex)
-          returnedStatus.setCompleted()
+    whenCompleted { tri =>
+      tri match {
+        case Success(result) => 
+          f match {
+            case None =>
+              if (!result) returnedStatus.setFailed()
+              returnedStatus.setCompleted()
+            case Some(ex) =>
+              returnedStatus.setUnreportedException(ex)
+              returnedStatus.setCompleted()
+          }
+        case Failure(originalEx) =>
+          f match {
+            case None =>
+              returnedStatus.setUnreportedException(originalEx)
+              returnedStatus.setCompleted()
+            case Some(ex) =>
+              returnedStatus.setUnreportedException(originalEx)
+              println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:") 
+              ex.printStackTrace()
+              returnedStatus.setCompleted()
+          }
       }
     }
     returnedStatus
@@ -159,7 +180,7 @@ object SucceededStatus extends Status with Serializable {
   /**
    * Executes the passed function immediately on the calling thread.
    */
-  def whenCompleted(f: Boolean => Unit) { f(true) }
+  def whenCompleted(f: Try[Boolean] => Unit) { f(Success(true)) }
 }
 
 /**
@@ -202,7 +223,7 @@ object FailedStatus extends Status with Serializable {
   /**
    * Executes the passed function immediately on the calling thread.
    */
-  def whenCompleted(f: Boolean => Unit) { f(false) }
+  def whenCompleted(f: Try[Boolean] => Unit) { f(Success(false)) }
 }
 
 case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisAbortedStatus =>
@@ -233,7 +254,7 @@ case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisA
   /**
    * Executes the passed function immediately on the calling thread.
    */
-  def whenCompleted(f: Boolean => Unit) { f(false) }
+  def whenCompleted(f: Try[Boolean] => Unit) { f(Failure(unreportedException.get)) }
 
   override val unreportedException: Option[Throwable] = Some(ex)
 }
@@ -247,7 +268,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
 
   private var succeeded = true
 
-  private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
+  private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
   private var asyncException: Option[Throwable] = None
 
@@ -304,11 +325,16 @@ println("SET ASYNC EXCEPTION TO: " + asyncException)
         latch.countDown()
         queue.iterator
       }
+    val tri: Try[Boolean] =
+      unreportedException match {
+        case Some(ex) => Failure(ex)
+        case None => Success(succeeded)
+      }
     for (f <- it)
-      f(succeeded)
+      f(tri)
   }
 
-  def whenCompleted(f: Boolean => Unit) {
+  def whenCompleted(f: Try[Boolean] => Unit) {
     var executeLocally = false
     synchronized {
       if (!isCompleted)
@@ -316,8 +342,14 @@ println("SET ASYNC EXCEPTION TO: " + asyncException)
       else
         executeLocally = true
     }
-    if (executeLocally)
-      f(succeeded)
+    if (executeLocally) {
+      val tri: Try[Boolean] =
+        unreportedException match {
+          case Some(ex) => Failure(ex)
+          case None => Success(succeeded)
+        }
+      f(tri)
+    }
   }
 }
 
@@ -338,7 +370,7 @@ println("SET ASYNC EXCEPTION TO: " + asyncException)
 final class StatefulStatus extends Status with Serializable {
   @transient private final val latch = new CountDownLatch(1)
   private var succeeded = true
-  private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
+  private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
   // SKIP-SCALATESTJS-START
   /**
@@ -406,8 +438,13 @@ final class StatefulStatus extends Status with Serializable {
         latch.countDown()
         queue.iterator
       }
+    val tri: Try[Boolean] =
+      unreportedException match {
+        case Some(ex) => Failure(ex)
+        case None => Success(succeeded)
+      }
     for (f <- it)
-      f(succeeded)
+      f(tri)
   }
 
   /**
@@ -418,7 +455,7 @@ final class StatefulStatus extends Status with Serializable {
    * order.
    * </p>
    */
-  def whenCompleted(f: Boolean => Unit) {
+  def whenCompleted(f: Try[Boolean] => Unit) {
     var executeLocally = false
     synchronized {
       if (!isCompleted)
@@ -426,8 +463,14 @@ final class StatefulStatus extends Status with Serializable {
       else
         executeLocally = true
     }
-    if (executeLocally)
-      f(succeeded)
+    if (executeLocally) {
+      val tri: Try[Boolean] =
+        unreportedException match {
+          case Some(ex) => Failure(ex)
+          case None => Success(succeeded)
+        }
+      f(tri)
+    }
   }
 }
 
@@ -443,21 +486,40 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
   @transient private final val latch = new CountDownLatch(statuses.size)
 
   @volatile private var succeeded = true
+  private var asyncException: Option[Throwable] = None
 
-  private final val queue = new ConcurrentLinkedQueue[Boolean => Unit]
+  private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
   for (status <- statuses) {
-    status.whenCompleted { st =>
+    status.whenCompleted { tri =>
       val youCompleteMe =
         synchronized {
           latch.countDown()
-          if (!st)
-            succeeded = false
+
+          tri match {
+            case Success(res) =>
+              if (!res)
+                succeeded = false
+            case Failure(ex) =>
+              succeeded = false
+              if (asyncException.isEmpty)
+                asyncException = Some(ex)
+              else {
+                println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:") 
+                ex.printStackTrace()
+              }
+          }
+
           latch.getCount == 0
         }
       if (youCompleteMe) {
+        val tri: Try[Boolean] =
+          unreportedException match {
+            case Some(ex) => Failure(ex)
+            case None => Success(succeeded)
+          }
         for (f <- queue.iterator)
-          f(succeeded)
+          f(tri)
       }
     }
   }
@@ -502,7 +564,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
    * order.
    * </p>
    */
-  def whenCompleted(f: Boolean => Unit) {
+  def whenCompleted(f: Try[Boolean] => Unit) {
     var executeLocally = false
     synchronized {
       if (!isCompleted)
@@ -510,13 +572,21 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
       else
         executeLocally = true
     }
-    if (executeLocally)
-      f(succeeded)
+    if (executeLocally) {
+      val tri: Try[Boolean] =
+        unreportedException match {
+          case Some(ex) => Failure(ex)
+          case None => Success(succeeded)
+        }
+      f(tri)
+    }
   }
 
-  override def unreportedException: Option[Throwable] =
+  override def unreportedException: Option[Throwable] = synchronized { asyncException }
+/*
     synchronized {
       statuses.map(_.unreportedException).find(_.isDefined).flatten
     }
+*/
 }
 

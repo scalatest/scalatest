@@ -130,7 +130,6 @@ class BeforeAndAfterSuite extends FunSuite {
     assert(a.afterCalled)
   }
 
-  // temporary ignore this test.
   test("If super.runTest returns normally, but after completes abruptly with an " +
     "exception, runTest will return a status that contains that exception as an unreportedException.") {
 

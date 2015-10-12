@@ -23,6 +23,7 @@ import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteAborted
 import org.scalatest.exceptions.NotAllowedException
+import scala.util.{Success, Failure}
 
 private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTestStatefulStatus) extends Runnable {
 
@@ -47,20 +48,20 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
         // Must wait until runStatus completed before dispatching SuiteCompleted, because if parallel test execution is mixed in,
         // the main thread will return before the tests are done. And the HTMLReporter uses SuiteCompleted to
         // determine when to write the page for that suite.
-        runStatus.whenCompleted { succeeded =>
-          if (!succeeded)
-            status.setFailed()
+        runStatus.whenCompleted { tri =>
           val formatter = formatterForSuiteCompleted(suite)
           val duration = System.currentTimeMillis - suiteStartTime
           try {
-            if (!suite.isInstanceOf[DistributedTestRunnerSuite]) {
-              runStatus.unreportedException match {
-                case Some(ue) =>
-                  dispatch(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), suite.rerunner))
-
-                case None =>
+            tri match {
+              case Success(succeeded) => 
+                if (!succeeded)
+                  status.setFailed()
+                if (!suite.isInstanceOf[DistributedTestRunnerSuite])
                   dispatch(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(duration), formatter, Some(TopOfClass(suite.getClass.getName)), suite.rerunner))
-              }
+              case Failure(ue) =>
+                status.setFailed() // Don't forward the unreportedException to the returned status, because reporting it here in this SuiteAborted
+                if (!suite.isInstanceOf[DistributedTestRunnerSuite])
+                  dispatch(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suite.getClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException), suite.rerunner))
             }
           }
           finally status.setCompleted()

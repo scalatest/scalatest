@@ -190,9 +190,8 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
     assert(a.afterEachCalled)
   }
   
-  // TODO: Bill will fix this tomorrow
-  ignore("If super.runTest returns normally, but afterEach completes abruptly with an " +
-    "exception, runTest will complete abruptly with the same exception.") {
+  test("if super.runTest returns normally, but afterEach completes abruptly with an " +
+    "exception, runTest will return a status that contains that exception as an unreportedException.") {
        
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterEach() { throw new NumberFormatException }
