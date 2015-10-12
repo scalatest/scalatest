@@ -108,7 +108,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       a.run(Some("july"), Args(StubReporter))
     }
   }
-  
+
   test("If any call to super.runTest completes abruptly with an exception, runTest " +
     "will complete abruptly with the same exception, however, before doing so, it will invoke afterEach") {
     trait FunkySuite extends Suite {

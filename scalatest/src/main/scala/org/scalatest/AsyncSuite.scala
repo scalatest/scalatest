@@ -20,7 +20,8 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 trait AsyncSuite extends Suite { thisAsyncSuite =>
 
-  protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncSuite.isInstanceOf[org.scalatest.ParallelTestExecution]
+  protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
+      thisAsyncSuite.isInstanceOf[org.scalatest.RandomTestOrder]
 
   final override def withFixture(test: NoArgTest): Outcome = {
     throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncSuite.scala", "withFixture"))
