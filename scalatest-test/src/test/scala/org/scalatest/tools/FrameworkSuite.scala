@@ -1275,7 +1275,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
 
-  test("should fire SuiteAborted event when after function in BeforeAndAfterEach throws RuntimeException") {
+  test("should fire SuiteAborted event when afterEach function in BeforeAndAfterEach throws RuntimeException") {
     val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     makeSureDone(runner) {
       val testEventHandler = new TestEventHandler
@@ -1296,7 +1296,7 @@ class FrameworkSuite extends FunSuite {
     }
   }
 
-  test("should fire SuiteAborted event when after function in BeforeAndAfterEachTestData throws RuntimeException") {
+  test("should fire SuiteAborted event when afterEach function in BeforeAndAfterEachTestData throws RuntimeException") {
     val runner = framework.runner(Array("-C", classOf[EventRecordingReporter].getName), Array.empty, testClassLoader)
     makeSureDone(runner) {
       val testEventHandler = new TestEventHandler
