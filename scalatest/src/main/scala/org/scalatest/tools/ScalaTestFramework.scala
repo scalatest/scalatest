@@ -410,13 +410,22 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
             report(SuiteStarting(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), formatter, Some(TopOfClass(suiteClass.getName))))
 
             try {  // TODO: I had to pass Set.empty for chosen styles now. Fix this later.
-              suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
+              val status = suite.run(None, Args(report, Stopper.default, filter, configMap, None, tracker, Set.empty))
 
               val formatter = formatterForSuiteCompleted(suite)
 
               val duration = System.currentTimeMillis - suiteStartTime
 
-              report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+              // Need to finish all before returning back to sbt.
+              status.succeeds()
+
+              status.unreportedException match {
+                case Some(ue) =>
+                  report(SuiteAborted(tracker.nextOrdinal(), ue.getMessage, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(ue), Some(duration), formatter, Some(SeeStackDepthException)))
+
+                case None =>
+                  report(SuiteCompleted(tracker.nextOrdinal(), suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(duration), formatter, Some(TopOfClass(suiteClass.getName))))
+              }
 
             }
             catch {       
