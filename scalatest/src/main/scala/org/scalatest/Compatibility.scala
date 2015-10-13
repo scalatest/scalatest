@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-trait Compatibility extends RegistrationPolicy {
+private[scalatest] trait Compatibility extends RegistrationPolicy {
   implicit override def convertAnyToAssertion(a: Any): Assertion = Succeeded
   implicit override def convertExpectationToAssertion(e: Expectation): Assertion = e.internalToAssertion
 }

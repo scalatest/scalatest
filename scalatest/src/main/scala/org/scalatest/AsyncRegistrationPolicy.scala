@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-trait AsyncRegistrationPolicy {
+private[scalatest] trait AsyncRegistrationPolicy {
 
   implicit def executionContext: ExecutionContext
 

@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-trait RegistrationPolicy {
+private[scalatest] trait RegistrationPolicy {
 
   // Made implicit in Compatibility, non-implicit in Safety
   def convertAnyToAssertion(a: Any): Assertion
