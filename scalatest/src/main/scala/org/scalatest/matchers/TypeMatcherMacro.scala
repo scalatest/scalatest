@@ -16,7 +16,8 @@
 package org.scalatest.matchers
 
 import scala.reflect.macros.Context
-import org.scalatest.words.{ResultOfAnTypeInvocation, FactResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation, FactResultOfATypeInvocation}
+import org.scalatest.words.{ResultOfAnTypeInvocation, MatcherWords, ResultOfATypeInvocation}
+//import org.scalatest.words.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
 import org.scalatest.{UnquotedString, Resources, Suite, FailureMessages, Assertions}
 import org.scalactic.Prettifier
 
@@ -375,7 +376,7 @@ private[scalatest] object TypeMatcherMacro {
   def mustBeAnTypeImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Assertion] =
     assertTypeImpl(context)(anType.tree, "mustBe an", "assertAnType")
 
-  def expectTypeImpl(context: Context)(tree: context.Tree, beMethodName: String, assertMethodName: String): context.Expr[org.scalatest.Fact] = {
+  /*def expectTypeImpl(context: Context)(tree: context.Tree, beMethodName: String, assertMethodName: String): context.Expr[org.scalatest.Fact] = {
     import context.universe._
 
     // check type parameter
@@ -416,7 +417,7 @@ private[scalatest] object TypeMatcherMacro {
     expectTypeImpl(context)(aType.tree, "willBe a", "expectAType")
 
   def willBeAnTypeImpl(context: Context)(anType: context.Expr[FactResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Fact] =
-    expectTypeImpl(context)(anType.tree, "willBe an", "expectAnType")
+    expectTypeImpl(context)(anType.tree, "willBe an", "expectAnType")*/
 
   def assertTypeShouldBeTrueImpl(context: Context)(tree: context.Tree, beMethodName: String, assertMethodName: String): context.Expr[org.scalatest.Assertion] = {
     import context.universe._
@@ -463,7 +464,7 @@ private[scalatest] object TypeMatcherMacro {
   def assertAnTypeShouldBeTrueImpl(context: Context)(anType: context.Expr[ResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Assertion] =
     assertTypeShouldBeTrueImpl(context)(anType.tree, "should not be an", "assertAnTypeShouldBeTrue")
 
-  def expectTypeWillBeTrueImpl(context: Context)(tree: context.Tree, beMethodName: String, expectMethodName: String): context.Expr[org.scalatest.Fact] = {
+  /*def expectTypeWillBeTrueImpl(context: Context)(tree: context.Tree, beMethodName: String, expectMethodName: String): context.Expr[org.scalatest.Fact] = {
     import context.universe._
 
     // check type parameter
@@ -506,6 +507,6 @@ private[scalatest] object TypeMatcherMacro {
 
   // Do checking on type parameter and generate AST to call TypeMatcherHelper.assertAnTypeShouldBeTrue
   def expectAnTypeWillBeTrueImpl(context: Context)(anType: context.Expr[FactResultOfAnTypeInvocation[_]]): context.Expr[org.scalatest.Fact] =
-    expectTypeWillBeTrueImpl(context)(anType.tree, "will not be an", "expectAnTypeWillBeTrue")
+    expectTypeWillBeTrueImpl(context)(anType.tree, "will not be an", "expectAnTypeWillBeTrue")*/
 
 }

@@ -19,7 +19,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions
 
-trait AsyncSafety extends AsyncRegistrationPolicy {
+private[scalatest] trait AsyncSafety extends AsyncRegistrationPolicy {
 
   override def convertAnyToFutureAssertion(o: Any): Future[Assertion] = Future.successful(Succeeded) // How happy is that?
   override def convertFutureTToFutureAssertion[T](o: Future[T]): Future[Assertion] =

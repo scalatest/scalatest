@@ -20,7 +20,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
 
-sealed abstract class Fact {
+private[scalatest] sealed abstract class Fact {
 
   val rawFactMessage: String
   val rawSimplifiedFactMessage: String
@@ -140,7 +140,7 @@ sealed abstract class Fact {
   override def toString: String = factDiagram(0)
 }
 
-object Fact {
+private[scalatest] object Fact {
 
   case class Leaf(
     rawFactMessage: String,

@@ -21,7 +21,7 @@ import org.scalactic.Bool
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-trait Expectations {
+private[scalatest] trait Expectations {
   
   // TODO: Need to make this and assertResult use custom equality I think.
   def expectResult(expected: Any)(actual: Any): Fact = {
@@ -149,5 +149,5 @@ trait Expectations {
   def expectTypeError(code: String): Fact = macro CompileMacro.expectTypeErrorImpl
 }
 
-object Expectations extends Expectations
+private[scalatest] object Expectations extends Expectations
 

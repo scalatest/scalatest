@@ -134,7 +134,7 @@ object GenMatchers {
     junitDir.mkdirs()
 
     translateFile(targetDir, "MustMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToMust)
-    translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
+    /*translateFile(targetDir, "WillMatchers.scala", "scalatest/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
     translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
     translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
       (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
@@ -149,7 +149,7 @@ object GenMatchers {
     translateFile(targetDir, "FactResultOfBeWordForNoException.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfBeWordForNoException.scala", scalaVersion, scalaJS, translateShouldToWill)
     translateFile(targetDir, "FactResultOfContainWord.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfContainWord.scala", scalaVersion, scalaJS, translateShouldToWill)
     translateFile(targetDir, "FactResultOfNotWordForAny.scala", "scalatest/src/main/scala/org/scalatest/words/ResultOfNotWordForAny.scala", scalaVersion, scalaJS, translateShouldToWill)
-    translateFile(targetDir, "FactMatcherWords.scala", "scalatest/src/main/scala/org/scalatest/words/MatcherWords.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactMatcherWords.scala", "scalatest/src/main/scala/org/scalatest/words/MatcherWords.scala", scalaVersion, scalaJS, translateShouldToWill)*/
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String) {
