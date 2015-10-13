@@ -355,13 +355,54 @@ class BeforeAndAfterAllSpec extends FunSpec {
 
     // Test exceptions
     it("should, if any invocation of beforeAll completes abruptly with an exception, run " +
-      "will complete abruptly with the same exception.") (pending)
+      "will complete abruptly with the same exception.") {
+      var testIsCalled = false
+      class MySuite extends FunSuite with BeforeAndAfterAll {
+        override def beforeAll() {
+          throw new NumberFormatException
+        }
+        test("test 1") { testIsCalled = true }
+      }
+      val a = new MySuite
+      intercept[NumberFormatException] {
+        a.run(None, Args(StubReporter))
+      }
+      assert(!testIsCalled)
+    }
     
     it("should, if any call to super.run completes abruptly with an exception, run " +
-      "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll")  (pending)
+      "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
+      var afterAllIsCalled = false
+      class MySuite extends FunSuite with BeforeAndAfterAll {
+        override def afterAll() {
+          afterAllIsCalled = true
+        }
+        override def run(testName: Option[String], args: Args): Status = {
+          super.run(testName, args)
+          throw new IllegalArgumentException
+        }
+        test("test 1") {}
+      }
+      val a = new MySuite
+      intercept[IllegalArgumentException] {
+        a.run(None, Args(StubReporter))
+      }
+      assert(afterAllIsCalled)
+    }
     
-    it("should, if both super.run and afterAll complete abruptly with an exception, run " + 
-      "will complete abruptly with the exception thrown by super.run.") (pending)
+    it("should, if both super.run and afterAll complete abruptly with an exception, run " +
+      "will complete abruptly with the exception thrown by super.run.") {
+      class MySuite extends FunSuite with BeforeAndAfterAll {
+        override def afterAll() { throw new NumberFormatException }
+        override def run(testName: Option[String], args: Args): Status = {
+          throw new IllegalArgumentException
+        }
+      }
+      val a = new MySuite
+      intercept[IllegalArgumentException] {
+        a.run(None, Args(StubReporter))
+      }
+    }
     
     it("should, if super.run returns normally, but afterEach completes abruptly with an " +
       "exception, the status returned by run will contain that exception as its unreportedException.") {
