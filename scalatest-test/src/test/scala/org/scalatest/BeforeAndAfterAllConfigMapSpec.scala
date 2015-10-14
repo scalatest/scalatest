@@ -347,5 +347,69 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       spec.afterAllCount.get should be (0)
     }
     // SKIP-SCALATESTJS-END
+
+    // Test exceptions
+    it("should, if any invocation of beforeAll completes abruptly with an exception, run " +
+      "will complete abruptly with the same exception.") {
+      var testIsCalled = false
+      class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
+        override def beforeAll(configMap: ConfigMap) {
+          throw new NumberFormatException
+        }
+        test("test 1") { testIsCalled = true }
+      }
+      val a = new MySuite
+      intercept[NumberFormatException] {
+        a.run(None, Args(StubReporter))
+      }
+      assert(!testIsCalled)
+    }
+
+    it("should, if any call to super.run completes abruptly with an exception, run " +
+      "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
+      var afterAllIsCalled = false
+      class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
+        override def afterAll(configMap: ConfigMap) {
+          afterAllIsCalled = true
+        }
+        override def run(testName: Option[String], args: Args): Status = {
+          super.run(testName, args)
+          throw new IllegalArgumentException
+        }
+        test("test 1") {}
+      }
+      val a = new MySuite
+      intercept[IllegalArgumentException] {
+        a.run(None, Args(StubReporter))
+      }
+      assert(afterAllIsCalled)
+    }
+
+    it("should, if both super.run and afterAll complete abruptly with an exception, run " +
+      "will complete abruptly with the exception thrown by super.run.") {
+      class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
+        override def afterAll(configMap: ConfigMap) { throw new NumberFormatException }
+        override def run(testName: Option[String], args: Args): Status = {
+          throw new IllegalArgumentException
+        }
+      }
+      val a = new MySuite
+      intercept[IllegalArgumentException] {
+        a.run(None, Args(StubReporter))
+      }
+    }
+
+    it("should, if super.run returns normally, but afterEach completes abruptly with an " +
+      "exception, the status returned by run will contain that exception as its unreportedException.") {
+      class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
+        override def afterAll(configMap: ConfigMap) { throw new NumberFormatException }
+        test("test July") {}
+      }
+      val a = new MySuite
+      val status = a.run(Some("test July"), Args(StubReporter))
+      assert(status.isCompleted)
+      import OptionValues._
+      assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
+    }
   }
 }
