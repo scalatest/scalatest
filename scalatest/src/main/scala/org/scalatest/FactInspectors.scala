@@ -534,7 +534,7 @@ private[scalatest] trait FactInspectors {
  * an alternative to mixing it in. One use case is to import <code>Inspectors</code>'s members so you can use
  * them in the Scala interpreter.
  */
-object FactInspectors extends FactInspectors
+private[scalatest] object FactInspectors extends FactInspectors
 
 private[scalatest] object FactInspectorsHelper {
 
