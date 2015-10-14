@@ -30,7 +30,7 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that return a Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution with Expectations {
+      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ { // Can resurrect expect later
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -111,7 +111,7 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
 
     it("can be used for tests that did not return Future under parallel async test execution") {
 
-      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution with Expectations {
+      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ {
 
         // SKIP-SCALATESTJS-START
         implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -141,12 +141,14 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
         }
 
         it("test 6") {
-          expect(a == 1)
+          // expect(a == 1)
+          assert(a == 1)
         }
 
         it("test 7") {
-          val result = expect(a == 22)
-          result
+          // val result = expect(a == 22)
+          // result
+          assert(a == 22)
         }
 
         override def newInstance = new ExampleSpec

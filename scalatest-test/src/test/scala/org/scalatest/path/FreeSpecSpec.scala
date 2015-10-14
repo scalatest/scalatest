@@ -35,7 +35,7 @@ import org.scalactic.exceptions.NullArgumentException
 
 class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
 
-  describe("A FreeSpec") {
+  describe("A path.FreeSpec") {
 
     describe("(when a nesting rule has been violated)") {
 
@@ -963,7 +963,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
     }
     // SKIP-SCALATESTJS-END
 
-    it("should support expectations") {
+    ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
       class TestSpec extends PathFreeSpec with Expectations {
         "it should do something" in {
           expect(1 === 2)

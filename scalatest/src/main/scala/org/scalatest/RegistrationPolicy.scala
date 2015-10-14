@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-private[scalatest] trait RegistrationPolicy {
+trait RegistrationPolicy {
 
   // Made implicit in Compatibility, non-implicit in Safety
   def convertAnyToAssertion(a: Any): Assertion
-  def convertExpectationToAssertion(e: Expectation): Assertion
+  // def convertExpectationToAssertion(e: Expectation): Assertion
 }
 

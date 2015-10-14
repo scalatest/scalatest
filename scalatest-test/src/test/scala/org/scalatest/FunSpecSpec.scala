@@ -1075,7 +1075,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       }
     }
 */
-    it("should support expectations") {
+    ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
       class TestSpec extends FunSpec with Expectations {
         it("fail scenario") {
           expect(1 === 2)

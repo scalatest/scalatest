@@ -1474,7 +1474,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       }
 
     }
-    it("should support expectations") {
+    ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
       class TestSpec extends WordSpec with Expectations {
         "it should do something" in {
           expect(1 === 2)

@@ -31,7 +31,7 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
   describe("The whenever construct") {
     describe("when the result type of the block is Expectation") {
       describe("when the Boolean condition is true") {
-        it("should, under Compatibility, either return Succeeded or throw TFE") {
+        ignore("should, under Compatibility, either return Succeeded or throw TFE") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
           import Expectations._
           val res1 = whenever (true) { expect(1 == 1) }
           assert(res1 eq Succeeded)

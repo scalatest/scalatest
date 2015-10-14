@@ -1256,7 +1256,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         assert(caught.getMessage === "Feature clauses cannot be nested.")
       }
     }
-    it("should support expectations") {
+    ignore("should support expectations") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
       class TestSpec extends FeatureSpec with Expectations {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }

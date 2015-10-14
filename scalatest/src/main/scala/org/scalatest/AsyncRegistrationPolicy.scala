@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-private[scalatest] trait AsyncRegistrationPolicy {
+trait AsyncRegistrationPolicy {
 
   implicit def executionContext: ExecutionContext
 
@@ -26,7 +26,9 @@ private[scalatest] trait AsyncRegistrationPolicy {
   def convertAnyToFutureAssertion(o: Any): Future[Assertion]
   def convertFutureTToFutureAssertion[T](o: Future[T]): Future[Assertion]
 
+/*
   def convertExpectationToFutureAssertion(e: Expectation): Future[Assertion]
   def convertFutureExpectationToFutureAssertion(o: Future[Expectation]): Future[Assertion]
+*/
 }
 
