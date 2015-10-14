@@ -79,7 +79,7 @@ package object scalatest {
   @deprecated("Please use PendingStatement instead")
   type PendingNothing = PendingStatement
 
-  type Expectation = Fact
+  private[scalatest] type Expectation = Fact
 
   /**
    * Marker trait that serves as the result type of <code>assert</code>, <code>assume</code>, and <code>pending</code> methods of

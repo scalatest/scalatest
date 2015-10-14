@@ -200,7 +200,7 @@ import Fact.Yes
  * scala&gt; forAtLeast(2, "hello, world!") { c =&gt; c shouldBe 'o' }
  * </pre>
  */
-trait FactInspectors {
+private[scalatest] trait FactInspectors {
 
   import FactInspectorsHelper._
 
