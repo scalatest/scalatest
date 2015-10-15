@@ -109,7 +109,7 @@ class AsyncFunSpecSpec2 extends AsyncFunSpec {
       }
     }
 
-    it("can be used for tests that did not return Future under parallel async test execution") {
+    ignore("can be used for tests that did not return Future under parallel async test execution") {
 
       class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ {
 
