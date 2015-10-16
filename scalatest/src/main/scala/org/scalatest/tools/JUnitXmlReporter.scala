@@ -163,47 +163,27 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
 
       event match {
         case e: TestStarting =>
-          val (testEndIndex, testcase) = processTest(orderedEvents, e, idx)
+          val testcase = processTest(orderedEvents, e, idx)
           testsuite.testcases += testcase
           if (testcase.failure != None) testsuite.failures += 1
-          idx = testEndIndex + 1
 
         case e: SuiteAborted =>
           assert(endIndex == idx)
           testsuite.errors += 1
           testsuite.time = e.timeStamp - testsuite.timeStamp
-          idx += 1
 
         case e: SuiteCompleted =>
           assert(endIndex == idx)
           testsuite.time = e.timeStamp - testsuite.timeStamp
-          idx += 1
 
         case e: TestIgnored    =>
           val testcase = Testcase(e.testName, e.suiteClassName, e.timeStamp)
           testcase.ignored = true
           testsuite.testcases += testcase
-          idx += 1
 
-        case e: InfoProvided   => idx += 1
-        case e: AlertProvided  => idx += 1
-        case e: NoteProvided   => idx += 1
-        case e: MarkupProvided => idx += 1
-        case e: ScopeOpened    => idx += 1
-        case e: ScopeClosed    => idx += 1
-        case e: ScopePending   => idx += 1
-        case e: TestPending    => unexpected(e)
-        case e: TestCanceled   => unexpected(e)
-        case e: RunStarting    => unexpected(e)
-        case e: RunCompleted   => unexpected(e)
-        case e: RunStopped     => unexpected(e)
-        case e: RunAborted     => unexpected(e)
-        case e: TestSucceeded  => unexpected(e)
-        case e: TestFailed     => unexpected(e)
-        case e: SuiteStarting  => unexpected(e)
-        case e: DiscoveryStarting  => unexpected(e)
-        case e: DiscoveryCompleted => unexpected(e)
+        case _ => 
       }
+      idx += 1
     }
     testsuite
   }
@@ -269,9 +249,6 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
     (startIndex, endIndex)
   }
 
-  private def idxAdjustmentForRecordedEvents(recordedEvents: collection.immutable.IndexedSeq[RecordableEvent]) =
-    recordedEvents.filter(e => e.isInstanceOf[InfoProvided] || e.isInstanceOf[MarkupProvided]).size
-  
   //
   // Constructs a Testcase object from events in orderedEvents array.
   //
@@ -282,59 +259,48 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   //
   private def processTest(orderedEvents: Array[Event],
                           startEvent: TestStarting, startIndex: Int):
-  (Int, Testcase) = {
+    Testcase =
+  {
     val testcase = Testcase(startEvent.testName, startEvent.suiteClassName,
                             startEvent.timeStamp)
-    var endIndex = 0
+    var endEventFound = false
     var idx = startIndex + 1
 
-    while ((idx < orderedEvents.size) && (endIndex == 0)) {
+    while ((idx < orderedEvents.size) && !endEventFound) {
       val event = orderedEvents(idx)
       events -= event
 
       event match {
         case e: TestSucceeded =>
-          endIndex = idx
-          testcase.time = e.timeStamp - testcase.timeStamp
-          idx += idxAdjustmentForRecordedEvents(e.recordedEvents)
+          if (e.testName == startEvent.testName) {
+            endEventFound = true
+            testcase.time = e.timeStamp - testcase.timeStamp
+          }
 
         case e: TestFailed =>
-          endIndex = idx
-          testcase.failure = Some(e)
-          testcase.time = e.timeStamp - testcase.timeStamp
-          idx += idxAdjustmentForRecordedEvents(e.recordedEvents)
+          if (e.testName == startEvent.testName) {
+            endEventFound = true
+            testcase.failure = Some(e)
+            testcase.time = e.timeStamp - testcase.timeStamp
+          }
 
         case e: TestPending =>
-          endIndex = idx
-          testcase.pending = true
-          idx += idxAdjustmentForRecordedEvents(e.recordedEvents)
+          if (e.testName == startEvent.testName) {
+            endEventFound = true
+            testcase.pending = true
+          }
 
         case e: TestCanceled =>
-          endIndex = idx
-          testcase.canceled = true
-          idx += idxAdjustmentForRecordedEvents(e.recordedEvents)
+          if (e.testName == startEvent.testName) {
+            endEventFound = true
+            testcase.canceled = true
+          }
 
-        case e: ScopeOpened    => idx += 1
-        case e: ScopeClosed    => idx += 1
-        case e: ScopePending   => idx += 1
-        case e: InfoProvided   => idx += 1
-        case e: MarkupProvided => idx += 1
-        case e: AlertProvided  => idx += 1
-        case e: NoteProvided   => idx += 1
-        case e: SuiteCompleted => unexpected(e)
-        case e: TestStarting   => unexpected(e)
-        case e: TestIgnored    => unexpected(e)
-        case e: SuiteStarting  => unexpected(e)
-        case e: RunStarting    => unexpected(e)
-        case e: RunCompleted   => unexpected(e)
-        case e: RunStopped     => unexpected(e)
-        case e: RunAborted     => unexpected(e)
-        case e: SuiteAborted   => unexpected(e)
-        case e: DiscoveryStarting  => unexpected(e)
-        case e: DiscoveryCompleted => unexpected(e)
+        case _ => 
       }
+      idx += 1
     }
-    (endIndex, testcase)
+    testcase
   }
 
   //
