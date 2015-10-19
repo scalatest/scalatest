@@ -1305,23 +1305,25 @@ object Runner {
               if (System.getProperty("org.scalatest.tools.Runner.forever", "false") == "true") {
 
                 while (true) {
-                  for (suiteConfig <- suiteInstances) {
+                  val statuses = for (suiteConfig <- suiteInstances) yield {
                     val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                     val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
                     val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker, chosenStyleSet, false, None, distributedSuiteSorter)
                     distributor.apply(suiteConfig.suite, runArgs)
                   }
                   distributor.waitUntilDone()
+                  (new CompositeStatus(statuses.toSet)).waitUntilCompleted()
                 }
               }
               else {
-                for (suiteConfig <- suiteInstances) {
+                val statuses = for (suiteConfig <- suiteInstances) yield {
                   val tagsToInclude = if (suiteConfig.requireSelectedTag) tagsToIncludeSet ++ Set(SELECTED_TAG) else tagsToIncludeSet
                   val filter = Filter(if (tagsToInclude.isEmpty) None else Some(tagsToInclude), tagsToExcludeSet, suiteConfig.excludeNestedSuites, suiteConfig.dynaTags)
                   val runArgs = Args(concurrentDispatch, stopper, filter, configMap, Some(distributor), tracker.nextTracker, chosenStyleSet, false, None, distributedSuiteSorter)
                   distributor.apply(suiteConfig.suite, runArgs)
                 }
                 distributor.waitUntilDone()
+                (new CompositeStatus(statuses.toSet)).waitUntilCompleted()
               }
             }
             finally {
@@ -1336,6 +1338,7 @@ object Runner {
               val status = new ScalaTestStatefulStatus()
               val suiteRunner = new SuiteRunner(suiteConfig.suite, runArgs, status)
               suiteRunner.run()
+              status.succeeds()
             }
           }
 
