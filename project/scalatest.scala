@@ -650,7 +650,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
-        "org.scalactic.anyvals"
+        "org.scalactic.anyvals",
+        "org.scalactic.exceptions"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
