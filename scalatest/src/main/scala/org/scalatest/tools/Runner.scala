@@ -1338,7 +1338,7 @@ object Runner {
               val status = new ScalaTestStatefulStatus()
               val suiteRunner = new SuiteRunner(suiteConfig.suite, runArgs, status)
               suiteRunner.run()
-              status.succeeds()
+              status.waitUntilCompleted()
             }
           }
 
