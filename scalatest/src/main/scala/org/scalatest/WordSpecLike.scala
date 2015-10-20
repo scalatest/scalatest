@@ -91,7 +91,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Assertion) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -99,7 +99,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Assertion) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -126,7 +126,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Assertion) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -155,7 +155,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Assertion) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -165,7 +165,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
-  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
+  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit/*Assertion*/) {
     def getStackDepth: Int =
       verb match {
         // SKIP-SCALATESTJS-START
@@ -209,7 +209,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     }
   }
   
-  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessage: => String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
+  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessage: => String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit/*Assertion*/) {
 
     // SKIP-SCALATESTJS-START
     val notAllowStackDepth = 2
@@ -273,7 +273,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(testFun: => Assertion) {
+    def in(testFun: => Unit/*Assertion*/) {
       registerTestToRun(specText, tags, "in", testFun _)
     }
 
@@ -313,7 +313,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Assertion) {
+    def ignore(testFun: => Unit/*Assertion*/) {
       registerTestToIgnore(specText, tags, "ignore", testFun _)
     }
   }       
@@ -351,7 +351,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(f: => Assertion) {
+    def in(f: => Unit/*Assertion*/) {
       registerTestToRun(string, List(), "in", f _)
     }
 
@@ -371,7 +371,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(f: => Assertion) {
+    def ignore(f: => Unit/*Assertion*/) {
       registerTestToIgnore(string, List(), "ignore", f _)
     }
 
@@ -432,7 +432,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def when(f: => Unit) {
+    def when(f: => Unit/*Assertion*/) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
@@ -478,7 +478,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def that(f: => Unit) {
+    def that(f: => Unit/*Assertion*/) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
@@ -502,7 +502,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def which(f: => Unit) {
+    def which(f: => Unit/*Assertion*/) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
@@ -615,7 +615,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * methods.  For more information, see the <a href="WordSpec.html#AfterWords">main documentation</code></a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def apply(f: => Unit) = new ResultOfAfterWordApplication(text, f _)
+    def apply(f: => Unit/*Assertion*/) = new ResultOfAfterWordApplication(text, f _)
   }
 
   /**
@@ -714,7 +714,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for <code>WordSpec</code>.
      * </p>
      */
-    def should(right: => Unit) {
+    def should(right: => Unit/*Assertion*/) {
       registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, right _)
     }
     
@@ -737,7 +737,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for <code>WordSpec</code>.
      * </p>
      */
-    def must(right: => Unit) {
+    def must(right: => Unit/*Assertion*/) {
       registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, right _)
     }
     
@@ -760,7 +760,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for <code>WordSpec</code>.
      * </p>
      */
-    def can(right: => Unit) {
+    def can(right: => Unit/*Assertion*/) {
       registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, right _)
     }
     
@@ -783,7 +783,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for <code>WordSpec</code>.
      * </p>
      */
-    def when(right: => Unit) {
+    def when(right: => Unit/*Assertion*/) {
       registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, right _)
     }
   }
@@ -849,7 +849,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for <code>WordSpec</code>.
      * </p>
      */
-    def should(right: => Unit) {
+    def should(right: => Unit/*Assertion*/) {
       registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, right _)
     }
     
@@ -872,7 +872,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for <code>WordSpec</code>.
      * </p>
      */
-    def must(right: => Unit) {
+    def must(right: => Unit/*Assertion*/) {
       registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, right _)
     }
     
@@ -895,7 +895,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for <code>WordSpec</code>.
      * </p>
      */
-    def can(right: => Unit) {
+    def can(right: => Unit/*Assertion*/) {
       registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, right _)
     }
     
@@ -918,7 +918,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for <code>WordSpec</code>.
      * </p>
      */
-    def when(right: => Unit) {
+    def when(right: => Unit/*Assertion*/) {
       registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, right _)
     }
   }
@@ -995,7 +995,7 @@ one error found
    */
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
-      def apply(left: String, verb: String, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, f)
+      def apply(left: String, verb: String, f: () => Unit/*Assertion*/) = registerBranch(left, Some(verb), verb, "apply", 6, -2, f)
     }
 
   /**
@@ -1020,7 +1020,7 @@ one error found
    * subject and executes the block.
    * </p>
    */
-  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication) => Unit = {
+  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication) => Unit/*Assertion*/ = {
     (left, verb, resultOfAfterWordApplication) => {
       val afterWordFunction =
         () => {

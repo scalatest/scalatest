@@ -93,7 +93,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Assertion) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -101,7 +101,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
     engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Assertion) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -155,7 +155,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: => Assertion) {
+    def apply(specText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -273,7 +273,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: => Assertion) {
+    def apply(specText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
       engine.registerTest(specText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, None, testTags: _*)
     }
 
@@ -357,7 +357,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(testText: String, testTags: Tag*)(testFun: => Assertion) {
+  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -373,7 +373,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
-  protected def describe(description: String)(fun: => Unit) {
+  protected def describe(description: String)(fun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val errorStackDepth = 4
