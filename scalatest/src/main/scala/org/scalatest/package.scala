@@ -87,4 +87,5 @@ package object scalatest {
    * an exception that indicates a failed, canceled, or pending test.
    */
   type Assertion = Unit // Succeeded.type
+  val AssertionValue: Assertion = () // Succeeded
 }

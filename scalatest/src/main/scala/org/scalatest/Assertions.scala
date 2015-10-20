@@ -1326,7 +1326,7 @@ trait Assertions extends TripleEquals {
 object Assertions extends Assertions {
 
   case class NormalResult(result: Any) extends Throwable {
-    override def toString = if (result == ()) Resources.noExceptionWasThrown else Resources.resultWas(Prettifier.default(result))
+    override def toString = if (result == AssertionValue) Resources.noExceptionWasThrown else Resources.resultWas(Prettifier.default(result))
   }
 
   private[scalatest] def areEqualComparingArraysStructurally(left: Any, right: Any): Boolean = {

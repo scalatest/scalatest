@@ -54,7 +54,7 @@ class FactSpec extends FreeSpec with Matchers with PrettyMethods with Expectatio
     }
     "should have a toAssertion method that" - {
       "returns Succeeded if the Fact is a non-vacuous Yes" in {
-        yesFact.toAssertion shouldBe Succeeded
+        yesFact.toAssertion shouldBe AssertionValue
       }
       "throws TestFailedException with the correct error message and stack depth if the Fact is a No" in {
         val caught = the [TestFailedException] thrownBy noFact.toAssertion

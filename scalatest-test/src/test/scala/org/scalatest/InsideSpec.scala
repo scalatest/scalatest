@@ -133,7 +133,7 @@ class InsideSpec extends FunSpec {
 
       inside (rec) { case Record(name, _, _) =>
         inside (name) { case Name(first, _, _) => (first should have length 5) }
-      } shouldBe Succeeded
+      } shouldBe AssertionValue
 
       (inside (rec) { case Record(name, _, _) =>
         inside (name) { case Name(first, _, _) => (first should have length 5) }

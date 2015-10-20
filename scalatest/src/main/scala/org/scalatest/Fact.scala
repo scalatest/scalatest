@@ -46,11 +46,11 @@ private[scalatest] sealed abstract class Fact {
 
   final def toAssertion: Assertion = {
     // SKIP-SCALATESTJS-START
-    val stackDepth = 5
+    val stackDepth = if (AssertionValue == Succeeded) 5 else 6 // () required 6, which is odd
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 10
     if (isYes) {
-      if (!isVacuousYes) Succeeded
+      if (!isVacuousYes) AssertionValue
       else throw new TestCanceledException(factMessage, stackDepth)
     }
     else throw new TestFailedException(factMessage, stackDepth)

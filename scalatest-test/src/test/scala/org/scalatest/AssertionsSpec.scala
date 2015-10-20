@@ -28,8 +28,6 @@ import org.scalactic.exceptions.NullArgumentException
 
 class AssertionsSpec extends FunSpec {
 
-  val AssertionSucceeded: Unit = ()
-
   val fileName: String = "AssertionsSpec.scala"
 
   describe("The === method") {
@@ -169,7 +167,7 @@ class AssertionsSpec extends FunSpec {
       val result = assertThrows[RuntimeException] {
         throw e
       }
-      assert(result == AssertionSucceeded)
+      assert(result == AssertionValue)
     }
 
     it("should throw TFE if no exception is thrown") {
@@ -200,7 +198,7 @@ class AssertionsSpec extends FunSpec {
       assert(trappedEx.isInstanceOf[TestFailedException])
       assert(trappedEx.getMessage == "12 did not equal 13")
       val trappedUnit = trap { assert(a == 12) }
-      assert(trappedUnit == NormalResult(Succeeded))
+      assert(trappedUnit == NormalResult(AssertionValue))
       val trappedInt = trap { 12 }
       assert(trappedInt == NormalResult(12))
       val trappedString = trap { "12" }
@@ -1793,7 +1791,7 @@ class AssertionsSpec extends FunSpec {
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
-      assert(assert(x + 1 == 2) == AssertionSucceeded)
+      assert(assert(x + 1 == 2) == AssertionValue)
     }
   }
 
@@ -3230,7 +3228,7 @@ class AssertionsSpec extends FunSpec {
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
-      assert(assert(x + 1 == 2, "clue") == AssertionSucceeded)
+      assert(assert(x + 1 == 2, "clue") == AssertionValue)
     }
   }
 
@@ -4660,7 +4658,7 @@ class AssertionsSpec extends FunSpec {
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
-      assert(assume(x + 1 == 2) == AssertionSucceeded)
+      assert(assume(x + 1 == 2) == AssertionValue)
     }
   }
 
@@ -6097,7 +6095,7 @@ class AssertionsSpec extends FunSpec {
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
-      assert(assume(x + 1 == 2, "clue") == AssertionSucceeded)
+      assert(assume(x + 1 == 2, "clue") == AssertionValue)
     }
   }
 
@@ -6169,7 +6167,7 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
-      assert(assertTypeError("val x: String = 1") == AssertionSucceeded)
+      assert(assertTypeError("val x: String = 1") == AssertionValue)
     }
   }
 
@@ -6228,7 +6226,7 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
-      assert(assertDoesNotCompile("val x: String = 1") == AssertionSucceeded)
+      assert(assertDoesNotCompile("val x: String = 1") == AssertionValue)
     }
   }
 
@@ -6304,7 +6302,7 @@ class AssertionsSpec extends FunSpec {
       }
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
-      assert(assertCompiles("val x: Int = 1") == AssertionSucceeded)
+      assert(assertCompiles("val x: Int = 1") == AssertionValue)
     }
   }
 
@@ -6371,7 +6369,7 @@ class AssertionsSpec extends FunSpec {
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
-      assert(assertResult(2) { x + 1 } == AssertionSucceeded)
+      assert(assertResult(2) { x + 1 } == AssertionValue)
     }
   }
 
@@ -6463,7 +6461,7 @@ class AssertionsSpec extends FunSpec {
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
-      assert(assertResult(2, "clue") { x + 1 } == AssertionSucceeded)
+      assert(assertResult(2, "clue") { x + 1 } == AssertionValue)
     }
   }
 }

@@ -28,15 +28,13 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
 class WheneverSpec extends FunSpec with Matchers with Whenever {
 
-  val AssertionSucceeded: Unit = ()
-
   describe("The whenever construct") {
     describe("when the result type of the block is Expectation") {
       describe("when the Boolean condition is true") {
         ignore("should, under Compatibility, either return Succeeded or throw TFE") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
           import Expectations._
           val res1 = whenever (true) { expect(1 == 1) }
-          assert(res1 == AssertionSucceeded)
+          assert(res1 == AssertionValue)
           assertThrows[TestFailedException] {
             whenever (true) { expect(1 == 2) }
           }
@@ -58,14 +56,14 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
       describe("when the Boolean condition is true") {
         it("should return Succeeded or throw an exception") {
           val res1 = whenever (true) { assert(1 == 1) }
-          assert(res1 == AssertionSucceeded)
+          assert(res1 == AssertionValue)
           assertThrows[TestFailedException] {
             whenever (true) { assert(1 == 2) }
           }
           val res2 = whenever (true) { 1 }
-          assert(res2 == AssertionSucceeded)
+          assert(res2 == AssertionValue)
           val res3 = whenever (true) { () }
-          assert(res3 == AssertionSucceeded)
+          assert(res3 == AssertionValue)
           // SKIP-SCALATESTJS-START
           assertThrows[StringIndexOutOfBoundsException] {
             whenever (true) { "hi".charAt(-1) }
