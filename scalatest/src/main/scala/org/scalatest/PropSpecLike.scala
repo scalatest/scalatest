@@ -87,7 +87,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Assertion) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -95,7 +95,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
     engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "PropSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Assertion) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -117,7 +117,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    * @throws NullArgumentException if <code>testName</code> or any passed test tag is <code>null</code>
    */
-  protected def property(testName: String, testTags: Tag*)(testFun: => Assertion) {
+  protected def property(testName: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -142,7 +142,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws DuplicateTestNameException if a test with the same name has been registered previously
    * @throws NotAllowedException if <code>testName</code> had been registered previously
    */
-  protected def ignore(testName: String, testTags: Tag*)(testFun: => Assertion) {
+  protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit/*Assertion*/) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2

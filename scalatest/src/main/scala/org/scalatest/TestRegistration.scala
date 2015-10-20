@@ -27,7 +27,7 @@ trait TestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Assertion)
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/)
 
   /**
    * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
@@ -37,5 +37,5 @@ trait TestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Assertion)
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit/*Assertion*/)
 }
