@@ -23,6 +23,8 @@ import scala.concurrent.ExecutionContext
 
 private[scalatest] trait Expectations {
   
+  implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
+
   // TODO: Need to make this and assertResult use custom equality I think.
   def expectResult(expected: Any)(actual: Any): Fact = {
     if (!Assertions.areEqualComparingArraysStructurally(actual, expected)) {

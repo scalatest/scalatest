@@ -415,6 +415,7 @@ object ScalatestBuild extends Build {
      genCodeTask,
      genFactoriesTask,
      genCompatibleClassesTask,
+     genSafeStylesTask,
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
      sourceGenerators in Compile <+=
@@ -427,6 +428,8 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
+     sourceGenerators in Compile <+=
+       (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMain),
      scalatestDocSourcesSetting,
      sourceGenerators in Compile += {
        Def.task{
@@ -517,6 +520,7 @@ object ScalatestBuild extends Build {
         }.taskValue
       },
       genFactoriesTask,
+      genSafeStylesTask,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS),
       sourceGenerators in Compile <+=
@@ -525,6 +529,8 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS),
+      sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS),
       /*genMustMatchersTask,
       genGenTask,
       genTablesTask,
@@ -1074,6 +1080,11 @@ object ScalatestBuild extends Build {
     GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theVersion, theScalaVersion)
     GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)
+  }
+
+  val genSafeStyles = TaskKey[Unit]("gensafestyles", "Generate safe style traits.")
+  val genSafeStylesTask = genSafeStyles <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenSafeStyles.genMain(new File(mainTargetDir, "scala/gensafestyles"), theVersion, theScalaVersion)
   }
 
   //
