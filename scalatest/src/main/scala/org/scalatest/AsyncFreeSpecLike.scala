@@ -54,9 +54,9 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with Async
 
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
-      val futureAssertion = testFun
+      val futureSucceeded = testFun.map(_ => Succeeded)
       FutureOutcome(
-        futureAssertion.recover {
+        futureSucceeded.recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending
           case tfe: exceptions.TestFailedException => Failed(tfe)
