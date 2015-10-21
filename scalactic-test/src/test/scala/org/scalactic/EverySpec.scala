@@ -1192,6 +1192,7 @@ class EverySpec extends UnitSpec {
   // SKIP-SCALATESTJS-START
   it should "be serializable" in {
     serializeRoundtrip(One(1))
+    succeed
   }
   // SKIP-SCALATESTJS-END
   "A Many" can "be widened to an Every type via .asEvery" in {
@@ -1200,6 +1201,7 @@ class EverySpec extends UnitSpec {
   // SKIP-SCALATESTJS-START
   it should "be serializable" in {
     serializeRoundtrip(Many(1, 2, 3))
+    succeed
   }
   // SKIP-SCALATESTJS-END
 }

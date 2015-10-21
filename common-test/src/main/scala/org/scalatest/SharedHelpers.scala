@@ -1842,10 +1842,11 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   }
   // SKIP-SCALATESTJS-END
 
-  def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int) {
+  def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int): Assertion = {
     assert(exception.message === Some(message))
     assert(exception.failedCodeFileName === Some(fileName))
     assert(exception.failedCodeLineNumber === Some(lineNumber))
+    succeed
   }
 
   def prettifyAst(str: String): String = {

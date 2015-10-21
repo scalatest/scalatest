@@ -48,7 +48,7 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     var beforeAllConfigGotTheGreeting = false
     var afterAllConfigGotTheGreeting = false
 
-    test("test something") {}
+    test("test something") { succeed }
 
     override def beforeAll(config: ConfigMap) {
       if (!runWasCalled)
@@ -199,7 +199,7 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
        
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterEach(td: TestData) { throw new NumberFormatException }
-      test("test July") {}
+      test("test July") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))
@@ -214,7 +214,7 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def beforeAll(cm: ConfigMap) { throw new NumberFormatException }
-      test("test July") {}
+      test("test July") { succeed }
     }
     assertThrows[NumberFormatException] {
       val a = new MySuite
@@ -231,9 +231,9 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterAllCalled = false
-      test("test 1") {}
-      test("test 2") {}
-      test("test 3") {}
+      test("test 1") { succeed }
+      test("test 2") { succeed }
+      test("test 3") { succeed }
       override def afterAll(cm: ConfigMap) {
         afterAllCalled = true
       }
@@ -254,9 +254,9 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterAllCalled = false
-      test("test 1") {}
-      test("test 2") {}
-      test("test 3") {}
+      test("test 1") { succeed }
+      test("test 2") { succeed }
+      test("test 3") { succeed }
       override def afterAll(cm: ConfigMap) {
         afterAllCalled = true
         throw new IllegalArgumentException
@@ -273,7 +273,7 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
-      test("test July") {}
+      test("test July") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))

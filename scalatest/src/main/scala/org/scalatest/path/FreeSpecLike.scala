@@ -44,7 +44,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting with Compatibility { thisSuite =>
+trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Informing with Notifying with Alerting with Documenting { thisSuite =>
   
   private final val engine = PathEngine.getEngine()
   import engine._
@@ -214,7 +214,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(specText, tags, "is", testFun _)
+      registerTestToRun(specText, tags, "is", () => { testFun; AssertionValue })
     }
 
     /**
@@ -353,7 +353,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * </p>
      */
     def is(f: => PendingNothing) {
-      registerTestToRun(string, List(), "is", f _)
+      registerTestToRun(string, List(), "is", () => { f; AssertionValue })
     }
 
     /**

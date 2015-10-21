@@ -173,6 +173,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3") {
       require(a == 3)
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check a == 5") {
@@ -184,6 +185,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 == b") {
       require(5 == b)
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 3 == b") {
@@ -195,6 +197,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 == 3") {
       require(3 == 3)
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 3 == 5") {
@@ -229,6 +232,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a === 3") {
       require(a === 3)
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check a === 5") {
@@ -240,6 +244,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 === a") {
       require(3 === a)
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 5 === a") {
@@ -251,6 +256,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a !== 5") {
       require(a !== 5)
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check a !== 3") {
@@ -262,6 +268,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 !== a") {
       require(5 !== a)
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 3 !== a") {
@@ -273,10 +280,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a > 2") {
       require(a > 2)
+      succeed
     }
 
     it("should do nothing when is used to check 5 > a") {
       require(5 > a)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a > 3") {
@@ -295,10 +304,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a >= 3") {
       require(a >= 3)
+      succeed
     }
 
     it("should do nothing when is used to check 3 >= a") {
       require(3 >= a)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a >= 4") {
@@ -317,10 +328,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check b < 6") {
       require(b < 6)
+      succeed
     }
 
     it("should do nothing when is used to check 3 < b") {
       require(3 < b)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check b < 5") {
@@ -339,10 +352,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check b <= 5") {
       require(b <= 5)
+      succeed
     }
 
     it("should do nothing when is used to check 5 <= b") {
       require(5 <= b)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check b <= 4") {
@@ -361,6 +376,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 && b == 5") {
       require(a == 3 && b == 5)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 3 && b == 6") {
@@ -386,6 +402,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 & b == 5") {
       require(a == 3 & b == 5)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 3 & b == 6") {
@@ -411,14 +428,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 || b == 5") {
       require(a == 3 || b == 5)
+      succeed
     }
 
     it("should do nothing when is used to check a == 3 || b == 6") {
       require(a == 3 || b == 6)
+      succeed
     }
 
     it("should do nothing when is used to check a == 2 || b == 5") {
       require(a == 2 || b == 5)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 2 || b == 6") {
@@ -430,14 +450,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 | b == 5") {
       require(a == 3 | b == 5)
+      succeed
     }
 
     it("should do nothing when is used to check a == 3 | b == 6") {
       require(a == 3 | b == 6)
+      succeed
     }
 
     it("should do nothing when is used to check a == 2 | b == 5") {
       require(a == 2 | b == 5)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 2 | b == 6") {
@@ -449,6 +472,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 && (b == 5 && b > 3)") {
       require(a == 3 && (b == 5 && b > 3))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 3 && (b == 5 && b > 5)") {
@@ -460,6 +484,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(a == 5)") {
       require(!(a == 5))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(a == 3)") {
@@ -478,6 +503,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check (a == 3) == (b == 5)") {
       require((a == 3) == (b == 5))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check (a == 3) == (b != 5)") {
@@ -517,6 +543,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
       require(a == 3 && { println("hi"); b == 5})
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
@@ -528,6 +555,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
       require({ println("hi"); b == 5} && a == 3)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
@@ -539,14 +567,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when Apply with single argument is passed in") {
       require(neverRuns1(sys.error("Sad times 1")))
+      succeed
     }
 
     it("should preserve side effects when Apply with 2 argument list is passed in") {
       require(neverRuns2(sys.error("Sad times 2"))(0))
+      succeed
     }
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       require(neverRuns3(sys.error("Sad times 3"))(0))
+      succeed
     }
 
     val s1 = "hi ScalaTest"
@@ -572,6 +603,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi")
       require(s1.startsWith("hi"))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
@@ -589,6 +621,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 startsWith 1") {
       require(ci1 startsWith 1)
       require(ci1.startsWith(1))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci2 startsWith 1") {
@@ -605,6 +638,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
       require(!s2.startsWith("hi"))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
@@ -617,6 +651,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s2 endsWith \"hi\"") {
       require(s2 endsWith "hi")
       require(s2.endsWith("hi"))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
@@ -629,11 +664,13 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(s1.endsWith("hi"))
       }
       assert(e2.getMessage == didNotEndWith(s1, "hi"))
+      succeed
     }
 
     it("should do nothing when is used to check ci2 endsWith 1") {
       require(ci2 endsWith 1)
       require(ci2.endsWith(1))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 endsWith 1") {
@@ -650,6 +687,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
       require(!s1.endsWith("hi"))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
@@ -662,6 +700,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s3 contains \"hi\"") {
       require(s3 contains "hi")
       require(s3.contains("hi"))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3 contains \"hello\"") {
@@ -679,6 +718,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci2 contains 2") {
       require(ci2 contains 2)
       require(ci2.contains(2))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 contains 5") {
@@ -695,6 +735,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.contains(\"hello\")") {
       require(!s3.contains("hello"))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
@@ -707,6 +748,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check l1 contains 2") {
       require(l1 contains 2)
       require(l1.contains(2))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1 contains 5") {
@@ -724,6 +766,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check !(l1 contains 5)") {
       require(!(l1 contains 5))
       require(!l1.contains(5))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1 contains 2)") {
@@ -741,6 +784,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check m1 contains 2") {
       require(m1 contains 2)
       require(m1.contains(2))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check m1 contains 5") {
@@ -758,6 +802,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check !(m1 contains 5)") {
       require(!(m1 contains 5))
       require(!m1.contains(5))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(m1 contains 2)") {
@@ -775,6 +820,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ct1 contains 8") {
       require(ct1 contains 8)
       require(ct1.contains(8))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ct1 contains 5") {
@@ -791,6 +837,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ct1.contains(5)") {
       require(!ct1.contains(5))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ct1.contains(8)") {
@@ -803,6 +850,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 eq ci3") {
       require(ci1 eq ci3)
       require(ci1.eq(ci3))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 eq ci2") {
@@ -819,6 +867,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ci1.eq(ci2)") {
       require(!ci1.eq(ci2))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
@@ -831,6 +880,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 ne ci2") {
       require(ci1 ne ci2)
       require(ci1.ne(ci2))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 ne ci3") {
@@ -847,6 +897,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ci1.ne(ci3)") {
       require(!ci1.ne(ci3))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
@@ -858,6 +909,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s4.isEmpty") {
       require(s4.isEmpty)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3.isEmpty") {
@@ -869,6 +921,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s3.isEmpty") {
       require(!s3.isEmpty)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s4.isEmpty") {
@@ -880,6 +933,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l2.isEmpty") {
       require(l2.isEmpty)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isEmpty") {
@@ -891,6 +945,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isEmpty") {
       require(!l1.isEmpty)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l2.isEmpty") {
@@ -902,6 +957,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s3.nonEmpty") {
       require(s3.nonEmpty)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s4.nonEmpty") {
@@ -913,6 +969,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s4.nonEmpty") {
       require(!s4.nonEmpty)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.nonEmpty") {
@@ -924,6 +981,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.nonEmpty") {
       require(l1.nonEmpty)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l2.nonEmpty") {
@@ -935,6 +993,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l2.nonEmpty") {
       require(!l2.nonEmpty)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.nonEmpty") {
@@ -946,6 +1005,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
       require(s1.isInstanceOf[String])
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
@@ -957,6 +1017,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
       require(l1.isInstanceOf[List[Int]])
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
@@ -968,6 +1029,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       require(date.isInstanceOf[Date])
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
@@ -979,6 +1041,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isInstanceOf[String]") {
       require(!l1.isInstanceOf[String])
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
@@ -990,6 +1053,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
       require(!s1.isInstanceOf[List[Int]])
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
@@ -1001,6 +1065,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       require(!l1.isInstanceOf[Date])
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
@@ -1012,6 +1077,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.length == 9") {
       require(s1.length == 12)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.length == 10") {
@@ -1023,6 +1089,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.length == 3") {
       require(l1.length == 3)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.length == 10") {
@@ -1034,6 +1101,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(s1.length == 10)") {
       require(!(s1.length == 10))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.length == 9)") {
@@ -1045,6 +1113,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(l1.length == 2)") {
       require(!(l1.length == 2))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.length == 9)") {
@@ -1056,6 +1125,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
       require(floatLengthSize.length == 2.0f)
+      succeed
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
@@ -1067,6 +1137,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.size == 9") {
       require(s1.size == 12)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.size == 10") {
@@ -1078,6 +1149,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.size == 3") {
       require(l1.size == 3)
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.size == 10") {
@@ -1089,6 +1161,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(s1.size == 10)") {
       require(!(s1.size == 10))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.size == 9)") {
@@ -1100,6 +1173,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(l1.size == 2)") {
       require(!(l1.size == 2))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.size == 9)") {
@@ -1111,6 +1185,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
       require(floatLengthSize.size == 2.0f)
+      succeed
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
@@ -1122,6 +1197,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       require(l1.exists(_ == 3))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
@@ -1133,6 +1209,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.exists(_ == 5)") {
       require(!l1.exists(_ == 5))
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
@@ -1168,6 +1245,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
       require(woof { meow(y = 5) } == "woof")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
@@ -1280,6 +1358,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3") {
       require(a == 3, "dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check a == 5") {
@@ -1291,6 +1370,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 == b") {
       require(5 == b, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 3 == b") {
@@ -1302,6 +1382,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a != 5") {
       require(a != 5, ". dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check a != 3") {
@@ -1313,6 +1394,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 != b") {
       require(3 != b, "; dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 5 != b") {
@@ -1324,6 +1406,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 == 3") {
       require(3 == 3, "dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 3 == 5") {
@@ -1365,10 +1448,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 != a") {
       require(5 != a, ". dude")
+      succeed
     }
 
     it("should do nothing when is used to check a === 3") {
       require(a === 3, "dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check a === 5") {
@@ -1380,6 +1465,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 === a") {
       require(3 === a, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 5 === a") {
@@ -1391,6 +1477,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a !== 5") {
       require(a !== 5, ". dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check a !== 3") {
@@ -1402,6 +1489,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 !== a") {
       require(5 !== a, "; dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException when is used to check 3 !== a") {
@@ -1413,10 +1501,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a > 2") {
       require(a > 2, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check 5 > a") {
       require(5 > a, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a > 3") {
@@ -1435,10 +1525,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a >= 3") {
       require(a >= 3, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check 3 >= a") {
       require(3 >= a, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a >= 4") {
@@ -1457,10 +1549,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check b < 6") {
       require(b < 6, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check 3 < b") {
       require(3 < b, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check b < 5") {
@@ -1479,10 +1573,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check b <= 5") {
       require(b <= 5, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check 5 <= b") {
       require(5 <= b, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check b <= 4") {
@@ -1501,6 +1597,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 && b == 5") {
       require(a == 3 && b == 5, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 3 && b == 6") {
@@ -1526,6 +1623,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 & b == 5") {
       require(a == 3 & b == 5, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 3 & b == 6") {
@@ -1551,14 +1649,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 || b == 5") {
       require(a == 3 || b == 5, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check a == 3 || b == 6") {
       require(a == 3 || b == 6, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check a == 2 || b == 5") {
       require(a == 2 || b == 5, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 2 || b == 6") {
@@ -1570,14 +1671,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 | b == 5") {
       require(a == 3 | b == 5, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check a == 3 | b == 6") {
       require(a == 3 | b == 6, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check a == 2 | b == 5") {
       require(a == 2 | b == 5, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 2 | b == 6") {
@@ -1589,6 +1693,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 && (b == 5 && b > 3)") {
       require(a == 3 && (b == 5 && b > 3), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check a == 3 && (b == 5 && b > 5)") {
@@ -1600,6 +1705,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(a == 5)") {
       require(!(a == 5), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(a == 3)") {
@@ -1618,6 +1724,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check (a == 3) == (b == 5)") {
       require((a == 3) == (b == 5), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check (a == 3) == (b != 5)") {
@@ -1657,6 +1764,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
       require(a == 3 && { println("hi"); b == 5}, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
@@ -1668,6 +1776,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
       require({ println("hi"); b == 5} && a == 3, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
@@ -1679,14 +1788,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when Apply with single argument is passed in") {
       require(neverRuns1(sys.error("Sad times 1")), "should not fail!")
+      succeed
     }
 
     it("should preserve side effects when Apply with 2 argument list is passed in") {
       require(neverRuns2(sys.error("Sad times 2"))(0), "should not fail!")
+      succeed
     }
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       require(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
+      succeed
     }
 
     val s1 = "hi ScalaTest"
@@ -1712,6 +1824,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       require(s1 startsWith "hi", ", dude")
       require(s1.startsWith("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
@@ -1729,6 +1842,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 startsWith 1") {
       require(ci1 startsWith 1, ", dude")
       require(ci1.startsWith(1), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci2 startsWith 1") {
@@ -1745,6 +1859,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
       require(!s2.startsWith("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
@@ -1757,6 +1872,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s2 endsWith \"hi\"") {
       require(s2 endsWith "hi", ", dude")
       require(s2.endsWith("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
@@ -1774,6 +1890,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci2 endsWith 1") {
       require(ci2 endsWith 1, ", dude")
       require(ci2.endsWith(1), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 endsWith 1") {
@@ -1790,6 +1907,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
       require(!s1.endsWith("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
@@ -1802,6 +1920,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s3 contains \"hi\"") {
       require(s3 contains "hi", ", dude")
       require(s3.contains("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3 contains \"hello\"") {
@@ -1819,6 +1938,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci2 contains 2") {
       require(ci2 contains 2, ", dude")
       require(ci2.contains(2), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 contains 5") {
@@ -1835,6 +1955,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.contains(\"hello\")") {
       require(!s3.contains("hello"), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
@@ -1847,6 +1968,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check l1 contains 2") {
       require(l1 contains 2, ", dude")
       require(l1.contains(2), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1 contains 5") {
@@ -1864,6 +1986,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check !(l1 contains 5)") {
       require(!(l1 contains 5), ", dude")
       require(!l1.contains(5), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1 contains 2)") {
@@ -1881,6 +2004,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check m1 contains 2") {
       require(m1 contains 2, ", dude")
       require(m1.contains(2), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check m1 contains 5") {
@@ -1898,6 +2022,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check !(m1 contains 5)") {
       require(!(m1 contains 5), ", dude")
       require(!m1.contains(5), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(m1 contains 2)") {
@@ -1910,11 +2035,13 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
         require(!m1.contains(2), ", dude")
       }
       assert(e2.getMessage == containedKey(m1, 2) + ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check ct1 contains 8") {
       require(ct1 contains 8, ", dude")
       require(ct1.contains(8), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ct1 contains 5") {
@@ -1931,6 +2058,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ct1.contains(5)") {
       require(!ct1.contains(5), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ct1.contains(8)") {
@@ -1943,6 +2071,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 eq ci3") {
       require(ci1 eq ci3, ", dude")
       require(ci1.eq(ci3), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 eq ci2") {
@@ -1959,6 +2088,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ci1.eq(ci2)") {
       require(!ci1.eq(ci2), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
@@ -1971,6 +2101,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 ne ci2") {
       require(ci1 ne ci2, ", dude")
       require(ci1.ne(ci2), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check ci1 ne ci3") {
@@ -1987,6 +2118,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ci1.ne(ci3)") {
       require(!ci1.ne(ci3), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
@@ -1998,6 +2130,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s4.isEmpty") {
       require(s4.isEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s3.isEmpty") {
@@ -2009,6 +2142,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s3.isEmpty") {
       require(!s3.isEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s4.isEmpty") {
@@ -2020,6 +2154,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l2.isEmpty") {
       require(l2.isEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isEmpty") {
@@ -2031,6 +2166,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isEmpty") {
       require(!l1.isEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l2.isEmpty") {
@@ -2042,6 +2178,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s3.nonEmpty") {
       require(s3.nonEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s4.nonEmpty") {
@@ -2053,6 +2190,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s4.nonEmpty") {
       require(!s4.nonEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s3.nonEmpty") {
@@ -2064,6 +2202,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.nonEmpty") {
       require(l1.nonEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l2.nonEmpty") {
@@ -2075,6 +2214,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l2.nonEmpty") {
       require(!l2.nonEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.nonEmpty") {
@@ -2086,6 +2226,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
       require(s1.isInstanceOf[String], ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
@@ -2097,6 +2238,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
       require(l1.isInstanceOf[List[Int]], ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
@@ -2108,6 +2250,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       require(date.isInstanceOf[Date], ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
@@ -2119,6 +2262,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isInstanceOf[String]") {
       require(!l1.isInstanceOf[String], ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
@@ -2130,6 +2274,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
       require(!s1.isInstanceOf[List[Int]], ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
@@ -2141,6 +2286,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       require(!l1.isInstanceOf[Date], ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
@@ -2152,6 +2298,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.length == 9") {
       require(s1.length == 12, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.length == 10") {
@@ -2163,6 +2310,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.length == 3") {
       require(l1.length == 3, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.length == 10") {
@@ -2174,6 +2322,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(s1.length == 10)") {
       require(!(s1.length == 10), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.length == 9)") {
@@ -2185,6 +2334,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(l1.length == 2)") {
       require(!(l1.length == 2), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.length == 9)") {
@@ -2196,6 +2346,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
       require(floatLengthSize.length == 2.0f, ", dude")
+      succeed
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
@@ -2207,6 +2358,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.size == 9") {
       require(s1.size == 12, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check s1.size == 10") {
@@ -2218,6 +2370,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.size == 3") {
       require(l1.size == 3, ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.size == 10") {
@@ -2229,6 +2382,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(s1.size == 10)") {
       require(!(s1.size == 10), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(s1.size == 9)") {
@@ -2240,6 +2394,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(l1.size == 2)") {
       require(!(l1.size == 2), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !(l1.size == 9)") {
@@ -2251,6 +2406,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
       require(floatLengthSize.size == 2.0f, ", dude")
+      succeed
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
@@ -2262,6 +2418,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       require(l1.exists(_ == 3), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
@@ -2273,6 +2430,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.exists(_ == 5)") {
       require(!l1.exists(_ == 5), ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
@@ -2308,6 +2466,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
       require(woof { meow(y = 5) } == "woof", ", dude")
+      succeed
     }
 
     it("should throw IllegalArgumentException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
@@ -2413,6 +2572,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3") {
       requireState(a == 3)
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check a == 5") {
@@ -2424,6 +2584,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 == b") {
       requireState(5 == b)
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 3 == b") {
@@ -2435,6 +2596,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 == 3") {
       requireState(3 == 3)
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 3 == 5") {
@@ -2469,6 +2631,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a === 3") {
       requireState(a === 3)
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check a === 5") {
@@ -2480,6 +2643,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 === a") {
       requireState(3 === a)
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 5 === a") {
@@ -2491,6 +2655,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a !== 5") {
       requireState(a !== 5)
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check a !== 3") {
@@ -2502,6 +2667,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 !== a") {
       requireState(5 !== a)
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 3 !== a") {
@@ -2513,10 +2679,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a > 2") {
       requireState(a > 2)
+      succeed
     }
 
     it("should do nothing when is used to check 5 > a") {
       requireState(5 > a)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a > 3") {
@@ -2535,10 +2703,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a >= 3") {
       requireState(a >= 3)
+      succeed
     }
 
     it("should do nothing when is used to check 3 >= a") {
       requireState(3 >= a)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a >= 4") {
@@ -2557,10 +2727,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check b < 6") {
       requireState(b < 6)
+      succeed
     }
 
     it("should do nothing when is used to check 3 < b") {
       requireState(3 < b)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check b < 5") {
@@ -2579,10 +2751,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check b <= 5") {
       requireState(b <= 5)
+      succeed
     }
 
     it("should do nothing when is used to check 5 <= b") {
       requireState(5 <= b)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check b <= 4") {
@@ -2601,6 +2775,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 && b == 5") {
       requireState(a == 3 && b == 5)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && b == 6") {
@@ -2626,6 +2801,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 & b == 5") {
       requireState(a == 3 & b == 5)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 & b == 6") {
@@ -2651,14 +2827,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 || b == 5") {
       requireState(a == 3 || b == 5)
+      succeed
     }
 
     it("should do nothing when is used to check a == 3 || b == 6") {
       requireState(a == 3 || b == 6)
+      succeed
     }
 
     it("should do nothing when is used to check a == 2 || b == 5") {
       requireState(a == 2 || b == 5)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 || b == 6") {
@@ -2670,14 +2849,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 | b == 5") {
       requireState(a == 3 | b == 5)
+      succeed
     }
 
     it("should do nothing when is used to check a == 3 | b == 6") {
       requireState(a == 3 | b == 6)
+      succeed
     }
 
     it("should do nothing when is used to check a == 2 | b == 5") {
       requireState(a == 2 | b == 5)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 | b == 6") {
@@ -2689,6 +2871,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 && (b == 5 && b > 3)") {
       requireState(a == 3 && (b == 5 && b > 3))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && (b == 5 && b > 5)") {
@@ -2700,6 +2883,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(a == 5)") {
       requireState(!(a == 5))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(a == 3)") {
@@ -2718,6 +2902,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check (a == 3) == (b == 5)") {
       requireState((a == 3) == (b == 5))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check (a == 3) == (b != 5)") {
@@ -2757,6 +2942,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
       requireState(a == 3 && { println("hi"); b == 5})
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
@@ -2768,6 +2954,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
       requireState({ println("hi"); b == 5} && a == 3)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
@@ -2779,14 +2966,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when Apply with single argument is passed in") {
       requireState(neverRuns1(sys.error("Sad times 1")))
+      succeed
     }
 
     it("should preserve side effects when Apply with 2 argument list is passed in") {
       requireState(neverRuns2(sys.error("Sad times 2"))(0))
+      succeed
     }
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       requireState(neverRuns3(sys.error("Sad times 3"))(0))
+      succeed
     }
 
     val s1 = "hi ScalaTest"
@@ -2812,6 +3002,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi")
       requireState(s1.startsWith("hi"))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
@@ -2829,6 +3020,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 startsWith 1") {
       requireState(ci1 startsWith 1)
       requireState(ci1.startsWith(1))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci2 startsWith 1") {
@@ -2845,6 +3037,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
       requireState(!s2.startsWith("hi"))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
@@ -2857,6 +3050,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s2 endsWith \"hi\"") {
       requireState(s2 endsWith "hi")
       requireState(s2.endsWith("hi"))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
@@ -2874,6 +3068,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci2 endsWith 1") {
       requireState(ci2 endsWith 1)
       requireState(ci2.endsWith(1))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 endsWith 1") {
@@ -2890,6 +3085,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
       requireState(!s1.endsWith("hi"))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
@@ -2902,6 +3098,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s3 contains \"hi\"") {
       requireState(s3 contains "hi")
       requireState(s3.contains("hi"))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s3 contains \"hello\"") {
@@ -2919,6 +3116,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci2 contains 2") {
       requireState(ci2 contains 2)
       requireState(ci2.contains(2))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 contains 5") {
@@ -2935,6 +3133,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.contains(\"hello\")") {
       requireState(!s3.contains("hello"))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
@@ -2947,6 +3146,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check l1 contains 2") {
       requireState(l1 contains 2)
       requireState(l1.contains(2))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1 contains 5") {
@@ -2964,6 +3164,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check !(l1 contains 5)") {
       requireState(!(l1 contains 5))
       requireState(!l1.contains(5))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1 contains 2)") {
@@ -2981,6 +3182,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check m1 contains 2") {
       requireState(m1 contains 2)
       requireState(m1.contains(2))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check m1 contains 5") {
@@ -2998,6 +3200,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check !(m1 contains 5)") {
       requireState(!(m1 contains 5))
       requireState(!m1.contains(5))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(m1 contains 2)") {
@@ -3015,6 +3218,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ct1 contains 8") {
       requireState(ct1 contains 8)
       requireState(ct1.contains(8))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ct1 contains 5") {
@@ -3031,6 +3235,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ct1.contains(5)") {
       requireState(!ct1.contains(5))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !ct1.contains(8)") {
@@ -3043,6 +3248,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 eq ci3") {
       requireState(ci1 eq ci3)
       requireState(ci1.eq(ci3))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 eq ci2") {
@@ -3059,6 +3265,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ci1.eq(ci2)") {
       requireState(!ci1.eq(ci2))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
@@ -3071,6 +3278,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 ne ci2") {
       requireState(ci1 ne ci2)
       requireState(ci1.ne(ci2))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 ne ci3") {
@@ -3087,6 +3295,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ci1.ne(ci3)") {
       requireState(!ci1.ne(ci3))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
@@ -3098,6 +3307,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s4.isEmpty") {
       requireState(s4.isEmpty)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s3.isEmpty") {
@@ -3109,6 +3319,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s3.isEmpty") {
       requireState(!s3.isEmpty)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s4.isEmpty") {
@@ -3120,6 +3331,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l2.isEmpty") {
       requireState(l2.isEmpty)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isEmpty") {
@@ -3131,6 +3343,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isEmpty") {
       requireState(!l1.isEmpty)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l2.isEmpty") {
@@ -3142,6 +3355,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s3.nonEmpty") {
       requireState(s3.nonEmpty)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s4.nonEmpty") {
@@ -3153,6 +3367,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s4.nonEmpty") {
       requireState(!s4.nonEmpty)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.nonEmpty") {
@@ -3164,6 +3379,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.nonEmpty") {
       requireState(l1.nonEmpty)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l2.nonEmpty") {
@@ -3175,6 +3391,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l2.nonEmpty") {
       requireState(!l2.nonEmpty)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.nonEmpty") {
@@ -3186,6 +3403,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
       requireState(s1.isInstanceOf[String])
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
@@ -3197,6 +3415,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
       requireState(l1.isInstanceOf[List[Int]])
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
@@ -3208,6 +3427,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       requireState(date.isInstanceOf[Date])
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
@@ -3219,6 +3439,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isInstanceOf[String]") {
       requireState(!l1.isInstanceOf[String])
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
@@ -3230,6 +3451,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
       requireState(!s1.isInstanceOf[List[Int]])
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
@@ -3241,6 +3463,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       requireState(!l1.isInstanceOf[Date])
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
@@ -3252,6 +3475,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.length == 9") {
       requireState(s1.length == 12)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.length == 10") {
@@ -3263,6 +3487,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.length == 3") {
       requireState(l1.length == 3)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.length == 10") {
@@ -3274,6 +3499,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(s1.length == 10)") {
       requireState(!(s1.length == 10))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.length == 9)") {
@@ -3285,6 +3511,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(l1.length == 2)") {
       requireState(!(l1.length == 2))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.length == 9)") {
@@ -3296,6 +3523,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
       requireState(floatLengthSize.length == 2.0f)
+      succeed
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
@@ -3307,6 +3535,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.size == 9") {
       requireState(s1.size == 12)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.size == 10") {
@@ -3318,6 +3547,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.size == 3") {
       requireState(l1.size == 3)
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.size == 10") {
@@ -3329,6 +3559,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(s1.size == 10)") {
       requireState(!(s1.size == 10))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.size == 9)") {
@@ -3340,6 +3571,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(l1.size == 2)") {
       requireState(!(l1.size == 2))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.size == 9)") {
@@ -3351,6 +3583,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
       requireState(floatLengthSize.size == 2.0f)
+      succeed
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
@@ -3362,6 +3595,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       requireState(l1.exists(_ == 3))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
@@ -3373,6 +3607,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.exists(_ == 5)") {
       requireState(!l1.exists(_ == 5))
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
@@ -3408,6 +3643,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
       requireState(woof { meow(y = 5) } == "woof")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
@@ -3520,6 +3756,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3") {
       requireState(a == 3, "dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check a == 5") {
@@ -3531,6 +3768,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 == b") {
       requireState(5 == b, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 3 == b") {
@@ -3542,6 +3780,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a != 5") {
       requireState(a != 5, ". dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check a != 3") {
@@ -3553,6 +3792,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 != b") {
       requireState(3 != b, "; dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 5 != b") {
@@ -3564,6 +3804,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 == 3") {
       requireState(3 == 3, "dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 3 == 5") {
@@ -3605,10 +3846,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 != a") {
       requireState(5 != a, ". dude")
+      succeed
     }
 
     it("should do nothing when is used to check a === 3") {
       requireState(a === 3, "dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check a === 5") {
@@ -3620,6 +3863,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 3 === a") {
       requireState(3 === a, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 5 === a") {
@@ -3631,6 +3875,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a !== 5") {
       requireState(a !== 5, ". dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check a !== 3") {
@@ -3642,6 +3887,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check 5 !== a") {
       requireState(5 !== a, "; dude")
+      succeed
     }
 
     it("should throw IllegalStateException when is used to check 3 !== a") {
@@ -3653,10 +3899,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a > 2") {
       requireState(a > 2, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check 5 > a") {
       requireState(5 > a, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a > 3") {
@@ -3675,10 +3923,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a >= 3") {
       requireState(a >= 3, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check 3 >= a") {
       requireState(3 >= a, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a >= 4") {
@@ -3697,10 +3947,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check b < 6") {
       requireState(b < 6, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check 3 < b") {
       requireState(3 < b, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check b < 5") {
@@ -3719,10 +3971,12 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check b <= 5") {
       requireState(b <= 5, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check 5 <= b") {
       requireState(5 <= b, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check b <= 4") {
@@ -3741,6 +3995,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 && b == 5") {
       requireState(a == 3 && b == 5, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && b == 6") {
@@ -3766,6 +4021,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 & b == 5") {
       requireState(a == 3 & b == 5, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 & b == 6") {
@@ -3791,14 +4047,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 || b == 5") {
       requireState(a == 3 || b == 5, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check a == 3 || b == 6") {
       requireState(a == 3 || b == 6, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check a == 2 || b == 5") {
       requireState(a == 2 || b == 5, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 || b == 6") {
@@ -3810,14 +4069,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 | b == 5") {
       requireState(a == 3 | b == 5, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check a == 3 | b == 6") {
       requireState(a == 3 | b == 6, ", dude")
+      succeed
     }
 
     it("should do nothing when is used to check a == 2 | b == 5") {
       requireState(a == 2 | b == 5, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 2 | b == 6") {
@@ -3829,6 +4091,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check a == 3 && (b == 5 && b > 3)") {
       requireState(a == 3 && (b == 5 && b > 3), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check a == 3 && (b == 5 && b > 5)") {
@@ -3840,6 +4103,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(a == 5)") {
       requireState(!(a == 5), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(a == 3)") {
@@ -3858,6 +4122,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check (a == 3) == (b == 5)") {
       requireState((a == 3) == (b == 5), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check (a == 3) == (b != 5)") {
@@ -3897,6 +4162,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when it is used to check a == 3 && { println(\"hi\"); b == 5}") {
       requireState(a == 3 && { println("hi"); b == 5}, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is usesd to check a == 3 && { println(\"hi\"); b == 3}") {
@@ -3908,6 +4174,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
       requireState({ println("hi"); b == 5} && a == 3, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is usesd to check { println(\"hi\"); b == 5} && a == 5") {
@@ -3919,14 +4186,17 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should preserve side effects when Apply with single argument is passed in") {
       requireState(neverRuns1(sys.error("Sad times 1")), "should not fail!")
+      succeed
     }
 
     it("should preserve side effects when Apply with 2 argument list is passed in") {
       requireState(neverRuns2(sys.error("Sad times 2"))(0), "should not fail!")
+      succeed
     }
 
     it("should preserve side effects when typed Apply with 2 argument list is passed in") {
       requireState(neverRuns3(sys.error("Sad times 3"))(0), "should not fail!")
+      succeed
     }
 
     val s1 = "hi ScalaTest"
@@ -3952,6 +4222,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s1 startsWith \"hi\"") {
       requireState(s1 startsWith "hi", ", dude")
       requireState(s1.startsWith("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s2 startsWith \"hi\"") {
@@ -3969,6 +4240,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 startsWith 1") {
       requireState(ci1 startsWith 1, ", dude")
       requireState(ci1.startsWith(1), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci2 startsWith 1") {
@@ -3985,6 +4257,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s2.startsWith(\"hi\")") {
       requireState(!s2.startsWith("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.startsWith(\"hi\")") {
@@ -3997,6 +4270,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s2 endsWith \"hi\"") {
       requireState(s2 endsWith "hi", ", dude")
       requireState(s2.endsWith("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1 endsWith \"hi\"") {
@@ -4014,6 +4288,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci2 endsWith 1") {
       requireState(ci2 endsWith 1, ", dude")
       requireState(ci2.endsWith(1), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 endsWith 1") {
@@ -4030,6 +4305,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.endsWith(\"hi\")") {
       requireState(!s1.endsWith("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s2.endsWith(\"hi\")") {
@@ -4042,6 +4318,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check s3 contains \"hi\"") {
       requireState(s3 contains "hi", ", dude")
       requireState(s3.contains("hi"), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s3 contains \"hello\"") {
@@ -4059,6 +4336,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci2 contains 2") {
       requireState(ci2 contains 2, ", dude")
       requireState(ci2.contains(2), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 contains 5") {
@@ -4075,6 +4353,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.contains(\"hello\")") {
       requireState(!s3.contains("hello"), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.contains(\"hi\")") {
@@ -4087,6 +4366,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check l1 contains 2") {
       requireState(l1 contains 2, ", dude")
       requireState(l1.contains(2), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1 contains 5") {
@@ -4104,6 +4384,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check !(l1 contains 5)") {
       requireState(!(l1 contains 5), ", dude")
       requireState(!l1.contains(5), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1 contains 2)") {
@@ -4121,6 +4402,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check m1 contains 2") {
       requireState(m1 contains 2, ", dude")
       requireState(m1.contains(2), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check m1 contains 5") {
@@ -4138,6 +4420,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check !(m1 contains 5)") {
       requireState(!(m1 contains 5), ", dude")
       requireState(!m1.contains(5), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(m1 contains 2)") {
@@ -4155,6 +4438,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ct1 contains 8") {
       requireState(ct1 contains 8, ", dude")
       requireState(ct1.contains(8), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ct1 contains 5") {
@@ -4171,6 +4455,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ct1.contains(5)") {
       requireState(!ct1.contains(5), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !ct1.contains(8)") {
@@ -4183,6 +4468,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 eq ci3") {
       requireState(ci1 eq ci3, ", dude")
       requireState(ci1.eq(ci3), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 eq ci2") {
@@ -4199,6 +4485,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ci1.eq(ci2)") {
       requireState(!ci1.eq(ci2), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.eq(ci3)") {
@@ -4211,6 +4498,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
     it("should do nothing when is used to check ci1 ne ci2") {
       requireState(ci1 ne ci2, ", dude")
       requireState(ci1.ne(ci2), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check ci1 ne ci3") {
@@ -4227,6 +4515,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !ci1.ne(ci3)") {
       requireState(!ci1.ne(ci3), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !ci1.ne(ci2)") {
@@ -4238,6 +4527,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s4.isEmpty") {
       requireState(s4.isEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s3.isEmpty") {
@@ -4249,6 +4539,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s3.isEmpty") {
       requireState(!s3.isEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s4.isEmpty") {
@@ -4260,6 +4551,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l2.isEmpty") {
       requireState(l2.isEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isEmpty") {
@@ -4271,6 +4563,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isEmpty") {
       requireState(!l1.isEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l2.isEmpty") {
@@ -4282,6 +4575,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s3.nonEmpty") {
       requireState(s3.nonEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s4.nonEmpty") {
@@ -4293,6 +4587,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s4.nonEmpty") {
       requireState(!s4.nonEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s3.nonEmpty") {
@@ -4304,6 +4599,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.nonEmpty") {
       requireState(l1.nonEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l2.nonEmpty") {
@@ -4315,6 +4611,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l2.nonEmpty") {
       requireState(!l2.nonEmpty, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.nonEmpty") {
@@ -4326,6 +4623,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.isInstanceOf[String]") {
       requireState(s1.isInstanceOf[String], ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[String]") {
@@ -4337,6 +4635,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.isInstanceOf[List[Int]]") {
       requireState(l1.isInstanceOf[List[Int]], ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.isInstanceOf[List[Int]]") {
@@ -4348,6 +4647,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check date.isInstanceOf[Date]") {
       requireState(date.isInstanceOf[Date], ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.isInstanceOf[Date]") {
@@ -4359,6 +4659,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isInstanceOf[String]") {
       requireState(!l1.isInstanceOf[String], ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !s1.isInstanceOf[String]") {
@@ -4370,6 +4671,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !s1.isInstanceOf[List[Int]]") {
       requireState(!s1.isInstanceOf[List[Int]], ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.isInstanceOf[List[Int]]") {
@@ -4381,6 +4683,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.isInstanceOf[Date]") {
       requireState(!l1.isInstanceOf[Date], ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !date.isInstanceOf[Date]") {
@@ -4392,6 +4695,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.length == 9") {
       requireState(s1.length == 12, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.length == 10") {
@@ -4403,6 +4707,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.length == 3") {
       requireState(l1.length == 3, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.length == 10") {
@@ -4414,6 +4719,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(s1.length == 10)") {
       requireState(!(s1.length == 10), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.length == 9)") {
@@ -4425,6 +4731,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(l1.length == 2)") {
       requireState(!(l1.length == 2), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.length == 9)") {
@@ -4436,6 +4743,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
       requireState(floatLengthSize.length == 2.0f, ", dude")
+      succeed
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
@@ -4447,6 +4755,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check s1.size == 9") {
       requireState(s1.size == 12, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check s1.size == 10") {
@@ -4458,6 +4767,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.size == 3") {
       requireState(l1.size == 3, ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.size == 10") {
@@ -4469,6 +4779,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(s1.size == 10)") {
       requireState(!(s1.size == 10), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(s1.size == 9)") {
@@ -4480,6 +4791,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !(l1.size == 2)") {
       requireState(!(l1.size == 2), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !(l1.size == 9)") {
@@ -4491,6 +4803,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
       requireState(floatLengthSize.size == 2.0f, ", dude")
+      succeed
     }
 
     it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
@@ -4502,6 +4815,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check l1.exists(_ == 3)") {
       requireState(l1.exists(_ == 3), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check l1.exists(_ == 5)") {
@@ -4513,6 +4827,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when is used to check !l1.exists(_ == 5)") {
       requireState(!l1.exists(_ == 5), ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check !l1.exists(_ == 3)") {
@@ -4548,6 +4863,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when used to check woof { meow(y = 5) } == \"woof\"") {
       requireState(woof { meow(y = 5) } == "woof", ", dude")
+      succeed
     }
 
     it("should throw IllegalStateException with correct message and stack depth when is used to check woof { meow(y = 5) } == \"meow\"") {
@@ -4658,6 +4974,7 @@ class RequirementsSpec extends FunSpec with Requirements with OptionValues {
 
     it("should do nothing when passed in parameters are non-null") {
       requireNonNull(prefix, string, suffix)
+      succeed
     }
 
     it("should throw NullArgumentException with correct message when one of passed parameters is null") {

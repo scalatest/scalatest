@@ -41,7 +41,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     var beforeEachCalledBeforeRunTest = false
     var afterEachCalledAfterRunTest = false
 
-    test("test something") {}
+    test("test something") { succeed }
 
     override def beforeEach() {
       if (!runTestWasCalled)
@@ -138,7 +138,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
        
     class MySuite extends FunSuite with BeforeAndAfterEach {
       override def afterEach() { throw new NumberFormatException }
-      test("test July") {}
+      test("test July") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))

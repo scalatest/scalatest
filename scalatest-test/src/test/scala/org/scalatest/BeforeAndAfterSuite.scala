@@ -45,7 +45,7 @@ class BeforeAndAfterSuite extends FunSuite {
       if (!runTestWasCalled)
         beforeCalledBeforeRunTest = true
     }
-    it("test something") {}
+    it("test something") { succeed }
     after {
       if (runTestWasCalled)
         afterCalledAfterRunTest = true
@@ -83,7 +83,7 @@ class BeforeAndAfterSuite extends FunSuite {
     class MySuite extends Suite with BeforeAndAfter {
       before { throw new NumberFormatException } 
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(Some("july"), Args(StubReporter))
     }
@@ -135,7 +135,7 @@ class BeforeAndAfterSuite extends FunSuite {
 
     class MySuite extends FunSpec with BeforeAndAfter {
       after { throw new NumberFormatException }
-      it("test July") {}
+      it("test July") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))
@@ -182,6 +182,7 @@ class BeforeAndAfterSuite extends FunSuite {
           case _: NotAllowedException => notAllowedExceptionThrown = true
           case e: Throwable => throw e
         }
+        succeed
       }
     }
     val a = new MySuite
@@ -226,6 +227,7 @@ class BeforeAndAfterSuite extends FunSuite {
           case _: NotAllowedException => notAllowedExceptionThrown = true
           case e: Throwable => throw e
         }
+        succeed
       }
     }
     val a = new MySuite
@@ -249,6 +251,7 @@ class BeforeAndAfterExtendingSuite extends FunSpec with BeforeAndAfter {
     assert(sb.toString === "ScalaTest is easy!")
     assert(lb.isEmpty)
     lb += "sweet"
+    succeed
   }
 
   it("test fun") {
@@ -273,6 +276,7 @@ class BeforeAndAfterExtendingFunSuite extends FunSuite with BeforeAndAfter {
     assert(sb.toString === "ScalaTest is easy!")
     assert(lb.isEmpty)
     lb += "sweet"
+    succeed
   }
 
   test("fun") {

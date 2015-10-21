@@ -42,7 +42,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
-trait PropSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting with Compatibility { thisSuite =>
+trait PropSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixturePropSpecMod, "FixturePropSpec")
 

@@ -25,12 +25,13 @@ class AllElementsOfContainMatcherSpec extends FunSpec {
 
   describe("allElementsOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = Prettifier.default(left)
       val rightText = Prettifier.default(right)
       e.message should be (Some(leftText + " did not contain all elements of " + right))
       e.failedCodeFileName should be (Some("AllElementsOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
+      Succeeded
     }
 
     it("should succeeded when left List contains same elements in same order as right List") {
@@ -180,12 +181,13 @@ class AllElementsOfContainMatcherSpec extends FunSpec {
 
   describe("not allElementsOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = Prettifier.default(left)
       val rightText = Prettifier.default(right)
       e.message should be (Some(leftText + " contained all elements of " + rightText))
       e.failedCodeFileName should be (Some("AllElementsOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
+      Succeeded
     }
 
     it("should succeeded when left List contains different elements as right List") {

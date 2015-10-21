@@ -105,75 +105,6 @@ class AsyncFunSpecSpec extends FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
-    it("can be used for tests that did not return Future under parallel async test execution") {
-
-      class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
-        val a = 1
-
-        it("test 1") {
-          assert(a == 1)
-        }
-
-        it("test 2") {
-          assert(a == 2)
-        }
-
-        it("test 3") {
-          pending
-        }
-
-        it("test 4") {
-          cancel
-        }
-
-        ignore("test 5") {
-          cancel
-        }
-
-        it("test 6") {
-          // expect(a == 1)
-          assert(a == 1)
-        }
-
-        it("test 7") {
-          // val result = expect(a == 22)
-          // result
-          assert(a == 22)
-        }
-
-        override def newInstance = new ExampleSpec
-      }
-
-      val rep = new EventRecordingReporter
-      val spec = new ExampleSpec
-      val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-      assert(rep.testStartingEventsReceived.length == 6)
-      assert(rep.testSucceededEventsReceived.length == 2)
-      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-      assert(rep.testSucceededEventsReceived(1).testName == "test 6")
-      assert(rep.testFailedEventsReceived.length == 2)
-      assert { 
-        val zero = rep.testFailedEventsReceived(0).testName
-        val one = rep.testFailedEventsReceived(1).testName
-        (zero == "test 2" && one == "test 7") || (zero == "test 7" && one == "test 2")
-      }
-      assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "test 3")
-      assert(rep.testCanceledEventsReceived.length == 1)
-      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
-      assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
-    }
-
     it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
@@ -190,6 +121,7 @@ class AsyncFunSpecSpec extends FunSpec {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            succeed
           }
         }
 
@@ -198,6 +130,7 @@ class AsyncFunSpecSpec extends FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            succeed
           }
         }
 
@@ -205,47 +138,6 @@ class AsyncFunSpecSpec extends FunSpec {
           Future {
             assert(count == 2)
           }
-        }
-
-      }
-
-      val rep = new EventRecordingReporter
-      val suite = new ExampleSpec
-      val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-
-      assert(rep.testStartingEventsReceived.length == 3)
-      assert(rep.testSucceededEventsReceived.length == 3)
-
-    }
-
-    it("should run tests that does not return Future in serial by default") {
-
-      @volatile var count = 0
-
-      class ExampleSpec extends AsyncFunSpec {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
-        it("test 1") {
-          SleepHelper.sleep(30)
-          assert(count == 0)
-          count = 1
-        }
-
-        it("test 2") {
-          assert(count == 1)
-          SleepHelper.sleep(50)
-          count = 2
-        }
-
-        it("test 3") {
-          assert(count == 2)
         }
 
       }

@@ -86,59 +86,6 @@ class AsyncWordSpecSpec extends FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
     }
 
-    it("can be used for tests that did not return Future under parallel async test execution") {
-
-      class ExampleSpec extends AsyncWordSpec with ParallelTestExecution {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
-        val a = 1
-
-        "test 1" in {
-          assert(a == 1)
-        }
-
-        "test 2" in {
-          assert(a == 2)
-        }
-
-        "test 3" in {
-          pending
-        }
-
-        "test 4" in {
-          cancel
-        }
-
-        "test 5" ignore {
-          cancel
-        }
-
-        override def newInstance = new ExampleSpec
-      }
-
-      val rep = new EventRecordingReporter
-      val spec = new ExampleSpec
-      val status = spec.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-      assert(rep.testStartingEventsReceived.length == 4)
-      assert(rep.testSucceededEventsReceived.length == 1)
-      assert(rep.testSucceededEventsReceived(0).testName == "test 1")
-      assert(rep.testFailedEventsReceived.length == 1)
-      assert(rep.testFailedEventsReceived(0).testName == "test 2")
-      assert(rep.testPendingEventsReceived.length == 1)
-      assert(rep.testPendingEventsReceived(0).testName == "test 3")
-      assert(rep.testCanceledEventsReceived.length == 1)
-      assert(rep.testCanceledEventsReceived(0).testName == "test 4")
-      assert(rep.testIgnoredEventsReceived.length == 1)
-      assert(rep.testIgnoredEventsReceived(0).testName == "test 5")
-    }
-
     it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
@@ -155,6 +102,7 @@ class AsyncWordSpecSpec extends FunSpec {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            succeed
           }
         }
 
@@ -163,6 +111,7 @@ class AsyncWordSpecSpec extends FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            succeed
           }
         }
 
@@ -170,47 +119,6 @@ class AsyncWordSpecSpec extends FunSpec {
           Future {
             assert(count == 2)
           }
-        }
-
-      }
-
-      val rep = new EventRecordingReporter
-      val suite = new ExampleSpec
-      val status = suite.run(None, Args(reporter = rep))
-      // SKIP-SCALATESTJS-START
-      status.waitUntilCompleted()
-      // SKIP-SCALATESTJS-END
-
-      assert(rep.testStartingEventsReceived.length == 3)
-      assert(rep.testSucceededEventsReceived.length == 3)
-
-    }
-
-    it("should run tests that does not return Future in serial by default") {
-
-      @volatile var count = 0
-
-      class ExampleSpec extends AsyncWordSpec {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
-        "test 1" in {
-          SleepHelper.sleep(3000)
-          assert(count == 0)
-          count = 1
-        }
-
-        "test 2" in {
-          assert(count == 1)
-          SleepHelper.sleep(5000)
-          count = 2
-        }
-
-        "test 3" in {
-          assert(count == 2)
         }
 
       }

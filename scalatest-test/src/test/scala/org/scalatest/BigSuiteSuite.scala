@@ -45,6 +45,7 @@ class BigSuiteSuite extends FunSuite {
       for (s2 <- suite.nestedSuites)
         assert(s2.nestedSuites.size === 0)
     }
+    succeed
   }
   test("a BigSuite(Some(3)) has 3 nested suites") {
     val bs = new BigSuite(Some(3), Map.empty)
@@ -60,14 +61,16 @@ class BigSuiteSuite extends FunSuite {
           assert(s3.nestedSuites.size === 0)
       }
     }
+    succeed
   }
-  def ensureTestFailedEventReceivedOrNot(suite: Suite, shouldReceiveCount: Int) {
+  def ensureTestFailedEventReceivedOrNot(suite: Suite, shouldReceiveCount: Int): Assertion = {
     val reporter = new EventRecordingReporter
     suite.run(None, Args(reporter))
     val testFailedEvents = reporter.testFailedEventsReceived
     assert(testFailedEvents.size === shouldReceiveCount)
     if (shouldReceiveCount > 0)
       assert(testFailedEvents(0).testName === "test number 1")
+    succeed
   }
   test("A BigSuite(Some(0)) has one test failure if somefailures property defined") {
     ensureTestFailedEventReceivedOrNot(new BigSuite(Some(0), Map("org.scalatest.BigSuite.someFailures" -> "true")), 1)

@@ -21,7 +21,7 @@ import org.scalatest.events.Ordinal
 import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
-import scala.concurrent.Promise
+import scala.concurrent.{Promise, Future}
 
 // This tests that BeforeAndAfter works correctly when mixed into an AsyncSuite
 class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
@@ -54,7 +54,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     @volatile var beforeCodeCalledBeforeRunTest = false
     @volatile var afterCodeCalledAfterRunTest = false
 
-    test("test something") {}
+    test("test something") { Future.successful(succeed) }
 
     before {
       if (!runTestWasCalled)
@@ -69,19 +69,19 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
   test("super's runTest must be called") {
     val a = new MySuite
     a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    assert(a.runTestWasCalled)
+    Future.successful(assert(a.runTestWasCalled))
   }
   
   test("super's run must be called") {
     val a = new MySuite
     a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    assert(a.runWasCalled)
+    Future.successful(assert(a.runWasCalled))
   }
 
   test("before code gets called before runTest") {
     val a = new MySuite
     a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap("hi" -> "there"), None, new Tracker, Set.empty))
-    assert(a.beforeCodeCalledBeforeRunTest)
+    Future.successful(assert(a.beforeCodeCalledBeforeRunTest))
   }
   
   test("after code gets called after runTest") {
@@ -101,10 +101,12 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     class MySuite extends Suite with BeforeAndAfter {
       before { throw new NumberFormatException } 
     }
-    intercept[NumberFormatException] {
-      val a = new MySuite
-      a.run(Some("july"), Args(StubReporter))
-    }
+    Future.successful(
+      assertThrows[NumberFormatException] {
+        val a = new MySuite
+        a.run(Some("july"), Args(StubReporter))
+      }
+    )
   }
   
   test("If any call to super.runTest completes abruptly with an exception, runTest " +
@@ -124,7 +126,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     intercept[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
-    assert(a.afterCodeCalled)
+    Future.successful(assert(a.afterCodeCalled))
   }
   
   test("If both super.runTest and after code complete abruptly with an exception, runTest " + 
@@ -145,7 +147,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     intercept[NumberFormatException] {
       a.run(Some("july"), Args(StubReporter))
     }
-    assert(a.afterCodeCalled)
+    Future.successful(assert(a.afterCodeCalled))
   }
   
   test("If super.runTest returns normally, but after code completes abruptly with an " +
@@ -159,7 +161,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
       //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
       after { throw new NumberFormatException }
-      test("test October") {}
+      test("test October") { Future.successful(succeed) }
     }
     val a = new MySuite
     val status = a.run(Some("test October"), Args(StubReporter))
@@ -191,7 +193,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     intercept[java.lang.annotation.AnnotationFormatError] {
       a.run(None, Args(StubReporter))
     }
-    assert(!a.afterAllCalled)
+    Future.successful(assert(!a.afterAllCalled))
   }
 
   test("Should propagate and not run after code if super.runTest throw java.nio.charset.CoderMalfunctionError") {
@@ -213,7 +215,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     intercept[java.nio.charset.CoderMalfunctionError] {
       a.run(None, Args(StubReporter))
     }
-    assert(!a.afterAllCalled)
+    Future.successful(assert(!a.afterAllCalled))
   }
 
   test("Should propagate and not run after code if super.runTest throw javax.xml.parsers.FactoryConfigurationError") {
@@ -235,7 +237,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     intercept[javax.xml.parsers.FactoryConfigurationError] {
       a.run(None, Args(StubReporter))
     }
-    assert(!a.afterAllCalled)
+    Future.successful(assert(!a.afterAllCalled))
   }
 
   test("Should propagate and not run after code if super.runTest throw java.lang.LinkageError") {
@@ -257,7 +259,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     intercept[java.lang.LinkageError] {
       a.run(None, Args(StubReporter))
     }
-    assert(!a.afterAllCalled)
+    Future.successful(assert(!a.afterAllCalled))
   }
 
   test("Should propagate and not run after code if super.runTest throw javax.xml.transform.TransformerFactoryConfigurationError") {
@@ -279,7 +281,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     intercept[javax.xml.transform.TransformerFactoryConfigurationError] {
       a.run(None, Args(StubReporter))
     }
-    assert(!a.afterAllCalled)
+    Future.successful(assert(!a.afterAllCalled))
   }
 
   test("Should propagate and not run after code if super.runTest throw java.lang.VirtualMachineError") {
@@ -301,7 +303,7 @@ class BeforeAndAfterAsyncSuite extends AsyncFunSuite {
     intercept[java.lang.VirtualMachineError] {
       a.run(None, Args(StubReporter))
     }
-    assert(!a.afterAllCalled)
+    Future.successful(assert(!a.afterAllCalled))
   }
   // SKIP-SCALATESTJS-END
 }
