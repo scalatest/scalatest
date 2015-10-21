@@ -185,7 +185,7 @@ protected[scalatest] class ExampleTestDataFunSuite extends FunSuite with TestDat
     testData = test
     super.withFixture(test)
   }
-  test("Test 1", TestDataTag) {}
+  test("Test 1", TestDataTag) { succeed }
 }
 
 @DoNotDiscover
@@ -205,7 +205,7 @@ protected[scalatest] class ExampleTestDataFixtureFunSuite extends fixture.FunSui
     testData = test
     super.withFixture(test)
   }
-  test("Test 1", TestDataTag) { s => }
+  test("Test 1", TestDataTag) { s => succeed }
 }
 
 @DoNotDiscover
@@ -227,7 +227,7 @@ protected[scalatest] class ExampleTestDataFunSpec extends FunSpec with TestDataF
   }
   describe("Scope 1") {
     describe("Scope 2") {
-      it("test 1", TestDataTag) {}
+      it("test 1", TestDataTag) { succeed }
     }
   }
 }
@@ -251,7 +251,7 @@ protected[scalatest] class ExampleTestDataFixtureFunSpec extends fixture.FunSpec
   }
   describe("Scope 1") {
     describe("Scope 2") {
-      it("test 1", TestDataTag) { s => }
+      it("test 1", TestDataTag) { s => succeed }
     }
   }
 }
@@ -274,7 +274,7 @@ protected[scalatest] class ExampleTestDataFeatureSpec extends FeatureSpec with T
     super.withFixture(test)
   }
   feature("Feature 1") {
-    scenario("Scenario 1", TestDataTag) {}
+    scenario("Scenario 1", TestDataTag) { succeed }
   }
 }
 
@@ -296,7 +296,7 @@ protected[scalatest] class ExampleTestDataFixtureFeatureSpec extends fixture.Fea
     super.withFixture(test)
   }
   feature("Feature 1") {
-    scenario("Scenario 1", TestDataTag) { s => }
+    scenario("Scenario 1", TestDataTag) { s => succeed }
   }
 }
 
@@ -317,7 +317,7 @@ protected[scalatest] class ExampleTestDataFlatSpec extends FlatSpec with TestDat
     testData = test
     super.withFixture(test)
   }
-  "Scope 1" should "test 1" taggedAs(TestDataTag) in {}
+  "Scope 1" should "test 1" taggedAs(TestDataTag) in { succeed }
 }
 
 @DoNotDiscover
@@ -337,7 +337,7 @@ protected[scalatest] class ExampleTestDataFixtureFlatSpec extends fixture.FlatSp
     testData = test
     super.withFixture(test)
   }
-  "Scope 1" should "test 1" taggedAs(TestDataTag) in { s => }
+  "Scope 1" should "test 1" taggedAs(TestDataTag) in { s => succeed }
 }
 
 @DoNotDiscover
@@ -359,7 +359,7 @@ protected[scalatest] class ExampleTestDataFreeSpec extends FreeSpec with TestDat
   }
   "Scope 1" - {
     "Scope 2" - {
-      "test 1" taggedAs(TestDataTag) in {}
+      "test 1" taggedAs(TestDataTag) in { succeed }
     }
   }
 }
@@ -383,7 +383,7 @@ protected[scalatest] class ExampleTestDataFixtureFreeSpec extends fixture.FreeSp
   }
   "Scope 1" - {
     "Scope 2" - {
-      "test 1" taggedAs(TestDataTag) in { s => }
+      "test 1" taggedAs(TestDataTag) in { s => succeed }
     }
   }
 }
@@ -405,7 +405,7 @@ protected[scalatest] class ExampleTestDataPropSpec extends PropSpec with TestDat
     testData = test
     super.withFixture(test)
   }
-  property("Test 1", TestDataTag) {}
+  property("Test 1", TestDataTag) { succeed }
 }
 
 @DoNotDiscover
@@ -425,7 +425,7 @@ protected[scalatest] class ExampleTestDataFixturePropSpec extends fixture.PropSp
     testData = test
     super.withFixture(test)
   }
-  property("Test 1", TestDataTag) { s => }
+  property("Test 1", TestDataTag) { s => succeed }
 }
 
 @DoNotDiscover
@@ -447,7 +447,7 @@ protected[scalatest] class ExampleTestDataWordSpec extends WordSpec with TestDat
   }
   "Scope 1" should {
     "Scope 2" should {
-      "test 1" taggedAs(TestDataTag) in {}
+      "test 1" taggedAs(TestDataTag) in { succeed }
     }
   }
 }
@@ -471,7 +471,7 @@ protected[scalatest] class ExampleTestDataFixtureWordSpec extends fixture.WordSp
   }
   "Scope 1" should {
     "Scope 2" should {
-      "test 1" taggedAs(TestDataTag) in { s => }
+      "test 1" taggedAs(TestDataTag) in { s => succeed }
     }
   }
 }
@@ -491,7 +491,7 @@ protected[scalatest] class ExampleTestDataPathFreeSpec extends path.FreeSpec wit
   def testData: TestData = testDataFor("Scope 1 Scope 2 test 1", ConfigMap("key1" -> "value1"))
   "Scope 1" - {
     "Scope 2" - {
-      "test 1" taggedAs(TestDataTag) in {}
+      "test 1" taggedAs(TestDataTag) in { succeed }
     }
   }
   override def newInstance: path.FreeSpecLike = new ExampleTestDataPathFreeSpec
@@ -512,7 +512,7 @@ protected[scalatest] class ExampleTestDataPathFunSpec extends path.FunSpec with 
   def testData: TestData = testDataFor("Scope 1 Scope 2 test 1", ConfigMap("key1" -> "value1"))
   describe("Scope 1") {
     describe("Scope 2") {
-      it("test 1", TestDataTag) {}
+      it("test 1", TestDataTag) { succeed }
     }
   }
   override def newInstance: path.FunSpecLike = new ExampleTestDataPathFunSpec

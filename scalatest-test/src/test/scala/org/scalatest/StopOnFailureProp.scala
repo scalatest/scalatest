@@ -170,157 +170,157 @@ class ExampleStopOnFailureTestNGSuite extends TestNGSuite with StopOnFailure wit
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFunSuite extends FunSuite with StopOnFailure with StopOnFailureFixtureServices {
-  test("Test 1") {}
+  test("Test 1") { succeed }
   test("Test 2") { pending }
   test("Test 3") { cancel }
-  ignore("Test 4") {}
+  ignore("Test 4") { succeed }
   test("Test 5") { fail }
-  test("Test 6") {}
+  test("Test 6") { succeed }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFixtureFunSuite extends fixture.FunSuite with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
-  test("Test 1") { s => }
+  test("Test 1") { s => succeed }
   test("Test 2") { s => pending }
   test("Test 3") { s => cancel }
-  ignore("Test 4") { s => }
+  ignore("Test 4") { s => succeed }
   test("Test 5") { s => fail }
-  test("Test 6") { s => }
+  test("Test 6") { s => succeed }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFunSpec extends FunSpec with StopOnFailure with StopOnFailureFixtureServices {
   describe("Scope 1") {
-    it("Test 1") {}
+    it("Test 1") { succeed }
     it("Test 2") { pending }
     it("Test 3") { cancel }
-    ignore("Test 4") {}
+    ignore("Test 4") { succeed }
     it("Test 5") { fail }
-    it("Test 6") {}
+    it("Test 6") { succeed }
   }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFixtureFunSpec extends fixture.FunSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   describe("Scope 1") {
-    it("Test 1") { s => }
+    it("Test 1") { s => succeed }
     it("Test 2") { s => pending }
     it("Test 3") { s => cancel }
-    ignore("Test 4") { s => }
+    ignore("Test 4") { s => succeed }
     it("Test 5") { s => fail }
-    it("Test 6") { s => }
+    it("Test 6") { s => succeed }
   }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFeatureSpec extends FeatureSpec with StopOnFailure with StopOnFailureFixtureServices {
   feature("Feature 1") {
-    scenario("Scenario 1") {}
+    scenario("Scenario 1") { succeed }
     scenario("Scenario 2") { pending }
     scenario("Scenario 3") { cancel }
-    ignore("Scenario 4") {}
+    ignore("Scenario 4") { succeed }
     scenario("Scenario 5") { fail }
-    scenario("Scenario 6") {}
+    scenario("Scenario 6") { succeed }
   }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFixtureFeatureSpec extends fixture.FeatureSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   feature("Feature 1") {
-    scenario("Scenario 1") { s => }
+    scenario("Scenario 1") { s => succeed }
     scenario("Scenario 2") { s => pending }
     scenario("Scenario 3") { s => cancel }
-    ignore("Scenario 4") { s => }
+    ignore("Scenario 4") { s => succeed }
     scenario("Scenario 5") { s => fail }
-    scenario("Scenario 6") { s => }
+    scenario("Scenario 6") { s => succeed }
   }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFlatSpec extends FlatSpec with StopOnFailure with StopOnFailureFixtureServices {
-  "Scope 1" should "do thing 1" in {}
+  "Scope 1" should "do thing 1" in { succeed }
   it should "do thing 2" in { pending }
   it should "do thing 3" in { cancel }
-  it should "do thing 4" ignore {}
+  it should "do thing 4" ignore { succeed }
   it should "do thing 5" in { fail }
-  it should "do thing 6" in {}
+  it should "do thing 6" in { succeed }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFixtureFlatSpec extends fixture.FlatSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
-  "Scope 1" should "do thing 1" in { s => }
+  "Scope 1" should "do thing 1" in { s => succeed }
   it should "do thing 2" in { s => pending }
   it should "do thing 3" in { s => cancel }
-  it should "do thing 4" ignore { s => }
+  it should "do thing 4" ignore { s => succeed }
   it should "do thing 5" in { s => fail }
-  it should "do thing 6" in { s => }
+  it should "do thing 6" in { s => succeed }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFreeSpec extends FreeSpec with StopOnFailure with StopOnFailureFixtureServices {
   "Scope 1" - {
-    "Test 1" in {}
+    "Test 1" in { succeed }
     "Test 2" in { pending }
     "Test 3" in { cancel }
-    "Test 4" ignore {}
+    "Test 4" ignore { succeed }
     "Test 5" in { fail }
-    "Test 6" in {}
+    "Test 6" in { succeed }
   }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFixtureFreeSpec extends fixture.FreeSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   "Scope 1" - {
-    "Test 1" in { s => }
+    "Test 1" in { s => succeed }
     "Test 2" in { s => pending }
     "Test 3" in { s => cancel }
-    "Test 4" ignore { s => }
+    "Test 4" ignore { s => succeed }
     "Test 5" in { s => fail }
-    "Test 6" in { s => }
+    "Test 6" in { s => succeed }
   }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailurePropSpec extends PropSpec with StopOnFailure with StopOnFailureFixtureServices {
-  property("Test 1") {}
+  property("Test 1") { succeed }
   property("Test 2") { pending }
   property("Test 3") { cancel }
-  ignore("Test 4") {}
+  ignore("Test 4") { succeed }
   property("Test 5") { fail }
-  property("Test 6") {}
+  property("Test 6") { succeed }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFixturePropSpec extends fixture.PropSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
-  property("Test 1") { s => }
+  property("Test 1") { s => succeed }
   property("Test 2") { s => pending }
   property("Test 3") { s => cancel }
-  ignore("Test 4") { s => }
+  ignore("Test 4") { s => succeed }
   property("Test 5") { s => fail }
-  property("Test 6") { s => }
+  property("Test 6") { s => succeed }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureWordSpec extends WordSpec with StopOnFailure with StopOnFailureFixtureServices {
   "Scope 1" should {
-    "Test 1" in {}
+    "Test 1" in { succeed }
     "Test 2" in { pending }
     "Test 3" in { cancel }
-    "Test 4" ignore {}
+    "Test 4" ignore { succeed }
     "Test 5" in { fail }
-    "Test 6" in {}
+    "Test 6" in { succeed }
   }
 }
 
 @DoNotDiscover
 protected[scalatest] class ExampleStopOnFailureFixtureWordSpec extends fixture.WordSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   "Scope 1" should {
-    "Test 1" in { s => }
+    "Test 1" in { s => succeed }
     "Test 2" in { s => pending }
     "Test 3" in { s => cancel }
-    "Test 4" ignore { s => }
+    "Test 4" ignore { s => succeed }
     "Test 5" in { s => fail }
-    "Test 6" in { s => }
+    "Test 6" in { s => succeed }
   }
 }
 

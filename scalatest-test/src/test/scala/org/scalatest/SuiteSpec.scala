@@ -464,7 +464,7 @@ class SuiteSpec extends FunSpec {
 
       class NestedSuite extends FunSuite with BeforeAndAfter {
 
-        test("test 1") {}
+        test("test 1") { succeed }
 
         after {
           throw new RuntimeException("oops!")
@@ -489,7 +489,7 @@ class SuiteSpec extends FunSpec {
 
       class NestedSuite extends FunSuite with BeforeAndAfterAll {
 
-        test("test 1") {}
+        test("test 1") { succeed }
 
         override protected def afterAll() {
           throw new RuntimeException("oops!")
@@ -514,7 +514,7 @@ class SuiteSpec extends FunSpec {
 
       class NestedSuite extends FunSuite with BeforeAndAfterAllConfigMap {
 
-        test("test 1") {}
+        test("test 1") { succeed }
 
         override protected def afterAll(configMap: ConfigMap) {
           throw new RuntimeException("oops!")
@@ -539,7 +539,7 @@ class SuiteSpec extends FunSpec {
 
       class NestedSuite extends FunSuite with BeforeAndAfterEach {
 
-        test("test 1") {}
+        test("test 1") { succeed }
 
         override protected def afterEach() {
           throw new RuntimeException("oops!")
@@ -564,7 +564,7 @@ class SuiteSpec extends FunSpec {
 
       class NestedSuite extends FunSuite with BeforeAndAfterEachTestData {
 
-        test("test 1") {}
+        test("test 1") { succeed }
 
         override protected def afterEach(test: TestData) {
           throw new RuntimeException("oops!")

@@ -38,8 +38,8 @@ class FeatureSpecSpec extends FunSpec {
     it("should return the scenario names in registration order from testNames") {
 
       val a = new FeatureSpec {
-        scenario("test this") {}
-        scenario("test that") {}
+        scenario("test this") { succeed }
+        scenario("test that") { succeed }
       }
 
       assertResult(List("Scenario: test this", "Scenario: test that")) {
@@ -53,8 +53,8 @@ class FeatureSpecSpec extends FunSpec {
       }
 
       val c = new FeatureSpec {
-        scenario("test that") {}
-        scenario("test this") {}
+        scenario("test that") { succeed }
+        scenario("test this") { succeed }
       }
 
       assertResult(List("Scenario: test that", "Scenario: test this")) {
@@ -66,26 +66,26 @@ class FeatureSpecSpec extends FunSpec {
 
       intercept[DuplicateTestNameException] {
         new FeatureSpec {
-          scenario("test this") {}
-          scenario("test this") {}
+          scenario("test this") { succeed }
+          scenario("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FeatureSpec {
-          scenario("test this") {}
-          ignore("test this") {}
+          scenario("test this") { succeed }
+          ignore("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FeatureSpec {
-          ignore("test this") {}
-          ignore("test this") {}
+          ignore("test this") { succeed }
+          ignore("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FeatureSpec {
-          ignore("test this") {}
-          scenario("test this") {}
+          ignore("test this") { succeed }
+          scenario("test this") { succeed }
         }
       }
     }
@@ -93,7 +93,7 @@ class FeatureSpecSpec extends FunSpec {
     it("should run tests registered via the scenariosFor syntax") {
       trait SharedFeatureSpecTests { this: FeatureSpec =>
         def nonEmptyStack(s: String)(i: Int) {
-          scenario("I am shared") {}
+          scenario("I am shared") { succeed }
         }
       }
       class MySuite extends FeatureSpec with SharedFeatureSpecTests {
@@ -114,72 +114,72 @@ class FeatureSpecSpec extends FunSpec {
       // scenario
       intercept[NullArgumentException] {
         new FeatureSpec {
-          scenario("hi", null) {}
+          scenario("hi", null) { succeed }
         }
       }
       val caught = intercept[NullArgumentException] {
         new FeatureSpec {
-          scenario("hi", mytags.SlowAsMolasses, null) {}
+          scenario("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FeatureSpec {
-          scenario("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          scenario("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
         new FeatureSpec {
-          ignore("hi", null) {}
+          ignore("hi", null) { succeed }
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new FeatureSpec {
-          ignore("hi", mytags.SlowAsMolasses, null) {}
+          ignore("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught2.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FeatureSpec {
-          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
         new FeatureSpec {
-          registerTest("hi", null) {}
+          registerTest("hi", null) { succeed }
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new FeatureSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null) {}
+          registerTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught3.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FeatureSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
         new FeatureSpec {
-          registerIgnoredTest("hi", null) {}
+          registerIgnoredTest("hi", null) { succeed }
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new FeatureSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught4.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FeatureSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
     }
@@ -640,28 +640,28 @@ class FeatureSpecSpec extends FunSpec {
     it("should return the correct test count from its expectedTestCount method") {
 
       val a = new FeatureSpec {
-        scenario("test this") {}
-        scenario("test that") {}
+        scenario("test this") { succeed }
+        scenario("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new FeatureSpec {
-        ignore("test this") {}
-        scenario("test that") {}
+        ignore("test this") { succeed }
+        scenario("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new FeatureSpec {
-        scenario("test this", mytags.FastAsLight) {}
-        scenario("test that") {}
+        scenario("test this", mytags.FastAsLight) { succeed }
+        scenario("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
       val d = new FeatureSpec {
-        scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        scenario("test that", mytags.SlowAsMolasses) {}
-        scenario("test the other thing") {}
+        scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        scenario("test that", mytags.SlowAsMolasses) { succeed }
+        scenario("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -669,9 +669,9 @@ class FeatureSpecSpec extends FunSpec {
       assert(d.expectedTestCount(Filter()) === 3)
 
       val e = new FeatureSpec {
-        scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        scenario("test that", mytags.SlowAsMolasses) {}
-        ignore("test the other thing") {}
+        scenario("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        scenario("test that", mytags.SlowAsMolasses) { succeed }
+        ignore("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -685,28 +685,28 @@ class FeatureSpecSpec extends FunSpec {
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
 
       val a = new FeatureSpec {
-        registerTest("test this") {}
-        registerTest("test that") {}
+        registerTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new FeatureSpec {
-        registerIgnoredTest("test this") {}
-        registerTest("test that") {}
+        registerIgnoredTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new FeatureSpec {
-        registerTest("test this", mytags.FastAsLight) {}
-        registerTest("test that") {}
+        registerTest("test this", mytags.FastAsLight) { succeed }
+        registerTest("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
       val d = new FeatureSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerTest("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -714,9 +714,9 @@ class FeatureSpecSpec extends FunSpec {
       assert(d.expectedTestCount(Filter()) === 3)
 
       val e = new FeatureSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerIgnoredTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerIgnoredTest("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -944,7 +944,7 @@ class FeatureSpecSpec extends FunSpec {
           correctTestNameWasPassed = test.name == "Scenario: should do something"
           super.withFixture(test)
         }
-        scenario("should do something") {}
+        scenario("should do something") { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -959,7 +959,7 @@ class FeatureSpecSpec extends FunSpec {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
         }
-        scenario("should do something") {}
+        scenario("should do something") { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -1505,7 +1505,7 @@ class FeatureSpecSpec extends FunSpec {
       it("should propagate VirtualMachineError when it is thrown inside scope") {
         class TestSpec extends FeatureSpec {
           feature("a feature") {
-            throw new VirtualMachineError("on purpose") {}
+            throw new VirtualMachineError("on purpose") { succeed }
           }
         }
         val e = intercept[VirtualMachineError] {

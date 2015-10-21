@@ -24,7 +24,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 class ShouldBehaveLikeSpec extends FunSpec {
 
   def myFirstBehavior(i: Int) {
-    it("This one is should blow up") {}
+    it("This one is should blow up") { succeed }
   }
 
   describe("The 'should behave like' syntax should throw an exception inside an it clause") {
@@ -49,7 +49,7 @@ class ShouldBehaveLikeSpec extends FunSpec {
 */
 
   def myBehavior(i: Int) {
-    it("This one is solo") {}
+    it("This one is solo") { succeed }
   }
   it should behave like myBehavior(1) 
 
@@ -57,7 +57,7 @@ class ShouldBehaveLikeSpec extends FunSpec {
   // the shared behaviors. Cool.
   def myNestedBehavior(i: Int) {
     describe("and this is the shared describe") {
-      it("This one is nested") {}
+      it("This one is nested") { succeed }
     }
   }
 

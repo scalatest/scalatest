@@ -259,11 +259,11 @@ protected[scalatest] class ExampleTestNameFunSuite extends FunSuite with TestNam
      "Testing 5 should be fun"     
     )
   
-  test("Testing 1 should be fun") {}
-  test(" Testing 2 should be fun") {}
-  test("Testing 3 should be fun ") {}
-  test("  Testing 4 should be fun") {}
-  test("Testing 5 should be fun  ") {}
+  test("Testing 1 should be fun") { succeed }
+  test(" Testing 2 should be fun") { succeed }
+  test("Testing 3 should be fun ") { succeed }
+  test("  Testing 4 should be fun") { succeed }
+  test("Testing 5 should be fun  ") { succeed }
 }
 
 @DoNotDiscover
@@ -278,11 +278,11 @@ protected[scalatest] class ExampleTestNameFixtureFunSuite extends fixture.FunSui
      "Testing 5 should be fun"     
     )
   
-  test("Testing 1 should be fun") { s => }
-  test(" Testing 2 should be fun") { s => }
-  test("Testing 3 should be fun ") { s => }
-  test("  Testing 4 should be fun") { s => }
-  test("Testing 5 should be fun  ") { s => }
+  test("Testing 1 should be fun") { s => succeed }
+  test(" Testing 2 should be fun") { s => succeed }
+  test("Testing 3 should be fun ") { s => succeed }
+  test("  Testing 4 should be fun") { s => succeed }
+  test("Testing 5 should be fun  ") { s => succeed }
 }
 
 @DoNotDiscover
@@ -302,55 +302,55 @@ protected[scalatest] class ExampleTestNameFunSpec extends FunSpec with TestNameF
   
   describe("Testing 1") { 
     describe("Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 2 ") { 
     describe("Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 3") { 
     describe(" Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 4") { 
     describe("Scala code ") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 5") { 
     describe("Scala code") {
-      it(" should be fun") {}
+      it(" should be fun") { succeed }
     }
   }
 
   describe(" Testing 6") { 
     describe("Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 7") { 
     describe("Scala code") {
-      it("should be fun ") {}
+      it("should be fun ") { succeed }
     }
   }
 
   describe("Testing 8 ") {  
     describe(" Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 9  ") {  
     describe("Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 }
@@ -372,55 +372,55 @@ protected[scalatest] class ExampleTestNameFixtureFunSpec extends fixture.FunSpec
   
   describe("Testing 1") { 
     describe("Scala code") {
-      it("should be fun") { s => }
+      it("should be fun") { s => succeed }
     }
   }
 
   describe("Testing 2 ") { 
     describe("Scala code") {
-      it("should be fun") { s => }
+      it("should be fun") { s => succeed }
     }
   }
 
   describe("Testing 3") { 
     describe(" Scala code") {
-      it("should be fun") { s => }
+      it("should be fun") { s => succeed }
     }
   }
 
   describe("Testing 4") { 
     describe("Scala code ") {
-      it("should be fun") { s => }
+      it("should be fun") { s => succeed }
     }
   }
 
   describe("Testing 5") { 
     describe("Scala code") {
-      it(" should be fun") { s => }
+      it(" should be fun") { s => succeed }
     }
   }
 
   describe(" Testing 6") { 
     describe("Scala code") {
-      it("should be fun") { s => }
+      it("should be fun") { s => succeed }
     }
   }
 
   describe("Testing 7") { 
     describe("Scala code") {
-      it("should be fun ") { s => }
+      it("should be fun ") { s => succeed }
     }
   }
 
   describe("Testing 8 ") { 
     describe(" Scala code") {
-      it("should be fun") { s => }
+      it("should be fun") { s => succeed }
     }
   }
 
   describe("Testing 9  ") { 
     describe("Scala code") {
-      it("should be fun") { s => }
+      it("should be fun") { s => succeed }
     }
   }
 }
@@ -439,31 +439,31 @@ protected[scalatest] class ExampleTestNameFeatureSpec extends FeatureSpec with T
     )
   
   feature("Testing 1") { 
-    scenario("Scala code should be fun") {}
+    scenario("Scala code should be fun") { succeed }
   }
 
   feature("Testing 2 ") { 
-    scenario("Scala code should be fun") {}
+    scenario("Scala code should be fun") { succeed }
   }
 
   feature("Testing 3") { 
-    scenario(" Scala code should be fun") {}
+    scenario(" Scala code should be fun") { succeed }
   }
 
   feature("Testing 4") { 
-    scenario("Scala code should be fun ") {}
+    scenario("Scala code should be fun ") { succeed }
   }
 
   feature(" Testing 5") { 
-    scenario("Scala code should be fun") {}
+    scenario("Scala code should be fun") { succeed }
   }
 
   feature("Testing 6 ") { 
-    scenario(" Scala code should be fun") {}
+    scenario(" Scala code should be fun") { succeed }
   }
 
   feature("Testing 7  ") {  
-    scenario("Scala code should be fun") {}
+    scenario("Scala code should be fun") { succeed }
   }
 }
 
@@ -481,31 +481,31 @@ protected[scalatest] class ExampleTestNameFixtureFeatureSpec extends fixture.Fea
     )
   
   feature("Testing 1") { 
-    scenario("Scala code should be fun") { s => }
+    scenario("Scala code should be fun") { s => succeed }
   }
 
   feature("Testing 2 ") { 
-    scenario("Scala code should be fun") { s => }
+    scenario("Scala code should be fun") { s => succeed }
   }
 
   feature("Testing 3") { 
-    scenario(" Scala code should be fun") { s => }
+    scenario(" Scala code should be fun") { s => succeed }
   }
 
   feature("Testing 4") { 
-    scenario("Scala code should be fun ") { s => }
+    scenario("Scala code should be fun ") { s => succeed }
   }
 
   feature(" Testing 5") { 
-    scenario("Scala code should be fun") { s => }
+    scenario("Scala code should be fun") { s => succeed }
   }
 
   feature("Testing 6 ") { 
-    scenario(" Scala code should be fun") { s => }
+    scenario(" Scala code should be fun") { s => succeed }
   }
 
   feature("Testing 7  ") { 
-    scenario("Scala code should be fun") { s => }
+    scenario("Scala code should be fun") { s => succeed }
   }
 }
 
@@ -559,24 +559,31 @@ protected[scalatest] class ExampleTestNameFixtureFlatSpec extends fixture.FlatSp
     )
   
   "Testing 1" should "be fun to code in Scala" in { s => 
+    succeed
   }
 
   "Testing 2 " should "be fun to code in Scala" in { s => 
+    succeed
   }
 
   "Testing 3" should " be fun to code in Scala" in { s => 
+    succeed
   }
 
   "Testing 4" should "be fun to code in Scala " in { s => 
+    succeed
   }
 
   " Testing 5" should "be fun to code in Scala" in { s => 
+    succeed
   }
 
   "Testing 6 " should " be fun to code in Scala" in { s =>  
+    succeed
   }
 
   "Testing 7  " should "be fun to code in Scala" in { s =>  
+    succeed
   }
 }
 
@@ -597,55 +604,55 @@ protected[scalatest] class ExampleTestNameFreeSpec extends FreeSpec with TestNam
   
   "Testing 1" - { 
     "Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 2 " - { 
     "Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 3" - { 
     " Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 4" - { 
     "Scala code " - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 5" - { 
     "Scala code" - {
-      " should be fun" in {}
+      " should be fun" in { succeed }
     }
   }
 
   " Testing 6" - { 
     "Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 7" - { 
     "Scala code" - {
-      "should be fun " in {}
+      "should be fun " in { succeed }
     }
   }
 
   "Testing 8 " - { 
     " Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 9  " - { 
     "Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 }
@@ -667,55 +674,55 @@ protected[scalatest] class ExampleTestNameFixtureFreeSpec extends fixture.FreeSp
   
   "Testing 1" - { 
     "Scala code" - {
-      "should be fun" in { s => }
+      "should be fun" in { s => succeed }
     }
   }
 
   "Testing 2 " - { 
     "Scala code" - {
-      "should be fun" in { s => }
+      "should be fun" in { s => succeed }
     }
   }
 
   "Testing 3" - { 
     " Scala code" - {
-      "should be fun" in { s => }
+      "should be fun" in { s => succeed }
     }
   }
 
   "Testing 4" - { 
     "Scala code " - {
-      "should be fun" in { s => }
+      "should be fun" in { s => succeed }
     }
   }
 
   "Testing 5" - { 
     "Scala code" - {
-      " should be fun" in { s => }
+      " should be fun" in { s => succeed }
     }
   }
 
   " Testing 6" - { 
     "Scala code" - {
-      "should be fun" in { s => }
+      "should be fun" in { s => succeed }
     }
   }
 
   "Testing 7" - { 
     "Scala code" - {
-      "should be fun " in { s => }
+      "should be fun " in { s => succeed }
     }
   }
 
   "Testing 8 " - { 
     " Scala code" - {
-      "should be fun" in { s => }
+      "should be fun" in { s => succeed }
     }
   }
 
   "Testing 9  " - { 
     "Scala code" - {
-      "should be fun" in { s => }
+      "should be fun" in { s => succeed }
     }
   }
 }
@@ -733,12 +740,12 @@ protected[scalatest] class ExampleTestNamePropSpec extends PropSpec with TestNam
      "Testing 6 Scala code should be fun"
     )
   
-  property("Testing 1 Scala code should be fun") {}
-  property(" Testing 2 Scala code should be fun") {}
-  property("Testing 3 Scala code should be fun ") {}
-  property("  Testing 4 Scala code should be fun") {}
-  property("Testing 5 Scala code should be fun  ") {}
-  property("  Testing 6 Scala code should be fun  ") {}
+  property("Testing 1 Scala code should be fun") { succeed }
+  property(" Testing 2 Scala code should be fun") { succeed }
+  property("Testing 3 Scala code should be fun ") { succeed }
+  property("  Testing 4 Scala code should be fun") { succeed }
+  property("Testing 5 Scala code should be fun  ") { succeed }
+  property("  Testing 6 Scala code should be fun  ") { succeed }
 }
 
 @DoNotDiscover
@@ -754,12 +761,12 @@ protected[scalatest] class ExampleTestNameFixturePropSpec extends fixture.PropSp
      "Testing 6 Scala code should be fun"
     )
   
-  property("Testing 1 Scala code should be fun") { s => }
-  property(" Testing 2 Scala code should be fun") { s => }
-  property("Testing 3 Scala code should be fun ") { s => }
-  property("  Testing 4 Scala code should be fun") { s => }
-  property("Testing 5 Scala code should be fun  ") { s => }
-  property("  Testing 6 Scala code should be fun  ") { s => }
+  property("Testing 1 Scala code should be fun") { s => succeed }
+  property(" Testing 2 Scala code should be fun") { s => succeed }
+  property("Testing 3 Scala code should be fun ") { s => succeed }
+  property("  Testing 4 Scala code should be fun") { s => succeed }
+  property("Testing 5 Scala code should be fun  ") { s => succeed }
+  property("  Testing 6 Scala code should be fun  ") { s => succeed }
 }
 
 @DoNotDiscover
@@ -779,55 +786,55 @@ protected[scalatest] class ExampleTestNameWordSpec extends WordSpec with TestNam
   
   "Testing 1" should { 
     "test Scala code" should {
-      "be fun" in {}
+      "be fun" in { succeed }
     }
   }
 
   "Testing 2 " should { 
     "test Scala code" should {
-      "be fun" in {}
+      "be fun" in { succeed }
     }
   }
 
   "Testing 3" should { 
     " test Scala code" should {
-      "be fun" in {}
+      "be fun" in { succeed }
     }
   }
 
   "Testing 4" should { 
     "test Scala code " should {
-      "be fun" in {}
+      "be fun" in { succeed }
     }
   }
 
   "Testing 5" should { 
     "test Scala code" should {
-      " be fun" in {}
+      " be fun" in { succeed }
     }
   }
 
   " Testing 6" should { 
     "test Scala code" should {
-      "be fun" in {}
+      "be fun" in { succeed }
     }
   }
 
   "Testing 7" should { 
     "test Scala code" should {
-      "be fun " in {}
+      "be fun " in { succeed }
     }
   }
 
   "Testing 8 " should { 
     " test Scala code" should {
-      "be fun" in {}
+      "be fun" in { succeed }
     }
   }
 
   "Testing 9  " should { 
     "test Scala code" should {
-      "be fun" in {}
+      "be fun" in { succeed }
     }
   }
 }
@@ -849,55 +856,55 @@ protected[scalatest] class ExampleTestNameFixtureWordSpec extends fixture.WordSp
   
   "Testing 1" should { 
     "test Scala code" should {
-      "be fun" in { s => }
+      "be fun" in { s => succeed }
     }
   }
 
   "Testing 2 " should { 
     "test Scala code" should {
-      "be fun" in { s => }
+      "be fun" in { s => succeed }
     }
   }
 
   "Testing 3" should { 
     " test Scala code" should {
-      "be fun" in { s => }
+      "be fun" in { s => succeed }
     }
   }
 
   "Testing 4" should { 
     "test Scala code " should {
-      "be fun" in { s => }
+      "be fun" in { s => succeed }
     }
   }
 
   "Testing 5" should { 
     "test Scala code" should {
-      " be fun" in { s => }
+      " be fun" in { s => succeed }
     }
   }
 
   " Testing 6" should { 
     "test Scala code" should {
-      "be fun" in { s => }
+      "be fun" in { s => succeed }
     }
   }
 
   "Testing 7" should { 
     "test Scala code" should {
-      "be fun " in { s => }
+      "be fun " in { s => succeed }
     }
   }
 
   "Testing 8 " should { 
     " test Scala code" should {
-      "be fun" in { s => }
+      "be fun" in { s => succeed }
     }
   }
 
   "Testing 9  " should { 
     "test Scala code" should {
-      "be fun" in { s => }
+      "be fun" in { s => succeed }
     }
   }
 }
@@ -919,55 +926,55 @@ protected[scalatest] class ExampleTestNamePathFreeSpec extends path.FreeSpec wit
   
   "Testing 1" - { 
     "Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 2 " - { 
     "Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 3" - { 
     " Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 4" - { 
     "Scala code " - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 5" - { 
     "Scala code" - {
-      " should be fun" in {}
+      " should be fun" in { succeed }
     }
   }
 
   " Testing 6" - { 
     "Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 7" - { 
     "Scala code" - {
-      "should be fun " in {}
+      "should be fun " in { succeed }
     }
   }
 
   "Testing 8 " - { 
     " Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
   "Testing 9  " - { 
     "Scala code" - {
-      "should be fun" in {}
+      "should be fun" in { succeed }
     }
   }
 
@@ -991,55 +998,55 @@ protected[scalatest] class ExampleTestNamePathFunSpec extends path.FunSpec with 
   
   describe("Testing 1") { 
     describe("Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 2 ") { 
     describe("Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 3") { 
     describe(" Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 4") { 
     describe("Scala code ") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 5") { 
     describe("Scala code") {
-      it(" should be fun") {}
+      it(" should be fun") { succeed }
     }
   }
 
   describe(" Testing 6") { 
     describe("Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 7") { 
     describe("Scala code") {
-      it("should be fun ") {}
+      it("should be fun ") { succeed }
     }
   }
 
   describe("Testing 8 ") { 
     describe(" Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 
   describe("Testing 9  ") { 
     describe("Scala code") {
-      it("should be fun") {}
+      it("should be fun") { succeed }
     }
   }
 

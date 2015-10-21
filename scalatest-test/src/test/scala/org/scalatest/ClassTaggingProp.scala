@@ -69,7 +69,7 @@ trait ClassTaggingFixtureServices {
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingSuite extends Suite with ClassTaggingFixtureServices {
+class ExampleClassTaggingSuite extends Suite with ClassTaggingFixtureServices { // TODO: I think this is probably not used anymore
   def testMethod1() {}
   def testMethod2() {}
   def testMethod3() {}
@@ -130,26 +130,26 @@ class ExampleClassTaggingTestNGSuite extends TestNGSuite with ClassTaggingFixtur
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFunSuite extends FunSuite with ClassTaggingFixtureServices {
-  test("Test 1") {}
-  test("Test 2") {}
-  test("Test 3") {}
+  test("Test 1") { succeed }
+  test("Test 2") { succeed }
+  test("Test 3") { succeed }
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFixtureFunSuite extends fixture.FunSuite with ClassTaggingFixtureServices with StringFixture {
-  test("Test 1") {s =>}
-  test("Test 2") {s =>}
-  test("Test 3") {s =>}
+  test("Test 1") { s => succeed }
+  test("Test 2") { s => succeed }
+  test("Test 3") { s => succeed }
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFunSpec extends FunSpec with ClassTaggingFixtureServices {
   describe("Scope 1") {
-    it("Test 1") {}
-    it("Test 2") {}
-    it("Test 3") {}
+    it("Test 1") { succeed }
+    it("Test 2") { succeed }
+    it("Test 3") { succeed }
   }
 }
 
@@ -157,9 +157,9 @@ class ExampleClassTaggingFunSpec extends FunSpec with ClassTaggingFixtureService
 @Ignore
 class ExampleClassTaggingFixtureFunSpec extends fixture.FunSpec with ClassTaggingFixtureServices with StringFixture {
   describe("Scope 1") {
-    it("Test 1") {s =>}
-    it("Test 2") {s =>}
-    it("Test 3") {s =>}
+    it("Test 1") { s => succeed }
+    it("Test 2") { s => succeed }
+    it("Test 3") { s => succeed }
   }
 }
 
@@ -167,9 +167,9 @@ class ExampleClassTaggingFixtureFunSpec extends fixture.FunSpec with ClassTaggin
 @Ignore
 class ExampleClassTaggingFeatureSpec extends FeatureSpec with ClassTaggingFixtureServices {
   feature("Feature 1") {
-    scenario("Scenario 1") {}
-    scenario("Scenario 2") {}
-    scenario("Scenario 3") {}
+    scenario("Scenario 1") { succeed }
+    scenario("Scenario 2") { succeed }
+    scenario("Scenario 3") { succeed }
   }
 }
 
@@ -177,35 +177,35 @@ class ExampleClassTaggingFeatureSpec extends FeatureSpec with ClassTaggingFixtur
 @Ignore
 class ExampleClassTaggingFixtureFeatureSpec extends fixture.FeatureSpec with ClassTaggingFixtureServices with StringFixture {
   feature("Feature 1") {
-    scenario("Scenario 1") {s =>}
-    scenario("Scenario 2") {s =>}
-    scenario("Scenario 3") {s =>}
+    scenario("Scenario 1") { s => succeed }
+    scenario("Scenario 2") { s => succeed }
+    scenario("Scenario 3") { s => succeed }
   }
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFlatSpec extends FlatSpec with ClassTaggingFixtureServices {
-  "Scope 1" should "do thing 1" in {}
-  it should "do thing 2" in {}
-  it should "do thing 3" in {}
+  "Scope 1" should "do thing 1" in { succeed }
+  it should "do thing 2" in { succeed }
+  it should "do thing 3" in { succeed }
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFixtureFlatSpec extends fixture.FlatSpec with ClassTaggingFixtureServices with StringFixture {
-  "Scope 1" should "do thing 1" in {s =>}
-  it should "do thing 2" in {s =>}
-  it should "do thing 3" in {s =>}
+  "Scope 1" should "do thing 1" in { s => succeed }
+  it should "do thing 2" in { s => succeed }
+  it should "do thing 3" in { s => succeed }
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFreeSpec extends FreeSpec with ClassTaggingFixtureServices {
   "Scope 1" - {
-    "Test 1" in {}
-    "Test 2" in {}
-    "Test 3" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
+    "Test 3" in { succeed }
   }
 }
 
@@ -213,35 +213,35 @@ class ExampleClassTaggingFreeSpec extends FreeSpec with ClassTaggingFixtureServi
 @Ignore
 class ExampleClassTaggingFixtureFreeSpec extends fixture.FreeSpec with ClassTaggingFixtureServices with StringFixture {
   "Scope 1" - {
-    "Test 1" in {s =>}
-    "Test 2" in {s =>}
-    "Test 3" in {s =>}
+    "Test 1" in { s => succeed }
+    "Test 2" in { s => succeed }
+    "Test 3" in { s => succeed }
   }
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingPropSpec extends PropSpec with ClassTaggingFixtureServices {
-  property("Test 1") {}
-  property("Test 2") {}
-  property("Test 3") {}
+  property("Test 1") { succeed }
+  property("Test 2") { succeed }
+  property("Test 3") { succeed }
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFixturePropSpec extends fixture.PropSpec with ClassTaggingFixtureServices with StringFixture {
-  property("Test 1") {s =>}
-  property("Test 2") {s =>}
-  property("Test 3") {s =>}
+  property("Test 1") { s => succeed }
+  property("Test 2") { s => succeed }
+  property("Test 3") { s => succeed }
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingWordSpec extends WordSpec with ClassTaggingFixtureServices {
   "Scope 1" should {
-    "Test 1" in {}
-    "Test 2" in {}
-    "Test 3" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
+    "Test 3" in { succeed }
   }
 }
 
@@ -249,9 +249,9 @@ class ExampleClassTaggingWordSpec extends WordSpec with ClassTaggingFixtureServi
 @Ignore
 class ExampleClassTaggingFixtureWordSpec extends fixture.WordSpec with ClassTaggingFixtureServices with StringFixture {
   "Scope 1" should {
-    "Test 1" in {s =>}
-    "Test 2" in {s =>}
-    "Test 3" in {s =>}
+    "Test 1" in { s => succeed }
+    "Test 2" in { s => succeed }
+    "Test 3" in { s => succeed }
   }
 }
 
@@ -259,9 +259,9 @@ class ExampleClassTaggingFixtureWordSpec extends fixture.WordSpec with ClassTagg
 @Ignore
 class ExampleClassTaggingPathFreeSpec extends path.FreeSpec with ClassTaggingFixtureServices {
   "Scope 1" - {
-    "Test 1" in {}
-    "Test 2" in {}
-    "Test 3" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
+    "Test 3" in { succeed }
   }
 }
 
@@ -269,8 +269,8 @@ class ExampleClassTaggingPathFreeSpec extends path.FreeSpec with ClassTaggingFix
 @Ignore
 class ExampleClassTaggingPathFunSpec extends path.FunSpec with ClassTaggingFixtureServices {
   describe("Scope 1") {
-    it("Test 1") {}
-    it("Test 2") {}
-    it("Test 3") {}
+    it("Test 1") { succeed }
+    it("Test 2") { succeed }
+    it("Test 3") { succeed }
   }
 }

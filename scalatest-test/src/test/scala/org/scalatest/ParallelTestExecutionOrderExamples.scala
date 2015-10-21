@@ -105,9 +105,9 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureSpec extends 
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFunSuite extends FunSuite with OrderExpectedResults with ParallelTestExecution {
-  test("Test 1") {}
-  test("Test 2") {}
-  test("Test 3") {}
+  test("Test 1") { succeed }
+  test("Test 2") { succeed }
+  test("Test 3") { succeed }
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 6)
     checkTestStarting(events(0), "Test 1")
@@ -122,9 +122,9 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFunSuite extends Fun
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSuite extends fixture.FunSuite with OrderExpectedResults with ParallelTestExecution with StringFixture {
-  test("Fixture Test 1") { fixture => }
-  test("Fixture Test 2") { fixture => }
-  test("Fixture Test 3") { fixture => }
+  test("Fixture Test 1") { fixture => succeed }
+  test("Fixture Test 2") { fixture => succeed }
+  test("Fixture Test 3") { fixture => succeed }
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 6)
     checkTestStarting(events(0), "Fixture Test 1")
@@ -140,12 +140,12 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSuite exte
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFunSpec extends FunSpec with OrderExpectedResults with ParallelTestExecution {
   describe("Scope 1") {
-    it("Test 1") {}
-    it("Test 2") {}
+    it("Test 1") { succeed }
+    it("Test 2") { succeed }
   }
   describe("Scope 2") {
-    it("Test 3") {}
-    it("Test 4") {}
+    it("Test 3") { succeed }
+    it("Test 4") { succeed }
   }
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 12)
@@ -168,12 +168,12 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFunSpec extends FunS
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSpec extends fixture.FunSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   describe("Fixture Scope 1") {
-    it("Fixture Test 1") { fixture => }
-    it("Fixture Test 2") { fixture =>}
+    it("Fixture Test 1") { fixture => succeed }
+    it("Fixture Test 2") { fixture => succeed }
   }
   describe("Fixture Scope 2") {
-    it("Fixture Test 3") { fixture => }
-    it("Fixture Test 4") { fixture =>}
+    it("Fixture Test 3") { fixture => succeed }
+    it("Fixture Test 4") { fixture => succeed }
   }
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 12)
@@ -196,12 +196,12 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFunSpec exten
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFeatureSpec extends FeatureSpec with OrderExpectedResults with ParallelTestExecution {
   feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+    scenario("Test 1") { succeed }
+    scenario("Test 2") { succeed }
   }
   feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+    scenario("Test 3") { succeed }
+    scenario("Test 4") { succeed }
   }
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 12)
@@ -224,12 +224,12 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFeatureSpec extends 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFeatureSpec extends fixture.FeatureSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   feature("Fixture Scope 1") {
-    scenario("Fixture Test 1") { fixture => }
-    scenario("Fixture Test 2") { fixture =>}
+    scenario("Fixture Test 1") { fixture => succeed }
+    scenario("Fixture Test 2") { fixture => succeed }
   }
   feature("Fixture Scope 2") {
-    scenario("Fixture Test 3") { fixture => }
-    scenario("Fixture Test 4") { fixture =>}
+    scenario("Fixture Test 3") { fixture => succeed }
+    scenario("Fixture Test 4") { fixture => succeed }
   }
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 12)
@@ -252,12 +252,12 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFeatureSpec e
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFlatSpec extends FlatSpec with OrderExpectedResults with ParallelTestExecution {
   behavior of "Scope 1"
-  it should "Test 1" in {}
-  it should "Test 2" in {}
+  it should "Test 1" in { succeed }
+  it should "Test 2" in { succeed }
   
   behavior of "Scope 2"
-  it should "Test 3" in {}
-  it should "Test 4" in {}
+  it should "Test 3" in { succeed }
+  it should "Test 4" in { succeed }
   
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 12)
@@ -280,12 +280,12 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFlatSpec extends Fla
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFlatSpec extends fixture.FlatSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   behavior of "Fixture Scope 1"
-  it should "Fixture Test 1" in { fixture => }
-  it should "Fixture Test 2" in { fixture => }
+  it should "Fixture Test 1" in { fixture => succeed }
+  it should "Fixture Test 2" in { fixture => succeed }
   
   behavior of "Fixture Scope 2"
-  it should "Fixture Test 3" in { fixture => }
-  it should "Fixture Test 4" in { fixture => }
+  it should "Fixture Test 3" in { fixture => succeed }
+  it should "Fixture Test 4" in { fixture => succeed }
   
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 12)
@@ -308,13 +308,13 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFlatSpec exte
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFreeSpec extends FreeSpec with OrderExpectedResults with ParallelTestExecution {
   "Scope 1" - {
-    "Test 1" in {}
-    "Test 2" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
   }
   
   "Scope 2" - {
-    "Test 3" in {}
-    "Test 4" in {}
+    "Test 3" in { succeed }
+    "Test 4" in { succeed }
   }
   
   def assertOrderTest(events: List[Event]) {
@@ -338,13 +338,13 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFreeSpec extends Fre
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFreeSpec extends fixture.FreeSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   "Fixture Scope 1" - {
-    "Fixture Test 1" in { fixture => }
-    "Fixture Test 2" in { fixture => }
+    "Fixture Test 1" in { fixture => succeed }
+    "Fixture Test 2" in { fixture => succeed }
   }
   
   "Fixture Scope 2" - {
-    "Fixture Test 3" in { fixture => }
-    "Fixture Test 4" in { fixture => }
+    "Fixture Test 3" in { fixture => succeed }
+    "Fixture Test 4" in { fixture => succeed }
   }
   
   def assertOrderTest(events: List[Event]) {
@@ -367,9 +367,9 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixtureFreeSpec exte
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderPropSpec extends PropSpec with OrderExpectedResults with ParallelTestExecution {
-  property("Test 1") {}
-  property("Test 2") {}
-  property("Test 3") {}
+  property("Test 1") { succeed }
+  property("Test 2") { succeed }
+  property("Test 3") { succeed }
   
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 6)
@@ -385,9 +385,9 @@ protected[scalatest] class ExampleParallelTestExecutionOrderPropSpec extends Pro
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFixturePropSpec extends fixture.PropSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
-  property("Fixture Test 1") { fixture => }
-  property("Fixture Test 2") { fixture => }
-  property("Fixture Test 3") { fixture => }
+  property("Fixture Test 1") { fixture => succeed }
+  property("Fixture Test 2") { fixture => succeed }
+  property("Fixture Test 3") { fixture => succeed }
   
   def assertOrderTest(events: List[Event]) {
     assert(events.size === 6)
@@ -404,13 +404,13 @@ protected[scalatest] class ExampleParallelTestExecutionOrderFixturePropSpec exte
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderWordSpec extends WordSpec with OrderExpectedResults with ParallelTestExecution {
   "Scope 1" should {
-    "Test 1" in {}
-    "Test 2" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
   }
   
   "Scope 2" should {
-    "Test 3" in {}
-    "Test 4" in {}
+    "Test 3" in { succeed }
+    "Test 4" in { succeed }
   }
   
   def assertOrderTest(events: List[Event]) {
@@ -434,13 +434,13 @@ protected[scalatest] class ExampleParallelTestExecutionOrderWordSpec extends Wor
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionOrderFixtureWordSpec extends fixture.WordSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   "Fixture Scope 1" should {
-    "Fixture Test 1" in { fixture => }
-    "Fixture Test 2" in { fixture => }
+    "Fixture Test 1" in { fixture => succeed }
+    "Fixture Test 2" in { fixture => succeed }
   }
   
   "Fixture Scope 2" should {
-    "Fixture Test 3" in { fixture => }
-    "Fixture Test 4" in { fixture => }
+    "Fixture Test 3" in { fixture => succeed }
+    "Fixture Test 4" in { fixture => succeed }
   }
   
   def assertOrderTest(events: List[Event]) {

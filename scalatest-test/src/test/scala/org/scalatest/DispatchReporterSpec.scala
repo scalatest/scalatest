@@ -59,7 +59,7 @@ class DispatchReporterSpec extends FunSpec {
         (erp, dispatch)
       }
       it("should throw NullArgumentException if constructed with a null reporters arg") {
-        intercept[NullArgumentException] {
+        assertThrows[NullArgumentException] {
           val dispatch = new DispatchReporter(null, Console.err, true, 1, 1)
         }
       }
@@ -103,7 +103,7 @@ class DispatchReporterSpec extends FunSpec {
         }
         finally dispatch.doDispose()
       }
-      def doTestStartingAndFinishedEvents(testFinishedEvent: Event): Unit = {
+      def doTestStartingAndFinishedEvents(testFinishedEvent: Event): Assertion = {
         val (erp, dispatch) = fireTestStarting()
         eventually {
           erp.alertProvidedEventsReceived.size should be > 0
@@ -121,6 +121,7 @@ class DispatchReporterSpec extends FunSpec {
           sizeWasSameCount should be >= 5
         }
         dispatch.doDispose()
+        AssertionValue
       }
       it("should stop sending out AlertProvided events after a detected slowpoke succeeds") {
         doTestStartingAndFinishedEvents(

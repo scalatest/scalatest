@@ -187,26 +187,26 @@ class ExampleStatusTestNGSuite extends TestNGSuite with StatusFixtureServices {
 
 @DoNotDiscover
 class ExampleStatusFunSuite extends FunSuite with StatusFixtureServices with ParallelTestExecution {
-  test("Test 1") {}
+  test("Test 1") { succeed }
   test("Test 2") { throw new VirtualMachineError {} }
-  test("Test 3") {}
+  test("Test 3") { succeed }
   val testNameToRun = "Test 2"
 }
 
 @DoNotDiscover
 class ExampleStatusFixtureFunSuite extends fixture.FunSuite with StatusFixtureServices with StringFixture with ParallelTestExecution {
-  test("Test 1") {s =>}
+  test("Test 1") {s => succeed }
   test("Test 2") {s => throw new VirtualMachineError {} }
-  test("Test 3") {s =>}
+  test("Test 3") {s => succeed }
   val testNameToRun = "Test 2"
 }
 
 @DoNotDiscover
 class ExampleStatusFunSpec extends FunSpec with StatusFixtureServices with ParallelTestExecution {
   describe("Scope 1") {
-    it("Test 1") {}
+    it("Test 1") { succeed }
     it("Test 2") { throw new VirtualMachineError {} }
-    it("Test 3") {}
+    it("Test 3") { succeed }
   }
   val testNameToRun = "Scope 1 Test 2"
 }
@@ -214,9 +214,9 @@ class ExampleStatusFunSpec extends FunSpec with StatusFixtureServices with Paral
 @DoNotDiscover
 class ExampleStatusFixtureFunSpec extends fixture.FunSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   describe("Scope 1") {
-    it("Test 1") {s =>}
+    it("Test 1") {s => succeed }
     it("Test 2") {s => throw new VirtualMachineError {}}
-    it("Test 3") {s =>}
+    it("Test 3") {s => succeed }
   }
   val testNameToRun = "Scope 1 Test 2"
 }
@@ -224,9 +224,9 @@ class ExampleStatusFixtureFunSpec extends fixture.FunSpec with StatusFixtureServ
 @DoNotDiscover
 class ExampleStatusFeatureSpec extends FeatureSpec with StatusFixtureServices with ParallelTestExecution {
   feature("Feature 1") {
-    scenario("Scenario 1") {}
+    scenario("Scenario 1") { succeed }
     scenario("Scenario 2") { throw new VirtualMachineError {} }
-    scenario("Scenario 3") {}
+    scenario("Scenario 3") { succeed }
   }
   val testNameToRun = "Feature: Feature 1 Scenario: Scenario 2"
 }
@@ -234,35 +234,35 @@ class ExampleStatusFeatureSpec extends FeatureSpec with StatusFixtureServices wi
 @DoNotDiscover
 class ExampleStatusFixtureFeatureSpec extends fixture.FeatureSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   feature("Feature 1") {
-    scenario("Scenario 1") {s =>}
+    scenario("Scenario 1") {s => succeed }
     scenario("Scenario 2") {s => throw new VirtualMachineError {}}
-    scenario("Scenario 3") {s =>}
+    scenario("Scenario 3") {s => succeed }
   }
   val testNameToRun = "Feature: Feature 1 Scenario: Scenario 2"
 }
 
 @DoNotDiscover
 class ExampleStatusFlatSpec extends FlatSpec with StatusFixtureServices with ParallelTestExecution {
-  "Scope 1" should "do thing 1" in {}
+  "Scope 1" should "do thing 1" in { succeed }
   it should "do thing 2" in {throw new VirtualMachineError {}}
-  it should "do thing 3" in {}
+  it should "do thing 3" in { succeed }
   val testNameToRun = "Scope 1 should do thing 2"
 }
 
 @DoNotDiscover
 class ExampleStatusFixtureFlatSpec extends fixture.FlatSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
-  "Scope 1" should "do thing 1" in {s =>}
+  "Scope 1" should "do thing 1" in {s => succeed }
   it should "do thing 2" in {s =>throw new VirtualMachineError {}}
-  it should "do thing 3" in {s =>}
+  it should "do thing 3" in {s => succeed }
   val testNameToRun = "Scope 1 should do thing 2"
 }
 
 @DoNotDiscover
 class ExampleStatusFreeSpec extends FreeSpec with StatusFixtureServices with ParallelTestExecution {
   "Scope 1" - {
-    "Test 1" in {}
+    "Test 1" in { succeed }
     "Test 2" in {throw new VirtualMachineError {}}
-    "Test 3" in {}
+    "Test 3" in { succeed }
   }
   val testNameToRun = "Scope 1 Test 2"
 }
@@ -270,35 +270,35 @@ class ExampleStatusFreeSpec extends FreeSpec with StatusFixtureServices with Par
 @DoNotDiscover
 class ExampleStatusFixtureFreeSpec extends fixture.FreeSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" - {
-    "Test 1" in {s =>}
+    "Test 1" in {s => succeed }
     "Test 2" in {s =>throw new VirtualMachineError {}}
-    "Test 3" in {s =>}
+    "Test 3" in {s => succeed }
   }
   val testNameToRun = "Scope 1 Test 2"
 }
 
 @DoNotDiscover
 class ExampleStatusPropSpec extends PropSpec with StatusFixtureServices with ParallelTestExecution {
-  property("Test 1") {}
+  property("Test 1") { succeed }
   property("Test 2") {throw new VirtualMachineError {}}
-  property("Test 3") {}
+  property("Test 3") { succeed }
   val testNameToRun = "Test 2"
 }
 
 @DoNotDiscover
 class ExampleStatusFixturePropSpec extends fixture.PropSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
-  property("Test 1") {s =>}
+  property("Test 1") {s => succeed }
   property("Test 2") {s =>throw new VirtualMachineError {}}
-  property("Test 3") {s =>}
+  property("Test 3") {s => succeed }
   val testNameToRun = "Test 2"
 }
 
 @DoNotDiscover
 class ExampleStatusWordSpec extends WordSpec with StatusFixtureServices with ParallelTestExecution {
   "Scope 1" should {
-    "Test 1" in {}
+    "Test 1" in { succeed }
     "Test 2" in {throw new VirtualMachineError {}}
-    "Test 3" in {}
+    "Test 3" in { succeed }
   }
   val testNameToRun = "Scope 1 should Test 2"
 }
@@ -306,9 +306,9 @@ class ExampleStatusWordSpec extends WordSpec with StatusFixtureServices with Par
 @DoNotDiscover
 class ExampleStatusFixtureWordSpec extends fixture.WordSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" should {
-    "Test 1" in {s =>}
+    "Test 1" in {s => succeed }
     "Test 2" in {s =>throw new VirtualMachineError {}}
-    "Test 3" in {s =>}
+    "Test 3" in {s => succeed }
   }
   val testNameToRun = "Scope 1 should Test 2"
 }
@@ -316,9 +316,9 @@ class ExampleStatusFixtureWordSpec extends fixture.WordSpec with StatusFixtureSe
 @DoNotDiscover
 class ExampleStatusPathFreeSpec extends path.FreeSpec with StatusFixtureServices {
   "Scope 1" - {
-    "Test 1" in {}
+    "Test 1" in { succeed }
     "Test 2" in {throw new VirtualMachineError {}}
-    "Test 3" in {}
+    "Test 3" in { succeed }
   }
   override val isSupported = false
   val testNameToRun = "Scope 1 Test 2"
@@ -327,9 +327,9 @@ class ExampleStatusPathFreeSpec extends path.FreeSpec with StatusFixtureServices
 @DoNotDiscover
 class ExampleStatusPathFunSpec extends path.FunSpec with StatusFixtureServices {
   describe("Scope 1") {
-    it("Test 1") {}
+    it("Test 1") { succeed }
     it("Test 2") {throw new VirtualMachineError {}}
-    it("Test 3") {}
+    it("Test 3") { succeed }
   }
   override val isSupported = false
   val testNameToRun = "Scope 1 Test 2"

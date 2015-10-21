@@ -218,18 +218,18 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
 
   def funSuite = new ExampleFunSuite()
   class ExampleFunSuite extends FunSuite {
-    test("test: A Succeeded Test") {}
+    test("test: A Succeeded Test") { succeed }
     test("test: A Failed Test") { fail }
-    ignore("test: An Ignored Test") {}
+    ignore("test: An Ignored Test") { succeed }
     test("test: A Pending Test") { pending }
     test("test: A Canceled Test") { cancel }
   }
   
   def fixtureFunSuite = new ExampleFixtureFunSuite
   class ExampleFixtureFunSuite extends fixture.FunSuite with StringFixture {
-    test("test: A Succeeded Test") { fixture => }
+    test("test: A Succeeded Test") { fixture => succeed}
     test("test: A Failed Test") { fixture => fail }
-    ignore("test: An Ignored Test") { fixture => }
+    ignore("test: An Ignored Test") { fixture => succeed}
     test("test: A Pending Test") { fixture => pending }
     test("test: A Canceled Test") { fixture => cancel }
   }
@@ -237,9 +237,9 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   def funSpec = new ExampleFunSpec
   class ExampleFunSpec extends FunSpec {
     describe("A Spec") {
-      it("test: A Succeeded Test") {}
+      it("test: A Succeeded Test") { succeed }
       it("test: A Failed Test") { fail }
-      ignore("test: An Ignored Test") {}
+      ignore("test: An Ignored Test") { succeed }
       it("test: A Pending Test") { pending }
       it("test: A Canceled Test") { cancel }
     }
@@ -248,9 +248,9 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   def fixtureFunSpec = new ExampleFixtureFunSpec
   class ExampleFixtureFunSpec extends fixture.FunSpec with StringFixture {
     describe("A Spec") {
-      it("test: A Succeeded Test") { fixture => }
+      it("test: A Succeeded Test") { fixture => succeed}
       it("test: A Failed Test") { fixture => fail }
-      ignore("test: An Ignored Test") { fixture => }
+      ignore("test: An Ignored Test") { fixture => succeed}
       it("test: A Pending Test") { fixture => pending }
       it("test: A Canceled Test") { fixture => cancel }
     }
@@ -258,36 +258,36 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   
   def featureSpec = new ExampleFeatureSpec
   class ExampleFeatureSpec extends FeatureSpec {
-    scenario("test: A Succeeded Test") {}
+    scenario("test: A Succeeded Test") { succeed }
     scenario("test: A Failed Test") { fail }
-    ignore("test: An Ignored Test") {}
+    ignore("test: An Ignored Test") { succeed }
     scenario("test: A Pending Test") { pending }
     scenario("test: A Canceled Test") { cancel }
   }
   
   def fixtureFeatureSpec = new ExampleFixtureFeatureSpec
   class ExampleFixtureFeatureSpec extends fixture.FeatureSpec with StringFixture {
-    scenario("test: A Succeeded Test") { fixture => }
+    scenario("test: A Succeeded Test") { fixture => succeed}
     scenario("test: A Failed Test") { fixture => fail }
-    ignore("test: An Ignored Test") { fixture => }
+    ignore("test: An Ignored Test") { fixture => succeed}
     scenario("test: A Pending Test") { fixture => pending }
     scenario("test: A Canceled Test") { fixture => cancel }
   }
   
   def flatSpec = new ExampleFlatSpec
   class ExampleFlatSpec extends FlatSpec {
-    "A Scope" should "test: A Succeeded Test" in {}
+    "A Scope" should "test: A Succeeded Test" in { succeed }
     "A Scope" should "test: A Failed Test" in { fail }
-    "A Scope" should "test: An Ignored Test" ignore {}
+    "A Scope" should "test: An Ignored Test" ignore { succeed }
     "A Scope" should "test: A Pending Test" in { pending }
     "A Scope" should "test: A Canceled Test" in { cancel }
   }
   
   def fixtureFlatSpec = new ExampleFixtureFlatSpec
   class ExampleFixtureFlatSpec extends fixture.FlatSpec with StringFixture {
-    "A Scope" should "test: A Succeeded Test" in { fixture => }
+    "A Scope" should "test: A Succeeded Test" in { fixture => succeed}
     "A Scope" should "test: A Failed Test" in { fixture => fail }
-    "A Scope" should "test: An Ignored Test" ignore { fixture => }
+    "A Scope" should "test: An Ignored Test" ignore { fixture => succeed}
     "A Scope" should "test: A Pending Test" in { fixture => pending }
     "A Scope" should "test: A Canceled Test" in { fixture =>  cancel }
   }
@@ -295,9 +295,9 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   def freeSpec = new ExampleFreeSpec
   class ExampleFreeSpec extends FreeSpec {
     "A Scope" - {
-      "test: A Succeeded Test" in {}
+      "test: A Succeeded Test" in { succeed }
       "test: A Failed Test" in { fail }
-      "test: An Ignored Test" ignore {}
+      "test: An Ignored Test" ignore { succeed }
       "test: A Pending Test" in { pending }
       "test: A Canceled Test" in { cancel }
     }
@@ -306,9 +306,9 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   def fixtureFreeSpec = new ExampleFixtureFreeSpec
   class ExampleFixtureFreeSpec extends fixture.FreeSpec with StringFixture {
     "A Scope" - {
-      "test: A Succeeded Test" in { fixture => }
+      "test: A Succeeded Test" in { fixture => succeed}
       "test: A Failed Test" in { fixture => fail }
-      "test: An Ignored Test" ignore { fixture => }
+      "test: An Ignored Test" ignore { fixture => succeed}
       "test: A Pending Test" in { fixture => pending }
       "test: A Canceled Test" in { fixture => cancel }
     }
@@ -316,18 +316,18 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   
   def propSpec = new ExamplePropSpec
   class ExamplePropSpec extends PropSpec {
-    property("test: A Succeeded Test") {}
+    property("test: A Succeeded Test") { succeed }
     property("test: A Failed Test") { fail }
-    ignore("test: An Ignored Test") {}
+    ignore("test: An Ignored Test") { succeed }
     property("test: A Pending Test") { pending }
     property("test: A Canceled Test") { cancel }
   }
   
   def fixturePropSpec = new ExampleFixturePropSpec
   class ExampleFixturePropSpec extends fixture.PropSpec with StringFixture {
-    property("test: A Succeeded Test") { fixture => }
+    property("test: A Succeeded Test") { fixture => succeed}
     property("test: A Failed Test") { fixture =>  fail }
-    ignore("test: An Ignored Test") { fixture => }
+    ignore("test: An Ignored Test") { fixture => succeed}
     property("test: A Pending Test") { fixture =>  pending }
     property("test: A Canceled Test") { fixture =>  cancel }
   }
@@ -335,9 +335,9 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   def wordSpec = new ExampleWordSpec
   class ExampleWordSpec extends WordSpec {
     "A Scope" should {
-      "test: A Succeeded Test" in {}
+      "test: A Succeeded Test" in { succeed }
       "test: A Failed Test" in { fail }
-      "test: An Ignored Test" ignore {}
+      "test: An Ignored Test" ignore { succeed }
       "test: A Pending Test" in { pending }
       "test: A Canceled Test" in { cancel }
     }
@@ -346,9 +346,9 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   def fixtureWordSpec = new ExampleFixtureWordSpec
   class ExampleFixtureWordSpec extends fixture.WordSpec with StringFixture {
     "A Scope" should { 
-      "test: A Succeeded Test" in { fixture => }
+      "test: A Succeeded Test" in { fixture => succeed}
       "test: A Failed Test" in { fixture =>  fail }
-      "test: An Ignored Test" ignore { fixture => }
+      "test: An Ignored Test" ignore { fixture => succeed}
       "test: A Pending Test" in { fixture => pending }
       "test: A Canceled Test" in { fixture => cancel }
     }

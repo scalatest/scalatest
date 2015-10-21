@@ -25,7 +25,7 @@ class YeOldeFunSuiteSpec extends Spec {
   def `test that test methods with no tags dont show up in tags map` = {
     
     val a = new FunSuite {
-      test("test not in a group") {}
+      test("test not in a group") { succeed }
     }
     assert(a.tags.keySet.size === 0)
   }
@@ -43,26 +43,26 @@ class YeOldeFunSuiteSpec extends Spec {
   def `test that test name cant be reused` = {
     intercept[DuplicateTestNameException] {
       new FunSuite {
-        test("test this") {}
-        test("test this") {}
+        test("test this") { succeed }
+        test("test this") { succeed }
       }
     }
     intercept[DuplicateTestNameException] {
       new FunSuite {
-        ignore("test this") {}
-        test("test this") {}
+        ignore("test this") { succeed }
+        test("test this") { succeed }
       }
     }
     intercept[DuplicateTestNameException] {
       new FunSuite {
-        test("test this") {}
-        ignore("test this") {}
+        test("test this") { succeed }
+        ignore("test this") { succeed }
       }
     }
     intercept[DuplicateTestNameException] {
       new FunSuite {
-        ignore("test this") {}
-        ignore("test this") {}
+        ignore("test this") { succeed }
+        ignore("test this") { succeed }
       }
     }
   }
@@ -299,7 +299,7 @@ class YeOldeFunSuiteSpec extends Spec {
   def `test that test durations are included in test failed and test succeeded events fired from FunSuite` = {
 
     class MyFunSuite extends FunSuite {
-      test("that it succeeds") {}
+      test("that it succeeds") { succeed }
       test("that it fails") { fail() }
     }
 

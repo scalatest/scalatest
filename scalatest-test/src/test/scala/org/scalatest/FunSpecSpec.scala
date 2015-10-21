@@ -36,8 +36,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the test names in registration order from testNames") {
 
       val a = new FunSpec {
-        it("should test this") {}
-        it("should test that") {}
+        it("should test this") { succeed }
+        it("should test that") { succeed }
       }
 
       assertResult(List("should test this", "should test that")) {
@@ -51,8 +51,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       }
 
       val c = new FunSpec {
-        it("should test that") {}
-        it("should test this") {}
+        it("should test that") { succeed }
+        it("should test this") { succeed }
       }
 
       assertResult(List("should test that", "should test this")) {
@@ -61,8 +61,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
 
       val d = new FunSpec {
         describe("A Tester") {
-          it("should test that") {}
-          it("should test this") {}
+          it("should test that") { succeed }
+          it("should test this") { succeed }
         }
       }
 
@@ -72,8 +72,8 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
 
       val e = new FunSpec {
         describe("A Tester") {
-          it("should test this") {}
-          it("should test that") {}
+          it("should test this") { succeed }
+          it("should test that") { succeed }
         }
       }
 
@@ -86,26 +86,26 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       
       intercept[DuplicateTestNameException] {
         new FunSpec {
-          it("should test this") {}
-          it("should test this") {}
+          it("should test this") { succeed }
+          it("should test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSpec {
-          it("should test this") {}
-          ignore("should test this") {}
+          it("should test this") { succeed }
+          ignore("should test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSpec {
-          ignore("should test this") {}
-          ignore("should test this") {}
+          ignore("should test this") { succeed }
+          ignore("should test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSpec {
-          ignore("should test this") {}
-          it("should test this") {}
+          ignore("should test this") { succeed }
+          it("should test this") { succeed }
         }
       }
     }
@@ -136,7 +136,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
           correctTestNameWasPassed = test.name == "should do something"
           super.withFixture(test)
         }
-        it("should do something") {}
+        it("should do something") { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -151,7 +151,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
         }
-        it("should do something") {}
+        it("should do something") { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -180,7 +180,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         val msg = "hi there, dude"
         val testName = "test name"
         info(msg)
-        it(testName) {}
+        it(testName) { succeed }
       }
       it("should, when the info appears in the body before a test, report the info before the test") {
         val spec = new InfoBeforeTestSpec
@@ -193,7 +193,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
         val msg = "hi there, dude"
         val testName = "test name"
         class MySpec extends FunSpec {
-          it(testName) {}
+          it(testName) { succeed }
           info(msg)
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
@@ -354,7 +354,7 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
     it("should run tests registered via the 'it should behave like' syntax") {
       trait SharedSpecTests { this: FunSpec =>
         def nonEmptyStack(s: String)(i: Int) {
-          it("should be that I am shared") {}
+          it("should be that I am shared") { succeed }
         }
       }
       class MySpec extends FunSpec with SharedSpecTests {
@@ -375,72 +375,72 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       // it
       intercept[NullArgumentException] {
         new FunSpec {
-          it("hi", null) {}
+          it("hi", null) { succeed }
         }
       }
       val caught = intercept[NullArgumentException] {
         new FunSpec {
-          it("hi", mytags.SlowAsMolasses, null) {}
+          it("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSpec {
-          it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
         new FunSpec {
-          ignore("hi", null) {}
+          ignore("hi", null) { succeed }
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new FunSpec {
-          ignore("hi", mytags.SlowAsMolasses, null) {}
+          ignore("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught2.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSpec {
-          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
         new FunSpec {
-          registerTest("hi", null) {}
+          registerTest("hi", null) { succeed }
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new FunSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null) {}
+          registerTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught3.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FunSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
         new FunSpec {
-          registerIgnoredTest("hi", null) {}
+          registerIgnoredTest("hi", null) { succeed }
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new FunSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught4.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
     }
@@ -900,28 +900,28 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the correct test count from its expectedTestCount method") {
 
       val a = new FunSpec {
-        it("test this") {}
-        it("test that") {}
+        it("test this") { succeed }
+        it("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new FunSpec {
-        ignore("test this") {}
-        it("test that") {}
+        ignore("test this") { succeed }
+        it("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new FunSpec {
-        it("test this", mytags.FastAsLight) {}
-        it("test that") {}
+        it("test this", mytags.FastAsLight) { succeed }
+        it("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
       val d = new FunSpec {
-        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        it("test that", mytags.SlowAsMolasses) {}
-        it("test the other thing") {}
+        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        it("test that", mytags.SlowAsMolasses) { succeed }
+        it("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -929,9 +929,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) === 3)
 
       val e = new FunSpec {
-        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        it("test that", mytags.SlowAsMolasses) {}
-        ignore("test the other thing") {}
+        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        it("test that", mytags.SlowAsMolasses) { succeed }
+        ignore("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -945,28 +945,28 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the correct test count from its expectedTestCount method when register tests with registerTest and registerIgnoredTest") {
 
       val a = new FunSpec {
-        registerTest("test this") {}
-        registerTest("test that") {}
+        registerTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new FunSpec {
-        registerIgnoredTest("test this") {}
-        registerTest("test that") {}
+        registerIgnoredTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new FunSpec {
-        registerTest("test this", mytags.FastAsLight) {}
-        registerTest("test that") {}
+        registerTest("test this", mytags.FastAsLight) { succeed }
+        registerTest("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
       val d = new FunSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerTest("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -974,9 +974,9 @@ class FunSpecSpec extends FunSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) === 3)
 
       val e = new FunSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerIgnoredTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerIgnoredTest("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)

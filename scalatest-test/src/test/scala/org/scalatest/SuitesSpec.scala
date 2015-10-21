@@ -52,8 +52,8 @@ class SuitesSpec extends FunSpec {
     it("should care about chosenStyles if it contains tests directly") {
 
       class SuitesWithSpecStyleTests(suitesToNest: Suite*) extends Suites(suitesToNest.toList: _*) with FunSpecLike {
-        it("test method 1") {}
-        it("test method 2") {}
+        it("test method 1") { succeed }
+        it("test method 2") { succeed }
       }
 
       val g = new SuitesWithSpecStyleTests(a, b, c, d, e)

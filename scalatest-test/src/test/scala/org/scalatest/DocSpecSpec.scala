@@ -144,9 +144,10 @@ This is a paragraph later...
         var wasRun = false
         it("a test") {
           wasRun = true
+          succeed
         }
       }
-        
+
       it("should run the nested suite as well as outputing the markup text") {
 
         val nestedSpec = new NestedSpec

@@ -346,61 +346,61 @@ class ConfigMapSpec extends FunSpec {
     }
     it("should work with 'contain (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain ("one" -> 1)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain ("three" -> 3)
       }
     }
     it("should work with 'contain oneOf (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain oneOf ("one" -> 1, "three" -> 3)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain oneOf ("three" -> 3, "four" -> 4)
       }
     }
     it("should work with 'contain noneOf (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain noneOf ("three" -> 3, "four" -> 4)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain noneOf ("one" -> 1, "four" -> 4)
       }
     }
     it("should work with 'contain allOf (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain allOf ("one" -> 1, "two" -> 2)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain allOf ("one" -> 1, "four" -> 4)
       }
     }
     it("should work with 'contain atLeastOneOf (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain atLeastOneOf ("one" -> 1, "two" -> 2)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain atLeastOneOf ("three" -> 3, "four" -> 4)
       }
     }
     it("should work with 'contain theSameElementsAs (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain theSameElementsAs List("one" -> 1, "two" -> 2)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain theSameElementsAs List("three" -> 3, "four" -> 4)
       }
     }
     it("should work with 'contain atMostOneOf (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain atMostOneOf ("three" -> 3, "four" -> 4)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain atMostOneOf ("one" -> 1, "two" -> 2)
       }
     }
     it("should work with 'contain only (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain only ("one" -> 1, "two" -> 2)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain only ("one" -> 2)
       }
     }
     it("should work with 'contain key (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain key ("one")
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain key ("three")
       }
     }
     it("should work with 'contain value (...) syntax") {
       ConfigMap("one" -> 1, "two" -> 2) should contain value (1)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("one" -> 1, "two" -> 2) should contain value (3)
       }
     }

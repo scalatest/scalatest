@@ -177,9 +177,9 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSuite exten
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSuite extends fixture.FunSuite with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
-  test("Test 1") { fixture => }
-  test("Test 2") { fixture => }
-  test("Test 3") { fixture => }
+  test("Test 1") { fixture => succeed }
+  test("Test 2") { fixture => succeed }
+  test("Test 3") { fixture => succeed }
   
   val holdTestSucceededName = "Test 2"
   val holdUntilEventCount = 5
@@ -243,12 +243,12 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSpec extend
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSpec extends fixture.FunSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   describe("Scope 1") {
-    it("Test 1") { fixture => }
-    it("Test 2") { fixture =>}
+    it("Test 1") { fixture => succeed }
+    it("Test 2") { fixture =>succeed }
   }
   describe("Scope 2") {
-    it("Test 3") { fixture => }
-    it("Test 4") { fixture => }
+    it("Test 3") { fixture => succeed }
+    it("Test 4") { fixture => succeed }
   }
   
   val holdTestSucceededName = "Scope 2 Test 3"
@@ -319,12 +319,12 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec ex
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFeatureSpec extends fixture.FeatureSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   feature("Scope 1") {
-    scenario("Test 1") { fixture => }
-    scenario("Test 2") { fixture =>}
+    scenario("Test 1") { fixture => succeed }
+    scenario("Test 2") { fixture =>succeed }
   }
   feature("Scope 2") {
-    scenario("Test 3") { fixture => }
-    scenario("Test 4") { fixture => }
+    scenario("Test 3") { fixture => succeed }
+    scenario("Test 4") { fixture => succeed }
   }
   
   val holdTestSucceededName = "Feature: Scope 2 Scenario: Test 3"
@@ -394,12 +394,12 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFlatSpec exten
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFlatSpec extends fixture.FlatSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   behavior of "Scope 1"
-  it should "Test 1" in { fixture => }
-  it should "Test 2" in { fixture => }
+  it should "Test 1" in { fixture => succeed }
+  it should "Test 2" in { fixture => succeed }
   
   behavior of "Scope 2"
-  it should "Test 3" in { fixture => }
-  it should "Test 4" in { fixture => }
+  it should "Test 3" in { fixture => succeed }
+  it should "Test 4" in { fixture => succeed }
   
   val holdTestSucceededName = "Scope 2 should Test 3"
   val holdUntilEventCount = 11
@@ -470,13 +470,13 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFreeSpec exten
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFreeSpec extends fixture.FreeSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   "Scope 1" - {
-    "Test 1" in { fixture => }
-    "Test 2" in { fixture => }
+    "Test 1" in { fixture => succeed }
+    "Test 2" in { fixture => succeed }
   }
   
   "Scope 2" - {
-    "Test 3" in { fixture => }
-    "Test 4" in { fixture => }
+    "Test 3" in { fixture => succeed }
+    "Test 4" in { fixture => succeed }
   }
   
   val holdTestSucceededName = "Scope 2 Test 3"
@@ -535,9 +535,9 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutPropSpec exten
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixturePropSpec extends fixture.PropSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
-  property("Test 1") { fixture => }
-  property("Test 2") { fixture => }
-  property("Test 3") { fixture => }
+  property("Test 1") { fixture => succeed }
+  property("Test 2") { fixture => succeed }
+  property("Test 3") { fixture => succeed }
   
   val holdTestSucceededName = "Test 2"
   val holdUntilEventCount = 5
@@ -602,13 +602,13 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutWordSpec exten
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureWordSpec extends fixture.WordSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   "Scope 1" should {
-    "Test 1" in { fixture => }
-    "Test 2" in { fixture => }
+    "Test 1" in { fixture => succeed }
+    "Test 2" in { fixture => succeed }
   }
   
   "Scope 2" should {
-    "Test 3" in { fixture => }
-    "Test 4" in { fixture => }
+    "Test 3" in { fixture => succeed }
+    "Test 4" in { fixture => succeed }
   }
   
   val holdTestSucceededName = "Scope 2 should Test 3"

@@ -29,8 +29,8 @@ class PropSpecSpec extends FunSpec {
     it("should return the test names in registration order from testNames") {
       
       val a = new PropSpec {
-        property("test this") {}
-        property("test that") {}
+        property("test this") { succeed }
+        property("test that") { succeed }
       }
 
       assertResult(List("test this", "test that")) {
@@ -44,8 +44,8 @@ class PropSpecSpec extends FunSpec {
       }
 
       val c = new PropSpec {
-        property("test that") {}
-        property("test this") {}
+        property("test that") { succeed }
+        property("test this") { succeed }
       }
 
       assertResult(List("test that", "test this")) {
@@ -57,26 +57,26 @@ class PropSpecSpec extends FunSpec {
 
       intercept[DuplicateTestNameException] {
         new PropSpec {
-          property("test this") {}
-          property("test this") {}
+          property("test this") { succeed }
+          property("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new PropSpec {
-          property("test this") {}
-          ignore("test this") {}
+          property("test this") { succeed }
+          ignore("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new PropSpec {
-          ignore("test this") {}
-          ignore("test this") {}
+          ignore("test this") { succeed }
+          ignore("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new PropSpec {
-          ignore("test this") {}
-          property("test this") {}
+          ignore("test this") { succeed }
+          property("test this") { succeed }
         }
       }
     }
@@ -150,7 +150,7 @@ class PropSpecSpec extends FunSpec {
           correctTestNameWasPassed = test.name == "something"
           super.withFixture(test)
         }
-        property("something") {}
+        property("something") { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -165,7 +165,7 @@ class PropSpecSpec extends FunSpec {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
         }
-        property("something") {}
+        property("something") { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -180,7 +180,7 @@ class PropSpecSpec extends FunSpec {
         val testName = "test name"
         class MySuite extends PropSpec {
           info(msg)
-          property(testName) {}
+          property(testName) { succeed }
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
           getIndexesForInformerEventOrderTests(new MySuite, testName, msg)
@@ -191,7 +191,7 @@ class PropSpecSpec extends FunSpec {
         val msg = "hi there, dude"
         val testName = "test name"
         class MySuite extends PropSpec {
-          property(testName) {}
+          property(testName) { succeed }
           info(msg)
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
@@ -218,7 +218,7 @@ class PropSpecSpec extends FunSpec {
     it("should run tests registered via the propertiesFor syntax") {
       trait SharedPropSpecTests { this: PropSpec =>
         def nonEmptyStack(s: String)(i: Int) {
-          property("I am shared") {}
+          property("I am shared") { succeed }
         }
       }
       class MySuite extends PropSpec with SharedPropSpecTests {
@@ -238,72 +238,72 @@ class PropSpecSpec extends FunSpec {
       // test
       intercept[NullArgumentException] {
         new PropSpec {
-          property("hi", null) {}
+          property("hi", null) { succeed }
         }
       }
       val caught = intercept[NullArgumentException] {
         new PropSpec {
-          property("hi", mytags.SlowAsMolasses, null) {}
+          property("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new PropSpec {
-          property("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          property("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
         new PropSpec {
-          ignore("hi", null) {}
+          ignore("hi", null) { succeed }
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new PropSpec {
-          ignore("hi", mytags.SlowAsMolasses, null) {}
+          ignore("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught2.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new PropSpec {
-          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
         new PropSpec {
-          registerTest("hi", null) {}
+          registerTest("hi", null) { succeed }
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new PropSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null) {}
+          registerTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught3.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new PropSpec {
-          property("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          property("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
         new PropSpec {
-          registerIgnoredTest("hi", null) {}
+          registerIgnoredTest("hi", null) { succeed }
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new PropSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught4.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new PropSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
     }
@@ -764,28 +764,28 @@ class PropSpecSpec extends FunSpec {
     it("should return the correct test count from its expectedTestCount method") {
 
       val a = new PropSpec {
-        property("test this") {}
-        property("test that") {}
+        property("test this") { succeed }
+        property("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
       val b = new PropSpec {
-        ignore("test this") {}
-        property("test that") {}
+        ignore("test this") { succeed }
+        property("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
       val c = new PropSpec {
-        property("test this", mytags.FastAsLight) {}
-        property("test that") {}
+        property("test this", mytags.FastAsLight) { succeed }
+        property("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
       val d = new PropSpec {
-        property("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        property("test that", mytags.SlowAsMolasses) {}
-        property("test the other thing") {}
+        property("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        property("test that", mytags.SlowAsMolasses) { succeed }
+        property("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -793,9 +793,9 @@ class PropSpecSpec extends FunSpec {
       assert(d.expectedTestCount(Filter()) === 3)
 
       val e = new PropSpec {
-        property("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        property("test that", mytags.SlowAsMolasses) {}
-        ignore("test the other thing") {}
+        property("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        property("test that", mytags.SlowAsMolasses) { succeed }
+        ignore("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -808,28 +808,28 @@ class PropSpecSpec extends FunSpec {
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
 
       val a = new PropSpec {
-        registerTest("test this") {}
-        registerTest("test that") {}
+        registerTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
       val b = new PropSpec {
-        registerIgnoredTest("test this") {}
-        registerTest("test that") {}
+        registerIgnoredTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
       val c = new PropSpec {
-        registerTest("test this", mytags.FastAsLight) {}
-        registerTest("test that") {}
+        registerTest("test this", mytags.FastAsLight) { succeed }
+        registerTest("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
       val d = new PropSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerTest("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -837,9 +837,9 @@ class PropSpecSpec extends FunSpec {
       assert(d.expectedTestCount(Filter()) == 3)
 
       val e = new PropSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerIgnoredTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerIgnoredTest("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -975,8 +975,8 @@ class PropSpecSpec extends FunSpec {
 
     it("should throw IllegalArgumentException if passed a testName that doesn't exist") {
       class MySuite extends PropSpec {
-        property("one") {}
-        property("two") {}
+        property("one") { succeed }
+        property("two") { succeed }
       }
       val suite = new MySuite
       intercept[IllegalArgumentException] {

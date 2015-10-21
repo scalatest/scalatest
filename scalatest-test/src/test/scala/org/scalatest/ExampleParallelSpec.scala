@@ -22,26 +22,26 @@ protected[scalatest] class ExampleParallelSpec extends WordSpec with ParallelTes
 
   "Subject 1" should {
     "have behavior 1a" in {
-      SleepHelper.sleep(100)
+      SleepHelper.sleep(100); succeed
     }
     "have behavior 1b" in {
       info("This is info 1 in 1b")
       info("This is info 2 in 1b")
-      SleepHelper.sleep(90)
+      SleepHelper.sleep(90); succeed
     }
     "have behavior 1c" in {
-      SleepHelper.sleep(80)
+      SleepHelper.sleep(80); succeed
     }
   }
   "Subject 2" should {
     "have behavior 2a" in {
-      SleepHelper.sleep(70)
+      SleepHelper.sleep(70); succeed
     }
     "have behavior 2b" in {
-      SleepHelper.sleep(60)
+      SleepHelper.sleep(60); succeed
     }
     "have behavior 2c" in {
-      SleepHelper.sleep(50)
+      SleepHelper.sleep(50); succeed
     }
   }
 

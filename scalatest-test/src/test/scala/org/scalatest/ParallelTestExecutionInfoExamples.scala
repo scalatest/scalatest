@@ -111,9 +111,9 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureSpec extends f
 protected[scalatest] class ExampleParallelTestExecutionInfoFunSuite extends FunSuite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
-  test("Test 1") {}
-  test("Test 2") {}
-  test("Test 3") {}
+  test("Test 1") { succeed }
+  test("Test 2") { succeed }
+  test("Test 3") { succeed }
   
   def assertBeforeAfterInfo(events: List[Event]) {
     assert(events.size === 12)
@@ -137,9 +137,9 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFunSuite extends FunS
 protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSuite extends fixture.FunSuite with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
-  test("Test 1") { fixture => }
-  test("Test 2") { fixture => }
-  test("Test 3") { fixture => }
+  test("Test 1") { fixture => succeed }
+  test("Test 2") { fixture => succeed }
+  test("Test 3") { fixture => succeed }
   
   def assertBeforeAfterInfo(events: List[Event]) {
     assert(events.size === 12)
@@ -164,12 +164,12 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFunSpec extends FunSp
   before { info("In Before") }
   after { info("In After") }
   describe("Scope 1") {
-    it("Test 1") {}
-    it("Test 2") {}
+    it("Test 1") { succeed }
+    it("Test 2") { succeed }
   }
   describe("Scope 2") {
-    it("Test 3") {}
-    it("Test 4") {}
+    it("Test 3") { succeed }
+    it("Test 4") { succeed }
   }
   
   def assertBeforeAfterInfo(events: List[Event]) {
@@ -203,12 +203,12 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFunSpec extend
   before { info("In Before") }
   after { info("In After") }
   describe("Scope 1") {
-    it("Test 1") { fixture => }
-    it("Test 2") { fixture =>}
+    it("Test 1") { fixture => succeed }
+    it("Test 2") { fixture => succeed }
   }
   describe("Scope 2") {
-    it("Test 3") { fixture => }
-    it("Test 4") { fixture =>}
+    it("Test 3") { fixture => succeed }
+    it("Test 4") { fixture => succeed }
   }
   
   def assertBeforeAfterInfo(events: List[Event]) {
@@ -242,12 +242,12 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFeatureSpec extends F
   before { info("In Before") }
   after { info("In After") }
   feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+    scenario("Test 1") { succeed }
+    scenario("Test 2") { succeed }
   }
   feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+    scenario("Test 3") { succeed }
+    scenario("Test 4") { succeed }
   }
   
   def assertBeforeAfterInfo(events: List[Event]) {
@@ -281,12 +281,12 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFeatureSpec ex
   before { info("In Before") }
   after { info("In After") }
   feature("Scope 1") {
-    scenario("Test 1") { fixture => }
-    scenario("Test 2") { fixture =>}
+    scenario("Test 1") { fixture => succeed }
+    scenario("Test 2") { fixture => succeed }
   }
   feature("Scope 2") {
-    scenario("Test 3") { fixture => }
-    scenario("Test 4") { fixture =>}
+    scenario("Test 3") { fixture => succeed }
+    scenario("Test 4") { fixture => succeed }
   }
   
   def assertBeforeAfterInfo(events: List[Event]) {
@@ -358,12 +358,12 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFlatSpec exten
   before { info("In Before") }
   after { info("In After") }
   behavior of "Scope 1"
-  it should "Test 1" in { fixture => }
-  it should "Test 2" in { fixture => }
+  it should "Test 1" in { fixture => succeed }
+  it should "Test 2" in { fixture => succeed }
   
   behavior of "Scope 2"
-  it should "Test 3" in { fixture => }
-  it should "Test 4" in { fixture => }
+  it should "Test 3" in { fixture => succeed }
+  it should "Test 4" in { fixture => succeed }
   
   def assertBeforeAfterInfo(events: List[Event]) {
     assert(events.size === 20)
@@ -436,13 +436,13 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFreeSpec exten
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" - {
-    "Test 1" in { fixture => }
-    "Test 2" in { fixture => }
+    "Test 1" in { fixture => succeed }
+    "Test 2" in { fixture => succeed }
   }
   
   "Scope 2" - {
-    "Test 3" in { fixture => }
-    "Test 4" in { fixture => }
+    "Test 3" in { fixture => succeed }
+    "Test 4" in { fixture => succeed }
   }
   
   def assertBeforeAfterInfo(events: List[Event]) {
@@ -475,9 +475,9 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureFreeSpec exten
 protected[scalatest] class ExampleParallelTestExecutionInfoPropSpec extends PropSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before { info("In Before") }
   after { info("In After") }
-  property("Test 1") {}
-  property("Test 2") {}
-  property("Test 3") {}
+  property("Test 1") { succeed }
+  property("Test 2") { succeed }
+  property("Test 3") { succeed }
   
   def assertBeforeAfterInfo(events: List[Event]) {
     assert(events.size === 12)
@@ -501,9 +501,9 @@ protected[scalatest] class ExampleParallelTestExecutionInfoPropSpec extends Prop
 protected[scalatest] class ExampleParallelTestExecutionInfoFixturePropSpec extends fixture.PropSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before { info("In Before") }
   after { info("In After") }
-  property("Test 1") { fixture => }
-  property("Test 2") { fixture => }
-  property("Test 3") { fixture => }
+  property("Test 1") { fixture => succeed }
+  property("Test 2") { fixture => succeed }
+  property("Test 3") { fixture => succeed }
   
   def assertBeforeAfterInfo(events: List[Event]) {
     assert(events.size === 12)
@@ -567,13 +567,13 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFixtureWordSpec exten
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" should {
-    "Test 1" in { fixture => }
-    "Test 2" in { fixture => }
+    "Test 1" in { fixture => succeed }
+    "Test 2" in { fixture => succeed }
   }
   
   "Scope 2" should {
-    "Test 3" in { fixture => }
-    "Test 4" in { fixture => }
+    "Test 3" in { fixture => succeed }
+    "Test 4" in { fixture => succeed }
   }
   
   def assertBeforeAfterInfo(events: List[Event]) {

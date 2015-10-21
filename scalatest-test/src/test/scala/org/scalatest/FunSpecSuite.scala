@@ -93,8 +93,8 @@ class FunSpecSuite extends FunSuite {
   test("plain-old specifier test names should include an enclosing describe string, separated by a space") {
     class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
-        it("must allow me to pop") {}
-        it("must allow me to push") {}
+        it("must allow me to pop") { succeed }
+        it("must allow me to push") { succeed }
       }
     }
     val a = new MySpec
@@ -107,10 +107,10 @@ class FunSpecSuite extends FunSuite {
     class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         describe("(when not empty)") {
-          it("must allow me to pop") {}
+          it("must allow me to pop") { succeed }
         }
         describe("(when not full)") {
-          it("must allow me to push") {}
+          it("must allow me to push") { succeed }
         }
       }
     }
@@ -124,10 +124,10 @@ class FunSpecSuite extends FunSuite {
     class MySpec extends FunSpec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
       describe("A Stack") {
         describe("(when not empty)") {
-          it("should allow me to pop") {}
+          it("should allow me to pop") { succeed }
         }
         describe("(when not full)") {
-          it("should allow me to push") {}
+          it("should allow me to push") { succeed }
         }
       }
     }
@@ -159,7 +159,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec with Matchers {
-      it("must start with proper words") {}
+      it("must start with proper words") { succeed }
     }
     val a = new MySpec
     a.run(None, Args(new MyReporter))
@@ -191,7 +191,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec with Matchers {
-      it("must start with proper words") {}
+      it("must start with proper words") { succeed }
     }
     val a = new MySpec
     a.run(None, Args(new MyReporter))
@@ -279,7 +279,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec with Matchers {
       describe("My Spec") {
-        it("must start with proper words") {}
+        it("must start with proper words") { succeed }
       }
     }
     val a = new MySpec
@@ -338,7 +338,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec with Matchers {
       describe("My Spec") {
-        it("must start with proper words") {}
+        it("must start with proper words") { succeed }
       }
     }
     val a = new MySpec
@@ -475,7 +475,7 @@ class FunSpecSuite extends FunSuite {
     class MySpec extends FunSpec with Matchers {
       describe("My") {
         describe("Spec") {
-          it("must start with proper words") {}
+          it("must start with proper words") { succeed }
         }
       }
     }
@@ -591,7 +591,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec {
       def myBehavior(i: Int) {
-        it("it should start with proper words") {}
+        it("it should start with proper words") { succeed }
       }
       it should behave like myBehavior(1)
     }
@@ -626,7 +626,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec {
       def myBehavior(i: Int) {
-        it("must start with proper words") {}
+        it("must start with proper words") { succeed }
       }
       it should behave like myBehavior(1)
     }
@@ -661,7 +661,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec {
       def myBehavior(i: Int) {
-        it("must start with proper words") {}
+        it("must start with proper words") { succeed }
       }
       it should behave like myBehavior(1)
     }
@@ -754,7 +754,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec {
       def myBehavior(i: Int) {
-        it("should start with proper words") {}
+        it("should start with proper words") { succeed }
       }
       describe("My Spec") {
         it should behave like myBehavior(1)
@@ -803,7 +803,7 @@ class FunSpecSuite extends FunSuite {
         foundMyGoodie = args.configMap.contains("my goodie")
         super.runTest(testName, args)
       }
-      it("it should find my goodie") {}
+      it("it should find my goodie") { succeed }
     }
     val a = new MySpec
     a.run(None, Args(StubReporter, Stopper.default, Filter(), ConfigMap("my goodie" -> "hi"), None, new Tracker, Set.empty))
@@ -827,7 +827,7 @@ class FunSpecSuite extends FunSuite {
     class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         describe("(when working right)") {
-          it("should push and pop properly") {}
+          it("should push and pop properly") { succeed }
         }
       }
     }
@@ -838,13 +838,13 @@ class FunSpecSuite extends FunSuite {
   
   test("expectedTestCount is the number of plain-old specifiers if no shares") {
     class MySpec extends FunSpec with Matchers {
-      it("must one") {}
-      it("must two") {}
+      it("must one") { succeed }
+      it("must two") { succeed }
       describe("behavior") {
-        it("must three") {}  
-        it("must four") {}
+        it("must three") { succeed }  
+        it("must four") { succeed }
       }
-      it("must five") {}
+      it("must five") { succeed }
     }
     val a = new MySpec
     assert(a.expectedTestCount(Filter()) === 5)
@@ -865,7 +865,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec with Matchers {
-      it("this thing must start with proper words") {}
+      it("this thing must start with proper words") { succeed }
     }
     val a = new MySpec
     a.run(None, Args(new MyReporter))
@@ -886,7 +886,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec with Matchers {
-      it("this thing must start with proper words") {}
+      it("this thing must start with proper words") { succeed }
     }
     val a = new MySpec
     a.run(None, Args(new MyReporter))
@@ -929,7 +929,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
-        it("needs to push and pop properly") {}
+        it("needs to push and pop properly") { succeed }
       }
     }
     val a = new MySpec
@@ -1000,7 +1000,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec with Matchers {
-      it("My spec text must have the proper words") {}
+      it("My spec text must have the proper words") { succeed }
     }
     val a = new MySpec
     a.run(None, Args(new MyReporter))
@@ -1028,7 +1028,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
-        it("My short name must have the proper words") {}
+        it("My short name must have the proper words") { succeed }
       }
     }
     val a = new MySpec
@@ -1058,7 +1058,7 @@ class FunSpecSuite extends FunSuite {
     class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
         describe("(when empty)") {
-          it("My short name must have the proper words") {}
+          it("My short name must have the proper words") { succeed }
         }
       }
     }
@@ -1092,7 +1092,7 @@ class FunSpecSuite extends FunSuite {
 
     class MySpec extends FunSpec with Matchers {
       describe("A Stack") {
-        it("should allow me to push") {}
+        it("should allow me to push") { succeed }
       }
     }
 
@@ -1114,11 +1114,11 @@ class FunSpecSuite extends FunSuite {
       }
       describe("A Stack") {
         describe("(when not empty)") {
-          it("should allow me to pop") {}
+          it("should allow me to pop") { succeed }
           it should behave like invocationVerifier(1) 
         }
         describe("(when not full)") {
-          it("should allow me to push") {}
+          it("should allow me to push") { succeed }
         }
       }
     }
@@ -1141,11 +1141,11 @@ class FunSpecSuite extends FunSuite {
       }
       describe("A Stack") {
         describe("(when not empty)") {
-          it("should allow me to pop") {}
+          it("should allow me to pop") { succeed }
           it should behave like invocationVerifier(1)
         }
         describe("(when not full)") {
-          it("should allow me to push") {}
+          it("should allow me to push") { succeed }
         }
       }
     }
@@ -1271,16 +1271,16 @@ class FunSpecSuite extends FunSuite {
   test("expectedTestCount should not include tests in shares if never called") {
     class MySpec extends FunSpec with Matchers {
       class Misbehavior extends FunSpec with Matchers {
-        it("should six") {}
-        it("should seven") {}
+        it("should six") { succeed }
+        it("should seven") { succeed }
       }
-      it("should one") {}
-      it("should two") {}
+      it("should one") { succeed }
+      it("should two") { succeed }
       describe("behavior") {
-        it("should three") {}
-        it("should four") {}
+        it("should three") { succeed }
+        it("should four") { succeed }
       }
-      it("should five") {}
+      it("should five") { succeed }
     }
     val a = new MySpec
     assert(a.expectedTestCount(Filter()) === 5)
@@ -1289,17 +1289,17 @@ class FunSpecSuite extends FunSuite {
   test("expectedTestCount should include tests in a share that is called") {
     class MySpec extends FunSpec {
       def misbehavior(i: Int) {
-        it("should six") {}
-        it("should seven") {}
+        it("should six") { succeed }
+        it("should seven") { succeed }
       }
-      it("should one") {}
-      it("should two") {}
+      it("should one") { succeed }
+      it("should two") { succeed }
       describe("behavior") {
-        it("should three") {}
+        it("should three") { succeed }
         it should behave like misbehavior(1) 
-        it("should four") {}
+        it("should four") { succeed }
       }
-      it("should five") {}
+      it("should five") { succeed }
     }
     val a = new MySpec
     assert(a.expectedTestCount(Filter()) === 7)
@@ -1308,17 +1308,17 @@ class FunSpecSuite extends FunSuite {
   test("expectedTestCount should include tests in a share that is called twice") {
     class MySpec extends FunSpec {
       def misbehavior(i: Int) {
-        it("should six") {}
-        it("should seven") {}
+        it("should six") { succeed }
+        it("should seven") { succeed }
       }
-      it("should one") {}
-      it("should two") {}
+      it("should one") { succeed }
+      it("should two") { succeed }
       describe("behavior") {
-        it("should three") {}
+        it("should three") { succeed }
         it should behave like misbehavior(1) 
-        it("should four") {}
+        it("should four") { succeed }
       }
-      it("should five") {}
+      it("should five") { succeed }
       it should behave like misbehavior(1) 
     }
     val a = new MySpec
@@ -1327,14 +1327,14 @@ class FunSpecSuite extends FunSuite {
 
   test("Spec's expectedTestCount includes tests in nested suites") {
     class TwoTestSpec extends FunSpec {
-      it("should count this test") {}
-      it("should count this test also") {}
+      it("should count this test") { succeed }
+      it("should count this test also") { succeed }
     }
     class MySpec extends FunSpec {
 
       override def nestedSuites = Vector(new TwoTestSpec, new TwoTestSpec, new TwoTestSpec)
 
-      it("should count this here test") {}
+      it("should count this here test") { succeed }
     }
     val mySpec = new MySpec
     assert(mySpec.expectedTestCount(Filter()) === 7)
@@ -1370,7 +1370,7 @@ class FunSpecSuite extends FunSuite {
           }
         }
         describe("(when not full)") {
-          it("should allow me to push") {}
+          it("should allow me to push") { succeed }
         }
       }
     }
@@ -1384,12 +1384,12 @@ class FunSpecSuite extends FunSuite {
   test("that a null specText results in a thrown NPE at construction time") {
     intercept[NullArgumentException] {
       new FunSpec {
-        it(null) {}
+        it(null) { succeed }
       }
     }
     intercept[NullArgumentException] {
       new FunSpec {
-        ignore(null) {}
+        ignore(null) { succeed }
       }
     }
   }
@@ -1397,7 +1397,7 @@ class FunSpecSuite extends FunSuite {
   test("test durations are included in TestFailed and TestSucceeded events fired from Spec") {
 
     class MySpec extends FunSpec {
-      it("should succeed") {}
+      it("should succeed") { succeed }
       it("should fail") { fail() }
     }
 

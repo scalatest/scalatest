@@ -31,8 +31,8 @@ class FunSuiteSpec extends FunSpec {
     it("should return the test names in registration order from testNames") {
       
       val a = new FunSuite {
-        test("test this") {}
-        test("test that") {}
+        test("test this") { succeed }
+        test("test that") { succeed }
       }
 
       assertResult(List("test this", "test that")) {
@@ -46,8 +46,8 @@ class FunSuiteSpec extends FunSpec {
       }
 
       val c = new FunSuite {
-        test("test that") {}
-        test("test this") {}
+        test("test that") { succeed }
+        test("test this") { succeed }
       }
 
       assertResult(List("test that", "test this")) {
@@ -59,26 +59,26 @@ class FunSuiteSpec extends FunSpec {
 
       intercept[DuplicateTestNameException] {
         new FunSuite {
-          test("test this") {}
-          test("test this") {}
+          test("test this") { succeed }
+          test("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSuite {
-          test("test this") {}
-          ignore("test this") {}
+          test("test this") { succeed }
+          ignore("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSuite {
-          ignore("test this") {}
-          ignore("test this") {}
+          ignore("test this") { succeed }
+          ignore("test this") { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new FunSuite {
-          ignore("test this") {}
-          test("test this") {}
+          ignore("test this") { succeed }
+          test("test this") { succeed }
         }
       }
     }
@@ -152,7 +152,7 @@ class FunSuiteSpec extends FunSpec {
           correctTestNameWasPassed = test.name == "something"
           super.withFixture(test)
         }
-        test("something") {}
+        test("something") { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -167,7 +167,7 @@ class FunSuiteSpec extends FunSpec {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
         }
-        test("something") {}
+        test("something") { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -182,7 +182,7 @@ class FunSuiteSpec extends FunSpec {
         val testName = "test name"
         class MySuite extends FunSuite {
           info(msg)
-          test(testName) {}
+          test(testName) { succeed }
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
           getIndexesForInformerEventOrderTests(new MySuite, testName, msg)
@@ -193,7 +193,7 @@ class FunSuiteSpec extends FunSpec {
         val msg = "hi there, dude"
         val testName = "test name"
         class MySuite extends FunSuite {
-          test(testName) {}
+          test(testName) { succeed }
           info(msg)
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
@@ -220,7 +220,7 @@ class FunSuiteSpec extends FunSpec {
     it("should run tests registered via the testsFor syntax") {
       trait SharedFunSuiteTests { this: FunSuite =>
         def nonEmptyStack(s: String)(i: Int) {
-          test("I am shared") {}
+          test("I am shared") { succeed }
         }
       }
       class MySuite extends FunSuite with SharedFunSuiteTests {
@@ -240,72 +240,72 @@ class FunSuiteSpec extends FunSpec {
       // test
       intercept[NullArgumentException] {
         new FunSuite {
-          test("hi", null) {}
+          test("hi", null) { succeed }
         }
       }
       val caught = intercept[NullArgumentException] {
         new FunSuite {
-          test("hi", mytags.SlowAsMolasses, null) {}
+          test("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSuite {
-          test("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          test("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
         new FunSuite {
-          ignore("hi", null) {}
+          ignore("hi", null) { succeed }
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new FunSuite {
-          ignore("hi", mytags.SlowAsMolasses, null) {}
+          ignore("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught2.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSuite {
-          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
         new FunSuite {
-          registerTest("hi", null) {}
+          registerTest("hi", null) { succeed }
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new FunSuite {
-          registerTest("hi", mytags.SlowAsMolasses, null) {}
+          registerTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught3.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSuite {
-          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
         new FunSuite {
-          registerIgnoredTest("hi", null) {}
+          registerIgnoredTest("hi", null) { succeed }
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new FunSuite {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught4.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FunSuite {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
     }
@@ -798,28 +798,28 @@ class FunSuiteSpec extends FunSpec {
     it("should return the correct test count from its expectedTestCount method") {
 
       val a = new FunSuite {
-        test("test this") {}
-        test("test that") {}
+        test("test this") { succeed }
+        test("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
       val b = new FunSuite {
-        ignore("test this") {}
-        test("test that") {}
+        ignore("test this") { succeed }
+        test("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
       val c = new FunSuite {
-        test("test this", mytags.FastAsLight) {}
-        test("test that") {}
+        test("test this", mytags.FastAsLight) { succeed }
+        test("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
       val d = new FunSuite {
-        test("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        test("test that", mytags.SlowAsMolasses) {}
-        test("test the other thing") {}
+        test("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        test("test that", mytags.SlowAsMolasses) { succeed }
+        test("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -827,9 +827,9 @@ class FunSuiteSpec extends FunSpec {
       assert(d.expectedTestCount(Filter()) == 3)
 
       val e = new FunSuite {
-        test("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        test("test that", mytags.SlowAsMolasses) {}
-        ignore("test the other thing") {}
+        test("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        test("test that", mytags.SlowAsMolasses) { succeed }
+        ignore("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -842,28 +842,28 @@ class FunSuiteSpec extends FunSpec {
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register test") {
 
       val a = new FunSuite {
-        registerTest("test this") {}
-        registerTest("test that") {}
+        registerTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
       val b = new FunSuite {
-        registerIgnoredTest("test this") {}
-        registerTest("test that") {}
+        registerIgnoredTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
       val c = new FunSuite {
-        registerTest("test this", mytags.FastAsLight) {}
-        registerTest("test that") {}
+        registerTest("test this", mytags.FastAsLight) { succeed }
+        registerTest("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
       val d = new FunSuite {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerTest("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -871,9 +871,9 @@ class FunSuiteSpec extends FunSpec {
       assert(d.expectedTestCount(Filter()) == 3)
 
       val e = new FunSuite {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerIgnoredTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerIgnoredTest("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -1009,8 +1009,8 @@ class FunSuiteSpec extends FunSpec {
 
     it("should throw IllegalArgumentException if passed a testName that doesn't exist") {
       class MySuite extends FunSuite {
-        test("one") {}
-        test("two") {}
+        test("one") { succeed }
+        test("two") { succeed }
       }
       val suite = new MySuite
       intercept[IllegalArgumentException] {
@@ -1021,9 +1021,9 @@ class FunSuiteSpec extends FunSpec {
     it("should throw a NotAllowedException if chosenStyles is defined and does not include FunSuite") {
 
       class SimpleSuite extends FunSuite {
-        test("one") {}
-        test("two") {}
-        test("three") {}
+        test("one") { succeed }
+        test("two") { succeed }
+        test("three") { succeed }
       }
 
       val simpleSuite = new SimpleSuite()

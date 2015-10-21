@@ -539,7 +539,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         }
       }
       assert(caught6.getMessage == "a test tag was null")
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         new FlatSpec {
           registerIgnoredTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
         }

@@ -21,14 +21,14 @@ import org.scalatest.concurrent.SleepHelper
 protected[scalatest] class ExampleSuiteTimeoutSpec extends FunSpec with ParallelTestExecution {
 
   describe("Thing 1") {
-    it ("do thing 1a") {}
-    it ("do thing 1b") {}
-    it ("do thing 1c") {}
+    it("do thing 1a") = succeed
+    it("do thing 1b") = succeed
+    it("do thing 1c") = succeed
   }
   
   describe("Thing 2") {
-    it ("do thing 2a") {}
-    it ("do thing 2b") { SleepHelper.sleep(1300) }
+    it("do thing 2a") = succeed
+    it("do thing 2b") { SleepHelper.sleep(1300); succeed }
   }
 
   //SCALATESTJS-ONLY override def newInstance = new ExampleSuiteTimeoutSpec
@@ -37,15 +37,15 @@ protected[scalatest] class ExampleSuiteTimeoutSpec extends FunSpec with Parallel
 @DoNotDiscover
 protected[scalatest] class ExampleSuiteTimeoutSpec2 extends FunSpec with ParallelTestExecution {
   describe("Subject 1") {
-    it ("content 1a") {}
-    it ("content 1b") {}
-    it ("content 1c") {}
+    it("content 1a") = succeed
+    it("content 1b") = succeed
+    it("content 1c") = succeed
   }
   
   describe("Subject 2") {
-    it ("content 2a") {}
-    it ("content 2b") {}
-    it ("content 2c") {}
+    it("content 2a") = succeed
+    it("content 2b") = succeed
+    it("content 2c") = succeed
   }
 
   //SCALATESTJS-ONLY override def newInstance = new ExampleSuiteTimeoutSpec2

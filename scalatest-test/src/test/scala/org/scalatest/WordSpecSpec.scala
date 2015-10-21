@@ -60,7 +60,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           correctTestNameWasPassed = test.name == "do something"
           super.withFixture(test)
         }
-        "do something" in {}
+        "do something" in { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -75,7 +75,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
         }
-        "do something" in {}
+        "do something" in { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -324,8 +324,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the test names in registration order from testNames") {
 
       val a = new WordSpec {
-        "it should test this" in {}
-        "it should test that" in {}
+        "it should test this" in { succeed }
+        "it should test that" in { succeed }
       }
 
       assertResult(List("it should test this", "it should test that")) {
@@ -339,8 +339,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       }
 
       val c = new WordSpec {
-        "it should test that" in {}
-        "it should test this" in {}
+        "it should test that" in { succeed }
+        "it should test this" in { succeed }
       }
 
       assertResult(List("it should test that", "it should test this")) {
@@ -349,8 +349,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
       val d = new WordSpec {
         "A Tester" should {
-          "test that" in {}
-          "test this" in {}
+          "test that" in { succeed }
+          "test this" in { succeed }
         }
       }
 
@@ -360,8 +360,8 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
       val e = new WordSpec {
         "A Tester" should {
-          "test this" in {}
-          "test that" in {}
+          "test this" in { succeed }
+          "test that" in { succeed }
         }
       }
 
@@ -374,26 +374,26 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       
       intercept[DuplicateTestNameException] {
         new WordSpec {
-          "should test this" in {}
-          "should test this" in {}
+          "should test this" in { succeed }
+          "should test this" in { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new WordSpec {
-          "should test this" in {}
-          "should test this" ignore {}
+          "should test this" in { succeed }
+          "should test this" ignore { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new WordSpec {
-          "should test this" ignore {}
-          "should test this" ignore {}
+          "should test this" ignore { succeed }
+          "should test this" ignore { succeed }
         }
       }
       intercept[DuplicateTestNameException] {
         new WordSpec {
-          "should test this" ignore {}
-          "should test this" in {}
+          "should test this" ignore { succeed }
+          "should test this" in { succeed }
         }
       }
     }
@@ -419,7 +419,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         val msg = "hi there, dude"
         val testName = "test name"
         info(msg)
-        testName in {}
+        testName in { succeed }
       }
       it("should, when the info appears in the body before a test, report the info before the test") {
         val spec = new InfoBeforeTestSpec
@@ -432,7 +432,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         val msg = "hi there, dude"
         val testName = "test name"
         class MySpec extends WordSpec {
-          testName in {}
+          testName in { succeed }
           info(msg)
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
@@ -470,79 +470,79 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       // it
       intercept[NullArgumentException] {
         new WordSpec {
-          "hi" taggedAs(null) in {}
+          "hi" taggedAs(null) in { succeed }
         }
       }
       val caught = intercept[NullArgumentException] {
         new WordSpec {
-          "hi" taggedAs(mytags.SlowAsMolasses, null) in {}
+          "hi" taggedAs(mytags.SlowAsMolasses, null) in { succeed }
         }
       }
       assert(caught.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new WordSpec {
-          "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in {}
+          "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in { succeed }
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
         new WordSpec {
-          "hi" taggedAs(null) ignore {}
+          "hi" taggedAs(null) ignore { succeed }
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new WordSpec {
-          "hi" taggedAs(mytags.SlowAsMolasses, null) ignore {}
+          "hi" taggedAs(mytags.SlowAsMolasses, null) ignore { succeed }
         }
       }
       assert(caught2.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new WordSpec {
-          "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore {}
+          "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore { succeed }
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
         new WordSpec {
-          registerTest("hi", null) {}
+          registerTest("hi", null) { succeed }
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new WordSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null) {}
+          registerTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught3.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new WordSpec {
-          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
         new WordSpec {
-          registerIgnoredTest("hi", null) {}
+          registerIgnoredTest("hi", null) { succeed }
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new WordSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught4.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new WordSpec {
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
     }
     it("should return a correct tags map from the tags method using is (pending)") {
 
       val a = new WordSpec {
-        "test this" ignore {}
+        "test this" ignore { succeed }
         "test that" is (pending)
       }
       assertResult(Map("test this" -> Set("org.scalatest.Ignore"))) {
@@ -551,15 +551,15 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
       val b = new WordSpec {
         "test this" is (pending)
-        "test that" ignore {}
+        "test that" ignore { succeed }
       }
       assertResult(Map("test that" -> Set("org.scalatest.Ignore"))) {
         b.tags
       }
 
       val c = new WordSpec {
-        "test this" ignore {}
-        "test that" ignore {}
+        "test this" ignore { succeed }
+        "test that" ignore { succeed }
       }
       assertResult(Map("test this" -> Set("org.scalatest.Ignore"), "test that" -> Set("org.scalatest.Ignore"))) {
         c.tags
@@ -567,7 +567,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
       val d = new WordSpec {
         "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
-        "test that" taggedAs(mytags.SlowAsMolasses) ignore {}
+        "test that" taggedAs(mytags.SlowAsMolasses) ignore { succeed }
       }
       assertResult(Map("test this" -> Set("org.scalatest.SlowAsMolasses"), "test that" -> Set("org.scalatest.Ignore", "org.scalatest.SlowAsMolasses"))) {
         d.tags
@@ -583,7 +583,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
       val f = new WordSpec {
         "test this" taggedAs(mytags.SlowAsMolasses, mytags.WeakAsAKitten) is (pending)
-        "test that" taggedAs(mytags.SlowAsMolasses) in  {}
+        "test that" taggedAs(mytags.SlowAsMolasses) in  { succeed }
       }
       assertResult(Map("test this" -> Set("org.scalatest.SlowAsMolasses", "org.scalatest.WeakAsAKitten"), "test that" -> Set("org.scalatest.SlowAsMolasses"))) {
         f.tags
@@ -591,7 +591,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
       val g = new WordSpec {
         "test this" taggedAs(mytags.SlowAsMolasses, mytags.WeakAsAKitten) is (pending)
-        "test that" taggedAs(mytags.SlowAsMolasses) in  {}
+        "test that" taggedAs(mytags.SlowAsMolasses) in  { succeed }
       }
       assertResult(Map("test this" -> Set("org.scalatest.SlowAsMolasses", "org.scalatest.WeakAsAKitten"), "test that" -> Set("org.scalatest.SlowAsMolasses"))) {
         g.tags
@@ -1054,28 +1054,28 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the correct test count from its expectedTestCount method") {
 
       val a = new WordSpec {
-        "test this" in {}
-        "test that" in {}
+        "test this" in { succeed }
+        "test that" in { succeed }
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new WordSpec {
-        "test this" ignore {}
-        "test that" in {}
+        "test this" ignore { succeed }
+        "test that" in { succeed }
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new WordSpec {
-        "test this" taggedAs(mytags.FastAsLight) in {}
-        "test that" in {}
+        "test this" taggedAs(mytags.FastAsLight) in { succeed }
+        "test that" in { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
       val d = new WordSpec {
-        "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in {}
-        "test that" taggedAs(mytags.SlowAsMolasses) in {}
-        "test the other thing" in {}
+        "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in { succeed }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { succeed }
+        "test the other thing" in { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -1083,9 +1083,9 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) === 3)
 
       val e = new WordSpec {
-        "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in {}
-        "test that" taggedAs(mytags.SlowAsMolasses) in {}
-        "test the other thing" ignore {}
+        "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in { succeed }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { succeed }
+        "test the other thing" ignore { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -1098,28 +1098,28 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
 
       val a = new WordSpec {
-        registerTest("test this") {}
-        registerTest("test that") {}
+        registerTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
       val b = new WordSpec {
-        registerIgnoredTest("test this") {}
-        registerTest("test that") {}
+        registerIgnoredTest("test this") { succeed }
+        registerTest("test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
       val c = new WordSpec {
-        registerTest("test this", mytags.FastAsLight) {}
-        registerTest("test that") {}
+        registerTest("test this", mytags.FastAsLight) { succeed }
+        registerTest("test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
       val d = new WordSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerTest("test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -1127,9 +1127,9 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) == 3)
 
       val e = new WordSpec {
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("test that", mytags.SlowAsMolasses) {}
-        registerIgnoredTest("test the other thing") {}
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("test that", mytags.SlowAsMolasses) { succeed }
+        registerIgnoredTest("test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -1306,11 +1306,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
     it("should contains correct formatter for TestStarting, TestSucceeded, TestFailed, TestPending, TestCanceled and TestIgnored") {
       class TestSpec extends WordSpec {
         "a feature" should {
-          "succeeded here" in {}
+          "succeeded here" in { succeed }
           "failed here" in { fail }
           "pending here" in { pending }
           "cancel here" in { cancel }
-          "ignore here" ignore {}
+          "ignore here" ignore { succeed }
         }
       }
       val rep = new EventRecordingReporter
@@ -1592,24 +1592,24 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             } 
 
             it should { 
-              "do something interesting 1" in {} 
+              "do something interesting 1" in { succeed } 
             }
         
             it can {
-              "do something interesting 2" in {}
+              "do something interesting 2" in { succeed }
             }
         
             it must {
-              "do something interesting 3" in {}
+              "do something interesting 3" in { succeed }
             }
         
             it when {
-              "do something interesting 4" in {}
+              "do something interesting 4" in { succeed }
             }
           }
       
@@ -1637,7 +1637,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         it("should throw NotAllowedException with correct stack depth and message when 'it should' is called without subject") {
           class TestSpec extends WordSpec { 
             it should {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1651,7 +1651,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         it("should throw NotAllowedException with correct stack depth and message when 'it can' is called without subject") {
           class TestSpec extends WordSpec { 
             it can {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1665,7 +1665,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         it("should throw NotAllowedException with correct stack depth and message when 'it must' is called without subject") {
           class TestSpec extends WordSpec { 
             it must {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1679,7 +1679,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         it("should throw NotAllowedException with correct stack depth and message when 'it when' is called without subject") {
           class TestSpec extends WordSpec { 
             it when {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1695,14 +1695,14 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             }
             
-            "Other do something special" in {}
+            "Other do something special" in { succeed }
             
             it should {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1718,14 +1718,14 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             }
             
-            "Other do something special" in {}
+            "Other do something special" in { succeed }
             
             it can {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1741,14 +1741,14 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             }
             
-            "Other do something special" in {}
+            "Other do something special" in { succeed }
             
             it must {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1764,14 +1764,14 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             }
             
-            "Other do something special" in {}
+            "Other do something special" in { succeed }
             
             it when {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1789,10 +1789,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
               it should {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1808,10 +1808,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
               it can {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1827,10 +1827,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
               it must {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1846,10 +1846,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
               it when {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1865,7 +1865,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               it should {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1881,7 +1881,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               it can {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1897,7 +1897,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               it must {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1913,7 +1913,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               it when {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1929,11 +1929,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
-              "do something" in {}
+              "do something" in { succeed }
               it should {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1949,11 +1949,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
-              "do something" in {}
+              "do something" in { succeed }
               it can {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1969,11 +1969,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
-              "do something" in {}
+              "do something" in { succeed }
               it must {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -1989,11 +1989,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
-              "do something" in {}
+              "do something" in { succeed }
               it when {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2013,7 +2013,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             var notAllowedThrown = false
             "Something special" in {
               it should {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
             override def withFixture(test: NoArgTest): Outcome = {
@@ -2044,7 +2044,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             var notAllowedThrown = false
             "Something special" in {
               it can {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
             override def withFixture(test: NoArgTest): Outcome = {
@@ -2075,7 +2075,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             var notAllowedThrown = false
             "Something special" in {
               it must {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
             override def withFixture(test: NoArgTest): Outcome = {
@@ -2106,7 +2106,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             var notAllowedThrown = false
             "Something special" in {
               it when {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
             override def withFixture(test: NoArgTest): Outcome = {
@@ -2144,24 +2144,24 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             } 
 
             they should { 
-              "do something interesting 1" in {} 
+              "do something interesting 1" in { succeed } 
             }
         
             they can {
-              "do something interesting 2" in {}
+              "do something interesting 2" in { succeed }
             }
         
             they must {
-              "do something interesting 3" in {}
+              "do something interesting 3" in { succeed }
             }
         
             they when {
-              "do something interesting 4" in {}
+              "do something interesting 4" in { succeed }
             }
           }
       
@@ -2189,7 +2189,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         it("should throw NotAllowedException with correct stack depth and message when 'they should' is called without subject") {
           class TestSpec extends WordSpec { 
             they should {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2203,7 +2203,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         it("should throw NotAllowedException with correct stack depth and message when 'they can' is called without subject") {
           class TestSpec extends WordSpec { 
             they can {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2217,7 +2217,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         it("should throw NotAllowedException with correct stack depth and message when 'they must' is called without subject") {
           class TestSpec extends WordSpec { 
             they must {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2231,7 +2231,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
         it("should throw NotAllowedException with correct stack depth and message when 'they when' is called without subject") {
           class TestSpec extends WordSpec { 
             they when {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2247,14 +2247,14 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             }
             
-            "Other do something special" in {}
+            "Other do something special" in { succeed }
             
             they should {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2270,14 +2270,14 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             }
             
-            "Other do something special" in {}
+            "Other do something special" in { succeed }
             
             they can {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2293,14 +2293,14 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             }
             
-            "Other do something special" in {}
+            "Other do something special" in { succeed }
             
             they must {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2316,14 +2316,14 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               } 
             }
             
-            "Other do something special" in {}
+            "Other do something special" in { succeed }
             
             they when {
-              "do something interesting" in {}
+              "do something interesting" in { succeed }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2341,10 +2341,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
               they should {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2360,10 +2360,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
               they can {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2379,10 +2379,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
               they must {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2398,10 +2398,10 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
               they when {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2417,7 +2417,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               they should {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2433,7 +2433,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               they can {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2449,7 +2449,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               they must {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2465,7 +2465,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               they when {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2481,11 +2481,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
-              "do something" in {}
+              "do something" in { succeed }
               they should {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2501,11 +2501,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
-              "do something" in {}
+              "do something" in { succeed }
               they can {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2521,11 +2521,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
-              "do something" in {}
+              "do something" in { succeed }
               they must {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2541,11 +2541,11 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           class TestSpec extends WordSpec { 
             "A Stack" when { 
               "empty" should { 
-                "be empty" in {} 
+                "be empty" in { succeed } 
               }
-              "do something" in {}
+              "do something" in { succeed }
               they when {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
           }
@@ -2565,7 +2565,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             var notAllowedThrown = false
             "Something special" in {
               they should {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
             override def withFixture(test: NoArgTest): Outcome = {
@@ -2596,7 +2596,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             var notAllowedThrown = false
             "Something special" in {
               they can {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
             override def withFixture(test: NoArgTest): Outcome = {
@@ -2627,7 +2627,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             var notAllowedThrown = false
             "Something special" in {
               they must {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
             override def withFixture(test: NoArgTest): Outcome = {
@@ -2658,7 +2658,7 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
             var notAllowedThrown = false
             "Something special" in {
               they when {
-                "do something interesting" in {}
+                "do something interesting" in { succeed }
               }
             }
             override def withFixture(test: NoArgTest): Outcome = {

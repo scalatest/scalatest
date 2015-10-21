@@ -23,15 +23,15 @@ protected[scalatest] class ExampleBeforeAfterParallelSpec extends FunSpec with B
   }
   
   describe("Thing 1") {
-    it ("do thing 1a") {}
-    it ("do thing 1b") {}
-    it ("do thing 1c") {}
+    it("do thing 1a") { succeed }
+    it("do thing 1b") { succeed }
+    it("do thing 1c") { succeed }
   }
   
   describe("Thing 2") {
-    it ("do thing 2a") {}
-    it ("do thing 2b") {}
-    it ("do thing 2c") {}
+    it("do thing 2a") { succeed }
+    it("do thing 2b") { succeed }
+    it("do thing 2c") { succeed }
   }
   
   after {
