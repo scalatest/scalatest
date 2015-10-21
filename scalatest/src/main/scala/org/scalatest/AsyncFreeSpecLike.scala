@@ -50,7 +50,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with AsyncCompatibility { thisSuite =>
+trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite =>
 
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
@@ -116,7 +116,11 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with Async
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
+    def transformPending: Future[Assertion] = {
+      testFun
+      Future.successful(AssertionValue)
+    }
+    engine.registerTest(specText, transformToOutcome(transformPending), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**
@@ -156,7 +160,11 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with Async
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    def transformPending: Future[Assertion] = {
+      testFun
+      Future.successful(AssertionValue)
+    }
+    engine.registerIgnoredTest(specText, transformToOutcome(transformPending), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

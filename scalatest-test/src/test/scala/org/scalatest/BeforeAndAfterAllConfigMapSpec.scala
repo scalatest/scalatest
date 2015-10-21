@@ -31,9 +31,9 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       beforeAllTime = System.currentTimeMillis
     }
     
-    test("test 1") { SleepHelper.sleep(100) }
-    test("test 2") { SleepHelper.sleep(100) }
-    test("test 3") { SleepHelper.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100); succeed }
+    test("test 2") { SleepHelper.sleep(100); succeed }
+    test("test 3") { SleepHelper.sleep(100); succeed }
     
     override def newInstance: Suite with ParallelTestExecution = new ExampleSuite
     
@@ -43,17 +43,17 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
   }
   
   class ExampleNestedSuite extends FunSuite with ParallelTestExecution {
-    test("test 1") { SleepHelper.sleep(100) }
-    test("test 2") { SleepHelper.sleep(100) }
-    test("test 3") { SleepHelper.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100); succeed }
+    test("test 2") { SleepHelper.sleep(100); succeed }
+    test("test 3") { SleepHelper.sleep(100); succeed }
     override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
   }
   
   @Ignore
   class ExampleIgnoreNestedSuite extends FunSuite with ParallelTestExecution {
-    test("test 1") { SleepHelper.sleep(100) }
-    test("test 2") { SleepHelper.sleep(100) }
-    test("test 3") { SleepHelper.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100); succeed }
+    test("test 2") { SleepHelper.sleep(100); succeed }
+    test("test 3") { SleepHelper.sleep(100); succeed }
     override def newInstance: Suite with ParallelTestExecution = new ExampleNestedSuite
   }
   
@@ -97,9 +97,9 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       counter.incrementAfterAllCount()
     }
     
-    test("test 1") { SleepHelper.sleep(100) }
-    test("test 2") { SleepHelper.sleep(100) }
-    test("test 3") { SleepHelper.sleep(100) }
+    test("test 1") { SleepHelper.sleep(100); succeed }
+    test("test 2") { SleepHelper.sleep(100); succeed }
+    test("test 3") { SleepHelper.sleep(100); succeed }
     
     override def newInstance: Suite with OneInstancePerTest = new ExampleBeforeAndAfterAllWithParallelTestExecutionSuite(counter)
   }
@@ -127,6 +127,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       testSucceededEvents.foreach { testSucceeded =>
         afterAllTime should be >= testSucceeded.timeStamp
       }
+      succeed
     }
     it ("should call beforeAll before any test starts in nested suite, and call afterAll after all tests in nested suites completed") {
       val suite = new ExampleSuites
@@ -150,6 +151,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       testSucceededEvents.foreach { testSucceeded =>
         afterAllTime should be >= testSucceeded.timeStamp
       }
+      succeed
     }
     it ("should be called once for beforeAll and afterAll when used with OneInstancePerTest") {
       val counter = new BeforeAfterAllCounter
@@ -173,9 +175,9 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override protected def beforeAll(configMap: ConfigMap) {
           beforeAllCount.incrementAndGet()
         }
-        it("test 1") {}
-        it("test 2") {}
-        it("test 3") {}
+        it("test 1") { succeed }
+        it("test 2") { succeed }
+        it("test 3") { succeed }
         override protected def afterAll(configMap: ConfigMap) {
           afterAllCount.incrementAndGet()
         }
@@ -193,9 +195,9 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override protected def beforeAll(configMap: ConfigMap) {
           beforeAllCount.incrementAndGet()
         }
-        it("test 1") {}
-        it("test 2") {}
-        it("test 3") {}
+        it("test 1") { succeed }
+        it("test 2") { succeed }
+        it("test 3") { succeed }
         override protected def afterAll(configMap: ConfigMap) {
           afterAllCount.incrementAndGet()
         }
@@ -262,9 +264,9 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override protected def beforeAll(configMap: ConfigMap) {
           beforeAllCount.incrementAndGet()
         }
-        it("test 1") {}
-        it("test 2") {}
-        it("test 3") {}
+        it("test 1") { succeed }
+        it("test 2") { succeed }
+        it("test 3") { succeed }
         override protected def afterAll(configMap: ConfigMap) {
           afterAllCount.incrementAndGet()
         }
@@ -284,9 +286,9 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override protected def beforeAll(configMap: ConfigMap) {
           beforeAllCount.incrementAndGet()
         }
-        it("test 1") {}
-        it("test 2") {}
-        it("test 3") {}
+        it("test 1") { succeed }
+        it("test 2") { succeed }
+        it("test 3") { succeed }
         override protected def afterAll(configMap: ConfigMap) {
           afterAllCount.incrementAndGet()
         }
@@ -356,7 +358,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override def beforeAll(configMap: ConfigMap) {
           throw new NumberFormatException
         }
-        test("test 1") { testIsCalled = true }
+        test("test 1") { testIsCalled = true; succeed }
       }
       val a = new MySuite
       intercept[NumberFormatException] {
@@ -376,7 +378,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
           super.run(testName, args)
           throw new IllegalArgumentException
         }
-        test("test 1") {}
+        test("test 1") { succeed }
       }
       val a = new MySuite
       intercept[IllegalArgumentException] {
@@ -394,7 +396,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         }
       }
       val a = new MySuite
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         a.run(None, Args(StubReporter))
       }
     }
@@ -403,7 +405,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       "exception, the status returned by run will contain that exception as its unreportedException.") {
       class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
         override def afterAll(configMap: ConfigMap) { throw new NumberFormatException }
-        test("test July") {}
+        test("test July") { succeed }
       }
       val a = new MySuite
       val status = a.run(Some("test July"), Args(StubReporter))

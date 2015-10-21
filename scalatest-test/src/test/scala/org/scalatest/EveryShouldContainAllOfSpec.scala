@@ -64,16 +64,16 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should contain allOf ("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain allOf ("fee", "fie", "foe", "fam")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should contain allOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain allOf ("fee", "fie", "foe", "fam")) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain allOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
         (fumList should contain allOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
@@ -103,16 +103,16 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain allOf ("fee", "fie", "foe", "fam"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should (contain allOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain allOf ("fee", "fie", "foe", "fam"))) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
         (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
@@ -141,17 +141,17 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should not contain allOf ("happy", "birthday", "to", "you", "dear")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should not contain allOf ("happy", "birthday", "to", "you", "dear")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
         }
         toList should not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -179,17 +179,17 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should (not contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should (not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should (not contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         toList should (not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -217,17 +217,17 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot contain allOf ("happy", "birthday", "to", "you", "dear")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot contain allOf ("happy", "birthday", "to", "you", "dear")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
         }
         toList shouldNot contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -255,17 +255,17 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot (contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot (contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot (contain allOf ("NICE", "TO", "MEET", "YOU", "TOO"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain allOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         toList shouldNot (contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain allOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -308,23 +308,23 @@ class EveryShouldContainAllOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should contain allOf ("he", "hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain allOf ("ho", "hi")
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should contain allOf ("HE", "HI")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain allOf ("HO", "HI")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should contain allOf ("HE", "HI")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain allOf ("HO", "HI")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should contain allOf ("he", "hi")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain allOf ("ho", "hi")) (decided by defaultEquality[String])
         }
       }
@@ -359,23 +359,23 @@ class EveryShouldContainAllOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should (contain allOf ("he", "hi"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain allOf ("ho", "hi"))
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should (contain allOf ("HE", "HI"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain allOf ("HO", "HI"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain allOf ("HE", "HI"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain allOf ("HO", "HI"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should (contain allOf ("he", "hi"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain allOf ("ho", "hi"))) (decided by defaultEquality[String])
         }
       }
@@ -406,17 +406,17 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should not contain allOf ("NICE", "MEET", "YOU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain allOf ("YOU", "TO")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should not contain allOf ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain allOf ("YOU", "TO")) (decided by upperCaseStringEquality)
         }
         all (toLists) should not contain allOf (" YOU ", " TO ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain allOf (" YOU ", " TO ")) (after being lowerCased and trimmed)
         }
       }
@@ -447,17 +447,17 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should (not contain allOf ("NICE", "MEET", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain allOf ("YOU", "TO"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain allOf ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain allOf ("YOU", "TO"))) (decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain allOf (" YOU ", " TO "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain allOf (" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }
@@ -488,17 +488,17 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot contain allOf ("NICE", "MEET", "YOU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain allOf ("YOU", "TO")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain allOf ("NICE", "MEET", "YOU")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain allOf ("YOU", "TO")) (decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain allOf (" YOU ", " TO ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain allOf (" YOU ", " TO ")) (after being lowerCased and trimmed)
         }
       }
@@ -529,17 +529,17 @@ class EveryShouldContainAllOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot (contain allOf ("NICE", "MEET", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain allOf ("YOU", "TO"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot (contain allOf ("NICE", "MEET", "YOU"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain allOf ("YOU", "TO"))) (decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain allOf (" YOU ", " TO "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain allOf (" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }

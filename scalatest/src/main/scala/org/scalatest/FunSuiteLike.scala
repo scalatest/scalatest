@@ -40,7 +40,7 @@ import Suite.autoTagClassAnnotations
  */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait FunSuiteLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting with Compatibility { thisSuite =>
+trait FunSuiteLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentFunSuiteMod, "FunSuite")
   import engine._

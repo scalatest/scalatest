@@ -105,7 +105,7 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
   
   "Engine.getPathForTest" should "throw IAE for not existing task" in {
     val engine = pathEngine
-    intercept[IllegalArgumentException] { 
+    assertThrows[IllegalArgumentException] {
       engine.testPath("Invalid test name") 
     } 
   }

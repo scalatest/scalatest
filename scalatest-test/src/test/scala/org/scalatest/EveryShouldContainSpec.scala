@@ -44,19 +44,19 @@ class EveryShouldContainSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         xs should contain ("hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs should contain ("ho")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         xs should contain ("ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs should contain ("hi")
         }
       }
       it("should use an explicitly provided Equality") {
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           caseLists should contain ("HI")
         }
         (caseLists should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
@@ -68,7 +68,7 @@ class EveryShouldContainSpec extends FunSpec {
         (xs should contain ("hi")) (decided by defaultEquality[String])
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           caseLists should contain ("HI")
         }
         var normalizedInvokedCount = 0
@@ -104,14 +104,14 @@ class EveryShouldContainSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         xs should not contain "ho"
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs should not contain "hi"
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         xs should not contain "hi"
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs should not contain "ho"
         }
       }
@@ -120,10 +120,10 @@ class EveryShouldContainSpec extends FunSpec {
         caseLists should not contain "HI "
         (caseLists should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
         (caseLists should not contain "HI ") (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists should not contain "HI ") (after being lowerCased and trimmed)
         }
       }
@@ -142,7 +142,7 @@ class EveryShouldContainSpec extends FunSpec {
               case _ => b
             }
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           caseLists should not contain "HI"
         }
         normalizedInvokedCount should be (4)
@@ -165,14 +165,14 @@ class EveryShouldContainSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         xs should not (contain ("ho"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs should not (contain ("hi"))
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         xs should not (contain ("hi"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs should not (contain ("ho"))
         }
       }
@@ -181,13 +181,13 @@ class EveryShouldContainSpec extends FunSpec {
         caseLists should not (contain ("HI "))
         (caseLists should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
         (caseLists should not (contain ("HI "))) (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists should not (contain ("HI"))) (after being lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists should not (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
@@ -206,7 +206,7 @@ class EveryShouldContainSpec extends FunSpec {
               case _ => b
             }
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           caseLists should not (contain ("HI"))
         }
         normalizedInvokedCount should be (4)
@@ -228,14 +228,14 @@ class EveryShouldContainSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         xs should (not contain "ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs should (not contain "hi")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         xs should (not contain "hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs should (not contain "ho")
         }
       }
@@ -244,13 +244,13 @@ class EveryShouldContainSpec extends FunSpec {
         caseLists should (not contain "HI ")
         (caseLists should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
         (caseLists should (not contain "HI ")) (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists should (not contain "HI")) (after being lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists should (not contain "HI ")) (after being lowerCased and trimmed)
         }
       }
@@ -269,7 +269,7 @@ class EveryShouldContainSpec extends FunSpec {
               case _ => b
             }
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           caseLists should (not contain "HI")
         }
         normalizedInvokedCount should be (4)
@@ -291,14 +291,14 @@ class EveryShouldContainSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         xs shouldNot contain ("ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs shouldNot contain ("hi")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         xs shouldNot contain ("hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs shouldNot contain ("ho")
         }
       }
@@ -307,10 +307,10 @@ class EveryShouldContainSpec extends FunSpec {
         caseLists shouldNot contain ("HI ")
         (caseLists shouldNot contain ("HI ")) (decided by defaultEquality afterBeing lowerCased)
         (caseLists shouldNot contain ("HI ")) (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists shouldNot contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists shouldNot contain ("HI ")) (after being lowerCased and trimmed)
         }
       }
@@ -329,7 +329,7 @@ class EveryShouldContainSpec extends FunSpec {
               case _ => b
             }
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           caseLists shouldNot contain ("HI")
         }
         normalizedInvokedCount should be (4)
@@ -352,14 +352,14 @@ class EveryShouldContainSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         xs shouldNot (contain ("ho"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs shouldNot (contain ("hi"))
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         xs shouldNot (contain ("hi"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           xs shouldNot (contain ("ho"))
         }
       }
@@ -368,13 +368,13 @@ class EveryShouldContainSpec extends FunSpec {
         caseLists shouldNot (contain ("HI "))
         (caseLists shouldNot (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
         (caseLists shouldNot (contain ("HI "))) (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists shouldNot (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists shouldNot (contain ("HI"))) (after being lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (caseLists shouldNot (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
@@ -393,7 +393,7 @@ class EveryShouldContainSpec extends FunSpec {
               case _ => b
             }
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           caseLists shouldNot (contain ("HI"))
         }
         normalizedInvokedCount should be (4)
@@ -447,22 +447,22 @@ class EveryShouldContainSpec extends FunSpec {
           "in Many(Many(1, 2, 3), Many(1, 2, 3), Many(4, 5, 6))"))
       }
       it("should use the implicit Equality in scope") {
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain ("ho")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiLists) should contain ("ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain ("hi")
         }
       }
       it("should use an explicitly provided Equality") {
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain ("HI")
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain ("HI ")
         }
         (all (hiLists) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
@@ -470,7 +470,7 @@ class EveryShouldContainSpec extends FunSpec {
       }
       it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         val hiHeHoLists: List[List[String]] = List(List("hi", "he", "ho"), List("hi", "he", "ho"), List("hi", "he", "ho"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiHeHoLists) should contain ("HO")
         }
         var normalizedInvokedCount = 0
@@ -511,24 +511,24 @@ class EveryShouldContainSpec extends FunSpec {
       }
       it("should use the implicit Equality in scope") {
         all (hiLists) should not contain "ho"
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should not contain "hi"
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiLists) should not contain "hi"
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should not contain "ho"
         }
       }
       it("should use an explicitly provided Equality") {
         all (hiLists) should not contain "HI"
         all (hiLists) should not contain "HI "
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should not contain "HI ") (after being trimmed and lowerCased)
         }
       }
@@ -554,24 +554,24 @@ class EveryShouldContainSpec extends FunSpec {
       }
       it("should use the implicit Equality in scope") {
         all (hiLists) should not (contain ("ho"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should not (contain ("hi"))
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiLists) should not (contain ("hi"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should not (contain ("ho"))
         }
       }
       it("should use an explicitly provided Equality") {
         all (hiLists) should not (contain ("HI"))
         all (hiLists) should not (contain ("HI "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should not (contain ("HI "))) (after being trimmed and lowerCased)
         }
       }
@@ -597,24 +597,24 @@ class EveryShouldContainSpec extends FunSpec {
       }
       it("should use the implicit Equality in scope") {
         all (hiLists) should (not contain "ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (not contain "hi")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiLists) should (not contain "hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (not contain "ho")
         }
       }
       it("should use an explicitly provided Equality") {
         all (hiLists) should (not contain "HI")
         all (hiLists) should (not contain "HI ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (not contain "HI ")) (after being trimmed and lowerCased)
         }
       }
@@ -641,24 +641,24 @@ class EveryShouldContainSpec extends FunSpec {
       }
       it("should use the implicit Equality in scope") {
         all (hiLists) shouldNot contain ("ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) shouldNot contain ("hi")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiLists) shouldNot contain ("hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) shouldNot contain ("ho")
         }
       }
       it("should use an explicitly provided Equality") {
         all (hiLists) shouldNot contain ("HI")
         all (hiLists) shouldNot contain ("HI ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) shouldNot contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) shouldNot contain ("HI ")) (after being trimmed and lowerCased)
         }
       }
@@ -684,24 +684,24 @@ class EveryShouldContainSpec extends FunSpec {
       }
       it("should use the implicit Equality in scope") {
         all (hiLists) shouldNot (contain ("ho"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) shouldNot (contain ("hi"))
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiLists) shouldNot (contain ("hi"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) shouldNot (contain ("ho"))
         }
       }
       it("should use an explicitly provided Equality") {
         all (hiLists) shouldNot (contain ("HI"))
         all (hiLists) shouldNot (contain ("HI "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) shouldNot (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) shouldNot (contain ("HI "))) (after being trimmed and lowerCased)
         }
       }

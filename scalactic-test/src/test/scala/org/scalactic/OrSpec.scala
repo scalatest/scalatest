@@ -312,7 +312,7 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
       case _ => fail()
     }
     divByZero.isBad shouldBe true
-    intercept[VirtualMachineError] {
+    assertThrows[VirtualMachineError] {
       attempt { throw new VirtualMachineError {} }
     }
   }
@@ -610,6 +610,7 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
     class BadOrFunctor[G] extends Functor[Or.GOOD[G]#BAD] {
       override def map[B, C](ca: G Or B)(f: B => C): G Or C = ca.badMap(f)
     }
+    succeed
   }
 }
 

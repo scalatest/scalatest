@@ -280,6 +280,7 @@ class CatchReporterProp extends AllSuiteProp {
       assert(rep.testSucceededEventsReceived.length === 3)
       assert(!wrapper.isWrapped, "rep should not be wrapped with CatchReporter, but it does.")
       wrapper.doDispose()
+      succeed
     }
   }
   
@@ -293,6 +294,7 @@ class CatchReporterProp extends AllSuiteProp {
       assert(rep.testSucceededEventsReceived.length === 3)
       assert(!wrapper.isWrapped, "rep should not be wrapped with CatchReporter, but it does.")
       wrapper.doDispose()
+      succeed
     }
   }
   
@@ -429,26 +431,26 @@ class ExampleCatchReporterTestNGSuite extends TestNGSuite with CatchReporterFixt
 
 @DoNotDiscover
 class ExampleCatchReporterFunSuite extends FunSuite with CatchReporterFixtureServices {
-  test("Test 1") {}
-  test("Test 2") {}
-  test("Test 3") {}
+  test("Test 1") { succeed }
+  test("Test 2") { succeed }
+  test("Test 3") { succeed }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterFixtureFunSuite extends fixture.FunSuite with CatchReporterFixtureServices with StringFixture {
-  test("Test 1") {s =>}
-  test("Test 2") {s =>}
-  test("Test 3") {s =>}
+  test("Test 1") {s => succeed }
+  test("Test 2") {s => succeed }
+  test("Test 3") {s => succeed }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterFunSpec extends FunSpec with CatchReporterFixtureServices {
   describe("Scope 1") {
-    it("Test 1") {}
-    it("Test 2") {}
-    it("Test 3") {}
+    it("Test 1") { succeed }
+    it("Test 2") { succeed }
+    it("Test 3") { succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
@@ -456,9 +458,9 @@ class ExampleCatchReporterFunSpec extends FunSpec with CatchReporterFixtureServi
 @DoNotDiscover
 class ExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with CatchReporterFixtureServices with StringFixture {
   describe("Scope 1") {
-    it("Test 1") {s =>}
-    it("Test 2") {s =>}
-    it("Test 3") {s =>}
+    it("Test 1") {s => succeed }
+    it("Test 2") {s => succeed }
+    it("Test 3") {s => succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
@@ -466,9 +468,9 @@ class ExampleCatchReporterFixtureFunSpec extends fixture.FunSpec with CatchRepor
 @DoNotDiscover
 class ExampleCatchReporterFeatureSpec extends FeatureSpec with CatchReporterFixtureServices {
   feature("Feature 1") {
-    scenario("Scenario 1") {}
-    scenario("Scenario 2") {}
-    scenario("Scenario 3") {}
+    scenario("Scenario 1") { succeed }
+    scenario("Scenario 2") { succeed }
+    scenario("Scenario 3") { succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
@@ -476,35 +478,35 @@ class ExampleCatchReporterFeatureSpec extends FeatureSpec with CatchReporterFixt
 @DoNotDiscover
 class ExampleCatchReporterFixtureFeatureSpec extends fixture.FeatureSpec with CatchReporterFixtureServices with StringFixture {
   feature("Feature 1") {
-    scenario("Scenario 1") {s =>}
-    scenario("Scenario 2") {s =>}
-    scenario("Scenario 3") {s =>}
+    scenario("Scenario 1") {s => succeed }
+    scenario("Scenario 2") {s => succeed }
+    scenario("Scenario 3") {s => succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterFlatSpec extends FlatSpec with CatchReporterFixtureServices {
-  "Scope 1" should "do thing 1" in {}
-  it should "do thing 2" in {}
-  it should "do thing 3" in {}
+  "Scope 1" should "do thing 1" in { succeed }
+  it should "do thing 2" in { succeed }
+  it should "do thing 3" in { succeed }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterFixtureFlatSpec extends fixture.FlatSpec with CatchReporterFixtureServices with StringFixture {
-  "Scope 1" should "do thing 1" in {s =>}
-  it should "do thing 2" in {s =>}
-  it should "do thing 3" in {s =>}
+  "Scope 1" should "do thing 1" in {s => succeed }
+  it should "do thing 2" in {s => succeed }
+  it should "do thing 3" in {s => succeed }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterFreeSpec extends FreeSpec with CatchReporterFixtureServices {
   "Scope 1" - {
-    "Test 1" in {}
-    "Test 2" in {}
-    "Test 3" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
+    "Test 3" in { succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
@@ -512,35 +514,35 @@ class ExampleCatchReporterFreeSpec extends FreeSpec with CatchReporterFixtureSer
 @DoNotDiscover
 class ExampleCatchReporterFixtureFreeSpec extends fixture.FreeSpec with CatchReporterFixtureServices with StringFixture {
   "Scope 1" - {
-    "Test 1" in {s =>}
-    "Test 2" in {s =>}
-    "Test 3" in {s =>}
+    "Test 1" in {s => succeed }
+    "Test 2" in {s => succeed }
+    "Test 3" in {s => succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterPropSpec extends PropSpec with CatchReporterFixtureServices {
-  property("Test 1") {}
-  property("Test 2") {}
-  property("Test 3") {}
+  property("Test 1") { succeed }
+  property("Test 2") { succeed }
+  property("Test 3") { succeed }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterFixturePropSpec extends fixture.PropSpec with CatchReporterFixtureServices with StringFixture {
-  property("Test 1") {s =>}
-  property("Test 2") {s =>}
-  property("Test 3") {s =>}
+  property("Test 1") {s => succeed }
+  property("Test 2") {s => succeed }
+  property("Test 3") {s => succeed }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
 
 @DoNotDiscover
 class ExampleCatchReporterWordSpec extends WordSpec with CatchReporterFixtureServices {
   "Scope 1" should {
-    "Test 1" in {}
-    "Test 2" in {}
-    "Test 3" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
+    "Test 3" in { succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
@@ -548,9 +550,9 @@ class ExampleCatchReporterWordSpec extends WordSpec with CatchReporterFixtureSer
 @DoNotDiscover
 class ExampleCatchReporterFixtureWordSpec extends fixture.WordSpec with CatchReporterFixtureServices with StringFixture {
   "Scope 1" should {
-    "Test 1" in {s =>}
-    "Test 2" in {s =>}
-    "Test 3" in {s =>}
+    "Test 1" in {s => succeed }
+    "Test 2" in {s => succeed }
+    "Test 3" in {s => succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
@@ -558,9 +560,9 @@ class ExampleCatchReporterFixtureWordSpec extends fixture.WordSpec with CatchRep
 @DoNotDiscover
 class ExampleCatchReporterPathFreeSpec extends path.FreeSpec with CatchReporterFixtureServices {
   "Scope 1" - {
-    "Test 1" in {}
-    "Test 2" in {}
-    "Test 3" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
+    "Test 3" in { succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }
@@ -568,9 +570,9 @@ class ExampleCatchReporterPathFreeSpec extends path.FreeSpec with CatchReporterF
 @DoNotDiscover
 class ExampleCatchReporterPathFunSpec extends path.FunSpec with CatchReporterFixtureServices {
   describe("Scope 1") {
-    it("Test 1") {}
-    it("Test 2") {}
-    it("Test 3") {}
+    it("Test 1") { succeed }
+    it("Test 2") { succeed }
+    it("Test 3") { succeed }
   }
   override private[scalatest] def createCatchReporter(reporter: Reporter) = new WrapperCatchReporter(reporter, new PrintStream(new ByteArrayOutputStream))
 }

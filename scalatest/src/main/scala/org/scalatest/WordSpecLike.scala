@@ -44,7 +44,7 @@ import Suite.autoTagClassAnnotations
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting with Compatibility { thisSuite =>
+trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentWordSpecMod, "WordSpecLike")
   import engine._
@@ -294,7 +294,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * </p>
      */
     def is(testFun: => PendingNothing) {
-      registerTestToRun(specText, tags, "is", testFun _)
+      registerTestToRun(specText, tags, "is", () => { testFun; AssertionValue })
     }
 
     /**
@@ -392,7 +392,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * </p>
      */
     def is(f: => PendingNothing) {
-      registerTestToRun(string, List(), "is", f _)
+      registerTestToRun(string, List(), "is", () => { f; AssertionValue })
     }
 
     /**

@@ -66,16 +66,16 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain inOrderElementsOf Seq("fee", "fie", "foe", "fum")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain inOrderElementsOf Seq("fee", "fie", "foe", "fum")) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE ")
         }
         (fumList should contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE ")) (after being lowerCased and trimmed)
@@ -98,16 +98,16 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq("fee", "fie", "foe", "fum"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should (contain inOrderElementsOf Seq("FUM", "FOE", "FIE", "FEE"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain inOrderElementsOf Seq("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE "))
         }
         (fumList should (contain inOrderElementsOf Seq(" FUM ", " FOE ", " FIE ", " FEE "))) (after being lowerCased and trimmed)
@@ -131,17 +131,17 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should not contain inOrderElementsOf (Seq("YOU", "TO", "BIRTHDAY", "HAPPY"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should not contain inOrderElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should not contain inOrderElementsOf (Seq("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should not contain inOrderElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         toList should not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -164,17 +164,17 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should (not contain inOrderElementsOf (Seq("YOU", "TO", "BIRTHDAY", "HAPPY")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should (not contain inOrderElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should (not contain inOrderElementsOf (Seq("YOU", "TO", "BIRTHDAY", "HAPPY")))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain inOrderElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
         }
         toList should (not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain inOrderElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
@@ -197,17 +197,17 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot contain inOrderElementsOf Seq("YOU", "TO", "BIRTHDAY", "HAPPY")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot contain inOrderElementsOf Seq("YOU", "TO", "BIRTHDAY", "HAPPY")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
         }
         toList shouldNot contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -230,17 +230,17 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot (contain inOrderElementsOf Seq("YOU", "TO", "BIRTHDAY", "HAPPY"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot (contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot (contain inOrderElementsOf Seq("YOU", "TO", "BIRTHDAY", "HAPPY"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain inOrderElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         toList shouldNot (contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain inOrderElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -277,23 +277,23 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should contain inOrderElementsOf Seq("hi", "he")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain inOrderElementsOf Seq("hi", "ho")
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should contain inOrderElementsOf Seq("HI", "HE")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain inOrderElementsOf Seq("HI", "HO")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should contain inOrderElementsOf Seq("HI", "HE")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain inOrderElementsOf Seq("HI", "HO")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should contain inOrderElementsOf Seq("hi", "he")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain inOrderElementsOf Seq("hi", "ho")) (decided by defaultEquality[String])
         }
       }
@@ -322,23 +322,23 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should (contain inOrderElementsOf Seq("hi", "he"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain inOrderElementsOf Seq("he", "hi"))
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should (contain inOrderElementsOf Seq("HI", "HE"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain inOrderElementsOf Seq("HI", "HO"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain inOrderElementsOf Seq("HI", "HE"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain inOrderElementsOf Seq("HI", "HO"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should (contain inOrderElementsOf Seq("hi", "he"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain inOrderElementsOf Seq("he", "hi"))) (decided by defaultEquality[String])
         }
       }
@@ -363,17 +363,17 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should not contain inOrderElementsOf (Seq("YOU", "TO"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain inOrderElementsOf (Seq("TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should not contain inOrderElementsOf (Seq("YOU", "TO"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain inOrderElementsOf (Seq("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         all (toLists) should not contain inOrderElementsOf (Seq(" TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain inOrderElementsOf (Seq(" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -398,17 +398,17 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should (not contain inOrderElementsOf (Seq("YOU", "TO")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain inOrderElementsOf (Seq("TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain inOrderElementsOf (Seq("YOU", "TO")))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain inOrderElementsOf (Seq("TO", "YOU")))) (decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain inOrderElementsOf (Seq(" TO ", " YOU ")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain inOrderElementsOf (Seq(" TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
@@ -433,17 +433,17 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot contain inOrderElementsOf Seq("YOU", "TO")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain inOrderElementsOf Seq("TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain inOrderElementsOf Seq("YOU", "TO")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain inOrderElementsOf Seq("TO", "YOU")) (decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain inOrderElementsOf Seq(" TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain inOrderElementsOf Seq(" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -468,17 +468,17 @@ class EveryShouldContainInOrderElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot (contain inOrderElementsOf Seq("YOU", "TO"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain inOrderElementsOf Seq("TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot (contain inOrderElementsOf Seq("YOU", "TO"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain inOrderElementsOf Seq("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain inOrderElementsOf Seq(" TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain inOrderElementsOf Seq(" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }

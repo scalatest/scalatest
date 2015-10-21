@@ -49,6 +49,7 @@ class CatcherSpec extends UnitSpec {
       case InternalServerError(e) => fail()
       case _: Throwable =>
     }
+    Succeeded
   }
 
   it should "be usable as an extractor for detecting exceptions in Failed outcomes in withFixtures" in {
@@ -73,6 +74,7 @@ class CatcherSpec extends UnitSpec {
       case Failed(InternalServerError(e)) => fail()
       case _ =>
     }
+    Succeeded
   }
 }
 

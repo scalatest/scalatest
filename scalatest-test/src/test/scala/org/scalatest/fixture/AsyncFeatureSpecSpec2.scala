@@ -97,64 +97,6 @@ class AsyncFeatureSpecSpec2 extends org.scalatest.AsyncFunSpec {
       }
     }
 
-    it("can be used for tests that did not return Future under parallel async test execution") {
-
-      class ExampleSpec extends AsyncFeatureSpec with ParallelTestExecution {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
-        type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
-          test("testing")
-
-        val a = 1
-
-        scenario("test 1") { fixture =>
-          assert(a == 1)
-        }
-
-        scenario("test 2") { fixture =>
-          assert(a == 2)
-        }
-
-        scenario("test 3") { fixture =>
-          pending
-        }
-
-        scenario("test 4") { fixture =>
-          cancel
-        }
-
-        ignore("test 5") { fixture =>
-          cancel
-        }
-
-        override def newInstance = new ExampleSpec
-      }
-
-      val rep = new EventRecordingReporter
-      val spec = new ExampleSpec
-      val status = spec.run(None, Args(reporter = rep))
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(repo.testStartingEventsReceived.length == 4)
-        assert(repo.testSucceededEventsReceived.length == 1)
-        assert(repo.testSucceededEventsReceived(0).testName == "Scenario: test 1")
-        assert(repo.testFailedEventsReceived.length == 1)
-        assert(repo.testFailedEventsReceived(0).testName == "Scenario: test 2")
-        assert(repo.testPendingEventsReceived.length == 1)
-        assert(repo.testPendingEventsReceived(0).testName == "Scenario: test 3")
-        assert(repo.testCanceledEventsReceived.length == 1)
-        assert(repo.testCanceledEventsReceived(0).testName == "Scenario: test 4")
-        assert(repo.testIgnoredEventsReceived.length == 1)
-        assert(repo.testIgnoredEventsReceived(0).testName == "Scenario: test 5")
-      }
-    }
-
     it("should run tests that return Future in serial by default") {
 
       @volatile var count = 0
@@ -192,52 +134,6 @@ class AsyncFeatureSpecSpec2 extends org.scalatest.AsyncFunSpec {
           Future {
             assert(count == 2)
           }
-        }
-
-      }
-
-      val rep = new EventRecordingReporter
-      val suite = new ExampleSpec
-      val status = suite.run(None, Args(reporter = rep))
-      val promise = Promise[EventRecordingReporter]
-      status whenCompleted { _ => promise.success(rep) }
-      promise.future.map { repo =>
-        assert(repo.testStartingEventsReceived.length == 3)
-        assert(repo.testSucceededEventsReceived.length == 3)
-      }
-    }
-
-    it("should run tests that does not return Future in serial by default") {
-
-      @volatile var count = 0
-
-      class ExampleSpec extends AsyncFeatureSpec {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
-        type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
-          test("testing")
-
-        scenario("test 1") { fixture =>
-          SleepHelper.sleep(30)
-          assert(count == 0)
-          count = 1
-          Succeeded
-        }
-
-        scenario("test 2") { fixture =>
-          assert(count == 1)
-          SleepHelper.sleep(50)
-          count = 2
-          Succeeded
-        }
-
-        scenario("test 3") { fixture =>
-          assert(count == 2)
         }
 
       }

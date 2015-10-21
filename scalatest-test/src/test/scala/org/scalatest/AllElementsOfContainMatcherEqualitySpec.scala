@@ -71,20 +71,22 @@ class AllElementsOfContainMatcherEqualitySpec extends FunSpec {
 
   describe("allElementsOf ") {
 
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = Prettifier.default(left)
       val rightText = Prettifier.default(right)
       e.message should be (Some(leftText + " did not contain all elements of " + rightText))
       e.failedCodeFileName should be (Some("AllElementsOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
+      Succeeded
     }
 
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = Prettifier.default(left)
       val rightText = Prettifier.default(right)
       e.message should be (Some(leftText + " contained all elements of " + rightText))
       e.failedCodeFileName should be (Some("AllElementsOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
+      Succeeded
     }
 
     it("should take custom implicit equality in scope when 'should contain' is used") {

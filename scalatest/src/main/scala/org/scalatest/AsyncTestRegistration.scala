@@ -16,12 +16,14 @@
 package org.scalatest
 
 import org.scalatest.OutcomeOf._
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * Trait for test registration support.
  */
 trait AsyncTestRegistration { theSuite: Suite =>
+
+  implicit def executionContext: ExecutionContext
 
   /**
    * Transform the test outcome, `Registration` type to `AsyncOutcome`.

@@ -72,6 +72,7 @@ class TripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           assert(!(nullSuper === super1))
           assert(nullSuper !== super1)
         }
+        succeed
       }
 
 /*

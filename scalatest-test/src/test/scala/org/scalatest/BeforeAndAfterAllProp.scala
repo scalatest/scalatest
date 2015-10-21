@@ -78,6 +78,7 @@ class BeforeAndAfterAllProp extends AllSuiteProp {
           afterAllTime should be >= testSucceeded.timeStamp
         }
       }
+      succeed
     }
   }
 }
@@ -145,9 +146,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropTestNGSuite extends TestN
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFunSuite extends FunSuite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
-  test("Test 1") { SleepHelper.sleep(10) }
-  test("Test 2") { SleepHelper.sleep(10) }
-  test("Test 3") { SleepHelper.sleep(10) }
+  test("Test 1") { SleepHelper.sleep(10); succeed }
+  test("Test 2") { SleepHelper.sleep(10); succeed }
+  test("Test 3") { SleepHelper.sleep(10); succeed }
   
   override protected def beforeAll() {
     beforeAllTime = Platform.currentTime
@@ -161,9 +162,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFunSuite extends FunSuite
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSuite extends fixture.FunSuite with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
-  test("Test 1") { s => SleepHelper.sleep(10) }
-  test("Test 2") { s => SleepHelper.sleep(10) }
-  test("Test 3") { s => SleepHelper.sleep(10) }
+  test("Test 1") { s => SleepHelper.sleep(10); succeed }
+  test("Test 2") { s => SleepHelper.sleep(10); succeed }
+  test("Test 3") { s => SleepHelper.sleep(10); succeed }
   
   override protected def beforeAll() {
     beforeAllTime = Platform.currentTime
@@ -178,9 +179,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSuite extends f
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFunSpec extends FunSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   describe("Scope 1") {
-    it("Test 1") { SleepHelper.sleep(10) }
-    it("Test 2") { SleepHelper.sleep(10) }
-    it("Test 3") { SleepHelper.sleep(10) }
+    it("Test 1") { SleepHelper.sleep(10); succeed }
+    it("Test 2") { SleepHelper.sleep(10); succeed }
+    it("Test 3") { SleepHelper.sleep(10); succeed }
   }
   
   override protected def beforeAll() {
@@ -196,9 +197,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFunSpec extends FunSpec w
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fixture.FunSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   describe("Scope 1") {
-    it("Test 1") { s => SleepHelper.sleep(10) }
-    it("Test 2") { s => SleepHelper.sleep(10) }
-    it("Test 3") { s => SleepHelper.sleep(10) }
+    it("Test 1") { s => SleepHelper.sleep(10); succeed }
+    it("Test 2") { s => SleepHelper.sleep(10); succeed }
+    it("Test 3") { s => SleepHelper.sleep(10); succeed }
   }
   
   override protected def beforeAll() {
@@ -214,9 +215,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fi
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFeatureSpec extends FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   feature("Feature 1") {
-    scenario("Scenario 1") { SleepHelper.sleep(10) }
-    scenario("Scenario 2") { SleepHelper.sleep(10) }
-    scenario("Scenario 3") { SleepHelper.sleep(10) }
+    scenario("Scenario 1") { SleepHelper.sleep(10); succeed }
+    scenario("Scenario 2") { SleepHelper.sleep(10); succeed }
+    scenario("Scenario 3") { SleepHelper.sleep(10); succeed }
   }
   
   override protected def beforeAll() {
@@ -232,9 +233,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFeatureSpec extends Featu
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extends fixture.FeatureSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   feature("Feature 1") {
-    scenario("Scenario 1") { s => SleepHelper.sleep(10) }
-    scenario("Scenario 2") { s => SleepHelper.sleep(10) }
-    scenario("Scenario 3") { s => SleepHelper.sleep(10) }
+    scenario("Scenario 1") { s => SleepHelper.sleep(10); succeed }
+    scenario("Scenario 2") { s => SleepHelper.sleep(10); succeed }
+    scenario("Scenario 3") { s => SleepHelper.sleep(10); succeed }
   }
   
   override protected def beforeAll() {
@@ -249,9 +250,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extend
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFlatSpec extends FlatSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
-  "Scope 1" should "do thing 1" in { SleepHelper.sleep(10) }
-  it should "do thing 2" in { SleepHelper.sleep(10) }
-  it should "do thing 3" in { SleepHelper.sleep(10) }
+  "Scope 1" should "do thing 1" in { SleepHelper.sleep(10); succeed }
+  it should "do thing 2" in { SleepHelper.sleep(10); succeed }
+  it should "do thing 3" in { SleepHelper.sleep(10); succeed }
   
   override protected def beforeAll() {
     beforeAllTime = Platform.currentTime
@@ -265,9 +266,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFlatSpec extends FlatSpec
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFlatSpec extends fixture.FlatSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
-  "Scope 1" should "do thing 1" in { s => SleepHelper.sleep(10) }
-  it should "do thing 2" in { s => SleepHelper.sleep(10) }
-  it should "do thing 3" in { s => SleepHelper.sleep(10) }
+  "Scope 1" should "do thing 1" in { s => SleepHelper.sleep(10); succeed }
+  it should "do thing 2" in { s => SleepHelper.sleep(10); succeed }
+  it should "do thing 3" in { s => SleepHelper.sleep(10); succeed }
   
   override protected def beforeAll() {
     beforeAllTime = Platform.currentTime
@@ -282,9 +283,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFlatSpec extends f
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFreeSpec extends FreeSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   "Scope 1" - {
-    "Test 1" in { SleepHelper.sleep(10) }
-    "Test 2" in { SleepHelper.sleep(10) }
-    "Test 3" in { SleepHelper.sleep(10) }
+    "Test 1" in { SleepHelper.sleep(10); succeed }
+    "Test 2" in { SleepHelper.sleep(10); succeed }
+    "Test 3" in { SleepHelper.sleep(10); succeed }
   }
   
   override protected def beforeAll() {
@@ -300,9 +301,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFreeSpec extends FreeSpec
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFreeSpec extends fixture.FreeSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" - {
-    "Test 1" in { s => SleepHelper.sleep(10) }
-    "Test 2" in { s => SleepHelper.sleep(10) }
-    "Test 3" in { s => SleepHelper.sleep(10) }
+    "Test 1" in { s => SleepHelper.sleep(10); succeed }
+    "Test 2" in { s => SleepHelper.sleep(10); succeed }
+    "Test 3" in { s => SleepHelper.sleep(10); succeed }
   }
   
   override protected def beforeAll() {
@@ -317,9 +318,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFreeSpec extends f
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropPropSpec extends PropSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
-  property("Test 1") { SleepHelper.sleep(10) }
-  property("Test 2") { SleepHelper.sleep(10) }
-  property("Test 3") { SleepHelper.sleep(10) }
+  property("Test 1") { SleepHelper.sleep(10); succeed }
+  property("Test 2") { SleepHelper.sleep(10); succeed }
+  property("Test 3") { SleepHelper.sleep(10); succeed }
   
   override protected def beforeAll() {
     beforeAllTime = Platform.currentTime
@@ -333,9 +334,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropPropSpec extends PropSpec
 
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixturePropSpec extends fixture.PropSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
-  property("Test 1") { s => SleepHelper.sleep(10) }
-  property("Test 2") { s => SleepHelper.sleep(10) }
-  property("Test 3") { s => SleepHelper.sleep(10) }
+  property("Test 1") { s => SleepHelper.sleep(10); succeed }
+  property("Test 2") { s => SleepHelper.sleep(10); succeed }
+  property("Test 3") { s => SleepHelper.sleep(10); succeed }
   
   override protected def beforeAll() {
     beforeAllTime = Platform.currentTime
@@ -350,9 +351,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixturePropSpec extends f
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropWordSpec extends WordSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   "Scope 1" should {
-    "Test 1" in { SleepHelper.sleep(10) }
-    "Test 2" in { SleepHelper.sleep(10) }
-    "Test 3" in { SleepHelper.sleep(10) }
+    "Test 1" in { SleepHelper.sleep(10); succeed }
+    "Test 2" in { SleepHelper.sleep(10); succeed }
+    "Test 3" in { SleepHelper.sleep(10); succeed }
   }
   
   override protected def beforeAll() {
@@ -368,9 +369,9 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropWordSpec extends WordSpec
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureWordSpec extends fixture.WordSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   "Scope 1" should {
-    "Test 1" in { s => SleepHelper.sleep(10) }
-    "Test 2" in { s => SleepHelper.sleep(10) }
-    "Test 3" in { s => SleepHelper.sleep(10) }
+    "Test 1" in { s => SleepHelper.sleep(10); succeed }
+    "Test 2" in { s => SleepHelper.sleep(10); succeed }
+    "Test 3" in { s => SleepHelper.sleep(10); succeed }
   }
   
   override protected def beforeAll() {

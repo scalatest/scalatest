@@ -23,11 +23,12 @@ class AllOfContainMatcherSpec extends FunSpec {
 
   describe("allOf ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " did not contain all of (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("AllOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
+      Succeeded
     }
     
     it("should succeeded when left List contains same elements in same order as right List") {
@@ -187,11 +188,12 @@ class AllOfContainMatcherSpec extends FunSpec {
   
   describe("not allOf ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " contained all of (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("AllOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
+      Succeeded
     }
     
     it("should succeeded when left List contains different elements as right List") {

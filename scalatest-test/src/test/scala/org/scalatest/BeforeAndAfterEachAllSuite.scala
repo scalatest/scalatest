@@ -23,7 +23,7 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
 import scala.concurrent.Promise
 
-class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
+class BeforeAndAfterEachAllSuite extends FunSuite {
 
   // SKIP-SCALATESTJS-START
   implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
@@ -57,7 +57,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
       if (!runTestWasCalled)
         beforeEachCalledBeforeRunTest = true
     }
-    it("test something") {}
+    it("test something") { succeed }
     override def afterEach() {
       if (runTestWasCalled)
         afterEachCalledAfterRunTest = true
@@ -163,7 +163,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterEach() { throw new NumberFormatException }
-      it("test July") {}
+      it("test July") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))
@@ -177,7 +177,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
       override def afterEach() { throw new NumberFormatException }
-      it("test July") {}
+      it("test July") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))
@@ -192,7 +192,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
     
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def beforeAll() { throw new NumberFormatException }
-      it("test July") {}
+      it("test July") { succeed }
     }
     assertThrows[NumberFormatException] {
       val a = new MySuite
@@ -209,9 +209,9 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterAllCalled = false
-      it("test 1") {}
-      it("test 2") {}
-      it("test 3") {}
+      it("test 1") { succeed }
+      it("test 2") { succeed }
+      it("test 3") { succeed }
       override def afterAll() {
         afterAllCalled = true
       }
@@ -232,9 +232,9 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterAllCalled = false
-      it("test 1") {}
-      it("test 2") {}
-      it("test 3") {}
+      it("test 1") { succeed }
+      it("test 2") { succeed }
+      it("test 3") { succeed }
       override def afterAll() {
         afterAllCalled = true
         throw new IllegalArgumentException
@@ -252,7 +252,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       override def afterAll() { throw new NumberFormatException }
-      it("test July") {}
+      it("test July") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))
@@ -266,7 +266,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
       override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
-      it("test July") {}
+      it("test July") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test July"), Args(StubReporter))
@@ -291,6 +291,7 @@ class BeforeAndAfterEachAllExtendingSuite extends FunSpec with BeforeAndAfterEac
     assert(sb.toString === "ScalaTest is easy!")
     assert(lb.isEmpty)
     lb += "sweet"
+    succeed
   }
 
   it("test fun") {
@@ -315,6 +316,7 @@ class BeforeAndAfterEachAllExtendingFunSuite extends FunSuite with BeforeAndAfte
     assert(sb.toString === "ScalaTest is easy!")
     assert(lb.isEmpty)
     lb += "sweet"
+    succeed
   }
 
   test("fun") {
@@ -337,6 +339,7 @@ class BeforeAndAfterEachAllInfoSuite extends FunSuite {
   
       test("test 1") {
         info("info 1")
+        succeed
       }
     }
     
@@ -360,6 +363,7 @@ class BeforeAndAfterEachAllInfoSuite extends FunSuite {
     class ExampleSpec extends FunSuite with BeforeAndAfter {
       test("test 1") {
         info("info 1")
+        succeed
       }
       after {
         info("In After")

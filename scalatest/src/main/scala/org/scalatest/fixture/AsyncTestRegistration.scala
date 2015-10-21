@@ -19,8 +19,11 @@ import org.scalatest.OutcomeOf._
 import org.scalatest.{AsyncOutcome, Tag}
 import scala.concurrent.Future
 import org.scalatest.Assertion
+import scala.concurrent.ExecutionContext
 
 trait AsyncTestRegistration { theSuite: Suite =>
+
+  implicit def executionContext: ExecutionContext
 
   /**
    * Transform the test outcome, `Registration` type to `AsyncOutcome`.
