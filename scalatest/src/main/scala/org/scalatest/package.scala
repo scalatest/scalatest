@@ -86,6 +86,11 @@ package object scalatest {
    * trait <code>Assertions</code>, which return its only instance, the <code>Succeeded</code> singleton, or throw
    * an exception that indicates a failed, canceled, or pending test.
    */
-  type Assertion = Unit // Succeeded.type
-  val AssertionValue: Assertion = () // Succeeded
+  // ScalaTest
+  type Assertion = Unit
+  val AssertionValue: Assertion = ()
+
+  // ScalaTest.safe
+  // type Assertion = Succeeded.type
+  // val AssertionValue: Assertion = Succeeded
 }
