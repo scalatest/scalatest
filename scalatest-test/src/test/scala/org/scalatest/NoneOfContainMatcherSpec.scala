@@ -23,7 +23,7 @@ class NoneOfContainMatcherSpec extends FunSpec {
 
   describe("noneOf ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       e.message should be (Some(FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -109,7 +109,7 @@ class NoneOfContainMatcherSpec extends FunSpec {
   
   describe("not noneOf ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherSpec.scala"))

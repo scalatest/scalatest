@@ -265,7 +265,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       implicit val e = new Equality[Int] {
         def areEqual(a: Int, b: Any): Boolean = a != b
       }
-      intercept[exceptions.TestFailedException] {
+      assertThrows[exceptions.TestFailedException] {
         all (xs) should equal (1) 
       }
     }
@@ -320,7 +320,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       implicit val e = new Equality[Int] {
         def areEqual(a: Int, b: Any): Boolean = a != b
       }
-      intercept[exceptions.TestFailedException] {
+      assertThrows[exceptions.TestFailedException] {
         all (xs) should equal (1) 
       }
     }
@@ -331,7 +331,7 @@ class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
       implicit val e = new Equality[Int] {
         def areEqual(a: Int, b: Any): Boolean = a != b
       }
-      intercept[exceptions.TestFailedException] {
+      assertThrows[exceptions.TestFailedException] {
         all (xs) should not equal (2) 
       }
     }

@@ -189,6 +189,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       }
       val a = new MySpec
       a.execute()
+      succeed
     }
     
     it("should register scopes and tests lazily after spec instance variables are created when testNames is invoked") {
@@ -199,6 +200,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
       a.testNames // Should execute assertion in the scope
+      succeed
     }
     it("should register scopes and tests lazily after spec instance variables are created when run is invoked") {
       val a = new Spec {
@@ -208,6 +210,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
       a.run(None, Args(SilentReporter)) // Should execute assertion in the scope
+      succeed
     }
     it("should register scopes and tests lazily after spec instance variables are created when expectedTestCount is invoked") {
       val a = new Spec {
@@ -217,6 +220,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
       a.expectedTestCount(Filter.default) // Should execute assertion in the scope
+      succeed
     }
     it("should register scopes and tests lazily after spec instance variables are created when tags is invoked") {
       val a = new Spec {
@@ -226,6 +230,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
       a.tags // Should execute assertion in the scope
+      succeed
     }
 
 /*
@@ -675,7 +680,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         def `test: that` { theTestThatCalled = true }
       }
 
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         // Here, they forgot that the name is actually `test: this`(Fixture)
         spec.run(Some(encode("test: misspelled")), Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       }
@@ -829,7 +834,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       val a = new Spec {
         def `test: throws AssertionError`() { throw new OutOfMemoryError }
       }
-      intercept[OutOfMemoryError] {
+      assertThrows[OutOfMemoryError] {
         a.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(), Set.empty))
       }
     }
@@ -1678,7 +1683,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       }
       
       val s = new ExampleSpec
-      intercept[AnnotationFormatError] {
+      assertThrows[AnnotationFormatError] {
         s.run(None, Args(reporter = SilentReporter))
       }
     }
@@ -1877,6 +1882,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         val myRep = new EventRecordingReporter
         spec.run(None, Args(myRep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
         spec.callInfo() // TODO: Actually test that This prints to stdout
+        succeed
       }
       it("should send an InfoProvided with an IndentedText formatter with level 0 when called outside a test") {
         val spec = new InfoBeforeTestSpec
@@ -1896,13 +1902,13 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   describe("A Suite's execute method") {
     it("should throw NAE if passed null for configMap") {
       class MySpec extends Spec
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         (new MySpec).execute(configMap = null)
       }
     }
     it("should throw IAE if a testName is passed that does not exist on the suite") {
       class MySpec extends Spec
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         (new MySpec).execute(testName = "fred")
       }
     }
@@ -1947,7 +1953,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
     
           def `should produce NoSuchElementException when head is invoked` {
-            intercept[NoSuchElementException] {
+            assertThrows[NoSuchElementException] {
               Set.empty.head
             }
           }

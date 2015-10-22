@@ -53,7 +53,7 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends FunSpec with Ex
   
   describe("theSameElementsInOrderAs ") {
     
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " did not contain the same elements in the same (iterated) order as " + rightText))
@@ -61,7 +61,7 @@ class TheSameElementsInOrderAsContainMatcherEqualitySpec extends FunSpec with Ex
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " contained the same elements in the same (iterated) order as " + rightText))

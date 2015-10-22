@@ -32,8 +32,8 @@ class YeOldeFunSuiteSpec extends Spec {
 
   def `test that test functions that result in non unit are registered` = {
     val a = new FunSuite {
-      test("test this") { 1 }
-      test("test that") { "hi" }
+      test("test this") { 1; succeed }
+      test("test that") { "hi"; succeed }
     }
     assert(a.expectedTestCount(Filter()) === 2)
     assert(a.testNames.size === 2)
@@ -73,10 +73,12 @@ class YeOldeFunSuiteSpec extends Spec {
       var fromConstructorTestExecuted = false
       test("from constructor") {
         fromConstructorTestExecuted = true
+        succeed
       }
       def registerOne() {
         test("from method") {
           fromMethodTestExecuted = true
+          succeed
         }
       }
     }
@@ -96,6 +98,7 @@ class YeOldeFunSuiteSpec extends Spec {
     class MySuite extends FunSuite {
       test("test this") {
         info(msg)
+        succeed
       }
     }
     val a = new MySuite
@@ -126,6 +129,7 @@ class YeOldeFunSuiteSpec extends Spec {
     class MySuite extends FunSuite {
       info(msg)
       test("test this") {
+        succeed
       }
     }
     val a = new MySuite
@@ -153,6 +157,7 @@ class YeOldeFunSuiteSpec extends Spec {
       test("test this") {
         if (infoProvidedReceived)
           infoProvidedReceivedBeforeTest = true
+        succeed
       }
     }
     val a = new MySuite
@@ -178,6 +183,7 @@ class YeOldeFunSuiteSpec extends Spec {
       test("test this") {
         if (infoProvidedReceived)
           infoProvidedReceivedAfterTest = false
+        succeed
       }
       info(msg)
     }
@@ -207,6 +213,7 @@ class YeOldeFunSuiteSpec extends Spec {
         test("is in the wrong place also") {
           assert(1 === 1)
         }
+        succeed
       }
     }
 
@@ -234,6 +241,7 @@ class YeOldeFunSuiteSpec extends Spec {
         test("is in the wrong place also", new Tag("SlowAsMolasses")) {
           assert(1 === 1)
         }
+        succeed
       }
     }
 
@@ -261,6 +269,7 @@ class YeOldeFunSuiteSpec extends Spec {
         ignore("is in the wrong place also") {
           assert(1 === 1)
         }
+        succeed
       }
     }
 
@@ -288,6 +297,7 @@ class YeOldeFunSuiteSpec extends Spec {
         ignore("is in the wrong place also", mytags.SlowAsMolasses) {
           assert(1 === 1)
         }
+        succeed
       }
     }
 

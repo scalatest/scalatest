@@ -75,13 +75,13 @@ class OneElementOfContainMatcherEqualitySpec extends FunSpec with Explicitly {
 
   describe("oneElementOf ") {
 
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       e.message should be (Some(FailureMessages.didNotContainOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       e.message should be (Some(FailureMessages.containedOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

@@ -29,6 +29,7 @@ class SlowpokeDetectorSpec extends FunSpec with Now {
       // interval is how long we sleep between looking to see if anything has been there longer than the timeout, but
       // That's something that will be set up by DispatchReporter, which will invoke detectSlowpokes periodically.
       new SlowpokeDetector(timeout = 300000)
+      succeed
     }
     it("should offer a method to register a starting test") {
       val spd = new SlowpokeDetector
@@ -70,6 +71,7 @@ class SlowpokeDetectorSpec extends FunSpec with Now {
           timeStamp = -10
         )
       }
+      succeed
     }
     it("should offer a method to register a finished (succeeded, failed, pending, canceled, or omitted) test") {
       val spd = new SlowpokeDetector
@@ -99,6 +101,7 @@ class SlowpokeDetectorSpec extends FunSpec with Now {
           testName = null
         )
       }
+      succeed
     }
     it("should return an empty Slowpoke seq if the SlowpokeDetector has received no events") {
       val spd = new SlowpokeDetector

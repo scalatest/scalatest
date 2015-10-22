@@ -77,11 +77,11 @@ class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
     }
 
     it("should be properly severed on intercept[IllegalArgumentException] {}") {
-      intercept[IllegalArgumentException] {}
+      assertThrows[IllegalArgumentException] {}
     }
 
     it("should be properly severed on intercept[IllegalArgumentException] { throw new RuntimeException }") {
-      intercept[IllegalArgumentException] { if (false) 1 else throw new RuntimeException }
+      assertThrows[IllegalArgumentException] { if (false) 1 else throw new RuntimeException }
     }
 
     it("should be properly severed on 1 should === (2)") {
@@ -96,7 +96,7 @@ class SeveredStackTracesFailureSpec extends FunSpec with SeveredStackTraces {
       an [IllegalArgumentException] should be thrownBy { if (false) () else throw new RuntimeException }
     }
   }
-  private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String) {
+  private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String): Assertion = {
     val stackTraceElement = e.getStackTrace()(e.failedCodeStackDepth)
     val fileName = StackDepthExceptionHelper.getFailedCodeFileName(stackTraceElement).get
     val lineNumber = stackTraceElement.getLineNumber

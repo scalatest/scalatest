@@ -228,6 +228,7 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
         }
       }
       serializeRoundtrip(e)
+      succeed
     }
   }
 }

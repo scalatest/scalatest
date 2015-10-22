@@ -53,16 +53,16 @@ class OptionShouldContainOneElementOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumSome should contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumSome should contain oneElementOf Seq("fee", "fie", "foe", "fum")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumSome should contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumSome should contain oneElementOf Seq("fee", "fie", "foe", "fum")) (decided by upperCaseEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumSome should contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")
         }
         (fumSome should contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
@@ -87,16 +87,16 @@ class OptionShouldContainOneElementOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumSome should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumSome should (contain oneElementOf Seq("fee", "fie", "foe", "fum"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumSome should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumSome should (contain oneElementOf Seq("fee", "fie", "foe", "fum"))) (decided by upperCaseEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumSome should (contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))
         }
         (fumSome should (contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
@@ -128,17 +128,17 @@ class OptionShouldContainOneElementOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toSome should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toSome should not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toSome should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toSome should not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         }
         toSome should not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toSome should not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -170,17 +170,17 @@ class OptionShouldContainOneElementOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toSome should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toSome should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
         (toSome should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toSome should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseEquality)
         }
         toSome should (not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toSome should (not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
@@ -239,23 +239,23 @@ class OptionShouldContainOneElementOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiSomes) should contain oneElementOf Seq("hi", "he")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should contain oneElementOf Seq("ho", "he")
         }
         implicit val ise = upperCaseEquality
         all (hiSomes) should contain oneElementOf Seq("HI", "HE")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should contain oneElementOf Seq("hi", "he")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should contain oneElementOf Seq("HI", "HE")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should contain oneElementOf Seq("hi", "he")) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
         (all (hiSomes) should contain oneElementOf Seq("hi", "he")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should contain oneElementOf Seq("HI", "HE")) (decided by defaultEquality[String])
         }
       }
@@ -304,23 +304,23 @@ class OptionShouldContainOneElementOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiSomes) should (contain oneElementOf Seq("hi", "he"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should (contain oneElementOf Seq("HI", "HE"))
         }
         implicit val ise = upperCaseEquality
         all (hiSomes) should (contain oneElementOf Seq("HI", "HE"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should (contain oneElementOf Seq("hi", "he"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should (contain oneElementOf Seq("HI", "HE"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should (contain oneElementOf Seq("hi", "he"))) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
         (all (hiSomes) should (contain oneElementOf Seq("hi", "he"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should (contain oneElementOf Seq("HI", "HE"))) (decided by defaultEquality[String])
         }
       }
@@ -360,17 +360,17 @@ class OptionShouldContainOneElementOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toSomes) should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toSomes) should not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toSomes) should not contain oneElementOf (Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toSomes) should not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         }
         all (toSomes) should not contain oneElementOf (Seq(" happy ", " birthday ", " to ", " you "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toSomes) should not contain oneElementOf (Seq(" happy ", " birthday ", " to ", " you "))) (after being lowerCased and trimmed)
         }
       }
@@ -412,17 +412,17 @@ class OptionShouldContainOneElementOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toSomes) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toSomes) should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toSomes) should (not contain oneElementOf (Seq("happy", "birthday", "to", "you")))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toSomes) should (not contain oneElementOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseEquality)
         }
         all (toSomes) should (not contain oneElementOf (Seq(" happy ", " birthday ", " to ", " you ")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toSomes) should (not contain oneElementOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }

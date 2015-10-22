@@ -38,6 +38,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         }
  
         verify(mockClown, times(1)).hasBigRedNose
+        succeed
       }
     }
 
@@ -57,6 +58,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         }
 
         verify(mockClown, times(2)).hasBigRedNose
+        succeed
       }
     }
 
@@ -82,6 +84,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         }
 
         verify(mockClown, times(3)).hasBigRedNose
+        succeed
       }
     }
 
@@ -101,6 +104,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         }
 
         verify(mockClown, times(2)).hasBigRedNose
+        succeed
       }
     }
 
@@ -126,6 +130,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         }
 
         verify(mockClown, times(3)).hasBigRedNose
+        succeed
       }
     }
 
@@ -145,6 +150,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         }
 
         verify(mockClown, times(2)).hasBigRedNose
+        succeed
       }
     }
   }
@@ -165,6 +171,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
       }
 
       verify(mockClown, times(2)).hasBigRedNose
+      succeed
     }
   }
 
@@ -177,6 +184,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         "hi" should (have length (2) or { mockClown.hasBigRedNose; have length (2) })
  
         verify(mockClown, times(1)).hasBigRedNose
+        succeed
       }
     }
 
@@ -192,6 +200,8 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         "hi" should (have length (2) or {mockClown.hasBigRedNose; have length 2})
 
         verify(mockClown, times(2)).hasBigRedNose
+
+        succeed
       }
     }
 
@@ -211,6 +221,8 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         "hi" should (have length (2) or {mockClown.hasBigRedNose; not have length (1)})
 
         verify(mockClown, times(3)).hasBigRedNose
+
+        succeed
       }
     }
 
@@ -226,6 +238,8 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         Array(1, 2) should (have size (2) or {mockClown.hasBigRedNose; have size 2})
 
         verify(mockClown, times(2)).hasBigRedNose
+
+        succeed
       }
     }
 
@@ -245,6 +259,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         Array(1, 2) should (have size (2) or {mockClown.hasBigRedNose; not have size (1)})
 
         verify(mockClown, times(3)).hasBigRedNose
+        succeed
       }
     }
 
@@ -260,6 +275,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         "hi" should (equal ("hi") or {mockClown.hasBigRedNose; equal ("ho")})
 
         verify(mockClown, times(2)).hasBigRedNose
+        succeed
       }
     }
 
@@ -275,6 +291,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         5 should (be < (7) or be < {mockClown.hasBigRedNose; 3})
 
         verify(mockClown, times(2)).hasBigRedNose
+        succeed
       }
       it("should not short-circuit if left matcher does match for >") {
 
@@ -287,6 +304,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         5 should (be > (3) or be > {mockClown.hasBigRedNose; 3})
 
         verify(mockClown, times(2)).hasBigRedNose
+        succeed
       }
     }
 
@@ -302,6 +320,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         5 should (be < (3) or not be < {mockClown.hasBigRedNose; 3})
 
         verify(mockClown, times(2)).hasBigRedNose
+        succeed
       }
       it("should not short-circuit if left matcher does match for >") {
 
@@ -314,6 +333,7 @@ class ShouldLogicalMatcherExprSpec extends FunSpec with Checkers with MockitoSug
         5 should (be > (7) or not be > {mockClown.hasBigRedNose; 8})
 
         verify(mockClown, times(2)).hasBigRedNose
+        succeed
       }
     }
   }

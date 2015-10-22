@@ -135,7 +135,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new VirtualMachineError {}
           }
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           vmeFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
@@ -149,7 +149,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestPendingException
           }
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           tpeFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
@@ -162,7 +162,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
           }
-        intercept[TestCanceledException] {
+        assertThrows[TestCanceledException] {
           tpeFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
@@ -319,7 +319,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new VirtualMachineError {}
           }
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           vmeFuture.futureValue
         }
       }
@@ -333,7 +333,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestPendingException
           }
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           tpeFuture.futureValue
         }
       }
@@ -346,7 +346,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
           }
-        intercept[TestCanceledException] {
+        assertThrows[TestCanceledException] {
           tpeFuture.futureValue
         }
       }
@@ -594,7 +594,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new VirtualMachineError {}
           }
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           whenReady(vmeFuture) { s =>
             s should equal ("hi")
           }
@@ -611,7 +611,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestPendingException
           }
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           whenReady(tpeFuture) { s =>
             s should equal ("hi")
           }
@@ -625,7 +625,7 @@ class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures w
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
           }
-        intercept[TestCanceledException] {
+        assertThrows[TestCanceledException] {
           whenReady(tpeFuture) { s =>
             s should equal ("hi")
           }

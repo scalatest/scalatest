@@ -382,21 +382,23 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     }
   }
 
-  def ensureTestFailedEventReceived(suite: Suite, testName: String) {
+  def ensureTestFailedEventReceived(suite: Suite, testName: String): Assertion = {
     val reporter = new EventRecordingReporter
     suite.run(None, Args(reporter))
     val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
     assert(testFailedEvent.isDefined)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName === testName)
+    succeed
   }
 
-  def ensureTestFailedEventReceivedWithCorrectMessage(suite: Suite, testName: String, expectedMessage: String) {
+  def ensureTestFailedEventReceivedWithCorrectMessage(suite: Suite, testName: String, expectedMessage: String): Assertion = {
     val reporter = new EventRecordingReporter
     suite.run(None, Args(reporter))
     val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
     assert(testFailedEvent.isDefined)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName == testName)
     assert(testFailedEvent.get.asInstanceOf[TestFailed].message == expectedMessage)
+    succeed
   }
 
   class TestIgnoredTrackingReporter extends Reporter {

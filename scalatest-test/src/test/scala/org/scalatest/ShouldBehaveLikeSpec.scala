@@ -29,7 +29,7 @@ class ShouldBehaveLikeSpec extends FunSpec {
 
   describe("The 'should behave like' syntax should throw an exception inside an it clause") {
     it("the code in here should fail with an exception") {
-      intercept[TestRegistrationClosedException] {
+      assertThrows[TestRegistrationClosedException] {
         it should behave like myFirstBehavior(1) 
       }
     }

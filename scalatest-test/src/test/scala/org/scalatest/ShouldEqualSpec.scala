@@ -228,7 +228,7 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       val a3 = Array(4, 5, 6)
       a1 should not be theSameInstanceAs (a2)
       a1 should equal (a2)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         a1 should equal (a3)
       }
     }
@@ -239,7 +239,7 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       val a3 = Array(1, Array("c", "d"), 3)
       a1 should not be theSameInstanceAs (a2)
       a1 should equal (a2)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         a1 should equal (a3)
       }
     }
@@ -250,10 +250,10 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       val a3 = Array(1, Array("c", "d"), 3)
       a1 should not be theSameInstanceAs (a2)
       a1 should equal (a2)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         a1 should equal (a3)
       }
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         a3 should equal (a1)
       }
     }
@@ -262,17 +262,17 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       val n1: String = null
       val n2: String = null
       n1 should equal (n2)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         n1 should equal ("hi")
       }
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         "hi" should equal (n1)
       }
       val a1 = Array(1, 2, 3)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         n1 should equal (a1)
       }
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         a1 should equal (n1)
       }
     }

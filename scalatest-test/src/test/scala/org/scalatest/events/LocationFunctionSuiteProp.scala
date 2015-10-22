@@ -35,7 +35,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
   def funSuite = new FunSuite with FixtureServices {
     test("succeed") {
-      
+      succeed
     }
     test("pending") {
       pending
@@ -44,7 +44,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
       cancel
     }
     ignore("ignore") {
-      
+      succeed
     }
     val suiteTypeName: String = "FunSuite"
     val expectedStartingList = List(TestStartingPair("succeed", expectedSourceFileName, thisLineNumber - 13), 
@@ -60,7 +60,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
   def fixtureFunSuite = new fixture.FunSuite with FixtureServices with StringFixture {
     test("succeed") { param =>
-      
+      succeed
     }
     test("pending") { param =>
       pending
@@ -69,7 +69,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
       cancel
     }
     ignore("ignore") { param =>
-      
+      succeed
     }
     val suiteTypeName: String = "FunSuite"
     val expectedStartingList = List(TestStartingPair("succeed", expectedSourceFileName, thisLineNumber - 13), 
@@ -86,7 +86,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   def funSpec = new FunSpec with FixtureServices {
     describe("A Spec") {
       it("succeed") {
-        
+        succeed
       }
       it("pending") {
         pending
@@ -95,7 +95,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
         cancel
       }
       ignore("ignore") {
-      
+        succeed
       }
     }
     val suiteTypeName: String = "FunSpec"
@@ -113,7 +113,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   def fixtureFunSpec = new fixture.FunSpec with FixtureServices with StringFixture {
     describe("A Spec") {
       it("succeed") { param =>
-        
+        succeed
       }
       it("pending") { param =>
         pending
@@ -122,7 +122,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
         cancel
       }
       ignore("ignore") { param =>
-      
+        succeed
       }
     }
     val suiteTypeName: String = "FixtureFunSpec"
@@ -140,7 +140,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   def featureSpec = new FeatureSpec with FixtureServices {
     feature("Test") {
       scenario("succeed") {
-      
+        succeed
       }
       scenario("pending") {
         pending
@@ -149,7 +149,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
         cancel
       }
       ignore("ignore") {
-        
+        succeed
       }
     }
     val suiteTypeName: String = "FeatureSpec"
@@ -167,7 +167,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   def fixtureFeatureSpec = new fixture.FeatureSpec with FixtureServices with StringFixture {
     feature("Test") {
       scenario("succeed") { param =>
-      
+        succeed
       }
       scenario("pending") { param =>
         pending
@@ -176,7 +176,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
         cancel
       }
       ignore("ignore") { param =>
-      
+        succeed
       }
     }
     val suiteTypeName: String = "FixtureFeatureSpec"
@@ -193,7 +193,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
   def flatSpec = new FlatSpec with FixtureServices {
     "Test 1" should "succeed" in {
-      
+      succeed
     }
     "Test 2" should "pending" in {
       pending
@@ -203,7 +203,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
     }
     behavior of "Test 4"
     it should "be ignored" ignore {
-      
+      succeed
     }
     val suiteTypeName: String = "FlatSpec"
     val expectedStartingList = List(TestStartingPair("Test 1 should succeed", expectedSourceFileName, thisLineNumber - 14), 
@@ -225,7 +225,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
   def fixtureFlatSpec = new fixture.FlatSpec with FixtureServices with StringFixture {
     "Test 1" should "succeed" in { param =>
-      
+      succeed
     }
     "Test 2" should "pending" in { param =>
       pending
@@ -235,7 +235,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
     }
     behavior of "Test 4"
     it should "be ignored" ignore { param =>
-      
+      succeed
     }
     val suiteTypeName: String = "FixtureFlatSpec"
     val expectedStartingList = List(TestStartingPair("Test 1 should succeed", expectedSourceFileName, thisLineNumber - 14), 
@@ -258,7 +258,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   def freeSpec = new FreeSpec with FixtureServices {
     "Test" - {
       "should succeed" in {
-        
+        succeed
       }
       "should pending" in {
         pending
@@ -267,7 +267,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
         cancel
       }
       "should ignore" ignore {
-        
+        succeed
       }
     }
     val suiteTypeName: String = "FreeSpec"
@@ -285,7 +285,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   def fixtureFreeSpec = new fixture.FreeSpec with FixtureServices with StringFixture {
     "Test" - {
       "should succeed" in { param =>
-        
+        succeed
       }
       "should pending" in { param =>
         pending
@@ -294,7 +294,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
         cancel
       }
       "should ignore" ignore { param =>
-        
+        succeed
       }
     }
     val suiteTypeName: String = "FixtureFreeSpec"
@@ -311,7 +311,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
   def propSpec = new PropSpec with FixtureServices {
     property("Test should succeed") {
-      
+      succeed
     }
     property("Test should pending") {
       pending
@@ -320,7 +320,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
       cancel
     }
     ignore("Test should ignore") {
-        
+      succeed
     }
     val suiteTypeName: String = "PropSpec"
     val expectedStartingList = List(TestStartingPair("Test should succeed", expectedSourceFileName, thisLineNumber - 13), 
@@ -336,7 +336,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
   
   def fixturePropSpec = new fixture.PropSpec with FixtureServices with StringFixture {
     property("Test should succeed") { param =>
-      
+      succeed
     }
     property("Test should pending") { param =>
       pending
@@ -345,7 +345,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
       cancel
     }
     ignore("Test should ignore") { param =>
-        
+      succeed
     }
     val suiteTypeName: String = "FixturePropSpec"
     val expectedStartingList = List(TestStartingPair("Test should succeed", expectedSourceFileName, thisLineNumber - 13), 
@@ -363,7 +363,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
     def provide = afterWord("provide")
     "Test 1" should provide {
       "succeed" in {
-        
+        succeed
       }
     }
     "Test 2" when {
@@ -378,7 +378,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
     }
     "Test 4" that {
       "ignore " ignore {
-        
+        succeed
       }
     }
     
@@ -406,7 +406,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
     def provide = afterWord("provide")
     "Test 1" should provide {
       "succeed" in { param =>
-        
+        succeed
       }
     }
     "Test 2" when {
@@ -421,7 +421,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
     }
     "Test 4" that {
       "ignore " ignore { param =>
-        
+        succeed
       }
     }
     
@@ -455,7 +455,7 @@ class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFu
   //SCALATESTJS-ONLY override def newInstance = new TestLocationFunctionPathFreeSpec
   "Test" - {
     "should succeed" in {
-      
+      succeed
     }
     "should pending" in {
       pending
@@ -464,7 +464,7 @@ class TestLocationFunctionPathFreeSpec extends path.FreeSpec with TestLocationFu
       cancel
     }
     "should ignore" ignore {
-      
+      succeed
     }
   }
   val suiteTypeName: String = "path.FreeSpec"
@@ -484,7 +484,7 @@ class TestLocationFunctionPathFunSpec extends path.FunSpec with TestLocationFunc
   //SCALATESTJS-ONLY override def newInstance = new TestLocationFunctionPathFunSpec
   describe("A Spec") {
     it("succeed") {
-       
+      succeed
     }
     it("pending") {
       pending
@@ -493,7 +493,7 @@ class TestLocationFunctionPathFunSpec extends path.FunSpec with TestLocationFunc
       cancel
     }
     ignore("ignore") {
-    
+      succeed
     }
   }
   val suiteTypeName: String = "path.FunSpec"

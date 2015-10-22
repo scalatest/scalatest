@@ -168,31 +168,31 @@ class OutcomeSpec extends FunSpec {
     }
     it("should throw IAE from its apply factory methods if TestCanceledException is passed") {
       val tce = new exceptions.TestCanceledException(0)
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         Failed(tce)
       }
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         Failed("Oops!", tce)
       }
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         new Failed(tce)
       }
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         Failed.here(tce)
       }
     }
     it("should throw IAE from its apply factory methods if TestPendingException is passed") {
       val tpe = new exceptions.TestPendingException
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         Failed(tpe)
       }
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         Failed("Oops!", tpe)
       }
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         new Failed(tpe)
       }
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         Failed.here(tpe)
       }
     }
@@ -286,7 +286,7 @@ class OutcomeSpec extends FunSpec {
     }
     // SKIP-SCALATESTJS-START
     it("if UnknownError is thrown, should complete abruptly with that exception") {
-      intercept[UnknownError] {
+      assertThrows[UnknownError] {
         outcomeOf { throw new UnknownError }
       }
     }
@@ -335,7 +335,7 @@ class OutcomeSpec extends FunSpec {
 
     it("should throw TestPendingException when it is Pending") {
       val outcome2: Outcome = Pending
-      intercept[exceptions.TestPendingException] {
+      assertThrows[exceptions.TestPendingException] {
         outcome2.toSucceeded
       }
     }

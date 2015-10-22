@@ -25,7 +25,7 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
 
   describe("inOrderOnly ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " did not contain only (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderOnlyContainMatcherSpec.scala"))
@@ -44,19 +44,19 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
     }
     
     it("should fail when left list contains part of right list") {
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         List(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3, 4, 5)
       }
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         Array(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3, 4, 5)
       }
       // SKIP-SCALATESTJS-START
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         javaList(1, 2, 2, 3, 3, 3) should contain inOrderOnly (1, 2, 3, 4, 5)
       }
       // SKIP-SCALATESTJS-END
-      
-      intercept[TestFailedException] {
+
+      assertThrows[TestFailedException] {
         LinkedHashMap(1 -> "one", 2 -> "two", 3 -> "three").iterator.toStream should contain inOrderOnly (1 -> "one", 2 -> "two", 3 -> "three", 4 -> "four", 5 -> "five")
       }
 /*
@@ -154,7 +154,7 @@ class InOrderOnlyContainMatcherSpec extends FunSpec {
   
   describe("not inOrderOnly ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " contained only (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderOnlyContainMatcherSpec.scala"))

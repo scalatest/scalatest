@@ -132,20 +132,22 @@ class InOrderElementsOfContainMatcherDeciderSpec extends FunSpec with Explicitly
 
   describe("inOrderElementsOf ") {
 
-    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " did not contain all elements of " + rightText + " in order"))
       e.failedCodeFileName should be (Some("InOrderElementsOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
+      succeed
     }
 
-    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       val rightText = FailureMessages.decorateToStringValue(right)
       e.message should be (Some(leftText + " contained all elements of " + rightText + " in order"))
       e.failedCodeFileName should be (Some("InOrderElementsOfContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
+      succeed
     }
 
     it("should take specified equality when 'should contain' is used") {

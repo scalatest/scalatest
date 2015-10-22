@@ -40,6 +40,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.ChromeBrowser"))
       }
+      succeed
     }
   }
 
@@ -50,6 +51,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.FirefoxBrowser"))
       }
+      succeed
     }
   }
 
@@ -60,6 +62,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.HtmlUnitBrowser"))
       }
+      succeed
     }
   }
 
@@ -70,6 +73,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.InternetExplorerBrowser"))
       }
+      succeed
     }
   }
 
@@ -80,6 +84,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.SafariBrowser"))
       }
+      succeed
     }
   }
 
@@ -90,6 +95,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.CPU"))
       }
+      succeed
     }
   }
 
@@ -100,6 +106,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.Disk"))
       }
+      succeed
     }
   }
 
@@ -110,6 +117,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.Network"))
       }
+      succeed
     }
   }
 
@@ -120,6 +128,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.Retryable"))
       }
+      succeed
     }
   }
 
@@ -130,6 +139,7 @@ class InheritedTagProp extends SuiteProp {
       resultTags.foreach { case (testName, tagSet) =>
         assert(tagSet.contains("org.scalatest.tags.Slow"))
       }
+      succeed
     }
   }
 

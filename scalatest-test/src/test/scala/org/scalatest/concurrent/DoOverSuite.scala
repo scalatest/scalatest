@@ -22,16 +22,16 @@ import DoOver.tryTryAgain
 class DoOverSuite extends FunSuite with Matchers {
 
   test("passing a maxTries less than 3 generates an IllegalArgumentException") {
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       tryTryAgain(0) {}
     }
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       tryTryAgain(-1) {}
     }
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       tryTryAgain(-2) {}
     }
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       tryTryAgain(-333) {}
     }
   }
@@ -145,157 +145,159 @@ class DoOverSuite extends FunSuite with Matchers {
     // 10011
     unFun = new UnreliableFun(List(true, false, false, true, true)) // Need three trues
     tryTryAgain(6) { unFun() }
+
+    succeed
   }
 
   test("Fails if majority fails") {
 
     var unFun = new UnreliableFun(List(false)) // Need one false
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(1) { unFun() }
     }
 
     unFun = new UnreliableFun(List(false)) // Need one false
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(2) { unFun() }
     }
 
     unFun = new UnreliableFun(List(false, false)) // Need two falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(3) { unFun() }
     }
 
     unFun = new UnreliableFun(List(true, false, false)) // Need two falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(3) { unFun() }
     }
 
     unFun = new UnreliableFun(List(false, false)) // Need two falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(4) { unFun() }
     }
 
     unFun = new UnreliableFun(List(true, false, false)) // Need two falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(4) { unFun() }
     }
 
     // 000
     unFun = new UnreliableFun(List(false, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 0010
     unFun = new UnreliableFun(List(false, false, true, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 00110
     unFun = new UnreliableFun(List(false, false, true, true, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 0100
     unFun = new UnreliableFun(List(false, true, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 01010
     unFun = new UnreliableFun(List(false, true, false, true, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 01100
     unFun = new UnreliableFun(List(false, true, true, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 1000
     unFun = new UnreliableFun(List(true, false, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 10010
     unFun = new UnreliableFun(List(true, false, false, true, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 10100
     unFun = new UnreliableFun(List(true, false, true, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 11000
     unFun = new UnreliableFun(List(true, true, false, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(5) { unFun() }
     }
 
     // 000
     unFun = new UnreliableFun(List(false, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 0010
     unFun = new UnreliableFun(List(false, false, true, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 00110
     unFun = new UnreliableFun(List(false, false, true, true, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 0100
     unFun = new UnreliableFun(List(false, true, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 01010
     unFun = new UnreliableFun(List(false, true, false, true, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 01100
     unFun = new UnreliableFun(List(false, true, true, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 1000
     unFun = new UnreliableFun(List(true, false, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 10010
     unFun = new UnreliableFun(List(true, false, false, true, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 10100
     unFun = new UnreliableFun(List(true, false, true, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
 
     // 11000
     unFun = new UnreliableFun(List(true, true, false, false, false)) // Need three falses
-    intercept[CouldNotGetThereException] {
+    assertThrows[CouldNotGetThereException] {
       tryTryAgain(6) { unFun() }
     }
   }

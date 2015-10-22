@@ -118,9 +118,9 @@ class TestColonEscapeExampleTestNGSuite extends TestNGSuite {
 @DoNotDiscover
 protected[scalatest] class TestColonEscapeExamplePathFreeSpec extends path.FreeSpec {
   "A Scope" - {
-    "test: A Succeeded Test" in {}
+    "test: A Succeeded Test" in { succeed }
     "test: A Failed Test" in { fail }
-    "test: An Ignored Test" ignore {}
+    "test: An Ignored Test" ignore { succeed }
     "test: A Pending Test" in { pending }
     "test: A Canceled Test" in { cancel }
   }
@@ -130,9 +130,9 @@ protected[scalatest] class TestColonEscapeExamplePathFreeSpec extends path.FreeS
 @DoNotDiscover
 protected[scalatest] class TestColonEscapeExamplePathFunSpec extends path.FunSpec {
   describe("A Spec") {
-    it("test: A Succeeded Test") { }
+    it("test: A Succeeded Test") { succeed }
     it("test: A Failed Test") { fail }
-    ignore("test: An Ignored Test") { }
+    ignore("test: An Ignored Test") { succeed }
     it("test: A Pending Test") { pending }
     it("test: A Canceled Test") { cancel }
   }
@@ -193,6 +193,7 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
         val testCanceled = reporter.testCanceledEventsReceived(0)
         assertFormattedText(testCanceled.formatter, canceled)
       }
+      succeed
     }
   }
 

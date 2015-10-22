@@ -158,6 +158,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           () should === (())
           () should !== (7)
         }
+
+        succeed
       }
 
       it("should be overridable with TypeCheckedTripleEquals locally when TripleEquals imported") {
@@ -204,6 +206,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           // fr should === (cr)
           // cr should === (fr)
         }
+
+        succeed
       }
 
       it("should be overridable with TypeCheckedTripleEquals locally when TripleEquals mixed in") {
@@ -250,6 +254,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
             // cr should === (fr)
           }
         }
+
+        succeed
       }
 
       it("should be overridable with ConversionCheckedTripleEquals locally when TripleEquals imported") {
@@ -297,6 +303,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
             // fr should === (cr)
             // cr should === (fr)
         }
+
+        succeed
       }
 
       it("should be overridable with ConversionCheckedTripleEquals locally when TripleEquals mixed in") {
@@ -344,6 +352,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
             // cr should === (fr)
           }
         }
+
+        succeed
       }
     }
 
@@ -458,6 +468,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           // intercept[TestFailedException] { javaSet should === (7) }
           // javaSet should !== (7)
         }
+        succeed
       }
 
       it("should be overridable with TripleEquals locally when TypeCheckedTripleEquals imported") {
@@ -489,6 +500,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           super1 should === (sub1)
           // sub1 should === (super1) // compiles on 2.10 but not 2.9
         }
+
+        succeed
       }
 
       it("should be overridable with TripleEquals locally when TypeCheckedTripleEquals mixed in") {
@@ -520,6 +533,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
             // sub1 should === (super1) // compiles on 2.10 but not 2.9
           }
         }
+
+        succeed
       }
 
       it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals imported") {
@@ -567,6 +582,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           // fr should === (cr)
           // cr should === (fr)
         }
+
+        succeed
       }
 
       it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals mixed in") {
@@ -614,6 +631,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
             // cr should === (fr)
           }
         }
+
+        succeed
       }
     }
 
@@ -730,6 +749,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           // intercept[TestFailedException] { javaSet should === (7) }
           // javaSet should !== (7)
         }
+
+        succeed
       }
 
       it("should be overridable with TripleEquals locally when ConversionCheckedTripleEquals imported") {
@@ -761,6 +782,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           super1 should === (sub1)
           // sub1 should === (super1) // compiles on 2.10 but not 2.9
         }
+
+        succeed
       }
 
       it("should be overridable with TripleEquals locally when ConversionCheckedTripleEquals mixed in") {
@@ -792,6 +815,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
             // sub1 should === (super1) // compiles on 2.10 but not 2.9
           }
         }
+
+        succeed
       }
 
       it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals imported") {
@@ -838,6 +863,8 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
           // fr should === (cr)
           // cr should === (fr)
         }
+
+        succeed
       }
 
       it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals mixed in") {
@@ -884,6 +911,7 @@ class ShouldTripleEqualsSpec extends FunSpec with NonImplicitAssertions {
             // cr should === (fr)
           }
         }
+        succeed
       }
     }
   }

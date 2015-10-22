@@ -30,8 +30,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the test names in registration order from testNames when using 'it should'") {
 
       val a = new FlatSpec {
-        it should "test this" in {}
-        it should "test that" in {}
+        it should "test this" in { succeed }
+        it should "test that" in { succeed }
       }
 
       assertResult(List("should test this", "should test that")) {
@@ -45,8 +45,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       }
 
       val c = new FlatSpec {
-        it should "test that" in {}
-        it should "test this" in {}
+        it should "test that" in { succeed }
+        it should "test this" in { succeed }
       }
 
       assertResult(List("should test that", "should test this")) {
@@ -55,8 +55,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
       val d = new FlatSpec {
         behavior of "A Tester"
-        it should "test that" in {}
-        it should "test this" in {}
+        it should "test that" in { succeed }
+        it should "test this" in { succeed }
       }
 
       assertResult(List("A Tester should test that", "A Tester should test this")) {
@@ -65,8 +65,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
       val e = new FlatSpec {
         behavior of "A Tester"
-        it should "test this" in {}
-        it should "test that" in {}
+        it should "test this" in { succeed }
+        it should "test that" in { succeed }
       }
 
       assertResult(List("A Tester should test this", "A Tester should test that")) {
@@ -75,29 +75,29 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     }
 
     it("should throw DuplicateTestNameException if a duplicate test name registration is attempted") {
-      
-      intercept[DuplicateTestNameException] {
+
+      assertThrows[DuplicateTestNameException] {
         new FlatSpec {
-          it should "test this" in {}
-          it should "test this" in {}
+          it should "test this" in { succeed }
+          it should "test this" in { succeed }
         }
       }
-      intercept[DuplicateTestNameException] {
+      assertThrows[DuplicateTestNameException] {
         new FlatSpec {
-          it should "test this" in {}
-          ignore should "test this" in {}
+          it should "test this" in { succeed }
+          ignore should "test this" in { succeed }
         }
       }
-      intercept[DuplicateTestNameException] {
+      assertThrows[DuplicateTestNameException] {
         new FlatSpec {
-          ignore should "test this" in {}
-          it should "test this" ignore {}
+          ignore should "test this" in { succeed }
+          it should "test this" ignore { succeed }
         }
       }
-      intercept[DuplicateTestNameException] {
+      assertThrows[DuplicateTestNameException] {
         new FlatSpec {
-          ignore should "test this" in {}
-          it should "test this" in {}
+          ignore should "test this" in { succeed }
+          it should "test this" in { succeed }
         }
       }
     }
@@ -112,6 +112,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         }
         it should "do something" in {
           testWasInvoked = true
+          succeed
         }
       }
 
@@ -128,7 +129,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           correctTestNameWasPassed = test.name == "should do something"
           super.withFixture(test)
         }
-        it should "do something" in {}
+        it should "do something" in { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -143,7 +144,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           super.withFixture(test)
         }
-        it should "do something" in {}
+        it should "do something" in { succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -158,6 +159,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         val testName = "should " + partialTestName
         it should partialTestName in {
           info(msg)
+          succeed
         }
       }
       // In a FlatSpec, any InfoProvided's fired during the test should be cached and sent out after the test has
@@ -183,7 +185,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         val partialTestName = "test name"
         val testName = "should " + partialTestName
         info(msg)
-        it should partialTestName in {}
+        it should partialTestName in { succeed }
       }
       it("should, when the info appears in the body before a test, report the info before the test") {
         val spec = new InfoBeforeTestFlatSpec
@@ -197,7 +199,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         val partialTestName = "test name"
         val testName = "should " + partialTestName
         class MyFlatSpec extends FlatSpec {
-          it should partialTestName in {}
+          it should partialTestName in { succeed }
           info(msg)
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
@@ -213,12 +215,14 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           }
           it should "howdy also" in {
             callInfo() // This should work fine
+            succeed
           }
         }
         val spec = new MyFlatSpec
         val myRep = new EventRecordingReporter
         spec.run(None, Args(myRep))
         spec.callInfo() // TODO: Actually test that This prints to stdout
+        succeed
       }
       it("should send an InfoProvided with an IndentedText formatter with level 0 when called outside a test") {
         val spec = new InfoBeforeTestFlatSpec
@@ -234,8 +238,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       }
       it("should work when using the shorthand notation for 'behavior of'") {
         val e = new FlatSpec with Matchers {
-          "A Tester" should "test this" in {}
-          it should "test that" in {}
+          "A Tester" should "test this" in { succeed }
+          it should "test that" in { succeed }
         }
 
         assertResult(List("A Tester should test this", "A Tester should test that")) {
@@ -251,6 +255,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         class MySpec extends FlatSpec {
           it should "blow up" in {
             behavior of "in the wrong place, at the wrong time"
+            succeed
           }
         }
 
@@ -261,7 +266,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
         class MySpec extends FlatSpec {
           it should "blow up" in {
-            "in the wrong place, at the wrong time" should "definitely blow up" in { }
+            "in the wrong place, at the wrong time" should "definitely blow up" in { succeed }
+            succeed
           }
         }
 
@@ -274,6 +280,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           def aTest {}
           it should "blow up" in {
             "in the wrong place, at the wrong time" should behave like aTest
+            succeed
           }
         }
 
@@ -288,6 +295,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             it should "never run" in {
               assert(1 === 1)
             }
+            succeed
           }
         }
 
@@ -302,7 +310,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
               it should "never run" in {
                 assert(1 === 1)
               }
+              succeed
             }
+            succeed
           }
         }
 
@@ -316,6 +326,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             it should "never run" in {
               assert(1 === 1)
             }
+            succeed
           }
         }
 
@@ -329,6 +340,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             it should "never run" taggedAs(mytags.SlowAsMolasses) in {
               assert(1 === 1)
             }
+            succeed
           }
         }
 
@@ -342,6 +354,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             registerTest("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
             }
+            succeed
           }
         }
 
@@ -356,6 +369,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             ignore should "never run" in {
               assert(1 === 1)
             }
+            succeed
           }
         }
 
@@ -369,6 +383,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             ignore should "never run" in {
               assert(1 === 1)
             }
+            succeed
           }
         }
 
@@ -382,6 +397,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             ignore should "never run" taggedAs(mytags.SlowAsMolasses) in {
               assert(1 === 1)
             }
+            succeed
           }
         }
 
@@ -395,6 +411,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             registerIgnoredTest("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
             }
+            succeed
           }
         }
 
@@ -405,7 +422,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     it("should run tests registered via the 'it should behave like' syntax") {
       trait SharedFlatSpecTests { this: FlatSpec =>
         def nonEmptyStack(s: String)(i: Int) {
-          it should "I am shared" in {}
+          it should "I am shared" in { succeed }
         }
       }
       class MyFlatSpec extends FlatSpec with SharedFlatSpecTests {
@@ -424,7 +441,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     it("should run tests registered via the 'it can behave like' syntax") {
       trait SharedFlatSpecTests { this: FlatSpec =>
         def nonEmptyStack(s: String)(i: Int) {
-          it can "I am shared" in {}
+          it can "I am shared" in { succeed }
         }
       }
       class MyFlatSpec extends FlatSpec with SharedFlatSpecTests {
@@ -444,104 +461,104 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       // it
       intercept[NullArgumentException] {
         new FlatSpec {
-          it should "hi" taggedAs(null) in {}
+          it should "hi" taggedAs(null) in { succeed }
         }
       }
       val caught = intercept[NullArgumentException] {
         new FlatSpec {
-          it should "hi" taggedAs(mytags.SlowAsMolasses, null) in {}
+          it should "hi" taggedAs(mytags.SlowAsMolasses, null) in { succeed }
         }
       }
       assert(caught.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FlatSpec {
-          it should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in {}
+          it should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in { succeed }
         }
       }
 
       // ignore
       intercept[NullArgumentException] {
         new FlatSpec {
-          ignore should "hi" taggedAs(null) in {}
+          ignore should "hi" taggedAs(null) in { succeed }
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new FlatSpec {
-          ignore should "hi" taggedAs(mytags.SlowAsMolasses, null) in {}
+          ignore should "hi" taggedAs(mytags.SlowAsMolasses, null) in { succeed }
         }
       }
       assert(caught2.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FlatSpec {
-          ignore should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in {}
+          ignore should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in { succeed }
         }
       }
       intercept[NullArgumentException] {
         new FlatSpec {
-          it should "hi" taggedAs(null) ignore {}
+          it should "hi" taggedAs(null) ignore { succeed }
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new FlatSpec {
-          it should "hi" taggedAs(mytags.SlowAsMolasses, null) ignore {}
+          it should "hi" taggedAs(mytags.SlowAsMolasses, null) ignore { succeed }
         }
       }
       assert(caught3.getMessage === "a test tag was null")
       intercept[NullArgumentException] {
         new FlatSpec {
-          it should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore {}
+          it should "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore { succeed }
         }
       }
 
       // registerTest
       intercept[NullArgumentException] {
         new FlatSpec {
-          registerTest("should hi", null) {}
+          registerTest("should hi", null) { succeed }
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new FlatSpec {
-          registerTest("should hi", mytags.SlowAsMolasses, null) {}
+          registerTest("should hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught4.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FlatSpec {
-          registerTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
 
       // registerIgnoredTest
       intercept[NullArgumentException] {
         new FlatSpec {
-          registerIgnoredTest("should hi", null) {}
+          registerIgnoredTest("should hi", null) { succeed }
         }
       }
       val caught5 = intercept[NullArgumentException] {
         new FlatSpec {
-          registerIgnoredTest("should hi", mytags.SlowAsMolasses, null) {}
+          registerIgnoredTest("should hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught5.getMessage == "a test tag was null")
       intercept[NullArgumentException] {
         new FlatSpec {
-          registerIgnoredTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerIgnoredTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
       intercept[NullArgumentException] {
         new FlatSpec {
-          registerIgnoredTest("should hi", null) {}
+          registerIgnoredTest("should hi", null) { succeed }
         }
       }
       val caught6 = intercept[NullArgumentException] {
         new FlatSpec {
-          registerIgnoredTest("should hi", mytags.SlowAsMolasses, null) {}
+          registerIgnoredTest("should hi", mytags.SlowAsMolasses, null) { succeed }
         }
       }
       assert(caught6.getMessage == "a test tag was null")
       assertThrows[NullArgumentException] {
         new FlatSpec {
-          registerIgnoredTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+          registerIgnoredTest("should hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
         }
       }
     }
@@ -591,7 +608,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
       val f = new FlatSpec {
         it can "test this" taggedAs(mytags.SlowAsMolasses, mytags.WeakAsAKitten) is (pending)
-        it can "test that" taggedAs(mytags.SlowAsMolasses) in  {}
+        it can "test that" taggedAs(mytags.SlowAsMolasses) in  { succeed }
       }
       assertResult(Map("can test this" -> Set("org.scalatest.SlowAsMolasses", "org.scalatest.WeakAsAKitten"), "can test that" -> Set("org.scalatest.SlowAsMolasses"))) {
         f.tags
@@ -599,7 +616,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
       val g = new FlatSpec {
         it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.WeakAsAKitten) is (pending)
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in  {}
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in  { succeed }
       }
       assertResult(Map("should test this" -> Set("org.scalatest.SlowAsMolasses", "org.scalatest.WeakAsAKitten"), "should test that" -> Set("org.scalatest.SlowAsMolasses"))) {
         g.tags
@@ -610,7 +627,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
             " notation and ignore replacing is") {
 
       val a = new FlatSpec {
-        it should "test this" ignore {}
+        it should "test this" ignore { succeed }
         it should "test that" is (pending)
       }
       assertResult(Map("should test this" -> Set("org.scalatest.Ignore"))) {
@@ -619,15 +636,15 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
       val b = new FlatSpec {
         it can "test this" is (pending)
-        it can "test that" ignore {}
+        it can "test that" ignore { succeed }
       }
       assertResult(Map("can test that" -> Set("org.scalatest.Ignore"))) {
         b.tags
       }
 
       val c = new FlatSpec {
-        it must "test this" ignore {}
-        it must "test that" ignore {}
+        it must "test this" ignore { succeed }
+        it must "test that" ignore { succeed }
       }
       assertResult(Map("must test this" -> Set("org.scalatest.Ignore"), "must test that" -> Set("org.scalatest.Ignore"))) {
         c.tags
@@ -635,7 +652,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
       val d = new FlatSpec {
         it must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
-        it must "test that" taggedAs(mytags.SlowAsMolasses) ignore {}
+        it must "test that" taggedAs(mytags.SlowAsMolasses) ignore { succeed }
       }
       assertResult(Map("must test this" -> Set("org.scalatest.SlowAsMolasses"), "must test that" -> Set("org.scalatest.Ignore", "org.scalatest.SlowAsMolasses"))) {
         d.tags
@@ -645,7 +662,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     it("should return a correct tags map from the tags method is (pending), when using shorthand notation") {
 
       val a = new FlatSpec {
-        "A Stack" should "test this" ignore {}
+        "A Stack" should "test this" ignore { succeed }
         "A Stack" should "test that" is (pending)
       }
       assertResult(Map("A Stack should test this" -> Set("org.scalatest.Ignore"))) {
@@ -654,15 +671,15 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
       val b = new FlatSpec {
         "A Stack" can "test this" is (pending)
-        "A Stack" can "test that" ignore {}
+        "A Stack" can "test that" ignore { succeed }
       }
       assertResult(Map("A Stack can test that" -> Set("org.scalatest.Ignore"))) {
         b.tags
       }
 
       val c = new FlatSpec {
-        "A Stack" must "test this" ignore {}
-        "A Stack" must "test that" ignore {}
+        "A Stack" must "test this" ignore { succeed }
+        "A Stack" must "test that" ignore { succeed }
       }
       assertResult(Map("A Stack must test this" -> Set("org.scalatest.Ignore"), "A Stack must test that" -> Set("org.scalatest.Ignore"))) {
         c.tags
@@ -670,7 +687,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
 
       val d = new FlatSpec {
         "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
-        "A Stack" must "test that" taggedAs(mytags.SlowAsMolasses) ignore {}
+        "A Stack" must "test that" taggedAs(mytags.SlowAsMolasses) ignore { succeed }
       }
       assertResult(Map("A Stack must test this" -> Set("org.scalatest.SlowAsMolasses"), "A Stack must test that" -> Set("org.scalatest.Ignore", "org.scalatest.SlowAsMolasses"))) {
         d.tags
@@ -704,8 +721,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     class TestWasCalledSuite extends FlatSpec {
       var theTestThisCalled = false
       var theTestThatCalled = false
-      it should "run this" in { theTestThisCalled = true }
-      it should "run that, maybe" in { theTestThatCalled = true }
+      it should "run this" in { theTestThisCalled = true; succeed }
+      it should "run that, maybe" in { theTestThatCalled = true; succeed }
     }
 
     it("should execute all tests when run is called with testName None") {
@@ -729,8 +746,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val a = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it can "test this" in { theTestThisCalled = true }
-        it can "test that" in { theTestThatCalled = true }
+        it can "test this" in { theTestThisCalled = true; succeed }
+        it can "test that" in { theTestThatCalled = true; succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -744,8 +761,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val b = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore must "test this" in { theTestThisCalled = true }
-        it must "test that" in { theTestThatCalled = true }
+        ignore must "test this" in { theTestThisCalled = true; succeed }
+        it must "test that" in { theTestThatCalled = true; succeed }
       }
 
       val repB = new TestIgnoredTrackingReporter
@@ -759,8 +776,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val c = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it can "test this" in { theTestThisCalled = true }
-        ignore can "test that" in { theTestThatCalled = true }
+        it can "test this" in { theTestThisCalled = true; succeed }
+        ignore can "test that" in { theTestThatCalled = true; succeed }
       }
 
       val repC = new TestIgnoredTrackingReporter
@@ -776,8 +793,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val d = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore should "test this" in { theTestThisCalled = true }
-        ignore should "test that" in { theTestThatCalled = true }
+        ignore should "test this" in { theTestThisCalled = true; succeed }
+        ignore should "test that" in { theTestThatCalled = true; succeed }
       }
 
       val repD = new TestIgnoredTrackingReporter
@@ -795,8 +812,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val e = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore must "test this" in { theTestThisCalled = true }
-        it must "test that" in { theTestThatCalled = true }
+        ignore must "test this" in { theTestThisCalled = true; succeed }
+        it must "test that" in { theTestThatCalled = true; succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -814,8 +831,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val a = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true }
-        it should "test that" in { theTestThatCalled = true }
+        it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; succeed }
+        it should "test that" in { theTestThatCalled = true; succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -830,8 +847,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val b = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true }
-        it should "test that" in { theTestThatCalled = true }
+        it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; succeed }
+        it should "test that" in { theTestThatCalled = true; succeed }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -843,8 +860,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val c = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true }
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
+        it should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -856,8 +873,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val d = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        ignore should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true }
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
+        ignore should "test this" taggedAs(mytags.SlowAsMolasses) in { theTestThisCalled = true; succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -870,9 +887,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true }
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
-        it should "test the other" in { theTestTheOtherCalled = true }
+        it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
+        it should "test the other" in { theTestTheOtherCalled = true; succeed }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -887,9 +904,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true }
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
-        it should "test the other" in { theTestTheOtherCalled = true }
+        ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
+        it should "test the other" in { theTestTheOtherCalled = true; succeed }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -904,9 +921,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true }
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
-        ignore should "test the other" in { theTestTheOtherCalled = true }
+        it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
+        ignore should "test the other" in { theTestTheOtherCalled = true; succeed }
       }
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -921,9 +938,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true }
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
-        it should "test the other" in { theTestTheOtherCalled = true }
+        it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
+        it should "test the other" in { theTestTheOtherCalled = true; succeed }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -937,9 +954,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true }
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
-        it should "test the other" in { theTestTheOtherCalled = true }
+        it should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
+        it should "test the other" in { theTestTheOtherCalled = true; succeed }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -953,9 +970,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true }
-        ignore should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
-        it should "test the other" in { theTestTheOtherCalled = true }
+        ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; succeed }
+        ignore should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
+        it should "test the other" in { theTestTheOtherCalled = true; succeed }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -969,9 +986,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true }
-        ignore should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true }
-        ignore should "test the other" in { theTestTheOtherCalled = true }
+        ignore should "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { theTestThisCalled = true; succeed }
+        ignore should "test that" taggedAs(mytags.SlowAsMolasses) in { theTestThatCalled = true; succeed }
+        ignore should "test the other" in { theTestTheOtherCalled = true; succeed }
       }
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -987,8 +1004,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val a = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        registerTest("should test that") { theTestThatCalled = true }
+        registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true; succeed }
+        registerTest("should test that") { theTestThatCalled = true; succeed }
       }
 
       import scala.language.reflectiveCalls
@@ -1003,8 +1020,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val b = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        registerTest("should test that") { theTestThatCalled = true }
+        registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true; succeed }
+        registerTest("should test that") { theTestThatCalled = true; succeed }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -1016,8 +1033,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val c = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
+        registerTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true; succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -1029,8 +1046,8 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val d = new FlatSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerIgnoredTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true }
-        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
+        registerIgnoredTest("should test this", mytags.SlowAsMolasses) { theTestThisCalled = true; succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -1043,9 +1060,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("should test the other") { theTestTheOtherCalled = true }
+        registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
+        registerTest("should test the other") { theTestTheOtherCalled = true; succeed }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -1060,9 +1077,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("should test the other") { theTestTheOtherCalled = true }
+        registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
+        registerTest("should test the other") { theTestTheOtherCalled = true; succeed }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -1077,9 +1094,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerIgnoredTest("should test the other") { theTestTheOtherCalled = true }
+        registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
+        registerIgnoredTest("should test the other") { theTestTheOtherCalled = true; succeed }
       }
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -1094,9 +1111,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("should test the other") { theTestTheOtherCalled = true }
+        registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
+        registerTest("should test the other") { theTestTheOtherCalled = true; succeed }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -1110,9 +1127,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("should test the other") { theTestTheOtherCalled = true }
+        registerTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
+        registerTest("should test the other") { theTestTheOtherCalled = true; succeed }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -1126,9 +1143,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerIgnoredTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerTest("should test the other") { theTestTheOtherCalled = true }
+        registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; succeed }
+        registerIgnoredTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
+        registerTest("should test the other") { theTestTheOtherCalled = true; succeed }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -1142,9 +1159,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true }
-        registerIgnoredTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true }
-        registerIgnoredTest("should test the other") { theTestTheOtherCalled = true }
+        registerIgnoredTest("should test this", mytags.SlowAsMolasses, mytags.FastAsLight) { theTestThisCalled = true; succeed }
+        registerIgnoredTest("should test that", mytags.SlowAsMolasses) { theTestThatCalled = true; succeed }
+        registerIgnoredTest("should test the other") { theTestTheOtherCalled = true; succeed }
       }
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -1157,28 +1174,28 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the correct test count from its expectedTestCount method") {
 
       val a = new FlatSpec {
-        it should "test this" in {}
-        it should "test that" in {}
+        it should "test this" in { succeed }
+        it should "test that" in { succeed }
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
       val b = new FlatSpec {
-        ignore should "test this" in {}
-        it should "test that" in {}
+        ignore should "test this" in { succeed }
+        it should "test that" in { succeed }
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
       val c = new FlatSpec {
-        it should "test this" taggedAs(mytags.FastAsLight) in {}
-        it should "test that" in {}
+        it should "test this" taggedAs(mytags.FastAsLight) in { succeed }
+        it should "test that" in { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
       val d = new FlatSpec {
-        it should "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in {}
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in {}
-        it should "test the other thing" in {}
+        it should "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in { succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { succeed }
+        it should "test the other thing" in { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -1186,9 +1203,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) == 3)
 
       val e = new FlatSpec {
-        it should "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in {}
-        it should "test that" taggedAs(mytags.SlowAsMolasses) in {}
-        ignore should "test the other thing" in {}
+        it should "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in { succeed }
+        it should "test that" taggedAs(mytags.SlowAsMolasses) in { succeed }
+        ignore should "test the other thing" in { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -1202,28 +1219,28 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     it("should return the correct test count from its expectedTestCount method when uses registerTest and registerIgnoredTest to register tests") {
 
       val a = new FlatSpec {
-        registerTest("should test this") {}
-        registerTest("should test that") {}
+        registerTest("should test this") { succeed }
+        registerTest("should test that") { succeed }
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
       val b = new FlatSpec {
-        registerIgnoredTest("should test this") {}
-        registerTest("should test that") {}
+        registerIgnoredTest("should test this") { succeed }
+        registerTest("should test that") { succeed }
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
       val c = new FlatSpec {
-        registerTest("should test this", mytags.FastAsLight) {}
-        registerTest("should test that") {}
+        registerTest("should test this", mytags.FastAsLight) { succeed }
+        registerTest("should test that") { succeed }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
 
       val d = new FlatSpec {
-        registerTest("should test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("should test that", mytags.SlowAsMolasses) {}
-        registerTest("should test the other thing") {}
+        registerTest("should test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { succeed }
+        registerTest("should test the other thing") { succeed }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -1231,9 +1248,9 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) == 3)
 
       val e = new FlatSpec {
-        registerTest("should test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        registerTest("should test that", mytags.SlowAsMolasses) {}
-        registerIgnoredTest("should test the other thing") {}
+        registerTest("should test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        registerTest("should test that", mytags.SlowAsMolasses) { succeed }
+        registerIgnoredTest("should test the other thing") { succeed }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -1304,7 +1321,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       val a = new FlatSpec {
         it should "throws AssertionError" in { throw new OutOfMemoryError }
       }
-      intercept[OutOfMemoryError] {
+      assertThrows[OutOfMemoryError] {
         a.run(None, Args(SilentReporter))
       }
     }
@@ -1358,10 +1375,13 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           var registrationClosedThrown = false
           "Application" should "send 404 on a bad request" in {
             it should "render an empty form on index" in {
+              succeed
             }
 
             it should "render a feature JSON on feature request" in {
+              succeed
             }
+            succeed
           }
           override def withFixture(test: NoArgTest): Outcome = {
             val outcome = test.apply()
@@ -1430,9 +1450,11 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       class TestSpec extends FlatSpec with Expectations {
         "a widget" should "do something"  in {
           expect(1 === 2)
+          succeed
         }
         it should "do something else" in {
           expect(1 === 2)
+          succeed
         }
       }
       val rep = new EventRecordingReporter
@@ -1476,6 +1498,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           it should "fail" in {
             assert(1 == 2)
           }
+          succeed
         }
         override def withFixture(test: NoArgTest): Outcome = {
           val outcome = test.apply()
@@ -1508,6 +1531,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           ignore should "fail" in {
             assert(1 == 2)
           }
+          succeed
         }
         override def withFixture(test: NoArgTest): Outcome = {
           val outcome = test.apply()
@@ -1540,6 +1564,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           registerTest("should fail") {
             assert(1 == 2)
           }
+          succeed
         }
         override def withFixture(test: NoArgTest): Outcome = {
           val outcome = test.apply()
@@ -1572,6 +1597,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
           registerIgnoredTest("should fail") {
             assert(1 == 2)
           }
+          succeed
         }
         override def withFixture(test: NoArgTest): Outcome = {
           val outcome = test.apply()

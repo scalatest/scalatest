@@ -150,6 +150,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
       }
       withDistributor(_.executeInOrder())
       withDistributor(_.executeInReverseOrder())
+      succeed
     }
     // SKIP-SCALATESTJS-END
     
@@ -198,6 +199,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
       }
       withDistributor(_.executeInOrder())
       withDistributor(_.executeInReverseOrder())
+      succeed
     }
     // SKIP-SCALATESTJS-END
 
@@ -236,6 +238,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
 
       withDistributor(_.executeInOrder())
       withDistributor(_.executeInReverseOrder())
+      succeed
     }
 
     // TODO: Check with Chee Seng. I'm not sure what this is supposed to be testing, and it fails.
@@ -453,13 +456,13 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
     it("should only execute nested suites in outer instance") {
       
       class InnerSuite extends FunSuite {
-        test("hi") { info("hi info") }
+        test("hi") { info("hi info"); succeed }
       }
       
       class OuterSuite extends FunSuite with ParallelTestExecution {
         override def nestedSuites = Vector(new InnerSuite)
-        test("outer 1") { info("outer 1 info") }
-        test("outer 2") { info("outer 2 info") }
+        test("outer 1") { info("outer 1 info"); succeed }
+        test("outer 2") { info("outer 2 info"); succeed }
         
         override def newInstance = new OuterSuite
       }
@@ -486,6 +489,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
             fail("Unexpected TestSucceeded event: " + other)
         }
       }
+      succeed
     }
   }
 }

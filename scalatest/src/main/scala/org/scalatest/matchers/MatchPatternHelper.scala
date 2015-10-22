@@ -75,14 +75,19 @@ object MatchPatternHelper {
    *                   ^
    * </pre>
    */
-  def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
+  def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]): org.scalatest.Assertion = {
     if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
-      throw newTestFailedException(
+      indicateFailure(
         if (resultOfNoWordForAny.shouldBeTrue)
           FailureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
         else
           FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left)
       )
+    else
+      if (resultOfNoWordForAny.shouldBeTrue)
+        indicateSuccess(FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left))
+      else
+        indicateSuccess(FailureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left))
   }
 
 }

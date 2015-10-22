@@ -158,15 +158,15 @@ protected[events] class ExampleScopePendingFixtureFunSuite extends fixture.FunSu
 @DoNotDiscover
 protected[events] class ExampleScopePendingFunSpec extends FunSpec with ScopePendingFixtureServices {
   describe("scope 1") {
-    it("test 1") {}
-    it("test 2") {}
-    it("test 3") {}
+    it("test 1") { succeed }
+    it("test 2") { succeed }
+    it("test 3") { succeed }
   }
   describe("scope 2") {
-    it("test 1") {}
+    it("test 1") { succeed }
     pending
-    it("test 2") {}
-    it("test 3") {}
+    it("test 2") { succeed }
+    it("test 3") { succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 test 1", 
@@ -178,15 +178,15 @@ protected[events] class ExampleScopePendingFunSpec extends FunSpec with ScopePen
 @DoNotDiscover
 protected[events] class ExampleScopePendingFixtureFunSpec extends fixture.FunSpec with ScopePendingFixtureServices with StringFixture {
   describe("scope 1") {
-    it("test 1") {s =>}
-    it("test 2") {s =>}
-    it("test 3") {s =>}
+    it("test 1") {s => succeed }
+    it("test 2") {s => succeed }
+    it("test 3") {s => succeed }
   }
   describe("scope 2") {
-    it("test 1") {s =>}
+    it("test 1") {s => succeed }
     pending
-    it("test 2") {s =>}
-    it("test 3") {s =>}
+    it("test 2") {s => succeed }
+    it("test 3") {s => succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 test 1", 
@@ -198,15 +198,15 @@ protected[events] class ExampleScopePendingFixtureFunSpec extends fixture.FunSpe
 @DoNotDiscover
 protected[events] class ExampleScopePendingFeatureSpec extends FeatureSpec with ScopePendingFixtureServices {
   feature("scope 1") {
-    scenario("test 1") {}
-    scenario("test 2") {}
-    scenario("test 3") {}
+    scenario("test 1") { succeed }
+    scenario("test 2") { succeed }
+    scenario("test 3") { succeed }
   }
   feature("scope 2") {
-    scenario("test 1") {}
+    scenario("test 1") { succeed }
     pending
-    scenario("test 2") {}
-    scenario("test 3") {}
+    scenario("test 2") { succeed }
+    scenario("test 3") { succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("Feature: scope 1 Scenario: test 1", 
@@ -218,15 +218,15 @@ protected[events] class ExampleScopePendingFeatureSpec extends FeatureSpec with 
 @DoNotDiscover
 protected[events] class ExampleScopePendingFixtureFeatureSpec extends fixture.FeatureSpec with ScopePendingFixtureServices with StringFixture {
   feature("scope 1") {
-    scenario("test 1") {s =>}
-    scenario("test 2") {s =>}
-    scenario("test 3") {s =>}
+    scenario("test 1") {s => succeed }
+    scenario("test 2") {s => succeed }
+    scenario("test 3") {s => succeed }
   }
   feature("scope 2") {
-    scenario("test 1") {s =>}
+    scenario("test 1") {s => succeed }
     pending
-    scenario("test 2") {s =>}
-    scenario("test 3") {s =>}
+    scenario("test 2") {s => succeed }
+    scenario("test 3") {s => succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("Feature: scope 1 Scenario: test 1", 
@@ -248,15 +248,15 @@ protected[events] class ExampleScopePendingFixtureFlatSpec extends fixture.FlatS
 @DoNotDiscover
 protected[events] class ExampleScopePendingFreeSpec extends FreeSpec with ScopePendingFixtureServices {
   "scope 1" - {
-    "test 1" in {}
-    "test 2" in {}
-    "test 3" in {}
+    "test 1" in { succeed }
+    "test 2" in { succeed }
+    "test 3" in { succeed }
   }
   "scope 2" - {
-    "test 1" in {}
+    "test 1" in { succeed }
     pending
-    "test 2" in {}
-    "test 3" in {}
+    "test 2" in { succeed }
+    "test 3" in { succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 test 1", 
@@ -268,15 +268,15 @@ protected[events] class ExampleScopePendingFreeSpec extends FreeSpec with ScopeP
 @DoNotDiscover
 protected[events] class ExampleScopePendingFixtureFreeSpec extends fixture.FreeSpec with ScopePendingFixtureServices with StringFixture {
   "scope 1" - {
-    "test 1" in {s =>}
-    "test 2" in {s =>}
-    "test 3" in {s =>}
+    "test 1" in {s => succeed }
+    "test 2" in {s => succeed }
+    "test 3" in {s => succeed }
   }
   "scope 2" - {
-    "test 1" in {s =>}
+    "test 1" in {s => succeed }
     pending
-    "test 2" in {s =>}
-    "test 3" in {s =>}
+    "test 2" in {s => succeed }
+    "test 3" in {s => succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 test 1", 
@@ -298,15 +298,15 @@ protected[events] class ExampleScopePendingFixturePropSpec extends fixture.PropS
 @DoNotDiscover
 protected[events] class ExampleScopePendingWordSpec extends WordSpec with ScopePendingFixtureServices {
   "scope 1" should {
-    "test 1" in {}
-    "test 2" in {}
-    "test 3" in {}
+    "test 1" in { succeed }
+    "test 2" in { succeed }
+    "test 3" in { succeed }
   }
   "scope 2" should {
-    "test 1" in {}
+    "test 1" in { succeed }
     pending
-    "test 2" in {}
-    "test 3" in {}
+    "test 2" in { succeed }
+    "test 3" in { succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 should test 1", 
@@ -318,15 +318,15 @@ protected[events] class ExampleScopePendingWordSpec extends WordSpec with ScopeP
 @DoNotDiscover
 protected[events] class ExampleScopePendingFixtureWordSpec extends fixture.WordSpec with ScopePendingFixtureServices with StringFixture {
   "scope 1" should {
-    "test 1" in {s =>}
-    "test 2" in {s =>}
-    "test 3" in {s =>}
+    "test 1" in {s => succeed }
+    "test 2" in {s => succeed }
+    "test 3" in {s => succeed }
   }
   "scope 2" should {
-    "test 1" in {s =>}
+    "test 1" in {s => succeed }
     pending
-    "test 2" in {s =>}
-    "test 3" in {s =>}
+    "test 2" in {s => succeed }
+    "test 3" in {s => succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 should test 1", 
@@ -339,15 +339,15 @@ protected[events] class ExampleScopePendingFixtureWordSpec extends fixture.WordS
 protected[events] class ExampleScopePendingPathFreeSpec extends path.FreeSpec with ScopePendingFixtureServices {
   //SCALATESTJS-ONLY override def newInstance = new ExampleScopePendingPathFreeSpec
   "scope 1" - {
-    "test 1" in {}
-    "test 2" in {}
-    "test 3" in {}
+    "test 1" in { succeed }
+    "test 2" in { succeed }
+    "test 3" in { succeed }
   }
   "scope 2" - {
-    "test 1" in {}
+    "test 1" in { succeed }
     pending
-    "test 2" in {}
-    "test 3" in {}
+    "test 2" in { succeed }
+    "test 3" in { succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 test 1", 
@@ -360,15 +360,15 @@ protected[events] class ExampleScopePendingPathFreeSpec extends path.FreeSpec wi
 protected[events] class ExampleScopePendingPathFunSpec extends path.FunSpec with ScopePendingFixtureServices {
   //SCALATESTJS-ONLY override def newInstance = new ExampleScopePendingPathFunSpec
   describe("scope 1") {
-    it("test 1") {}
-    it("test 2") {}
-    it("test 3") {}
+    it("test 1") { succeed }
+    it("test 2") { succeed }
+    it("test 3") { succeed }
   }
   describe("scope 2") {
-    it("test 1") {}
+    it("test 1") { succeed }
     pending
-    it("test 2") {}
-    it("test 3") {}
+    it("test 2") { succeed }
+    it("test 3") { succeed }
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 test 1", 

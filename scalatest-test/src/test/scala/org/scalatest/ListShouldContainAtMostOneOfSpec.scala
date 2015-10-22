@@ -65,16 +65,16 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val use = upperCaseStringEquality
         fumList should contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
           
         }
@@ -105,16 +105,16 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val use = upperCaseStringEquality
         fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
         }
         fumList should (contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
@@ -143,17 +143,17 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val use = upperCaseStringEquality
         fumList should not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should not contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should not contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")) (decided by upperCaseStringEquality)
         }
         (fumList should not contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should not contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
       }
@@ -181,17 +181,17 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
         }
         (fumList should (not contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (not contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
       }
@@ -219,17 +219,17 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val use = upperCaseStringEquality
         fumList shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FAM")) (decided by upperCaseStringEquality)
         }
         (fumList shouldNot contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList shouldNot contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
       }
@@ -257,17 +257,17 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FAM"))) (decided by upperCaseStringEquality)
         }
         (fumList shouldNot (contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList shouldNot (contain atMostOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
       }
@@ -311,24 +311,24 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should contain atMostOneOf ("hi", "ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain atMostOneOf ("hi", "he")
         }
         implicit val use = upperCaseStringEquality
         all (hiLists) should contain atMostOneOf ("HI", "HO")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain atMostOneOf ("HI", "HE")
         }
       }
       
       it("should use an explicitly provided Equality") {
         (all (hiLists) should contain atMostOneOf ("hi", "ho")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain atMostOneOf ("hi", "he")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should contain atMostOneOf ("hi", "HE")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain atMostOneOf ("hi", "he")) (decided by defaultEquality[String])
         }
       }
@@ -363,24 +363,24 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should (contain atMostOneOf ("hi", "ho"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain atMostOneOf ("hi", "he"))
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should (contain atMostOneOf ("HI", "HO"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain atMostOneOf ("HI", "HE"))
         }
       }
       
       it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain atMostOneOf ("hi", "ho"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain atMostOneOf ("hi", "he"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should (contain atMostOneOf ("hi", "HE"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain atMostOneOf ("hi", "he"))) (decided by defaultEquality[String])
         }
       }
@@ -411,18 +411,18 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should not contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")
         }
       }
       
       it("should use an explicitly provided Equality") {
         (all (toLists) should not contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         }
         (all (toLists) should not contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
       }
@@ -453,17 +453,17 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should (not contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
         (all (toLists) should (not contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
@@ -493,18 +493,18 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")
         }
       }
       
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain atMostOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
         }
         (all (toLists) shouldNot contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
       }
@@ -535,17 +535,17 @@ class ListShouldContainAtMostOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot (contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot (contain atMostOneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain atMostOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
         (all (toLists) shouldNot (contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain atMostOneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }

@@ -51,16 +51,16 @@ class ListShouldContainAtLeastOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain atLeastOneOf ("fum", "foe")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain atLeastOneOf ("fum", "foe")) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
         (fumList should contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
@@ -90,16 +90,16 @@ class ListShouldContainAtLeastOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain atLeastOneOf ("fum", "foe"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should (contain atLeastOneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain atLeastOneOf ("fum", "foe"))) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
         (fumList should (contain atLeastOneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
@@ -136,17 +136,17 @@ class ListShouldContainAtLeastOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should not contain atLeastOneOf ("to", "you")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should not contain atLeastOneOf ("TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should not contain atLeastOneOf ("to", "you")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should not contain atLeastOneOf ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
         toList should not contain atLeastOneOf (" TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should not contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -183,17 +183,17 @@ The bottom two don't, but still I don't want to support that in general.
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should (not contain atLeastOneOf ("to", "you"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should (not contain atLeastOneOf ("TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should (not contain atLeastOneOf ("to", "you"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         toList should (not contain atLeastOneOf (" TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -222,17 +222,17 @@ The bottom two don't, but still I don't want to support that in general.
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot contain atLeastOneOf ("to", "you")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot contain atLeastOneOf ("TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot contain atLeastOneOf ("to", "you")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot contain atLeastOneOf ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
         toList shouldNot contain atLeastOneOf (" TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -260,17 +260,17 @@ The bottom two don't, but still I don't want to support that in general.
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot (contain atLeastOneOf ("to", "you"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot (contain atLeastOneOf ("TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot (contain atLeastOneOf ("to", "you"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         toList shouldNot (contain atLeastOneOf (" TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -335,23 +335,23 @@ The bottom two don't, but still I don't want to support that in general.
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should contain atLeastOneOf ("hi", "he")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain atLeastOneOf ("ho", "he")
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should contain atLeastOneOf ("HI", "HE")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain atLeastOneOf ("hi", "he")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should contain atLeastOneOf ("HI", "HE")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain atLeastOneOf ("hi", "he")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should contain atLeastOneOf ("hi", "he")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain atLeastOneOf ("HI", "HE")) (decided by defaultEquality[String])
         }
       }
@@ -405,23 +405,23 @@ The bottom two don't, but still I don't want to support that in general.
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should (contain atLeastOneOf ("hi", "he"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain atLeastOneOf ("HI", "HE"))
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should (contain atLeastOneOf ("HI", "HE"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain atLeastOneOf ("hi", "he"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain atLeastOneOf ("HI", "HE"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain atLeastOneOf ("hi", "he"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should (contain atLeastOneOf ("hi", "he"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain atLeastOneOf ("HI", "HE"))) (decided by defaultEquality[String])
         }
       }
@@ -466,17 +466,17 @@ scala> all (list1s) should (contain (atLeastOneOf (1, 3, 4)))
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should not contain atLeastOneOf ("to", "you")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain atLeastOneOf ("TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should not contain atLeastOneOf ("to", "you")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain atLeastOneOf ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
         all (toLists) should not contain atLeastOneOf (" TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -523,17 +523,17 @@ The top two don't, but still I don't want to support that in general.
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should (not contain atLeastOneOf ("to", "you"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain atLeastOneOf ("TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain atLeastOneOf ("to", "you"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain atLeastOneOf (" TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -563,17 +563,17 @@ The top two don't, but still I don't want to support that in general.
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot contain atLeastOneOf ("to", "you")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain atLeastOneOf ("TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain atLeastOneOf ("to", "you")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain atLeastOneOf ("TO", "YOU")) (decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain atLeastOneOf (" TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain atLeastOneOf (" TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -603,17 +603,17 @@ The top two don't, but still I don't want to support that in general.
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot (contain atLeastOneOf ("to", "you"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain atLeastOneOf ("TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot (contain atLeastOneOf ("to", "you"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain atLeastOneOf ("TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain atLeastOneOf (" TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain atLeastOneOf (" TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }

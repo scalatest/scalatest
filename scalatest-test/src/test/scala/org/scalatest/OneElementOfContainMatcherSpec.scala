@@ -24,7 +24,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
 
   describe("oneElementOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       e.message should be (Some(FailureMessages.didNotContainOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -269,7 +269,7 @@ class OneElementOfContainMatcherSpec extends FunSpec {
 
   describe("not oneElementOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(FailureMessages.containedOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherSpec.scala"))

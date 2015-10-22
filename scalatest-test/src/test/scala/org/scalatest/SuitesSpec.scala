@@ -34,10 +34,10 @@ class SuitesSpec extends FunSpec {
       assert(f.nestedSuites == List(a, b, c, d, e))
       val g = new Suites(Array(a, b, c, d, e): _*)
       assert(g.nestedSuites == List(a, b, c, d, e))
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         new Suites(a, b, null, d, e)
       }
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         val aNull: Array[Suite] = null
         new Suites(aNull: _*)
       }
@@ -47,6 +47,7 @@ class SuitesSpec extends FunSpec {
       f.run(None, Args(SilentReporter))
       f.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("FunSuite")), None, new Tracker, Set.empty))
       // TODO: Is this test really testing anything?
+      succeed
     }
 
     it("should care about chosenStyles if it contains tests directly") {
@@ -61,7 +62,7 @@ class SuitesSpec extends FunSpec {
       g.run(None, Args(SilentReporter))
       // OK if chosen styles is Suite, because that's the style of *tests* written in this Suites
       g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec")), None, new Tracker, Set.empty))
-      intercept[NotAllowedException] {
+      assertThrows[NotAllowedException] {
         // Should not allow if chosen styles is FunSuite, because Suite is the style of *tests* written in this Suites
         g.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSuite")), None, new Tracker, Set.empty))
       }

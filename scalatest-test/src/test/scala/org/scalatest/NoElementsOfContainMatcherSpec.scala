@@ -23,7 +23,7 @@ class NoElementsOfContainMatcherSpec extends FunSpec {
 
   describe("noElementsOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       e.message should be (Some(FailureMessages.containedAtLeastOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("NoElementsOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -98,7 +98,7 @@ class NoElementsOfContainMatcherSpec extends FunSpec {
 
   describe("not noElementsOf ") {
 
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(FailureMessages.didNotContainAtLeastOneElementOf(left, right)))
       e.failedCodeFileName should be (Some("NoElementsOfContainMatcherSpec.scala"))

@@ -58,6 +58,7 @@ class LocationSuiteProp extends SuiteProp
     class NestedSuite extends FunSuite {
       test("info") {
         info("test info")
+        succeed
       }
     }
     class AbortNestedSuite extends FunSuite {
@@ -87,6 +88,7 @@ class LocationSuiteProp extends SuiteProp
     class NestedSuite extends StringFixtureFunSuite {
       test("info") { param =>
         info("test info")
+        succeed
       }
     }
     class AbortNestedSuite extends StringFixtureFunSuite {
@@ -116,6 +118,7 @@ class LocationSuiteProp extends SuiteProp
     class NestedSuite extends FunSpec {
       it("info") {
         info("test info")
+        succeed
       }
     }
     class AbortNestedSuite extends FunSpec {
@@ -145,6 +148,7 @@ class LocationSuiteProp extends SuiteProp
     class NestedSuite extends StringFixtureFunSpec {
       it("info") { param =>
         info("test info")
+        succeed
       }
     }
     class AbortNestedSuite extends StringFixtureFunSpec {
@@ -175,6 +179,7 @@ class LocationSuiteProp extends SuiteProp
       feature("feature") {
         scenario("info") {
           info("test info")
+          succeed
         }
       }
     }
@@ -211,6 +216,7 @@ class LocationSuiteProp extends SuiteProp
       feature("feature") { 
         scenario("info") { param =>
           info("test info")
+          succeed
         }
       }
     }
@@ -245,6 +251,7 @@ class LocationSuiteProp extends SuiteProp
     class NestedSuite extends FlatSpec {
       "Test" should "info" in {
         info("test info")
+        succeed
       }
     }
     class AbortNestedSuite extends FlatSpec {
@@ -277,6 +284,7 @@ class LocationSuiteProp extends SuiteProp
     class NestedSuite extends StringFixtureFlatSpec {
       "Test" should "info" in { param =>
         info("test info")
+        succeed
       }
     }
     class AbortNestedSuite extends StringFixtureFlatSpec {
@@ -309,6 +317,7 @@ class LocationSuiteProp extends SuiteProp
       "Test" - {
         "should info" in {
           info("test info")
+          succeed
         }
       }
     }
@@ -345,6 +354,7 @@ class LocationSuiteProp extends SuiteProp
       "Test" - {
         "should info" in { param =>
           info("test info")
+          succeed
         }
       }
     }
@@ -379,6 +389,7 @@ class LocationSuiteProp extends SuiteProp
     class NestedSuite extends PropSpec {
       property("Test should info") {
         info("test info")
+        succeed
       }
     }
     class AbortNestedSuite extends PropSpec {
@@ -411,6 +422,7 @@ class LocationSuiteProp extends SuiteProp
     class NestedSuite extends StringFixturePropSpec {
       property("Test should info") { param =>
         info("test info")
+        succeed
       }
     }
     class AbortNestedSuite extends StringFixturePropSpec {
@@ -443,6 +455,7 @@ class LocationSuiteProp extends SuiteProp
       "Test" should {
         "info" in {
           info("test info")
+          succeed
         }
       }
     }
@@ -479,6 +492,7 @@ class LocationSuiteProp extends SuiteProp
       "Test" should {
         "info" in { param =>
           info("test info")
+          succeed
         }
       }
     }

@@ -98,7 +98,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
 
         val task = new ThrowingTask(new RuntimeException("oops"))
         val caught =
-          intercept[TestFailedException] {
+          assertThrows[TestFailedException] {
             task.isReadyWithin(Span(1, Millisecond))
           }
         caught.failedCodeLineNumber.value should equal(thisLineNumber - 2)
@@ -111,7 +111,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         // Wrong, should just go up
         val task = new ThrowingTask(new VirtualMachineError {})
         val caught =
-          intercept[VirtualMachineError] {
+          assertThrows[VirtualMachineError] {
             task.isReadyWithin(Span(1, Millisecond))
           }
       }
@@ -119,7 +119,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
       // Same thing here and in 2.0 need to add a test for TestCanceledException
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val task = new ThrowingTask(new TestPendingException)
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           task.isReadyWithin(Span(1, Millisecond))
         }
       }
@@ -229,7 +229,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
 
         val task = new ThrowingTask(new RuntimeException("oops"))
         val caught =
-          intercept[TestFailedException] {
+          assertThrows[TestFailedException] {
             task.futureValue
           }
         caught.failedCodeLineNumber.value should equal(thisLineNumber - 2)
@@ -242,7 +242,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         // Wrong, should just go up
         val task = new ThrowingTask(new VirtualMachineError {})
         val caught =
-          intercept[VirtualMachineError] {
+          assertThrows[VirtualMachineError] {
             task.futureValue
           }
       }
@@ -250,7 +250,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
       // Same thing here and in 2.0 need to add a test for TestCanceledException
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val task = new ThrowingTask(new TestPendingException)
-          intercept[TestPendingException] {
+          assertThrows[TestPendingException] {
             task.futureValue
           }
       }
@@ -373,7 +373,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
 
         val task = new ThrowingTask(new RuntimeException("oops"))
         val caught =
-          intercept[TestFailedException] {
+          assertThrows[TestFailedException] {
             whenReady(task) { s =>
               s should be ("hi")
             }
@@ -388,7 +388,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
         // Wrong, should just go up
         val task = new ThrowingTask(new VirtualMachineError {})
         val caught =
-          intercept[VirtualMachineError] {
+          assertThrows[VirtualMachineError] {
             whenReady(task) { s =>
               s should be ("hi")
             }
@@ -397,7 +397,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {
         val task = new ThrowingTask(new TestPendingException)
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           whenReady(task) { s =>
             s should be ("hi")
           }
@@ -406,7 +406,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
       
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
         val task = new ThrowingTask(new TestCanceledException(sde => None, None, sde => 0, None))
-        intercept[TestCanceledException] {
+        assertThrows[TestCanceledException] {
           whenReady(task) { s =>
             s should be ("hi")
           }

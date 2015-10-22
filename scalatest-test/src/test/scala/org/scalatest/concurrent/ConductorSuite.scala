@@ -303,7 +303,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
         calledSuperWithFixtureNoArgTest = true
         super.withFixture(test)
       }
-      test("one") { c => }
+      test("one") { c => succeed }
     }
 
     val a = new MySpec
@@ -320,7 +320,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
       }
     }
     class MySpec extends FunSuite with SuperTrait with ConductorMethods {
-      test("one") {}
+      test("one") { succeed }
     }
 
     val a = new MySpec

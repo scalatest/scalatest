@@ -61,6 +61,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       failAfter(Span(200, Millis)) {
         Thread.sleep(100)
       }
+      succeed
     }
 
     it("should blow up with TestFailedException when the task does not response interrupt request and pass after the timeout") {
@@ -134,6 +135,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       }
       clientSocket.close()
       drag = false
+      succeed
     }
     
     it("should close a Socket connection via FunInterruptor when the timeout is reached") {
@@ -165,6 +167,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       }
       clientSocket.close()
       drag = false
+      succeed
     }
     
     it("should wait for the test to finish when DoNotInterrupt is used.") {
@@ -222,6 +225,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       }
       clientSelector.close()
       drag = false
+      succeed
     }
   }
 
@@ -242,6 +246,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       cancelAfter(Span(2000, Millis)) {
         Thread.sleep(1000)
       }
+      succeed
     }
     
     it("should blow up with TestCanceledException when the task does not response interrupt request and pass after the timeout") {
@@ -315,6 +320,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       }
       clientSocket.close()
       drag = false
+      succeed
     }
     
     it("should close Socket connection via FunInterruptor when timeout reached") {
@@ -346,6 +352,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       }
       clientSocket.close()
       drag = false
+      succeed
     }
     
     it("should wait for the test to finish when DoNotInterrupt is used.") {
