@@ -99,5 +99,6 @@ class CatchReporterSpec extends FunSpec {
       buggyReporter.dispose()
     }
     catchReporter.dispose()
+    succeed
   }
 }

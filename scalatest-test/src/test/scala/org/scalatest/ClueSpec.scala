@@ -261,6 +261,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
     }
 
     serializeRoundtrip(result)
+    succeed
   }
   // SKIP-SCALATESTJS-END
 }

@@ -129,13 +129,13 @@ class ExampleStackSpec extends FunSpec with ExampleStackBehaviors {
       }
 
       it("should complain on peek") {
-        intercept[IllegalStateException] {
+        assertThrows[IllegalStateException] {
           emptyStack.peek
         }
       }
 
       it("should complain on pop") {
-        intercept[IllegalStateException] {
+        assertThrows[IllegalStateException] {
           emptyStack.pop
         }
       }
@@ -160,7 +160,7 @@ class ExampleStackSpec extends FunSpec with ExampleStackBehaviors {
       it should behave like nonEmptyStack(fullStack, lastValuePushed)
 
       it("should complain on a push") {
-        intercept[IllegalStateException] {
+        assertThrows[IllegalStateException] {
           fullStack.push(10)
         }
       }

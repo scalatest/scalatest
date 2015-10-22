@@ -23,15 +23,15 @@ import org.scalatest.time.Second
 protected[scalatest] class ExampleTimeoutParallelSpec extends FunSpec with ParallelTestExecution {
 
   describe("Thing 1") {
-    it ("do thing 1a") = succeed
+    it ("do thing 1a") { succeed }
     it ("do thing 1b") { SleepHelper.sleep(2000); succeed }
-    it ("do thing 1c") = succeed
+    it ("do thing 1c") { succeed }
   }
   
   describe("Thing 2") {
-    it ("do thing 2a") = succeed
-    it ("do thing 2b") = succeed
-    it ("do thing 2c") = succeed
+    it ("do thing 2a") { succeed }
+    it ("do thing 2b") { succeed }
+    it ("do thing 2c") { succeed }
   }
   
   override protected def sortingTimeout: Span = Span(1, Second)

@@ -25,15 +25,15 @@ class ExamplesSuite extends FunSuite {
     class MySpec extends FunSpec {
 
       def myOtherExamples() {
-        it("should lead the whole game") = succeed
-        it("should lead just part of the game") = succeed
+        it("should lead the whole game") { succeed }
+        it("should lead just part of the game") { succeed }
       }
 
       myOtherExamples()
 
       def myExamples() {
-        it("should lead the whole game") = succeed
-        it("should lead the whole game") = succeed
+        it("should lead the whole game") { succeed }
+        it("should lead the whole game") { succeed }
       }
 
       intercept[DuplicateTestNameException] {
@@ -48,21 +48,21 @@ class ExamplesSuite extends FunSuite {
   test("duplicate testNames should result in an exception when one is in the Examples and the other in the Spec") {
     class MySpec extends FunSpec {
       def myOtherExamples() {
-        it("should lead the whole game") = succeed
-        it("should lead just part of the game") = succeed
+        it("should lead the whole game") { succeed }
+        it("should lead just part of the game") { succeed }
       }
       myOtherExamples()
-      it("should lead the whole game") = succeed
+      it("should lead the whole game") { succeed }
     }
     intercept[DuplicateTestNameException] {
       new MySpec  
     }
     class MyOtherSpec extends FunSpec {
       def myOtherExamples() {
-        it("should lead the whole game") = succeed
-        it("should lead just part of the game") = succeed
+        it("should lead the whole game") { succeed }
+        it("should lead just part of the game") { succeed }
       }
-      it("should lead the whole game") = succeed
+      it("should lead the whole game") { succeed }
       myOtherExamples()
     }
     assertThrows[DuplicateTestNameException] {
@@ -75,7 +75,7 @@ class ExamplesSuite extends FunSuite {
     class MySpec extends FunSpec {
 
       def examples() {
-        it(null) = succeed
+        it(null) { succeed }
       }
       intercept[NullArgumentException] {
         examples()
@@ -89,8 +89,8 @@ class ExamplesSuite extends FunSuite {
 
     val a = new FunSpec {
       def aExamples() {
-        it("test this", mytags.SlowAsMolasses) = succeed
-        ignore("test that", mytags.SlowAsMolasses) = succeed
+        it("test this", mytags.SlowAsMolasses) { succeed }
+        ignore("test that", mytags.SlowAsMolasses) { succeed }
       }
       aExamples()
     }
@@ -99,7 +99,7 @@ class ExamplesSuite extends FunSuite {
     }
 
     val b = new FunSpec {
-      def bExamples() = succeed
+      def bExamples() { succeed }
       bExamples()
     }
     assertResult(Map()) {
@@ -108,8 +108,8 @@ class ExamplesSuite extends FunSuite {
 
     val c = new FunSpec {
       def cExamples() {
-        it("test this", mytags.SlowAsMolasses, mytags.WeakAsAKitten) = succeed
-        it("test that", mytags.SlowAsMolasses) = succeed
+        it("test this", mytags.SlowAsMolasses, mytags.WeakAsAKitten) { succeed }
+        it("test that", mytags.SlowAsMolasses) { succeed }
       }
       cExamples()
     }

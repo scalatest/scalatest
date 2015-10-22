@@ -56,6 +56,7 @@ class ClassTaggingProp extends AllSuiteProp {
         tagSet.isDefined should be (true)
         tagSet.get should contain ("org.scalatest.Ignore")
       }
+      succeed
     }
   }
 }

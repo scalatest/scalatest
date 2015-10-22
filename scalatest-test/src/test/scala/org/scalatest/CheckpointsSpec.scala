@@ -59,6 +59,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should not throw an exception if reportAll is not called") {
         val cp = new Checkpoint
         cp { 1 should equal (2) }
+        succeed
       }
     }
 
@@ -95,6 +96,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
         val cp = new Checkpoint
         cp { 1 should equal (1) }
         cp.reportAll()
+        succeed
       }
     } 
     describe("when a TestCanceledException is thrown") {
