@@ -54,16 +54,16 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList should contain noElementsOf Seq("FEE", "FAM", "FOE", "FU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain noElementsOf Seq("FEE", "FUM", "FOE", "FU")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should contain noElementsOf Seq("FEE", "FAM", "FOE", "FU")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain noElementsOf Seq("FEE", "FUM", "FOE", "FU")) (decided by upperCaseEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
         }
         (fumList should contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FAM ")) (after being lowerCased and trimmed)
@@ -88,17 +88,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList should (contain noElementsOf Seq("FEE", "FAM", "FOE", "FU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain noElementsOf Seq("FEE", "FUM", "FOE", "FU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should (contain noElementsOf Seq("FEE", "FAM", "FOE", "FU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain noElementsOf Seq("FEE", "FUM", "FOE", "FU"))) (decided by upperCaseEquality)
         }
         fumList should (contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
         }
       }
@@ -121,17 +121,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList should not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should not contain noElementsOf (Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         }
         (fumList should not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should not contain noElementsOf (Seq(" FEE ", " FIE ", " FOE ", " FUM "))
         }
       }
@@ -154,17 +154,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toList should (not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should (not contain noElementsOf (Seq("happy", "birthday", "to", "you")))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should (not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain noElementsOf (Seq("happy", "birthday", "to", "you")))) (decided by upperCaseEquality)
         }
         (toList should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         }
       }
@@ -187,17 +187,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList shouldNot contain noElementsOf Seq("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList shouldNot contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList shouldNot contain noElementsOf Seq("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList shouldNot contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         }
         (fumList shouldNot contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList shouldNot contain noElementsOf Seq(" FEE ", " FIE ", " FOE ", " FUM ")
         }
       }
@@ -220,17 +220,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toList shouldNot (contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot (contain noElementsOf Seq("happy", "birthday", "to", "you"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot (contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain noElementsOf Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
         (toList shouldNot (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
@@ -269,23 +269,23 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should contain noElementsOf Seq("ho", "he")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain noElementsOf Seq("hi", "he")
         }
         implicit val ise = upperCaseEquality
         all (hiLists) should contain noElementsOf Seq("hi", "he")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain noElementsOf Seq("HI", "HE")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should contain noElementsOf Seq("hi", "he")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain noElementsOf Seq("HI", "HE")) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
         (all (hiLists) should contain noElementsOf Seq("ho", "he")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain noElementsOf Seq("hi", "he")) (decided by defaultEquality[String])
         }
       }
@@ -314,23 +314,23 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should (contain noElementsOf Seq("ho", "he"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain noElementsOf Seq("hi", "he"))
         }
         implicit val ise = upperCaseEquality
         all (hiLists) should (contain noElementsOf Seq("hi", "he"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain noElementsOf Seq("HI", "HE"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain noElementsOf Seq("hi", "he"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain noElementsOf Seq("HI", "HE"))) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
         (all (hiLists) should (contain noElementsOf Seq("ho", "he"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain noElementsOf Seq("hi", "he"))) (decided by defaultEquality[String])
         }
       }
@@ -355,17 +355,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) should not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain noElementsOf (Seq("happy", "birthday", "to", "you"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain noElementsOf (Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
         (all (toLists) should not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
@@ -390,17 +390,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) should (not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain noElementsOf (Seq("happy", "birthday", "to", "you")))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain noElementsOf (Seq("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain noElementsOf (Seq("happy", "birthday", "to", "you")))) (decided by upperCaseEquality)
         }
         (all (toLists) should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain noElementsOf (Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
         }
       }
@@ -425,17 +425,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) shouldNot contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain noElementsOf Seq("happy", "birthday", "to", "you")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain noElementsOf Seq("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         }
         (all (toLists) shouldNot contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
       }
@@ -460,17 +460,17 @@ class ListShouldContainNoElementsOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) shouldNot (contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain noElementsOf Seq("happy", "birthday", "to", "you"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot  (contain noElementsOf Seq("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain noElementsOf Seq("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
         (all (toLists) shouldNot  (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain noElementsOf Seq(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }

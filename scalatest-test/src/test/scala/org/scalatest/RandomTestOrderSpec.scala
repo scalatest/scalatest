@@ -58,12 +58,15 @@ class RandomTestOrderSpec extends FunSpec {
   class ExampleFunSuite(listBuffer: ListBuffer[Int]) extends FunSuite with RandomTestOrder {
     test("test 1") {
       listBuffer += 0
+      succeed
     }
     test("test 2") {
       listBuffer += 1
+      succeed
     }
     test("test 3") {
       listBuffer += 2
+      succeed
     }
     override def newInstance = new ExampleFunSuite(listBuffer)
   }
@@ -71,12 +74,15 @@ class RandomTestOrderSpec extends FunSpec {
   class ExampleFixtureFunSuite(listBuffer: ListBuffer[Int]) extends fixture.FunSuite with StringFixture with RandomTestOrder {
     test("test 1") { fixture =>
       listBuffer += 0
+      succeed
     }
     test("test 2") { fixture =>
       listBuffer += 1
+      succeed
     }
     test("test 3") { fixture =>
       listBuffer += 2
+      succeed
     }
     override def newInstance = new ExampleFixtureFunSuite(listBuffer)
   }
@@ -85,14 +91,17 @@ class RandomTestOrderSpec extends FunSpec {
 
     it("test 1") {
       listBuffer += 0
+      succeed
     }
 
     it("test 2") {
       listBuffer += 1
+      succeed
     }
 
     it("test 3") {
       listBuffer += 2
+      succeed
     }
 
     override def newInstance = new ExampleFunSpec(listBuffer)
@@ -103,14 +112,17 @@ class RandomTestOrderSpec extends FunSpec {
 
     it("test 1") { fixture =>
       listBuffer += 0
+      succeed
     }
 
     it("test 2") { fixture =>
       listBuffer += 1
+      succeed
     }
 
     it("test 3") { fixture =>
       listBuffer += 2
+      succeed
     }
 
     override def newInstance = new ExampleFixtureFunSpec(listBuffer)
@@ -121,12 +133,15 @@ class RandomTestOrderSpec extends FunSpec {
     feature("Scope 1") {
       scenario("test 1") {
         listBuffer += 0
+        succeed
       }
       scenario("test 2") {
         listBuffer += 1
+        succeed
       }
       scenario("test 3") {
         listBuffer += 2
+        succeed
       }
     }
 
@@ -137,12 +152,15 @@ class RandomTestOrderSpec extends FunSpec {
     feature("Scope 1") {
       scenario("test 1") { fixture =>
         listBuffer += 0
+        succeed
       }
       scenario("test 2") { fixture =>
         listBuffer += 1
+        succeed
       }
       scenario("test 3") { fixture =>
         listBuffer += 2
+        succeed
       }
     }
 
@@ -153,12 +171,15 @@ class RandomTestOrderSpec extends FunSpec {
     behavior of "Scope 1"
     it should "test 1" in {
       listBuffer += 0
+      succeed
     }
     it should "test 2" in {
       listBuffer += 1
+      succeed
     }
     it should "test 3" in {
       listBuffer += 2
+      succeed
     }
 
     override def newInstance = new ExampleFlatSpec(listBuffer)
@@ -168,12 +189,15 @@ class RandomTestOrderSpec extends FunSpec {
     behavior of "Scope 1"
     it should "test 1" in { fixture =>
       listBuffer += 0
+      succeed
     }
     it should "test 2" in { fixture =>
       listBuffer += 1
+      succeed
     }
     it should "test 3" in { fixture =>
       listBuffer += 2
+      succeed
     }
 
     override def newInstance = new ExampleFixtureFlatSpec(listBuffer)
@@ -183,12 +207,15 @@ class RandomTestOrderSpec extends FunSpec {
     "Scope 1" - {
       "test 1" in {
         listBuffer += 0
+        succeed
       }
       "test 2" in {
         listBuffer += 1
+        succeed
       }
       "test 3" in {
         listBuffer += 2
+        succeed
       }
     }
 
@@ -199,12 +226,15 @@ class RandomTestOrderSpec extends FunSpec {
     "Scope 1" - {
       "test 1" in { fixture =>
         listBuffer += 0
+        succeed
       }
       "test 2" in { fixture =>
         listBuffer += 1
+        succeed
       }
       "test 3" in { fixture =>
         listBuffer += 2
+        succeed
       }
     }
 
@@ -214,12 +244,15 @@ class RandomTestOrderSpec extends FunSpec {
   class ExamplePropSpec(listBuffer: ListBuffer[Int]) extends PropSpec with RandomTestOrder {
     property("test 1") {
       listBuffer += 0
+      succeed
     }
     property("test 2") {
       listBuffer += 1
+      succeed
     }
     property("test 3") {
       listBuffer += 2
+      succeed
     }
     override def newInstance = new ExamplePropSpec(listBuffer)
   }
@@ -227,12 +260,15 @@ class RandomTestOrderSpec extends FunSpec {
   class ExampleFixturePropSpec(listBuffer: ListBuffer[Int]) extends fixture.PropSpec with StringFixture with RandomTestOrder {
     property("test 1") { fixture =>
       listBuffer += 0
+      succeed
     }
     property("test 2") { fixture =>
       listBuffer += 1
+      succeed
     }
     property("test 3") { fixture =>
       listBuffer += 2
+      succeed
     }
     override def newInstance = new ExampleFixturePropSpec(listBuffer)
   }
@@ -241,12 +277,15 @@ class RandomTestOrderSpec extends FunSpec {
     "Scope 1" should {
       "test 1" in {
         listBuffer += 0
+        succeed
       }
       "test 2" in {
         listBuffer += 1
+        succeed
       }
       "test 3" in {
         listBuffer += 2
+        succeed
       }
     }
     override def newInstance = new ExampleWordSpec(listBuffer)
@@ -256,12 +295,15 @@ class RandomTestOrderSpec extends FunSpec {
     "Scope 1" should {
       "test 1" in { fixture =>
         listBuffer += 0
+        succeed
       }
       "test 2" in { fixture =>
         listBuffer += 1
+        succeed
       }
       "test 3" in { fixture =>
         listBuffer += 2
+        succeed
       }
     }
     override def newInstance = new ExampleFixtureWordSpec(listBuffer)

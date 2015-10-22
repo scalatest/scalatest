@@ -57,31 +57,31 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
       }
       it("should use the implicit Equality in scope") {
         some should contain ("hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should contain ("ho")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         some should contain ("ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should contain ("hi")
         }
       }
       it("should use an explicitly provided Equality") {
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should contain ("HI")
         }
         (some should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
         (some should contain ("HI")) (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (some should contain ("HI ")) (after being lowerCased)
         }
         (some should contain ("HI ")) (after being lowerCased and trimmed)
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should contain ("hi")
         }
         (some should contain ("hi")) (decided by defaultEquality[String])
@@ -110,14 +110,14 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
       }
       it("should use the implicit Equality in scope") {
         some should not contain "ho"
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should not contain "hi"
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         some should not contain "hi"
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should not contain "ho"
         }
       }
@@ -126,10 +126,10 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         some should not contain "HI "
         (some should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
         (some should not contain "HI ") (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (some should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (some should not contain "HI ") (after being lowerCased and trimmed)
         }
       }
@@ -160,14 +160,14 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
 
       it("should use the implicit Equality in scope") {
         some should not (contain ("ho"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should not (contain ("hi"))
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         some should not (contain ("hi"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should not (contain ("ho"))
         }
       }
@@ -176,10 +176,10 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         some should not (contain ("HI "))
         (some should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
         (some should not (contain ("HI "))) (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (some should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (some should not (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
@@ -209,14 +209,14 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
 
       it("should use the implicit Equality in scope") {
         some should (not contain "ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should (not contain "hi")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         some should (not contain "hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           some should (not contain "ho")
         }
       }
@@ -225,10 +225,10 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         some should (not contain "HI ")
         (some should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
         (some should (not contain "HI ")) (after being lowerCased)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (some should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (some should (not contain "HI ")) (after being lowerCased and trimmed)
         }
       }
@@ -282,22 +282,22 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
                                    "in Vector(Some(1), Some(1), Some(2))"))
       }
       it("should use the implicit Equality in scope") {
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should contain ("ho")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiSomes) should contain ("ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should contain ("hi")
         }
       }
       it("should use an explicitly provided Equality") {
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (somes) should contain ("HI")
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should contain ("HI ")
         }
         (all (hiSomes) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
@@ -333,24 +333,24 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
       }
       it("should use the implicit Equality in scope") {
         all (hiSomes) should not contain "ho"
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should not contain "hi"
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiSomes) should not contain "hi"
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should not contain "ho"
         }
       }
       it("should use an explicitly provided Equality") {
         all (hiSomes) should not contain "HI"
         all (hiSomes) should not contain "HI "
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should not contain "HI") (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should not contain "HI ") (after being trimmed and lowerCased)
         }
       }
@@ -384,24 +384,24 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
       }
       it("should use the implicit Equality in scope") {
         all (hiSomes) should not (contain ("ho"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should not (contain ("hi"))
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiSomes) should not (contain ("hi"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should not (contain ("ho"))
         }
       }
       it("should use an explicitly provided Equality") {
         all (hiSomes) should not (contain ("HI"))
         all (hiSomes) should not (contain ("HI "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should not (contain ("HI"))) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should not (contain ("HI "))) (after being trimmed and lowerCased)
         }
       }
@@ -435,24 +435,24 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
       }
       it("should use the implicit Equality in scope") {
         all (hiSomes) should (not contain "ho")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should (not contain "hi")
         }
         implicit val e = new Equality[String] {
           def areEqual(a: String, b: Any): Boolean = a != b
         }
         all (hiSomes) should (not contain "hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should (not contain "ho")
         }
       }
       it("should use an explicitly provided Equality") {
         all (hiSomes) should (not contain "HI")
         all (hiSomes) should (not contain "HI ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should (not contain "HI")) (decided by defaultEquality afterBeing lowerCased)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should (not contain "HI ")) (after being trimmed and lowerCased)
         }
       }

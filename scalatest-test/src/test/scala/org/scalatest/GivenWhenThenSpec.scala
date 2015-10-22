@@ -31,6 +31,7 @@ class GivenWhenThenSpec extends FunSpec {
         And(theAnd)
         When(theWhen)
         Then(theThen)
+        succeed
       }
     }
     val spec = new GivenWhenThenInsideTestSpec

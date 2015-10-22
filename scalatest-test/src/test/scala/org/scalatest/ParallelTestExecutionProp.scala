@@ -176,6 +176,7 @@ class ParallelTestExecutionProp extends FunSuite {
       example.assertOrderTest(inOrderEvents)
       val reverseOrderEvents = withDistributor(example, _.executeInReverseOrder)
       example.assertOrderTest(reverseOrderEvents)
+      succeed
     }
   }
   
@@ -186,6 +187,7 @@ class ParallelTestExecutionProp extends FunSuite {
       example.assertBeforeAfterInfo(inOrderEvents)
       val reverseOrderEvents = withDistributor(example, _.executeInReverseOrder)
       example.assertBeforeAfterInfo(reverseOrderEvents)
+      succeed
     }
   }
 
@@ -197,6 +199,7 @@ class ParallelTestExecutionProp extends FunSuite {
       example.assertTestTimeoutTest(inOrderEvents)
       val reverseOrderEvents = withTestHoldingDistributor(example, _.executeInReverseOrder)
       example.assertTestTimeoutTest(reverseOrderEvents)
+      succeed
     }
   }
   // SKIP-SCALATESTJS-END
@@ -208,6 +211,7 @@ class ParallelTestExecutionProp extends FunSuite {
       example.assertParallelSuites(inOrderEvents)
       //val reverseOrderEvents = withSuiteDistributor(example.suite1, example.suite2, _.executeInReverseOrder)
       //example.assertParallelSuites(reverseOrderEvents)
+      succeed
     }
   }
 
@@ -217,6 +221,7 @@ class ParallelTestExecutionProp extends FunSuite {
     forAll(suiteTimeoutExamples) { example =>
       val events = withSuiteHoldingDistributor(example, _.executeInOrder)
       example.assertSuiteTimeoutTest(events)
+      succeed
     }
   }
   // SKIP-SCALATESTJS-END

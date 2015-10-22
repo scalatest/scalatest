@@ -218,6 +218,7 @@ class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers
       waitForBeat(1)
       t1.getState should (be (WAITING) or be (BLOCKED) or be (RUNNABLE))
     }
+    succeed
   }
 
   // On Mac, failed with RUNNABLE was not equal to TERMINATED
@@ -242,6 +243,7 @@ class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers
       waitForBeat(1)
       t1.getThreadGroup should be (t2.getThreadGroup)
     }
+    succeed
   }
 
   test("if a thread call is nested inside another thread call, both threads are in the same thread group") {
@@ -250,6 +252,7 @@ class ConductorMethodsSuite extends FunSuite with ConductorMethods with Matchers
       waitForBeat(1)
       t2.getThreadGroup should be (Thread.currentThread.getThreadGroup) // Got: java.lang.ThreadGroup[name=Orchestra,maxpri=10] was not null
     }
+    succeed
   }
 
   test("whenFinished can only be called by thread that created Conductor.") {

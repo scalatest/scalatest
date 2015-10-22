@@ -208,6 +208,7 @@ class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTrac
         case e: Throwable =>
           fail("intercept[IllegalArgumentException] {} didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on intercept[IllegalArgumentException] { throw new RuntimeException }") {
@@ -225,6 +226,7 @@ class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTrac
         case e: Throwable =>
           fail("intercept[IllegalArgumentException] { throw new RuntimeException } didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on 1 should === (2)") {
@@ -332,7 +334,7 @@ class SeveredStackTracesSpec extends FunSpec with Matchers with SeveredStackTrac
       assert(tfe.getCause == null)
     }
   }
-  private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String) {
+  private def checkFileNameAndLineNumber(e: TestFailedException, failedCodeFileNameAndLineNumberString: String): Assertion = {
     val stackTraceElement = e.getStackTrace()(e.failedCodeStackDepth)
     val fileName = StackDepthExceptionHelper.getFailedCodeFileName(stackTraceElement).get
     val lineNumber = stackTraceElement.getLineNumber

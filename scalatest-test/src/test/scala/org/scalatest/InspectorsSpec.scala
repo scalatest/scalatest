@@ -66,10 +66,10 @@ class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChe
     ignore("should, when passed a Fact, convert that Fact to an Assertion") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
       import Expectations._
 
-      forAll(List(1, 2, 3)) { x => expect(x > 0) } shouldBe Succeeded
+      forAll(List(1, 2, 3)) { x => expect(x > 0); succeed } shouldBe Succeeded
 
       val tfe = intercept[exceptions.TestFailedException] {
-        forAll(List(1, 2, 3)) { x => expect(x < 0) }
+        forAll(List(1, 2, 3)) { x => expect(x < 0); succeed }
       }
       tfe.failedCodeFileName should be (Some("InspectorsSpec.scala"))
       tfe.failedCodeLineNumber should be (Some( thisLineNumber - 3))

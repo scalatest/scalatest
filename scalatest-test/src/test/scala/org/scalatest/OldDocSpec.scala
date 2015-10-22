@@ -108,7 +108,7 @@ This is a paragraph later...
         val reporter = new EventRecordingReporter
         a.run(None, Args(reporter))
         val indexedList = reporter.eventsReceived
-println("##### " + indexedList)
+        succeed
       }
     }
     "with two include calls inside" - {
@@ -146,6 +146,7 @@ println("##### " + indexedList)
           }
         </markup>)
       }
+      succeed
     }
   }
   "The trimMarkup method" - {

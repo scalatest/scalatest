@@ -51,7 +51,7 @@ class TestNameProp  extends AllSuiteProp {
   def pathFunSpec = new ExampleTestNamePathFunSpec
   
   test("test name will be constructed by concatennating scopes, outer to inner, followed by the test text, separated by a space after each component is trimmed.") {
-    forAll(examples) { s => s.assertTestNames() }
+    forAll(examples) { s => s.assertTestNames(); succeed }
   }
   
 }
@@ -523,25 +523,32 @@ protected[scalatest] class ExampleTestNameFlatSpec extends FlatSpec with TestNam
      "Testing 7 should be fun to code in Scala"
     )
   
-  "Testing 1" should "be fun to code in Scala" in { 
+  "Testing 1" should "be fun to code in Scala" in {
+    succeed
   }
 
-  "Testing 2 " should "be fun to code in Scala" in { 
+  "Testing 2 " should "be fun to code in Scala" in {
+    succeed
   }
 
-  "Testing 3" should " be fun to code in Scala" in { 
+  "Testing 3" should " be fun to code in Scala" in {
+    succeed
   }
 
-  "Testing 4" should "be fun to code in Scala " in { 
+  "Testing 4" should "be fun to code in Scala " in {
+    succeed
   }
 
-  " Testing 5" should "be fun to code in Scala" in { 
+  " Testing 5" should "be fun to code in Scala" in {
+    succeed
   }
 
-  "Testing 6 " should " be fun to code in Scala" in {  
+  "Testing 6 " should " be fun to code in Scala" in {
+    succeed
   }
 
-  "Testing 7  " should "be fun to code in Scala" in {  
+  "Testing 7  " should "be fun to code in Scala" in {
+    succeed
   }
 }
 

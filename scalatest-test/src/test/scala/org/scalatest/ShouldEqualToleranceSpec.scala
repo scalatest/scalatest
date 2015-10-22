@@ -307,129 +307,129 @@ class ShouldEqualToleranceSpec extends FunSpec with Tolerance {
       // Double +- Double
       val caught = intercept[TestFailedException] { sevenDotOh should equal (7.5 +- 0.2) }
       assert(caught.getMessage === sevenDotOh + " did not equal 7.5 plus or minus 0.2")
-      intercept[TestFailedException] { sevenDotOh should equal (6.5 +- 0.2) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-7.5 +- 0.2) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-6.5 +- 0.2) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (6.5 +- 0.2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-7.5 +- 0.2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-6.5 +- 0.2) }
 
       // Double +- Float
-      intercept[TestFailedException] { sevenDotOh should equal (7.5 +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOh should equal (6.5 +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-7.5 +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-6.5 +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (7.5 +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (6.5 +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-7.5 +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-6.5 +- 0.2f) }
 
       // Double +- Long
-      intercept[TestFailedException] { sevenDotOh should equal (4.0 +- 2L) }
-      intercept[TestFailedException] { sevenDotOh should equal (9.1 +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-4.0 +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-9.1 +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (4.0 +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (9.1 +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-4.0 +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-9.1 +- 2L) }
 
       // Double +- Int
-      intercept[TestFailedException] { sevenDotOh should equal (4.0 +- 2) }
-      intercept[TestFailedException] { sevenDotOh should equal (9.1 +- 2) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-4.0 +- 2) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-9.1 +- 2) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (4.0 +- 2) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (9.1 +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-4.0 +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-9.1 +- 2) }
 
       // Double +- Short
-      intercept[TestFailedException] { sevenDotOh should equal (4.0 +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOh should equal (9.1 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-4.0 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-9.1 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (4.0 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (9.1 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-4.0 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-9.1 +- 2.toShort) }
 
       // Double +- Byte
-      intercept[TestFailedException] { sevenDotOh should equal (4.0 +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOh should equal (9.1 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-4.0 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOh should equal (-9.1 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (4.0 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOh should equal (9.1 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-4.0 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOh should equal (-9.1 +- 2.toByte) }
 
       // Float +- Float
-      intercept[TestFailedException] { sevenDotOhFloat should equal (7.5f +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOhFloat should equal (6.5f +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-7.5f +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-6.5f +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (7.5f +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (6.5f +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-7.5f +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-6.5f +- 0.2f) }
 
       // Float +- Long
-      intercept[TestFailedException] { sevenDotOhFloat should equal (4.0f +- 2L) }
-      intercept[TestFailedException] { sevenDotOhFloat should equal (9.1f +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-4.0f +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-9.1f +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (4.0f +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (9.1f +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-4.0f +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-9.1f +- 2L) }
 
       // Float +- Int
-      intercept[TestFailedException] { sevenDotOhFloat should equal (4.0f +- 2) }
-      intercept[TestFailedException] { sevenDotOhFloat should equal (9.1f +- 2) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-4.0f +- 2) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-9.1f +- 2) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (4.0f +- 2) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (9.1f +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-4.0f +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-9.1f +- 2) }
 
       // Float +- Short
-      intercept[TestFailedException] { sevenDotOhFloat should equal (4.0f +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOhFloat should equal (9.1f +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-4.0f +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-9.1f +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (4.0f +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (9.1f +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-4.0f +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-9.1f +- 2.toShort) }
 
       // Float +- Byte
-      intercept[TestFailedException] { sevenDotOhFloat should equal (4.0f +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOhFloat should equal (9.1f +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-4.0f +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should equal (-9.1f +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (4.0f +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should equal (9.1f +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-4.0f +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should equal (-9.1f +- 2.toByte) }
 
       // Long +- Long
-      intercept[TestFailedException] { sevenLong should equal (4L +- 2L) }
-      intercept[TestFailedException] { sevenLong should equal (10L +- 2L) }
-      intercept[TestFailedException] { minusSevenLong should equal (-4L +- 2L) }
-      intercept[TestFailedException] { minusSevenLong should equal (-10L +- 2L) }
+      assertThrows[TestFailedException] { sevenLong should equal (4L +- 2L) }
+      assertThrows[TestFailedException] { sevenLong should equal (10L +- 2L) }
+      assertThrows[TestFailedException] { minusSevenLong should equal (-4L +- 2L) }
+      assertThrows[TestFailedException] { minusSevenLong should equal (-10L +- 2L) }
 
       // Long +- Int
-      intercept[TestFailedException] { sevenLong should equal (4L +- 2) }
-      intercept[TestFailedException] { sevenLong should equal (10L +- 2) }
-      intercept[TestFailedException] { minusSevenLong should equal (-4L +- 2) }
-      intercept[TestFailedException] { minusSevenLong should equal (-10L +- 2) }
+      assertThrows[TestFailedException] { sevenLong should equal (4L +- 2) }
+      assertThrows[TestFailedException] { sevenLong should equal (10L +- 2) }
+      assertThrows[TestFailedException] { minusSevenLong should equal (-4L +- 2) }
+      assertThrows[TestFailedException] { minusSevenLong should equal (-10L +- 2) }
 
       // Long +- Short
-      intercept[TestFailedException] { sevenLong should equal (4L +- 2.toShort) }
-      intercept[TestFailedException] { sevenLong should equal (10L +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenLong should equal (-4L +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenLong should equal (-10L +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenLong should equal (4L +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenLong should equal (10L +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenLong should equal (-4L +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenLong should equal (-10L +- 2.toShort) }
 
       // Long +- Byte
-      intercept[TestFailedException] { sevenLong should equal (4L +- 2.toByte) }
-      intercept[TestFailedException] { sevenLong should equal (10L +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenLong should equal (-4L +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenLong should equal (-10L +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenLong should equal (4L +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenLong should equal (10L +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenLong should equal (-4L +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenLong should equal (-10L +- 2.toByte) }
 
       // Int +- Int
-      intercept[TestFailedException] { sevenInt should equal (4 +- 2) }
-      intercept[TestFailedException] { sevenInt should equal (10 +- 2) }
-      intercept[TestFailedException] { minusSevenInt should equal (-4 +- 2) }
-      intercept[TestFailedException] { minusSevenInt should equal (-10 +- 2) }
+      assertThrows[TestFailedException] { sevenInt should equal (4 +- 2) }
+      assertThrows[TestFailedException] { sevenInt should equal (10 +- 2) }
+      assertThrows[TestFailedException] { minusSevenInt should equal (-4 +- 2) }
+      assertThrows[TestFailedException] { minusSevenInt should equal (-10 +- 2) }
 
       // Int +- Short
-      intercept[TestFailedException] { sevenInt should equal (4 +- 2.toShort) }
-      intercept[TestFailedException] { sevenInt should equal (10 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenInt should equal (-4 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenInt should equal (-10 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenInt should equal (4 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenInt should equal (10 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenInt should equal (-4 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenInt should equal (-10 +- 2.toShort) }
 
       // Int +- Byte
-      intercept[TestFailedException] { sevenInt should equal (4 +- 2.toByte) }
-      intercept[TestFailedException] { sevenInt should equal (10 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenInt should equal (-4 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenInt should equal (-10 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenInt should equal (4 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenInt should equal (10 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenInt should equal (-4 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenInt should equal (-10 +- 2.toByte) }
 
       // Short +- Short
-      intercept[TestFailedException] { sevenShort should equal (4.toShort +- 2.toShort) }
-      intercept[TestFailedException] { sevenShort should equal (10.toShort +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenShort should equal ((-4).toShort +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenShort should equal ((-10).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenShort should equal (4.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenShort should equal (10.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenShort should equal ((-4).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenShort should equal ((-10).toShort +- 2.toShort) }
 
       // Short +- Byte
-      intercept[TestFailedException] { sevenShort should equal (4.toShort +- 2.toByte) }
-      intercept[TestFailedException] { sevenShort should equal (10.toShort +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenShort should equal ((-4).toShort +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenShort should equal ((-10).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenShort should equal (4.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenShort should equal (10.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenShort should equal ((-4).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenShort should equal ((-10).toShort +- 2.toByte) }
 
       // Byte +- Byte
-      intercept[TestFailedException] { sevenByte should equal (4.toByte +- 2.toByte) }
-      intercept[TestFailedException] { sevenByte should equal (10.toByte +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenByte should equal ((-4).toByte +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenByte should equal ((-10).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenByte should equal (4.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenByte should equal (10.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenByte should equal ((-4).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenByte should equal ((-10).toByte +- 2.toByte) }
     }
 
     it("should succeed if the number is outside the given interval when used with not") {
@@ -566,255 +566,255 @@ class ShouldEqualToleranceSpec extends FunSpec with Tolerance {
       // Double +- Double
       val caught = intercept[TestFailedException] { sevenDotOh should not equal (7.1 +- 0.2) }
       assert(caught.getMessage === sevenDotOh + " equaled 7.1 plus or minus 0.2")
-      intercept[TestFailedException] { sevenDotOh should not equal (6.9 +- 0.2) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.0 +- 0.2) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.2 +- 0.2) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.8 +- 0.2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 0.2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 0.2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 0.2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 0.2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 0.2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.9 +- 0.2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.0 +- 0.2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.2 +- 0.2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.8 +- 0.2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 0.2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 0.2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 0.2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 0.2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 0.2) }
 
       // Double +- Float
-      intercept[TestFailedException] { sevenDotOh should not equal (7.1 +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.9 +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.0 +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.2 +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.8 +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.1 +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.9 +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.0 +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.2 +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.8 +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 0.2f) }
 
       // Double +- Long
-      intercept[TestFailedException] { sevenDotOh should not equal (7.1 +- 2L) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.9 +- 2L) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.0 +- 2L) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.2 +- 2L) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.8 +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.1 +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.9 +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.0 +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.2 +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.8 +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 2L) }
 
       // Double +- Int
-      intercept[TestFailedException] { sevenDotOh should not equal (7.1 +- 2) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.9 +- 2) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.0 +- 2) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.2 +- 2) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.8 +- 2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 2) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.1 +- 2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.9 +- 2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.0 +- 2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.2 +- 2) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.8 +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 2) }
 
       // Double +- Short
-      intercept[TestFailedException] { sevenDotOh should not equal (7.1 +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.9 +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.0 +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.2 +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.8 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.1 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.9 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.0 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.2 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.8 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 2.toShort) }
 
       // Double +- Byte
-      intercept[TestFailedException] { sevenDotOh should not equal (7.1 +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.9 +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.0 +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOh should not equal (7.2 +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOh should not equal (6.8 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.1 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.9 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.0 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (7.2 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOh should not equal (6.8 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.1 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.9 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.0 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-7.2 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOh should not equal (-6.8 +- 2.toByte) }
 
       // Float +- Float
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 0.2f) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 0.2f) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 0.2f) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 0.2f) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 0.2f) }
 
       // Float +- Long
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 2L) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 2L) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 2L) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 2L) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 2L) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 2L) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 2L) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 2L) }
 
       // Float +- Int
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 2) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 2) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 2) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 2) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 2) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 2) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 2) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 2) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 2) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 2) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 2) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 2) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 2) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 2) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 2) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 2) }
 
       // Float +- Short
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 2.toShort) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 2.toShort) }
 
       // Float +- Byte
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 2.toByte) }
-      intercept[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.1f +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.9f +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.0f +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (7.2f +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenDotOhFloat should not equal (6.8f +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.1f +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.9f +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.0f +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-7.2f +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenDotOhFloat should not equal (-6.8f +- 2.toByte) }
 
       // Long +- Long
-      intercept[TestFailedException] { sevenLong should not equal (9L +- 2L) }
-      intercept[TestFailedException] { sevenLong should not equal (8L +- 2L) }
-      intercept[TestFailedException] { sevenLong should not equal (7L +- 2L) }
-      intercept[TestFailedException] { sevenLong should not equal (6L +- 2L) }
-      intercept[TestFailedException] { sevenLong should not equal (5L +- 2L) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-9L +- 2L) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-8L +- 2L) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-7L +- 2L) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-6L +- 2L) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-5L +- 2L) }
+      assertThrows[TestFailedException] { sevenLong should not equal (9L +- 2L) }
+      assertThrows[TestFailedException] { sevenLong should not equal (8L +- 2L) }
+      assertThrows[TestFailedException] { sevenLong should not equal (7L +- 2L) }
+      assertThrows[TestFailedException] { sevenLong should not equal (6L +- 2L) }
+      assertThrows[TestFailedException] { sevenLong should not equal (5L +- 2L) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-9L +- 2L) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-8L +- 2L) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-7L +- 2L) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-6L +- 2L) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-5L +- 2L) }
 
       // Long +- Int
-      intercept[TestFailedException] { sevenLong should not equal (9L +- 2) }
-      intercept[TestFailedException] { sevenLong should not equal (8L +- 2) }
-      intercept[TestFailedException] { sevenLong should not equal (7L +- 2) }
-      intercept[TestFailedException] { sevenLong should not equal (6L +- 2) }
-      intercept[TestFailedException] { sevenLong should not equal (5L +- 2) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-9L +- 2) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-8L +- 2) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-7L +- 2) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-6L +- 2) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-5L +- 2) }
+      assertThrows[TestFailedException] { sevenLong should not equal (9L +- 2) }
+      assertThrows[TestFailedException] { sevenLong should not equal (8L +- 2) }
+      assertThrows[TestFailedException] { sevenLong should not equal (7L +- 2) }
+      assertThrows[TestFailedException] { sevenLong should not equal (6L +- 2) }
+      assertThrows[TestFailedException] { sevenLong should not equal (5L +- 2) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-9L +- 2) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-8L +- 2) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-7L +- 2) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-6L +- 2) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-5L +- 2) }
 
       // Long +- Short
-      intercept[TestFailedException] { sevenLong should not equal (9L +- 2.toShort) }
-      intercept[TestFailedException] { sevenLong should not equal (8L +- 2.toShort) }
-      intercept[TestFailedException] { sevenLong should not equal (7L +- 2.toShort) }
-      intercept[TestFailedException] { sevenLong should not equal (6L +- 2.toShort) }
-      intercept[TestFailedException] { sevenLong should not equal (5L +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-9L +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-8L +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-7L +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-6L +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-5L +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenLong should not equal (9L +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenLong should not equal (8L +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenLong should not equal (7L +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenLong should not equal (6L +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenLong should not equal (5L +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-9L +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-8L +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-7L +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-6L +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-5L +- 2.toShort) }
 
       // Long +- Byte
-      intercept[TestFailedException] { sevenLong should not equal (9L +- 2.toByte) }
-      intercept[TestFailedException] { sevenLong should not equal (8L +- 2.toByte) }
-      intercept[TestFailedException] { sevenLong should not equal (7L +- 2.toByte) }
-      intercept[TestFailedException] { sevenLong should not equal (6L +- 2.toByte) }
-      intercept[TestFailedException] { sevenLong should not equal (5L +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-9L +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-8L +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-7L +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-6L +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenLong should not equal (-5L +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenLong should not equal (9L +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenLong should not equal (8L +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenLong should not equal (7L +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenLong should not equal (6L +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenLong should not equal (5L +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-9L +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-8L +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-7L +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-6L +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenLong should not equal (-5L +- 2.toByte) }
 
       // Int +- Int
-      intercept[TestFailedException] { sevenInt should not equal (9 +- 2) }
-      intercept[TestFailedException] { sevenInt should not equal (8 +- 2) }
-      intercept[TestFailedException] { sevenInt should not equal (7 +- 2) }
-      intercept[TestFailedException] { sevenInt should not equal (6 +- 2) }
-      intercept[TestFailedException] { sevenInt should not equal (5 +- 2) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-9 +- 2) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-8 +- 2) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-7 +- 2) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-6 +- 2) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-5 +- 2) }
+      assertThrows[TestFailedException] { sevenInt should not equal (9 +- 2) }
+      assertThrows[TestFailedException] { sevenInt should not equal (8 +- 2) }
+      assertThrows[TestFailedException] { sevenInt should not equal (7 +- 2) }
+      assertThrows[TestFailedException] { sevenInt should not equal (6 +- 2) }
+      assertThrows[TestFailedException] { sevenInt should not equal (5 +- 2) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-9 +- 2) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-8 +- 2) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-7 +- 2) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-6 +- 2) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-5 +- 2) }
 
       // Int +- Short
-      intercept[TestFailedException] { sevenInt should not equal (9 +- 2.toShort) }
-      intercept[TestFailedException] { sevenInt should not equal (8 +- 2.toShort) }
-      intercept[TestFailedException] { sevenInt should not equal (7 +- 2.toShort) }
-      intercept[TestFailedException] { sevenInt should not equal (6 +- 2.toShort) }
-      intercept[TestFailedException] { sevenInt should not equal (5 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-9 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-8 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-7 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-6 +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-5 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenInt should not equal (9 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenInt should not equal (8 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenInt should not equal (7 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenInt should not equal (6 +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenInt should not equal (5 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-9 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-8 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-7 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-6 +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-5 +- 2.toShort) }
 
       // Int +- Byte
-      intercept[TestFailedException] { sevenInt should not equal (9 +- 2.toByte) }
-      intercept[TestFailedException] { sevenInt should not equal (8 +- 2.toByte) }
-      intercept[TestFailedException] { sevenInt should not equal (7 +- 2.toByte) }
-      intercept[TestFailedException] { sevenInt should not equal (6 +- 2.toByte) }
-      intercept[TestFailedException] { sevenInt should not equal (5 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-9 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-8 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-7 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-6 +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenInt should not equal (-5 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenInt should not equal (9 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenInt should not equal (8 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenInt should not equal (7 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenInt should not equal (6 +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenInt should not equal (5 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-9 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-8 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-7 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-6 +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenInt should not equal (-5 +- 2.toByte) }
 
       // Short +- Short
-      intercept[TestFailedException] { sevenShort should not equal (9.toShort +- 2.toShort) }
-      intercept[TestFailedException] { sevenShort should not equal (8.toShort +- 2.toShort) }
-      intercept[TestFailedException] { sevenShort should not equal (7.toShort +- 2.toShort) }
-      intercept[TestFailedException] { sevenShort should not equal (6.toShort +- 2.toShort) }
-      intercept[TestFailedException] { sevenShort should not equal (5.toShort +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-9).toShort +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-8).toShort +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-7).toShort +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-6).toShort +- 2.toShort) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-5).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenShort should not equal (9.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenShort should not equal (8.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenShort should not equal (7.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenShort should not equal (6.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { sevenShort should not equal (5.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-9).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-8).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-7).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-6).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-5).toShort +- 2.toShort) }
 
       // Short +- Byte
-      intercept[TestFailedException] { sevenShort should not equal (9.toShort +- 2.toByte) }
-      intercept[TestFailedException] { sevenShort should not equal (8.toShort +- 2.toByte) }
-      intercept[TestFailedException] { sevenShort should not equal (7.toShort +- 2.toByte) }
-      intercept[TestFailedException] { sevenShort should not equal (6.toShort +- 2.toByte) }
-      intercept[TestFailedException] { sevenShort should not equal (5.toShort +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-9).toShort +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-8).toShort +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-7).toShort +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-6).toShort +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenShort should not equal ((-5).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenShort should not equal (9.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenShort should not equal (8.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenShort should not equal (7.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenShort should not equal (6.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenShort should not equal (5.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-9).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-8).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-7).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-6).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenShort should not equal ((-5).toShort +- 2.toByte) }
 
       // Byte +- Byte
-      intercept[TestFailedException] { sevenByte should not equal (9.toByte +- 2.toByte) }
-      intercept[TestFailedException] { sevenByte should not equal (8.toByte +- 2.toByte) }
-      intercept[TestFailedException] { sevenByte should not equal (7.toByte +- 2.toByte) }
-      intercept[TestFailedException] { sevenByte should not equal (6.toByte +- 2.toByte) }
-      intercept[TestFailedException] { sevenByte should not equal (5.toByte +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenByte should not equal ((-9).toByte +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenByte should not equal ((-8).toByte +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenByte should not equal ((-7).toByte +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenByte should not equal ((-6).toByte +- 2.toByte) }
-      intercept[TestFailedException] { minusSevenByte should not equal ((-5).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenByte should not equal (9.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenByte should not equal (8.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenByte should not equal (7.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenByte should not equal (6.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { sevenByte should not equal (5.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenByte should not equal ((-9).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenByte should not equal ((-8).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenByte should not equal ((-7).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenByte should not equal ((-6).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { minusSevenByte should not equal ((-5).toByte +- 2.toByte) }
     }
 
     it("should succeed when equal and used in a logical-and expression") {

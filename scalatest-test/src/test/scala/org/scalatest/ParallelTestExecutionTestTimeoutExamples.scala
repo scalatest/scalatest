@@ -150,9 +150,9 @@ class ExampleParallelTestExecutionTestTimeoutFixtureSpec extends fixture.Spec wi
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSuite extends FunSuite with ParallelTestExecution with TestTimeoutExpectedResults {
-  test("Test 1") {}
-  test("Test 2") {}
-  test("Test 3") {}
+  test("Test 1") { succeed }
+  test("Test 2") { succeed }
+  test("Test 3") { succeed }
   
   val holdTestSucceededName = "Test 2"
   val holdUntilEventCount = 5
@@ -205,12 +205,12 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSuit
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSpec extends FunSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   describe("Scope 1") {
-    it("Test 1") {}
-    it("Test 2") {}
+    it("Test 1") { succeed }
+    it("Test 2") { succeed }
   }
   describe("Scope 2") {
-    it("Test 3") {}
-    it("Test 4") {}
+    it("Test 3") { succeed }
+    it("Test 4") { succeed }
   }
   
   val holdTestSucceededName = "Scope 2 Test 3"
@@ -281,12 +281,12 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSpec
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec extends FeatureSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   feature("Scope 1") {
-    scenario("Test 1") {}
-    scenario("Test 2") {}
+    scenario("Test 1") { succeed }
+    scenario("Test 2") { succeed }
   }
   feature("Scope 2") {
-    scenario("Test 3") {}
-    scenario("Test 4") {}
+    scenario("Test 3") { succeed }
+    scenario("Test 4") { succeed }
   }
   
   val holdTestSucceededName = "Feature: Scope 2 Scenario: Test 3"
@@ -357,12 +357,12 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFeature
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFlatSpec extends FlatSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   behavior of "Scope 1"
-  it should "Test 1" in {}
-  it should "Test 2" in {}
+  it should "Test 1" in { succeed }
+  it should "Test 2" in { succeed }
   
   behavior of "Scope 2"
-  it should "Test 3" in {}
-  it should "Test 4" in {}
+  it should "Test 3" in { succeed }
+  it should "Test 4" in { succeed }
   
   val holdTestSucceededName = "Scope 2 should Test 3"
   val holdUntilEventCount = 11
@@ -431,13 +431,13 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFlatSpe
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFreeSpec extends FreeSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   "Scope 1" - {
-    "Test 1" in {}
-    "Test 2" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
   }
   
   "Scope 2" - {
-    "Test 3" in {}
-    "Test 4" in {}
+    "Test 3" in { succeed }
+    "Test 4" in { succeed }
   }
   
   val holdTestSucceededName = "Scope 2 Test 3"
@@ -508,9 +508,9 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFreeSpe
 
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutPropSpec extends PropSpec with ParallelTestExecution with TestTimeoutExpectedResults {
-  property("Test 1") {}
-  property("Test 2") {}
-  property("Test 3") {}
+  property("Test 1") { succeed }
+  property("Test 2") { succeed }
+  property("Test 3") { succeed }
   
   val holdTestSucceededName = "Test 2"
   val holdUntilEventCount = 5
@@ -563,13 +563,13 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixturePropSpe
 @DoNotDiscover
 protected[scalatest] class ExampleParallelTestExecutionTestTimeoutWordSpec extends WordSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   "Scope 1" should {
-    "Test 1" in {}
-    "Test 2" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
   }
   
   "Scope 2" should {
-    "Test 3" in {}
-    "Test 4" in {}
+    "Test 3" in { succeed }
+    "Test 4" in { succeed }
   }
   
   val holdTestSucceededName = "Scope 2 should Test 3"

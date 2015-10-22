@@ -311,129 +311,129 @@ class ShouldCollectedTripleEqualsToleranceSpec extends FunSpec /* with NonImplic
       caught.message should be (Some("'all' inspection failed, because: \n" +
                                 "  at index 0, " + sevenDotOh + " did not equal 7.5 plus or minus 0.2 (ShouldCollectedTripleEqualsToleranceSpec.scala:" + (thisLineNumber - 2) + ") \n" +
                                 "in List(" + sevenDotOh + ", " + sevenDotOh + ", " + sevenDotOh + ")"))
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (6.5 +- 0.2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-7.5 +- 0.2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-6.5 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (6.5 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-7.5 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-6.5 +- 0.2) }
 
       // Double +- Float
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (7.5 +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (6.5 +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-7.5 +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-6.5 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (7.5 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (6.5 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-7.5 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-6.5 +- 0.2f) }
 
       // Double +- Long
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (4.0 +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (9.1 +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-4.0 +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-9.1 +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (4.0 +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (9.1 +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-4.0 +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-9.1 +- 2L) }
 
       // Double +- Int
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (4.0 +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (9.1 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-4.0 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-9.1 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (4.0 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (9.1 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-4.0 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-9.1 +- 2) }
 
       // Double +- Short
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (4.0 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (9.1 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-4.0 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-9.1 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (4.0 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (9.1 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-4.0 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-9.1 +- 2.toShort) }
 
       // Double +- Byte
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (4.0 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (9.1 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-4.0 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-9.1 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (4.0 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should === (9.1 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-4.0 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should === (-9.1 +- 2.toByte) }
 
       // Float +- Float
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (7.5f +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (6.5f +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-7.5f +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-6.5f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (7.5f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (6.5f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-7.5f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-6.5f +- 0.2f) }
 
       // Float +- Long
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (4.0f +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (9.1f +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-4.0f +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-9.1f +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (4.0f +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (9.1f +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-4.0f +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-9.1f +- 2L) }
 
       // Float +- Int
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (4.0f +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (9.1f +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-4.0f +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-9.1f +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (4.0f +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (9.1f +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-4.0f +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-9.1f +- 2) }
 
       // Float +- Short
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (4.0f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (9.1f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-4.0f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-9.1f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (4.0f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (9.1f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-4.0f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-9.1f +- 2.toShort) }
 
       // Float +- Byte
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (4.0f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (9.1f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-4.0f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-9.1f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (4.0f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should === (9.1f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-4.0f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should === (-9.1f +- 2.toByte) }
 
       // Long +- Long
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (4L +- 2L) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (10L +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-4L +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-10L +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (4L +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (10L +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-4L +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-10L +- 2L) }
 
       // Long +- Int
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (4L +- 2) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (10L +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-4L +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-10L +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (4L +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (10L +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-4L +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-10L +- 2) }
 
       // Long +- Short
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (4L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (10L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-4L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-10L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (4L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (10L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-4L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-10L +- 2.toShort) }
 
       // Long +- Byte
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (4L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (10L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-4L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-10L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (4L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should === (10L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-4L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should === (-10L +- 2.toByte) }
 
       // Int +- Int
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (4 +- 2) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (10 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-4 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-10 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (4 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (10 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-4 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-10 +- 2) }
 
       // Int +- Short
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (4 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (10 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-4 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-10 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (4 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (10 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-4 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-10 +- 2.toShort) }
 
       // Int +- Byte
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (4 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (10 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-4 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-10 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (4 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should === (10 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-4 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should === (-10 +- 2.toByte) }
 
       // Short +- Short
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should === (4.toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should === (10.toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should === ((-4).toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should === ((-10).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should === (4.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should === (10.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should === ((-4).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should === ((-10).toShort +- 2.toShort) }
 
       // Short +- Byte
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should === (4.toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should === (10.toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should === ((-4).toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should === ((-10).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should === (4.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should === (10.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should === ((-4).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should === ((-10).toShort +- 2.toByte) }
 
       // Byte +- Byte
-      intercept[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should === (4.toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should === (10.toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should === ((-4).toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should === ((-10).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should === (4.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should === (10.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should === ((-4).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should === ((-10).toByte +- 2.toByte) }
     }
   }
 
@@ -575,255 +575,255 @@ class ShouldCollectedTripleEqualsToleranceSpec extends FunSpec /* with NonImplic
       caught.message should be (Some("'all' inspection failed, because: \n" +
                                 "  at index 0, " + sevenDotOh + " equaled 7.1 plus or minus 0.2 (ShouldCollectedTripleEqualsToleranceSpec.scala:" + (thisLineNumber - 2) + ") \n" +
                                 "in List(" + sevenDotOh + ", " + sevenDotOh + ", " + sevenDotOh + ")"))
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 0.2) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 0.2) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 0.2) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 0.2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 0.2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 0.2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 0.2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 0.2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 0.2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 0.2) }
 
       // Double +- Float
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 0.2f) }
 
       // Double +- Long
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 2L) }
 
       // Double +- Int
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 2) }
 
       // Double +- Short
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 2.toShort) }
 
       // Double +- Byte
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.1 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.9 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.0 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (7.2 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOh, sevenDotOh, sevenDotOh)) should !== (6.8 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.1 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.9 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.0 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-7.2 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOh, minusSevenDotOh, minusSevenDotOh)) should !== (-6.8 +- 2.toByte) }
 
       // Float +- Float
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 0.2f) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 0.2f) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 0.2f) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 0.2f) }
 
       // Float +- Long
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 2L) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 2L) }
 
       // Float +- Int
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 2) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 2) }
 
       // Float +- Short
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 2.toShort) }
 
       // Float +- Byte
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.1f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.9f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.0f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (7.2f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenDotOhFloat, sevenDotOhFloat, sevenDotOhFloat)) should !== (6.8f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.1f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.9f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.0f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-7.2f +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenDotOhFloat, minusSevenDotOhFloat, minusSevenDotOhFloat)) should !== (-6.8f +- 2.toByte) }
 
       // Long +- Long
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (9L +- 2L) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (8L +- 2L) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (7L +- 2L) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (6L +- 2L) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (5L +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-9L +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-8L +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-7L +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-6L +- 2L) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-5L +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (9L +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (8L +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (7L +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (6L +- 2L) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (5L +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-9L +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-8L +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-7L +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-6L +- 2L) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-5L +- 2L) }
 
       // Long +- Int
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (9L +- 2) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (8L +- 2) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (7L +- 2) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (6L +- 2) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (5L +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-9L +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-8L +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-7L +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-6L +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-5L +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (9L +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (8L +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (7L +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (6L +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (5L +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-9L +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-8L +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-7L +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-6L +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-5L +- 2) }
 
       // Long +- Short
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (9L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (8L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (7L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (6L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (5L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-9L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-8L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-7L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-6L +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-5L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (9L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (8L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (7L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (6L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (5L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-9L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-8L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-7L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-6L +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-5L +- 2.toShort) }
 
       // Long +- Byte
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (9L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (8L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (7L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (6L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (5L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-9L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-8L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-7L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-6L +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-5L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (9L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (8L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (7L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (6L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenLong, sevenLong, sevenLong)) should !== (5L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-9L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-8L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-7L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-6L +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenLong, minusSevenLong, minusSevenLong)) should !== (-5L +- 2.toByte) }
 
       // Int +- Int
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (9 +- 2) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (8 +- 2) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (7 +- 2) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (6 +- 2) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (5 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-9 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-8 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-7 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-6 +- 2) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-5 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (9 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (8 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (7 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (6 +- 2) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (5 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-9 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-8 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-7 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-6 +- 2) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-5 +- 2) }
 
       // Int +- Short
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (9 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (8 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (7 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (6 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (5 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-9 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-8 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-7 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-6 +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-5 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (9 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (8 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (7 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (6 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (5 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-9 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-8 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-7 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-6 +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-5 +- 2.toShort) }
 
       // Int +- Byte
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (9 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (8 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (7 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (6 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (5 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-9 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-8 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-7 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-6 +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-5 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (9 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (8 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (7 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (6 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenInt, sevenInt, sevenInt)) should !== (5 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-9 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-8 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-7 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-6 +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenInt, minusSevenInt, minusSevenInt)) should !== (-5 +- 2.toByte) }
 
       // Short +- Short
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (9.toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (8.toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (7.toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (6.toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (5.toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-9).toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-8).toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-7).toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-6).toShort +- 2.toShort) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-5).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (9.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (8.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (7.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (6.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (5.toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-9).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-8).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-7).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-6).toShort +- 2.toShort) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-5).toShort +- 2.toShort) }
 
       // Short +- Byte
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (9.toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (8.toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (7.toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (6.toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (5.toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-9).toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-8).toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-7).toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-6).toShort +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-5).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (9.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (8.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (7.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (6.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenShort, sevenShort, sevenShort)) should !== (5.toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-9).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-8).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-7).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-6).toShort +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenShort, minusSevenShort, minusSevenShort)) should !== ((-5).toShort +- 2.toByte) }
 
       // Byte +- Byte
-      intercept[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (9.toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (8.toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (7.toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (6.toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (5.toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-9).toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-8).toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-7).toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-6).toByte +- 2.toByte) }
-      intercept[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-5).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (9.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (8.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (7.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (6.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(sevenByte, sevenByte, sevenByte)) should !== (5.toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-9).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-8).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-7).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-6).toByte +- 2.toByte) }
+      assertThrows[TestFailedException] { all (List(minusSevenByte, minusSevenByte, minusSevenByte)) should !== ((-5).toByte +- 2.toByte) }
     }
   }
 

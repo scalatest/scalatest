@@ -57,16 +57,16 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList should contain noneOf ("FEE", "FAM", "FOE", "FU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain noneOf ("FEE", "FUM", "FOE", "FU")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should contain noneOf ("FEE", "FAM", "FOE", "FU")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain noneOf ("FEE", "FUM", "FOE", "FU")) (decided by upperCaseEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
         }
         (fumList should contain noneOf (" FEE ", " FIE ", " FOE ", " FAM ")) (after being lowerCased and trimmed)
@@ -96,17 +96,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList should (contain noneOf ("FEE", "FAM", "FOE", "FU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain noneOf ("FEE", "FUM", "FOE", "FU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should (contain noneOf ("FEE", "FAM", "FOE", "FU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain noneOf ("FEE", "FUM", "FOE", "FU"))) (decided by upperCaseEquality)
         }
         fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain noneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
         }
       }
@@ -134,17 +134,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList should not contain noneOf ("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should not contain noneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         }
         (fumList should not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should not contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
       }
@@ -172,17 +172,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toList should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should (not contain noneOf ("happy", "birthday", "to", "you"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
         (toList should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
@@ -210,17 +210,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumList shouldNot contain noneOf ("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList shouldNot contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList shouldNot contain noneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList shouldNot contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         }
         (fumList shouldNot contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList shouldNot contain noneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
       }
@@ -248,17 +248,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toList shouldNot (contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot (contain noneOf ("happy", "birthday", "to", "you"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot (contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
         (toList shouldNot (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
@@ -302,23 +302,23 @@ class ListShouldContainNoneOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should contain noneOf ("ho", "he")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain noneOf ("hi", "he")
         }
         implicit val ise = upperCaseEquality
         all (hiLists) should contain noneOf ("hi", "he")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain noneOf ("HI", "HE")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should contain noneOf ("hi", "he")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain noneOf ("HI", "HE")) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
         (all (hiLists) should contain noneOf ("ho", "he")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain noneOf ("hi", "he")) (decided by defaultEquality[String])
         }
       }
@@ -352,23 +352,23 @@ class ListShouldContainNoneOfSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should (contain noneOf ("ho", "he"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain noneOf ("hi", "he"))
         }
         implicit val ise = upperCaseEquality
         all (hiLists) should (contain noneOf ("hi", "he"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain noneOf ("HI", "HE"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain noneOf ("hi", "he"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain noneOf ("HI", "HE"))) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
         (all (hiLists) should (contain noneOf ("ho", "he"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain noneOf ("hi", "he"))) (decided by defaultEquality[String])
         }
       }
@@ -398,17 +398,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain noneOf ("happy", "birthday", "to", "you")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain noneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         }
         (all (toLists) should not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
       }
@@ -438,17 +438,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain noneOf ("happy", "birthday", "to", "you"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
         (all (toLists) should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }
@@ -478,17 +478,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) shouldNot contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain noneOf ("happy", "birthday", "to", "you")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain noneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
         }
         (all (toLists) shouldNot contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
         }
       }
@@ -518,17 +518,17 @@ class ListShouldContainNoneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toLists) shouldNot (contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain noneOf ("happy", "birthday", "to", "you"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot  (contain noneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain noneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
         }
         (all (toLists) shouldNot  (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain noneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
         }
       }

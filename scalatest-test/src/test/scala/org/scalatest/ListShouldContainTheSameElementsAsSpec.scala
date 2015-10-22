@@ -65,16 +65,16 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain theSameElementsAs Set("fee", "fie", "foe")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should contain theSameElementsAs Set("fee", "fie", "foe")) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ")
         }
         (fumList should contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
@@ -96,16 +96,16 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain theSameElementsAs Set("fee", "fie", "foe"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumList should (contain theSameElementsAs Set("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumList should (contain theSameElementsAs Set("fee", "fie", "foe"))) (decided by upperCaseStringEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))
         }
         (fumList should (contain theSameElementsAs Set(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
@@ -126,17 +126,17 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should not contain theSameElementsAs (Set("happy", "birthday", "to"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should not contain theSameElementsAs (Set("happy", "birthday", "to"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         toList should not contain theSameElementsAs (Set(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should not contain theSameElementsAs (Set(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -156,17 +156,17 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList should (not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList should (not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList should (not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
         }
         toList should (not contain theSameElementsAs (Set(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList should (not contain theSameElementsAs (Set(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
@@ -186,17 +186,17 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot contain theSameElementsAs (Set("happy", "birthday", "to"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot contain theSameElementsAs (Set("happy", "birthday", "to"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseStringEquality)
         }
         toList shouldNot contain theSameElementsAs (Set(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot contain theSameElementsAs (Set(" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -216,17 +216,17 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         toList shouldNot (contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toList shouldNot (contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))
         }
       }
       it("should use an explicitly provided Equality") {
         (toList shouldNot (contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain theSameElementsAs (Set("HAPPY", "BIRTHDAY", "TO", "YOU")))) (decided by upperCaseStringEquality)
         }
         toList shouldNot (contain theSameElementsAs (Set(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toList shouldNot (contain theSameElementsAs (Set(" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")))) (after being lowerCased and trimmed)
         }
       }
@@ -270,23 +270,23 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should contain theSameElementsAs Set("he", "hi")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain theSameElementsAs Set("ho", "hi")
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should contain theSameElementsAs Set("HE", "HI")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should contain theSameElementsAs Set("HO", "HI")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should contain theSameElementsAs Set("HE", "HI")) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain theSameElementsAs Set("HO", "HI")) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should contain theSameElementsAs Set("he", "hi")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should contain theSameElementsAs Set("ho", "hi")) (decided by defaultEquality[String])
         }
       }
@@ -322,23 +322,23 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
 
       it("should use the implicit Equality in scope") {
         all (hiLists) should (contain theSameElementsAs Set("he", "hi"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain theSameElementsAs Set("ho", "hi"))
         }
         implicit val ise = upperCaseStringEquality
         all (hiLists) should (contain theSameElementsAs Set("HE", "HI"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiLists) should (contain theSameElementsAs Set("HO", "HI"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiLists) should (contain theSameElementsAs Set("HE", "HI"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain theSameElementsAs Set("HO", "HI"))) (decided by upperCaseStringEquality)
         }
         implicit val ise = upperCaseStringEquality
         (all (hiLists) should (contain theSameElementsAs Set("he", "hi"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiLists) should (contain theSameElementsAs Set("ho", "hi"))) (decided by defaultEquality[String])
         }
       }
@@ -360,17 +360,17 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should not contain theSameElementsAs (Set("YOU", "TO"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain theSameElementsAs (Set("YOU", "TO"))) (decided by upperCaseStringEquality)
         }
         all (toLists) should not contain theSameElementsAs (Set(" YOU ", " TO "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should not contain theSameElementsAs (Set(" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }
@@ -392,17 +392,17 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) should (not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) should (not contain theSameElementsAs (Set("YOU", "TO")))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) should (not contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain theSameElementsAs (Set("YOU", "TO")))) (decided by upperCaseStringEquality)
         }
         all (toLists) should (not contain theSameElementsAs (Set(" YOU ", " TO ")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) should (not contain theSameElementsAs (Set(" YOU ", " TO ")))) (after being lowerCased and trimmed)
         }
       }
@@ -424,17 +424,17 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot contain theSameElementsAs (Set("YOU", "TO"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU"))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain theSameElementsAs (Set("YOU", "TO"))) (decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot contain theSameElementsAs (Set(" YOU ", " TO "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot contain theSameElementsAs (Set(" YOU ", " TO "))) (after being lowerCased and trimmed)
         }
       }
@@ -456,17 +456,17 @@ class ListShouldContainTheSameElementsAsSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseStringEquality
         all (toLists) shouldNot (contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toLists) shouldNot (contain theSameElementsAs (Set("YOU", "TO")))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toLists) shouldNot (contain theSameElementsAs (Set("NICE", "TO", "MEET", "YOU")))) (decided by upperCaseStringEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain theSameElementsAs (Set("YOU", "TO")))) (decided by upperCaseStringEquality)
         }
         all (toLists) shouldNot (contain theSameElementsAs (Set(" YOU ", " TO ")))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toLists) shouldNot (contain theSameElementsAs (Set(" YOU ", " TO ")))) (after being lowerCased and trimmed)
         }
       }

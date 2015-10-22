@@ -126,7 +126,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           promise.failure(new VirtualMachineError {})
           promise.future
         }
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           vmeFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
@@ -138,7 +138,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           promise.failure(new TestPendingException)
           promise.future
         }
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           tpeFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
@@ -149,7 +149,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           promise.failure(new TestCanceledException(0))
           promise.future
         }
-        intercept[TestCanceledException] {
+        assertThrows[TestCanceledException] {
           tceFuture.isReadyWithin(Span(1, Millisecond))
         }
       }
@@ -256,7 +256,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           promise.failure(new VirtualMachineError {})
           promise.future
         }
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           vmeFuture.futureValue
         }
       }
@@ -270,7 +270,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestPendingException
           }
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           tpeFuture.futureValue
         }
       }
@@ -283,7 +283,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
           }
-        intercept[TestCanceledException] {
+        assertThrows[TestCanceledException] {
           tpeFuture.futureValue
         }
       }
@@ -480,7 +480,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
           promise.failure(new VirtualMachineError {})
           promise.future
         }
-        intercept[VirtualMachineError] {
+        assertThrows[VirtualMachineError] {
           whenReady(vmeFuture) { s =>
             s should equal ("hi")
           }
@@ -497,7 +497,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestPendingException
           }
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           whenReady(tpeFuture) { s =>
             s should equal ("hi")
           }
@@ -511,7 +511,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
             def isCanceled: Boolean = false
             def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
           }
-        intercept[TestCanceledException] {
+        assertThrows[TestCanceledException] {
           whenReady(tpeFuture) { s =>
             s should equal ("hi")
           }

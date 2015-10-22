@@ -81,10 +81,10 @@ class ShouldBeNullSpec extends FunSpec with Checkers with ReturnsNormallyThrowsA
 
     it("should throw a NullArgumentException if they try to short circuit with a null check first") {
       // The reason I check this is I warn that this will happen in the ShouldMatcher scaladoc
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         nullMap should (not be (null) and contain key (7))
       }
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         nullMap should (be (null) and contain key (7))
       }
     }

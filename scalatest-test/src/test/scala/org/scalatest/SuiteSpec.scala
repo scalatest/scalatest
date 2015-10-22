@@ -262,14 +262,14 @@ class SuiteSpec extends FunSpec {
   describe("A Suite") {
     describe("(when its pendingUntilFixed method is invoked)") {
       it("should throw TestPendingException if the code block throws an exception") {
-        intercept[TestPendingException] {
+        assertThrows[TestPendingException] {
           pendingUntilFixed {
             assert(1 + 1 === 3)
           }
         }
       }
       it("should throw TestFailedException if the code block doesn't throw an exception") {
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           pendingUntilFixed {
             assert(1 + 2 === 3)
           }
@@ -380,13 +380,13 @@ class SuiteSpec extends FunSpec {
   describe("A Suite's execute method") {
     it("should throw NAE if passed null for configMap") {
       class MySuite extends Suite
-      intercept[NullArgumentException] {
+      assertThrows[NullArgumentException] {
         (new MySuite).execute(configMap = null)
       }
     }
     it("should throw IAE if a testName is passed that does not exist on the suite") {
       class MySuite extends Suite
-      intercept[IllegalArgumentException] {
+      assertThrows[IllegalArgumentException] {
         (new MySuite).execute(testName = "fred")
       }
     }
@@ -408,7 +408,7 @@ class SuiteSpec extends FunSpec {
           theFixture = "hi"
           test()
         }
-        it("some test") { sideEffectedFixtureWas = theFixture }
+        it("some test") { sideEffectedFixtureWas = theFixture; succeed }
       }
 
       val a = new SideEffectedFixtureWasSpec

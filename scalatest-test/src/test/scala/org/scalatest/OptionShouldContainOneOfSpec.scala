@@ -53,16 +53,16 @@ class OptionShouldContainOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumSome should contain oneOf ("FEE", "FIE", "FOE", "FUM")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumSome should contain oneOf ("fee", "fie", "foe", "fum")
         }
       }
       it("should use an explicitly provided Equality") {
         (fumSome should contain oneOf ("FEE", "FIE", "FOE", "FUM")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumSome should contain oneOf ("fee", "fie", "foe", "fum")) (decided by upperCaseEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumSome should contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ")
         }
         (fumSome should contain oneOf (" FEE ", " FIE ", " FOE ", " FUM ")) (after being lowerCased and trimmed)
@@ -92,16 +92,16 @@ class OptionShouldContainOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         fumSome should (contain oneOf ("FEE", "FIE", "FOE", "FUM"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumSome should (contain oneOf ("fee", "fie", "foe", "fum"))
         }
       }
       it("should use an explicitly provided Equality") {
         (fumSome should (contain oneOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (fumSome should (contain oneOf ("fee", "fie", "foe", "fum"))) (decided by upperCaseEquality)
         }
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           fumSome should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))
         }
         (fumSome should (contain oneOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
@@ -138,17 +138,17 @@ class OptionShouldContainOneOfSpec extends FunSpec {
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toSome should not contain oneOf ("happy", "birthday", "to", "you")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toSome should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (toSome should not contain oneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toSome should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         }
         toSome should not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toSome should not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU ")) (after being lowerCased and trimmed)
         }
       }
@@ -185,17 +185,17 @@ The bottom two don't, but still I don't want to support that in general.
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         toSome should (not contain oneOf ("happy", "birthday", "to", "you"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           toSome should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (toSome should (not contain oneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toSome should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         }
         toSome should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (toSome should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }
@@ -259,23 +259,23 @@ The bottom two don't, but still I don't want to support that in general.
 
       it("should use the implicit Equality in scope") {
         all (hiSomes) should contain oneOf ("hi", "he")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should contain oneOf ("ho", "he")
         }
         implicit val ise = upperCaseEquality
         all (hiSomes) should contain oneOf ("HI", "HE")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should contain oneOf ("hi", "he")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should contain oneOf ("HI", "HE")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should contain oneOf ("hi", "he")) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
         (all (hiSomes) should contain oneOf ("hi", "he")) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should contain oneOf ("HI", "HE")) (decided by defaultEquality[String])
         }
       }
@@ -329,23 +329,23 @@ The bottom two don't, but still I don't want to support that in general.
 
       it("should use the implicit Equality in scope") {
         all (hiSomes) should (contain oneOf ("hi", "he"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should (contain oneOf ("HI", "HE"))
         }
         implicit val ise = upperCaseEquality
         all (hiSomes) should (contain oneOf ("HI", "HE"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (hiSomes) should (contain oneOf ("hi", "he"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (hiSomes) should (contain oneOf ("HI", "HE"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should (contain oneOf ("hi", "he"))) (decided by upperCaseEquality)
         }
         implicit val ise = upperCaseEquality
         (all (hiSomes) should (contain oneOf ("hi", "he"))) (decided by defaultEquality[String])
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (hiSomes) should (contain oneOf ("HI", "HE"))) (decided by defaultEquality[String])
         }
       }
@@ -390,17 +390,17 @@ scala> all (some1s) should (contain (oneOf (1, 3, 4)))
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toSomes) should not contain oneOf ("happy", "birthday", "to", "you")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toSomes) should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toSomes) should not contain oneOf ("happy", "birthday", "to", "you")) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toSomes) should not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU")) (decided by upperCaseEquality)
         }
         all (toSomes) should not contain oneOf (" happy ", " birthday ", " to ", " you ")
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toSomes) should not contain oneOf (" happy ", " birthday ", " to ", " you ")) (after being lowerCased and trimmed)
         }
       }
@@ -447,17 +447,17 @@ The top two don't, but still I don't want to support that in general.
       it("should use the implicit Equality in scope") {
         implicit val ise = upperCaseEquality
         all (toSomes) should (not contain oneOf ("happy", "birthday", "to", "you"))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           all (toSomes) should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))
         }
       }
       it("should use an explicitly provided Equality") {
         (all (toSomes) should (not contain oneOf ("happy", "birthday", "to", "you"))) (decided by upperCaseEquality)
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toSomes) should (not contain oneOf ("HAPPY", "BIRTHDAY", "TO", "YOU"))) (decided by upperCaseEquality)
         }
         all (toSomes) should (not contain oneOf (" happy ", " birthday ", " to ", " you "))
-        intercept[TestFailedException] {
+        assertThrows[TestFailedException] {
           (all (toSomes) should (not contain oneOf (" HAPPY ", " BIRTHDAY ", " TO ", " YOU "))) (after being lowerCased and trimmed)
         }
       }

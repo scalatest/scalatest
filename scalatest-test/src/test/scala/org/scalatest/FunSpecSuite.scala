@@ -28,14 +28,17 @@ class FunSpecSuite extends FunSuite {
       var example3WasInvokedAfterExample2 = false
       it("should get invoked") {
         example1WasInvoked = true
+        succeed
       }
       it("should also get invoked") {
         if (example1WasInvoked)
           example2WasInvokedAfterExample1 = true
+        succeed
       }
       it("should also also get invoked") {
         if (example2WasInvokedAfterExample1)
           example3WasInvokedAfterExample2 = true
+        succeed
       }
     }
     val a = new MySpec
@@ -52,15 +55,18 @@ class FunSpecSuite extends FunSuite {
       var example3WasInvokedAfterExample2 = false
       it("should get invoked") {
         example1WasInvoked = true
+        succeed
       }
       describe("Stack") {
         it("should also get invoked") {
           if (example1WasInvoked)
             example2WasInvokedAfterExample1 = true
+          succeed
         }
         it("should also also get invoked") {
           if (example2WasInvokedAfterExample1)
             example3WasInvokedAfterExample2 = true
+          succeed
         }
       }
     }
@@ -77,10 +83,12 @@ class FunSpecSuite extends FunSuite {
       var example2WasInvokedAfterExample1 = false
       it("should get invoked") {
         example1WasInvoked = true
+        succeed
       }
       it("should also get invoked") {
         if (example1WasInvoked)
           example2WasInvokedAfterExample1 = true
+        succeed
       }
     }
     val a = new MySpec
@@ -133,6 +141,7 @@ class FunSpecSuite extends FunSuite {
     }
     val a = new MySpec
     a.run(None, Args(SilentReporter))
+    succeed
   }
   
   // Test for good strings in report for top-level examples  
@@ -777,6 +786,7 @@ class FunSpecSuite extends FunSuite {
     }
     val a = new MySpec
     a.run(None, Args(SilentReporter))
+    succeed
   }  
   
   test("Only a passed test name should be invoked.") {
@@ -785,9 +795,11 @@ class FunSpecSuite extends FunSuite {
     class MySpec extends FunSpec with Matchers {
       it("it should be invoked") {
         correctTestWasInvoked = true
+        succeed
       }
       it("it should not be invoked") {
         wrongTestWasInvoked = true
+        succeed
       }
     }
     val a = new MySpec
@@ -1110,6 +1122,7 @@ class FunSpecSuite extends FunSuite {
       def invocationVerifier(i: Int) {
         it("should be invoked") {
           sharedExampleInvoked = true
+          succeed
         }
       }
       describe("A Stack") {
@@ -1134,9 +1147,11 @@ class FunSpecSuite extends FunSuite {
       def invocationVerifier(i: Int) {
         it("should be invoked") {
           sharedExampleInvoked = true
+          succeed
         }
         it("should also be invoked") {
           sharedExampleAlsoInvoked = true
+          succeed
         }
       }
       describe("A Stack") {
@@ -1163,14 +1178,17 @@ class FunSpecSuite extends FunSuite {
       def invocationVerifier(i: Int) {
         it("should get invoked") {
           example1WasInvoked = true
+          succeed
         }
         it("should also get invoked") {
           if (example1WasInvoked)
             example2WasInvokedAfterExample1 = true
+          succeed
         }
         it("should also also get invoked") {
           if (example2WasInvokedAfterExample1)
             example3WasInvokedAfterExample2 = true
+          succeed
         }
       }
       it should behave like invocationVerifier(1)
@@ -1190,14 +1208,17 @@ class FunSpecSuite extends FunSuite {
       def invocationVerifier(i: Int) {
         it("should get invoked") {
           example1WasInvoked = true
+          succeed
         }
         it("should also get invoked") {
           if (example1WasInvoked)
             example2WasInvokedAfterExample1 = true
+          succeed
         }
         it("should also also get invoked") {
           if (example2WasInvokedAfterExample1)
             example3WasInvokedAfterExample2 = true
+          succeed
         }
       }
       // don't use it: behaves like (an InvocationVerifier())
@@ -1229,6 +1250,7 @@ class FunSpecSuite extends FunSuite {
       def invocationVerifier(i: Int) {
         it("it should be invoked") {
           sharedExampleInvoked = true
+          succeed
         }
       }
       it should behave like invocationVerifier(1) 
@@ -1257,6 +1279,7 @@ class FunSpecSuite extends FunSuite {
       def invocationVerifier(i: Int) {
         it("should pop properly") {
           sharedExampleInvoked = true
+          succeed
         }
       }
       describe("A Stack") {
@@ -1366,7 +1389,7 @@ class FunSpecSuite extends FunSuite {
         describe("(when not empty)") {
           it("should allow me to pop") {
             info(expectedMessage)
-            ()
+            succeed
           }
         }
         describe("(when not full)") {
@@ -1387,7 +1410,7 @@ class FunSpecSuite extends FunSuite {
         it(null) { succeed }
       }
     }
-    intercept[NullArgumentException] {
+    assertThrows[NullArgumentException] {
       new FunSpec {
         ignore(null) { succeed }
       }

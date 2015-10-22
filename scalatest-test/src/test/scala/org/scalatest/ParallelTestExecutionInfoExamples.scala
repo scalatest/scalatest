@@ -320,12 +320,12 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFlatSpec extends Flat
   before { info("In Before") }
   after { info("In After") }
   behavior of "Scope 1"
-  it should "Test 1" in {}
-  it should "Test 2" in {}
+  it should "Test 1" in { succeed }
+  it should "Test 2" in { succeed }
   
   behavior of "Scope 2"
-  it should "Test 3" in {}
-  it should "Test 4" in {}
+  it should "Test 3" in { succeed }
+  it should "Test 4" in { succeed }
   
   def assertBeforeAfterInfo(events: List[Event]) {
     assert(events.size === 20)
@@ -396,13 +396,13 @@ protected[scalatest] class ExampleParallelTestExecutionInfoFreeSpec extends Free
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" - {
-    "Test 1" in {}
-    "Test 2" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
   }
   
   "Scope 2" - {
-    "Test 3" in {}
-    "Test 4" in {}
+    "Test 3" in { succeed }
+    "Test 4" in { succeed }
   }
   
   def assertBeforeAfterInfo(events: List[Event]) {
@@ -528,13 +528,13 @@ protected[scalatest] class ExampleParallelTestExecutionInfoWordSpec extends Word
   before { info("In Before") }
   after { info("In After") }
   "Scope 1" should {
-    "Test 1" in {}
-    "Test 2" in {}
+    "Test 1" in { succeed }
+    "Test 2" in { succeed }
   }
   
   "Scope 2" should {
-    "Test 3" in {}
-    "Test 4" in {}
+    "Test 3" in { succeed }
+    "Test 4" in { succeed }
   }
   
   def assertBeforeAfterInfo(events: List[Event]) {

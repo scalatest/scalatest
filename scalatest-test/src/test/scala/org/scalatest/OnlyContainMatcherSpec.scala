@@ -24,7 +24,7 @@ class OnlyContainMatcherSpec extends FunSpec {
 
   describe("only ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " did not contain only (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherSpec.scala"))
@@ -144,7 +144,7 @@ class OnlyContainMatcherSpec extends FunSpec {
   
   describe("not only ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Assertion = {
       val leftText = FailureMessages.decorateToStringValue(left)
       e.message should be (Some(leftText + " contained only (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherSpec.scala"))

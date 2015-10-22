@@ -71,13 +71,14 @@ class StatusSpec extends fixture.FunSpec {
       import scala.language.reflectiveCalls
       status.setCompleted()
       status.waitUntilCompleted()
+      succeed
     }
     // SKIP-SCALATESTJS-END
     
     it("should throw IllegalStateException when setFailed() is called after setCompleted() is set") { status =>
       import scala.language.reflectiveCalls
       status.setCompleted()
-      intercept[IllegalStateException] {
+      assertThrows[IllegalStateException] {
         status.setFailed()
       }
     }
@@ -95,6 +96,7 @@ class StatusSpec extends fixture.FunSpec {
     // SKIP-SCALATESTJS-START
     it("should be serializable") { status =>
       SharedHelpers.serializeRoundtrip(status)
+      succeed
     }
     // SKIP-SCALATESTJS-END
   }
