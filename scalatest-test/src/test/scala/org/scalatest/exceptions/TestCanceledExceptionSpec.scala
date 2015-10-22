@@ -180,7 +180,7 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
 
     it("should give the proper line on intercept[IllegalArgumentException] {}") {
       try {
-        intercept[IllegalArgumentException] {}
+        assertThrows[IllegalArgumentException] {}
       }
       catch {
         case e: TestCanceledException =>
@@ -195,7 +195,7 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
 
     it("should give the proper line on intercept[IllegalArgumentException] { throw new RuntimeException }") {
       try {
-        intercept[IllegalArgumentException] {
+        assertThrows[IllegalArgumentException] {
           if (false) 1 else throw new RuntimeException
         }
       }
@@ -226,6 +226,7 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
         case e: Throwable =>
           cancel("1 should === 2 didn't produce a TestCanceledException", e)
       }
+      succeed
     }
 
     it("should give the proper line on an [IllegalArgumentException] should be thrownBy {}") {
@@ -244,6 +245,7 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
         case e: Throwable =>
           cancel("an [IllegalArgumentException] should be thrownBy {} didn't produce a TestCanceledException", e)
       }
+      succeed
     }
 
     // TODO: What is this testing? there should be no TCE thrown by an [IAE] should be thrownBy ....

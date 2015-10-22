@@ -29,7 +29,7 @@ class LocationSpec extends FunSpec with Checkers {
   
   class TestLocationFunSuite extends FunSuite {
     test("succeed") {
-      
+      succeed
     }
     test("fail") {
       fail
@@ -38,7 +38,7 @@ class LocationSpec extends FunSpec with Checkers {
       pending
     }
     ignore("ignore") {
-      
+      fail
     }
   }
   
@@ -64,6 +64,7 @@ class LocationSpec extends FunSpec with Checkers {
           case _ =>
         }
       }
+      succeed
     }
   }
 
@@ -107,6 +108,7 @@ class LocationSpec extends FunSpec with Checkers {
           case _ =>
         }
       }
+      succeed
     }
   }
   // SKIP-SCALATESTJS-END

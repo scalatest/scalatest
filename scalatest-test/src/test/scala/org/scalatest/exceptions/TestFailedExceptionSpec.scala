@@ -172,9 +172,9 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
       }
     }
 
-    it("should give the proper line on intercept[IllegalArgumentException] {}") {
+    it("should give the proper line on assertThrows[IllegalArgumentException] {}") {
       try {
-        intercept[IllegalArgumentException] {}
+        assertThrows[IllegalArgumentException] {}
       }
       catch {
         case e: TestFailedException =>
@@ -187,9 +187,9 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
       }
     }
 
-    it("should give the proper line on intercept[IllegalArgumentException] { throw new RuntimeException }") {
+    it("should give the proper line on assertThrows[IllegalArgumentException] { throw new RuntimeException }") {
       try {
-        intercept[IllegalArgumentException] { if (false) 1 else throw new RuntimeException }
+        assertThrows[IllegalArgumentException] { if (false) 1 else throw new RuntimeException }
       }
       catch {
         case e: TestFailedException =>
@@ -218,6 +218,7 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
         case e: Throwable =>
           fail("1 should === (2) didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on a [IllegalArgumentException] should be thrownBy {}") {
@@ -236,6 +237,7 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
         case e: Throwable =>
           fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on a [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
@@ -269,6 +271,7 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
         case e: Throwable =>
           fail("an [IllegalArgumentException] should be thrownBy {} didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {

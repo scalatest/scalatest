@@ -98,7 +98,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
 
         val task = new ThrowingTask(new RuntimeException("oops"))
         val caught =
-          assertThrows[TestFailedException] {
+          intercept[TestFailedException] {
             task.isReadyWithin(Span(1, Millisecond))
           }
         caught.failedCodeLineNumber.value should equal(thisLineNumber - 2)
@@ -110,10 +110,9 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
         // Wrong, should just go up
         val task = new ThrowingTask(new VirtualMachineError {})
-        val caught =
-          assertThrows[VirtualMachineError] {
-            task.isReadyWithin(Span(1, Millisecond))
-          }
+        assertThrows[VirtualMachineError] {
+          task.isReadyWithin(Span(1, Millisecond))
+        }
       }
 
       // Same thing here and in 2.0 need to add a test for TestCanceledException
@@ -229,7 +228,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
 
         val task = new ThrowingTask(new RuntimeException("oops"))
         val caught =
-          assertThrows[TestFailedException] {
+          intercept[TestFailedException] {
             task.futureValue
           }
         caught.failedCodeLineNumber.value should equal(thisLineNumber - 2)
@@ -241,10 +240,9 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
         // Wrong, should just go up
         val task = new ThrowingTask(new VirtualMachineError {})
-        val caught =
-          assertThrows[VirtualMachineError] {
-            task.futureValue
-          }
+        assertThrows[VirtualMachineError] {
+          task.futureValue
+        }
       }
 
       // Same thing here and in 2.0 need to add a test for TestCanceledException
@@ -373,7 +371,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
 
         val task = new ThrowingTask(new RuntimeException("oops"))
         val caught =
-          assertThrows[TestFailedException] {
+          intercept[TestFailedException] {
             whenReady(task) { s =>
               s should be ("hi")
             }
@@ -387,12 +385,11 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
       it("should allow errors that do not normally cause a test to fail to propagate back without being wrapped in a TFE") {
         // Wrong, should just go up
         val task = new ThrowingTask(new VirtualMachineError {})
-        val caught =
-          assertThrows[VirtualMachineError] {
-            whenReady(task) { s =>
-              s should be ("hi")
-            }
+        assertThrows[VirtualMachineError] {
+          whenReady(task) { s =>
+            s should be ("hi")
           }
+        }
       }
 
       it("should allow TestPendingException, which does not normally cause a test to fail, through immediately when thrown") {

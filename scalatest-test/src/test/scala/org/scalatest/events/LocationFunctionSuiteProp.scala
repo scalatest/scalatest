@@ -26,6 +26,7 @@ class LocationFunctionSuiteProp extends FunctionSuiteProp {
       val eventList = reporter.eventsReceived
       eventList.foreach { event => suite.checkFun(event) }
       suite.allChecked
+      succeed
     }
   }
   

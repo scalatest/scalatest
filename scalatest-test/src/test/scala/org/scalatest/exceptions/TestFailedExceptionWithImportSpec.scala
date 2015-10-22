@@ -186,6 +186,7 @@ class TestFailedExceptionWithImportSpec extends FunSpec {
         case e: Throwable =>
           fail("intercept[IllegalArgumentException] {} didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on intercept[IllegalArgumentException] { throw new RuntimeException }") {
@@ -201,6 +202,7 @@ class TestFailedExceptionWithImportSpec extends FunSpec {
         case e: Throwable =>
           fail("intercept[IllegalArgumentException] { throw new RuntimeException } didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on 1 should === (2)") {
@@ -219,6 +221,7 @@ class TestFailedExceptionWithImportSpec extends FunSpec {
         case e: Throwable =>
           fail("assert(1 === 2) didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on a [IllegalArgumentException] should be thrownBy {}") {
@@ -237,6 +240,7 @@ class TestFailedExceptionWithImportSpec extends FunSpec {
         case e: Throwable =>
           fail("a [IllegalArgumentException] should be thrownBy {} didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on a [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {
@@ -270,6 +274,7 @@ class TestFailedExceptionWithImportSpec extends FunSpec {
         case e: Throwable =>
           fail("an [IllegalArgumentException] should be thrownBy {} didn't produce a TestFailedException", e)
       }
+      succeed
     }
 
     it("should give the proper line on an [IllegalArgumentException] should be thrownBy { throw new RuntimeException }") {

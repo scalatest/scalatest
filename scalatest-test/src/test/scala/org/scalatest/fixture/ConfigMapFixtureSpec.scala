@@ -27,6 +27,7 @@ class ConfigMapFixtureSpec extends org.scalatest.FunSpec {
         test("test something") { configMap =>
           if (configMap == myConfigMap)
             configMapPassed = true
+          succeed
         }
       }
       val spec = new MySpec
