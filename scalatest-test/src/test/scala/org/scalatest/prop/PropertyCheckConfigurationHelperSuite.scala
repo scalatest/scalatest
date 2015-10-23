@@ -53,7 +53,7 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
   }
 
   test("getParams throws IAE if passed multiple minSuccessful config params") {
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       getParams(Seq(MinSuccessful(33), MinSuccessful(34)), defaultConfig)
     }
   }
@@ -73,7 +73,7 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
   }
 
   test("getParams throws IAE if passed multiple maxDiscarded config params") {
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       getParams(Seq(MaxDiscardedFactor(33.0), MaxDiscardedFactor(34.0)), defaultConfig)
     }
   }
@@ -90,7 +90,7 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
   }
 
   test("getParams throws IAE if passed multiple minSize config params") {
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       getParams(Seq(MinSize(33), MinSize(34)), defaultConfig)
     }
   }
@@ -112,13 +112,13 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
   }
 
   test("getParams throws IAE if passed multiple maxSize config params") {
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       getParams(Seq(MaxSize(33), MaxSize(34)), defaultConfig)
     }
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       getParams(Seq(MaxSize(33), SizeRange(34)), defaultConfig)
     }
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       getParams(Seq(SizeRange(33), SizeRange(34)), defaultConfig)
     }
   }
@@ -135,7 +135,7 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
   }
 
   test("getParams throws IAE if passed multiple workers config params") {
-    intercept[IllegalArgumentException] {
+    assertThrows[IllegalArgumentException] {
       getParams(Seq(Workers(33), Workers(34)), defaultConfig)
     }
   }

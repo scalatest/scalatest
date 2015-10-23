@@ -471,16 +471,19 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       click on linkText("Test Click")
       click on partialLinkText("Click")
       click on tagName("a")
+      succeed
     }
     it("should be able to click on Element") {
       go to (host + "click.html")
       val element = id("aLink").element
       click on element
+      succeed
     }
     it("should be able to click on WebElement") {
       go to (host + "click.html")
       val webElement = id("aLink").webElement
       click on webElement
+      succeed
     }
   }
 
@@ -561,6 +564,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     it("should have no effect if already at oldest page") {
       for (i <- 0 to 1000)
         goBack()
+      succeed
     }
   }
 
@@ -568,6 +572,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     it("should have no effect if already at newest page") {
       for (i <- 0 to 1000)
         goForward()
+      succeed
     }
   }
 
@@ -1178,6 +1183,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       textField("name").value = "Penguin"
       submit()
       // submit (name("name")) // This will work as well.
+      succeed
     }
     
     it("should throw TestFailedException with correct stack depth when submit is called on none form's element") {
@@ -1199,6 +1205,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       
       textField("name").value = "Penguin"
       click on "submitButton"
+      succeed
     }
     
     it("should navigate to, back, forward and refresh correctly") {
@@ -1315,6 +1322,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     
     it("should support implicitlyWait method") {
       implicitlyWait(Span(2, Seconds))
+      succeed
     }
   
     it("should support capturing screenshot", Slow) {
@@ -1328,6 +1336,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
         case unsupported: UnsupportedOperationException => 
           cancel(unsupported)
       }
+      succeed
     }
     
     it("should support setting capture target directory", Slow) {
@@ -1451,6 +1460,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       switch to frame(name("name"))
       switch to frame(name("name").element)
       switch to window(windowHandle)
+      succeed
     }
     
     ignore("should support switchTo") {
@@ -1462,6 +1472,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       switchTo(frame(name("name")))
       switchTo(frame(name("name").element))
       switchTo(window(windowHandle))
+      succeed
     }
   }
   
@@ -1545,7 +1556,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       it("should return Some(Element) when findElement method is called with valid id") {
         go to (host + "click.html")
         id("aLink").findElement match {
-          case Some(element: Element) => // ok
+          case Some(element: Element) => succeed // ok
           case other => fail("Expected Some(element: Element), but got: " + other)
         }
       }
@@ -1597,7 +1608,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       it("should return Some(Element) when findElement method is called with valid name") {
         go to (host + "click.html")
         name("aLinkName").findElement match {
-          case Some(element: Element) => // ok
+          case Some(element: Element) => succeed // ok
           case other => fail("Expected Some(element: Element), but got: " + other)
         }
       }
@@ -1649,7 +1660,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       it("should return Some(Element) when findElement method is called with valid xpath") {
         go to (host + "click.html")
         xpath("//html/body/a").findElement match {
-          case Some(element: Element) => // ok
+          case Some(element: Element) => succeed // ok
           case other => fail("Expected Some(element: Element), but got: " + other)
         }
       }
@@ -1701,7 +1712,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       it("should return Some(Element) when findElement method is called with valid className") {
         go to (host + "click.html")
         className("aClass").findElement match {
-          case Some(element: Element) => // ok
+          case Some(element: Element) => succeed // ok
           case other => fail("Expected Some(element: Element), but got: " + other)
         }
       }
@@ -1753,7 +1764,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       it("should return Some(Element) when findElement method is called with valid cssSelector") {
         go to (host + "click.html")
         cssSelector("a[id='aLink']").findElement match {
-          case Some(element: Element) => // ok
+          case Some(element: Element) => succeed // ok
           case other => fail("Expected Some(element: Element), but got: " + other)
         }
       }
@@ -1805,7 +1816,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       it("should return Some(Element) when findElement method is called with valid linkText") {
         go to (host + "click.html")
         linkText("Test Click").findElement match {
-          case Some(element: Element) => // ok
+          case Some(element: Element) => succeed // ok
           case other => fail("Expected Some(element: Element), but got: " + other)
         }
       }
@@ -1857,7 +1868,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       it("should return Some(Element) when findElement method is called with valid partialLinkText") {
         go to (host + "click.html")
         partialLinkText("Click").findElement match {
-          case Some(element: Element) => // ok
+          case Some(element: Element) => succeed // ok
           case other => fail("Expected Some(element: Element), but got: " + other)
         }
       }
@@ -1909,7 +1920,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       it("should return Some(Element) when findElement method is called with valid tagname") {
         go to (host + "click.html")
         tagName("a").findElement match {
-          case Some(element: Element) => // ok
+          case Some(element: Element) => succeed // ok
           case other => fail("Expected Some(element: Element), but got: " + other)
         }
       }

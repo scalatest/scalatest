@@ -42,24 +42,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       it("should be empty when created") {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         buf += 1
         it("should contain 1") {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           buf += 2
           it("should contain 1 and 2") {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             buf -= 2
             it("should contain only 1 again") {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -67,6 +71,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -75,6 +80,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -100,24 +106,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       it("should be empty when created") {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         buf += 1
         it("should contain 1") {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           buf += 2
           it("should contain 1 and 2") {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             buf -= 2
             it("should contain only 1 again") {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -125,6 +135,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -133,6 +144,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -160,24 +172,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       it("should be empty when created") {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         buf += 1
         it("should contain 1") {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           buf += 2
           it("should contain 1 and 2") {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             buf -= 2
             it("should contain only 1 again") {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -185,6 +201,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -193,6 +210,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -218,29 +236,34 @@ class PathListBufferExamples extends PathSuiteExamples {
       describe("Another subject") {
         it("first test") {
           buf += 1000 // To ensure this isn't seen by others
+          succeed
         }
       }
       it("should be empty when created") {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         buf += 1
         it("should contain 1") {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           buf += 2
           it("should contain 1 and 2") {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             buf -= 2
             it("should contain only 1 again") {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -248,6 +271,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -256,6 +280,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -282,30 +307,35 @@ class PathListBufferExamples extends PathSuiteExamples {
         describe("when created") {
           it("first test") {
             buf += 1000 // To ensure this isn't seen by others
+            succeed
           }
         }
       }
       it("should be empty when created") {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         buf += 1
         it("should contain 1") {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           buf += 2
           it("should contain 1 and 2") {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             buf -= 2
             it("should contain only 1 again") {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -313,6 +343,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -321,6 +352,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -345,24 +377,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       it("should be empty when created") {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         vec :+= 1
         it("should contain 1") {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           vec :+= 2
           it("should contain 1 and 2") {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             vec = vec.init
             it("should contain only 1 again") {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -370,6 +406,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -378,6 +415,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -399,30 +437,34 @@ class PathListBufferExamples extends PathSuiteExamples {
     describe("A Vector") {
       var vec = Vector.empty[Int]
       describe("A subject") {
-        it("should first test") { vec ++= Seq(1, 2, 3) }
-        it("should second test") { vec ++= Vector(4, 5, 6) }
+        it("should first test") { vec ++= Seq(1, 2, 3); succeed }
+        it("should second test") { vec ++= Vector(4, 5, 6); succeed }
       }
       it("should be empty when created") {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         vec :+= 1
         it("should contain 1") {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           vec :+= 2
           it("should contain 1 and 2") {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             vec = vec.init
             it("should contain only 1 again") {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -430,6 +472,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -438,6 +481,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -459,32 +503,36 @@ class PathListBufferExamples extends PathSuiteExamples {
     describe("A Vector") {
       var vec = Vector.empty[Int]
       describe("A subject") {
-        it("should first test") { vec ++= Seq(1, 2, 3) }
+        it("should first test") { vec ++= Seq(1, 2, 3); succeed }
       }
       describe("Another subject") {
-        it("should second test") { vec ++= Vector(4, 5, 6) }
+        it("should second test") { vec ++= Vector(4, 5, 6); succeed }
       }
       it("should be empty when created") {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         vec :+= 1
         it("should contain 1") {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           vec :+= 2
           it("should contain 1 and 2") {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             vec = vec.init
             it("should contain only 1 again") {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -492,6 +540,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -500,6 +549,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -522,31 +572,35 @@ class PathListBufferExamples extends PathSuiteExamples {
       var vec = Vector.empty[Int]
       describe("A subject") {
         describe("when created") {
-          it("should first test") { vec ++= Seq(1, 2, 3) }
-          it("should second test") { vec ++= Vector(4, 5, 6) }
+          it("should first test") { vec ++= Seq(1, 2, 3); succeed }
+          it("should second test") { vec ++= Vector(4, 5, 6); succeed }
         }
       }
       it("should be empty when created") {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         vec :+= 1
         it("should contain 1") {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           vec :+= 2
           it("should contain 1 and 2") {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             vec = vec.init
             it("should contain only 1 again") {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -554,6 +608,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -562,6 +617,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -584,35 +640,39 @@ class PathListBufferExamples extends PathSuiteExamples {
       var vec = Vector.empty[Int]
       describe("A subject") {
         describe("when created") {
-          it("should first test") { vec ++= Seq(1, 2, 3) }
+          it("should first test") { vec ++= Seq(1, 2, 3); succeed }
         }
       }
       describe("Another subject") {
         describe("when created") {
-          it("should second test") { vec ++= Vector(4, 5, 6) }
+          it("should second test") { vec ++= Vector(4, 5, 6); succeed }
         }
       }
       it("should be empty when created") {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         vec :+= 1
         it("should contain 1") {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           vec :+= 2
           it("should contain 1 and 2") {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             vec = vec.init
             it("should contain only 1 again") {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -620,6 +680,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -628,6 +689,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -650,31 +712,35 @@ class PathListBufferExamples extends PathSuiteExamples {
       var vec = Vector.empty[Int]
       describe("A subject") {
         describe("when created") {
-          it("should first test") { vec ++= Seq(1, 2, 3) }
+          it("should first test") { vec ++= Seq(1, 2, 3); succeed }
         }
-        it("should second test") { vec ++= Vector(4, 5, 6) }
+        it("should second test") { vec ++= Vector(4, 5, 6); succeed }
       }
       it("should be empty when created") {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       describe("when 1 is appended") {
         vec :+= 1
         it("should contain 1") {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         describe("when 2 is appended") {
           vec :+= 2
           it("should contain 1 and 2") {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           describe("when 2 is removed") {
             vec = vec.init
             it("should contain only 1 again") {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           describe("when 3 is appended") { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -682,6 +748,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             it("should contain 1, 2, and 3") {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -690,6 +757,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           it("should contain 1 and 88") {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -714,24 +782,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       "should be empty when created" in {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         buf += 1
         "should contain 1" in {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           buf += 2
           "should contain 1 and 2" in {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             buf -= 2
             "should contain only 1 again" in {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -739,6 +811,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -747,6 +820,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -772,24 +846,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       "should be empty when created" in {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         buf += 1
         "should contain 1" in {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           buf += 2
           "should contain 1 and 2" in {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             buf -= 2
             "should contain only 1 again" in {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -797,6 +875,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -805,6 +884,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -832,24 +912,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       "should be empty when created" in {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         buf += 1
         "should contain 1" in {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           buf += 2
           "should contain 1 and 2" in {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             buf -= 2
             "should contain only 1 again" in {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -857,6 +941,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -865,6 +950,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -896,24 +982,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       "should be empty when created" in {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         buf += 1
         "should contain 1" in {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           buf += 2
           "should contain 1 and 2" in {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             buf -= 2
             "should contain only 1 again" in {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -921,6 +1011,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -929,6 +1020,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -961,24 +1053,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       "should be empty when created" in {
         buf should be (empty)
         buf += 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         buf += 1
         "should contain 1" in {
           buf should equal (Seq(1))
           buf += 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           buf += 2
           "should contain 1 and 2" in {
             buf should equal (Seq(1, 2))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             buf -= 2
             "should contain only 1 again" in {
               buf should equal (Seq(1))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -986,6 +1082,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               buf should equal (Seq(1, 2, 3))
               buf += 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -994,6 +1091,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             buf should equal (Seq(1, 88))
             buf += 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -1018,24 +1116,28 @@ class PathListBufferExamples extends PathSuiteExamples {
       "should be empty when created" in {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         vec :+= 1
         "should contain 1" in {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           vec :+= 2
           "should contain 1 and 2" in {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             vec = vec.init
             "should contain only 1 again" in {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -1043,6 +1145,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -1051,6 +1154,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -1074,32 +1178,38 @@ class PathListBufferExamples extends PathSuiteExamples {
       "A subject" - {
         "should first test" in {
           vec = Vector(1, 2, 3)
+          succeed
         }
         "should second test" in {
           vec ++= Vector(1, 2, 3)
+          succeed
         }
       }
       "should be empty when created" in {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         vec :+= 1
         "should contain 1" in {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           vec :+= 2
           "should contain 1 and 2" in {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             vec = vec.init
             "should contain only 1 again" in {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -1107,6 +1217,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -1115,6 +1226,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -1138,34 +1250,40 @@ class PathListBufferExamples extends PathSuiteExamples {
       "A subject" - {
         "should first test" in {
           vec = Vector(1, 2, 3)
+          succeed
         }
       }
       "Another subject" - {
         "should second test" in {
           vec ++= Vector(1, 2, 3)
+          succeed
         }
       }
       "should be empty when created" in {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         vec :+= 1
         "should contain 1" in {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           vec :+= 2
           "should contain 1 and 2" in {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             vec = vec.init
             "should contain only 1 again" in {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -1173,6 +1291,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -1181,6 +1300,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -1205,33 +1325,39 @@ class PathListBufferExamples extends PathSuiteExamples {
         "when created" - {
           "should first test" in {
             vec = Vector(1, 2, 3)
+            succeed
           }
           "should second test" in {
             vec ++= Vector(1, 2, 3)
+            succeed
           }
         }
       }
       "should be empty when created" in {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         vec :+= 1
         "should contain 1" in {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           vec :+= 2
           "should contain 1 and 2" in {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             vec = vec.init
             "should contain only 1 again" in {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -1239,6 +1365,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -1247,6 +1374,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -1271,6 +1399,7 @@ class PathListBufferExamples extends PathSuiteExamples {
         "when created" - {
           "should first test" in {
             vec = Vector(1, 2, 3)
+            succeed
           }
         }
       }
@@ -1278,30 +1407,35 @@ class PathListBufferExamples extends PathSuiteExamples {
         "when created" - {
           "should second test" in {
             vec ++= Vector(1, 2, 3)
+            succeed
           }
         }
       }
       "should be empty when created" in {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         vec :+= 1
         "should contain 1" in {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           vec :+= 2
           "should contain 1 and 2" in {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             vec = vec.init
             "should contain only 1 again" in {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -1309,6 +1443,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -1317,6 +1452,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }
@@ -1341,33 +1477,39 @@ class PathListBufferExamples extends PathSuiteExamples {
         "when created" - {
           "should first test" in {
             vec = Vector(1, 2, 3)
+            succeed
           }
         }
         "should second test" in {
           vec ++= Vector(1, 2, 3)
+          succeed
         }
       }
       "should be empty when created" in {
         vec should be (empty)
         vec :+= 99 // Mutate to make sure no other test sees this
+        succeed
       }
       "when 1 is appended" - {
         vec :+= 1
         "should contain 1" in {
           vec should equal (Seq(1))
           vec :+= 99 // Mutate to make sure no other test sees this
+          succeed
         }
         "when 2 is appended" - {
           vec :+= 2
           "should contain 1 and 2" in {
             vec should equal (Seq(1, 2))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
           "when 2 is removed" - {
             vec = vec.init
             "should contain only 1 again" in {
               vec should equal (Seq(1))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
           "when 3 is appended" - { // This describe should not see the removal of 2 done in earlier sibling describe
@@ -1375,6 +1517,7 @@ class PathListBufferExamples extends PathSuiteExamples {
             "should contain 1, 2, and 3" in {
               vec should equal (Seq(1, 2, 3))
               vec :+= 99 // Mutate to make sure no other test sees this
+              succeed
             }
           }
         }
@@ -1383,6 +1526,7 @@ class PathListBufferExamples extends PathSuiteExamples {
           "should contain 1 and 88" in {
             vec should equal (Seq(1, 88))
             vec :+= 99 // Mutate to make sure no other test sees this
+            succeed
           }
         }
       }

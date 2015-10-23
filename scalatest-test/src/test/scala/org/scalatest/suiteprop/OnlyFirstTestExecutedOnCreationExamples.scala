@@ -95,8 +95,8 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
   class PathFunSpecExample(val counts: Counts) extends path.FunSpec with Services {
     import counts._
     instanceCount += 1
-    it("first test") { firstTestCount += 1 }
-    it("second test") { secondTestCount += 1 }
+    it("first test") { firstTestCount += 1; succeed }
+    it("second test") { secondTestCount += 1; succeed }
     override def newInstance = new PathFunSpecExample(counts)
   }
 
@@ -104,8 +104,8 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     import counts._
     instanceCount += 1
     describe("A subject") {
-      it("should first test") { firstTestCount += 1 }
-      it("should second test") { secondTestCount += 1 }
+      it("should first test") { firstTestCount += 1; succeed }
+      it("should second test") { secondTestCount += 1; succeed }
     }
     override def newInstance = new NestedPathFunSpecExample(counts)
   }
@@ -114,10 +114,10 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     import counts._
     instanceCount += 1
     describe("A subject") {
-      it("should first test") { firstTestCount += 1 }
+      it("should first test") { firstTestCount += 1; succeed }
     }
     describe("Another subject") {
-      it("should second test") { secondTestCount += 1 }
+      it("should second test") { secondTestCount += 1; succeed }
     }
     override def newInstance = new SiblingNestedPathFunSpecExample(counts)
   }
@@ -127,8 +127,8 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     instanceCount += 1
     describe("A subject") {
       describe("when created") {
-        it("should first test") { firstTestCount += 1 }
-        it("should second test") { secondTestCount += 1 }
+        it("should first test") { firstTestCount += 1; succeed }
+        it("should second test") { secondTestCount += 1; succeed }
       }
     }
     override def newInstance = new DeeplyNestedPathFunSpecExample(counts)
@@ -139,12 +139,12 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     instanceCount += 1
     describe("A subject") {
       describe("when created") {
-        it("should first test") { firstTestCount += 1 }
+        it("should first test") { firstTestCount += 1; succeed }
       }
     }
     describe("Another subject") {
       describe("when created") {
-        it("should second test") { secondTestCount += 1 }
+        it("should second test") { secondTestCount += 1; succeed }
       }
     }
     override def newInstance = new SiblingDeeplyNestedPathFunSpecExample(counts)
@@ -155,9 +155,9 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     instanceCount += 1
     describe("A subject") {
       describe("when created") {
-        it("should first test") { firstTestCount += 1 }
+        it("should first test") { firstTestCount += 1; succeed }
       }
-      it("should second test") { secondTestCount += 1 }
+      it("should second test") { secondTestCount += 1; succeed }
     }
     override def newInstance = new AsymetricalDeeplyNestedPathFunSpecExample(counts)
   }
@@ -197,7 +197,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     "A subject" - {
     }
     "Another subject" - {
-      "first test" in { firstTestCount += 1 }
+      "first test" in { firstTestCount += 1; succeed }
     }
     override def newInstance = new OneTestSiblingEmptyNestedPathFreeSpecExample(counts)
     override val expectedTotalTestsCount = 1
@@ -211,7 +211,7 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     }
     "Another subject" - {
       "when created" - {
-        "first test" in { firstTestCount += 1 }
+        "first test" in { firstTestCount += 1; succeed }
       }
     }
     override def newInstance = new OneTestSiblingEmptyDeeplyNestedPathFreeSpecExample(counts)
@@ -222,8 +222,8 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
   class PathFreeSpecExample(val counts: Counts) extends path.FreeSpec with Services {
     import counts._
     instanceCount += 1
-    "first test" in { firstTestCount += 1 }
-    "second test" in { secondTestCount += 1 }
+    "first test" in { firstTestCount += 1; succeed }
+    "second test" in { secondTestCount += 1; succeed }
     override def newInstance = new PathFreeSpecExample(counts)
   }
 
@@ -231,8 +231,8 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     import counts._
     instanceCount += 1
     "A subject" - {
-      "should first test" in { firstTestCount += 1 }
-      "should second test" in { secondTestCount += 1 }
+      "should first test" in { firstTestCount += 1; succeed }
+      "should second test" in { secondTestCount += 1; succeed }
     }
     override def newInstance = new NestedPathFreeSpecExample(counts)
   }
@@ -241,10 +241,10 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     import counts._
     instanceCount += 1
     "A subject" - {
-      "should first test" in { firstTestCount += 1 }
+      "should first test" in { firstTestCount += 1; succeed }
     }
     "Another subject" - {
-      "should second test" in { secondTestCount += 1 }
+      "should second test" in { secondTestCount += 1; succeed }
     }
     override def newInstance = new SiblingNestedPathFreeSpecExample(counts)
   }
@@ -254,8 +254,8 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     instanceCount += 1
     "A subject" - {
       "when created" - {
-        "should first test" in { firstTestCount += 1 }
-        "should second test" in { secondTestCount += 1 }
+        "should first test" in { firstTestCount += 1; succeed }
+        "should second test" in { secondTestCount += 1; succeed }
       }
     }
     override def newInstance = new DeeplyNestedPathFreeSpecExample(counts)
@@ -266,12 +266,12 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     instanceCount += 1
     "A subject" - {
       "when created" - {
-        "should first test" in { firstTestCount += 1 }
+        "should first test" in { firstTestCount += 1; succeed }
       }
     }
     "Another subject" - {
       "when created" - {
-        "should second test" in { secondTestCount += 1 }
+        "should second test" in { secondTestCount += 1; succeed }
       }
     }
     override def newInstance = new SiblingDeeplyNestedPathFreeSpecExample(counts)
@@ -282,9 +282,9 @@ class OnlyFirstTestExecutedOnCreationExamples extends PathSuiteExamples {
     instanceCount += 1
     "A subject" - {
       "when created" - {
-        "should first test" in { firstTestCount += 1 }
+        "should first test" in { firstTestCount += 1; succeed }
       }
-      "should second test" in { secondTestCount += 1 }
+      "should second test" in { secondTestCount += 1; succeed }
     }
     override def newInstance = new AsymetricalDeeplyNestedPathFreeSpecExample(counts)
   }

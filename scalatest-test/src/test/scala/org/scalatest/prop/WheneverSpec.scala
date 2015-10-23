@@ -33,10 +33,10 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
       describe("when the Boolean condition is true") {
         ignore("should, under Compatibility, either return Succeeded or throw TFE") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
           import Expectations._
-          val res1 = whenever (true) { expect(1 == 1) }
+          val res1 = whenever (true) { expect(1 == 1); succeed }
           assert(res1 == AssertionValue)
           assertThrows[TestFailedException] {
-            whenever (true) { expect(1 == 2) }
+            whenever (true) { expect(1 == 2); succeed }
           }
         }
       }
@@ -44,10 +44,10 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
         it("should throw DiscardedEvaluationException") {
           import Expectations._
           assertThrows[DiscardedEvaluationException] {
-            whenever (false) { expect(1 == 1) }
+            whenever (false) { expect(1 == 1); succeed }
           }
           assertThrows[DiscardedEvaluationException] {
-            whenever (false) { expect(1 == 2) }
+            whenever (false) { expect(1 == 2); succeed }
           }
         }
       }
@@ -60,13 +60,13 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           assertThrows[TestFailedException] {
             whenever (true) { assert(1 == 2) }
           }
-          val res2 = whenever (true) { 1 }
+          val res2 = whenever (true) { 1; succeed }
           assert(res2 == AssertionValue)
-          val res3 = whenever (true) { () }
+          val res3 = whenever (true) { (); succeed }
           assert(res3 == AssertionValue)
           // SKIP-SCALATESTJS-START
           assertThrows[StringIndexOutOfBoundsException] {
-            whenever (true) { "hi".charAt(-1) }
+            whenever (true) { "hi".charAt(-1); succeed }
           }
           // SKIP-SCALATESTJS-END
         }
@@ -80,10 +80,10 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
             whenever (false) { assert(1 == 2) }
           }
           assertThrows[DiscardedEvaluationException] {
-            whenever (false) { 1 }
+            whenever (false) { 1; succeed }
           }
           assertThrows[DiscardedEvaluationException] {
-            whenever (false) { () }
+            whenever (false) { (); succeed }
           }
         }
       }

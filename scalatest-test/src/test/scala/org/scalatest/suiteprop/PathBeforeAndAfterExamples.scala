@@ -95,7 +95,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     middle += 1
     describe("Another subject") {
       before01 += 1
-      it("first test") { initialInstance.get.firstTestCounts = counts.copy() }
+      it("first test") { initialInstance.get.firstTestCounts = counts.copy(); succeed }
       after01 += 1
     }
     after0 += 1
@@ -116,7 +116,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before01 += 1
       describe("when created") {
         before010 += 1
-        it("first test") { initialInstance.get.firstTestCounts = counts.copy() }
+        it("first test") { initialInstance.get.firstTestCounts = counts.copy(); succeed }
         after010 += 1
       }
       after01 += 1
@@ -131,9 +131,9 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
   class PathFunSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FunSpec with Services {
     import counts._
     before0 += 1
-    it("first test") { firstTestCounts = counts.copy() }
+    it("first test") { firstTestCounts = counts.copy(); succeed }
     middle += 1
-    it("second test") { initialInstance.get.secondTestCounts = counts.copy() }
+    it("second test") { initialInstance.get.secondTestCounts = counts.copy(); succeed }
     after0 += 1
     override def newInstance = new PathFunSpecExample(counts, Some(this))
     val expectedFirstTestCounts = Counts(before0 = 1)
@@ -146,9 +146,9 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     before0 += 1
     describe("A subject") {
       before00 += 1
-      it("should first test") { firstTestCounts = counts.copy() }
+      it("should first test") { firstTestCounts = counts.copy(); succeed }
       middle += 1
-      it("should second test") { initialInstance.get.secondTestCounts = counts.copy() }
+      it("should second test") { initialInstance.get.secondTestCounts = counts.copy(); succeed }
       after00 += 1
     }
     after0 += 1
@@ -163,13 +163,13 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     before0 += 1
     describe("A subject") {
       before00 += 1
-      it("should first test") { firstTestCounts = counts.copy() }
+      it("should first test") { firstTestCounts = counts.copy(); succeed }
       after00 += 1
     }
     middle += 1
     describe("Another subject") {
       before01 += 1
-      it("should second test") { initialInstance.get.secondTestCounts = counts.copy() }
+      it("should second test") { initialInstance.get.secondTestCounts = counts.copy(); succeed }
       after01 += 1
     }
     after0 += 1
@@ -186,9 +186,9 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before00 += 1
       describe("when created") {
         before000 += 1
-        it("should first test") { firstTestCounts = counts.copy() }
+        it("should first test") { firstTestCounts = counts.copy(); succeed }
         middle += 1
-        it("should second test") { initialInstance.get.secondTestCounts = counts.copy() }
+        it("should second test") { initialInstance.get.secondTestCounts = counts.copy(); succeed }
         after000 += 1
       }
       after00 += 1
@@ -207,7 +207,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before00 += 1
       describe("when created") {
         before000 += 1
-        it("should first test") { firstTestCounts = counts.copy() }
+        it("should first test") { firstTestCounts = counts.copy(); succeed }
         after000 += 1
       }
       after00 += 1
@@ -217,7 +217,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before01 += 1
       describe("when created") {
         before010 += 1
-        it("should second test") { initialInstance.get.secondTestCounts = counts.copy() }
+        it("should second test") { initialInstance.get.secondTestCounts = counts.copy(); succeed }
         after010 += 1
       }
       after01 += 1
@@ -236,11 +236,11 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before00 += 1
       describe("when created") {
         before000 += 1
-        it("should first test") { firstTestCounts = counts.copy() }
+        it("should first test") { firstTestCounts = counts.copy(); succeed }
         after000 += 1
       }
       middle += 1
-      it("should second test") { initialInstance.get.secondTestCounts = counts.copy() }
+      it("should second test") { initialInstance.get.secondTestCounts = counts.copy(); succeed }
       after00 += 1
     }
     after0 += 1
@@ -298,7 +298,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     middle += 1
     "Another subject" - {
       before01 += 1
-      "first test" in { initialInstance.get.firstTestCounts = counts.copy() }
+      "first test" in { initialInstance.get.firstTestCounts = counts.copy(); succeed }
       after01 += 1
     }
     after0 += 1
@@ -319,7 +319,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before01 += 1
       "when created" - {
         before010 += 1
-        "first test" in { initialInstance.get.firstTestCounts = counts.copy() }
+        "first test" in { initialInstance.get.firstTestCounts = counts.copy(); succeed }
         after010 += 1
       }
       after01 += 1
@@ -334,9 +334,9 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
   class PathFreeSpecExample(val counts: Counts, initialInstance: Option[Services] = None) extends path.FreeSpec with Services {
     import counts._
     before0 += 1
-    "first test" in { firstTestCounts = counts.copy() }
+    "first test" in { firstTestCounts = counts.copy(); succeed }
     middle += 1
-    "second test" in { initialInstance.get.secondTestCounts = counts.copy() }
+    "second test" in { initialInstance.get.secondTestCounts = counts.copy(); succeed }
     after0 += 1
     override def newInstance = new PathFreeSpecExample(counts, Some(this))
     val expectedFirstTestCounts = Counts(before0 = 1)
@@ -349,9 +349,9 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     before0 += 1
     "A subject" - {
       before00 += 1
-      "should first test" in { firstTestCounts = counts.copy() }
+      "should first test" in { firstTestCounts = counts.copy(); succeed }
       middle += 1
-      "should second test" in { initialInstance.get.secondTestCounts = counts.copy() }
+      "should second test" in { initialInstance.get.secondTestCounts = counts.copy(); succeed }
       after00 += 1
     }
     after0 += 1
@@ -366,13 +366,13 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
     before0 += 1
     "A subject" - {
       before00 += 1
-      "should first test" in { firstTestCounts = counts.copy() }
+      "should first test" in { firstTestCounts = counts.copy(); succeed }
       after00 += 1
     }
     middle += 1
     "Another subject" - {
       before01 += 1
-      "should second test" in { initialInstance.get.secondTestCounts = counts.copy() }
+      "should second test" in { initialInstance.get.secondTestCounts = counts.copy(); succeed }
       after01 += 1
     }
     after0 += 1
@@ -389,9 +389,9 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before00 += 1
       "when created" - {
         before000 += 1
-        "should first test" in { firstTestCounts = counts.copy() }
+        "should first test" in { firstTestCounts = counts.copy(); succeed }
         middle += 1
-        "should second test" in { initialInstance.get.secondTestCounts = counts.copy() }
+        "should second test" in { initialInstance.get.secondTestCounts = counts.copy(); succeed }
         after000 += 1
       }
       after00 += 1
@@ -410,7 +410,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before00 += 1
       "when created" - {
         before000 += 1
-        "should first test" in { firstTestCounts = counts.copy() }
+        "should first test" in { firstTestCounts = counts.copy(); succeed }
         after000 += 1
       }
       after00 += 1
@@ -420,7 +420,7 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before01 += 1 
       "when created" - {
         before010 += 1
-        "should second test" in { initialInstance.get.secondTestCounts = counts.copy() }
+        "should second test" in { initialInstance.get.secondTestCounts = counts.copy(); succeed }
         after010 += 1
       }
       after01 += 1
@@ -439,11 +439,11 @@ class PathBeforeAndAfterExamples extends PathSuiteExamples {
       before00 += 1
       "when created" - {
         before000 += 1
-        "should first test" in { firstTestCounts = counts.copy() }
+        "should first test" in { firstTestCounts = counts.copy(); succeed }
         after000 += 1
       }
       middle += 1
-      "should second test" in { initialInstance.get.secondTestCounts = counts.copy() }
+      "should second test" in { initialInstance.get.secondTestCounts = counts.copy(); succeed }
       after00 += 1
     }
     after0 += 1
