@@ -181,6 +181,7 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
+import org.scalatest.enablers.TableAsserting
 """
 
 val tableScaladocTemplate = """
@@ -312,7 +313,7 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    *
    * @param fun the property check function to apply to each row of this <code>TableFor$n$</code>
    */
-  def apply(fun: ($alphaUpper$) => Assertion): Assertion = {
+  def apply[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
     for ((($alphaLower$), idx) <- rows.zipWithIndex) {
       try {
         fun($alphaLower$)
@@ -351,7 +352,7 @@ $namesAndValues$
           )
       }
     }
-    Succeeded
+    asserting.Singleton
   }
 
   /**
@@ -512,6 +513,7 @@ val propertyCheckPreamble = """
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
 import scala.annotation.tailrec
+import org.scalatest.enablers.TableAsserting
 
 /**
  * Trait containing methods that faciliate property checks against tables of data.
@@ -892,7 +894,7 @@ val propertyCheckForAllTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forAll[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Assertion): Assertion = {
+  def forAll[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
     table(fun)
   }
 """
@@ -906,10 +908,10 @@ val propertyCheckForEveryPreamble = """
                           failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
 
 
-  private[scalatest] def runAndCollectResult[T <: Product](namesOfArgs: List[String], rows: Seq[T], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Assertion) = {
+  private[scalatest] def runAndCollectResult[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION): ForResult[T] = {
     import InspectorsHelper.{shouldPropagate, indentErrorMessages}
     @tailrec
-    def innerRunAndCollectResult[T <: Product](itr: Iterator[T], result: ForResult[T], index: Int)(fun: T => Assertion): ForResult[T] = {
+    def innerRunAndCollectResult[T <: Product](itr: Iterator[T], result: ForResult[T], index: Int)(fun: T => ASSERTION): ForResult[T] = {
       if (itr.hasNext) {
         val head = itr.next
         val newResult =
@@ -962,7 +964,7 @@ val propertyCheckForEveryPreamble = """
     innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
   }
 
-  private[scalatest] def doForEvery[T <: Product](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Assertion): Assertion = {
+  private[scalatest] def doForEvery[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
     import InspectorsHelper.indentErrorMessages
     val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
     val messageList = result.failedElements.map(_._3)
@@ -972,7 +974,7 @@ val propertyCheckForEveryPreamble = """
         messageList.headOption,
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
-    else Succeeded
+    else asserting.Singleton
   }
 
 """
@@ -992,8 +994,8 @@ val propertyCheckForEveryTemplateFor1 = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forEvery[A](table: TableFor1[A])(fun: (A) => Assertion): Assertion = {
-    doForEvery[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3){a => fun(a._1)}
+  def forEvery[A, ASSERTION](table: TableFor1[A])(fun: (A) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+    doForEvery[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3){a => fun(a._1)}
   }
 
 """
@@ -1012,15 +1014,15 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forEvery[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Assertion): Assertion = {
-    doForEvery[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3)(fun.tupled)
+  def forEvery[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+    doForEvery[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3)(fun.tupled)
   }
 """
 
 
   val propertyCheckExistsPreamble = """
 
-  private[scalatest] def doExists[T <: Product](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => Assertion): Assertion = {
+  private[scalatest] def doExists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
     import InspectorsHelper.indentErrorMessages
     val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
     if (result.passedCount == 0) {
@@ -1031,7 +1033,7 @@ val propertyCheckForEveryTemplate = """
         getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
       )
     }
-    else Succeeded
+    else asserting.Singleton
   }
 
                                       """
@@ -1045,8 +1047,8 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def exists[A](table: TableFor1[A])(fun: (A) => Assertion): Assertion = {
-    doExists[Tuple1[A]](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+  def exists[A, ASSERTION](table: TableFor1[A])(fun: (A) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+    doExists[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
   }
 
                                           """
@@ -1059,8 +1061,8 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def exists[$alphaUpper$](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => Assertion): Assertion = {
-    doExists[($alphaUpper$)](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
+  def exists[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+    doExists[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
   }
                                       """
 
