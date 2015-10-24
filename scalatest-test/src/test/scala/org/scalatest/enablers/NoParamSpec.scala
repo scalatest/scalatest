@@ -97,7 +97,7 @@ class NoParamSpec extends FunSpec with Matchers with LoneElement {
         MyStringSeq("hi", "ho").loneElement
       }
       ConfigMap("hi" -> 1).loneElement should be ("hi" -> 1)
-      intercept[TestFailedException] {
+      assertThrows[TestFailedException] {
         ConfigMap("hi" -> 1, "ho" -> 2).loneElement
       }
     }

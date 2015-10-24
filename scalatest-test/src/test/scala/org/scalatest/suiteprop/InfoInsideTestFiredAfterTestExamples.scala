@@ -70,18 +70,21 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class FunSuiteExample extends FunSuite with Services {
     test(theTestName) {
       info(msg)
+      succeed
     }
   }
 
   class FixtureFunSuiteExample extends StringFixtureFunSuite with Services {
     test(theTestName) { s =>
       info(msg)
+      succeed
     }
   }
 
   class FunSpecExample extends FunSpec with Services {
     it(theTestName) {
       info(msg)
+      succeed
     }
   }
 
@@ -89,6 +92,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     describe("A subject") {
       it("should test name") {
         info(msg)
+        succeed
       }
     }
   }
@@ -98,6 +102,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       describe("when created") {
         it("should test name") {
           info(msg)
+          succeed
         }
       }
     }
@@ -106,6 +111,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class FixtureFunSpecExample extends StringFixtureFunSpec with Services {
     it(theTestName) { s =>
       info(msg)
+      succeed
     }
   }
   
@@ -113,6 +119,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     describe("A subject") {
       it("should test name") { s =>
         info(msg)
+        succeed
       }
     }
   }
@@ -122,6 +129,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       describe("when created") {
         it("should test name") { s =>
           info(msg)
+          succeed
         }
       }
     }
@@ -130,6 +138,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class PathFunSpecExample extends path.FunSpec with Services {
     it(theTestName) {
       info(msg)
+      succeed
     }
     //SCALATESTJS-ONLY override def newInstance = new PathFunSpecExample
   }
@@ -138,6 +147,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     describe("A subject") {
       it("should test name") {
         info(msg)
+        succeed
       }
     }
     //SCALATESTJS-ONLY override def newInstance = new NestedPathFunSpecExample
@@ -148,6 +158,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       describe("when created") {
         it("should test name") {
           info(msg)
+          succeed
         }
       }
     }
@@ -157,6 +168,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class WordSpecExample extends WordSpec with Services {
     theTestName in {
       info(msg)
+      succeed
     }
   }
 
@@ -164,6 +176,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" should {
       "test name" in {
         info(msg)
+        succeed
       }
     }
   }
@@ -173,6 +186,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "created" should {
         "test name" in {
           info(msg)
+          succeed
         }
       }
     }
@@ -181,6 +195,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class FixtureWordSpecExample extends StringFixtureWordSpec with Services {
     theTestName in { s =>
       info(msg)
+      succeed
     }
   }
 
@@ -188,6 +203,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" should {
       "test name" in { s =>
         info(msg)
+        succeed
       }
     }
   }
@@ -197,6 +213,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "created" should {
         "test name" in { s =>
           info(msg)
+          succeed
         }
       }
     }
@@ -206,6 +223,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" must {
       "test name" in {
         info(msg)
+        succeed
       }
     }
   }
@@ -215,6 +233,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "created" must {
         "test name" in {
           info(msg)
+          succeed
         }
       }
     }
@@ -224,6 +243,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" must {
       "test name" in { s =>
         info(msg)
+        succeed
       }
     }
   }
@@ -233,6 +253,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "created" must {
         "test name" in { s =>
           info(msg)
+          succeed
         }
       }
     }
@@ -242,6 +263,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" can {
       "test name" in {
         info(msg)
+        succeed
       }
     }
   }
@@ -251,6 +273,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "created" can {
         "test name" in {
           info(msg)
+          succeed
         }
       }
     }
@@ -260,6 +283,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" can {
       "test name" in { s =>
         info(msg)
+        succeed
       }
     }
   }
@@ -269,6 +293,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "created" can {
         "test name" in { s =>
           info(msg)
+          succeed
         }
       }
     }
@@ -277,6 +302,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class FlatSpecExample extends FlatSpec with Services {
     it should "test name" in {
       info(msg)
+      succeed
     }
     override val theTestName = "should test name"
   }
@@ -285,17 +311,20 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     behavior of "A subject"
     it should "test name" in {
       info(msg)
+      succeed
     }
   }
   class ShorthandSubjectFlatSpecExample extends FlatSpec with NestedTestName {
     "A subject" should "test name" in {
       info(msg)
+      succeed
     }
   }
 
   class FixtureFlatSpecExample extends StringFixtureFlatSpec with Services {
     it should "test name" in { s =>
       info(msg)
+      succeed
     }
     override val theTestName = "should test name"
   }
@@ -304,18 +333,21 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     behavior of "A subject"
     it should "test name" in { s =>
       info(msg)
+      succeed
     }
   }
   
   class ShorthandSubjectFixtureFlatSpecExample extends StringFixtureFlatSpec with NestedTestName {
     "A subject" should "test name" in { s =>
       info(msg)
+      succeed
     }
   }
 
   class FlatSpecWithMustExample extends FlatSpec with Services {
     it must "test name" in {
       info(msg)
+      succeed
     }
     override val theTestName = "must test name"
   }
@@ -324,17 +356,20 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     behavior of "A subject"
     it must "test name" in {
       info(msg)
+      succeed
     }
   }
   class ShorthandSubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNameWithMust {
     "A subject" must "test name" in {
       info(msg)
+      succeed
     }
   }
 
   class FixtureFlatSpecWithMustExample extends StringFixtureFlatSpec with Services {
     it must "test name" in { s =>
       info(msg)
+      succeed
     }
     override val theTestName = "must test name"
   }
@@ -343,18 +378,21 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     behavior of "A subject"
     it must "test name" in { s =>
       info(msg)
+      succeed
     }
   }
   
   class ShorthandSubjectFixtureFlatSpecWithMustExample extends StringFixtureFlatSpec with NestedTestNameWithMust {
     "A subject" must "test name" in { s =>
       info(msg)
+      succeed
     }
   }
 
   class FlatSpecWithCanExample extends FlatSpec with Services {
     it can "test name" in {
       info(msg)
+      succeed
     }
     override val theTestName = "can test name"
   }
@@ -363,17 +401,20 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     behavior of "A subject"
     it can "test name" in {
       info(msg)
+      succeed
     }
   }
   class ShorthandSubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNameWithCan {
     "A subject" can "test name" in {
       info(msg)
+      succeed
     }
   }
 
   class FixtureFlatSpecWithCanExample extends StringFixtureFlatSpec with Services {
     it can "test name" in { s =>
       info(msg)
+      succeed
     }
     override val theTestName = "can test name"
   }
@@ -382,18 +423,21 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     behavior of "A subject"
     it can "test name" in { s =>
       info(msg)
+      succeed
     }
   }
   
   class ShorthandSubjectFixtureFlatSpecWithCanExample extends StringFixtureFlatSpec with NestedTestNameWithCan {
     "A subject" can "test name" in { s =>
       info(msg)
+      succeed
     }
   }
 
   class FreeSpecExample extends FreeSpec with Services {
     "test name" in {
       info(msg)
+      succeed
     }
   }
 
@@ -401,6 +445,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" - {
       "should test name" in {
         info(msg)
+        succeed
       }
     }
   }
@@ -410,6 +455,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "when created" - {
         "should test name" in {
           info(msg)
+          succeed
         }
       }
     }
@@ -418,6 +464,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class FixtureFreeSpecExample extends StringFixtureFreeSpec with Services {
     "test name" in { s =>
       info(msg)
+      succeed
     }
   }
 
@@ -425,6 +472,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" - {
       "should test name" in { s =>
         info(msg)
+        succeed
       }
     }
   }
@@ -434,6 +482,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "when created" - {
         "should test name" in { s =>
           info(msg)
+          succeed
         }
       }
     }
@@ -442,6 +491,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class PathFreeSpecExample extends path.FreeSpec with Services {
     "test name" in {
       info(msg)
+      succeed
     }
     //SCALATESTJS-ONLY override def newInstance = new PathFreeSpecExample
   }
@@ -450,6 +500,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     "A subject" - {
       "should test name" in {
         info(msg)
+        succeed
       }
     }
     //SCALATESTJS-ONLY override def newInstance = new NestedPathFreeSpecExample
@@ -460,6 +511,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
       "when created" - {
         "should test name" in {
           info(msg)
+          succeed
         }
       }
     }
@@ -469,6 +521,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class FeatureSpecExample extends FeatureSpec with Services {
     scenario("test name") {
       info(msg)
+      succeed
     }
     override val theTestName = "Scenario: test name"
   }
@@ -477,6 +530,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     feature("A feature") {
       scenario("test name") {
         info(msg)
+        succeed
       }
     }
     override val theTestName = "Feature: A feature Scenario: test name"
@@ -485,6 +539,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class FixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
     scenario("test name") { s =>
       info(msg)
+      succeed
     }
     override val theTestName = "Scenario: test name"
   }
@@ -493,6 +548,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
     feature("A feature") {
       scenario("test name") { s =>
         info(msg)
+        succeed
       }
     }
     override val theTestName = "Feature: A feature Scenario: test name"
@@ -501,12 +557,14 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   class PropSpecExample extends PropSpec with Services {
     property(theTestName) {
       info(msg)
+      succeed
     }
   }
 
   class FixturePropSpecExample extends StringFixturePropSpec with Services {
     property(theTestName) { s =>
       info(msg)
+      succeed
     }
   }
 

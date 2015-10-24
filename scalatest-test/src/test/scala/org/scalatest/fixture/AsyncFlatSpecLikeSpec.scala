@@ -111,6 +111,7 @@ class AsyncFlatSpecLikeSpec extends org.scalatest.FunSpec {
              SleepHelper.sleep(30)
              assert(count == 0)
              count = 1
+             succeed
            }
          }
 
@@ -119,6 +120,7 @@ class AsyncFlatSpecLikeSpec extends org.scalatest.FunSpec {
              assert(count == 1)
              SleepHelper.sleep(50)
              count = 2
+             succeed
            }
          }
 

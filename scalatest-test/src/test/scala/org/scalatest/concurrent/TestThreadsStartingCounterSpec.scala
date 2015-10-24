@@ -32,6 +32,7 @@ class TestThreadsStartingCounterSpec extends fixture.WordSpec with Matchers with
         // Is it possible that this second thread goes before the first one, so it doesn't know. Yes, because this is in a thread. Race condition.
         // The race condition was in the actual class. I fixed it, and so far this test hasn't passed. Makes one nervous to make a change like that. - bv 4/8/2011
       }
+      succeed
     }
     "go right ahead if the same number of threads have called increment and decrement" in { conductor => import conductor._
       val counter = new TestThreadsStartingCounter
@@ -45,6 +46,7 @@ class TestThreadsStartingCounterSpec extends fixture.WordSpec with Matchers with
         counter.waitUntilAllTestThreadsHaveStarted()
         beat should be (1)
       }
+      succeed
     }
   }
 }

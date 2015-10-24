@@ -220,6 +220,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
       waitForBeat(1)
       t1.getState should (be (WAITING) or be (BLOCKED) or be (RUNNABLE))
     }
+    succeed
   }
 
   // On Mac, failed with RUNNABLE was not equal to TERMINATED
@@ -233,6 +234,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
       t1.getState should (be (TERMINATED) or be (RUNNABLE))
       t2.getState should (be (TERMINATED) or be (RUNNABLE))
     }
+    succeed
   }
 
   test("two thread calls return threads that both are in the same thread group") { conductor => import conductor._
@@ -244,6 +246,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
       waitForBeat(1)
       t1.getThreadGroup should be (t2.getThreadGroup)
     }
+    succeed
   }
 
   test("if a thread call is nested inside another thread call, both threads are in the same thread group") { conductor => import conductor._
@@ -252,6 +255,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
       waitForBeat(1)
       t2.getThreadGroup should be (Thread.currentThread.getThreadGroup)
     }
+    succeed
   }
 
   test("whenFinished can only be called by thread that created Conductor.") { conductor => import conductor._
@@ -261,6 +265,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
       }.getMessage should be ("whenFinished can only be called by the thread that created Conductor.")
     }
     whenFinished {1 should be (1)}
+    succeed
   }
 
   // TODO: I don't understand this test. Josh, can you clarify?
@@ -269,6 +274,7 @@ class ConductorFixtureSuite extends fixture.FunSuite with ConductorFixture with 
     val anotherConductor = new Conductor
     val t = anotherConductor.thread{ 1 should be (1) }
     thread{ t.getState should (be (WAITING) or be (RUNNABLE)) } // Got RUNNABLE. Decided to accept it.
+    succeed
   }
 
   test("nested thread calls result in a running thread that is allowed to execute immediately") (pending)

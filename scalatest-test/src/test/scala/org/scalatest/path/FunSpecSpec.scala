@@ -39,8 +39,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     "should return the test names in registration order from testNames" in {
 
       class AFunSpec extends PathFunSpec {
-        it("should test this") {}
-        it("should test that") {}
+        it("should test this") { succeed }
+        it("should test that") { succeed }
         override def newInstance = new AFunSpec
       }
       val a = new AFunSpec
@@ -59,8 +59,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       }
 
       class CFunSpec extends PathFunSpec {
-        it("should test that") {}
-        it("should test this") {}
+        it("should test that") { succeed }
+        it("should test this") { succeed }
         override def newInstance = new CFunSpec
       }
       val c = new CFunSpec
@@ -71,8 +71,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       class DFunSpec extends PathFunSpec {
         describe("A Tester") {
-          it("should test that") {}
-          it("should test this") {}
+          it("should test that") { succeed }
+          it("should test this") { succeed }
         }
         override def newInstance = new DFunSpec
       }
@@ -84,8 +84,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       class EFunSpec extends PathFunSpec {
         describe("A Tester") {
-          it("should test this") {}
-          it("should test that") {}
+          it("should test this") { succeed }
+          it("should test that") { succeed }
         }
         override def newInstance = new EFunSpec
       }
@@ -100,32 +100,32 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       
       intercept[DuplicateTestNameException] {
         class AFunSpec extends PathFunSpec {
-          it("should test this") {}
-          it("should test this") {}
+          it("should test this") { succeed }
+          it("should test this") { succeed }
           override def newInstance = new AFunSpec
         }
         (new AFunSpec).tags // Must call a method to get it to attempt to register the second test
       }
       intercept[DuplicateTestNameException] {
         class AFunSpec extends PathFunSpec {
-          it("should test this") {}
-          ignore("should test this") {}
+          it("should test this") { succeed }
+          ignore("should test this") { succeed }
           override def newInstance = new AFunSpec
         }
         (new AFunSpec).tags
       }
       intercept[DuplicateTestNameException] {
         class AFunSpec extends PathFunSpec {
-          ignore("should test this") {}
-          ignore("should test this") {}
+          ignore("should test this") { succeed }
+          ignore("should test this") { succeed }
           override def newInstance = new AFunSpec
         }
         (new AFunSpec).tags
       }
       intercept[DuplicateTestNameException] {
         class AFunSpec extends PathFunSpec {
-          ignore("should test this") {}
-          it("should test this") {}
+          ignore("should test this") { succeed }
+          it("should test this") { succeed }
           override def newInstance = new AFunSpec
         }
         (new AFunSpec).tags
@@ -143,6 +143,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         val testName = "test name"
         it(testName) {
           info(msg)
+          succeed
         }
         override def newInstance = new InfoInsideTestSpec
       }
@@ -160,7 +161,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         val msg = "hi there, dude"
         val testName = "test name"
         info(msg)
-        it(testName) {}
+        it(testName) { succeed }
       }
       "should, when the info appears in the body before a test, report the info before the test" in {
         val spec = new InfoBeforeTestSpec
@@ -174,7 +175,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
         val testName = "test name"
         class MySpec extends PathFunSpec {
           //SCALATESTJS-ONLY override def newInstance = new MySpec
-          it(testName) {}
+          it(testName) { succeed }
           info(msg)
         }
         val (infoProvidedIndex, testStartingIndex, testSucceededIndex) =
@@ -190,6 +191,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
           }
           it("howdy also") {
             callInfo() // This should work fine
+            succeed
           }
           override def newInstance = new MySpec
         }
@@ -218,6 +220,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
           it("should blow up") {
             describe("in the wrong place, at the wrong time") {
             }
+            succeed
           }
           override def newInstance = new MySpec
         }
@@ -234,6 +237,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
                 assert(1 === 1)
               }
             }
+            succeed
           }
           override def newInstance = new MySpec
         }
@@ -248,6 +252,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
             it("should never run") {
               assert(1 === 1)
             }
+            succeed
           }
           override def newInstance = new MySpec
         }
@@ -262,6 +267,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
             it("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
             }
+            succeed
           }
           override def newInstance = new MySpec
         }
@@ -278,6 +284,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
                 assert(1 === 1)
               }
             }
+            succeed
           }
           override def newInstance = new MySpec
         }
@@ -292,6 +299,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
             ignore("should never run") {
               assert(1 === 1)
             }
+            succeed
           }
           override def newInstance = new MySpec
         }
@@ -306,6 +314,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
             ignore("should never run", mytags.SlowAsMolasses) {
               assert(1 === 1)
             }
+            succeed
           }
           override def newInstance = new MySpec
         }
@@ -318,7 +327,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     "should run tests registered via the 'it should behave like' syntax" in {
       trait SharedSpecTests { this: PathFunSpec =>
         def nonEmptyStack(s: String)(i: Int) {
-          it("should be that I am shared") {}
+          it("should be that I am shared") { succeed }
         }
       }
       class MySpec extends PathFunSpec with SharedSpecTests {
@@ -340,7 +349,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       // it
       class TestSpec1 extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec1
-        it("hi", null) {}
+        it("hi", null) { succeed }
       }
       intercept[NullArgumentException] {
         new TestSpec1
@@ -348,7 +357,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       class TestSpec2 extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec2
-        it("hi", mytags.SlowAsMolasses, null) {}
+        it("hi", mytags.SlowAsMolasses, null) { succeed }
       }
       val caught = intercept[NullArgumentException] {
         new TestSpec2
@@ -357,7 +366,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       class TestSpec3 extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec3
-        it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+        it("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
       }
       intercept[NullArgumentException] {
         new TestSpec3
@@ -366,7 +375,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       // ignore
       class TestSpec4 extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec4
-        ignore("hi", null) {}
+        ignore("hi", null) { succeed }
       }
       intercept[NullArgumentException] {
         new TestSpec4
@@ -374,7 +383,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       class TestSpec5 extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec5
-        ignore("hi", mytags.SlowAsMolasses, null) {}
+        ignore("hi", mytags.SlowAsMolasses, null) { succeed }
       }
       val caught2 = intercept[NullArgumentException] {
         new TestSpec5
@@ -383,7 +392,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       class TestSpec6 extends PathFunSpec {
         //SCALATESTJS-ONLY override def newInstance = new TestSpec6
-        ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) {}
+        ignore("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { succeed }
       }
       intercept[NullArgumentException] {
         new TestSpec6
@@ -393,8 +402,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     
     class TestWasCalledSuite(val counts: TestWasCalledCounts) extends PathFunSpec {
       def this() { this(TestWasCalledCounts(false, false)) }
-      it("should run this") { counts.theTestThisCalled = true }
-      it("should run that, maybe") { counts.theTestThatCalled = true }
+      it("should run this") { counts.theTestThisCalled = true; succeed }
+      it("should run that, maybe") { counts.theTestThatCalled = true; succeed }
       override def newInstance = new TestWasCalledSuite(counts)
     }
 
@@ -425,8 +434,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     "should report as ignored, and not run, tests marked ignored" in {
 
       class AFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
-        it("test this") { counts.theTestThisCalled = true }
-        it("test that") { counts.theTestThatCalled = true }
+        it("test this") { counts.theTestThisCalled = true; succeed }
+        it("test that") { counts.theTestThatCalled = true; succeed }
         override def newInstance = new AFunSpec(counts)
       }
       val a = new AFunSpec(TestWasCalledCounts(false, false))
@@ -438,8 +447,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(a.counts.theTestThatCalled)
 
       class BFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
-        ignore("test this") { counts.theTestThisCalled = true }
-        it("test that") { counts.theTestThatCalled = true }
+        ignore("test this") { counts.theTestThisCalled = true; succeed }
+        it("test that") { counts.theTestThatCalled = true; succeed }
         override def newInstance = new BFunSpec(counts)
       }
       val b = new BFunSpec(TestWasCalledCounts(false, false))
@@ -453,8 +462,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(b.counts.theTestThatCalled)
 
       class CFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
-        it("test this") { counts.theTestThisCalled = true }
-        ignore("test that") { counts.theTestThatCalled = true }
+        it("test this") { counts.theTestThisCalled = true; succeed }
+        ignore("test that") { counts.theTestThatCalled = true; succeed }
         override def newInstance = new CFunSpec(counts)
       }
       val c = new CFunSpec(TestWasCalledCounts(false, false))
@@ -470,8 +479,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       // The order I want is order of appearance in the file.
       // Will try and implement that tomorrow. Subtypes will be able to change the order.
       class DFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
-        ignore("test this") { counts.theTestThisCalled = true }
-        ignore("test that") { counts.theTestThatCalled = true }
+        ignore("test this") { counts.theTestThisCalled = true; succeed }
+        ignore("test that") { counts.theTestThatCalled = true; succeed }
         override def newInstance = new DFunSpec(counts)
       }
       val d = new DFunSpec(TestWasCalledCounts(false, false))
@@ -490,8 +499,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       // method and actually invoke it.
       class EFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
         def this() { this(TestWasCalledCounts(false, false)) }
-        ignore("test this") { counts.theTestThisCalled = true }
-        it("test that") { counts.theTestThatCalled = true }
+        ignore("test this") { counts.theTestThisCalled = true; succeed }
+        it("test that") { counts.theTestThatCalled = true; succeed }
         override def newInstance = new EFunSpec(counts)
       }
       val e = new EFunSpec
@@ -509,8 +518,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // Nothing is excluded
       class AFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
-        it("test this", mytags.SlowAsMolasses) { counts.theTestThisCalled = true }
-        it("test that") { counts.theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { counts.theTestThisCalled = true; succeed }
+        it("test that") { counts.theTestThatCalled = true; succeed }
         override def newInstance = new AFunSpec(counts)
       }
       val a = new AFunSpec(TestWasCalledCounts(false, false))
@@ -522,8 +531,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // SlowAsMolasses is included, one test should be excluded
       class BFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
-        it("test this", mytags.SlowAsMolasses) { counts.theTestThisCalled = true }
-        it("test that") { counts.theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { counts.theTestThisCalled = true; succeed }
+        it("test that") { counts.theTestThatCalled = true; succeed }
         override def newInstance = new BFunSpec(counts)
       }
       val b = new BFunSpec(TestWasCalledCounts(false, false))
@@ -537,8 +546,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // SlowAsMolasses is included, and both tests should be included
       class CFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
-        it("test this", mytags.SlowAsMolasses) { counts.theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
+        it("test this", mytags.SlowAsMolasses) { counts.theTestThisCalled = true; succeed }
+        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed }
         override def newInstance = new CFunSpec(counts)
       }
       val c = new CFunSpec(TestWasCalledCounts(false, false))
@@ -551,8 +560,8 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // SlowAsMolasses is included. both tests should be included but one ignored
       class DFunSpec(val counts: TestWasCalledCounts) extends PathFunSpec {
-        ignore("test this", mytags.SlowAsMolasses) { counts.theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
+        ignore("test this", mytags.SlowAsMolasses) { counts.theTestThisCalled = true; succeed }
+        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed }
         override def newInstance = new DFunSpec(counts)
       }
       val d = new DFunSpec(TestWasCalledCounts(false, false))
@@ -567,9 +576,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       case class ThreeCounts(var theTestThisCalled: Boolean, var theTestThatCalled: Boolean, var theTestTheOtherCalled: Boolean)
       // SlowAsMolasses included, FastAsLight excluded
       class EFunSpec(val counts: ThreeCounts) extends PathFunSpec {
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
-        it("test the other") { counts.theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true; succeed  }
+        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed  }
+        it("test the other") { counts.theTestTheOtherCalled = true; succeed  }
         override def newInstance = new EFunSpec(counts)
       }
       val e = new EFunSpec(ThreeCounts(false, false, false))
@@ -585,9 +594,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
       class FFunSpec(val counts: ThreeCounts) extends PathFunSpec {
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
-        it("test the other") { counts.theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true; succeed }
+        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed }
+        it("test the other") { counts.theTestTheOtherCalled = true; succeed }
         override def newInstance = new FFunSpec(counts)
       }
       val f = new FFunSpec(ThreeCounts(false, false, false))
@@ -603,9 +612,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // An Ignored test that was not included should not generate a TestIgnored event
       class GFunSpec(val counts: ThreeCounts) extends PathFunSpec {
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
-        ignore("test the other") { counts.theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true; succeed }
+        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed }
+        ignore("test the other") { counts.theTestTheOtherCalled = true; succeed }
         override def newInstance = new GFunSpec(counts)
       }
       val g = new GFunSpec(ThreeCounts(false, false, false))
@@ -621,9 +630,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // No tagsToInclude set, FastAsLight excluded
       class HFunSpec(val counts: ThreeCounts) extends PathFunSpec {
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
-        it("test the other") { counts.theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true; succeed }
+        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed }
+        it("test the other") { counts.theTestTheOtherCalled = true; succeed }
         override def newInstance = new HFunSpec(counts)
       }
       val h = new HFunSpec(ThreeCounts(false, false, false))
@@ -639,9 +648,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded
       class IFunSpec(val counts: ThreeCounts) extends PathFunSpec {
-        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true }
-        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
-        it("test the other") { counts.theTestTheOtherCalled = true }
+        it("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true; succeed }
+        it("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed }
+        it("test the other") { counts.theTestTheOtherCalled = true; succeed }
         override def newInstance = new IFunSpec(counts)
       }
       val i = new IFunSpec(ThreeCounts(false, false, false))
@@ -656,9 +665,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // No tagsToInclude set, mytags.SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
       class JFunSpec(val counts: ThreeCounts) extends PathFunSpec {
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true }
-        ignore("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
-        it("test the other") { counts.theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true; succeed }
+        ignore("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed }
+        it("test the other") { counts.theTestTheOtherCalled = true; succeed }
         override def newInstance = new JFunSpec(counts)
       }
       val j = new JFunSpec(ThreeCounts(false, false, false))
@@ -671,9 +680,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
       // Same as previous, except Ignore specifically mentioned in excludes set
       class KFunSpec(val counts: ThreeCounts) extends PathFunSpec {
-        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true }
-        ignore("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true }
-        ignore("test the other") { counts.theTestTheOtherCalled = true }
+        ignore("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { counts.theTestThisCalled = true; succeed }
+        ignore("test that", mytags.SlowAsMolasses) { counts.theTestThatCalled = true; succeed }
+        ignore("test the other") { counts.theTestTheOtherCalled = true; succeed }
         override def newInstance = new KFunSpec(counts)
       }
       val k = new KFunSpec(ThreeCounts(false, false, false))
@@ -688,24 +697,24 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
     "should return the correct test count from its expectedTestCount method" in {
 
       class AFunSpec extends PathFunSpec {
-        it("test this") {}
-        it("test that") {}
+        it("test this") { succeed }
+        it("test that") { succeed }
         override def newInstance = new AFunSpec
       }
       val a = new AFunSpec
       assert(a.expectedTestCount(Filter()) === 2)
 
       class BFunSpec extends PathFunSpec {
-        ignore("test this") {}
-        it("test that") {}
+        ignore("test this") { succeed }
+        it("test that") { succeed }
         override def newInstance = new BFunSpec
       }
       val b = new BFunSpec
       assert(b.expectedTestCount(Filter()) === 1)
 
       class CFunSpec extends PathFunSpec {
-        it("test this", mytags.FastAsLight) {}
-        it("test that") {}
+        it("test this", mytags.FastAsLight) { succeed }
+        it("test that") { succeed }
         override def newInstance = new CFunSpec
       }
       val c = new CFunSpec
@@ -713,9 +722,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
       class DFunSpec extends PathFunSpec {
-        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        it("test that", mytags.SlowAsMolasses) {}
-        it("test the other thing") {}
+        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        it("test that", mytags.SlowAsMolasses) { succeed }
+        it("test the other thing") { succeed }
         override def newInstance = new DFunSpec
       }
       val d = new DFunSpec
@@ -725,9 +734,9 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(d.expectedTestCount(Filter()) === 3)
 
       class EFunSpec extends PathFunSpec {
-        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) {}
-        it("test that", mytags.SlowAsMolasses) {}
-        ignore("test the other thing") {}
+        it("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { succeed }
+        it("test that", mytags.SlowAsMolasses) { succeed }
+        ignore("test the other thing") { succeed }
        // ignore("test the other thing") {}
         override def newInstance = new EFunSpec
       }
@@ -844,10 +853,12 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       class TestSpec extends PathFunSpec with Expectations {
         it("fail scenario") {
           expect(1 === 2)
+          succeed
         }
         describe("a feature") {
           it("nested fail scenario") {
             expect(1 === 2)
+            succeed
           }
         }
         override def newInstance = new TestSpec
@@ -893,6 +904,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
             it("nested scenario") {
               assert(1 === 2)
             }
+            succeed
           }
         }
         override def newInstance = new TestSpec
@@ -916,6 +928,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
             ignore("nested scenario") {
               assert(1 === 2)
             }
+            succeed
           }
         }
         override def newInstance = new TestSpec
@@ -939,6 +952,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
             they("nested scenario") {
               assert(1 === 2)
             }
+            succeed
           }
         }
         override def newInstance = new TestSpec
@@ -962,6 +976,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
             ignore("nested scenario") {
               assert(1 === 2)
             }
+            succeed
           }
         }
         override def newInstance = new TestSpec

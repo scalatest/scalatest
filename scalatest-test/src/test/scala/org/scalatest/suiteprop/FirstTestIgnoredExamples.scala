@@ -64,67 +64,67 @@ class FirstTestIgnoredExamples extends SuiteExamples {
   // SKIP-SCALATESTJS-END
 
   class FunSuiteExample extends FunSuite with Services {
-    ignore("first test") {}
-    test("second test") {}
+    ignore("first test") { succeed }
+    test("second test") { succeed }
   }
 
   class FixtureFunSuiteExample extends StringFixtureFunSuite with Services {
-    ignore("first test") { s => }
-    test("second test") { s => }
+    ignore("first test") { s => succeed }
+    test("second test") { s => succeed }
   }
 
   class FunSpecExample extends FunSpec with Services {
-    ignore("first test") {}
-    it("second test") {}
+    ignore("first test") { succeed }
+    it("second test") { succeed }
   }
 
   class NestedFunSpecExample extends FunSpec with NestedTestNames {
     describe("A subject") {
-      ignore("should first test") {}
-      it("should second test") {}
+      ignore("should first test") { succeed }
+      it("should second test") { succeed }
     }
   }
 
   class DeeplyNestedFunSpecExample extends FunSpec with DeeplyNestedTestNames {
     describe("A subject") {
       describe("when created") {
-        ignore("should first test") {}
-        it("should second test") {}
+        ignore("should first test") { succeed }
+        it("should second test") { succeed }
       }
     }
   }
 
   class FixtureFunSpecExample extends StringFixtureFunSpec with Services {
-      ignore("first test") { s => }
-      it("second test") { s => }
+      ignore("first test") { s => succeed }
+      it("second test") { s => succeed }
   }
   
   class NestedFixtureFunSpecExample extends StringFixtureFunSpec with NestedTestNames {
     describe("A subject") {
-      ignore("should first test") { s => }
-      it("should second test") { s => }
+      ignore("should first test") { s => succeed }
+      it("should second test") { s => succeed }
     }
   }
 
   class DeeplyNestedFixtureFunSpecExample extends StringFixtureFunSpec with DeeplyNestedTestNames {
     describe("A subject") {
       describe("when created") {
-        ignore("should first test") { s => }
-        it("should second test") { s => }
+        ignore("should first test") { s => succeed }
+        it("should second test") { s => succeed }
       }
     }
   }
 
   class PathFunSpecExample extends path.FunSpec with Services {
-    ignore("first test") {}
-    it("second test") {}
+    ignore("first test") { succeed }
+    it("second test") { succeed }
     override def newInstance = new PathFunSpecExample
   }
 
   class NestedPathFunSpecExample extends path.FunSpec with NestedTestNames {
     describe("A subject") {
-      ignore("should first test") {}
-      it("should second test") {}
+      ignore("should first test") { succeed }
+      it("should second test") { succeed }
     }
     override def newInstance = new NestedPathFunSpecExample
   }
@@ -132,273 +132,273 @@ class FirstTestIgnoredExamples extends SuiteExamples {
   class DeeplyNestedPathFunSpecExample extends path.FunSpec with DeeplyNestedTestNames {
     describe("A subject") {
       describe("when created") {
-        ignore("should first test") {}
-        it("should second test") {}
+        ignore("should first test") { succeed }
+        it("should second test") { succeed }
       }
     }
     override def newInstance = new DeeplyNestedPathFunSpecExample
   }
 
   class WordSpecExample extends WordSpec with Services {
-    "first test" ignore {}
-    "second test" in {}
+    "first test" ignore { succeed }
+    "second test" in { succeed }
   }
 
   class NestedWordSpecExample extends WordSpec with NestedTestNames {
     "A subject" should {
-      "first test" ignore {}
-      "second test" in {}
+      "first test" ignore { succeed }
+      "second test" in { succeed }
     }
   }
 
   class DeeplyNestedWordSpecExample extends WordSpec with DeeplyNestedTestNames {
     "A subject" when {
       "created" should {
-        "first test" ignore {}
-        "second test" in {}
+        "first test" ignore { succeed }
+        "second test" in { succeed }
       }
     }
   }
 
   class FixtureWordSpecExample extends StringFixtureWordSpec with Services {
-    "first test" ignore { s => }
-    "second test" in { s => }
+    "first test" ignore { s => succeed }
+    "second test" in { s => succeed }
   }
 
   class NestedFixtureWordSpecExample extends StringFixtureWordSpec with NestedTestNames {
     "A subject" should {
-      "first test" ignore { s => }
-      "second test" in { s => }
+      "first test" ignore { s => succeed }
+      "second test" in { s => succeed }
     }
   }
 
   class DeeplyNestedFixtureWordSpecExample extends StringFixtureWordSpec with DeeplyNestedTestNames {
     "A subject" when {
       "created" should {
-        "first test" ignore { s => }
-        "second test" in { s => }
+        "first test" ignore { s => succeed }
+        "second test" in { s => succeed }
       }
     }
   }
 
   class NestedWordSpecWithMustExample extends WordSpec with NestedTestNamesWithMust {
     "A subject" must {
-      "first test" ignore {}
-      "second test" in {}
+      "first test" ignore { succeed }
+      "second test" in { succeed }
     }
   }
 
   class DeeplyNestedWordSpecWithMustExample extends WordSpec with DeeplyNestedTestNamesWithMust {
     "A subject" when {
       "created" must {
-        "first test" ignore {}
-        "second test" in {}
+        "first test" ignore { succeed }
+        "second test" in { succeed }
       }
     }
   }
 
   class NestedFixtureWordSpecWithMustExample extends StringFixtureWordSpec with NestedTestNamesWithMust {
     "A subject" must {
-      "first test" ignore { s => }
-      "second test" in { s => }
+      "first test" ignore { s => succeed }
+      "second test" in { s => succeed }
     }
   }
 
   class DeeplyNestedFixtureWordSpecWithMustExample extends StringFixtureWordSpec with DeeplyNestedTestNamesWithMust {
     "A subject" when {
       "created" must {
-        "first test" ignore { s => }
-        "second test" in { s => }
+        "first test" ignore { s => succeed }
+        "second test" in { s => succeed }
       }
     }
   }
 
   class NestedWordSpecWithCanExample extends WordSpec with NestedTestNamesWithCan {
     "A subject" can {
-      "first test" ignore {}
-      "second test" in {}
+      "first test" ignore { succeed }
+      "second test" in { succeed }
     }
   }
 
   class DeeplyNestedWordSpecWithCanExample extends WordSpec with DeeplyNestedTestNamesWithCan {
     "A subject" when {
       "created" can {
-        "first test" ignore {}
-        "second test" in {}
+        "first test" ignore { succeed }
+        "second test" in { succeed }
       }
     }
   }
 
   class NestedFixtureWordSpecWithCanExample extends StringFixtureWordSpec with NestedTestNamesWithCan {
     "A subject" can {
-      "first test" ignore { s => }
-      "second test" in { s => }
+      "first test" ignore { s => succeed }
+      "second test" in { s => succeed }
     }
   }
 
   class DeeplyNestedFixtureWordSpecWithCanExample extends StringFixtureWordSpec with DeeplyNestedTestNamesWithCan {
     "A subject" when {
       "created" can {
-        "first test" ignore { s => }
-        "second test" in { s => }
+        "first test" ignore { s => succeed }
+        "second test" in { s => succeed }
       }
     }
   }
 
   class FlatSpecExample extends FlatSpec with Services {
-    it should "first test" ignore {}
-    it should "second test" in {}
+    it should "first test" ignore { succeed }
+    it should "second test" in { succeed }
     override val theTestNames = Vector("should first test", "should second test")
    }
 
   class SubjectFlatSpecExample extends FlatSpec with NestedTestNames {
     behavior of "A subject"
-    it should "first test" ignore {}
-    it should "second test" in {}
+    it should "first test" ignore { succeed }
+    it should "second test" in { succeed }
    }
 
   class ShorthandSubjectFlatSpecExample extends FlatSpec with NestedTestNames {
-    "A subject" should "first test" ignore {}
-    it should "second test" in {}
+    "A subject" should "first test" ignore { succeed }
+    it should "second test" in { succeed }
    }
 
   class FixtureFlatSpecExample extends StringFixtureFlatSpec with Services {
-    it should "first test" ignore { s => }
-    it should "second test" in { s => }
+    it should "first test" ignore { s => succeed }
+    it should "second test" in { s => succeed }
     override val theTestNames = Vector("should first test", "should second test")
   }
 
   class SubjectFixtureFlatSpecExample extends StringFixtureFlatSpec with NestedTestNames {
     behavior of "A subject"
-    it should "first test" ignore { s => }
-    it should "second test" in { s => }
+    it should "first test" ignore { s => succeed }
+    it should "second test" in { s => succeed }
    }
 
   class ShorthandSubjectFixtureFlatSpecExample extends StringFixtureFlatSpec with NestedTestNames {
-    "A subject" should "first test" ignore { s => }
-    it should "second test" in { s => }
+    "A subject" should "first test" ignore { s => succeed }
+    it should "second test" in { s => succeed }
    }
 
   class FlatSpecWithMustExample extends FlatSpec with Services {
-    it must "first test" ignore {}
-    it must "second test" in {}
+    it must "first test" ignore { succeed }
+    it must "second test" in { succeed }
     override val theTestNames = Vector("must first test", "must second test")
    }
 
   class SubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNamesWithMust {
     behavior of "A subject"
-    it must "first test" ignore {}
-    it must "second test" in {}
+    it must "first test" ignore { succeed }
+    it must "second test" in { succeed }
    }
 
   class ShorthandSubjectFlatSpecWithMustExample extends FlatSpec with NestedTestNamesWithMust {
-    "A subject" must "first test" ignore {}
-    it must "second test" in {}
+    "A subject" must "first test" ignore { succeed }
+    it must "second test" in { succeed }
    }
 
   class FixtureFlatSpecWithMustExample extends StringFixtureFlatSpec with Services {
-    it must "first test" ignore { s => }
-    it must "second test" in { s => }
+    it must "first test" ignore { s => succeed }
+    it must "second test" in { s => succeed }
     override val theTestNames = Vector("must first test", "must second test")
   }
 
   class SubjectFixtureFlatSpecWithMustExample extends StringFixtureFlatSpec with NestedTestNamesWithMust {
     behavior of "A subject"
-    it must "first test" ignore { s => }
-    it must "second test" in { s => }
+    it must "first test" ignore { s => succeed }
+    it must "second test" in { s => succeed }
    }
 
   class ShorthandSubjectFixtureFlatSpecWithMustExample extends StringFixtureFlatSpec with NestedTestNamesWithMust {
-    "A subject" must "first test" ignore { s => }
-    it must "second test" in { s => }
+    "A subject" must "first test" ignore { s => succeed }
+    it must "second test" in { s => succeed }
    }
 
   class FlatSpecWithCanExample extends FlatSpec with Services {
-    it can "first test" ignore {}
-    it can "second test" in {}
+    it can "first test" ignore { succeed }
+    it can "second test" in { succeed }
     override val theTestNames = Vector("can first test", "can second test")
    }
 
   class SubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNamesWithCan {
     behavior of "A subject"
-    it can "first test" ignore {}
-    it can "second test" in {}
+    it can "first test" ignore { succeed }
+    it can "second test" in { succeed }
    }
 
   class ShorthandSubjectFlatSpecWithCanExample extends FlatSpec with NestedTestNamesWithCan {
-    "A subject" can "first test" ignore {}
-    it can "second test" in {}
+    "A subject" can "first test" ignore { succeed }
+    it can "second test" in { succeed }
    }
 
   class FixtureFlatSpecWithCanExample extends StringFixtureFlatSpec with Services {
-    it can "first test" ignore { s => }
-    it can "second test" in { s => }
+    it can "first test" ignore { s => succeed }
+    it can "second test" in { s => succeed }
     override val theTestNames = Vector("can first test", "can second test")
   }
 
   class SubjectFixtureFlatSpecWithCanExample extends StringFixtureFlatSpec with NestedTestNamesWithCan {
     behavior of "A subject"
-    it can "first test" ignore { s => }
-    it can "second test" in { s => }
+    it can "first test" ignore { s => succeed }
+    it can "second test" in { s => succeed }
    }
 
   class ShorthandSubjectFixtureFlatSpecWithCanExample extends StringFixtureFlatSpec with NestedTestNamesWithCan {
-    "A subject" can "first test" ignore { s => }
-    it can "second test" in { s => }
+    "A subject" can "first test" ignore { s => succeed }
+    it can "second test" in { s => succeed }
    }
 
   class FreeSpecExample extends FreeSpec with Services {
-    "first test" ignore {}
-    "second test" in {}
+    "first test" ignore { succeed }
+    "second test" in { succeed }
   }
 
   class NestedFreeSpecExample extends FreeSpec with NestedTestNames {
     "A subject" - {
-      "should first test" ignore {}
-      "should second test" in {}
+      "should first test" ignore { succeed }
+      "should second test" in { succeed }
     }
   }
 
   class DeeplyNestedFreeSpecExample extends FreeSpec with DeeplyNestedTestNames {
     "A subject" - {
       "when created" - {
-        "should first test" ignore {}
-        "should second test" in {}
+        "should first test" ignore { succeed }
+        "should second test" in { succeed }
       }
     }
   }
 
   class FixtureFreeSpecExample extends StringFixtureFreeSpec with Services {
-    "first test" ignore { s => }
-    "second test" in { s => }
+    "first test" ignore { s => succeed }
+    "second test" in { s => succeed }
   }
 
   class NestedFixtureFreeSpecExample extends StringFixtureFreeSpec with NestedTestNames {
     "A subject" - {
-      "should first test" ignore { s => }
-      "should second test" in { s => }
+      "should first test" ignore { s => succeed }
+      "should second test" in { s => succeed }
     }
   }
 
   class DeeplyNestedFixtureFreeSpecExample extends StringFixtureFreeSpec with DeeplyNestedTestNames {
     "A subject" - {
       "when created" - {
-        "should first test" ignore { s => }
-        "should second test" in { s => }
+        "should first test" ignore { s => succeed }
+        "should second test" in { s => succeed }
       }
     }
   }
 
   class PathFreeSpecExample extends path.FreeSpec with Services {
-    "first test" ignore {}
-    "second test" in {}
+    "first test" ignore { succeed }
+    "second test" in { succeed }
     override def newInstance = new PathFreeSpecExample
   }
 
   class NestedPathFreeSpecExample extends path.FreeSpec with NestedTestNames {
     "A subject" - {
-      "should first test" ignore {}
-      "should second test" in {}
+      "should first test" ignore { succeed }
+      "should second test" in { succeed }
     }
     override def newInstance = new NestedPathFreeSpecExample
   }
@@ -406,49 +406,49 @@ class FirstTestIgnoredExamples extends SuiteExamples {
   class DeeplyNestedPathFreeSpecExample extends path.FreeSpec with DeeplyNestedTestNames {
     "A subject" - {
       "when created" - {
-        "should first test" ignore {}
-        "should second test" in {}
+        "should first test" ignore { succeed }
+        "should second test" in { succeed }
       }
     }
     override def newInstance = new DeeplyNestedPathFreeSpecExample
   }
 
   class FeatureSpecExample extends FeatureSpec with Services {
-    ignore("first test") {}
-    scenario("second test") {}
+    ignore("first test") { succeed }
+    scenario("second test") { succeed }
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
   class NestedFeatureSpecExample extends FeatureSpec with Services {
     feature("A feature") {
-      ignore("first test") {}
-      scenario("second test") {}
+      ignore("first test") { succeed }
+      scenario("second test") { succeed }
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "A feature Scenario: second test")
   }
 
   class FixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
-    ignore("first test") { s => }
-    scenario("second test") { s => }
+    ignore("first test") { s => succeed }
+    scenario("second test") { s => succeed }
     override val theTestNames = Vector("Scenario: first test", "Scenario: second test")
   }
 
   class NestedFixtureFeatureSpecExample extends StringFixtureFeatureSpec with Services {
     feature("A feature") {
-      ignore("first test") { s => }
-      scenario("second test") { s => }
+      ignore("first test") { s => succeed }
+      scenario("second test") { s => succeed }
     }
     override val theTestNames = Vector("Feature: A feature Scenario: first test", "A feature Scenario: second test")
   }
 
   class PropSpecExample extends PropSpec with Services {
-    ignore("first test") {}
-    property("second test") {}
+    ignore("first test") { succeed }
+    property("second test") { succeed }
   }
 
   class FixturePropSpecExample extends StringFixturePropSpec with Services {
-    ignore("first test") { s => }
-    property("second test") { s => }
+    ignore("first test") { s => succeed }
+    property("second test") { s => succeed }
   }
 
   // SKIP-SCALATESTJS-START
@@ -532,38 +532,38 @@ class FirstTestIgnoredExamples extends SuiteExamples {
     )
 
   class FlatSpecExample2 extends FlatSpec with Services {
-    ignore should "first test" in {}
-    it should "second test" in {}
+    ignore should "first test" in { succeed }
+    it should "second test" in { succeed }
     override val theTestNames = Vector("should first test", "should second test")
    }
 
   class FixtureFlatSpecExample2 extends StringFixtureFlatSpec with Services {
-    ignore should "first test" in { s => }
-    it should "second test" in { s => }
+    ignore should "first test" in { s => succeed }
+    it should "second test" in { s => succeed }
     override val theTestNames = Vector("should first test", "should second test")
   }
 
   class FlatSpecWithMustExample2 extends FlatSpec with Services {
-    ignore must "first test" in {}
-    it must "second test" in {}
+    ignore must "first test" in { succeed }
+    it must "second test" in { succeed }
     override val theTestNames = Vector("must first test", "must second test")
    }
 
   class FixtureFlatSpecWithMustExample2 extends StringFixtureFlatSpec with Services {
-    ignore must "first test" in { s => }
-    it must "second test" in { s => }
+    ignore must "first test" in { s => succeed }
+    it must "second test" in { s => succeed }
     override val theTestNames = Vector("must first test", "must second test")
   }
 
   class FlatSpecWithCanExample2 extends FlatSpec with Services {
-    ignore can "first test" in {}
-    it can "second test" in {}
+    ignore can "first test" in { succeed }
+    it can "second test" in { succeed }
     override val theTestNames = Vector("can first test", "can second test")
    }
 
   class FixtureFlatSpecWithCanExample2 extends StringFixtureFlatSpec with Services {
-    ignore can "first test" in { s => }
-    it can "second test" in { s => }
+    ignore can "first test" in { s => succeed }
+    it can "second test" in { s => succeed }
     override val theTestNames = Vector("can first test", "can second test")
   }
 }

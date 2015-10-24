@@ -113,6 +113,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
           all (List((), (),())) should === (())
           all (List((), (),())) should !== (7)
         }
+        succeed
       }
 
       it("should be overridable with TypeCheckedTripleEquals locally when TripleEquals imported") {
@@ -159,6 +160,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
           // all (List(fr, fr, fr)) should === (cr)
           // all (List(cr, cr, cr)) should === (fr)
         }
+        succeed
       }
 
       it("should be overridable with TypeCheckedTripleEquals locally when TripleEquals mixed in") {
@@ -205,6 +207,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
             // all (List(cr, cr, cr)) should === (fr)
           }
         }
+        succeed
       }
 
       it("should be overridable with ConversionCheckedTripleEquals locally when TripleEquals imported") {
@@ -252,6 +255,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
             // all (List(fr, fr, fr)) should === (cr)
             // all (List(cr, cr, cr)) should === (fr)
         }
+        succeed
       }
 
       it("should be overridable with ConversionCheckedTripleEquals locally when TripleEquals mixed in") {
@@ -299,6 +303,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
             // all (List(cr, cr, cr)) should === (fr)
           }
         }
+        succeed
       }
     }
 
@@ -390,6 +395,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
           // intercept[TestFailedException] { all (List(Set(1, 2, 3), Set(1, 2, 3), Set(1, 2, 3))) should === (7) }
           // all (List(Set(1, 2, 3), Set(1, 2, 3), Set(1, 2, 3))) should !== (7)
         }
+        succeed
       }
 
       it("should be overridable with TripleEquals locally when TypeCheckedTripleEquals imported") {
@@ -421,6 +427,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
           all (List(super1, super1, super1)) should === (sub1)
           // all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
         }
+        succeed
       }
 
       it("should be overridable with TripleEquals locally when TypeCheckedTripleEquals mixed in") {
@@ -452,6 +459,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
             // all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
           }
         }
+        succeed
       }
 
       it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals imported") {
@@ -499,6 +507,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
           // all (List(fr, fr, fr)) should === (cr)
           // all (List(cr, cr, cr)) should === (fr)
         }
+        succeed
       }
 
       it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals mixed in") {
@@ -546,6 +555,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
             // all (List(cr, cr, cr)) should === (fr)
           }
         }
+        succeed
       }
     }
 
@@ -639,6 +649,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
           // intercept[TestFailedException] { all (List(Set(1, 2, 3), Set(1, 2, 3), Set(1, 2, 3))) should === (7) }
           // all (List(Set(1, 2, 3), Set(1, 2, 3), Set(1, 2, 3))) should !== (7)
         }
+        succeed
       }
 
       it("should be overridable with TripleEquals locally when ConversionCheckedTripleEquals imported") {
@@ -670,6 +681,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
           all (List(super1, super1, super1)) should === (sub1)
           all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
         }
+        succeed
       }
 
       it("should be overridable with TripleEquals locally when ConversionCheckedTripleEquals mixed in") {
@@ -701,6 +713,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
             all (List(sub1, sub1, sub1)) should === (super1) // compiles on 2.10 but not 2.9
           }
         }
+        succeed
       }
 
       it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals imported") {
@@ -747,6 +760,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
           // all (List(fr, fr, fr)) should === (cr)
           // all (List(cr, cr, cr)) should === (fr)
         }
+        succeed
       }
 
       it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals mixed in") {
@@ -793,6 +807,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
             // all (List(cr, cr, cr)) should === (fr)
           }
         }
+        succeed
       }
     }
   }

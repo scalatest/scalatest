@@ -55,7 +55,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces
         val a =
           new FunSuite with TimeLimitedTests {
             val timeLimit = Span(100L, Millis)
-            test("time out failure") { Thread.sleep(500) }
+            test("time out failure") { Thread.sleep(500); succeed }
           }
         val rep = new EventRecordingReporter
         a.run(None, Args(rep))

@@ -78,10 +78,11 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
           }
         }
       }
+      succeed
     }
 
     it("should not catch exception thrown from the test") {
-      val caught = the [InterruptedException] thrownBy {
+      assertThrows[InterruptedException] {
         failAfter(Span(100, Millis)) {
           throw new InterruptedException
         }
@@ -250,7 +251,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
     }
     
     it("should blow up with TestCanceledException when the task does not response interrupt request and pass after the timeout") {
-      val caught = the [TestCanceledException] thrownBy {
+      assertThrows[TestCanceledException] {
         cancelAfter(timeout = Span(1000, Millis)) {
           for (i <- 1 to 10) {
             try {
@@ -266,7 +267,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
     }
     
     it("should not catch exception thrown from the test") {
-      val caught = the [InterruptedException] thrownBy {
+      assertThrows[InterruptedException] {
         cancelAfter(Span(1000, Millis)) {
           throw new InterruptedException
         }
@@ -410,6 +411,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       }
       clientSelector.close()
       drag = false
+      succeed
     }
   }
 }

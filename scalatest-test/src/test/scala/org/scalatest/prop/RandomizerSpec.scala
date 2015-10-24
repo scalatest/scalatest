@@ -249,6 +249,7 @@ class RandomizerSpec extends FunSpec with Matchers {
         k should be <= max
         k should be >= min
         rnd = nextRandomizer
+        succeed
       }
     }
     it("should offer a chooseLong method that initially produces Long values between from and to") {
@@ -261,6 +262,7 @@ class RandomizerSpec extends FunSpec with Matchers {
         k should be <= max
         k should be >= min
         rnd = nextRandomizer
+        succeed
       }
     }
     it("should offer a nextString method that produces a String of the requested 0 or greater size") {
