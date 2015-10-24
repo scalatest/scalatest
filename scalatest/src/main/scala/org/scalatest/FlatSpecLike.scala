@@ -289,7 +289,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)
     }
 
@@ -400,7 +400,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)
     }
 
@@ -703,7 +703,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _)
     }
     // Note: no def ignore here, so you can't put two ignores in the same line
@@ -799,7 +799,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _)
     }
 
@@ -1004,7 +1004,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)
     }
 
@@ -1115,7 +1115,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)
     }
 
@@ -1560,17 +1560,17 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
       registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecLike.scala", "apply", stackDepth, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
 
-        def is(testFun: => PendingNothing) {
+        def is(testFun: => PendingStatement) {
           registerTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _)
         }
-        // Note, won't have an is method that takes fixture => PendingNothing one, because don't want
+        // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
         // to say is (fixture => pending), rather just say is (pending)
         def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
           val tagList = firstTestTag :: otherTestTags.toList
           new ResultOfTaggedAsInvocation(verb, rest, tagList) {
             // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
             //                                               ^
-            def is(testFun: => PendingNothing) {
+            def is(testFun: => PendingStatement) {
               registerTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _)
             }
           }

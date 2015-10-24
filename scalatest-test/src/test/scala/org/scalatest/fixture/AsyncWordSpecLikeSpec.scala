@@ -168,6 +168,7 @@ class AsyncWordSpecLikeSpec extends org.scalatest.FunSpec {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            succeed
           }
         }
 
@@ -176,6 +177,7 @@ class AsyncWordSpecLikeSpec extends org.scalatest.FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            succeed
           }
         }
 
@@ -218,12 +220,14 @@ class AsyncWordSpecLikeSpec extends org.scalatest.FunSpec {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
+          succeed
         }
 
         "test 2" in { fixture =>
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
+          succeed
         }
 
         "test 3" in { fixture =>

@@ -51,7 +51,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with AsyncCompatibility { thisSuite =>
+trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb { thisSuite =>
 
   override private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {

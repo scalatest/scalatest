@@ -157,6 +157,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            succeed
           }
         }
 
@@ -165,6 +166,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            succeed
           }
         }
 
@@ -203,12 +205,14 @@ class AsyncFeatureSpecSpec extends FunSpec {
           SleepHelper.sleep(3000)
           assert(count == 0)
           count = 1
+          succeed
         }
 
         scenario("test 2") {
           assert(count == 1)
           SleepHelper.sleep(5000)
           count = 2
+          succeed
         }
 
         scenario("test 3") {

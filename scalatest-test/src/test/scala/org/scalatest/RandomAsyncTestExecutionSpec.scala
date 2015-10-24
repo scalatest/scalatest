@@ -34,13 +34,13 @@ class RandomAsyncTestExecutionSpec extends AsyncFunSuite with Safety /* with Ran
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
-    test("test one") { thisOuterSuite.synchronized { buf += 1 } }
-    test("test two") { thisOuterSuite.synchronized { buf += 2 } }
-    test("test three") { thisOuterSuite.synchronized { buf += 3 } }
-    test("test four") { thisOuterSuite.synchronized { buf += 4 } }
-    test("test five") { thisOuterSuite.synchronized { buf += 5 } }
-    test("test six") { thisOuterSuite.synchronized { buf += 6 } }
-    test("test seven") { thisOuterSuite.synchronized { buf += 7 } }
+    test("test one") { thisOuterSuite.synchronized { buf += 1 }; succeed }
+    test("test two") { thisOuterSuite.synchronized { buf += 2 }; succeed }
+    test("test three") { thisOuterSuite.synchronized { buf += 3 }; succeed }
+    test("test four") { thisOuterSuite.synchronized { buf += 4 }; succeed }
+    test("test five") { thisOuterSuite.synchronized { buf += 5 }; succeed }
+    test("test six") { thisOuterSuite.synchronized { buf += 6 }; succeed }
+    test("test seven") { thisOuterSuite.synchronized { buf += 7 }; succeed }
 
     override def newInstance = new ExampleSpec
   }

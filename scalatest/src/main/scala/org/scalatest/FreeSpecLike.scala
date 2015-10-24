@@ -218,7 +218,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
+    def is(testFun: => PendingStatement) {
       registerTestToRun(specText, tags, "is", testFun _)
     }
 
@@ -335,7 +335,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingNothing) {
+    def is(f: => PendingStatement) {
       registerTestToRun(string, List(), "is", f _)
     }
 

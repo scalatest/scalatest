@@ -157,6 +157,7 @@ class AsyncFlatSpecLikeSpec extends FunSpec {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            succeed
           }
         }
 
@@ -165,6 +166,7 @@ class AsyncFlatSpecLikeSpec extends FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            succeed
           }
         }
 
@@ -203,12 +205,14 @@ class AsyncFlatSpecLikeSpec extends FunSpec {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
+          succeed
         }
 
         it should "test 2" in {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
+          succeed
         }
 
         it should "test 3" in {

@@ -48,7 +48,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait AsyncFeatureSpecLike extends AsyncSuite with AsyncTestRegistration with AsyncCompatibility { thisSuite =>
+trait AsyncFeatureSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite =>
 
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {

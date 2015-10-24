@@ -54,7 +54,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     @volatile var beforeEachCalledBeforeRunTest = false
     @volatile var afterEachCalledAfterRunTest = false
 
-    test("test something") {}
+    test("test something") { succeed }
 
     override def beforeEach() {
       if (!runTestWasCalled)
@@ -103,7 +103,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     class MySuite extends Suite with BeforeAndAfterEach {
       override def beforeEach() { throw new NumberFormatException } 
     }
-    intercept[NumberFormatException] {
+    assertThrows[NumberFormatException] {
       val a = new MySuite
       a.run(Some("july"), Args(StubReporter))
     }
@@ -161,7 +161,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
       override def afterEach() { throw new NumberFormatException }
-      test("test October") {}
+      test("test October") { succeed }
     }
     val a = new MySuite
     val status = a.run(Some("test October"), Args(StubReporter))

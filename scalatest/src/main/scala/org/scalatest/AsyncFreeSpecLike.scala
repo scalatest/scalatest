@@ -50,13 +50,26 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with AsyncCompatibility { thisSuite =>
+trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite =>
 
   override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
       val futureAssertion = testFun
       FutureOutcome(
         futureAssertion.recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
+
+  private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
+    () => {
+      PastOutcome(
+        try { testFun; Succeeded }
+        catch {
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending
           case tfe: exceptions.TestFailedException => Failed(tfe)
@@ -115,8 +128,8 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with Async
     engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingNothing) {
-    engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement) {
+    engine.registerTest(specText, transformPendingToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**
@@ -156,7 +169,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with Async
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**

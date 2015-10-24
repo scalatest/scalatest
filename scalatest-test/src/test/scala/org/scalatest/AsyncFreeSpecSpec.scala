@@ -155,6 +155,7 @@ class AsyncFreeSpecSpec extends FunSpec {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            succeed
           }
         }
 
@@ -163,6 +164,7 @@ class AsyncFreeSpecSpec extends FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            succeed
           }
         }
 
@@ -201,12 +203,14 @@ class AsyncFreeSpecSpec extends FunSpec {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
+          succeed
         }
 
         "test 2" in {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
+          succeed
         }
 
         "test 3" in {

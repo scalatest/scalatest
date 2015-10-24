@@ -17,8 +17,13 @@ package org.scalatest
 
 import scala.concurrent.Future
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import scala.concurrent.ExecutionContext
 
 trait AsyncSuite extends Suite { thisAsyncSuite =>
+
+  implicit def executionContext: ExecutionContext
+
+  implicit def convertAssertionToFutureAssertion(assertion: Assertion): Future[Assertion] = Future { assertion }
 
   protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
       thisAsyncSuite.isInstanceOf[org.scalatest.RandomTestOrder]

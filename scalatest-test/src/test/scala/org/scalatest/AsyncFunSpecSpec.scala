@@ -190,6 +190,7 @@ class AsyncFunSpecSpec extends FunSpec {
             SleepHelper.sleep(30)
             assert(count == 0)
             count = 1
+            succeed
           }
         }
 
@@ -198,6 +199,7 @@ class AsyncFunSpecSpec extends FunSpec {
             assert(count == 1)
             SleepHelper.sleep(50)
             count = 2
+            succeed
           }
         }
 
@@ -236,12 +238,14 @@ class AsyncFunSpecSpec extends FunSpec {
           SleepHelper.sleep(30)
           assert(count == 0)
           count = 1
+          succeed
         }
 
         it("test 2") {
           assert(count == 1)
           SleepHelper.sleep(50)
           count = 2
+          succeed
         }
 
         it("test 3") {
