@@ -16,6 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalatest.Assertion
+import org.scalatest.Expectation
 import org.scalatest.exceptions.DiscardedEvaluationException
 
 trait WheneverAsserting[T] {
@@ -23,9 +24,22 @@ trait WheneverAsserting[T] {
   def whenever(condition: Boolean)(fun: => T): Result
 }
 
-object WheneverAsserting {
+abstract class LowPriorityWheneverAsserting {
 
-  implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] = {
+  implicit def assertingNatureOfT[T]: WheneverAsserting[T] { type Result = Unit } = {
+    new WheneverAsserting[T] {
+      type Result = Unit
+      def whenever(condition: Boolean)(fun: => T): Unit =
+        if (!condition)
+          throw new DiscardedEvaluationException
+        else
+         fun
+    }
+  }
+}
+
+abstract class MediumPriorityWheneverAsserting extends LowPriorityWheneverAsserting {
+  implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
     new WheneverAsserting[Assertion] {
       type Result = Assertion
       def whenever(condition: Boolean)(fun: => Assertion): Assertion =
@@ -36,10 +50,24 @@ object WheneverAsserting {
     }
   }
 
-  implicit def assertingNatureOfAny[T]: WheneverAsserting[T] = {
-    new WheneverAsserting[T] {
-      type Result = Unit
-      def whenever(condition: Boolean)(fun: => T): Unit =
+  implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
+    new WheneverAsserting[Expectation] {
+      type Result = Expectation
+      def whenever(condition: Boolean)(fun: => Expectation): Expectation =
+        if (!condition)
+          throw new DiscardedEvaluationException
+        else
+         fun
+    }
+  }
+}
+
+object WheneverAsserting extends MediumPriorityWheneverAsserting {
+
+  implicit def assertingNatureOfNothing: WheneverAsserting[Nothing] { type Result = Nothing } = {
+    new WheneverAsserting[Nothing] {
+      type Result = Nothing
+      def whenever(condition: Boolean)(fun: => Nothing): Nothing =
         if (!condition)
           throw new DiscardedEvaluationException
         else

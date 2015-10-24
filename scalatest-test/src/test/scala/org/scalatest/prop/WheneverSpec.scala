@@ -31,34 +31,52 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
   describe("The whenever construct") {
     describe("when the result type of the block is Expectation") {
       describe("when the Boolean condition is true") {
-        ignore("should, under Compatibility, either return Succeeded or throw TFE") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
+        it("should pass the result of the block through") {
+
           import Expectations._
-          val res1 = whenever (true) { expect(1 == 1) }
-          assert(res1 == Succeeded)
-          assertThrows[TestFailedException] {
-            whenever (true) { expect(1 == 2) }
+          val x = 1
+          val yes = expect(x == 1)
+          val no = expect(x == 2)
+          val res1 = whenever (true) { yes }
+          assert(res1 == yes)
+          val res2 = whenever (true) { no }
+          assert(res2 == no)
+
+          assertThrows[java.lang.Exception] {
+            whenever (true) { throw new java.lang.Exception; expect(x == 1) }
           }
+          // SKIP-SCALATESTJS-START
+          assertThrows[StringIndexOutOfBoundsException] {
+            whenever (true) { "hi".charAt(-1); expect(x == 1) }
+          }
+          // SKIP-SCALATESTJS-END
         }
       }
       describe("when the Boolean condition is false") {
-        it("should throw DiscardedEvaluationException") {
+        it("should return a vacuous Yes") {
           import Expectations._
+          val x = 1
+          val yes = expect(x == 1)
+          val no = expect(x == 2)
           assertThrows[DiscardedEvaluationException] {
-            whenever (false) { expect(1 == 1) }
+            whenever (false) { yes }
           }
           assertThrows[DiscardedEvaluationException] {
-            whenever (false) { expect(1 == 2) }
+            whenever (false) { no }
           }
         }
       }
     }
     describe("when the result type of the block is Assertion") {
-      describe("when the Boolean condition is true") { // TODO: thow new Exception to test the Nothing case
+      describe("when the Boolean condition is true") {
         it("should return Succeeded or throw an exception") {
           val res1 = whenever (true) { assert(1 == 1) }
           assert(res1 == Succeeded)
           assertThrows[TestFailedException] {
             whenever (true) { assert(1 == 2) }
+          }
+          assertThrows[java.lang.Exception] {
+            whenever (true) { throw new java.lang.Exception }
           }
           // SKIP-SCALATESTJS-START
           assertThrows[StringIndexOutOfBoundsException] {
@@ -88,6 +106,9 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           }
           assertThrows[AssertionError] {
             whenever (true) { Predef.assert(1 == 2) }
+          }
+          assertThrows[java.lang.Exception] {
+            whenever (true) { throw new java.lang.Exception }
           }
           val res2 = whenever (true) { 1 }
           assert(res2 == ())
@@ -122,21 +143,5 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
         }
       }
     }
-/*
-    it("should infer the result type from the block, and pass the value through") {
-
-      val x = 1
-      val s = "hi"
-
-      whenever(true) { x } shouldBe 1
-      (whenever(true) { x }: Int) shouldBe an [Integer]
-
-      whenever(true) { s } shouldBe "hi"
-      (whenever(true) { s }: String) shouldBe a [String]
-
-      whenever(true) { assert(x == 1) } shouldBe Succeeded
-      (whenever(true) { assert(x == 1) }: Assertion) shouldBe an [Assertion]
-    }
-*/
   }
 }
