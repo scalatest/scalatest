@@ -179,6 +179,7 @@ import org.scalacheck.Gen
 import org.scalacheck.Prop._
 import org.scalatest.exceptions.DiscardedEvaluationException
 import Checkers.getParams
+import org.scalatest.enablers.CheckerAsserting
 
 /**
  * Trait containing methods that faciliate property checks against generated data using ScalaCheck.
@@ -700,11 +701,12 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A](fun: (A) => Assertion)
+    def apply[A, ASSERTION](fun: (A) => ASSERTION)
       (implicit
         config: PropertyCheckConfigurable,
-      arbA: Arbitrary[A], shrA: Shrink[A]
-      ): Assertion = {
+        arbA: Arbitrary[A], shrA: Shrink[A],
+        asserting: CheckerAsserting[ASSERTION]
+      ): asserting.Result = {
         val propF = { (a: A) =>
           val (unmetCondition, exception) =
             try {
@@ -741,12 +743,13 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B](fun: (A, B) => Assertion)
+    def apply[A, B, ASSERTION](fun: (A, B) => ASSERTION)
       (implicit
         config: PropertyCheckConfigurable,
-      arbA: Arbitrary[A], shrA: Shrink[A],
-      arbB: Arbitrary[B], shrB: Shrink[B]
-      ): Assertion = {
+        arbA: Arbitrary[A], shrA: Shrink[A],
+        arbB: Arbitrary[B], shrB: Shrink[B],
+        asserting: CheckerAsserting[ASSERTION]
+      ): asserting.Result = {
         val propF = { (a: A, b: B) =>
           val (unmetCondition, exception) =
             try {
@@ -783,13 +786,14 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B, C](fun: (A, B, C) => Assertion)
+    def apply[A, B, C, ASSERTION](fun: (A, B, C) => ASSERTION)
       (implicit
         config: PropertyCheckConfigurable,
-      arbA: Arbitrary[A], shrA: Shrink[A],
-      arbB: Arbitrary[B], shrB: Shrink[B],
-      arbC: Arbitrary[C], shrC: Shrink[C]
-      ): Assertion = {
+        arbA: Arbitrary[A], shrA: Shrink[A],
+        arbB: Arbitrary[B], shrB: Shrink[B],
+        arbC: Arbitrary[C], shrC: Shrink[C],
+        asserting: CheckerAsserting[ASSERTION]
+      ): asserting.Result = {
         val propF = { (a: A, b: B, c: C) =>
           val (unmetCondition, exception) =
             try {
@@ -826,14 +830,15 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B, C, D](fun: (A, B, C, D) => Assertion)
+    def apply[A, B, C, D, ASSERTION](fun: (A, B, C, D) => ASSERTION)
       (implicit
         config: PropertyCheckConfigurable,
-      arbA: Arbitrary[A], shrA: Shrink[A],
-      arbB: Arbitrary[B], shrB: Shrink[B],
-      arbC: Arbitrary[C], shrC: Shrink[C],
-      arbD: Arbitrary[D], shrD: Shrink[D]
-      ): Assertion = {
+        arbA: Arbitrary[A], shrA: Shrink[A],
+        arbB: Arbitrary[B], shrB: Shrink[B],
+        arbC: Arbitrary[C], shrC: Shrink[C],
+        arbD: Arbitrary[D], shrD: Shrink[D],
+        asserting: CheckerAsserting[ASSERTION]
+      ): asserting.Result = {
         val propF = { (a: A, b: B, c: C, d: D) =>
           val (unmetCondition, exception) =
             try {
@@ -870,15 +875,16 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B, C, D, E](fun: (A, B, C, D, E) => Assertion)
+    def apply[A, B, C, D, E, ASSERTION](fun: (A, B, C, D, E) => ASSERTION)
       (implicit
         config: PropertyCheckConfigurable,
-      arbA: Arbitrary[A], shrA: Shrink[A],
-      arbB: Arbitrary[B], shrB: Shrink[B],
-      arbC: Arbitrary[C], shrC: Shrink[C],
-      arbD: Arbitrary[D], shrD: Shrink[D],
-      arbE: Arbitrary[E], shrE: Shrink[E]
-      ): Assertion = {
+        arbA: Arbitrary[A], shrA: Shrink[A],
+        arbB: Arbitrary[B], shrB: Shrink[B],
+        arbC: Arbitrary[C], shrC: Shrink[C],
+        arbD: Arbitrary[D], shrD: Shrink[D],
+        arbE: Arbitrary[E], shrE: Shrink[E],
+        asserting: CheckerAsserting[ASSERTION]
+      ): asserting.Result = {
         val propF = { (a: A, b: B, c: C, d: D, e: E) =>
           val (unmetCondition, exception) =
             try {
@@ -915,16 +921,17 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @param fun the property check function to apply to the generated arguments
    */
-    def apply[A, B, C, D, E, F](fun: (A, B, C, D, E, F) => Assertion)
+    def apply[A, B, C, D, E, F, ASSERTION](fun: (A, B, C, D, E, F) => ASSERTION)
       (implicit
         config: PropertyCheckConfigurable,
-      arbA: Arbitrary[A], shrA: Shrink[A],
-      arbB: Arbitrary[B], shrB: Shrink[B],
-      arbC: Arbitrary[C], shrC: Shrink[C],
-      arbD: Arbitrary[D], shrD: Shrink[D],
-      arbE: Arbitrary[E], shrE: Shrink[E],
-      arbF: Arbitrary[F], shrF: Shrink[F]
-      ): Assertion = {
+        arbA: Arbitrary[A], shrA: Shrink[A],
+        arbB: Arbitrary[B], shrB: Shrink[B],
+        arbC: Arbitrary[C], shrC: Shrink[C],
+        arbD: Arbitrary[D], shrD: Shrink[D],
+        arbE: Arbitrary[E], shrE: Shrink[E],
+        arbF: Arbitrary[F], shrF: Shrink[F],
+        asserting: CheckerAsserting[ASSERTION]
+      ): asserting.Result = {
         val propF = { (a: A, b: B, c: C, d: D, e: E, f: F) =>
           val (unmetCondition, exception) =
             try {
@@ -963,11 +970,12 @@ val propertyCheckForAllTemplate = """
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$](fun: ($alphaUpper$) => Assertion)
+  def forAll[$alphaUpper$, ASSERTION](fun: ($alphaUpper$) => ASSERTION)
     (implicit
       config: PropertyCheckConfigurable,
-$arbShrinks$
-    ): Assertion = {
+$arbShrinks$,
+        asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
           try {
@@ -1003,11 +1011,12 @@ $arbShrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Assertion)
+  def forAll[$alphaUpper$, ASSERTION]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
       config: PropertyCheckConfigurable,
-$arbShrinks$
-    ): Assertion = {
+$arbShrinks$,
+        asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
           try {
@@ -1050,11 +1059,12 @@ $arbShrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Assertion)
+  def forAll[$alphaUpper$, ASSERTION]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
       config: PropertyCheckConfigurable,
-$shrinks$
-    ): Assertion = {
+$shrinks$,
+        asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
           try {
@@ -1097,11 +1107,12 @@ $shrinks$
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => Assertion)
+  def forAll[$alphaUpper$, ASSERTION]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
       config: PropertyCheckConfigurable,
-$shrinks$
-    ): Assertion = {
+$shrinks$,
+        asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
 
 $tupleBusters$
 

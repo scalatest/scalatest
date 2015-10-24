@@ -17,6 +17,7 @@ package org.scalatest.prop
 
 import org.scalatest._
 import org.scalatest.Suite
+import org.scalatest.enablers.CheckerAsserting
 import org.scalacheck.Arbitrary
 import org.scalacheck.Shrink
 import org.scalacheck.util.Pretty
@@ -236,13 +237,14 @@ trait Checkers extends Configuration {
    * @param f the function to be converted into a property and checked
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check[A1,P](f: A1 => P, configParams: PropertyCheckConfigParam*)
+  def check[A1, P, ASSERTION](f: A1 => P, configParams: PropertyCheckConfigParam*)
     (implicit
       config: PropertyCheckConfigurable,
       p: P => Prop,
-      a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty
-    ): Assertion = {
-    check(Prop.forAll(f)(p, a1, s1, pp1), configParams: _*)(config)
+      a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
+      asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
+    check(Prop.forAll(f)(p, a1, s1, pp1), configParams: _*)(config, asserting)
   }
 
   /**
@@ -251,15 +253,16 @@ trait Checkers extends Configuration {
    * @param f the function to be converted into a property and checked
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check[A1,A2,P](f: (A1,A2) => P, configParams: PropertyCheckConfigParam*)
+  def check[A1, A2, P, ASSERTION](f: (A1,A2) => P, configParams: PropertyCheckConfigParam*)
     (implicit
       config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
-      a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty
-    ): Assertion = {
+      a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
+      asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
     val params = getParams(configParams, config)
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), configParams: _*)(config)
+    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), configParams: _*)(config, asserting)
   }
 
   /**
@@ -268,15 +271,16 @@ trait Checkers extends Configuration {
    * @param f the function to be converted into a property and checked
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check[A1,A2,A3,P](f: (A1,A2,A3) => P, configParams: PropertyCheckConfigParam*)
+  def check[A1, A2, A3, P, ASSERTION](f: (A1,A2,A3) => P, configParams: PropertyCheckConfigParam*)
     (implicit
       config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
-      a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty
-    ): Assertion = {
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), configParams: _*)(config)
+      a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
+      asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
+    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), configParams: _*)(config, asserting)
   }
 
   /**
@@ -285,16 +289,17 @@ trait Checkers extends Configuration {
    * @param f the function to be converted into a property and checked
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check[A1,A2,A3,A4,P](f: (A1,A2,A3,A4) => P, configParams: PropertyCheckConfigParam*)
+  def check[A1, A2, A3, A4, P, ASSERTION](f: (A1,A2,A3,A4) => P, configParams: PropertyCheckConfigParam*)
     (implicit
       config: PropertyCheckConfigurable,
       p: P => Prop,
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
       a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
-      a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty
-    ): Assertion = {
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), configParams: _*)(config)
+      a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty,
+      asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
+    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), configParams: _*)(config, asserting)
   }
 
   /**
@@ -303,26 +308,7 @@ trait Checkers extends Configuration {
    * @param f the function to be converted into a property and checked
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check[A1,A2,A3,A4,A5,P](f: (A1,A2,A3,A4,A5) => P, configParams: PropertyCheckConfigParam*)
-    (implicit
-      config: PropertyCheckConfigurable,
-      p: P => Prop,
-      a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
-      a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
-      a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
-      a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty,
-      a5: Arbitrary[A5], s5: Shrink[A5], pp5: A5 => Pretty
-    ): Assertion = {
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), configParams: _*)(config)
-  }
-
-  /**
-   * Convert the passed 6-arg function into a property, and check it.
-   *
-   * @param f the function to be converted into a property and checked
-   * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
-   */
-  def check[A1,A2,A3,A4,A5,A6,P](f: (A1,A2,A3,A4,A5,A6) => P, configParams: PropertyCheckConfigParam*)
+  def check[A1, A2, A3, A4, A5, P, ASSERTION](f: (A1,A2,A3,A4,A5) => P, configParams: PropertyCheckConfigParam*)
     (implicit
       config: PropertyCheckConfigurable,
       p: P => Prop,
@@ -331,9 +317,30 @@ trait Checkers extends Configuration {
       a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
       a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty,
       a5: Arbitrary[A5], s5: Shrink[A5], pp5: A5 => Pretty,
-      a6: Arbitrary[A6], s6: Shrink[A6], pp6: A6 => Pretty
-    ): Assertion = {
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), configParams: _*)(config)
+      asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
+    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), configParams: _*)(config, asserting)
+  }
+
+  /**
+   * Convert the passed 6-arg function into a property, and check it.
+   *
+   * @param f the function to be converted into a property and checked
+   * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
+   */
+  def check[A1, A2, A3, A4, A5, A6, P, ASSERTION](f: (A1,A2,A3,A4,A5,A6) => P, configParams: PropertyCheckConfigParam*)
+    (implicit
+      config: PropertyCheckConfigurable,
+      p: P => Prop,
+      a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
+      a2: Arbitrary[A2], s2: Shrink[A2], pp2: A2 => Pretty,
+      a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
+      a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty,
+      a5: Arbitrary[A5], s5: Shrink[A5], pp5: A5 => Pretty,
+      a6: Arbitrary[A6], s6: Shrink[A6], pp6: A6 => Pretty,
+      asserting: CheckerAsserting[ASSERTION]
+    ): asserting.Result = {
+    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), configParams: _*)(config, asserting)
   }
 
   /**
@@ -343,7 +350,7 @@ trait Checkers extends Configuration {
    * @param prms the test parameters
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, prms: Test.Parameters): Assertion = {
+  def check[ASSERTION](p: Prop, prms: Test.Parameters)(implicit asserting: CheckerAsserting[ASSERTION]): asserting.Result = {
     println("here11")
     Checkers.doCheck(p, prms, "Checkers.scala", "check")
   }
@@ -354,7 +361,7 @@ trait Checkers extends Configuration {
    * @param p the property to check
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
-  def check(p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable): Assertion = {
+  def check[ASSERTION](p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable, asserting: CheckerAsserting[ASSERTION]): asserting.Result = {
     val params = getParams(configParams, config)
     //check(p, params)
     Checkers.doCheck(p, params, "Checkers.scala", "check")
@@ -370,7 +377,7 @@ trait Checkers extends Configuration {
  */
 object Checkers extends Checkers {
 
-  private[prop] def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Assertion = {
+  private[prop] def doCheck[ASSERTION](p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None)(implicit asserting: CheckerAsserting[ASSERTION]): asserting.Result = {
 
     val result = Test.check(prms, p)
     if (!result.passed) {
@@ -457,7 +464,7 @@ object Checkers extends Checkers {
           )
       }
     }
-    else Succeeded
+    else asserting.Singleton
   }
   
   private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]) = {

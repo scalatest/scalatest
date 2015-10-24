@@ -18,50 +18,50 @@ package org.scalatest.enablers
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
 
-trait InspectorAsserting[T] {
+trait CheckerAsserting[T] {
   type Result
   val Singleton: Result
 }
 
-abstract class LowPriorityInspectorAsserting {
+abstract class LowPriorityCheckerAsserting {
 
-  implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } = {
-    new InspectorAsserting[T] {
+  implicit def assertingNatureOfT[T]: CheckerAsserting[T] { type Result = Unit } = {
+    new CheckerAsserting[T] {
       type Result = Unit
       val Singleton = ()
     }
   }
 }
 
-abstract class MediumPriorityInspectorAsserting extends LowPriorityInspectorAsserting {
-  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } = {
-    new InspectorAsserting[Assertion] {
+abstract class MediumPriorityCheckerAsserting extends LowPriorityCheckerAsserting {
+  implicit def assertingNatureOfAssertion: CheckerAsserting[Assertion] { type Result = Assertion } = {
+    new CheckerAsserting[Assertion] {
       type Result = Assertion
       val Singleton = Succeeded
     }
   }
 
 /*
-  implicit def assertingNatureOfExpectation: InspectorAsserting[Expectation] { type Result = Expectation } = {
-    new InspectorAsserting[Expectation] {
+  implicit def assertingNatureOfExpectation: CheckerAsserting[Expectation] { type Result = Expectation } = {
+    new CheckerAsserting[Expectation] {
       type Result = Expectation
     }
   }
 */
 }
 
-object InspectorAsserting extends MediumPriorityInspectorAsserting {
+object CheckerAsserting extends MediumPriorityCheckerAsserting {
 
 /*
-  implicit def assertingNatureOfNothing: InspectorAsserting[Nothing] { type Result = Nothing } = {
-    new InspectorAsserting[Nothing] {
+  implicit def assertingNatureOfNothing: CheckerAsserting[Nothing] { type Result = Nothing } = {
+    new CheckerAsserting[Nothing] {
       type Result = Nothing
       val Singleton = throw new NoSuchElementException
     }
   }
 */
-  implicit def assertingNatureOfString: InspectorAsserting[String] { type Result = Unit } = {
-    new InspectorAsserting[String] {
+  implicit def assertingNatureOfString: CheckerAsserting[String] { type Result = Unit } = {
+    new CheckerAsserting[String] {
       type Result = Unit
       val Singleton = ()
     }
