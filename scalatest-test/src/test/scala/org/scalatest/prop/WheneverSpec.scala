@@ -34,7 +34,7 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
         ignore("should, under Compatibility, either return Succeeded or throw TFE") { // Unignore after we uncomment the expectation implicits in RegistrationPolicy
           import Expectations._
           val res1 = whenever (true) { expect(1 == 1) }
-          assert(res1 eq Succeeded)
+          assert(res1 == Succeeded)
           assertThrows[TestFailedException] {
             whenever (true) { expect(1 == 2) }
           }
@@ -52,18 +52,14 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
         }
       }
     }
-    describe("when the result type of the block is anything other than Expectation") {
-      describe("when the Boolean condition is true") {
+    describe("when the result type of the block is Assertion") {
+      describe("when the Boolean condition is true") { // TODO: thow new Exception to test the Nothing case
         it("should return Succeeded or throw an exception") {
           val res1 = whenever (true) { assert(1 == 1) }
-          assert(res1 eq Succeeded)
+          assert(res1 == Succeeded)
           assertThrows[TestFailedException] {
             whenever (true) { assert(1 == 2) }
           }
-          val res2 = whenever (true) { 1 }
-          assert(res2 eq Succeeded)
-          val res3 = whenever (true) { () }
-          assert(res3 eq Succeeded)
           // SKIP-SCALATESTJS-START
           assertThrows[StringIndexOutOfBoundsException] {
             whenever (true) { "hi".charAt(-1) }
@@ -79,11 +75,49 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           assertThrows[DiscardedEvaluationException] {
             whenever (false) { assert(1 == 2) }
           }
+        }
+      }
+    }
+    describe("when the result type of the block is anything other than Expectation") {
+      describe("when the Boolean condition is true") {
+        it("should return the Unit value or throw an exception") {
+          val res1 = whenever (true) { Predef.assert(1 == 1) }
+          assert(res1 == ())
+          assertThrows[TestFailedException] {
+            whenever (true) { assert(1 == 2); () }
+          }
+          assertThrows[AssertionError] {
+            whenever (true) { Predef.assert(1 == 2) }
+          }
+          val res2 = whenever (true) { 1 }
+          assert(res2 == ())
+          val res3 = whenever (true) { () }
+          assert(res3 == ())
+          val res4 = whenever (true) { 1 == 1 }
+          assert(res2 == ())
+          // SKIP-SCALATESTJS-START
+          assertThrows[StringIndexOutOfBoundsException] {
+            whenever (true) { "hi".charAt(-1) }
+          }
+          // SKIP-SCALATESTJS-END
+        }
+      }
+      describe("when the Boolean condition is false") {
+        it("should throw DiscardedEvaluationException") {
+          assertThrows[DiscardedEvaluationException] {
+            whenever (false) { Predef.assert(1 == 1) }
+          }
+          assertThrows[DiscardedEvaluationException] {
+            whenever (false) { Predef.assert(1 == 2) }
+          }
           assertThrows[DiscardedEvaluationException] {
             whenever (false) { 1 }
           }
           assertThrows[DiscardedEvaluationException] {
             whenever (false) { () }
+          }
+          assertThrows[DiscardedEvaluationException] {
+            whenever (false) { 1 == 1 }
           }
         }
       }
