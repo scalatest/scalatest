@@ -49,7 +49,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait FunSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting with Compatibility { thisSuite =>
+trait FunSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureSpecMod, "FixtureFunSpec")
 
@@ -99,7 +99,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Assertion) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -107,7 +107,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Assertion) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = 0
     // SKIP-SCALATESTJS-END
@@ -141,7 +141,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
 
     class ResultOfItWordApplication(specText: String, testTags: Tag*) {
 
-      def apply(testFun: FixtureParam => Assertion) {
+      def apply(testFun: FixtureParam => Unit /* Assertion */) {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
@@ -151,7 +151,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
         engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
       }
 
-      def apply(testFun: () => Assertion) {
+      def apply(testFun: () => Unit /* Assertion */) {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
@@ -275,14 +275,14 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
   protected final class TheyWord {
 
     class ResultOfTheyWordApplication(specText: String, testTags: Tag*) {
-      def apply(testFun: FixtureParam => Assertion): Unit = {
+      def apply(testFun: FixtureParam => Unit /* Assertion */): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepthAdjustment = -3
         engine.registerTest(specText, Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
       }
-      def apply(testFun: () => Assertion): Unit = {
+      def apply(testFun: () => Unit /* Assertion */): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
@@ -380,7 +380,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
   protected val they = new TheyWord
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Assertion): Unit = {
+    def apply(testFun: FixtureParam => Unit /* Assertion */): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -389,7 +389,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
       //SCALATESTJS-ONLY val stackDepthAdjustment = -9
       engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
-    def apply(testFun: () => Assertion): Unit = {
+    def apply(testFun: () => Unit /* Assertion */): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -439,7 +439,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
 /*
-  protected def ignore(specText: String)(testFun: FixtureParam => Assertion) {
+  protected def ignore(specText: String)(testFun: FixtureParam => Unit /* Assertion */) {
     if (atomic.get.registrationClosed)
       throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideAnItOrAThey, getStackDepthFun(sourceFileName, "ignore"))
     ignore(specText, Array[Tag](): _*)(testFun)
@@ -622,7 +622,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Assertion = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Unit /* Assertion */ = {
     fixture => { f; Succeeded }
   }
 
@@ -635,7 +635,7 @@ trait FunSpecLike extends Suite with TestRegistration with Informing with Notify
    * @return a function of <code>FixtureParam => Any</code>
    */
 /*
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Assertion): (FixtureParam => Assertion) =
+  protected implicit def convertNoArgToFixtureFunction(fun: () => Unit /* Assertion */): (FixtureParam => Unit /* Assertion */) =
     new NoArgTestWrapper(fun)
 */
 

@@ -50,7 +50,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting with Compatibility { thisSuite =>
+trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFixtureWordSpecMod, "FixtureWordSpec")
 
@@ -100,7 +100,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Assertion) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -108,7 +108,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Assertion) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -135,7 +135,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Assertion) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -168,7 +168,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Assertion) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
@@ -292,7 +292,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Assertion) {
+    def in(testFun: FixtureParam => Unit /* Assertion */) {
       registerTestToRun(specText, tags, "in", testFun)
     }
 
@@ -314,7 +314,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Assertion) {
+    def in(testFun: () => Unit /* Assertion */) {
       registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -358,7 +358,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Assertion) {
+    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
       registerTestToIgnore(specText, tags, "ignore", testFun)
     }
 
@@ -380,7 +380,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Assertion) {
+    def ignore(testFun: () => Unit /* Assertion */) {
       registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
     }
   }
@@ -422,7 +422,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Assertion) {
+    def in(testFun: FixtureParam => Unit /* Assertion */) {
       registerTestToRun(string, List(), "in", testFun)
     }
 
@@ -444,7 +444,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Assertion) {
+    def in(testFun: () => Unit /* Assertion */) {
       registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -488,7 +488,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Assertion) {
+    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
       registerTestToIgnore(string, List(), "ignore", testFun)
     }
 
@@ -510,7 +510,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Assertion) {
+    def ignore(testFun: () => Unit /* Assertion */) {
       registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
 
     }
