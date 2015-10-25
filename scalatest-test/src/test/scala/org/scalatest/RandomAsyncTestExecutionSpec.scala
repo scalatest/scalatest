@@ -19,7 +19,7 @@ import scala.collection.mutable.ListBuffer
 import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.SharedHelpers.EventRecordingReporter
 
-class RandomAsyncTestExecutionSpec extends AsyncFunSuite with Safety /* with RandomTestOrder*/ { thisOuterSuite =>
+class RandomAsyncTestExecutionSpec extends AsyncFunSuite /* with RandomTestOrder*/ { thisOuterSuite =>
   
   // SKIP-SCALATESTJS-START
   implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
