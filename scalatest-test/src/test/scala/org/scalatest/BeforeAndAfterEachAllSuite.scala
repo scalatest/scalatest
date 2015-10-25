@@ -23,7 +23,7 @@ import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest.events.InfoProvided
 import scala.concurrent.Promise
 
-class BeforeAndAfterEachAllSuite extends FunSuite with Safety {
+class BeforeAndAfterEachAllSuite extends FunSuite {
 
   // SKIP-SCALATESTJS-START
   implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
