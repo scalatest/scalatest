@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalatest.enablers.InspectorAsserting
 import org.scalatest.matchers._
 import org.scalatest.enablers._
 import org.scalatest.words.ResultOfNoElementsOfApplication
@@ -3132,37 +3133,37 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   private case object NoCollected extends Collected
   private case class ExactlyCollected(num: Int) extends Collected
   
-  import InspectorsHelper._
-  
   private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, methodName: String, stackDepth: Int)(fun: T => Assertion): Assertion = {
+
+    val asserting = InspectorAsserting.assertingNatureOfAssertion
 
     collected match {
       case AllCollected =>
-        doForAll(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.doForAll(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
-      case AtLeastCollected(num) => 
-        doForAtLeast(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+      case AtLeastCollected(num) =>
+        asserting.doForAtLeast(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
-      case EveryCollected => 
-        doForEvery(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+      case EveryCollected =>
+        asserting.doForEvery(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
-      case ExactlyCollected(num) => 
-        doForExactly(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+      case ExactlyCollected(num) =>
+        asserting.doForExactly(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case NoCollected =>
-        doForNo(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.doForNo(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case BetweenCollected(from, to) =>
-        doForBetween(from, to, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.doForBetween(from, to, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case AtMostCollected(num) =>
-        doForAtMost(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.doForAtMost(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
     }
