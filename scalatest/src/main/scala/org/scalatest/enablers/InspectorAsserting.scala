@@ -36,7 +36,256 @@ trait InspectorAsserting[T] {
 
 abstract class LowPriorityInspectorAsserting {
 
+  class InspectorAssertingImpl[T, Res](val singleton: Res) extends InspectorAsserting[T] {
+
+    type Result = Res 
+    val Singleton = singleton // TODO DELETE
+
+    import InspectorAsserting._
+
+    def doForAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+      val xsIsMap = isMap(original)
+      val result =
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
+      if (result.failedElements.length > 0)
+        throw new exceptions.TestFailedException(
+          sde =>
+            Some(
+              if (shorthand)
+                Resources.allShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+              else
+                Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+            ),
+          Some(result.failedElements(0)._3),
+          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+        )
+      else
+        singleton
+    }
+
+    def doForAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+      @tailrec
+      def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): (Int, IndexedSeq[String]) = {
+        if (itr.hasNext) {
+          val head = itr.next
+          val (newPassedCount, newMessageAcc) =
+            try {
+              fun(head)
+              (passedCount + 1, messageAcc)
+            }
+            catch {
+              case e if !shouldPropagate(e) =>
+                val xsIsMap = isMap(original)
+                val messageKey = head match {
+                  case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+                  case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+                  case _ => index.toString
+                }
+                (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+            }
+          if (newPassedCount < min)
+            forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
+          else
+            (newPassedCount, newMessageAcc)
+        }
+        else
+          (passedCount, messageAcc)
+      }
+
+      if (min <= 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'min'"))
+
+      val (passedCount, messageAcc) = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty)
+      if (passedCount < min)
+        throw new exceptions.TestFailedException(
+          sde =>
+            Some(
+              if (shorthand)
+                if (passedCount > 0)
+                  Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
+                else
+                  Resources.atLeastShorthandFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
+              else
+              if (passedCount > 0)
+                Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
+              else
+                Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
+            ),
+          None,
+          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+        )
+      else
+        singleton
+    }
+
+    def doForAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+      if (max <= 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
+
+      val xsIsMap = isMap(original)
+      val result =
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > max)
+      if (result.passedCount > max)
+        throw new exceptions.TestFailedException(
+          sde =>
+            Some(
+              if (shorthand)
+                Resources.atMostShorthandFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+              else
+                Resources.forAtMostFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+            ),
+          None,
+          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+        )
+      else
+        singleton
+    }
+
+    def doForExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+      if (succeededCount <= 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
+
+      val xsIsMap = isMap(original)
+      val result =
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > succeededCount)
+      if (result.passedCount != succeededCount)
+        throw new exceptions.TestFailedException(
+          sde =>
+            Some(
+              if (shorthand)
+                if (result.passedCount == 0)
+                  Resources.exactlyShorthandFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                else {
+                  if (result.passedCount < succeededCount)
+                    Resources.exactlyShorthandFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                  else
+                    Resources.exactlyShorthandFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+                }
+              else
+              if (result.passedCount == 0)
+                Resources.forExactlyFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+              else {
+                if (result.passedCount < succeededCount)
+                  Resources.forExactlyFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                else
+                  Resources.forExactlyFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+              }
+            ),
+          None,
+          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+        )
+      else
+        singleton
+    }
+
+    def doForNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+      val xsIsMap = isMap(original)
+      val result =
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
+      if (result.passedCount != 0)
+        throw new exceptions.TestFailedException(
+          sde =>
+            Some(
+              if (shorthand)
+                Resources.noShorthandFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+              else
+                Resources.forNoFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+            ),
+          None,
+          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+        )
+      else
+        singleton
+    }
+
+    def doForBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+      if (from < 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
+      if (upTo <= 0)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'upTo'"))
+      if (upTo <= from)
+        throw new IllegalArgumentException(Resources.forAssertionsMoreThan("'upTo'", "'from'"))
+
+      val xsIsMap = isMap(original)
+      val result =
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > upTo)
+      if (result.passedCount < from || result.passedCount > upTo)
+        throw new exceptions.TestFailedException(
+          sde =>
+            Some(
+              if (shorthand)
+                if (result.passedCount == 0)
+                  Resources.betweenShorthandFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                else {
+                  if (result.passedCount < from)
+                    Resources.betweenShorthandFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                  else
+                    Resources.betweenShorthandFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+                }
+              else
+              if (result.passedCount == 0)
+                Resources.forBetweenFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+              else {
+                if (result.passedCount < from)
+                  Resources.forBetweenFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+                else
+                  Resources.forBetweenFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+              }
+            ),
+          None,
+          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+        )
+      else
+        singleton
+    }
+
+    def doForEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+      @tailrec
+      def runAndCollectErrorMessage[E](itr: Iterator[E], messageList: IndexedSeq[String], index: Int)(fun: E => T): IndexedSeq[String] = {
+        if (itr.hasNext) {
+          val head = itr.next
+          val newMessageList =
+            try {
+              fun(head)
+              messageList
+            }
+            catch {
+              case e if !shouldPropagate(e) =>
+                val xsIsMap = isMap(original)
+                val messageKey = head match {
+                  case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+                  case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+                  case _ => index.toString
+                }
+                messageList :+ createMessage(messageKey, e, xsIsMap)
+            }
+
+          runAndCollectErrorMessage(itr, newMessageList, index + 1)(fun)
+        }
+        else
+          messageList
+      }
+      val messageList = runAndCollectErrorMessage(xs.toIterator, IndexedSeq.empty, 0)(fun)
+      if (messageList.size > 0)
+        throw new exceptions.TestFailedException(
+          sde =>
+            Some(
+              if (shorthand)
+                Resources.everyShorthandFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original))
+              else
+                Resources.forEveryFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original))
+            ),
+          None,
+          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+        )
+      else
+        singleton
+    }
+  }
+
   implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } = {
+    new InspectorAssertingImpl[T, Unit](())
+/*
     new InspectorAsserting[T] {
       type Result = Unit
       val Singleton = ()
@@ -269,6 +518,7 @@ abstract class LowPriorityInspectorAsserting {
       }
 
     }
+*/
   }
 }
 
