@@ -524,6 +524,8 @@ abstract class LowPriorityInspectorAsserting {
 
 abstract class MediumPriorityInspectorAsserting extends LowPriorityInspectorAsserting {
   implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } = {
+    new InspectorAssertingImpl[Assertion, Assertion](Succeeded)
+/*
     new InspectorAsserting[Assertion] {
       type Result = Assertion
       val Singleton = Succeeded
@@ -770,6 +772,7 @@ abstract class MediumPriorityInspectorAsserting extends LowPriorityInspectorAsse
       }
 
     }
+*/
   }
 
 /*
