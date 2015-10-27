@@ -16,11 +16,12 @@
 package org.scalatest.enablers
 
 import org.scalatest._
+import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import Suite.indentLines
 import org.scalatest.FailureMessages.decorateToStringValue
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
 
 trait InspectorAsserting[T] {
   type Result
@@ -44,14 +45,11 @@ abstract class LowPriorityInspectorAsserting {
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
       if (result.failedElements.length > 0)
-        throw new exceptions.TestFailedException(
-          sde =>
-            Some(
-              if (shorthand)
-                Resources.allShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else
-                Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-            ),
+        indicateFailure(
+          if (shorthand)
+            Resources.allShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+          else
+            Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original)),
           Some(result.failedElements(0)._3),
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
@@ -92,20 +90,17 @@ abstract class LowPriorityInspectorAsserting {
 
       val (passedCount, messageAcc) = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty)
       if (passedCount < min)
-        throw new exceptions.TestFailedException(
-          sde =>
-            Some(
-              if (shorthand)
-                if (passedCount > 0)
-                  Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else
-                  Resources.atLeastShorthandFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else
-              if (passedCount > 0)
-                Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else
-                Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
-            ),
+        indicateFailure(
+          if (shorthand)
+            if (passedCount > 0)
+              Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
+            else
+              Resources.atLeastShorthandFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
+          else
+            if (passedCount > 0)
+              Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original))
+            else
+              Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(original)),
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
@@ -120,14 +115,11 @@ abstract class LowPriorityInspectorAsserting {
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > max)
       if (result.passedCount > max)
-        throw new exceptions.TestFailedException(
-          sde =>
-            Some(
-              if (shorthand)
-                Resources.atMostShorthandFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-              else
-                Resources.forAtMostFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-            ),
+        indicateFailure(
+          if (shorthand)
+            Resources.atMostShorthandFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+          else
+            Resources.forAtMostFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original)),
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
@@ -142,28 +134,25 @@ abstract class LowPriorityInspectorAsserting {
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > succeededCount)
       if (result.passedCount != succeededCount)
-        throw new exceptions.TestFailedException(
-          sde =>
-            Some(
-              if (shorthand)
-                if (result.passedCount == 0)
-                  Resources.exactlyShorthandFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else {
-                  if (result.passedCount < succeededCount)
-                    Resources.exactlyShorthandFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                  else
-                    Resources.exactlyShorthandFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-                }
+        indicateFailure(
+          if (shorthand)
+            if (result.passedCount == 0)
+              Resources.exactlyShorthandFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+            else {
+              if (result.passedCount < succeededCount)
+                Resources.exactlyShorthandFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
               else
-              if (result.passedCount == 0)
-                Resources.forExactlyFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else {
-                if (result.passedCount < succeededCount)
-                  Resources.forExactlyFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else
-                  Resources.forExactlyFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-              }
-            ),
+                Resources.exactlyShorthandFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+            }
+          else
+            if (result.passedCount == 0)
+              Resources.forExactlyFailedNoElement(succeededCount.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+            else {
+              if (result.passedCount < succeededCount)
+                Resources.forExactlyFailedLess(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+              else
+                Resources.forExactlyFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+            },
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
@@ -175,14 +164,11 @@ abstract class LowPriorityInspectorAsserting {
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
       if (result.passedCount != 0)
-        throw new exceptions.TestFailedException(
-          sde =>
-            Some(
-              if (shorthand)
-                Resources.noShorthandFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-              else
-                Resources.forNoFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-            ),
+        indicateFailure(
+          if (shorthand)
+            Resources.noShorthandFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+          else
+            Resources.forNoFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original)),
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
@@ -201,28 +187,25 @@ abstract class LowPriorityInspectorAsserting {
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > upTo)
       if (result.passedCount < from || result.passedCount > upTo)
-        throw new exceptions.TestFailedException(
-          sde =>
-            Some(
-              if (shorthand)
-                if (result.passedCount == 0)
-                  Resources.betweenShorthandFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else {
-                  if (result.passedCount < from)
-                    Resources.betweenShorthandFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                  else
-                    Resources.betweenShorthandFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-                }
+        indicateFailure(
+          if (shorthand)
+            if (result.passedCount == 0)
+              Resources.betweenShorthandFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+            else {
+              if (result.passedCount < from)
+                Resources.betweenShorthandFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
               else
-              if (result.passedCount == 0)
-                Resources.forBetweenFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-              else {
-                if (result.passedCount < from)
-                  Resources.forBetweenFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
-                else
-                  Resources.forBetweenFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
-              }
-            ),
+                Resources.betweenShorthandFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+            }
+          else
+            if (result.passedCount == 0)
+              Resources.forBetweenFailedNoElement(from.toString, upTo.toString, indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+            else {
+              if (result.passedCount < from)
+                Resources.forBetweenFailedLess(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(original))
+              else
+                Resources.forBetweenFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(original))
+            },
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
@@ -257,14 +240,11 @@ abstract class LowPriorityInspectorAsserting {
       }
       val messageList = runAndCollectErrorMessage(xs.toIterator, IndexedSeq.empty, 0)(fun)
       if (messageList.size > 0)
-        throw new exceptions.TestFailedException(
-          sde =>
-            Some(
-              if (shorthand)
-                Resources.everyShorthandFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original))
-              else
-                Resources.forEveryFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original))
-            ),
+        indicateFailure(
+          if (shorthand)
+            Resources.everyShorthandFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original))
+          else
+            Resources.forEveryFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(original)),
           None,
           getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
         )
@@ -273,13 +253,23 @@ abstract class LowPriorityInspectorAsserting {
 
     // TODO: Why is this a by-name? Well, I made it a by-name because it was one in MatchersHelper.
     // Why is it a by-name there?
+    // CS: because we want to construct the message lazily.
     def indicateSuccess(message: => String): Result
+
+    def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
   }
 
   implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } =
     new InspectorAssertingImpl[T] {
       type Result = Unit
       def indicateSuccess(message: => String): Unit = ()
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
+        throw new exceptions.TestFailedException(
+          sde => Some(message),
+          optionalCause,
+          stackDepthFun
+        )
+      }
     }
 }
 
@@ -289,6 +279,7 @@ abstract class MediumPriorityInspectorAsserting extends LowPriorityInspectorAsse
     new InspectorAssertingImpl[Expectation] {
       type Result = Expectation
       def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Expectation = Fact.No(message)
     }
   }
 }
@@ -299,6 +290,13 @@ object InspectorAsserting extends MediumPriorityInspectorAsserting {
     new InspectorAssertingImpl[Assertion] {
       type Result = Assertion
       def indicateSuccess(message: => String): Assertion = Succeeded
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {
+        throw new exceptions.TestFailedException(
+          sde => Some(message),
+          optionalCause,
+          stackDepthFun
+        )
+      }
     }
 
   private[scalatest] final def indentErrorMessages(messages: IndexedSeq[String]) = indentLines(1, messages)
