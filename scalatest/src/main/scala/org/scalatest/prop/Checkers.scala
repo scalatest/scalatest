@@ -29,7 +29,6 @@ import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalacheck.Test.Parameters
 import org.scalacheck.Test.TestCallback
-import Checkers.getParams
 
 /**
  * Trait that contains several &ldquo;check&rdquo; methods that perform ScalaCheck property checks.
@@ -244,7 +243,8 @@ trait Checkers extends Configuration {
       a1: Arbitrary[A1], s1: Shrink[A1], pp1: A1 => Pretty,
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
-    check(Prop.forAll(f)(p, a1, s1, pp1), configParams: _*)(config, asserting)
+    val params = getParams(configParams, config)
+    asserting.doCheck(Prop.forAll(f)(p, a1, s1, pp1), params, "Checkers.scala", "check")
   }
 
   /**
@@ -262,7 +262,7 @@ trait Checkers extends Configuration {
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
     val params = getParams(configParams, config)
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), configParams: _*)(config, asserting)
+    asserting.doCheck(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), params, "Checkers.scala", "check")
   }
 
   /**
@@ -280,7 +280,8 @@ trait Checkers extends Configuration {
       a3: Arbitrary[A3], s3: Shrink[A3], pp3: A3 => Pretty,
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), configParams: _*)(config, asserting)
+    val params = getParams(configParams, config)
+    asserting.doCheck(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), params, "Checkers.scala", "check")
   }
 
   /**
@@ -299,7 +300,8 @@ trait Checkers extends Configuration {
       a4: Arbitrary[A4], s4: Shrink[A4], pp4: A4 => Pretty,
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), configParams: _*)(config, asserting)
+    val params = getParams(configParams, config)
+    asserting.doCheck(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), params, "Checkers.scala", "check")
   }
 
   /**
@@ -319,7 +321,8 @@ trait Checkers extends Configuration {
       a5: Arbitrary[A5], s5: Shrink[A5], pp5: A5 => Pretty,
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), configParams: _*)(config, asserting)
+    val params = getParams(configParams, config)
+    asserting.doCheck(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), params, "Checkers.scala", "check")
   }
 
   /**
@@ -340,7 +343,8 @@ trait Checkers extends Configuration {
       a6: Arbitrary[A6], s6: Shrink[A6], pp6: A6 => Pretty,
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
-    check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), configParams: _*)(config, asserting)
+    val params = getParams(configParams, config)
+    asserting.doCheck(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), params, "Checkers.scala", "check")
   }
 
   /**
@@ -351,8 +355,7 @@ trait Checkers extends Configuration {
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
   def check[ASSERTION](p: Prop, prms: Test.Parameters)(implicit asserting: CheckerAsserting[ASSERTION]): asserting.Result = {
-    println("here11")
-    Checkers.doCheck(p, prms, "Checkers.scala", "check")
+    asserting.doCheck(p, prms, "Checkers.scala", "check")
   }
 
   /**
@@ -363,200 +366,8 @@ trait Checkers extends Configuration {
    */
   def check[ASSERTION](p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable, asserting: CheckerAsserting[ASSERTION]): asserting.Result = {
     val params = getParams(configParams, config)
-    //check(p, params)
-    Checkers.doCheck(p, params, "Checkers.scala", "check")
+    asserting.doCheck(p, params, "Checkers.scala", "check")
   }
-}
-
-/**
- * Companion object that facilitates the importing of <code>Checkers</code> members as 
- * an alternative to mixing it in. One use case is to import <code>Checkers</code> members so you can use
- * them in the Scala interpreter.
- *
- * @author Bill Venners
- */
-object Checkers extends Checkers {
-
-  private[prop] def doCheck[ASSERTION](p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None)(implicit asserting: CheckerAsserting[ASSERTION]): asserting.Result = {
-
-    val result = Test.check(prms, p)
-    if (!result.passed) {
-
-      val (args, labels) = argsAndLabels(result)
-
-      (result.status: @unchecked) match {
-
-        case Test.Exhausted =>
-
-          val failureMsg =
-            if (result.succeeded == 1)
-              FailureMessages.propCheckExhaustedAfterOne(result.discarded)
-            else
-              FailureMessages.propCheckExhausted(result.succeeded, result.discarded)
-
-          throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => failureMsg,
-            None,
-            getStackDepthFun(stackDepthFileName, stackDepthMethodName),
-            // getStackDepth("ScalaCheck.scala", "check"),
-            // { val x = getStackDepth("GeneratorDrivenPropertyChecks$class.scala", "forAll"); println("stackDepth:" + x); x},
-            None,
-            failureMsg,
-            args,
-            None,
-            labels
-          )
-
-        case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
-
-          // SKIP-SCALATESTJS-START
-          val stackDepth = 0
-          // SKIP-SCALATESTJS-END
-          //SCALATESTJS-ONLY val stackDepth = 1
-
-          throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
-              "  " + FailureMessages.propertyFailed(result.succeeded) + "\n" +
-              (
-                sde match {
-                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                  case _ => ""
-                }
-              ) +
-              "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-              "  )" + 
-              getLabelDisplay(scalaCheckLabels),
-            None,
-            getStackDepthFun(stackDepthFileName, stackDepthMethodName, stackDepth),
-            None,
-            FailureMessages.propertyFailed(result.succeeded),
-            scalaCheckArgs,
-            None,
-            scalaCheckLabels.toList
-          )
-
-        case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
-
-          throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" +
-              "  " + FailureMessages.thrownExceptionsMessage(if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
-              (
-                e match {
-                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                  case _ => ""
-                }
-              ) +
-              "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-              "  )" + 
-              getLabelDisplay(scalaCheckLabels),
-            Some(e),
-            getStackDepthFun(stackDepthFileName, stackDepthMethodName),
-            None,
-            FailureMessages.propertyException(UnquotedString(e.getClass.getName)),
-            scalaCheckArgs,
-            None,
-            scalaCheckLabels.toList
-          )
-      }
-    }
-    else asserting.Singleton
-  }
-  
-  private def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]) = {
-    if (argNames.isDefined) {
-      // length of scalaCheckArgs should equal length of argNames
-      val zipped = argNames.get zip scalaCheckArgs
-      zipped map { case (argName, arg) => arg.copy(label = argName) }
-    }
-    else
-      scalaCheckArgs
-  }
-  
-  private def getLabelDisplay(labels: Set[String]): String = 
-    if (labels.size > 0)
-      "\n  " + (if (labels.size == 1) Resources.propCheckLabel else Resources.propCheckLabels) + "\n" + labels.map("    " + _).mkString("\n")
-    else
-      ""
-
-  private def argsAndLabels(result: Test.Result): (List[Any], List[String]) = {
-
-    val (scalaCheckArgs, scalaCheckLabels) =
-      result.status match {
-        case Test.Proved(args) => (args.toList, List())
-        case Test.Failed(args, labels) => (args.toList, labels.toList)
-        case Test.PropException(args, _, labels) => (args.toList, labels.toList)
-        case _ => (List(), List())
-      }
-
-    val args: List[Any] = for (scalaCheckArg <- scalaCheckArgs.toList) yield scalaCheckArg.arg
-
-    // scalaCheckLabels is a Set[String], I think
-    val labels: List[String] = for (scalaCheckLabel <- scalaCheckLabels.iterator.toList) yield scalaCheckLabel
-
-    (args, labels)
-  }
-
-  // TODO: Internationalize these, and make them consistent with FailureMessages stuff (only strings get quotes around them, etc.)
-  private def prettyTestStats(result: Test.Result) = result.status match {
-
-    case Test.Proved(args) =>
-      "OK, proved property:                   \n" + prettyArgs(args)
-
-    case Test.Passed =>
-      "OK, passed " + result.succeeded + " tests."
-
-    case Test.Failed(args, labels) =>
-      "Falsified after " + result.succeeded + " passed tests:\n" + prettyLabels(labels) + prettyArgs(args)
-
-    case Test.Exhausted =>
-      "Gave up after only " + result.succeeded + " passed tests. " +
-          result.discarded + " tests were discarded."
-
-    case Test.PropException(args, e, labels) =>
-      FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args)
-  }
-
-  private def prettyLabels(labels: Set[String]) = {
-    if (labels.isEmpty) ""
-    else if (labels.size == 1) "Label of failing property: " + labels.iterator.next + "\n"
-    else "Labels of failing property: " + labels.mkString("\n") + "\n"
-  }
-
-  import FailureMessages.decorateToStringValue
-
-  //
-  // If scalacheck arg contains a type that
-  // decorateToStringValue processes, then let
-  // decorateToStringValue handle it.  Otherwise use its
-  // prettyArg method to generate the display string.
-  //
-  // Passes 0 as verbosity value to prettyArg function.
-  //
-  def decorateArgToStringValue(arg: Arg[_]): String =
-    arg.arg match {
-      case null         => decorateToStringValue(arg.arg)
-      case _: Unit      => decorateToStringValue(arg.arg)
-      case _: String    => decorateToStringValue(arg.arg)
-      case _: Char      => decorateToStringValue(arg.arg)
-      case _: Array[_]  => decorateToStringValue(arg.arg)
-      case _            => arg.prettyArg(new Pretty.Params(0))
-    }
-
-  private def prettyArgs(args: List[Arg[_]]) = {
-    val strs = for((a, i) <- args.zipWithIndex) yield (
-      "    " +
-      (if (a.label == "") "arg" + i else a.label) +
-      " = " + decorateArgToStringValue(a) + (if (i < args.length - 1) "," else "") +
-      (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
-    )
-    strs.mkString("\n")
-  }
-
 }
 
   /*

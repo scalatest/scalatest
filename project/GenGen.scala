@@ -178,7 +178,6 @@ import org.scalacheck.Prop
 import org.scalacheck.Gen
 import org.scalacheck.Prop._
 import org.scalatest.exceptions.DiscardedEvaluationException
-import Checkers.getParams
 import org.scalatest.enablers.CheckerAsserting
 
 /**
@@ -723,7 +722,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
+        asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
     }
 
   /**
@@ -766,7 +765,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
+        asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
     }
 
   /**
@@ -810,7 +809,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
+        asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
     }
 
   /**
@@ -855,7 +854,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
+        asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
     }
 
   /**
@@ -901,7 +900,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
+        asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
     }
 
   /**
@@ -948,7 +947,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
+        asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "apply")
     }
   }
 """
@@ -992,7 +991,7 @@ $arbShrinks$,
       }
       val prop = Prop.forAll(propF)
       val params = getParams(Seq(), config)
-      Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "forAll")
+      asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "forAll")
   }
 
   /**
@@ -1033,7 +1032,7 @@ $arbShrinks$,
       }
       val prop = Prop.forAll(propF)
       val params = getParams(configParams, config)
-      Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "forAll", Some(List($argNameNames$)))
+      asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "forAll", Some(List($argNameNames$)))
   }
 
   /**
@@ -1081,7 +1080,7 @@ $shrinks$,
       }
       val prop = Prop.forAll($genArgs$)(propF)
       val params = getParams(configParams, config)
-      Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "forAll")
+      asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "forAll")
   }
 
   /**
@@ -1132,7 +1131,7 @@ $tupleBusters$
       }
       val prop = Prop.forAll($genArgs$)(propF)
       val params = getParams(configParams, config)
-      Checkers.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "forAll", Some(List($argNameNames$)))
+      asserting.doCheck(prop, params, "GeneratorDrivenPropertyChecks.scala", "forAll", Some(List($argNameNames$)))
   }
 """
 
