@@ -28,212 +28,141 @@ import org.scalacheck.Test
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepth
+import org.scalatest.exceptions.StackDepthException
 
 trait CheckerAsserting[T] {
   type Result
-  val Singleton: Result
 
   def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result
 }
 
 abstract class LowPriorityCheckerAsserting {
 
-  implicit def assertingNatureOfT[T]: CheckerAsserting[T] { type Result = Unit } = {
-    new CheckerAsserting[T] {
-      type Result = Unit
-      val Singleton = ()
+  abstract class CheckerAssertingImpl[T] extends CheckerAsserting[T] {
 
-      import CheckerAsserting._
+    import CheckerAsserting._
 
-      def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result = {
+    def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result = {
 
-        val result = Test.check(prms, p)
-        if (!result.passed) {
+      val result = Test.check(prms, p)
+      if (!result.passed) {
 
-          val (args, labels) = argsAndLabels(result)
+        val (args, labels) = argsAndLabels(result)
 
-          (result.status: @unchecked) match {
+        (result.status: @unchecked) match {
 
-            case Test.Exhausted =>
+          case Test.Exhausted =>
 
-              val failureMsg =
-                if (result.succeeded == 1)
-                  FailureMessages.propCheckExhaustedAfterOne(result.discarded)
-                else
-                  FailureMessages.propCheckExhausted(result.succeeded, result.discarded)
+            val failureMsg =
+              if (result.succeeded == 1)
+                FailureMessages.propCheckExhaustedAfterOne(result.discarded)
+              else
+                FailureMessages.propCheckExhausted(result.succeeded, result.discarded)
 
-              throw new GeneratorDrivenPropertyCheckFailedException(
-                sde => failureMsg,
-                None,
-                getStackDepthFun(stackDepthFileName, stackDepthMethodName),
-                // getStackDepth("ScalaCheck.scala", "check"),
-                // { val x = getStackDepth("GeneratorDrivenPropertyChecks$class.scala", "forAll"); println("stackDepth:" + x); x},
-                None,
-                failureMsg,
-                args,
-                None,
-                labels
-              )
+            indicateFailure(
+              sde => failureMsg,
+              failureMsg,
+              args,
+              labels,
+              None,
+              getStackDepthFun(stackDepthFileName, stackDepthMethodName)
+            )
 
-            case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
+          case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
 
-              // SKIP-SCALATESTJS-START
-              val stackDepth = 0
-              // SKIP-SCALATESTJS-END
-              //SCALATESTJS-ONLY val stackDepth = 1
+            // SKIP-SCALATESTJS-START
+            val stackDepth = 2
+            // SKIP-SCALATESTJS-END
+            //SCALATESTJS-ONLY val stackDepth = 1
 
-              throw new GeneratorDrivenPropertyCheckFailedException(
-                sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-                  ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-                  "  " + FailureMessages.propertyFailed(result.succeeded) + "\n" +
-                  (
-                    sde match {
-                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                        "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                      case _ => ""
-                    }
-                    ) +
-                  "  " + FailureMessages.occurredOnValues + "\n" +
-                  prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-                  "  )" +
-                  getLabelDisplay(scalaCheckLabels),
-                None,
-                getStackDepthFun(stackDepthFileName, stackDepthMethodName, stackDepth),
-                None,
-                FailureMessages.propertyFailed(result.succeeded),
-                scalaCheckArgs,
-                None,
-                scalaCheckLabels.toList
-              )
+            indicateFailure(
+              sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+              "  " + FailureMessages.propertyFailed(result.succeeded) + "\n" +
+              (
+                sde match {
+                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                  case _ => ""
+                }
+                ) +
+              "  " + FailureMessages.occurredOnValues + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
+              "  )" +
+              getLabelDisplay(scalaCheckLabels),
+              FailureMessages.propertyFailed(result.succeeded),
+              scalaCheckArgs,
+              scalaCheckLabels.toList,
+              None,
+              getStackDepthFun(stackDepthFileName, stackDepthMethodName, stackDepth)
+            )
 
-            case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
+          case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
 
-              throw new GeneratorDrivenPropertyCheckFailedException(
-                sde => FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" +
-                  "  " + FailureMessages.thrownExceptionsMessage(if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
-                  (
-                    e match {
-                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                        "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                      case _ => ""
-                    }
-                    ) +
-                  "  " + FailureMessages.occurredOnValues + "\n" +
-                  prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-                  "  )" +
-                  getLabelDisplay(scalaCheckLabels),
-                Some(e),
-                getStackDepthFun(stackDepthFileName, stackDepthMethodName),
-                None,
-                FailureMessages.propertyException(UnquotedString(e.getClass.getName)),
-                scalaCheckArgs,
-                None,
-                scalaCheckLabels.toList
-              )
-          }
+            indicateFailure(
+              sde => FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" +
+              "  " + FailureMessages.thrownExceptionsMessage(if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
+              (
+                e match {
+                  case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                  case _ => ""
+                }
+              ) +
+              "  " + FailureMessages.occurredOnValues + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
+              "  )" +
+              getLabelDisplay(scalaCheckLabels),
+              FailureMessages.propertyException(UnquotedString(e.getClass.getName)),
+              scalaCheckArgs,
+              scalaCheckLabels.toList,
+              Some(e),
+              getStackDepthFun(stackDepthFileName, stackDepthMethodName)
+            )
         }
-        //else asserting.Singleton
+      } else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+    }
+
+    def indicateSuccess(message: => String): Result
+
+    def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
+  }
+
+  implicit def assertingNatureOfT[T]: CheckerAsserting[T] { type Result = Unit } =
+    new CheckerAssertingImpl[T] {
+      type Result = Unit
+      def indicateSuccess(message: => String): Unit = ()
+      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          messageFun,
+          optionalCause,
+          stackDepthFun,
+          None,
+          undecoratedMessage,
+          scalaCheckArgs,
+          None,
+          scalaCheckLabels.toList
+        )
       }
     }
-  }
 }
 
 abstract class MediumPriorityCheckerAsserting extends LowPriorityCheckerAsserting {
   implicit def assertingNatureOfAssertion: CheckerAsserting[Assertion] { type Result = Assertion } = {
-    new CheckerAsserting[Assertion] {
+    new CheckerAssertingImpl[Assertion] {
       type Result = Assertion
-      val Singleton = Succeeded
-
-      import CheckerAsserting._
-
-      def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result = {
-
-        val result = Test.check(prms, p)
-        if (!result.passed) {
-
-          val (args, labels) = argsAndLabels(result)
-
-          (result.status: @unchecked) match {
-
-            case Test.Exhausted =>
-
-              val failureMsg =
-                if (result.succeeded == 1)
-                  FailureMessages.propCheckExhaustedAfterOne(result.discarded)
-                else
-                  FailureMessages.propCheckExhausted(result.succeeded, result.discarded)
-
-              throw new GeneratorDrivenPropertyCheckFailedException(
-                sde => failureMsg,
-                None,
-                getStackDepthFun(stackDepthFileName, stackDepthMethodName),
-                // getStackDepth("ScalaCheck.scala", "check"),
-                // { val x = getStackDepth("GeneratorDrivenPropertyChecks$class.scala", "forAll"); println("stackDepth:" + x); x},
-                None,
-                failureMsg,
-                args,
-                None,
-                labels
-              )
-
-            case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
-
-              // SKIP-SCALATESTJS-START
-              val stackDepth = 2
-              // SKIP-SCALATESTJS-END
-              //SCALATESTJS-ONLY val stackDepth = 1
-
-              throw new GeneratorDrivenPropertyCheckFailedException(
-                sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-                  ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-                  "  " + FailureMessages.propertyFailed(result.succeeded) + "\n" +
-                  (
-                    sde match {
-                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                        "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                      case _ => ""
-                    }
-                    ) +
-                  "  " + FailureMessages.occurredOnValues + "\n" +
-                  prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-                  "  )" +
-                  getLabelDisplay(scalaCheckLabels),
-                None,
-                getStackDepthFun(stackDepthFileName, stackDepthMethodName, stackDepth),
-                None,
-                FailureMessages.propertyFailed(result.succeeded),
-                scalaCheckArgs,
-                None,
-                scalaCheckLabels.toList
-              )
-
-            case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
-
-              throw new GeneratorDrivenPropertyCheckFailedException(
-                sde => FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" +
-                  "  " + FailureMessages.thrownExceptionsMessage(if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
-                  (
-                    e match {
-                      case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                        "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                      case _ => ""
-                    }
-                    ) +
-                  "  " + FailureMessages.occurredOnValues + "\n" +
-                  prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
-                  "  )" +
-                  getLabelDisplay(scalaCheckLabels),
-                Some(e),
-                getStackDepthFun(stackDepthFileName, stackDepthMethodName),
-                None,
-                FailureMessages.propertyException(UnquotedString(e.getClass.getName)),
-                scalaCheckArgs,
-                None,
-                scalaCheckLabels.toList
-              )
-          }
-        }
-        else Succeeded
+      def indicateSuccess(message: => String): Assertion = Succeeded
+      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          messageFun,
+          optionalCause,
+          stackDepthFun,
+          None,
+          undecoratedMessage,
+          scalaCheckArgs,
+          None,
+          scalaCheckLabels.toList
+        )
       }
     }
   }
