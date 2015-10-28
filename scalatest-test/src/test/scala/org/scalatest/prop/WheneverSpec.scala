@@ -23,6 +23,7 @@ import Prop._
 import org.scalatest.Matchers._
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
@@ -53,7 +54,7 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
         }
       }
       describe("when the Boolean condition is false") {
-        it("should return a vacuous Yes") {
+        it("should throw DiscardedEvaluationException") {
           import Expectations._
           val x = 1
           val yes = expect(x == 1)
@@ -76,13 +77,19 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
             whenever (true) { assert(1 == 2) }
           }
           assertThrows[java.lang.Exception] {
-            whenever (true) { throw new java.lang.Exception }
+            whenever (true) { throw new java.lang.Exception; succeed }
           }
           // SKIP-SCALATESTJS-START
           assertThrows[StringIndexOutOfBoundsException] {
-            whenever (true) { "hi".charAt(-1) }
+            whenever (true) { "hi".charAt(-1); succeed }
           }
           // SKIP-SCALATESTJS-END
+          assertThrows[TestFailedException] {
+            whenever (true) { if (false) succeed else fail() }
+          }
+          assertThrows[TestCanceledException] {
+            whenever (true) { if (false) succeed else cancel() }
+          }
         }
       }
       describe("when the Boolean condition is false") {
@@ -96,7 +103,7 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
         }
       }
     }
-    describe("when the result type of the block is anything other than Expectation") {
+    describe("when the result type of the block is anything other than Expectation or Assertion") {
       describe("when the Boolean condition is true") {
         it("should return the Unit value or throw an exception") {
           val res1 = whenever (true) { Predef.assert(1 == 1) }
@@ -108,7 +115,7 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
             whenever (true) { Predef.assert(1 == 2) }
           }
           assertThrows[java.lang.Exception] {
-            whenever (true) { throw new java.lang.Exception }
+            whenever (true) { throw new java.lang.Exception; 33 }
           }
           val res2 = whenever (true) { 1 }
           assert(res2 == ())
@@ -121,6 +128,12 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
             whenever (true) { "hi".charAt(-1) }
           }
           // SKIP-SCALATESTJS-END
+          assertThrows[TestFailedException] {
+            whenever (true) { if (false) () else fail() }
+          }
+          assertThrows[TestCanceledException] {
+            whenever (true) { if (false) () else cancel() }
+          }
         }
       }
       describe("when the Boolean condition is false") {

@@ -38,7 +38,8 @@ abstract class LowPriorityWheneverAsserting {
   }
 }
 
-abstract class MediumPriorityWheneverAsserting extends LowPriorityWheneverAsserting {
+object WheneverAsserting extends LowPriorityWheneverAsserting {
+
   implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
     new WheneverAsserting[Assertion] {
       type Result = Assertion
@@ -60,10 +61,6 @@ abstract class MediumPriorityWheneverAsserting extends LowPriorityWheneverAssert
          fun
     }
   }
-}
-
-object WheneverAsserting extends MediumPriorityWheneverAsserting {
-
   implicit def assertingNatureOfNothing: WheneverAsserting[Nothing] { type Result = Nothing } = {
     new WheneverAsserting[Nothing] {
       type Result = Nothing
