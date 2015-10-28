@@ -314,7 +314,7 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    * @param fun the property check function to apply to each row of this <code>TableFor$n$</code>
    */
   def apply[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
-    asserting.doCheckTable(heading, rows: _*)(fun)
+    asserting.check(heading, rows: _*)(fun)
   }
 
   /**
@@ -876,7 +876,7 @@ val propertyCheckForEveryTemplateFor1 = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def forEvery[A, ASSERTION](table: TableFor1[A])(fun: (A) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
-    asserting.doForEvery[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3){a => fun(a._1)}
+    asserting.forEvery[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3){a => fun(a._1)}
   }
 
 """
@@ -896,7 +896,7 @@ val propertyCheckForEveryTemplate = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def forEvery[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
-    asserting.doForEvery[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3)(fun.tupled)
+    asserting.forEvery[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenForEveryFailed _, "$filename$", "forEvery", 3)(fun.tupled)
   }
 """
 
@@ -909,7 +909,7 @@ val propertyCheckForEveryTemplate = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def exists[A, ASSERTION](table: TableFor1[A])(fun: (A) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
-    asserting.doExists[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+    asserting.exists[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
   }
 
                                           """
@@ -923,7 +923,7 @@ val propertyCheckForEveryTemplate = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def exists[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
-    asserting.doExists[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
+    asserting.exists[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
   }
                                       """
 
@@ -1294,7 +1294,7 @@ $columnsOfIndexes$
   def genTableAsserting(targetDir: File, scalaJS: Boolean): Unit = {
 
     val doCheckMethodTemplate: String =
-      "def doCheckTable[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+      "def check[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
 
     def doCheckMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1332,7 +1332,7 @@ $columnsOfIndexes$
     }
 
     def doCheckMethodImpl(i: Int): String = {
-      val doCheckTableImplTemplate: String =
+      val checkImplTemplate: String =
         doCheckMethodTemplate + """ = {
           |  for ((($alphaLower$), idx) <- rows.zipWithIndex) {
           |    try {
@@ -1378,7 +1378,7 @@ $columnsOfIndexes$
 
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(doCheckTableImplTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(checkImplTemplate)
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1440,18 +1440,18 @@ $columnsOfIndexes$
          |
          |trait TableAsserting[T] {
          |  type Result
-         |  $doCheckTableMethods$
-         |  def doForEvery[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
-         |  def doExists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
+         |  $checkMethods$
+         |  def forEvery[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
+         |  def exists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
          |}
          |
-         |abstract class LowPriorityTableAsserting {
+         |abstract class UnitTableAsserting {
          |
          |  abstract class TableAssertingImpl[T] extends TableAsserting[T] {
          |
-         |    $doCheckTableMethodImpls$
+         |    $checkMethodImpls$
          |
-         |    case class ForResult[T](passedCount: Int = 0,
+         |    private[scalatest] case class ForResult[T](passedCount: Int = 0,
          |                          discardedCount: Int = 0,
          |                          messageAcc: IndexedSeq[String] = IndexedSeq.empty,
          |                          passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty,
@@ -1513,7 +1513,7 @@ $columnsOfIndexes$
          |      innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
          |    }
          |
-         |    def doForEvery[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    def forEvery[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
          |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
          |      val messageList = result.failedElements.map(_._3)
@@ -1526,7 +1526,7 @@ $columnsOfIndexes$
          |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
          |    }
          |
-         |    def doExists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    def exists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
          |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
          |      if (result.passedCount == 0) {
@@ -1540,11 +1540,11 @@ $columnsOfIndexes$
          |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
          |    }
          |
-         |    def indicateSuccess(message: => String): Result
+         |    private[scalatest] def indicateSuccess(message: => String): Result
          |
-         |    def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, idx: Int): Result
+         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, idx: Int): Result
          |
-         |    def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
+         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
          |  }
          |
          |  implicit def assertingNatureOfT[T]: TableAsserting[T] { type Result = Unit } = {
@@ -1573,7 +1573,18 @@ $columnsOfIndexes$
          |  }
          |}
          |
-         |abstract class MediumPriorityTableAsserting extends LowPriorityTableAsserting {
+         |abstract class ExpectationTableAsserting extends UnitTableAsserting {
+         |/*
+         |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
+         |    new TableAsserting[Expectation] {
+         |      type Result = Expectation
+         |    }
+         |  }
+         |*/
+         |}
+         |
+         |object TableAsserting extends ExpectationTableAsserting {
+         |
          |  implicit def assertingNatureOfAssertion: TableAsserting[Assertion] { type Result = Assertion } = {
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion
@@ -1598,22 +1609,6 @@ $columnsOfIndexes$
          |    }
          |  }
          |
-         |/*
-         |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
-         |    new TableAsserting[Expectation] {
-         |      type Result = Expectation
-         |    }
-         |  }
-         |*/
-         |}
-         |
-         |object TableAsserting extends MediumPriorityTableAsserting {
-         |
-         |  /*implicit def assertingNatureOfNothing: TableAsserting[Nothing] { type Result = Nothing } = {
-         |    new TableAsserting[Nothing] {
-         |      type Result = Nothing
-         |    }
-         |  }*/
          |}
          |
          |
@@ -1622,11 +1617,11 @@ $columnsOfIndexes$
     val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableAsserting.scala")))
 
     try {
-      val doCheckTableMethods = (for (i <- 1 to 22) yield doCheckMethod(i)).mkString("\n\n")
-      val doCheckTableMethodImpls = (for (i <- 1 to 22) yield doCheckMethodImpl(i)).mkString("\n\n")
+      val checkMethods = (for (i <- 1 to 22) yield doCheckMethod(i)).mkString("\n\n")
+      val checkMethodImpls = (for (i <- 1 to 22) yield doCheckMethodImpl(i)).mkString("\n\n")
       val st = new org.antlr.stringtemplate.StringTemplate(mainTemplate)
-      st.setAttribute("doCheckTableMethods", doCheckTableMethods)
-      st.setAttribute("doCheckTableMethodImpls", doCheckTableMethodImpls)
+      st.setAttribute("checkMethods", checkMethods)
+      st.setAttribute("checkMethodImpls", checkMethodImpls)
       bw.write(st.toString)
     }
     finally {

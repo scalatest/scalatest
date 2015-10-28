@@ -254,9 +254,9 @@ abstract class UnitInspectorAsserting {
     // TODO: Why is this a by-name? Well, I made it a by-name because it was one in MatchersHelper.
     // Why is it a by-name there?
     // CS: because we want to construct the message lazily.
-    def indicateSuccess(message: => String): Result
+    private[scalatest] def indicateSuccess(message: => String): Result
 
-    def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
+    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
   }
 
   implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } =
