@@ -34,7 +34,7 @@ trait InspectorAsserting[T] {
   def doForEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
 }
 
-abstract class LowPriorityInspectorAsserting {
+abstract class UnitInspectorAsserting {
 
   abstract class InspectorAssertingImpl[T] extends InspectorAsserting[T] {
 
@@ -273,7 +273,7 @@ abstract class LowPriorityInspectorAsserting {
     }
 }
 
-abstract class MediumPriorityInspectorAsserting extends LowPriorityInspectorAsserting {
+abstract class FactInspectorAsserting extends UnitInspectorAsserting {
 
   implicit def assertingNatureOfExpectation: InspectorAsserting[Expectation] { type Result = Expectation } = {
     new InspectorAssertingImpl[Expectation] {
@@ -284,7 +284,7 @@ abstract class MediumPriorityInspectorAsserting extends LowPriorityInspectorAsse
   }
 }
 
-object InspectorAsserting extends MediumPriorityInspectorAsserting {
+object InspectorAsserting extends FactInspectorAsserting {
 
   implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } =
     new InspectorAssertingImpl[Assertion] {
