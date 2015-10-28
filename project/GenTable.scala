@@ -1407,7 +1407,7 @@ $columnsOfIndexes$
   def genTableAsserting(targetDir: File, scalaJS: Boolean): Unit = {
 
     val doCheckMethodTemplate: String =
-      "def doCheckTable[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result"
+      "def doCheckTable[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
 
     def doCheckMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1461,7 +1461,7 @@ $columnsOfIndexes$
           |        // SKIP-SCALATESTJS-END
           |        //SCALATESTJS-ONLY val stackDepth = 1
           |
-          |        throw new TableDrivenPropertyCheckFailedException(
+          |        indicateFailure(
           |          sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
           |            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
           |            "  " + FailureMessages.thrownExceptionsMessage(if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
@@ -1475,18 +1475,18 @@ $columnsOfIndexes$
           |            "  " + FailureMessages.occurredAtRow(idx) + "\n" +
           |            $namesAndValues$
           |            "  )",
-          |          Some(ex),
-          |          getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", stackDepth),
-          |          None, // Payload
           |          FailureMessages.undecoratedPropertyCheckFailureMessage,
           |          List($alphaLower$),
           |          List($alphaName$),
+          |          Some(ex),
+          |          None, // Payload
+          |          getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", stackDepth),
           |          idx
           |        )
           |      }
-          |    }
-          |    asserting.Singleton
           |  }
+          |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
+          |}
         """.stripMargin
 
       val alpha = "abcdefghijklmnopqrstuv"
