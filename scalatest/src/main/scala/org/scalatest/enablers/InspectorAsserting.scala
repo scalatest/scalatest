@@ -25,13 +25,13 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, get
 
 trait InspectorAsserting[T] {
   type Result
-  def doForAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
-  def doForAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
-  def doForAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
-  def doForExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
-  def doForNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
-  def doForBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
-  def doForEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
+  def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
+  def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
+  def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
+  def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
+  def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
+  def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
+  def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result
 }
 
 abstract class UnitInspectorAsserting {
@@ -40,7 +40,7 @@ abstract class UnitInspectorAsserting {
 
     import InspectorAsserting._
 
-    def doForAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+    def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
       val xsIsMap = isMap(original)
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
@@ -56,7 +56,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAll succeeded")
     }
 
-    def doForAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+    def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
       @tailrec
       def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): (Int, IndexedSeq[String]) = {
         if (itr.hasNext) {
@@ -107,7 +107,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAtLeast succeeded")
     }
 
-    def doForAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+    def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
       if (max <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
 
@@ -126,7 +126,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAtMost succeeded")
     }
 
-    def doForExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+    def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
       if (succeededCount <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
 
@@ -159,7 +159,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forExactly succeeded")
     }
 
-    def doForNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+    def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
       val xsIsMap = isMap(original)
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
@@ -175,7 +175,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forNo succeeded")
     }
 
-    def doForBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+    def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
       if (from < 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
       if (upTo <= 0)
@@ -212,7 +212,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forBetween succeeded")
     }
 
-    def doForEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
+    def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => T): Result = {
       @tailrec
       def runAndCollectErrorMessage[E](itr: Iterator[E], messageList: IndexedSeq[String], index: Int)(fun: E => T): IndexedSeq[String] = {
         if (itr.hasNext) {
@@ -273,7 +273,7 @@ abstract class UnitInspectorAsserting {
     }
 }
 
-abstract class FactInspectorAsserting extends UnitInspectorAsserting {
+abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
   implicit def assertingNatureOfExpectation: InspectorAsserting[Expectation] { type Result = Expectation } = {
     new InspectorAssertingImpl[Expectation] {
@@ -284,7 +284,7 @@ abstract class FactInspectorAsserting extends UnitInspectorAsserting {
   }
 }
 
-object InspectorAsserting extends FactInspectorAsserting {
+object InspectorAsserting extends ExpectationInspectorAsserting {
 
   implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } =
     new InspectorAssertingImpl[Assertion] {

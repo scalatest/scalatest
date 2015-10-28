@@ -3139,31 +3139,31 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
     collected match {
       case AllCollected =>
-        asserting.doForAll(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forAll(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case AtLeastCollected(num) =>
-        asserting.doForAtLeast(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forAtLeast(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case EveryCollected =>
-        asserting.doForEvery(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forEvery(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case ExactlyCollected(num) =>
-        asserting.doForExactly(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forExactly(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case NoCollected =>
-        asserting.doForNo(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forNo(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case BetweenCollected(from, to) =>
-        asserting.doForBetween(from, to, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forBetween(from, to, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
       case AtMostCollected(num) =>
-        asserting.doForAtMost(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forAtMost(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
           fun(e)
         }
     }
