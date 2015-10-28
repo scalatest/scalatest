@@ -1440,7 +1440,6 @@ $columnsOfIndexes$
          |
          |trait TableAsserting[T] {
          |  type Result
-         |  val Singleton: Result
          |  $doCheckTableMethods$
          |  def doForEvery[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
          |  def doExists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
@@ -1551,7 +1550,6 @@ $columnsOfIndexes$
          |  implicit def assertingNatureOfT[T]: TableAsserting[T] { type Result = Unit } = {
          |    new TableAssertingImpl[T] {
          |      type Result = Unit
-         |      val Singleton: Result = ()
          |      def indicateSuccess(message: => String): Unit = ()
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, idx: Int): Unit =
          |        throw new TableDrivenPropertyCheckFailedException(
@@ -1579,7 +1577,6 @@ $columnsOfIndexes$
          |  implicit def assertingNatureOfAssertion: TableAsserting[Assertion] { type Result = Assertion } = {
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion
-         |      val Singleton = Succeeded
          |      def indicateSuccess(message: => String): Assertion = Succeeded
          |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
@@ -1615,7 +1612,6 @@ $columnsOfIndexes$
          |  /*implicit def assertingNatureOfNothing: TableAsserting[Nothing] { type Result = Nothing } = {
          |    new TableAsserting[Nothing] {
          |      type Result = Nothing
-         |      val Singleton = throw new NoSuchElementException
          |    }
          |  }*/
          |}
