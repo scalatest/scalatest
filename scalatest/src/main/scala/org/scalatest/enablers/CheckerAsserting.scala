@@ -32,16 +32,16 @@ import org.scalatest.exceptions.StackDepthException
 
 trait CheckerAsserting[T] {
   type Result
-  def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result
+  def check(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result
 }
 
-abstract class LowPriorityCheckerAsserting {
+abstract class UnitCheckerAsserting {
 
   abstract class CheckerAssertingImpl[T] extends CheckerAsserting[T] {
 
     import CheckerAsserting._
 
-    def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result = {
+    def check(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result = {
 
       val result = Test.check(prms, p)
       if (!result.passed) {
@@ -146,7 +146,17 @@ abstract class LowPriorityCheckerAsserting {
     }
 }
 
-object CheckerAsserting extends LowPriorityCheckerAsserting {
+abstract class ExpectationCheckerAsserting extends UnitCheckerAsserting {
+/*
+  implicit def assertingNatureOfExpectation: CheckerAsserting[Expectation] { type Result = Expectation } = {
+    new CheckerAsserting[Expectation] {
+      type Result = Expectation
+    }
+  }
+*/
+}
+
+object CheckerAsserting extends ExpectationCheckerAsserting {
 
   implicit def assertingNatureOfAssertion: CheckerAsserting[Assertion] { type Result = Assertion } = {
     new CheckerAssertingImpl[Assertion] {
@@ -166,14 +176,6 @@ object CheckerAsserting extends LowPriorityCheckerAsserting {
       }
     }
   }
-
-/*
-  implicit def assertingNatureOfExpectation: CheckerAsserting[Expectation] { type Result = Expectation } = {
-    new CheckerAsserting[Expectation] {
-      type Result = Expectation
-    }
-  }
-*/
 
   private[enablers] def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]) = {
     if (argNames.isDefined) {
