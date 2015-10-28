@@ -61,14 +61,4 @@ object WheneverAsserting extends LowPriorityWheneverAsserting {
          fun
     }
   }
-  implicit def assertingNatureOfNothing: WheneverAsserting[Nothing] { type Result = Nothing } = {
-    new WheneverAsserting[Nothing] {
-      type Result = Nothing
-      def whenever(condition: Boolean)(fun: => Nothing): Nothing =
-        if (!condition)
-          throw new DiscardedEvaluationException
-        else
-         fun
-    }
-  }
 }
