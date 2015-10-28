@@ -32,7 +32,6 @@ import org.scalatest.exceptions.StackDepthException
 
 trait CheckerAsserting[T] {
   type Result
-
   def doCheck(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result
 }
 
@@ -123,16 +122,16 @@ abstract class LowPriorityCheckerAsserting {
       } else indicateSuccess(FailureMessages.propertyCheckSucceeded)
     }
 
-    def indicateSuccess(message: => String): Result
+    private[scalatest] def indicateSuccess(message: => String): Result
 
-    def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
+    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
   }
 
   implicit def assertingNatureOfT[T]: CheckerAsserting[T] { type Result = Unit } =
     new CheckerAssertingImpl[T] {
       type Result = Unit
-      def indicateSuccess(message: => String): Unit = ()
-      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
+      private[scalatest] def indicateSuccess(message: => String): Unit = ()
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
         throw new GeneratorDrivenPropertyCheckFailedException(
           messageFun,
           optionalCause,
@@ -147,12 +146,13 @@ abstract class LowPriorityCheckerAsserting {
     }
 }
 
-abstract class MediumPriorityCheckerAsserting extends LowPriorityCheckerAsserting {
+object CheckerAsserting extends LowPriorityCheckerAsserting {
+
   implicit def assertingNatureOfAssertion: CheckerAsserting[Assertion] { type Result = Assertion } = {
     new CheckerAssertingImpl[Assertion] {
       type Result = Assertion
-      def indicateSuccess(message: => String): Assertion = Succeeded
-      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {
+      private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {
         throw new GeneratorDrivenPropertyCheckFailedException(
           messageFun,
           optionalCause,
@@ -174,24 +174,6 @@ abstract class MediumPriorityCheckerAsserting extends LowPriorityCheckerAssertin
     }
   }
 */
-}
-
-object CheckerAsserting extends MediumPriorityCheckerAsserting {
-
-/*
-  implicit def assertingNatureOfNothing: CheckerAsserting[Nothing] { type Result = Nothing } = {
-    new CheckerAsserting[Nothing] {
-      type Result = Nothing
-      val Singleton = throw new NoSuchElementException
-    }
-  }
-*/
-  /*implicit def assertingNatureOfString: CheckerAsserting[String] { type Result = Unit } = {
-    new CheckerAsserting[String] {
-      type Result = Unit
-      val Singleton = ()
-    }
-  }*/
 
   private[enablers] def getArgsWithSpecifiedNames(argNames: Option[List[String]], scalaCheckArgs: List[Arg[Any]]) = {
     if (argNames.isDefined) {
