@@ -24,7 +24,7 @@ trait WheneverAsserting[T] {
   def whenever(condition: Boolean)(fun: => T): Result
 }
 
-abstract class LowPriorityWheneverAsserting {
+abstract class UnitWheneverAsserting {
 
   implicit def assertingNatureOfT[T]: WheneverAsserting[T] { type Result = Unit } = {
     new WheneverAsserting[T] {
@@ -38,23 +38,26 @@ abstract class LowPriorityWheneverAsserting {
   }
 }
 
-object WheneverAsserting extends LowPriorityWheneverAsserting {
+abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
 
-  implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
-    new WheneverAsserting[Assertion] {
-      type Result = Assertion
-      def whenever(condition: Boolean)(fun: => Assertion): Assertion =
+  implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
+    new WheneverAsserting[Expectation] {
+      type Result = Expectation
+      def whenever(condition: Boolean)(fun: => Expectation): Expectation =
         if (!condition)
           throw new DiscardedEvaluationException
         else
          fun
     }
   }
+}
 
-  implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
-    new WheneverAsserting[Expectation] {
-      type Result = Expectation
-      def whenever(condition: Boolean)(fun: => Expectation): Expectation =
+object WheneverAsserting extends ExpectationWheneverAsserting {
+
+  implicit def assertingNatureOfAssertion: WheneverAsserting[Assertion] { type Result = Assertion } = {
+    new WheneverAsserting[Assertion] {
+      type Result = Assertion
+      def whenever(condition: Boolean)(fun: => Assertion): Assertion =
         if (!condition)
           throw new DiscardedEvaluationException
         else

@@ -85,10 +85,10 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           }
           // SKIP-SCALATESTJS-END
           assertThrows[TestFailedException] {
-            whenever (true) { if (false) succeed else fail() }
+            whenever (true) { fail() }
           }
           assertThrows[TestCanceledException] {
-            whenever (true) { if (false) succeed else cancel() }
+            whenever (true) { cancel() }
           }
         }
       }
@@ -129,10 +129,10 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
           }
           // SKIP-SCALATESTJS-END
           assertThrows[TestFailedException] {
-            whenever (true) { if (false) () else fail() }
+            whenever (true) { fail() }
           }
           assertThrows[TestCanceledException] {
-            whenever (true) { if (false) () else cancel() }
+            whenever (true) { cancel() }
           }
         }
       }
