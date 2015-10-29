@@ -40,7 +40,7 @@ abstract class UnitWheneverAsserting {
 
 abstract class ExpectationWheneverAsserting extends UnitWheneverAsserting {
 
-  implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
+  private[scalatest] implicit def assertingNatureOfExpectation: WheneverAsserting[Expectation] { type Result = Expectation } = {
     new WheneverAsserting[Expectation] {
       type Result = Expectation
       def whenever(condition: Boolean)(fun: => Expectation): Expectation =

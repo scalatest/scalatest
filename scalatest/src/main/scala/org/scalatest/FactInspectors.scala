@@ -200,6 +200,15 @@ import Fact.Yes
  * scala&gt; forAtLeast(2, "hello, world!") { c =&gt; c shouldBe 'o' }
  * </pre>
  */
+
+
+
+/*
+
+Commenting this out entirely now that we're going the Asserting route. Will
+leave it checked in commented out until we get Inspectors working with Fact, 
+which should be a couple days I "expect".
+
 private[scalatest] trait FactInspectors {
 
   import FactInspectorsHelper._
@@ -891,3 +900,4 @@ private[scalatest] object FactInspectorsHelper {
     else Yes("forAtMost inspection succeeded")
   }
 }
+*/

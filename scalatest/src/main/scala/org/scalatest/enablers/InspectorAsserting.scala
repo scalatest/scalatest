@@ -275,7 +275,7 @@ abstract class UnitInspectorAsserting {
 
 abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  implicit def assertingNatureOfExpectation: InspectorAsserting[Expectation] { type Result = Expectation } = {
+  private[scalatest] implicit def assertingNatureOfExpectation: InspectorAsserting[Expectation] { type Result = Expectation } = {
     new InspectorAssertingImpl[Expectation] {
       type Result = Expectation
       def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
