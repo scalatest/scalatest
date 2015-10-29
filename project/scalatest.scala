@@ -925,9 +925,17 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
+  lazy val genSafeStyleTests = Project("genSafeStyleTests", file("gentests/GenSafeStyles"))
+    .settings(gentestsSharedSettings: _*)
+    .settings(
+      genSafeStyleTestsTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensafestyletests", "GenSafeStyles.scala")(GenSafeStyles.genTest)
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+
   lazy val gentests = Project("gentests", file("gentests"))
     .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
-               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests)
+               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests, genSafeStyleTests)
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
@@ -1085,6 +1093,11 @@ object ScalatestBuild extends Build {
   val genSafeStyles = TaskKey[Unit]("gensafestyles", "Generate safe style traits.")
   val genSafeStylesTask = genSafeStyles <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenSafeStyles.genMain(new File(mainTargetDir, "scala/gensafestyles"), theVersion, theScalaVersion)
+  }
+
+  val genSafeStyleTestsTaskKey = TaskKey[Unit]("gensafestyletests", "Generate Safe Style tests")
+  val genSafeStyleTestsTask = genSafeStyleTestsTaskKey <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+    GenSafeStyles.genTest(new File(testTargetDir, "scala/gensafestyles"), theVersion, theScalaVersion)
   }
 
   //

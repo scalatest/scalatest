@@ -106,7 +106,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
     engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
@@ -163,7 +163,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
   private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
-    val stackDepthAdjustment = -3
+    val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6

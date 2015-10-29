@@ -97,7 +97,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -3
+    val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
     engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
@@ -120,7 +120,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
   protected def test(testName: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
@@ -145,7 +145,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
   protected def ignore(testName: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
-    val stackDepthAdjustment = -3
+    val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
