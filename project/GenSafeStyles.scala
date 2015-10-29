@@ -26,8 +26,12 @@ object GenSafeStyles {
         .replaceAllLiterally(traitName, "Safe" + traitName)
         .replaceAllLiterally("Resources.concurrentSafe" + traitName + "Mod", "Resources.concurrent" + traitName + "Mod")
         .replaceAllLiterally("Resources.concurrentFixtureSafe" + traitName + "Mod", "Resources.concurrentFixture" + traitName + "Mod")
-        .replaceAllLiterally("final override val styleName: String = \"org.scalatest.Safe" + traitName + "\"", "final override val styleName: String = \"org.scalatest." + traitName + "\"")
+        //.replaceAllLiterally("final override val styleName: String = \"org.scalatest.Safe" + traitName + "\"", "final override val styleName: String = \"org.scalatest." + traitName + "\"")
         .replaceAllLiterally("@Finders(Array(\"org.scalatest.finders.Safe" + traitName + "Finder\"))", "@Finders(Array(\"org.scalatest.finders." + traitName + "Finder\"))")
+
+  def translateTestLine(traitName: String)(line: String): String =
+    line.replaceAllLiterally(traitName, "Safe" + traitName)
+    .replaceAllLiterally("/* ASSERTION_SUCCEED */", "succeed")
 
   def translateFile(targetDir: File, fileName: String, sourceFileName: String, scalaVersion: String, scalaJS: Boolean, translateFun: String => String): Unit = {
     val outputFile = new File(targetDir, fileName)
@@ -130,5 +134,17 @@ object GenSafeStyles {
 
   def genMainForScalaJS(targetDir: File, version: String, scalaVersion: String) {
     genMainImpl(targetDir, version, scalaVersion, true)
+  }
+
+  def genTestImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
+    targetDir.mkdirs()
+    val safeDir = new File(targetDir, "safe")
+    safeDir.mkdirs()
+
+    translateFile(safeDir, "SafeFunSuiteSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSuite"))
+  }
+
+  def genTest(targetDir: File, version: String, scalaVersion: String): Unit = {
+    genTestImpl(targetDir, version, scalaVersion, false)
   }
 }
