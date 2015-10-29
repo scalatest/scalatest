@@ -104,7 +104,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     engine.registerIgnoredTest(Resources.scenario(testText.trim), Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
@@ -159,7 +159,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
