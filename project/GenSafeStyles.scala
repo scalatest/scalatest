@@ -152,6 +152,7 @@ object GenSafeStyles {
 
     translateFile(safeDir, "SafeFunSuiteSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSuite"))
     translateFile(safeDir, "SafeFunSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FunSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSpec"))
+    translateFile(safeDir, "SafeFeatureSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FeatureSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FeatureSpec"))
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Unit = {
