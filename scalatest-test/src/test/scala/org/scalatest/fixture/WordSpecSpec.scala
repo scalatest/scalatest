@@ -43,8 +43,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = Succeeded
         "Something" should {
           "do that" in { fixture =>
+            /* ASSERTION_SUCCEED */
           }
           "do this" in { fixture =>
+            /* ASSERTION_SUCCEED */
           }
         }
       }
@@ -67,8 +69,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = Succeeded
         "Something" should {
           "do this" in { fixture =>
+            /* ASSERTION_SUCCEED */
           }
           "do that" in { fixture =>
+            /* ASSERTION_SUCCEED */
           }
         }
       }
@@ -84,32 +88,32 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "should test this" in { fixture => }
-          "should test this" in { fixture => }
+          "should test this" in { fixture => /* ASSERTION_SUCCEED */ }
+          "should test this" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       intercept[DuplicateTestNameException] {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "should test this" in { fixture => }
-          "should test this" ignore { fixture => }
+          "should test this" in { fixture => /* ASSERTION_SUCCEED */ }
+          "should test this" ignore { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       intercept[DuplicateTestNameException] {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "should test this" ignore { fixture => }
-          "should test this" ignore { fixture => }
+          "should test this" ignore { fixture => /* ASSERTION_SUCCEED */ }
+          "should test this" ignore { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       intercept[DuplicateTestNameException] {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "should test this" ignore { fixture => }
-          "should test this" in { fixture => }
+          "should test this" ignore { fixture => /* ASSERTION_SUCCEED */ }
+          "should test this" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
     }
@@ -140,14 +144,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "hi" taggedAs(null) in { fixture => }
+          "hi" taggedAs(null) in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught = intercept[NullArgumentException] {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "hi" taggedAs(mytags.SlowAsMolasses, null) in { fixture => }
+          "hi" taggedAs(mytags.SlowAsMolasses, null) in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught.getMessage === "a test tag was null")
@@ -155,7 +159,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in { fixture => }
+          "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -164,14 +168,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "hi" taggedAs(null) ignore { fixture => }
+          "hi" taggedAs(null) ignore { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught2 = intercept[NullArgumentException] {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "hi" taggedAs(mytags.SlowAsMolasses, null) ignore { fixture => }
+          "hi" taggedAs(mytags.SlowAsMolasses, null) ignore { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught2.getMessage === "a test tag was null")
@@ -179,7 +183,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore { fixture => }
+          "hi" taggedAs(mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) ignore { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -188,14 +192,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerTest("hi", null) { fixture => }
+          registerTest("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught3 = intercept[NullArgumentException] {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerTest("hi", mytags.SlowAsMolasses, null) { fixture => }
+          registerTest("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught3.getMessage == "a test tag was null")
@@ -203,7 +207,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => }
+          registerTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -212,14 +216,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerIgnoredTest("hi", null) { fixture => }
+          registerIgnoredTest("hi", null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val caught4 = intercept[NullArgumentException] {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { fixture => }
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       assert(caught4.getMessage == "a test tag was null")
@@ -227,7 +231,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         new WordSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = Succeeded
-          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => }
+          registerIgnoredTest("hi", mytags.SlowAsMolasses, null, mytags.WeakAsAKitten) { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
     }
@@ -236,7 +240,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       val a = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
-        "test this" ignore { fixture => }
+        "test this" ignore { fixture => /* ASSERTION_SUCCEED */ }
         "test that" is (pending)
       }
       assertResult(Map("test this" -> Set("org.scalatest.Ignore"))) {
@@ -247,7 +251,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
         "test this" is (pending)
-        "test that" ignore { fixture => }
+        "test that" ignore { fixture => /* ASSERTION_SUCCEED */ }
       }
       assertResult(Map("test that" -> Set("org.scalatest.Ignore"))) {
         b.tags
@@ -256,8 +260,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       val c = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
-        "test this" ignore { fixture => }
-        "test that" ignore { fixture => }
+        "test this" ignore { fixture => /* ASSERTION_SUCCEED */ }
+        "test that" ignore { fixture => /* ASSERTION_SUCCEED */ }
       }
       assertResult(Map("test this" -> Set("org.scalatest.Ignore"), "test that" -> Set("org.scalatest.Ignore"))) {
         c.tags
@@ -267,7 +271,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = Succeeded
         "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
-        "test that" taggedAs(mytags.SlowAsMolasses) ignore { fixture => }
+        "test that" taggedAs(mytags.SlowAsMolasses) ignore { fixture => /* ASSERTION_SUCCEED */ }
       }
       assertResult(Map("test this" -> Set("org.scalatest.SlowAsMolasses"), "test that" -> Set("org.scalatest.Ignore", "org.scalatest.SlowAsMolasses"))) {
         d.tags
@@ -308,8 +312,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       def withFixture(test: OneArgTest): Outcome = { test("hi") }
       var theTestThisCalled = false
       var theTestThatCalled = false
-      "run this" in { fixture => theTestThisCalled = true }
-      "run that, maybe" in { fixture => theTestThatCalled = true }
+      "run this" in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+      "run that, maybe" in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
     }
 
     it("should execute all tests when run is called with testName None") {
@@ -335,8 +339,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" in { fixture => theTestThisCalled = true }
-        "test that" in { fixture => theTestThatCalled = true }
+        "test this" in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -352,8 +356,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" ignore { fixture => theTestThisCalled = true }
-        "test that" in { fixture => theTestThatCalled = true }
+        "test this" ignore { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repB = new TestIgnoredTrackingReporter
@@ -369,8 +373,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" in { fixture => theTestThisCalled = true }
-        "test that" ignore { fixture => theTestThatCalled = true }
+        "test this" in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" ignore { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repC = new TestIgnoredTrackingReporter
@@ -388,8 +392,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" ignore { fixture => theTestThisCalled = true }
-        "test that" ignore { fixture => theTestThatCalled = true }
+        "test this" ignore { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" ignore { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       val repD = new TestIgnoredTrackingReporter
@@ -409,8 +413,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" ignore { fixture => theTestThisCalled = true }
-        "test that" in { fixture => theTestThatCalled = true }
+        "test this" ignore { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -430,8 +434,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThisCalled = true }
-        "test that" in { fixture => theTestThatCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -448,8 +452,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThisCalled = true }
-        "test that" in { fixture => theTestThatCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -463,8 +467,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -478,8 +482,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses) ignore { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses) ignore { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -494,9 +498,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true }
-        "test the other" in { fixture => theTestTheOtherCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        "test the other" in { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -513,9 +517,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) ignore { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true }
-        "test the other" in { fixture => theTestTheOtherCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) ignore { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        "test the other" in { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -532,9 +536,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true }
-        "test the other" ignore { fixture => theTestTheOtherCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        "test the other" ignore { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -551,9 +555,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true }
-        "test the other" in { fixture => theTestTheOtherCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        "test the other" in { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -569,9 +573,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true }
-        "test the other" in { fixture => theTestTheOtherCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) in { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        "test the other" in { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -587,9 +591,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) ignore { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) ignore { fixture => theTestThatCalled = true }
-        "test the other" in { fixture => theTestTheOtherCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) ignore { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) ignore { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        "test the other" in { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -605,9 +609,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) ignore { fixture => theTestThisCalled = true }
-        "test that" taggedAs(mytags.SlowAsMolasses) ignore { fixture => theTestThatCalled = true }
-        "test the other" ignore { fixture => theTestTheOtherCalled = true }
+        "test this" taggedAs(mytags.SlowAsMolasses, mytags.FastAsLight) ignore { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) ignore { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        "test the other" ignore { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -625,8 +629,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        registerTest("test that") { fixture => theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -643,8 +647,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        registerTest("test that") { fixture => theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repB = new TestIgnoredTrackingReporter
       b.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -658,8 +662,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repC = new TestIgnoredTrackingReporter
       c.run(None, Args(repB, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set()), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -673,8 +677,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         var theTestThisCalled = false
         var theTestThatCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repD = new TestIgnoredTrackingReporter
       d.run(None, Args(repD, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -689,9 +693,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repE = new TestIgnoredTrackingReporter
       e.run(None, Args(repE, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -708,9 +712,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repF = new TestIgnoredTrackingReporter
       f.run(None, Args(repF, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -727,9 +731,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repG = new TestIgnoredTrackingReporter
       g.run(None, Args(repG, Stopper.default, Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight")),
@@ -746,9 +750,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repH = new TestIgnoredTrackingReporter
       h.run(None, Args(repH, Stopper.default, Filter(None, Set("org.scalatest.FastAsLight")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -764,9 +768,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repI = new TestIgnoredTrackingReporter
       i.run(None, Args(repI, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -782,9 +786,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repJ = new TestIgnoredTrackingReporter
       j.run(None, Args(repJ, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -800,9 +804,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
-        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true }
-        registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true }
-        registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true }
+        registerIgnoredTest("test this", mytags.SlowAsMolasses, mytags.FastAsLight) { fixture => theTestThisCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test that", mytags.SlowAsMolasses) { fixture => theTestThatCalled = true; /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test the other") { fixture => theTestTheOtherCalled = true; /* ASSERTION_SUCCEED */ }
       }
       val repK = new TestIgnoredTrackingReporter
       k.run(None, Args(repK, Stopper.default, Filter(None, Set("org.scalatest.SlowAsMolasses", "org.scalatest.Ignore")), ConfigMap.empty, None, new Tracker, Set.empty))
@@ -817,24 +821,24 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       val a = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "test this" in { fixture => }
-        "test that" in { fixture => }
+        "test this" in { fixture => /* ASSERTION_SUCCEED */ }
+        "test that" in { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
       val b = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "test this" ignore { fixture => }
-        "test that" in { fixture => }
+        "test this" ignore { fixture => /* ASSERTION_SUCCEED */ }
+        "test that" in { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
       val c = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "test this" taggedAs(mytags.FastAsLight) in { fixture => }
-        "test that" in { fixture => }
+        "test this" taggedAs(mytags.FastAsLight) in { fixture => /* ASSERTION_SUCCEED */ }
+        "test that" in { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
@@ -842,9 +846,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       val d = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in { fixture => }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => }
-        "test the other thing" in { fixture => }
+        "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in { fixture => /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => /* ASSERTION_SUCCEED */ }
+        "test the other thing" in { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -854,9 +858,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       val e = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in { fixture => }
-        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => }
-        "test the other thing" ignore { fixture => }
+        "test this" taggedAs(mytags.FastAsLight, mytags.SlowAsMolasses) in { fixture => /* ASSERTION_SUCCEED */ }
+        "test that" taggedAs(mytags.SlowAsMolasses) in { fixture => /* ASSERTION_SUCCEED */ }
+        "test the other thing" ignore { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) === 1)
@@ -872,24 +876,24 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       val a = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerTest("test this") { fixture => }
-        registerTest("test that") { fixture => }
+        registerTest("test this") { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(a.expectedTestCount(Filter()) == 2)
 
       val b = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerIgnoredTest("test this") { fixture => }
-        registerTest("test that") { fixture => }
+        registerIgnoredTest("test this") { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(b.expectedTestCount(Filter()) == 1)
 
       val c = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerTest("test this", mytags.FastAsLight) { fixture => }
-        registerTest("test that") { fixture => }
+        registerTest("test this", mytags.FastAsLight) { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) == 1)
@@ -897,9 +901,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       val d = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => }
-        registerTest("test the other thing") { fixture => }
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test the other thing") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(d.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -909,9 +913,9 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       val e = new WordSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
-        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => }
-        registerTest("test that", mytags.SlowAsMolasses) { fixture => }
-        registerIgnoredTest("test the other thing") { fixture => }
+        registerTest("test this", mytags.FastAsLight, mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        registerTest("test that", mytags.SlowAsMolasses) { fixture => /* ASSERTION_SUCCEED */ }
+        registerIgnoredTest("test the other thing") { fixture => /* ASSERTION_SUCCEED */ }
       }
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) == 1)
       assert(e.expectedTestCount(Filter(Some(Set("org.scalatest.SlowAsMolasses")), Set("org.scalatest.FastAsLight"))) == 1)
@@ -1072,8 +1076,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var takesAFixtureInvoked = false
 
         "A WordSpec" should {
-          "take no args" in { () => takesNoArgsInvoked = true }
-          "take a fixture" in { s => takesAFixtureInvoked = true }
+          "take no args" in { () => takesNoArgsInvoked = true; /* ASSERTION_SUCCEED */ }
+          "take a fixture" in { s => takesAFixtureInvoked = true; /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -1095,8 +1099,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var takesNoArgsInvoked = false
         var takesAFixtureInvoked = false
         "A WordSpec" should {
-          "take no args" in { () => takesNoArgsInvoked = true; true }
-          "take a fixture" in { s => takesAFixtureInvoked = true; true }
+          "take no args" in { () => takesNoArgsInvoked = true; true; /* ASSERTION_SUCCEED */ }
+          "take a fixture" in { s => takesAFixtureInvoked = true; true; /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -1116,8 +1120,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         var takeNoArgsInvoked = false
         var takeAFixtureInvoked = false
         "A WordSpec" should {
-          "take no args" ignore { () => takeNoArgsInvoked = true; "hi" }
-          "take a fixture" ignore { s => takeAFixtureInvoked = true; 42 }
+          "take no args" ignore { () => takeNoArgsInvoked = true; "hi"; /* ASSERTION_SUCCEED */ }
+          "take a fixture" ignore { s => takeAFixtureInvoked = true; 42; /* ASSERTION_SUCCEED */ }
         }
       }
 
@@ -1189,6 +1193,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         }
         "do something" in { () =>
           theNoArgTestWasInvoked = true
+          /* ASSERTION_SUCCEED */
         }
       }
 
@@ -1204,7 +1209,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           correctTestNameWasPassed = test.name == "do something"
           test("hi")
         }
-        "do something" in { fixture => }
+        "do something" in { fixture => /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -1220,7 +1225,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
           test("hi")
         }
-        "do something" in { fixture => }
+        "do something" in { fixture => /* ASSERTION_SUCCEED */ }
       }
 
       import scala.language.reflectiveCalls
@@ -1238,6 +1243,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" should {
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1255,6 +1261,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1270,6 +1277,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" when {
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1287,6 +1295,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1302,6 +1311,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" that {
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1319,6 +1329,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1334,6 +1345,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" which {
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1351,6 +1363,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1366,6 +1379,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           "should blow up" in { fixture =>
             "in the wrong place, at the wrong time" can {
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1383,6 +1397,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1399,6 +1414,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             "should never run" in { fixture =>
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1414,6 +1430,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             "should never run" taggedAs(mytags.SlowAsMolasses) in { fixture =>
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1429,6 +1446,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             registerTest("should never run", mytags.SlowAsMolasses)  { fixture =>
               assert(1 == 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1446,6 +1464,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
                 assert(1 === 1)
               }
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1461,6 +1480,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             "should never run" ignore { fixture =>
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1476,6 +1496,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             "should never run" taggedAs(mytags.SlowAsMolasses) ignore { fixture =>
               assert(1 === 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1491,6 +1512,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             registerIgnoredTest("should never run", mytags.SlowAsMolasses) { fixture =>
               assert(1 == 1)
             }
+            /* ASSERTION_SUCCEED */
           }
         }
 
@@ -1502,11 +1524,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
     it("should contains correct formatter for TestStarting, TestSucceeded, TestFailed, TestPending, TestCanceled and TestIgnored") {
       class TestSpec extends WordSpec with StringFixture {
         "a feature" should {
-          "succeeded here" in { fixture => }
+          "succeeded here" in { fixture => /* ASSERTION_SUCCEED */ }
           "failed here" in { fixture =>  fail }
           "pending here" in { fixture =>  pending }
           "cancel here" in { fixture =>  cancel }
-          "ignore here" ignore { fixture => }
+          "ignore here" ignore { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
       val rep = new EventRecordingReporter
@@ -1612,8 +1634,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           "a feature" should {
             registerTest("a scenario") { fixture =>
               registerTest("nested scenario") { fixture =>
-
-              }
+                /* ASSERTION_SUCCEED */
+              }; /* ASSERTION_SUCCEED */
             }
           }
           override def withFixture(test: OneArgTest): Outcome = {
@@ -1646,8 +1668,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           "a feature" should {
             registerTest("a scenario") { fixture =>
               registerIgnoredTest("nested scenario") { fixture =>
-
-              }
+                /* ASSERTION_SUCCEED */
+              }; /* ASSERTION_SUCCEED */
             }
           }
           override def withFixture(test: OneArgTest): Outcome = {
@@ -1678,11 +1700,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }
         "it should do something" in { () =>
-          expect(1 === 2)
+          expect(1 === 2); /* ASSERTION_SUCCEED */
         }
         "a widget" should {
           "do something" in { fixture =>
-            expect(1 === 2)
+            expect(1 === 2); /* ASSERTION_SUCCEED */
           }
         }
       }
@@ -1724,8 +1746,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         "a feature" should {
           "a scenario" in { fixture =>
             "nested scenario" in { fixture =>
-              
-            }
+              /* ASSERTION_SUCCEED */
+            };  /* ASSERTION_SUCCEED */
           }
         }
         def withFixture(test: OneArgTest): Outcome = {
@@ -1758,8 +1780,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
         "a feature" should {
           "a scenario" in { fixture =>
             "nested scenario" ignore { fixture =>
-
-            }
+              /* ASSERTION_SUCCEED */
+            }; /* ASSERTION_SUCCEED */
           }
         }
         def withFixture(test: OneArgTest): Outcome = {
@@ -1798,24 +1820,24 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             } 
 
             it should { 
-              "do something interesting 1" in { fixture => } 
+              "do something interesting 1" in { fixture => /* ASSERTION_SUCCEED */ }
             }
         
             it can {
-              "do something interesting 2" in { fixture => }
+              "do something interesting 2" in { fixture => /* ASSERTION_SUCCEED */ }
             }
         
             it must {
-              "do something interesting 3" in { fixture => }
+              "do something interesting 3" in { fixture => /* ASSERTION_SUCCEED */ }
             }
         
             it when {
-              "do something interesting 4" in { fixture => }
+              "do something interesting 4" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
       
@@ -1845,7 +1867,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             type FixtureParam = String
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             it should {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1861,7 +1883,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             type FixtureParam = String
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             it can {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1877,7 +1899,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             type FixtureParam = String
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             it must {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1893,7 +1915,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             type FixtureParam = String
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             it when {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1910,14 +1932,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             }
             
-            "Other do something special" in { fixture => }
+            "Other do something special" in { fixture => /* ASSERTION_SUCCEED */ }
             
             it should {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1934,14 +1956,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             }
             
-            "Other do something special" in { fixture => }
+            "Other do something special" in { fixture => /* ASSERTION_SUCCEED */ }
             
             it can {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1958,14 +1980,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             }
             
-            "Other do something special" in { fixture => }
+            "Other do something special" in { fixture => /* ASSERTION_SUCCEED */ }
             
             it must {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -1982,14 +2004,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             }
             
-            "Other do something special" in { fixture => }
+            "Other do something special" in { fixture => /* ASSERTION_SUCCEED */ }
             
             it when {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2009,10 +2031,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
               it should {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2030,10 +2052,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
               it can {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2051,10 +2073,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
               it must {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2072,10 +2094,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
               it when {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2093,7 +2115,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               it should {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2111,7 +2133,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               it can {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2129,7 +2151,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               it must {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2147,7 +2169,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               it when {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2165,11 +2187,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
-              "do something" in { fixture => }
+              "do something" in { fixture => /* ASSERTION_SUCCEED */ }
               it should {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2187,11 +2209,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
-              "do something" in { fixture => }
+              "do something" in { fixture => /* ASSERTION_SUCCEED */ }
               it can {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2209,11 +2231,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
-              "do something" in { fixture => }
+              "do something" in { fixture => /* ASSERTION_SUCCEED */ }
               it must {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2231,11 +2253,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
-              "do something" in { fixture => }
+              "do something" in { fixture => /* ASSERTION_SUCCEED */ }
               it when {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2256,8 +2278,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             var notAllowedThrown = false
             "Something special" in { fixture => 
               it should {
-                "do something interesting" in { fixture => }
-              }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
+              }; /* ASSERTION_SUCCEED */
             }
             def withFixture(test: OneArgTest): Outcome = {
               val outcome = test.apply("hi")
@@ -2288,8 +2310,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             var notAllowedThrown = false
             "Something special" in { fixture => 
               it can {
-                "do something interesting" in { fixture => }
-              }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
+              }; /* ASSERTION_SUCCEED */
             }
             def withFixture(test: OneArgTest): Outcome = {
               val outcome = test.apply("hi")
@@ -2320,8 +2342,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             var notAllowedThrown = false
             "Something special" in { fixture => 
               it must {
-                "do something interesting" in { fixture => }
-              }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
+              }; /* ASSERTION_SUCCEED */
             }
             def withFixture(test: OneArgTest): Outcome = {
               val outcome = test.apply("hi")
@@ -2352,8 +2374,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             var notAllowedThrown = false
             "Something special" in { fixture => 
               it when {
-                "do something interesting" in { fixture => }
-              }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
+              }; /* ASSERTION_SUCCEED */
             }
             def withFixture(test: OneArgTest): Outcome = {
               val outcome = test.apply("hi")
@@ -2391,24 +2413,24 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             } 
 
             they should { 
-              "do something interesting 1" in { fixture => } 
+              "do something interesting 1" in { fixture => /* ASSERTION_SUCCEED */ }
             }
         
             they can {
-              "do something interesting 2" in { fixture => }
+              "do something interesting 2" in { fixture => /* ASSERTION_SUCCEED */ }
             }
         
             they must {
-              "do something interesting 3" in { fixture => }
+              "do something interesting 3" in { fixture => /* ASSERTION_SUCCEED */ }
             }
         
             they when {
-              "do something interesting 4" in { fixture => }
+              "do something interesting 4" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
       
@@ -2438,7 +2460,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             type FixtureParam = String
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             they should {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2454,7 +2476,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             type FixtureParam = String
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             they can {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2470,7 +2492,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             type FixtureParam = String
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             they must {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2486,7 +2508,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             type FixtureParam = String
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             they when {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2503,14 +2525,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             }
             
-            "Other do something special" in { fixture => }
+            "Other do something special" in { fixture => /* ASSERTION_SUCCEED */ }
             
             they should {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2527,14 +2549,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             }
             
-            "Other do something special" in { fixture => }
+            "Other do something special" in { fixture => /* ASSERTION_SUCCEED */ }
             
             they can {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2551,14 +2573,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             }
             
-            "Other do something special" in { fixture => }
+            "Other do something special" in { fixture => /* ASSERTION_SUCCEED */ }
             
             they must {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2575,14 +2597,14 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               } 
             }
             
-            "Other do something special" in { fixture => }
+            "Other do something special" in { fixture => /* ASSERTION_SUCCEED */ }
             
             they when {
-              "do something interesting" in { fixture => }
+              "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
             }
           }
           val e = intercept[exceptions.NotAllowedException] {
@@ -2602,10 +2624,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
               they should {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2623,10 +2645,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
               they can {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2644,10 +2666,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
               they must {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2665,10 +2687,10 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
               they when {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2686,7 +2708,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               they should {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2704,7 +2726,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               they can {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2722,7 +2744,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               they must {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2740,7 +2762,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               they when {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2758,11 +2780,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
-              "do something" in { fixture => }
+              "do something" in { fixture => /* ASSERTION_SUCCEED */ }
               they should {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2780,11 +2802,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
-              "do something" in { fixture => }
+              "do something" in { fixture => /* ASSERTION_SUCCEED */ }
               they can {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2802,11 +2824,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
-              "do something" in { fixture => }
+              "do something" in { fixture => /* ASSERTION_SUCCEED */ }
               they must {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2824,11 +2846,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             def withFixture(test: OneArgTest): Outcome = { test("hi") }
             "A Stack" when { 
               "empty" should { 
-                "be empty" in { fixture => } 
+                "be empty" in { fixture => /* ASSERTION_SUCCEED */ }
               }
-              "do something" in { fixture => }
+              "do something" in { fixture => /* ASSERTION_SUCCEED */ }
               they when {
-                "do something interesting" in { fixture => }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
               }
             }
           }
@@ -2849,8 +2871,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             var notAllowedThrown = false
             "Something special" in { fixture => 
               they should {
-                "do something interesting" in { fixture => }
-              }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
+              }; /* ASSERTION_SUCCEED */
             }
             def withFixture(test: OneArgTest): Outcome = {
               val outcome = test.apply("hi")
@@ -2881,8 +2903,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             var notAllowedThrown = false
             "Something special" in { fixture => 
               they can {
-                "do something interesting" in { fixture => }
-              }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
+              }; /* ASSERTION_SUCCEED */
             }
             def withFixture(test: OneArgTest): Outcome = {
               val outcome = test.apply("hi")
@@ -2913,8 +2935,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             var notAllowedThrown = false
             "Something special" in { fixture => 
               they must {
-                "do something interesting" in { fixture => }
-              }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
+              }; /* ASSERTION_SUCCEED */
             }
             def withFixture(test: OneArgTest): Outcome = {
               val outcome = test.apply("hi")
@@ -2945,8 +2967,8 @@ class WordSpecSpec extends org.scalatest.FunSpec {
             var notAllowedThrown = false
             "Something special" in { fixture => 
               they when {
-                "do something interesting" in { fixture => }
-              }
+                "do something interesting" in { fixture => /* ASSERTION_SUCCEED */ }
+              }; /* ASSERTION_SUCCEED */
             }
             def withFixture(test: OneArgTest): Outcome = {
               val outcome = test.apply("hi")
