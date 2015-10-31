@@ -19,7 +19,7 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.11.7"
+  val buildScalaVersion = "2.12.0-M3"
 
   val releaseVersion = "3.0.0-M11"
 
@@ -132,14 +132,14 @@ object ScalatestBuild extends Build {
   )
 
   def scalacheckDependency(config: String) =
-    "org.scalacheck" %% "scalacheck" % "1.12.4" % config
+    "org.scalacheck" %% "scalacheck" % "1.12.5" % config
 
   def crossBuildLibraryDependencies(theScalaVersion: String) =
     CrossVersion.partialVersion(theScalaVersion) match {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
           "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
           scalacheckDependency("optional")
         )

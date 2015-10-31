@@ -50,6 +50,8 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
     }
     def newNeverReadyCountingFuture(increment: => Unit): FutureOfScala[String] =
       new FutureOfScala[String] {
+        def transform[S](f: Try[String] => Try[S])(implicit executor: ExecutionContext): FutureOfScala[S] = ???
+        def transformWith[S](f: Try[String] => FutureOfScala[S])(implicit executor: ExecutionContext): FutureOfScala[S] = ???
         def isCompleted = neverReadyFuture.isCompleted
         def onComplete[U](func: Try[String] => U)(implicit executor: ExecutionContext): Unit = neverReadyFuture.onComplete(func)
         def value: Option[Try[String]] = {
@@ -70,6 +72,8 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
 
     def newAlreadySucceededCountingFuture(increment: => Unit): FutureOfScala[String] =
       new FutureOfScala[String] {
+        def transform[S](f: Try[String] => Try[S])(implicit executor: ExecutionContext): FutureOfScala[S] = ???
+        def transformWith[S](f: Try[String] => FutureOfScala[S])(implicit executor: ExecutionContext): FutureOfScala[S] = ???
         def isCompleted = alreadySucceededFuture.isCompleted
         def onComplete[U](func: Try[String] => U)(implicit executor: ExecutionContext): Unit = alreadySucceededFuture.onComplete(func)
         def value: Option[Try[String]] = {
@@ -347,6 +351,8 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
         val countingFuture =
           new FutureOfScala[String] {
             var gotToFive = false
+            def transform[S](f: Try[String] => Try[S])(implicit executor: ExecutionContext): FutureOfScala[S] = ???
+            def transformWith[S](f: Try[String] => FutureOfScala[S])(implicit executor: ExecutionContext): FutureOfScala[S] = ???
             def isCompleted = gotToFive
             def onComplete[U](func: Try[String] => U)(implicit executor: ExecutionContext): Unit = {}
             def value: Option[Try[String]] = {
