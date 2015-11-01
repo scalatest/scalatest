@@ -19,7 +19,7 @@ import org.scalatest._
 import prop._
 import scala.collection.immutable._
 
-class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatchers {
+class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
 
   val examples =
     Table(
@@ -33,7 +33,7 @@ class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatcher
 
   property("invoking head on an empty set should produce NoSuchElementException") {
     forAll(examples) { set =>
-      evaluating { set.head } should produce [NoSuchElementException]
+      a [NoSuchElementException] should be thrownBy { set.head }
     }
   }
 }
