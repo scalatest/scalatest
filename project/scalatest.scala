@@ -25,9 +25,13 @@ object ScalatestBuild extends Build {
 
   val githubTag = "release-3.0.0-M11-for-scala-2.11-and-2.10" // for scaladoc source urls
 
-  val docSourceUrl =
+  val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
-    "€{FILE_PATH}.scala"
+    "/scalatest/€{FILE_PATH}.scala"
+
+  val scalacticDocSourceUrl =
+    "https://github.com/scalatest/scalatest/tree/"+ githubTag +
+      "/scalactic/€{FILE_PATH}.scala"
 
   def envVar(name: String): Option[String] =
     try {
@@ -126,9 +130,14 @@ object ScalatestBuild extends Build {
     pgpPassphrase := getGPGPassphase
   )
 
-  lazy val sharedDocSettings = Seq(
+  lazy val scalatestDocSettings = Seq(
     docsrcDirSetting,
-    docScalacOptionsSetting
+    scalatestDocScalacOptionsSetting
+  )
+
+  lazy val scalacticDocSettings = Seq(
+    docsrcDirSetting,
+    scalacticDocScalacOptionsSetting
   )
 
   def scalacheckDependency(config: String) =
@@ -284,7 +293,7 @@ object ScalatestBuild extends Build {
 
   lazy val scalactic = Project("scalactic", file("scalactic"))
     .settings(sharedSettings: _*)
-    .settings(sharedDocSettings: _*)
+    .settings(scalacticDocSettings: _*)
     .settings(
       projectTitle := "Scalactic",
       organization := "org.scalactic",
@@ -395,7 +404,7 @@ object ScalatestBuild extends Build {
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
    .settings(sharedSettings: _*)
-   .settings(sharedDocSettings: _*)
+   .settings(scalatestDocSettings: _*)
    .settings(
      projectTitle := "ScalaTest",
      organization := "org.scalatest",
@@ -479,7 +488,6 @@ object ScalatestBuild extends Build {
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
-    .settings(sharedDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
@@ -584,7 +592,6 @@ object ScalatestBuild extends Build {
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
     .settings(sharedSettings: _*)
-    .settings(sharedDocSettings: _*)
     .settings(
       projectTitle := "ScalaTest Test",
       organization := "org.scalatest",
@@ -1211,13 +1218,21 @@ object ScalatestBuild extends Build {
                          file(".").getCanonicalFile),
                      docsrcDir.value)
 
-  val docScalacOptionsSetting =
+  val scalatestDocScalacOptionsSetting =
     scalacOptions in (Compile, doc) ++=
       Seq[String](
         "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
         "-sourcepath", docsrcDir.value.getAbsolutePath,
         "-doc-title", projectTitle.value +" "+ releaseVersion,
-        "-doc-source-url", docSourceUrl)
+        "-doc-source-url", scalatestDocSourceUrl)
+
+  val scalacticDocScalacOptionsSetting =
+    scalacOptions in (Compile, doc) ++=
+      Seq[String](
+        "-Ymacro-no-expand", // avoids need to separate out macros in docsrc dir
+        "-sourcepath", docsrcDir.value.getAbsolutePath,
+        "-doc-title", projectTitle.value +" "+ releaseVersion,
+        "-doc-source-url", scalacticDocSourceUrl)
 
   val docTaskSetting =
     doc in Compile := docTask((doc in Compile).value,
