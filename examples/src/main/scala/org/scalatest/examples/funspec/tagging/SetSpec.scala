@@ -31,7 +31,7 @@ class SetSpec extends FunSpec {
       }
       
       it("should produce NoSuchElementException when head is invoked", SlowTest, DbTest) {
-        intercept[NoSuchElementException] {
+        assertThrows[NoSuchElementException] {
           Set.empty.head
         }
       }

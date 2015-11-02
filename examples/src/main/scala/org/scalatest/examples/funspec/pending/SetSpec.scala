@@ -24,7 +24,7 @@ class SetSpec extends FunSpec {
       it("should have size 0") (pending)
       
       it("should produce NoSuchElementException when head is invoked") {
-        intercept[NoSuchElementException] {
+        assertThrows[NoSuchElementException] {
           Set.empty.head
         }
       }
