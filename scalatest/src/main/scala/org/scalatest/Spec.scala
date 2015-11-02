@@ -53,7 +53,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       }
  *     
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -200,7 +200,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       }
  *       
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -247,7 +247,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       }
  *       
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -519,7 +519,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       def &#96;should have size 0&#96; { pending }
  *       
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -600,7 +600,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       
  *       @SlowTest @DbTest
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }

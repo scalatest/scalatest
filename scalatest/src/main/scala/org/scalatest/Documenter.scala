@@ -94,7 +94,7 @@ package org.scalatest
  *
  *     it("should throw NoSuchElementException if an empty stack is popped") {
  *       val emptyStack = new Stack[String]
- *       intercept[NoSuchElementException] {
+ *       assertThrows[NoSuchElementException] {
  *         emptyStack.pop()
  *       }
  *     }

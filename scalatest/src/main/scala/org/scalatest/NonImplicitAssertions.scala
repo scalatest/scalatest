@@ -20,15 +20,9 @@ import org.scalactic._
 import TripleEqualsSupport._
 
 /**
- * Trait that can be mixed into a <code>Suite</code> to disable the lone implicit conversion provided by default in trait
+ * Trait that can be mixed into a <code>Suite</code> to disable the implicit conversions provided by default in trait
  * <a href="Assertions.html"><code>Assertions</code></a>, which trait <code>Suite</code> extends.
  * 
- * <p>
- * Currently there is just one implicit conversion provided by default in <a href="Suite.html"><code>Suite</code></a>, the one that adds a <code>===</code> method to
- * anything. If more default implicits are added to <code>Suite</code> in future versions of ScalaTest, they will be added here as well so that
- * this trait will disable all of them.
- * </p>
- *
  * <p>
  * This trait can be used to quickly solve a problem in which ScalaTest's default implicit conversion is clashing with those of some other library
  * you need to use in your tests. After mixing in this trait, like this:
@@ -41,17 +35,29 @@ import TripleEqualsSupport._
  * </pre>
  *
  * <p>
- * You can write tests using <code>assert</code> (without triple equals), <code>expect</code>, and <code>intercept</code>:
+ * You can write tests using <code>assert</code> (without triple equals), <code>assertResult</code>, <code>assertThrows</code>,
+ * <code>intercept</code>, <code>assertCompiles</code>, <code>assertDoesNotCompile</code>, and <code>assertTypeError</code>:
  * </p>
  *
  * <pre class="stHighlight">
  *   assert(a &lt; 7)
  *
- *   expect(2) { 1 + 1 }
+ *   assertResult(2) { 1 + 1 }
  *
- *   intercept[IndexOutOfBoundsException] {
+ *   assertThrows[IndexOutOfBoundsException] {
  *     "hi".charAt(-1)
  *   }
+ *
+ *   val caught =
+ *     intercept[IndexOutOfBoundsException] {
+ *       "hi".charAt(-1)
+ *     }
+ *
+ *   assertDoesNotCompile("val a: String = 1")
+ *
+ *   assertTypeError("val a: String = 1")
+ *
+ *   assertCompiles("val a: Int = 1")
  * </pre>
  *
  * @author Chua Chee Seng

@@ -1642,7 +1642,7 @@ import Suite.autoTagClassAnnotations
  * 
  *       When("peek is invoked on the stack")
  *       Then("peek throws IllegalStateException")
- *       intercept[IllegalStateException] {
+ *       assertThrows[IllegalStateException] {
  *         stack.peek
  *       }
  *     }
@@ -1654,7 +1654,7 @@ import Suite.autoTagClassAnnotations
  * 
  *       When("pop is invoked on the stack")
  *       Then("pop throws IllegalStateException")
- *       intercept[IllegalStateException] {
+ *       assertThrows[IllegalStateException] {
  *         emptyStack.pop
  *       }
  *     }
@@ -1684,7 +1684,7 @@ import Suite.autoTagClassAnnotations
  * 
  *       When("push is invoked on the stack")
  *       Then("push throws IllegalStateException")
- *       intercept[IllegalStateException] {
+ *       assertThrows[IllegalStateException] {
  *         stack.push(10)
  *       }
  *     }

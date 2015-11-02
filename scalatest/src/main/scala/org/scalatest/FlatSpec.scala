@@ -55,7 +55,7 @@ import Suite.autoTagClassAnnotations
  *   }
  *     
  *   it should "produce NoSuchElementException when head is invoked" in {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -84,7 +84,7 @@ import Suite.autoTagClassAnnotations
  *   }
  *     
  *   it should "produce NoSuchElementException when head is invoked" in {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -192,7 +192,7 @@ import Suite.autoTagClassAnnotations
  *   }
  *     
  *   ignore should "produce NoSuchElementException when head is invoked" in {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -236,7 +236,7 @@ import Suite.autoTagClassAnnotations
  *   }
  *     
  *   it should "produce NoSuchElementException when head is invoked" in {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -278,7 +278,7 @@ import Suite.autoTagClassAnnotations
  *   }
  * 
  *   it should "produce NoSuchElementException when head is invoked" in {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -541,7 +541,7 @@ import Suite.autoTagClassAnnotations
  *   "An empty Set" should "have size 0" in (pending)
  *     
  *   it should "produce NoSuchElementException when head is invoked" in {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -651,7 +651,7 @@ import Suite.autoTagClassAnnotations
  *   }
  *     
  *   it should "produce NoSuchElementException when head is invoked" taggedAs(SlowTest, DbTest) in {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -1570,13 +1570,13 @@ import Suite.autoTagClassAnnotations
  *   }
  * 
  *   it should "complain on peek" in {
- *     intercept[IllegalStateException] {
+ *     assertThrows[IllegalStateException] {
  *       emptyStack.peek
  *     }
  *   }
  *
  *   it should "complain on pop" in {
- *     intercept[IllegalStateException] {
+ *     assertThrows[IllegalStateException] {
  *       emptyStack.pop
  *     }
  *   }
@@ -1596,7 +1596,7 @@ import Suite.autoTagClassAnnotations
  *   it should behave like nonEmptyStack(fullStack, lastValuePushed)
  * 
  *   it should "complain on a push" in {
- *     intercept[IllegalStateException] {
+ *     assertThrows[IllegalStateException] {
  *       fullStack.push(10)
  *     }
  *   }

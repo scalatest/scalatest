@@ -23,7 +23,7 @@ package org.scalatest.exceptions
  * <a href="../Assertions.html"><code>Assertions</code></a>. This construct enables extra information (or "clues") to
  * be included in the detail message of a thrown exception. Although both
  * <code>assert</code> and <code>expect</code> provide a way for a clue to be
- * included directly, <code>intercept</code> and ScalaTest matcher expressions
+ * included directly, <code>assertThrows</code>, <code>intercept</code>, and ScalaTest matcher expressions
  * do not. Here's an example of clues provided directly in <code>assert</code>:
  * </p>
  *
@@ -43,12 +43,12 @@ package org.scalatest.exceptions
  * The exceptions thrown by the previous two statements will include the clue
  * string, <code>"this is a clue"</code>, in the exceptions detail message.
  * To get the same clue in the detail message of an exception thrown
- * by a failed <code>intercept</code> call requires using <code>withClue</code>:
+ * by a failed <code>assertThrows</code> call requires using <code>withClue</code>:
  * </p>
  *
  * <pre class="stHighlight">
  * withClue("this is a clue") {
- *   intercept[IndexOutOfBoundsException] {
+ *   assertThrows[IndexOutOfBoundsException] {
  *     "hi".charAt(-1)
  *   }
  * }

@@ -43,7 +43,7 @@ import Suite.autoTagClassAnnotations
  *   }
  *
  *   test("Invoking head on an empty Set should produce NoSuchElementException") {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -99,7 +99,7 @@ import Suite.autoTagClassAnnotations
  *   }
  *
  *   test("Invoking head on an empty Set should produce NoSuchElementException") {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -142,7 +142,7 @@ import Suite.autoTagClassAnnotations
  *   }
  *
  *   test("Invoking head on an empty Set should produce NoSuchElementException") {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -404,7 +404,7 @@ import Suite.autoTagClassAnnotations
  *   test("An empty Set should have size 0") (pending)
  *
  *   test("Invoking head on an empty Set should produce NoSuchElementException") {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -494,7 +494,7 @@ import Suite.autoTagClassAnnotations
  *
  *   test("Invoking head on an empty Set should produce NoSuchElementException",
  *        SlowTest, DbTest) {
- *     intercept[NoSuchElementException] {
+ *     assertThrows[NoSuchElementException] {
  *       Set.empty.head
  *     }
  *   }
@@ -1439,14 +1439,14 @@ import Suite.autoTagClassAnnotations
  *
  *   test("peek is invoked on an empty stack") {
  *     val stack = emptyStack
- *     intercept[IllegalStateException] {
+ *     assertThrows[IllegalStateException] {
  *       stack.peek
  *     }
  *   }
  *
  *   test("pop is invoked on an empty stack") {
  *     val stack = emptyStack
- *     intercept[IllegalStateException] {
+ *     assertThrows[IllegalStateException] {
  *       emptyStack.pop
  *     }
  *   }
@@ -1466,7 +1466,7 @@ import Suite.autoTagClassAnnotations
  *
  *   test("push is invoked on a full stack") {
  *     val stack = fullStack
- *     intercept[IllegalStateException] {
+ *     assertThrows[IllegalStateException] {
  *       stack.push(10)
  *     }
  *   }

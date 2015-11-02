@@ -59,7 +59,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -244,7 +244,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -292,7 +292,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -560,7 +560,7 @@ import Suite.autoTagClassAnnotations
  *       "should have size 0" in (pending)
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -679,7 +679,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" taggedAs(SlowTest, DbTest) in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -1625,13 +1625,13 @@ import Suite.autoTagClassAnnotations
  *       }
  * 
  *       "should complain on peek" in {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           emptyStack.peek
  *         }
  *       }
  *
  *       "should complain on pop" in {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           emptyStack.pop
  *         }
  *       }
@@ -1661,7 +1661,7 @@ import Suite.autoTagClassAnnotations
  *       }
  * 
  *       "should complain on a push" in {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           fullStack.push(10)
  *         }
  *       }
