@@ -74,4 +74,11 @@ object Monad {
    * @return The <code>Monad[Context]</code> instance.
    */
   def apply[Context[_]](implicit ev: Monad[Context]): Monad[Context] = ev
+
+  private class ListMonad extends Monad[List] {
+    override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
+    override def insert[A](a: A): List[A] = List(a)
+  }
+
+  implicit val listMonad: Monad[List] = new ListMonad
 }

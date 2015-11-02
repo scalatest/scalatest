@@ -70,6 +70,11 @@ class MonadSpec extends UnitSpec {
 
     Monad[List].flatten(List(List(1, 2), List(3, 4), List(5, 6))) shouldEqual List(1, 2, 3, 4, 5, 6)
   }
+
+  it should "provide an instance for List" in {
+    "implicitly[Monad[List]]" should compile
+  }
+
   "A Monad Adapter" should "offer a flatten method" in {
     class ListMonad extends Monad[List] {
       override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
