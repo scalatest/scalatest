@@ -295,6 +295,16 @@ if [[ $MODE = 'genSafeStyleTests' ]] ; then
   exit $rc
 fi
 
+if [[ $MODE = 'examples' ]] ; then
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  project examples
+  sbt ++$TRAVIS_SCALA_VERSION compile test:compile
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
 if [[ $MODE = 'Publish' ]] ; then
   sbt ++$TRAVIS_SCALA_VERSION publishSigned
   sbt ++$TRAVIS_SCALA_VERSION scalactic/publishSigned
