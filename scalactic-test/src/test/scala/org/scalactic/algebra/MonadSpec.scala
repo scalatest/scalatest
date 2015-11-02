@@ -24,18 +24,6 @@ import scala.language.implicitConversions
 
 class MonadSpec extends UnitSpec {
 
-  "List" should "obey the monad laws" in {
-
-    class ListMonad extends Monad[List] {
-      override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
-      override def insert[A](a: A): List[A] = List(a)
-    }
-
-    implicit val listMonad = new ListMonad
-
-    new MonadLaws[List].assert()
-  }
-
   "Option" should "obey the monad laws" in {
     class OptionMonad extends Monad[Option] {
       override def flatMap[A, B](ca: Option[A])(f: (A) => Option[B]): Option[B] = ca.flatMap(f)
@@ -72,7 +60,7 @@ class MonadSpec extends UnitSpec {
   }
 
   it should "provide an instance for List" in {
-    "implicitly[Monad[List]]" should compile
+    new MonadLaws[List].assert()
   }
 
   "A Monad Adapter" should "offer a flatten method" in {
