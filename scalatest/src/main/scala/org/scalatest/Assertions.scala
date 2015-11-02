@@ -776,13 +776,22 @@ trait Assertions extends TripleEquals {
    * for example), this method will complete abruptly with a <code>TestFailedException</code>.
    * </p>
    *
+   * <p>
+   * Also note that the difference between this method and <code>assertThrows</code> is that this method
+   * returns the expected exception, so it lets you perform further assertions on
+   * that exception. By contrast, the <code>assertThrows</code> method returns <code>Succeeded</code>, which means it can
+   * serve as the last statement in an async- or safe-style suite. <code>assertThrows</code> also indicates to the reader
+   * of the code that nothing further is expected about the thrown exception other than its type.
+   * The recommended usage is to use <code>assertThrows</code> by default, <code>intercept</code> only when you
+   * need to inspect the caught exception further.
+   * </p>
+   *
    * @param f the function value that should throw the expected exception
    * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
    * type parameter.
    * @return the intercepted exception, if it is of the expected type
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
-   *    that's an instance of the specified type
-   *     passed <code>expected</code> value.
+   *    that's an instance of the specified type.
    */
   def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): T = {
     val clazz = classTag.runtimeClass
@@ -809,6 +818,39 @@ trait Assertions extends TripleEquals {
     }
   }
 
+  /**
+   * Ensure that an expected exception is thrown by the passed function value. The thrown exception must be an instance of the
+   * type specified by the type parameter of this method. This method invokes the passed
+   * function. If the function throws an exception that's an instance of the specified type,
+   * this method returns <code>Succeeded</code>. Else, whether the passed function returns normally
+   * or completes abruptly with a different exception, this method throws <code>TestFailedException</code>.
+   *
+   * <p>
+   * Note that the type specified as this method's type parameter may represent any subtype of
+   * <code>AnyRef</code>, not just <code>Throwable</code> or one of its subclasses. In
+   * Scala, exceptions can be caught based on traits they implement, so it may at times make sense
+   * to specify a trait that the intercepted exception's class must mix in. If a class instance is
+   * passed for a type that could not possibly be used to catch an exception (such as <code>String</code>,
+   * for example), this method will complete abruptly with a <code>TestFailedException</code>.
+   * </p>
+   *
+   * <p>
+   * Also note that the difference between this method and <code>intercept</code> is that this method
+   * does not return the expected exception, so it does not let you perform further assertions on
+   * that exception. Instead, this method returns <code>Succeeded</code>, which means it can
+   * serve as the last statement in an async- or safe-style suite. It also indicates to the reader
+   * of the code that nothing further is expected about the thrown exception other than its type.
+   * The recommended usage is to use <code>assertThrows</code> by default, <code>intercept</code> only when you
+   * need to inspect the caught exception further.
+   * </p>
+   *
+   * @param f the function value that should throw the expected exception
+   * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
+   * type parameter.
+   * @return the <code>Succeeded</code> singleton, if an exception of the expected type is thrown
+   * @throws TestFailedException if the passed function does not complete abruptly with an exception
+   *    that's an instance of the specified type.
+   */
   def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Assertion = {
     val clazz = classTag.runtimeClass
     val threwExpectedException =
