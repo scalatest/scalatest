@@ -88,4 +88,15 @@ object Monad {
   }
 
   implicit val optionMonad: Monad[Option] = new OptionMonad
+
+  import org.scalactic.{Or, Good}
+
+  private class OrMonad[BAD] extends Monad[Or.B[BAD]#G] {
+    override def flatMap[A, B](ca: Or.B[BAD]#G[A])(f: (A) => Or.B[BAD]#G[B]): Or.B[BAD]#G[B] =
+      ca.flatMap(f)
+    override def insert[A](a: A): Or.B[BAD]#G[A] = Good(a)
+  }
+
+  implicit def orMonad[BAD]: Monad[Or.B[BAD]#G] = new OrMonad[BAD]
 }
+

@@ -24,19 +24,6 @@ import scala.language.implicitConversions
 
 class MonadSpec extends UnitSpec {
 
-  "The good nature of Or" should "obey the monad laws" in {
-    class OrMonad[BAD] extends Monad[Or.B[BAD]#G] {
-      override def flatMap[A, B](ca: Or.B[BAD]#G[A])(f: (A) => Or.B[BAD]#G[B]): Or.B[BAD]#G[B] =
-        ca.flatMap(f)
-      override def insert[A](a: A): B[BAD]#G[A] = Good(a)
-    }
-
-    implicit val orMonad = new OrMonad[Int]
-    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
-
-    new MonadLaws[Or.B[Int]#G].assert()
-  }
-
   "A Monad" should "offer a flatten method" in {
     class ListMonad extends Monad[List] {
       override def flatMap[A, B](ca: List[A])(f: (A) => List[B]): List[B] = ca.flatMap(f)
@@ -53,6 +40,10 @@ class MonadSpec extends UnitSpec {
   }
   it should "provide an instance for Option" in {
     new MonadLaws[Option].assert()
+  }
+  it should "provide an instance for Or, which abstracts over the Good side" in {
+    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+    new MonadLaws[Or.B[Int]#G].assert()
   }
 
   "A Monad Adapter" should "offer a flatten method" in {
