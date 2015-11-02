@@ -81,4 +81,11 @@ object Monad {
   }
 
   implicit val listMonad: Monad[List] = new ListMonad
+
+  private class OptionMonad extends Monad[Option] {
+    override def flatMap[A, B](ca: Option[A])(f: (A) => Option[B]): Option[B] = ca.flatMap(f)
+    override def insert[A](a: A): Option[A] = Option(a)
+  }
+
+  implicit val optionMonad: Monad[Option] = new OptionMonad
 }
