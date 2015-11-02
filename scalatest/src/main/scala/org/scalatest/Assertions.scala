@@ -184,7 +184,8 @@ import org.scalactic.Requirements._
  * </pre>
  *
  * <a name="interceptedExceptions"></a>
- * <h2>Intercepted exceptions</h2>
+ * <a name="expectedExceptions"></a>
+ * <h2>Expected exceptions</h2>
  *
  * <p>
  * Sometimes you need to test whether a method throws an expected exception under certain circumstances, such
@@ -210,24 +211,38 @@ import org.scalactic.Requirements._
  * </p>
  *
  * <p>
- * To make this common use case easier to express and read, ScalaTest provides an <code>intercept</code>
- * method. You use it like this:
+ * To make this common use case easier to express and read, ScalaTest provides two methods:
+ * <code>assertThrows</code> and <code>intercept</code>.
+ * Here's how you use <code>assertThrows</code>:
  * </p>
  *
  * <pre class="stHighlight">
  * val s = "hi"
- * intercept[IndexOutOfBoundsException] {
+ * assertThrows[IndexOutOfBoundsException] {
  *   s.charAt(-1)
  * }
  * </pre>
  *
  * <p>
  * This code behaves much like the previous example. If <code>charAt</code> throws an instance of <code>IndexOutOfBoundsException</code>,
- * <code>intercept</code> will return that exception. But if <code>charAt</code> completes normally, or throws a different
- * exception, <code>intercept</code> will complete abruptly with a <code>TestFailedException</code>. <code>intercept</code> returns the
- * caught exception so that you can inspect it further if you wish, for example, to ensure that data contained inside
- * the exception has the expected values.
+ * <code>assertThrows</code> will return <code>Succeeded</code>. But if <code>charAt</code> completes normally, or throws a different
+ * exception, <code>assertThrows</code> will complete abruptly with a <code>TestFailedException</code>.
  * </p>
+ *
+ * <p>
+ * The <code>intercept</code> method behaves the same as <code>assertThrows</code>, except that instead of returning <code>Succeeded</code>,
+ * <code>intercept</code> returns the caught exception so that you can inspect it further if you wish. For example, you may need
+ * to ensure that data contained inside the exception have expected values. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val s = "hi"
+ * val caught =
+ *   intercept[IndexOutOfBoundsException] {
+ *     s.charAt(-1)
+ *   }
+ * assert(caught.getMessage.indexOf("-1") != -1)
+ * </pre>
  *
  * <a name="checkingThatCodeDoesNotCompile"></a>
  * <h2>Checking that a snippet of code does or does not compile</h2>
