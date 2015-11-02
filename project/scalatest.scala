@@ -946,6 +946,12 @@ object ScalatestBuild extends Build {
     .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
                genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests, genSafeStyleTests)
 
+  lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
+    .settings(
+      scalaVersion := buildScalaVersion,
+      libraryDependencies += scalacheckDependency("compile")
+    ).dependsOn(scalacticMacro, scalactic, scalatest)
+
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
     val jdir = outDir / "java" / name

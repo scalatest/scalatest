@@ -69,6 +69,12 @@ You can also run different groups generated tests separately:
 
 What it does is simply switch to gentests project and run test.
 
+### Building Exmaples
+
+You can build examples project using this command: 
+
+  `$ sbt examples/compile`
+
 ### Packaging
 
 You can package the ScalaTest JAR file using this command:
