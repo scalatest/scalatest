@@ -19,7 +19,7 @@ import org.scalatest._
 import prop.PropertyChecks
 import scala.collection.mutable.ListBuffer
 
-class ExampleSpec extends fixture.PropSpec with PropertyChecks with ShouldMatchers {
+class ExampleSpec extends fixture.PropSpec with PropertyChecks with Matchers {
 
   case class FixtureParam(builder: StringBuilder, buffer: ListBuffer[String])
 

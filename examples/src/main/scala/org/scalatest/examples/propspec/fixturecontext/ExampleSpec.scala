@@ -39,7 +39,7 @@ class EmptySetExamples extends SetExamples {
   def treeSet = TreeSet.empty[Int]
 }
 
-class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatchers {
+class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
 
   property("an empty Set should have size 0") {
     new EmptySetExamples {
@@ -52,7 +52,7 @@ class SetSpec extends PropSpec with TableDrivenPropertyChecks with ShouldMatcher
   property("invoking head on an empty set should produce NoSuchElementException") {
     new EmptySetExamples {
       forAll(examples) { set =>
-        evaluating { set.head } should produce [NoSuchElementException]
+        a [NoSuchElementException] should be thrownBy { set.head }
       }
     }
   }

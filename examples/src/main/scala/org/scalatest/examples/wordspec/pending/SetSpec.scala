@@ -24,7 +24,7 @@ class SetSpec extends WordSpec {
       "have size 0" in (pending)
       
       "produce NoSuchElementException when head is invoked" in {
-        intercept[NoSuchElementException] {
+        assertThrows[NoSuchElementException] {
           Set.empty.head
         }
       }

@@ -27,7 +27,7 @@ class SetSpec extends Spec {
       }
       
       def `should produce NoSuchElementException when head is invoked` {
-        intercept[NoSuchElementException] {
+        assertThrows[NoSuchElementException] {
           Set.empty.head
         }
       }

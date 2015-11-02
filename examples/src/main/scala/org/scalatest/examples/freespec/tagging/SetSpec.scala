@@ -31,7 +31,7 @@ class SetSpec extends FreeSpec {
       }
       
       "should produce NoSuchElementException when head is invoked" taggedAs(SlowTest, DbTest) in {
-        intercept[NoSuchElementException] {
+        assertThrows[NoSuchElementException] {
           Set.empty.head
         }
       }

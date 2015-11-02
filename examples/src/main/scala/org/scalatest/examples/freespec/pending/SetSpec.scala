@@ -24,7 +24,7 @@ class SetSpec extends FreeSpec {
       "should have size 0" in (pending)
       
       "should produce NoSuchElementException when head is invoked" in {
-        intercept[NoSuchElementException] {
+        assertThrows[NoSuchElementException] {
           Set.empty.head
         }
       }

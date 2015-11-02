@@ -17,7 +17,7 @@ package org.scalatest.examples.fixture.configmapfixture
 
 import org.scalatest._
 
-class ExampleSpec extends fixture.FlatSpec with fixture.ConfigMapFixture with ShouldMatchers {
+class ExampleSpec extends fixture.FlatSpec with fixture.ConfigMapFixture with Matchers {
 
   "The config map" should "contain hello" in { configMap =>
     // Use the configMap passed to runTest in the test

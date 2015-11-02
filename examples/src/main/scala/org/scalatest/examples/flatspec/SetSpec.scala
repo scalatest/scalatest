@@ -24,7 +24,7 @@ class SetSpec extends FlatSpec {
   }
     
   it should "produce NoSuchElementException when head is invoked" in {
-    intercept[NoSuchElementException] {
+    assertThrows[NoSuchElementException] {
       Set.empty.head
     }
   }

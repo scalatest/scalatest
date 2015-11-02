@@ -31,7 +31,7 @@ class SetSpec extends WordSpec {
       }
       
       "produce NoSuchElementException when head is invoked" taggedAs(SlowTest, DbTest) in {
-        intercept[NoSuchElementException] {
+        assertThrows[NoSuchElementException] {
           Set.empty.head
         }
       }

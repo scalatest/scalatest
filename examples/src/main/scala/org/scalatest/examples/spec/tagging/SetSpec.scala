@@ -29,7 +29,7 @@ class SetSpec extends Spec {
       
       @SlowTest @DbTest
       def `should produce NoSuchElementException when head is invoked` {
-        intercept[NoSuchElementException] {
+        assertThrows[NoSuchElementException] {
           Set.empty.head
         }
       }
