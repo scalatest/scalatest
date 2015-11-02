@@ -35,10 +35,10 @@ import org.scalatest.Suite.autoTagClassAnnotations
  *
  * <pre class="stHighlight">
  * import org.scalatest.path
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import scala.collection.mutable.ListBuffer
  *
- * class ExampleSpec extends path.FreeSpec with ShouldMatchers {
+ * class ExampleSpec extends path.FreeSpec with Matchers {
  *
  *   "A ListBuffer" - {
  *
@@ -306,10 +306,10 @@ import org.scalatest.Suite.autoTagClassAnnotations
  *
  * <pre class="stHighlight">
  * import org.scalatest.path
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import scala.collection.mutable.ListBuffer
  *
- * class ExampleSpec extends path.FreeSpec with ShouldMatchers {
+ * class ExampleSpec extends path.FreeSpec with Matchers {
  *
  *   println("Start of: ExampleSpec")
  *   "A ListBuffer" - {
@@ -664,11 +664,9 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * order: first tests then nested suites. To help make <code>path.FreeSpec</code> code easier to
  * reason about by giving readers of one less difference to think about, nested suites are not allowed. If you want
  * to add nested suites to a <code>path.FreeSpec</code>, you can instead wrap them all in a
- * <a href="../Suites.html"><code>Suites</code></a> or <a href="../Specs.html"><code>Specs</code></a> object. They will
+ * <a href="../Suites.html"><code>Suites</code></a> object. They will
  * be executed in the order of appearance (unless a <a href="../Distributor">Distributor</a> is passed, in which case
  * they will execute in parallel).
- * </p>
-
  * </p>
  *
  * <a name="durations"></a><h2>Durations</h2>

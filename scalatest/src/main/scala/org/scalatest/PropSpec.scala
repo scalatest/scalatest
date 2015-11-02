@@ -54,7 +54,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -162,7 +162,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =>
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -476,7 +476,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -579,7 +579,7 @@ import Suite.autoTagClassAnnotations
  *       SlowTest, DbTest) {
  * 
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -840,7 +840,7 @@ import Suite.autoTagClassAnnotations
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     new EmptySetExamples {
  *       forAll(examples) { set =&gt;
- *         evaluating { set.head } should produce [NoSuchElementException]
+ *         a [NoSuchElementException] should be thrownBy { set.head }
  *       }
  *     }
  *   }

@@ -634,9 +634,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * <code>org.scalatest.FreeSpec</code>, nested suites are executed then tests are executed. In an
    * <code>org.scalatest.path.FreeSpec</code> it would be the opposite. To make the code easy to reason about,
    * therefore, this is just not allowed. If you want to add nested suites to a <code>path.FreeSpec</code>, you can
-   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> or
-   * <a href="../Specs.html"><code>Specs</code></a> object and put them in whatever order
-   * you wish.
+   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> 
+   * object and put them in whatever order you wish.
    * </p>
    *
    * <p>
@@ -658,9 +657,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * <code>org.scalatest.FreeSpec</code>, nested suites are executed then tests are executed. In an
    * <code>org.scalatest.path.FreeSpec</code> it would be the opposite. To make the code easy to reason about,
    * therefore, this is just not allowed. If you want to add nested suites to a <code>path.FreeSpec</code>, you can
-   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> or
-   * <a href="../Specs.html"><code>Specs</code></a> object and put them in whatever order
-   * you wish.
+   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> 
+   * object and put them in whatever order you wish.
    * </p>
    *
    * <p>

@@ -87,9 +87,9 @@ package prop
  *   )
  *
  * forAll (invalidCombos) { (n: Int, d: Int) =&gt;
- *   evaluating {
+ *   an [IllegalArgumentException] should be thrownBy {
  *     new Fraction(n, d)
- *   } should produce [IllegalArgumentException]
+ *   }
  * }
  * </pre>
  *

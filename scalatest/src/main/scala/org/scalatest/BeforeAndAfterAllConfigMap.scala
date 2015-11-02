@@ -77,12 +77,12 @@ package org.scalatest
  * class RedSpec extends TempFileExistsSpec
  * class BlueSpec extends TempFileExistsSpec
  * 
- * class ExampleSpec extends Specs(
+ * class ExampleSpec extends Suites(
  *   new OneSpec,
  *   new TwoSpec,
  *   new RedSpec,
  *   new BlueSpec
- * ) with TempFileExistsSpec with BeforeAndAfterAll {
+ * ) with TempFileExistsSpec with BeforeAndAfterAllConfigMap {
  * 
  *   private val tempFileName = "tempFileName"
  * 
