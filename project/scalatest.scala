@@ -23,6 +23,8 @@ object ScalatestBuild extends Build {
 
   val releaseVersion = "3.0.0-M11"
 
+  val scalacheckVersion = "1.12.5"
+
   val githubTag = "release-3.0.0-M11-for-scala-2.11-and-2.10" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
@@ -141,7 +143,7 @@ object ScalatestBuild extends Build {
   )
 
   def scalacheckDependency(config: String) =
-    "org.scalacheck" %% "scalacheck" % "1.12.4" % config
+    "org.scalacheck" %% "scalacheck" % scalacheckVersion % config
 
   def crossBuildLibraryDependencies(theScalaVersion: String) =
     CrossVersion.partialVersion(theScalaVersion) match {
@@ -388,7 +390,7 @@ object ScalatestBuild extends Build {
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
       jsDependencies += RuntimeDOM % "test",
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -514,7 +516,7 @@ object ScalatestBuild extends Build {
         </dependency>,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "optional",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
@@ -597,7 +599,7 @@ object ScalatestBuild extends Build {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
-      libraryDependencies += "org.scalacheck" %%% "scalacheck" % "1.12.4" % "test",
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       jsDependencies += RuntimeDOM % "test",
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
