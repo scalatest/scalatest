@@ -220,6 +220,58 @@ object GenScalaTestJS {
     )
   }
 
+  def genFeatureSpecMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyFiles(
+      "scalatest-featurespec/src/main/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "FeatureSpecLike.scala",
+        "FeatureSpec.scala",
+        "AsyncFeatureSpecLike.scala",
+        "AsyncFeatureSpec.scala"
+      ),
+      targetDir
+    ) ++
+    copyFiles(
+      "scalatest-featurespec/src/main/scala/org/scalatest/fixture",
+      "org/scalatest/fixture",
+      List(
+        "FeatureSpecLike.scala",
+        "FeatureSpec.scala",
+        "AsyncFeatureSpecLike.scala",
+        "AsyncFeatureSpec.scala"
+      ),
+      targetDir
+    )
+  }
+
+  def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyFiles(
+      "scalatest-featurespec-test/src/test/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "FeatureSpecSpec.scala",
+        "AsyncFeatureSpecLikeSpec.scala",
+        "AsyncFeatureSpecLikeSpec2.scala",
+        "AsyncFeatureSpecSpec.scala",
+        "AsyncFeatureSpecSpec2.scala"
+      ),
+      targetDir
+    ) ++
+      copyFiles(
+        "scalatest-featurespec-test/src/test/scala/org/scalatest/fixture",
+        "org/scalatest/fixture",
+        List(
+          "FeatureSpecSpec.scala",
+          "AsyncFeatureSpecLikeSpec.scala",
+          "AsyncFeatureSpecLikeSpec2.scala",
+          "AsyncFeatureSpecSpec.scala",
+          "AsyncFeatureSpecSpec2.scala"
+        ),
+        targetDir
+      )
+  }
+
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
     //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("MatcherStackDepthSpec.scala"), targetDir)
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,

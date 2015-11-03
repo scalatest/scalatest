@@ -16,6 +16,8 @@
 
 import sbt.Keys._
 import sbt._
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 trait FeatureSpecModules {
 
@@ -23,15 +25,27 @@ trait FeatureSpecModules {
 
   def scalatestTestOptions: Seq[Tests.Argument]
 
+  def scalatestTestJSOptions: Seq[Tests.Argument]
+
   def scalatest: Project
+
+  def scalatestJS: Project
 
   def scalatestLibraryDependencies: Seq[ModuleID]
 
+  def scalatestJSLibraryDependencies: Seq[ModuleID]
+
   def commonTest: Project
+
+  def commonTestJS: Project
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File]
 
   val genSafeStylesTask: Def.Setting[Task[Unit]]
+
+  def scalacticJS: Project
+
+  def scalatestAll: Project
 
   lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("scalatest-featurespec"))
     .settings(sharedSettings: _*)
@@ -39,6 +53,21 @@ trait FeatureSpecModules {
       organization := "org.scalatest",
       moduleName := "scalatest-featurespec"
     ).dependsOn(scalatest).aggregate(LocalProject("scalatestFeatureSpecTest"))
+
+  lazy val scalatestFeatureSpecJS = Project("scalatestFeatureSpecJS", file("scalatest-featurespec.js"))
+    .settings(sharedSettings: _*)
+    .settings(
+      organization := "org.scalatest",
+      moduleName := "scalatest-featurespec",
+      sourceGenerators in Compile += {
+        Def.task {
+          GenScalaTestJS.genFeatureSpecMain((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      test in Test := {},
+      testOnly in Test := {}
+    ).dependsOn(scalatestJS).enablePlugins(ScalaJSPlugin).aggregate(LocalProject("scalatestFeatureSpecTestJS"))
 
   lazy val scalatestFeatureSpecTests = Project("scalatestFeatureSpecTest", file("scalatest-featurespec-test"))
     .settings(sharedSettings: _*)
@@ -49,6 +78,22 @@ trait FeatureSpecModules {
       publish := {},
       publishLocal := {}
     ).dependsOn(scalatestFeatureSpec % "test", commonTest % "test")
+
+  lazy val scalatestFeatureSpecTestsJS = Project("scalatestFeatureSpecTestJS", file("scalatest-featurespec-test.js"))
+    .settings(sharedSettings: _*)
+    .settings(
+      testOptions in Test := scalatestTestJSOptions,
+      libraryDependencies ++= scalatestJSLibraryDependencies,
+      jsDependencies += RuntimeDOM % "test",
+      sourceGenerators in Test += {
+        Def.task {
+          GenScalaTestJS.genFeatureSpecTest((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      },
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
+    ).dependsOn(scalatestFeatureSpecJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestSafeFeatureSpec = Project("scalatestSafeFeatureSpec", file("scalatest-featurespec-safe"))
     .settings(sharedSettings: _*)
