@@ -15,7 +15,7 @@
 */
 
 import java.io.{FileWriter, BufferedWriter, File}
-
+import sbt._
 import scala.io.Source
 
 object GenSafeStyles {
@@ -73,6 +73,66 @@ object GenSafeStyles {
     }
   }
 
+  def genFeatureSpecMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
+    targetDir.mkdirs()
+    val scalatestDir = new File(targetDir, "org/scalatest")
+    scalatestDir.mkdirs()
+
+    translateFile(scalatestDir, "SafeFeatureSpecLike.scala", "scalatest-featurespec/src/main/scala/org/scalatest/FeatureSpecLike.scala", scalaVersion, scalaJS, translateLine("FeatureSpec"))
+    translateFile(scalatestDir, "SafeFeatureSpec.scala", "scalatest-featurespec/src/main/scala/org/scalatest/FeatureSpec.scala", scalaVersion, scalaJS, translateLine("FeatureSpec"))
+
+    val fixtureDir = new File(scalatestDir, "fixture")
+    fixtureDir.mkdirs()
+
+    translateFile(fixtureDir, "SafeFeatureSpecLike.scala", "scalatest-featurespec/src/main/scala/org/scalatest/fixture/FeatureSpecLike.scala", scalaVersion, scalaJS, translateLine("FeatureSpec"))
+    translateFile(fixtureDir, "SafeFeatureSpec.scala", "scalatest-featurespec/src/main/scala/org/scalatest/fixture/FeatureSpec.scala", scalaVersion, scalaJS, translateLine("FeatureSpec"))
+
+    IO.copy(
+      List(
+        (new File("scalatest-featurespec/src/main/scala/org/scalatest/AsyncFeatureSpecLike.scala"), new File(scalatestDir, "AsyncFeatureSpecLike.scala")),
+        (new File("scalatest-featurespec/src/main/scala/org/scalatest/AsyncFeatureSpec.scala"), new File(scalatestDir, "AsyncFeatureSpec.scala")),
+        (new File("scalatest-featurespec/src/main/scala/org/scalatest/fixture/AsyncFeatureSpecLike.scala"), new File(fixtureDir, "AsyncFeatureSpecLike.scala")),
+        (new File("scalatest-featurespec/src/main/scala/org/scalatest/fixture/AsyncFeatureSpec.scala"), new File(fixtureDir, "AsyncFeatureSpec.scala"))
+      ),
+      true
+    )
+  }
+
+  def genFeatureSpecMain(targetDir: File, version: String, scalaVersion: String) = genFeatureSpecMainImpl(targetDir, version, scalaVersion, false)
+
+  def genFeatureSpecMainJS(targetDir: File, version: String, scalaVersion: String) = genFeatureSpecMainImpl(targetDir, version, scalaVersion, true)
+
+  def genFeatureSpecTestImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
+    targetDir.mkdirs()
+    val scalatestDir = new File(targetDir, "org/scalatest")
+    scalatestDir.mkdirs()
+
+    translateFile(scalatestDir, "SafeFeatureSpecSpec.scala", "scalatest-featurespec-test/src/test/scala/org/scalatest/FeatureSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FeatureSpec"))
+
+    val fixtureDir = new File(scalatestDir, "fixture")
+    fixtureDir.mkdirs()
+
+    translateFile(fixtureDir, "SafeFeatureSpecSpec.scala", "scalatest-featurespec-test/src/test/scala/org/scalatest/fixture/FeatureSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FeatureSpec"))
+
+    IO.copy(
+      List(
+        (new File("scalatest-featurespec-test/src/test/scala/org/scalatest/AsyncFeatureSpecLikeSpec.scala"), new File(scalatestDir, "AsyncFeatureSpecLikeSpec.scala")),
+        (new File("scalatest-featurespec-test/src/test/scala/org/scalatest/AsyncFeatureSpecLikeSpec2.scala"), new File(scalatestDir, "AsyncFeatureSpecLikeSpec2.scala")),
+        (new File("scalatest-featurespec-test/src/test/scala/org/scalatest/AsyncFeatureSpecSpec.scala"), new File(scalatestDir, "AsyncFeatureSpecSpec.scala")),
+        (new File("scalatest-featurespec-test/src/test/scala/org/scalatest/AsyncFeatureSpecSpec2.scala"), new File(scalatestDir, "AsyncFeatureSpecSpec2.scala")),
+        (new File("scalatest-featurespec-test/src/test/scala/org/scalatest/fixture/AsyncFeatureSpecLikeSpec.scala"), new File(fixtureDir, "AsyncFeatureSpecLikeSpec.scala")),
+        (new File("scalatest-featurespec-test/src/test/scala/org/scalatest/fixture/AsyncFeatureSpecLikeSpec2.scala"), new File(fixtureDir, "AsyncFeatureSpecLikeSpec2.scala")),
+        (new File("scalatest-featurespec-test/src/test/scala/org/scalatest/fixture/AsyncFeatureSpecSpec.scala"), new File(fixtureDir, "AsyncFeatureSpecSpec.scala")),
+        (new File("scalatest-featurespec-test/src/test/scala/org/scalatest/fixture/AsyncFeatureSpecSpec2.scala"), new File(fixtureDir, "AsyncFeatureSpecSpec2.scala"))
+      ),
+      true
+    )
+  }
+
+  def genFeatureSpecTest(targetDir: File, version: String, scalaVersion: String) = genFeatureSpecTestImpl(targetDir, version, scalaVersion, false)
+
+  def genFeatureSpecTestJS(targetDir: File, version: String, scalaVersion: String) = genFeatureSpecTestImpl(targetDir, version, scalaVersion, true)
+
   def genMainImpl(targetDir: File, version: String, scalaVersion: String, scalaJS: Boolean): Unit = {
     targetDir.mkdirs()
     val safeDir = new File(targetDir, "safe")
@@ -82,9 +142,6 @@ object GenSafeStyles {
 
     translateFile(safeDir, "SafeFunSuiteLike.scala", "scalatest/src/main/scala/org/scalatest/FunSuiteLike.scala", scalaVersion, scalaJS, translateLine("FunSuite"))
     translateFile(safeDir, "SafeFunSuite.scala", "scalatest/src/main/scala/org/scalatest/FunSuite.scala", scalaVersion, scalaJS, translateLine("FunSuite"))
-
-    translateFile(safeDir, "SafeFeatureSpecLike.scala", "scalatest/src/main/scala/org/scalatest/FeatureSpecLike.scala", scalaVersion, scalaJS, translateLine("FeatureSpec"))
-    translateFile(safeDir, "SafeFeatureSpec.scala", "scalatest/src/main/scala/org/scalatest/FeatureSpec.scala", scalaVersion, scalaJS, translateLine("FeatureSpec"))
 
     translateFile(safeDir, "SafeFlatSpecLike.scala", "scalatest/src/main/scala/org/scalatest/FlatSpecLike.scala", scalaVersion, scalaJS, translateLine("FlatSpec"))
     translateFile(safeDir, "SafeFlatSpec.scala", "scalatest/src/main/scala/org/scalatest/FlatSpec.scala", scalaVersion, scalaJS, translateLine("FlatSpec"))
@@ -108,9 +165,6 @@ object GenSafeStyles {
 
     translateFile(safeFixtureDir, "SafeFunSuiteLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/FunSuiteLike.scala", scalaVersion, scalaJS, translateLine("FunSuite"))
     translateFile(safeFixtureDir, "SafeFunSuite.scala", "scalatest/src/main/scala/org/scalatest/fixture/FunSuite.scala", scalaVersion, scalaJS, translateLine("FunSuite"))
-
-    translateFile(safeFixtureDir, "SafeFeatureSpecLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/FeatureSpecLike.scala", scalaVersion, scalaJS, translateLine("FeatureSpec"))
-    translateFile(safeFixtureDir, "SafeFeatureSpec.scala", "scalatest/src/main/scala/org/scalatest/fixture/FeatureSpec.scala", scalaVersion, scalaJS, translateLine("FeatureSpec"))
 
     translateFile(safeFixtureDir, "SafeFlatSpecLike.scala", "scalatest/src/main/scala/org/scalatest/fixture/FlatSpecLike.scala", scalaVersion, scalaJS, translateLine("FlatSpec"))
     translateFile(safeFixtureDir, "SafeFlatSpec.scala", "scalatest/src/main/scala/org/scalatest/fixture/FlatSpec.scala", scalaVersion, scalaJS, translateLine("FlatSpec"))
@@ -144,7 +198,7 @@ object GenSafeStyles {
     translateFile(safeDir, "SafeFunSuiteSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSuite"))
     translateFile(safeDir, "SafeFunSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FunSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSpec"))
     translateFile(safeDir, "SafeFunSpecSuite.scala", "scalatest-test/src/test/scala/org/scalatest/FunSpecSuite.scala", scalaVersion, scalaJS, translateTestLine("FunSpec"))
-    translateFile(safeDir, "SafeFeatureSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FeatureSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FeatureSpec"))
+
     translateFile(safeDir, "SafeFlatSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FlatSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FlatSpec"))
     translateFile(safeDir, "SafeFreeSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/FreeSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FreeSpec"))
     translateFile(safeDir, "SafePropSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/PropSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("PropSpec"))
@@ -155,7 +209,7 @@ object GenSafeStyles {
 
     translateFile(fixtureDir, "SafeFunSuiteSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FunSuiteSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSuite"))
     translateFile(fixtureDir, "SafeFunSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FunSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FunSpec"))
-    translateFile(fixtureDir, "SafeFeatureSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FeatureSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FeatureSpec"))
+
     translateFile(fixtureDir, "SafeFlatSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FlatSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FlatSpec"))
     translateFile(fixtureDir, "SafeFreeSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/FreeSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("FreeSpec"))
     translateFile(fixtureDir, "SafePropSpecSpec.scala", "scalatest-test/src/test/scala/org/scalatest/fixture/PropSpecSpec.scala", scalaVersion, scalaJS, translateTestLine("PropSpec"))

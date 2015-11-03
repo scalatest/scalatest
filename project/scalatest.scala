@@ -25,8 +25,6 @@ object ScalaTestBuild extends Build with RegularTests with GenerateTests with Do
 
   val scalacheckVersion = "1.12.5"
 
-
-
   def envVar(name: String): Option[String] =
     try {
       Some(sys.env(name))
@@ -418,7 +416,54 @@ object ScalaTestBuild extends Build with RegularTests with GenerateTests with Do
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-   ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic).aggregate(LocalProject("scalatest-test"))
+   ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic)
+    .aggregate(
+      LocalProject("scalatest-test"),
+      LocalProject("scalatestFeatureSpec"),
+      LocalProject("scalatestSafeFeatureSpec")
+    )
+
+  lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("scalatest-featurespec"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec",
+      organization := "org.scalatest",
+      moduleName := "scalatest-featurespec"
+    ).dependsOn(scalatest).aggregate(LocalProject("scalatestFeatureSpecTest"))
+
+  lazy val scalatestFeatureSpecTests = Project("scalatestFeatureSpecTest", file("scalatest-featurespec-test"))
+    .settings(sharedSettings: _*)
+    .settings(
+      testOptions in Test := scalatestTestOptions,
+      libraryDependencies ++= scalatestLibraryDependencies,
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {}
+    ).dependsOn(scalatestFeatureSpec % "test", commonTest % "test")
+
+  lazy val scalatestSafeFeatureSpec = Project("scalatestSafeFeatureSpec", file("scalatest-featurespec-safe"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest FeatureSpec",
+      organization := "org.scalatest",
+      moduleName := "scalatest-featurespec",
+      genSafeStylesTask,
+      sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genFeatureSpecMain)
+    ).dependsOn(scalatest).aggregate(LocalProject("scalatestSafeFeatureSpecTest"))
+
+  lazy val scalatestSafeFeatureSpecTests = Project("scalatestSafeFeatureSpecTest", file("scalatest-featurespec-safe-test"))
+    .settings(sharedSettings: _*)
+    .settings(
+      testOptions in Test := scalatestTestOptions,
+      libraryDependencies ++= scalatestLibraryDependencies,
+      publishArtifact := false,
+      publish := {},
+      publishLocal := {},
+      genSafeStylesTask,
+      sourceGenerators in Test <+=
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genFeatureSpecTest)
+    ).dependsOn(scalatestSafeFeatureSpec % "test", commonTest % "test")
 
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
     .settings(sharedSettings: _*)

@@ -40,7 +40,7 @@ trait RegularTests {
     .settings(sharedSettings: _*)
     .settings(
       libraryDependencies += scalacheckDependency("optional")
-    ).dependsOn(scalacticMacro, LocalProject("scalatest"))
+    ).dependsOn(scalacticMacro, LocalProject("scalatest"), LocalProject("scalatestFeatureSpec"))
 
   // Common test classes used by scalactic.js and scalatest.js
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
