@@ -34,7 +34,6 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest.time.Millis
 import java.util.concurrent.atomic.AtomicInteger
-import org.scalatest.testng.TestNGWrapperSuite
 import Suite.{mergeMap, CHOSEN_STYLES, SELECTED_TAG, testSortingReporterTimeout}
 import ArgsParser._
 import org.scalactic.Requirements._
@@ -1243,8 +1242,10 @@ object Runner {
             }
 
           val testNGWrapperSuiteList: List[SuiteConfig] =
-            if (!testNGList.isEmpty)
-              List(SuiteConfig(new TestNGWrapperSuite(testNGList), emptyDynaTags, false, true)) // TestNG suite should exclude nested suites
+            if (!testNGList.isEmpty) {
+              val wrapperInstance = loader.loadClass("org.scalatest.testng.TestNGWrapperSuite").getConstructor(classOf[List[String]]).newInstance(testNGList)
+              List(SuiteConfig(wrapperInstance.asInstanceOf[Suite], emptyDynaTags, false, true)) // TestNG suite should exclude nested suites
+            }
             else
               Nil
 

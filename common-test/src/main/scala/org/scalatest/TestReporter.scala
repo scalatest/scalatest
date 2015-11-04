@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.jmock;
+package org.scalatest
 
-import org.scalatest._
-import org.scalatest.events._
+import events._
 
 class TestReporter extends Reporter {
 

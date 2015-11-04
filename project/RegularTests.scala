@@ -55,11 +55,17 @@ trait RegularTests {
 
   def scalatestJUnit: Project
 
+  def scalatestTestNG: Project
+
   // Common test classes used by scalactic and scalatest
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
     .settings(
-      libraryDependencies += scalacheckDependency("optional")
+      libraryDependencies ++=
+        Seq(
+          scalacheckDependency("optional"),
+          "org.jmock" % "jmock-legacy" % "2.5.1" % "optional"
+        )
     ).dependsOn(scalacticMacro, LocalProject("scalatest"), LocalProject("scalatestFeatureSpec"))
 
   // Common test classes used by scalactic.js and scalatest.js
@@ -109,11 +115,17 @@ trait RegularTests {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++=
+        Seq(
+          "junit" % "junit" % "4.10" % "test",
+          "org.testng" % "testng" % "6.8.7" % "optional",
+          "com.google.inject" % "guice" % "2.0" % "optional"
+        ),
       testOptions in Test := scalatestTestOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalatest % "test", scalatestJUnit % "test", commonTest % "test")
+    ).dependsOn(scalatest % "test", scalatestJUnit % "test", scalatestTestNG % "test", commonTest % "test")
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
     .settings(sharedSettings: _*)
