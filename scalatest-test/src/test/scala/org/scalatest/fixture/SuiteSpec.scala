@@ -19,7 +19,6 @@ package fixture
 import collection.immutable.TreeSet
 import events.TestFailed
 import events.TestSucceeded
-import mock.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.events.InfoProvided
 import SharedHelpers._
