@@ -17,48 +17,36 @@
 import sbt._
 import sbt.Keys._
 
-trait TestNGModules {
+trait JMockModules {
 
   def sharedSettings: Seq[Setting[_]]
 
   def scalatest: Project
 
-  def scalacticMacro: Project
-
   def scalatestTestOptions: Seq[Tests.Argument]
-
-  def commonTest: Project
 
   def scalatestLibraryDependencies: Seq[ModuleID]
 
-  def scalatestJMock: Project
+  def commonTest: Project
 
-  lazy val scalatestTestNG = Project("scalatestTestNG", file("scalatest-testng"))
+  lazy val scalatestJMock = Project("scalatestJMock", file("scalatest-jmock"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
-      moduleName := "scalatest-testng",
-      libraryDependencies ++=
-        Seq(
-          "org.testng" % "testng" % "6.8.7" % "optional",
-          "com.google.inject" % "guice" % "2.0" % "optional"
-        )
-    ).dependsOn(scalatest).aggregate(LocalProject("scalatestTestNGTest"))
+      moduleName := "scalatest-jmock",
+      libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1" % "optional"
+    ).dependsOn(scalatest).aggregate(LocalProject("scalatestJMockTest"))
 
-  lazy val scalatestTestNGTest = Project("scalatestTestNGTest", file("scalatest-testng-test"))
+  lazy val scalatestJMockTest = Project("scalatestJMockTest", file("scalatest-jmock-test"))
     .settings(sharedSettings: _*)
     .settings(
       testOptions in Test := scalatestTestOptions,
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies ++=
-        Seq(
-          "org.testng" % "testng" % "6.8.7" % "test",
-          "com.google.inject" % "guice" % "2.0" % "test",
-          "org.jmock" % "jmock-legacy" % "2.5.1" % "test"
-        ),
+      libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1" % "test",
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalatestTestNG % "test", scalatestJMock % "test", commonTest % "test")
+    ).dependsOn(scalatestJMock % "test", commonTest % "test")
+
 
 }

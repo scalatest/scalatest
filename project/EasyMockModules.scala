@@ -46,6 +46,6 @@ trait EasyMockModules {
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalatestEasyMock % "test", commonTest % "test"/*, scalacticMacro % "test", */)
+    ).dependsOn(scalatestEasyMock % "test", commonTest % "test")
 
 }
