@@ -372,7 +372,7 @@ import Suite.autoTagClassAnnotations
  * Eric Torreborre for the <a href="http://code.google.com/p/specs/" target="_blank">specs framework</a>.</em>
  * </p>
  *
- * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
+ * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>WordSpec</code> adds a method
@@ -1195,7 +1195,7 @@ import Suite.autoTagClassAnnotations
  * scala&gt; new ExampleSuite execute
  * <span class="stGreen">ExampleSuite:
  * This test
- * - should succeed
+ * - should succeed</span>
  * <span class="stRed">- should fail *** FAILED ***
  *   2 did not equal 3 (<console>:33)
  *   + Dir snapshot: hello.txt, world.txt </span>
@@ -1307,7 +1307,6 @@ import Suite.autoTagClassAnnotations
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
- * </pre>
  * <a name="withFixtureOneArgTest"></a>
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *

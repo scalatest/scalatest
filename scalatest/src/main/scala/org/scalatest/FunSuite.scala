@@ -79,7 +79,7 @@ import Suite.autoTagClassAnnotations
  * an early test framework for Scala.</em>
  * </p>
  *
- * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
+ * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * <p>
  * To support the common use case of temporarily disabling a test, with the
@@ -853,7 +853,7 @@ import Suite.autoTagClassAnnotations
  * <pre class="stREPL">
  * scala&gt; new ExampleSuite execute
  * <span class="stGreen">ExampleSuite:
- * - this test should succeed
+ * - this test should succeed</span>
  * <span class="stRed">- this test should fail *** FAILED ***
  *   2 did not equal 3 (<console>:33)
  *   + Dir snapshot: hello.txt, world.txt </span>
@@ -969,7 +969,6 @@ import Suite.autoTagClassAnnotations
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
- * </pre>
  * <a name="withFixtureOneArgTest"></a>
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
