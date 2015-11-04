@@ -53,6 +53,8 @@ trait RegularTests {
 
   def scalatestFeatureSpecJS: Project
 
+  def scalatestJUnit: Project
+
   // Common test classes used by scalactic and scalatest
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
@@ -111,7 +113,7 @@ trait RegularTests {
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalatest % "test", commonTest % "test")
+    ).dependsOn(scalatest % "test", scalatestJUnit % "test", commonTest % "test")
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
     .settings(sharedSettings: _*)

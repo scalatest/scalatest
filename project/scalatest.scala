@@ -10,6 +10,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object ScalaTestBuild extends Build
   with FeatureSpecModules
+  with JUnitModules
   with RegularTests
   with GenerateTests
   with Doc {
@@ -156,7 +157,6 @@ object ScalaTestBuild extends Build
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
       "org.testng" % "testng" % "6.8.7" % "optional",
       "com.google.inject" % "guice" % "2.0" % "optional",
-      "junit" % "junit" % "4.10" % "optional",
       "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "commons-io" % "commons-io" % "1.3.2" % "test",
@@ -424,7 +424,8 @@ object ScalaTestBuild extends Build
     .aggregate(
       LocalProject("scalatest-test"),
       LocalProject("scalatestFeatureSpec"),
-      LocalProject("scalatestSafeFeatureSpec")
+      LocalProject("scalatestSafeFeatureSpec"),
+      LocalProject("scalatestJUnit")
     )
 
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
