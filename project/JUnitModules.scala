@@ -35,7 +35,7 @@ trait JUnitModules {
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
-      moduleName := "scalatest-featurespec",
+      moduleName := "scalatest-junit",
       libraryDependencies += "junit" % "junit" % "4.10" % "optional"
     ).dependsOn(scalatest).aggregate(LocalProject("scalatestJUnitTest"))
 
