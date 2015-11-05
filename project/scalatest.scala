@@ -423,7 +423,7 @@ object ScalaTestBuild extends Build
     .aggregate(
       LocalProject("scalatest-test"),
       LocalProject("scalatestFeatureSpec"),
-      LocalProject("scalatestSafeFeatureSpec"),
+      //LocalProject("scalatestSafeFeatureSpec"),
       LocalProject("scalatestJUnit"),
       LocalProject("scalatestTestNG"),
       LocalProject("scalatestEasyMock"),

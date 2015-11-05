@@ -95,7 +95,7 @@ trait FeatureSpecModules {
       publishLocal := {}
     ).dependsOn(scalatestFeatureSpecJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestSafeFeatureSpec = Project("scalatestSafeFeatureSpec", file("scalatest-featurespec-safe"))
+  /*lazy val scalatestSafeFeatureSpec = Project("scalatestSafeFeatureSpec", file("scalatest-featurespec-safe"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
@@ -143,6 +143,6 @@ trait FeatureSpecModules {
       genSafeStylesTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genFeatureSpecTestJS)
-    ).dependsOn(scalatestSafeFeatureSpecJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalatestSafeFeatureSpecJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)*/
 
 }
