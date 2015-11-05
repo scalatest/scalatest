@@ -34,7 +34,7 @@ final class ResultOfBeWordForNoException {
    *                       ^
    * </pre>
    */
-  def thrownBy(fun: => Unit): Assertion = {
+  def thrownBy(fun: => Any): Assertion = {
     checkNoException(fun)
   }
   
