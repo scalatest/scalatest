@@ -420,16 +420,7 @@ object ScalaTestBuild extends Build
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic)
-    .aggregate(
-      LocalProject("scalatest-test"),
-      LocalProject("scalatestFeatureSpec"),
-      //LocalProject("scalatestSafeFeatureSpec"),
-      LocalProject("scalatestJUnit"),
-      LocalProject("scalatestTestNG"),
-      LocalProject("scalatestEasyMock"),
-      LocalProject("scalatestJMock"),
-      LocalProject("scalatestMockito")
-    )
+    .aggregate(LocalProject("scalatest-test"))
 
   lazy val scalatestCoreJS = Project("scalatestCoreJS", file("scalatest-core.js"))
     .settings(sharedSettings: _*)
@@ -691,22 +682,40 @@ object ScalaTestBuild extends Build
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++=
+        Seq(
+          "junit" % "junit" % "4.10" % "optional",
+          "org.testng" % "testng" % "6.8.7" % "optional",
+          "com.google.inject" % "guice" % "2.0" % "optional",
+          "org.easymock" % "easymockclassextension" % "3.1" % "optional",
+          "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
+          "org.mockito" % "mockito-all" % "1.9.0" % "optional"
+        ),
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,
       // include the scalactic sources in the source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalactic, Compile, packageSrc).value,
-      // include the scalatest classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestCore, Compile, packageBin).value,
-      // include the scalatest sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCore, Compile, packageSrc).value,
-      sourceGenerators in Compile += {
-        // Little trick to get rid of bnd error when publish.
-        Def.task{
-          (new File(crossTarget.value, "classes")).mkdirs()
-          Seq.empty[File]
-        }.taskValue
-      },
-      unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "scalatest" / "src" / "main" / "resources" )
+      compile in Compile <<= compile in Compile dependsOn (
+        // Build scalactic and scalatest first
+        compile in Compile in scalactic,
+        compile in Compile in scalatest
+        ),
+      sourceGenerators in Compile += Def.task {
+        val scalaTargetDir = (sourceManaged in Compile).value / "scala"
+        val javaTargetDir = (sourceManaged in Compile).value / "java"
+
+        IO.copyDirectory(file("scalatest/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
+        IO.copyDirectory(file("scalatest/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/java"), javaTargetDir, true)
+
+        listAllFiles(scalaTargetDir) ++ listAllFiles(javaTargetDir)
+      }.taskValue,
+      resourceGenerators in Compile += Def.task {
+        val resourcesTargetDir = (resourceManaged in Compile).value
+
+        IO.copyDirectory(file("scalatest-core/src/main/resources"), resourcesTargetDir, true)
+
+        listAllFiles(resourcesTargetDir)
+      }.taskValue
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -747,7 +756,7 @@ object ScalaTestBuild extends Build
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatestCore % "compile-internal").aggregate(scalactic, scalatestCore)
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal")
 
   lazy val scalatestAllJS = Project("scalatestAllJS", file("scalatest-all.js"))
     .settings(sharedSettings: _*)
@@ -762,17 +771,20 @@ object ScalaTestBuild extends Build
       mappings in (Compile, packageBin) ++= mappings.in(scalacticJS, Compile, packageBin).value,
       // include the scalactic sources in the source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticJS, Compile, packageSrc).value,
-      // include the scalatest classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestCoreJS, Compile, packageBin).value,
-      // include the scalatest sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCoreJS, Compile, packageSrc).value,
-      sourceGenerators in Compile += {
-        // Little trick to get rid of bnd error when publish.
-        Def.task{
-          (new File(crossTarget.value, "classes")).mkdirs()
-          Seq.empty[File]
-        }.taskValue
-      }
+      compile in Compile <<= compile in Compile dependsOn (
+        // Build scalactic and scalatest first
+        compile in Compile in scalacticJS,
+        compile in Compile in scalatestJS
+        ),
+      sourceGenerators in Compile += Def.task {
+        val scalaTargetDir = (sourceManaged in Compile).value / "scala"
+        val javaTargetDir = (sourceManaged in Compile).value / "java"
+
+        IO.copyDirectory(file("scalatest.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
+        IO.copyDirectory(file("scalatest.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/java"), javaTargetDir, true)
+
+        listAllFiles(scalaTargetDir) ++ listAllFiles(javaTargetDir)
+      }.taskValue
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -813,7 +825,7 @@ object ScalaTestBuild extends Build
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal", scalatestCoreJS % "compile-internal").aggregate(scalacticJS, scalatestCoreJS).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal").enablePlugins(ScalaJSPlugin)
 
 
   lazy val examples = Project("examples", file("examples"), delegates = scalatestCore :: Nil)
