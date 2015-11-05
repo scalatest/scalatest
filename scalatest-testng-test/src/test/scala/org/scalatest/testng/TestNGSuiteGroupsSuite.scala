@@ -17,7 +17,7 @@ package org.scalatest.testng {
 
   import org.scalatest._
   import org.scalatest.Suite
-  import org.scalatest.jmock.TestReporter
+  import org.scalatest.TestReporter
   import org.testng.annotations.Test
   import testng.test._
 
