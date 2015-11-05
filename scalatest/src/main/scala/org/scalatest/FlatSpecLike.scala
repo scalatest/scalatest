@@ -94,7 +94,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -102,7 +102,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -129,7 +129,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Unit /* Assertion */) {
+  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -267,7 +267,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)
     }
 
@@ -311,7 +311,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */) {
+    def ignore(testFun: => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)
     }
   }
@@ -379,7 +379,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)
     }
 
@@ -421,7 +421,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */) {
+    def ignore(testFun: => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)
     }
 
@@ -673,7 +673,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _)
     }
 
@@ -770,7 +770,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _)
     }
 
@@ -982,7 +982,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)
     }
 
@@ -1026,7 +1026,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */) {
+    def ignore(testFun: => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)
     }
   }
@@ -1094,7 +1094,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)
     }
 
@@ -1136,7 +1136,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */) {
+    def ignore(testFun: => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)
     }
 
@@ -1395,7 +1395,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _)
     }
     
@@ -1416,7 +1416,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */) {
+    def ignore(testFun: => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _)
     }
   }
@@ -1493,7 +1493,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _)
     }
 
@@ -1516,7 +1516,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */) {
+    def ignore(testFun: => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _)
     }
   }
@@ -1630,7 +1630,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
