@@ -21,7 +21,7 @@ trait JUnitModules {
 
   def sharedSettings: Seq[Setting[_]]
 
-  def scalatest: Project
+  def scalatestCore: Project
 
   def scalacticMacro: Project
 
@@ -37,7 +37,7 @@ trait JUnitModules {
       organization := "org.scalatest",
       moduleName := "scalatest-junit",
       libraryDependencies += "junit" % "junit" % "4.10" % "optional"
-    ).dependsOn(scalatest).aggregate(LocalProject("scalatestJUnitTest"))
+    ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestJUnitTest"))
 
   lazy val scalatestJUnitTest = Project("scalatestJUnitTest", file("scalatest-junit-test"))
     .settings(sharedSettings: _*)

@@ -21,7 +21,7 @@ trait MockitoModules {
 
   def sharedSettings: Seq[Setting[_]]
 
-  def scalatest: Project
+  def scalatestCore: Project
 
   lazy val scalatestMockito = Project("scalatestMockito", file("scalatest-mockito"))
     .settings(sharedSettings: _*)
@@ -29,6 +29,6 @@ trait MockitoModules {
       organization := "org.scalatest",
       moduleName := "scalatest-jmock",
       libraryDependencies += "org.mockito" % "mockito-all" % "1.9.0" % "optional"
-    ).dependsOn(scalatest)
+    ).dependsOn(scalatestCore)
 
 }

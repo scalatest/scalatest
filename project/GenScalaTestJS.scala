@@ -87,7 +87,7 @@ object GenScalaTestJS {
   }
 
   def genJava(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyFiles("scalatest/src/main/java/org/scalatest", "org/scalatest",
+    copyFiles("scalatest-core/src/main/java/org/scalatest", "org/scalatest",
             List(
               "Finders.java",
               "TagAnnotation.java",
@@ -98,11 +98,11 @@ object GenScalaTestJS {
   }
 
   def genHtml(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyResourceDir("scalatest/src/main/html", "html", targetDir, List.empty)
+    copyResourceDir("scalatest-core/src/main/html", "html", targetDir, List.empty)
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("scalatest/src/main/scala/org/scalatest", "org/scalatest", targetDir,
+    copyDir("scalatest-core/src/main/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "DispatchReporter.scala",
         "ConfigMapWrapperSuite.scala",    // skipped because depends on java reflection.
@@ -112,15 +112,15 @@ object GenScalaTestJS {
         "run.scala"
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
+    copyDir("scalatest-core/src/main/scala/org/scalatest/fixture", "org/scalatest/fixture", targetDir,
       List(
         "Spec.scala",
         "SpecLike.scala"
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
+    copyDir("scalatest-core/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
+    copyDir("scalatest-core/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
+    copyDir("scalatest-core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "AboutJDialog.scala",
         //"AnsiColor.scala",
@@ -172,21 +172,21 @@ object GenScalaTestJS {
         "XmlSocketReporter.scala"
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir,
+    copyDir("scalatest-core/src/main/scala/org/scalatest/exceptions", "org/scalatest/exceptions", targetDir,
       List(
         "StackDepthExceptionHelper.scala"
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
+    copyDir("scalatest-core/src/main/scala/org/scalatest/time", "org/scalatest/time", targetDir, List.empty) ++
+    copyDir("scalatest-core/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir,
       List(
         "JavaCollectionWrapper.scala",
         "JavaMapWrapper.scala"
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
+    copyDir("scalatest-core/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyDir("scalatest-core/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
+    copyDir("scalatest-core/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
         "AsyncAssertions.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
         "Conductors.scala",             // skipped because depends on PimpedReadWriteLock
@@ -208,8 +208,8 @@ object GenScalaTestJS {
         "TimeoutTask.scala"             // skipped because timeout is not supported.
       )
     ) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
-    copyDir("scalatest/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects", targetDir,
+    copyDir("scalatest-core/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
+    copyDir("scalatest-core/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects", targetDir,
       List(
         "ChromeBrowser.scala",  // skipped because selenium not supported.
         "FirefoxBrowser.scala",  // skipped because selenium not supported.
