@@ -92,7 +92,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -100,7 +100,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
@@ -109,7 +109,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
   }
 
   class ResultOfTestInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Unit /* Assertion */) {
+    def apply(testFun: FixtureParam => Any /* Assertion */) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -119,7 +119,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
       engine.registerTest(testName, Transformer(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
 
-    def apply(testFun: () => Unit /* Assertion */) {
+    def apply(testFun: () => Any /* Assertion */) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -146,7 +146,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def test(testName: String, testTags: Tag*): ResultOfTestInvocation = new ResultOfTestInvocation(testName, testTags: _*)
 /*
-  protected def test(testName: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  protected def test(testName: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -158,7 +158,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
 */
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Unit /* Assertion */) {
+    def apply(testFun: FixtureParam => Any /* Assertion */) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -168,7 +168,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
       engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
 
-    def apply(testFun: () => Unit /* Assertion */) {
+    def apply(testFun: () => Any /* Assertion */) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -196,7 +196,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def ignore(testName: String, testTags: Tag*): ResultOfIgnoreInvocation = new ResultOfIgnoreInvocation(testName, testTags: _*)
 /*
-  protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -354,7 +354,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Unit /* Assertion */) = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Any /* Assertion */) = {
     fixture => { f; Succeeded }
   }
 
@@ -367,7 +367,7 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
    * @return a function of <code>FixtureParam => Any</code>
    */
 /*
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Unit /* Assertion */): (FixtureParam => Unit /* Assertion */) =
+  protected implicit def convertNoArgToFixtureFunction(fun: () => Any /* Assertion */): (FixtureParam => Any /* Assertion */) =
     new NoArgTestWrapper(fun)
 */
 

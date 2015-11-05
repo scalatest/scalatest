@@ -22,7 +22,7 @@ object GenSafeStyles {
 
   def translateLine(traitName: String)(line: String): String =
     line.replaceAllLiterally("with TestRegistration", "with SafeTestRegistration")
-        .replaceAllLiterally("Unit /* Assertion */", "Assertion")
+        .replaceAllLiterally("Any /* Assertion */", "Assertion")
         .replaceAllLiterally(traitName, "Safe" + traitName)
         .replaceAllLiterally("Resources.concurrentSafe" + traitName + "Mod", "Resources.concurrent" + traitName + "Mod")
         .replaceAllLiterally("Resources.concurrentFixtureSafe" + traitName + "Mod", "Resources.concurrentFixture" + traitName + "Mod")

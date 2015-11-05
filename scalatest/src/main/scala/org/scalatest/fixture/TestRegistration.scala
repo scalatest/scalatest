@@ -20,7 +20,7 @@ import org.scalatest.Assertion
 
 trait TestRegistration { theSuite: Suite =>
 
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */)
+  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)
 
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */)
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)
 }
