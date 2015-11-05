@@ -668,7 +668,22 @@ object ScalaTestBuild extends Build
     )
   ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestAll = Project("scalatestAll", file("."))
+  lazy val root = Project("root", file(".")).aggregate(
+    scalatestCore,
+    scalatestFeatureSpec,
+    scalatestJUnit,
+    scalatestTestNG,
+    scalatestEasyMock,
+    scalatestJMock,
+    scalatestMockito
+  )
+
+  lazy val rootJS = Project("js", file("js")).aggregate(
+    scalatestCoreJS,
+    scalatestFeatureSpecJS
+  )
+
+  lazy val scalatestAll = Project("scalatestAll", file("scalatest-all"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest All",
