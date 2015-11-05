@@ -1095,7 +1095,7 @@ import org.scalatest.Resources
  * quit()
  * </pre>
  * 
- * <a name="alternateForms"/>
+ * <a name="alternateForms"></a>
  * <h2>Alternate forms</h2>
  * 
  * <p>
