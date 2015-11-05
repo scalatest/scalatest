@@ -30,7 +30,7 @@ object ScalaTestBuild extends Build
   // > ++ 2.10.5
   val buildScalaVersion = "2.11.7"
 
-  val releaseVersion = "3.0.0-M11"
+  val releaseVersion = "3.0.0-SNAP10"
 
   val scalacheckVersion = "1.12.5"
 
@@ -833,6 +833,27 @@ object ScalaTestBuild extends Build
       scalaVersion := buildScalaVersion,
       libraryDependencies += scalacheckDependency("compile")
     ).dependsOn(scalacticMacro, scalactic, scalatestCore)
+
+  lazy val deploy = Project("deploy", file("deploy")).aggregate(
+    scalactic,
+    scalatestCore,
+    scalatestFeatureSpec,
+    scalatestJUnit,
+    scalatestTestNG,
+    scalatestEasyMock,
+    scalatestJMock,
+    scalatestMockito,
+    scalatest,
+    scalatestAll
+  )
+
+  lazy val deployJS = Project("deployJS", file("deploy-js")).aggregate(
+    scalacticJS,
+    scalatestCoreJS,
+    scalatestFeatureSpecJS,
+    scalatestJS,
+    scalatestAllJS
+  )
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
