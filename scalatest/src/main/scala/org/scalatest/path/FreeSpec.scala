@@ -511,7 +511,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * instance of the class that executes that test.
  * </p>
  *
- * <a name="howItExecutes" />
+ * <a name="howItExecutes"></a>
  * <h2>How it executes</h2>
  *
  * <p>
@@ -575,7 +575,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * initial instance repeats this process until all leaf nodes have been executed and all test results registered.
  * </p>
  *
- * <a name="ignoredTests" />
+ * <a name="ignoredTests"></a>
  * <h2>Ignored tests</h2>
  *
  * <p>
@@ -590,7 +590,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * be executed. Instead, a <code>TestIgnored</code> event will be fired.
  * </p>
  *
- * <a name="informers" />
+ * <a name="informers"></a>
  * <h2>Informers</h2>
  *
  * <p>
@@ -599,7 +599,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * section in its documentation for more information.
  * </p>
  *
- * <a name="pendingTests" />
+ * <a name="pendingTests"></a>
  * <h2>Pending tests</h2>
  *
  * <p>
@@ -614,7 +614,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * completes abruptly with a <code>TestPendingException</code>).
  * </p>
  *
- * <a name="taggingTests" />
+ * <a name="taggingTests"></a>
  * <h2>Tagging tests</h2>
  *
  * <p>
