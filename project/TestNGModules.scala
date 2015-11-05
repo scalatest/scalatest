@@ -21,7 +21,7 @@ trait TestNGModules {
 
   def sharedSettings: Seq[Setting[_]]
 
-  def scalatest: Project
+  def scalatestCore: Project
 
   def scalacticMacro: Project
 
@@ -43,7 +43,7 @@ trait TestNGModules {
           "org.testng" % "testng" % "6.8.7" % "optional",
           "com.google.inject" % "guice" % "2.0" % "optional"
         )
-    ).dependsOn(scalatest).aggregate(LocalProject("scalatestTestNGTest"))
+    ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestTestNGTest"))
 
   lazy val scalatestTestNGTest = Project("scalatestTestNGTest", file("scalatest-testng-test"))
     .settings(sharedSettings: _*)

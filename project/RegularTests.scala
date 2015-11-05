@@ -31,11 +31,11 @@ trait RegularTests {
 
   def scalactic: Project
 
-  def scalatest: Project
+  def scalatestCore: Project
 
   def scalacticJS: Project
 
-  def scalatestJS: Project
+  def scalatestCoreJS: Project
 
   def scalacheckVersion: String
 
@@ -68,7 +68,7 @@ trait RegularTests {
           scalacheckDependency("optional"),
           "org.jmock" % "jmock-legacy" % "2.5.1" % "optional"
         )
-    ).dependsOn(scalacticMacro, LocalProject("scalatest"), LocalProject("scalatestFeatureSpec"))
+    ).dependsOn(scalacticMacro, LocalProject("scalatestCore"), LocalProject("scalatestFeatureSpec"))
 
   // Common test classes used by scalactic.js and scalatest.js
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -80,7 +80,7 @@ trait RegularTests {
           GenCommonTestJS.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(scalacticMacroJS, LocalProject("scalatestJS"), LocalProject("scalatestFeatureSpecJS")).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalacticMacroJS, LocalProject("scalatestCoreJS"), LocalProject("scalatestFeatureSpecJS")).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)
@@ -90,7 +90,7 @@ trait RegularTests {
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalactic, scalatest % "test", commonTest % "test")
+    ).dependsOn(scalactic, scalatestCore % "test", commonTest % "test")
 
   lazy val scalacticTestJS = Project("scalacticTestJS", file("scalactic-test.js"))
     .settings(sharedSettings: _*)
@@ -109,7 +109,7 @@ trait RegularTests {
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalacticJS, scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalacticJS, scalatestCoreJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestTest = Project("scalatest-test", file("scalatest-test"))
     .settings(sharedSettings: _*)
@@ -128,7 +128,7 @@ trait RegularTests {
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalatest % "test", scalatestJUnit % "test", scalatestTestNG % "test", scalatestMockito % "test", commonTest % "test")
+    ).dependsOn(scalatestCore % "test", scalatestJUnit % "test", scalatestTestNG % "test", scalatestMockito % "test", commonTest % "test")
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
     .settings(sharedSettings: _*)
@@ -154,6 +154,6 @@ trait RegularTests {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)
-    ).dependsOn(scalatestJS % "test", scalatestFeatureSpecJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalatestCoreJS % "test", scalatestFeatureSpecJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
 }

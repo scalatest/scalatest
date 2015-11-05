@@ -21,7 +21,7 @@ trait EasyMockModules {
 
   def sharedSettings: Seq[Setting[_]]
 
-  def scalatest: Project
+  def scalatestCore: Project
 
   def scalatestTestOptions: Seq[Tests.Argument]
 
@@ -35,7 +35,7 @@ trait EasyMockModules {
       organization := "org.scalatest",
       moduleName := "scalatest-easymock",
       libraryDependencies += "org.easymock" % "easymockclassextension" % "3.1" % "optional"
-    ).dependsOn(scalatest).aggregate(LocalProject("scalatestEasyMockTest"))
+    ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestEasyMockTest"))
 
   lazy val scalatestEasyMockTest = Project("scalatestEasyMockTest", file("scalatest-easymock-test"))
     .settings(sharedSettings: _*)

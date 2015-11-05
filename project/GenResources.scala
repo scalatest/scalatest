@@ -169,7 +169,7 @@ object ScalacticGenResourcesJVM extends GenResourcesJVM {
 
 object ScalaTestGenResourcesJVM extends GenResourcesJVM {
   def packageName: String = "scalatest"
-  def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
+  def propertiesFile: File = new File("scalatest-core/src/main/resources/org/scalatest/ScalaTestBundle.properties")
 
   override def resourcesTemplate(methods: String): String =
     s"""package org.$packageName
@@ -269,5 +269,5 @@ object ScalacticGenResourcesJSVM extends GenResourcesJSVM {
 
 object ScalaTestGenResourcesJSVM extends GenResourcesJSVM {
   def packageName: String = "scalatest"
-  def propertiesFile: File = new File("scalatest/src/main/resources/org/scalatest/ScalaTestBundle.properties")
+  def propertiesFile: File = new File("scalatest-core/src/main/resources/org/scalatest/ScalaTestBundle.properties")
 }

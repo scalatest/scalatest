@@ -21,7 +21,7 @@ trait JMockModules {
 
   def sharedSettings: Seq[Setting[_]]
 
-  def scalatest: Project
+  def scalatestCore: Project
 
   def scalatestTestOptions: Seq[Tests.Argument]
 
@@ -35,7 +35,7 @@ trait JMockModules {
       organization := "org.scalatest",
       moduleName := "scalatest-jmock",
       libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1" % "optional"
-    ).dependsOn(scalatest).aggregate(LocalProject("scalatestJMockTest"))
+    ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestJMockTest"))
 
   lazy val scalatestJMockTest = Project("scalatestJMockTest", file("scalatest-jmock-test"))
     .settings(sharedSettings: _*)

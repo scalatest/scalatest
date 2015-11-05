@@ -337,13 +337,13 @@ object ScalaTestBuild extends Build
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal").aggregate(LocalProject("scalacticTestJS")).enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatest = Project("scalatest", file("scalatest"))
+  lazy val scalatestCore = Project("scalatestCore", file("scalatest-core"))
    .settings(sharedSettings: _*)
    .settings(scalatestDocSettings: _*)
    .settings(
-     projectTitle := "ScalaTest",
+     projectTitle := "ScalaTest Core",
      organization := "org.scalatest",
-     moduleName := "scalatest",
+     moduleName := "scalatest-core",
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
@@ -431,12 +431,12 @@ object ScalaTestBuild extends Build
       LocalProject("scalatestMockito")
     )
 
-  lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
+  lazy val scalatestCoreJS = Project("scalatestCoreJS", file("scalatest-core.js"))
     .settings(sharedSettings: _*)
     .settings(
       projectTitle := "ScalaTest",
       organization := "org.scalatest",
-      moduleName := "scalatest",
+      moduleName := "scalatest-core",
       initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
@@ -535,9 +535,9 @@ object ScalaTestBuild extends Build
       // include the scalactic sources in the source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalactic, Compile, packageSrc).value,
       // include the scalatest classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatest, Compile, packageBin).value,
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestCore, Compile, packageBin).value,
       // include the scalatest sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatest, Compile, packageSrc).value,
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCore, Compile, packageSrc).value,
       sourceGenerators in Compile += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
@@ -586,7 +586,7 @@ object ScalaTestBuild extends Build
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest)
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatestCore % "compile-internal").aggregate(scalactic, scalatestCore)
 
   lazy val scalatestAllJS = Project("scalatestAllJS", file("scalatest-all.js"))
     .settings(sharedSettings: _*)
@@ -602,9 +602,9 @@ object ScalaTestBuild extends Build
       // include the scalactic sources in the source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticJS, Compile, packageSrc).value,
       // include the scalatest classes and resources in the jar
-      mappings in (Compile, packageBin) ++= mappings.in(scalatestJS, Compile, packageBin).value,
+      mappings in (Compile, packageBin) ++= mappings.in(scalatestCoreJS, Compile, packageBin).value,
       // include the scalatest sources in the source jar
-      mappings in (Compile, packageSrc) ++= mappings.in(scalatestJS, Compile, packageSrc).value,
+      mappings in (Compile, packageSrc) ++= mappings.in(scalatestCoreJS, Compile, packageSrc).value,
       sourceGenerators in Compile += {
         // Little trick to get rid of bnd error when publish.
         Def.task{
@@ -652,14 +652,14 @@ object ScalaTestBuild extends Build
         "Bundle-Vendor" -> "Artima, Inc.",
         "Main-Class" -> "org.scalatest.tools.Runner"
       )
-    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal", scalatestJS % "compile-internal").aggregate(scalacticJS, scalatestJS).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS % "compile-internal", scalatestCoreJS % "compile-internal").aggregate(scalacticJS, scalatestCoreJS).enablePlugins(ScalaJSPlugin)
 
 
-  lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
+  lazy val examples = Project("examples", file("examples"), delegates = scalatestCore :: Nil)
     .settings(
       scalaVersion := buildScalaVersion,
       libraryDependencies += scalacheckDependency("compile")
-    ).dependsOn(scalacticMacro, scalactic, scalatest)
+    ).dependsOn(scalacticMacro, scalactic, scalatestCore)
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
