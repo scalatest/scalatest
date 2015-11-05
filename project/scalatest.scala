@@ -522,6 +522,152 @@ object ScalaTestBuild extends Build
       )
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).aggregate(LocalProject("scalatestTestJS")).enablePlugins(ScalaJSPlugin)
 
+  def listAllFiles(folder: File): Seq[File] = {
+    val files = folder.listFiles.filter(_.isFile)
+    val subdirs = folder.listFiles.filter(_.isDirectory)
+    files ++ subdirs.flatMap(listAllFiles)
+  }
+
+  lazy val scalatest = Project("scalatest", file("scalatest"))
+    .settings(sharedSettings: _*)
+    .settings(scalatestDocSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest",
+      organization := "org.scalatest",
+      moduleName := "scalatest",
+      initialCommands in console := """|import org.scalatest._
+                                      |import org.scalactic._
+                                      |import Matchers._""".stripMargin,
+      ivyXML :=
+        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
+          <artifact name="javax.servlet" type="orbit" ext="jar"/>
+        </dependency>,
+      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
+      libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++=
+        Seq(
+          "junit" % "junit" % "4.10" % "optional",
+          "org.testng" % "testng" % "6.8.7" % "optional",
+          "com.google.inject" % "guice" % "2.0" % "optional",
+          "org.easymock" % "easymockclassextension" % "3.1" % "optional",
+          "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
+          "org.mockito" % "mockito-all" % "1.9.0" % "optional"
+        ),
+      compile in Compile <<= compile in Compile dependsOn (
+        // Compile other modules first, as some we'll need to copy from their src_managed folder
+        compile in Compile in scalatestCore,
+        compile in Compile in scalatestFeatureSpec
+      ),
+      sourceGenerators in Compile += Def.task {
+        val scalaTargetDir = (sourceManaged in Compile).value / "scala"
+        val javaTargetDir = (sourceManaged in Compile).value / "java"
+
+        // scalatest-core
+        IO.copyDirectory(file("scalatest-core/src/main/scala"), scalaTargetDir, true)
+        IO.copyDirectory(file("scalatest-core/src/main/java"), javaTargetDir, true)
+        IO.copyDirectory(file("scalatest-core/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
+
+        // scalatest-featurespec
+        IO.copyDirectory(file("scalatest-featurespec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-junit
+        IO.copyDirectory(file("scalatest-junit/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-testng
+        IO.copyDirectory(file("scalatest-testng/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-easymock
+        IO.copyDirectory(file("scalatest-easymock/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-jmock
+        IO.copyDirectory(file("scalatest-jmock/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-mockito
+        IO.copyDirectory(file("scalatest-mockito/src/main/scala"), scalaTargetDir, true)
+
+        listAllFiles(scalaTargetDir) ++ listAllFiles(javaTargetDir)
+      }.taskValue,
+      resourceGenerators in Compile += Def.task {
+        val resourcesTargetDir = (resourceManaged in Compile).value
+
+        IO.copyDirectory(file("scalatest-core/src/main/resources"), resourcesTargetDir, true)
+
+        listAllFiles(resourcesTargetDir)
+      }.taskValue
+    ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic)
+
+  lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
+    .settings(sharedSettings: _*)
+    .settings(
+      projectTitle := "ScalaTest",
+      organization := "org.scalatest",
+      moduleName := "scalatest-core",
+      initialCommands in console := """|import org.scalatest._
+                                      |import org.scalactic._
+                                      |import Matchers._""".stripMargin,
+      ivyXML :=
+        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
+          <artifact name="javax.servlet" type="orbit" ext="jar"/>
+        </dependency>,
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      libraryDependencies ++= scalatestJSLibraryDependencies,
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
+      jsDependencies += RuntimeDOM % "test",
+      compile in Compile <<= compile in Compile dependsOn (
+        // Compile other modules first, as some we'll need to copy from their src_managed folder
+        compile in Compile in scalatestCoreJS,
+        compile in Compile in scalatestFeatureSpecJS
+      ),
+      sourceGenerators in Compile += Def.task {
+        val scalaTargetDir = (sourceManaged in Compile).value / "scala"
+        val javaTargetDir = (sourceManaged in Compile).value / "java"
+
+        IO.copyDirectory(file("scalatest-core.js/src/main/scala"), scalaTargetDir, true)
+        IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
+        IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/java"), javaTargetDir, true)
+
+        listAllFiles(scalaTargetDir) ++ listAllFiles(javaTargetDir)
+      }.taskValue,
+      scalatestJSDocTaskSetting
+    ).settings(osgiSettings: _*).settings(
+    OsgiKeys.exportPackage := Seq(
+      "org.scalatest",
+      "org.scalatest.concurrent",
+      "org.scalatest.enablers",
+      "org.scalatest.events",
+      "org.scalatest.exceptions",
+      "org.scalatest.fixture",
+      "org.scalatest.junit",
+      "org.scalatest.matchers",
+      "org.scalatest.mock",
+      "org.scalatest.path",
+      "org.scalatest.prop",
+      "org.scalatest.selenium",
+      "org.scalatest.tags",
+      "org.scalatest.tagobjects",
+      "org.scalatest.testng",
+      "org.scalatest.time",
+      "org.scalatest.tools",
+      "org.scalatest.verb",
+      "org.scalatest.words"
+    ),
+    OsgiKeys.importPackage := Seq(
+      "org.scalatest.*",
+      "org.scalactic.*",
+      "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+      "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+      "*;resolution:=optional"
+    ),
+    OsgiKeys.additionalHeaders:= Map(
+      "Bundle-Name" -> "ScalaTest",
+      "Bundle-Description" -> "ScalaTest.js is an open-source test framework for the Javascript Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+      "Bundle-DocURL" -> "http://www.scalatest.org/",
+      "Bundle-Vendor" -> "Artima, Inc.",
+      "Main-Class" -> "org.scalatest.tools.Runner"
+    )
+  ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
+
   lazy val scalatestAll = Project("scalatestAll", file("."))
     .settings(sharedSettings: _*)
     .settings(
