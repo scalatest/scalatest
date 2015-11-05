@@ -288,7 +288,10 @@ private[tools] object ArgsParser {
         if (it.hasNext)
           reporters += it.next
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
+        // Try an experiment where we allow this, but don't do anything. This is because this IAE was being seen
+        // by folks doing JVM/JS cross builds using IntelliJ.
+        // https://github.com/scalatest/scalatest/issues/743
+        //SCALATESTJS-ONLY // throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
       else if (s == "-s") {
         suites += s
