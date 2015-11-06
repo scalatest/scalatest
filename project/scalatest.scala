@@ -682,7 +682,7 @@ object ScalaTestBuild extends Build
   lazy val rootJS = Project("js", file("js"))
     .settings(sharedSettings: _*)
     .aggregate(
-      scalacticJS, 
+      scalacticJS,
       scalatestCoreJS,
       scalatestFeatureSpecJS
     )
