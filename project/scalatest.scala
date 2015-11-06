@@ -619,10 +619,12 @@ object ScalaTestBuild extends Build
       sourceGenerators in Compile += Def.task {
         val scalaTargetDir = (sourceManaged in Compile).value / "scala"
         val javaTargetDir = (sourceManaged in Compile).value / "java"
+        val htmlTargetDir = (sourceManaged in Compile).value / "html"
 
         IO.copyDirectory(file("scalatest-core.js/src/main/scala"), scalaTargetDir, true)
         IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
         IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/java"), javaTargetDir, true)
+        IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/html"), htmlTargetDir, true)
 
         listAllFiles(scalaTargetDir) ++ listAllFiles(javaTargetDir)
       }.taskValue,
