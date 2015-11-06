@@ -514,9 +514,16 @@ object ScalaTestBuild extends Build
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).aggregate(LocalProject("scalatestTestJS")).enablePlugins(ScalaJSPlugin)
 
   def listAllFiles(folder: File): Seq[File] = {
-    val files = folder.listFiles.filter(_.isFile)
-    val subdirs = folder.listFiles.filter(_.isDirectory)
-    files ++ subdirs.flatMap(listAllFiles)
+    try {
+      val files = folder.listFiles.filter(_.isFile)
+      val subdirs = folder.listFiles.filter(_.isDirectory)
+      files ++ subdirs.flatMap(listAllFiles)
+    }
+    catch {
+      case t: Throwable =>
+        println("###error folder: " + folder.getAbsoluteFile.getName)
+        throw t
+    }
   }
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
@@ -659,20 +666,26 @@ object ScalaTestBuild extends Build
     )
   ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
 
-  lazy val root = Project("root", file(".")).aggregate(
-    scalatestCore,
-    scalatestFeatureSpec,
-    scalatestJUnit,
-    scalatestTestNG,
-    scalatestEasyMock,
-    scalatestJMock,
-    scalatestMockito
-  )
+  lazy val root = Project("root", file("."))
+    .settings(sharedSettings: _*)
+    .aggregate(
+      scalactic,
+      scalatestCore,
+      scalatestFeatureSpec,
+      scalatestJUnit,
+      scalatestTestNG,
+      scalatestEasyMock,
+      scalatestJMock,
+      scalatestMockito
+    )
 
-  lazy val rootJS = Project("js", file("js")).aggregate(
-    scalatestCoreJS,
-    scalatestFeatureSpecJS
-  )
+  lazy val rootJS = Project("js", file("js"))
+    .settings(sharedSettings: _*)
+    .aggregate(
+      scalacticJS, 
+      scalatestCoreJS,
+      scalatestFeatureSpecJS
+    )
 
   lazy val scalatestAll = Project("scalatestAll", file("scalatest-all"))
     .settings(sharedSettings: _*)
@@ -833,27 +846,6 @@ object ScalaTestBuild extends Build
       scalaVersion := buildScalaVersion,
       libraryDependencies += scalacheckDependency("compile")
     ).dependsOn(scalacticMacro, scalactic, scalatestCore)
-
-  lazy val deploy = Project("deploy", file("deploy")).aggregate(
-    scalactic,
-    scalatestCore,
-    scalatestFeatureSpec,
-    scalatestJUnit,
-    scalatestTestNG,
-    scalatestEasyMock,
-    scalatestJMock,
-    scalatestMockito,
-    scalatest,
-    scalatestAll
-  )
-
-  lazy val deployJS = Project("deployJS", file("deploy-js")).aggregate(
-    scalacticJS,
-    scalatestCoreJS,
-    scalatestFeatureSpecJS,
-    scalatestJS,
-    scalatestAllJS
-  )
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
