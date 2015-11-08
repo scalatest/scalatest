@@ -119,7 +119,7 @@ object GenScalaTestJS {
       )
     ) ++
     copyDir("scalatest-core/src/main/scala/org/scalatest/events", "org/scalatest/events", targetDir, List.empty) ++
-    copyDir("scalatest-core/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
+    //copyDir("scalatest-core/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
     copyDir("scalatest-core/src/main/scala/org/scalatest/tools", "org/scalatest/tools", targetDir,
       List(
         "AboutJDialog.scala",
@@ -270,6 +270,21 @@ object GenScalaTestJS {
         ),
         targetDir
       )
+  }
+
+  def genMatchersMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyDir("scalatest-matchers/src/main/scala/org/scalatest/matchers", "org/scalatest/matchers", targetDir, List.empty) ++
+    copyDir("scalatest-matchers/src/main/scala/org/scalatest/words", "org/scalatest/words", targetDir, List.empty) ++
+    copyDir("scalatest-matchers/src/main/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
+    copyFiles(
+      "scalatest-matchers/src/main/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "Matchers.scala",
+        "MatchersHelper.scala"
+      ),
+      targetDir
+    )
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {

@@ -15,14 +15,12 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
 import org.scalatest.enablers._
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import scala.reflect.Manifest
-import org.scalatest.MatchersHelper.transformOperatorChars
 import scala.collection.Traversable
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
@@ -32,9 +30,6 @@ import org.scalactic.Tolerance
 import org.scalactic.Explicitly
 import scala.annotation.tailrec
 import org.scalactic.Equality
-import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.MatchersHelper.orMatchersAndApply
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 
 private[scalatest] class JavaMapWrapper[K, V](val underlying: java.util.Map[K, V]) extends scala.collection.Map[K, V] {
   // Even though the java map is mutable I just wrap it it to a plain old Scala map, because

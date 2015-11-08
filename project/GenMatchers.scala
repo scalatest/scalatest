@@ -133,23 +133,23 @@ object GenMatchers {
     val junitDir = new File(targetDir, "junit")
     junitDir.mkdirs()
 
-    translateFile(targetDir, "MustMatchers.scala", "scalatest-core/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToMust)
-    /*translateFile(targetDir, "WillMatchers.scala", "scalatest-core/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
-    translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest-core/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
-    translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest-core/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
+    translateFile(targetDir, "MustMatchers.scala", "scalatest-matchers/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToMust)
+    /*translateFile(targetDir, "WillMatchers.scala", "scalatest-matchers/src/main/scala/org/scalatest/Matchers.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactNoExceptionWord.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/NoExceptionWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfATypeInvocation.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/ResultOfATypeInvocation.scala", scalaVersion, scalaJS,
       (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
         .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
     )
-    translateFile(targetDir, "FactResultOfAnTypeInvocation.scala", "scalatest-core/src/main/scala/org/scalatest/words/ResultOfAnTypeInvocation.scala", scalaVersion, scalaJS,
+    translateFile(targetDir, "FactResultOfAnTypeInvocation.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/ResultOfAnTypeInvocation.scala", scalaVersion, scalaJS,
       (line: String) => translateShouldToWill(line.replaceAll("PleaseUseNoExceptionShouldSyntaxInstead", "STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD"))
                         .replaceAll("STAY_AS_PLEASEUSNOTEXCEPTIONSHOULDSYNTAXINSTEAD", "PleaseUseNoExceptionShouldSyntaxInstead")
     )
-    translateFile(targetDir, "FactResultOfBeWordForAType.scala", "scalatest-core/src/main/scala/org/scalatest/words/ResultOfBeWordForAType.scala", scalaVersion, scalaJS, translateShouldToWill)
-    translateFile(targetDir, "FactResultOfBeWordForAnType.scala", "scalatest-core/src/main/scala/org/scalatest/words/ResultOfBeWordForAnType.scala", scalaVersion, scalaJS, translateShouldToWill)
-    translateFile(targetDir, "FactResultOfBeWordForNoException.scala", "scalatest-core/src/main/scala/org/scalatest/words/ResultOfBeWordForNoException.scala", scalaVersion, scalaJS, translateShouldToWill)
-    translateFile(targetDir, "FactResultOfContainWord.scala", "scalatest-core/src/main/scala/org/scalatest/words/ResultOfContainWord.scala", scalaVersion, scalaJS, translateShouldToWill)
-    translateFile(targetDir, "FactResultOfNotWordForAny.scala", "scalatest-core/src/main/scala/org/scalatest/words/ResultOfNotWordForAny.scala", scalaVersion, scalaJS, translateShouldToWill)
-    translateFile(targetDir, "FactMatcherWords.scala", "scalatest-core/src/main/scala/org/scalatest/words/MatcherWords.scala", scalaVersion, scalaJS, translateShouldToWill)*/
+    translateFile(targetDir, "FactResultOfBeWordForAType.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/ResultOfBeWordForAType.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfBeWordForAnType.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/ResultOfBeWordForAnType.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfBeWordForNoException.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/ResultOfBeWordForNoException.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfContainWord.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/ResultOfContainWord.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactResultOfNotWordForAny.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/ResultOfNotWordForAny.scala", scalaVersion, scalaJS, translateShouldToWill)
+    translateFile(targetDir, "FactMatcherWords.scala", "scalatest-matchers/src/main/scala/org/scalatest/words/MatcherWords.scala", scalaVersion, scalaJS, translateShouldToWill)*/
   }
 
   def genMain(targetDir: File, version: String, scalaVersion: String) {

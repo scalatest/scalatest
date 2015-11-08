@@ -47,6 +47,8 @@ trait FeatureSpecModules {
 
   def scalatestAll: Project
 
+  def root: Project
+
   lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("scalatest-featurespec"))
     .settings(sharedSettings: _*)
     .settings(
@@ -64,7 +66,7 @@ trait FeatureSpecModules {
           GenScalaTestJS.genFeatureSpecMain((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       },
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + root.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       test in Test := {},
       testOnly in Test := {}
     ).dependsOn(scalatestCoreJS).aggregate(LocalProject("scalatestFeatureSpecTestJS")).enablePlugins(ScalaJSPlugin)
