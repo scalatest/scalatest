@@ -10,6 +10,7 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object ScalaTestBuild extends Build
   with FeatureSpecModules
+  with MatchersModules
   with JUnitModules
   with TestNGModules
   with EasyMockModules
@@ -30,7 +31,7 @@ object ScalaTestBuild extends Build
   // > ++ 2.10.5
   val buildScalaVersion = "2.11.7"
 
-  val releaseVersion = "3.0.0-M11"
+  val releaseVersion = "3.0.0-SNAP10"
 
   val scalacheckVersion = "1.12.5"
 
@@ -353,21 +354,15 @@ object ScalaTestBuild extends Build
        </dependency>,
      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
-     genMustMatchersTask,
      genGenTask,
      genTablesTask,
      genCodeTask,
-     genFactoriesTask,
      genCompatibleClassesTask,
      genSafeStylesTask,
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
-     sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
-     sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
@@ -450,16 +445,11 @@ object ScalaTestBuild extends Build
           ScalaTestGenResourcesJSVM.genFailureMessages((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       },
-      genFactoriesTask,
       genSafeStylesTask,
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS),
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS),
       /*genMustMatchersTask,
@@ -514,9 +504,16 @@ object ScalaTestBuild extends Build
     ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).aggregate(LocalProject("scalatestTestJS")).enablePlugins(ScalaJSPlugin)
 
   def listAllFiles(folder: File): Seq[File] = {
-    val files = folder.listFiles.filter(_.isFile)
-    val subdirs = folder.listFiles.filter(_.isDirectory)
-    files ++ subdirs.flatMap(listAllFiles)
+    try {
+      val files = folder.listFiles.filter(_.isFile)
+      val subdirs = folder.listFiles.filter(_.isDirectory)
+      files ++ subdirs.flatMap(listAllFiles)
+    }
+    catch {
+      case t: Throwable =>
+        println("###error folder: " + folder.getAbsoluteFile.getName)
+        throw t
+    }
   }
 
   lazy val scalatest = Project("scalatest", file("scalatest"))
@@ -612,10 +609,12 @@ object ScalaTestBuild extends Build
       sourceGenerators in Compile += Def.task {
         val scalaTargetDir = (sourceManaged in Compile).value / "scala"
         val javaTargetDir = (sourceManaged in Compile).value / "java"
+        val htmlTargetDir = (sourceManaged in Compile).value / "html"
 
         IO.copyDirectory(file("scalatest-core.js/src/main/scala"), scalaTargetDir, true)
         IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
         IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/java"), javaTargetDir, true)
+        IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/html"), htmlTargetDir, true)
 
         listAllFiles(scalaTargetDir) ++ listAllFiles(javaTargetDir)
       }.taskValue,
@@ -659,20 +658,28 @@ object ScalaTestBuild extends Build
     )
   ).dependsOn(scalacticMacroJS % "compile-internal, test-internal", scalacticJS).enablePlugins(ScalaJSPlugin)
 
-  lazy val root = Project("root", file(".")).aggregate(
-    scalatestCore,
-    scalatestFeatureSpec,
-    scalatestJUnit,
-    scalatestTestNG,
-    scalatestEasyMock,
-    scalatestJMock,
-    scalatestMockito
-  )
+  lazy val root = Project("root", file("."))
+    .settings(sharedSettings: _*)
+    .aggregate(
+      scalactic,
+      scalatestCore,
+      scalatestMatchers,
+      scalatestFeatureSpec,
+      scalatestJUnit,
+      scalatestTestNG,
+      scalatestEasyMock,
+      scalatestJMock,
+      scalatestMockito
+    )
 
-  lazy val rootJS = Project("js", file("js")).aggregate(
-    scalatestCoreJS,
-    scalatestFeatureSpecJS
-  )
+  lazy val rootJS = Project("js", file("js"))
+    .settings(sharedSettings: _*)
+    .aggregate(
+      scalacticJS,
+      scalatestCoreJS,
+      scalatestMatchersJS,
+      scalatestFeatureSpecJS
+    )
 
   lazy val scalatestAll = Project("scalatestAll", file("scalatest-all"))
     .settings(sharedSettings: _*)
@@ -867,16 +874,6 @@ object ScalaTestBuild extends Build
   val genTables = TaskKey[Unit]("gentables", "Generate Tables")
   val genTablesTask = genTables <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
     GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theVersion, theScalaVersion)
-  }
-
-  val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")
-  val genMustMatchersTask = genMustMatchers <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
-    GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
-  }
-
-  val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
-  val genFactoriesTask = genFactories <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
-    GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)
   }
 
   val genCompatibleClasses = TaskKey[Unit]("gencompcls", "Generate Compatible Classes for Java 6 & 7")

@@ -18,12 +18,6 @@ package org.scalatest
 import exceptions.TestCanceledException
 import reflect.ClassTag
 import collection.immutable.MapLike
-import org.scalactic.Equality
-import enablers.Containing
-import enablers.Aggregating
-import enablers.KeyMapping
-import enablers.ValueMapping
-import scala.collection.GenTraversable
 
 // TODO: Oops. Need to pass ConfigMap not Map[String, Any] in TestStarting.
 /**
