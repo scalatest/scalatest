@@ -446,6 +446,8 @@ object ScalaTestBuild extends Build
         }.taskValue
       },
       genSafeStylesTask,
+      genGenTask,
+      genTablesTask,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
       sourceGenerators in Compile <+=
@@ -663,7 +665,10 @@ object ScalaTestBuild extends Build
     .aggregate(
       scalactic,
       scalatestCore,
+      scalatestMatchersCore,
       scalatestMatchers,
+      scalatestMustMatchers,
+      scalatestMustMatchers,
       scalatestFeatureSpec,
       scalatestJUnit,
       scalatestTestNG,
@@ -677,7 +682,10 @@ object ScalaTestBuild extends Build
     .aggregate(
       scalacticJS,
       scalatestCoreJS,
+      scalatestMatchersCoreJS,
       scalatestMatchersJS,
+      scalatestMustMatchersJS,
+      scalatestMustMatchersJS,
       scalatestFeatureSpecJS
     )
 

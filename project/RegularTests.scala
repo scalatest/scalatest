@@ -63,7 +63,9 @@ trait RegularTests {
 
   def scalatestMatchersJS: Project
 
-  //def scalatestMatchersJS: Project
+  def scalatestMustMatchers: Project
+
+  def scalatestMustMatchersJS: Project
 
   // Common test classes used by scalactic and scalatest
   lazy val commonTest = Project("common-test", file("common-test"))
@@ -134,7 +136,7 @@ trait RegularTests {
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalatestCore % "test", scalatestMatchers % "test", scalatestJUnit % "test", scalatestTestNG % "test", scalatestMockito % "test", commonTest % "test")
+    ).dependsOn(scalatestCore % "test", scalatestMatchers % "test", scalatestMustMatchers % "test", scalatestJUnit % "test", scalatestTestNG % "test", scalatestMockito % "test", commonTest % "test")
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
     .settings(sharedSettings: _*)
@@ -160,6 +162,6 @@ trait RegularTests {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest),
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)
-    ).dependsOn(scalatestCoreJS % "test", /*scalatestMatchersJS % "test",  */scalatestFeatureSpecJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
+    ).dependsOn(scalatestCoreJS % "test", scalatestMatchersJS % "test",  scalatestMustMatchersJS % "test",  scalatestFeatureSpecJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
 }
