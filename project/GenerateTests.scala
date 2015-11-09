@@ -272,9 +272,9 @@ trait GenerateTests {
   lazy val genSafeStyleTests = Project("genSafeStyleTests", file("gentests/GenSafeStyles"))
     .settings(gentestsSharedSettings: _*)
     .settings(
-      genSafeStyleTestsTask,
+      genSafeStyleTestsTask/*,
       sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensafestyletests", "GenSafeStyles.scala")(GenSafeStyles.genTest)
+        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensafestyletests", "GenSafeStyles.scala")(GenSafeStyles.genTest)*/
     ).dependsOn(scalatestCore, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val gentests = Project("gentests", file("gentests"))
