@@ -171,9 +171,6 @@ object ScalaTestBuild extends Build
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
-      "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )

@@ -127,6 +127,11 @@ trait RegularTests {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
+      libraryDependencies ++=
+        Seq(
+          "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
+          "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test"
+        ),
       testOptions in Test := scalatestTestOptions,
       publishArtifact := false,
       publish := {},

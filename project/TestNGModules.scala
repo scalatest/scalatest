@@ -58,7 +58,8 @@ trait TestNGModules {
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++=
         Seq(
-          "org.jmock" % "jmock-legacy" % jMockVersion % "test"
+          "org.jmock" % "jmock-legacy" % jMockVersion % "test",
+          "commons-io" % "commons-io" % "1.3.2" % "test"
         ),
       publishArtifact := false,
       publish := {},
