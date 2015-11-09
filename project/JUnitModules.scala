@@ -31,12 +31,14 @@ trait JUnitModules {
 
   def scalatestLibraryDependencies: Seq[ModuleID]
 
+  def junitVersion: String
+
   lazy val scalatestJUnit = Project("scalatestJUnit", file("scalatest-junit"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-junit",
-      libraryDependencies += "junit" % "junit" % "4.10"
+      libraryDependencies += "junit" % "junit" % junitVersion
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestJUnitTest"))
 
   lazy val scalatestJUnitTest = Project("scalatestJUnitTest", file("scalatest-junit-test"))

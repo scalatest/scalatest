@@ -29,12 +29,14 @@ trait JMockModules {
 
   def commonTest: Project
 
+  def jMockVersion: String
+
   lazy val scalatestJMock = Project("scalatestJMock", file("scalatest-jmock"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-jmock",
-      libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1"
+      libraryDependencies += "org.jmock" % "jmock-legacy" % jMockVersion
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestJMockTest"))
 
   lazy val scalatestJMockTest = Project("scalatestJMockTest", file("scalatest-jmock-test"))

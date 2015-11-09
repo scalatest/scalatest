@@ -23,12 +23,14 @@ trait MockitoModules {
 
   def scalatestCore: Project
 
+  def mockitoVersion: String
+
   lazy val scalatestMockito = Project("scalatestMockito", file("scalatest-mockito"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-jmock",
-      libraryDependencies += "org.mockito" % "mockito-all" % "1.9.0"
+      libraryDependencies += "org.mockito" % "mockito-all" % mockitoVersion
     ).dependsOn(scalatestCore)
 
 }

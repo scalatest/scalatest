@@ -33,6 +33,12 @@ trait TestNGModules {
 
   def scalatestJMock: Project
 
+  def testNGVersion: String
+
+  def guiceVersion: String
+
+  def jMockVersion: String
+
   lazy val scalatestTestNG = Project("scalatestTestNG", file("scalatest-testng"))
     .settings(sharedSettings: _*)
     .settings(
@@ -40,8 +46,8 @@ trait TestNGModules {
       moduleName := "scalatest-testng",
       libraryDependencies ++=
         Seq(
-          "org.testng" % "testng" % "6.8.7",
-          "com.google.inject" % "guice" % "2.0"
+          "org.testng" % "testng" % testNGVersion,
+          "com.google.inject" % "guice" % guiceVersion
         )
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestTestNGTest"))
 
@@ -52,7 +58,7 @@ trait TestNGModules {
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++=
         Seq(
-          "org.jmock" % "jmock-legacy" % "2.5.1" % "test"
+          "org.jmock" % "jmock-legacy" % jMockVersion % "test"
         ),
       publishArtifact := false,
       publish := {},

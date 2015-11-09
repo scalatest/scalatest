@@ -36,6 +36,18 @@ object ScalaTestBuild extends Build
 
   val scalacheckVersion = "1.12.5"
 
+  val junitVersion = "4.10"
+
+  val testNGVersion = "6.8.7"
+
+  val guiceVersion = "2.0"
+
+  val easyMockVersion = "3.1"
+
+  val jMockVersion = "2.5.1"
+
+  val mockitoVersion = "1.9.0"
+
   def envVar(name: String): Option[String] =
     try {
       Some(sys.env(name))
@@ -536,12 +548,12 @@ object ScalaTestBuild extends Build
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++=
         Seq(
-          "junit" % "junit" % "4.10" % "optional",
-          "org.testng" % "testng" % "6.8.7" % "optional",
-          "com.google.inject" % "guice" % "2.0" % "optional",
-          "org.easymock" % "easymockclassextension" % "3.1" % "optional",
-          "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
-          "org.mockito" % "mockito-all" % "1.9.0" % "optional"
+          "junit" % "junit" % junitVersion % "optional",
+          "org.testng" % "testng" % testNGVersion % "optional",
+          "com.google.inject" % "guice" % guiceVersion % "optional",
+          "org.easymock" % "easymockclassextension" % easyMockVersion % "optional",
+          "org.jmock" % "jmock-legacy" % jMockVersion % "optional",
+          "org.mockito" % "mockito-all" % mockitoVersion % "optional"
         ),
       compile in Compile <<= compile in Compile dependsOn (
         // Compile other modules first, as some we'll need to copy from their src_managed folder
@@ -700,12 +712,12 @@ object ScalaTestBuild extends Build
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++=
         Seq(
-          "junit" % "junit" % "4.10" % "optional",
-          "org.testng" % "testng" % "6.8.7" % "optional",
-          "com.google.inject" % "guice" % "2.0" % "optional",
-          "org.easymock" % "easymockclassextension" % "3.1" % "optional",
-          "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
-          "org.mockito" % "mockito-all" % "1.9.0" % "optional"
+          "junit" % "junit" % junitVersion % "optional",
+          "org.testng" % "testng" % testNGVersion % "optional",
+          "com.google.inject" % "guice" % guiceVersion % "optional",
+          "org.easymock" % "easymockclassextension" % easyMockVersion % "optional",
+          "org.jmock" % "jmock-legacy" % jMockVersion % "optional",
+          "org.mockito" % "mockito-all" % mockitoVersion % "optional"
         ),
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,

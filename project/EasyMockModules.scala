@@ -29,12 +29,14 @@ trait EasyMockModules {
 
   def commonTest: Project
 
+  def easyMockVersion: String
+
   lazy val scalatestEasyMock = Project("scalatestEasyMock", file("scalatest-easymock"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-easymock",
-      libraryDependencies += "org.easymock" % "easymockclassextension" % "3.1"
+      libraryDependencies += "org.easymock" % "easymockclassextension" % easyMockVersion
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestEasyMockTest"))
 
   lazy val scalatestEasyMockTest = Project("scalatestEasyMockTest", file("scalatest-easymock-test"))
