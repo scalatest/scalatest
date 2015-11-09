@@ -67,6 +67,8 @@ trait RegularTests {
 
   def scalatestMustMatchersJS: Project
 
+  def scalatestSelenium: Project
+
   // Common test classes used by scalactic and scalatest
   lazy val commonTest = Project("common-test", file("common-test"))
     .settings(sharedSettings: _*)
@@ -130,13 +132,23 @@ trait RegularTests {
           "junit" % "junit" % "4.10" % "test",
           "org.testng" % "testng" % "6.8.7" % "test",
           "com.google.inject" % "guice" % "2.0" % "test",
-          "org.mockito" % "mockito-all" % "1.9.0" % "test"
+          "org.mockito" % "mockito-all" % "1.9.0" % "test",
+          "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "test"
         ),
       testOptions in Test := scalatestTestOptions,
       publishArtifact := false,
       publish := {},
       publishLocal := {}
-    ).dependsOn(scalatestCore % "test", scalatestMatchers % "test", scalatestMustMatchers % "test", scalatestJUnit % "test", scalatestTestNG % "test", scalatestMockito % "test", commonTest % "test")
+    ).dependsOn(
+      scalatestCore % "test",
+      scalatestMatchers % "test",
+      scalatestMustMatchers % "test",
+      scalatestJUnit % "test",
+      scalatestTestNG % "test",
+      scalatestMockito % "test",
+      scalatestSelenium % "test",
+      commonTest % "test"
+    )
 
   lazy val scalatestTestJS = Project("scalatestTestJS", file("scalatest-test.js"))
     .settings(sharedSettings: _*)

@@ -16,6 +16,7 @@ object ScalaTestBuild extends Build
   with EasyMockModules
   with JMockModules
   with MockitoModules
+  with SeleniumModules
   with RegularTests
   with GenerateTests
   with Doc {
@@ -157,7 +158,6 @@ object ScalaTestBuild extends Build
   def scalatestLibraryDependencies =
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "commons-io" % "commons-io" % "1.3.2" % "test",
       "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
@@ -674,7 +674,8 @@ object ScalaTestBuild extends Build
       scalatestTestNG,
       scalatestEasyMock,
       scalatestJMock,
-      scalatestMockito
+      scalatestMockito,
+      scalatestSelenium
     )
 
   lazy val rootJS = Project("js", file("js"))
