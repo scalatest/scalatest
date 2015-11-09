@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+import com.typesafe.sbt.osgi.SbtOsgi._
 import sbt._
 import sbt.Keys._
 
@@ -49,6 +50,26 @@ trait TestNGModules {
           "org.testng" % "testng" % testNGVersion,
           "com.google.inject" % "guice" % guiceVersion
         )
+    )
+    .settings(osgiSettings: _*)
+    .settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.testng"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest TestNG",
+        "Bundle-Description" -> "TestNG support for ScalaTest, an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestTestNGTest"))
 
   lazy val scalatestTestNGTest = Project("scalatestTestNGTest", file("scalatest-testng-test"))

@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+import com.typesafe.sbt.osgi.SbtOsgi._
 import sbt._
 import sbt.Keys._
 
@@ -37,6 +38,26 @@ trait EasyMockModules {
       organization := "org.scalatest",
       moduleName := "scalatest-easymock",
       libraryDependencies += "org.easymock" % "easymockclassextension" % easyMockVersion
+    )
+    .settings(osgiSettings: _*)
+    .settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.mock"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest EasyMock",
+        "Bundle-Description" -> "EasyMock support for ScalaTest, an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestEasyMockTest"))
 
   lazy val scalatestEasyMockTest = Project("scalatestEasyMockTest", file("scalatest-easymock-test"))

@@ -32,7 +32,7 @@ object ScalaTestBuild extends Build
   // > ++ 2.10.5
   val buildScalaVersion = "2.11.7"
 
-  val releaseVersion = "3.0.0-SNAP10"
+  val releaseVersion = "3.0.0-SNAP12"
 
   val scalacheckVersion = "1.12.5"
 
@@ -47,6 +47,8 @@ object ScalaTestBuild extends Build
   val jMockVersion = "2.5.1"
 
   val mockitoVersion = "1.9.0"
+
+  val seleniumVersion = "2.35.0"
 
   def envVar(name: String): Option[String] =
     try {
@@ -394,18 +396,12 @@ object ScalaTestBuild extends Build
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.junit",
-        "org.scalatest.matchers",
-        "org.scalatest.mock",
         "org.scalatest.path",
         "org.scalatest.prop",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
-        "org.scalatest.verb",
         "org.scalatest.words"
       ),
       OsgiKeys.importPackage := Seq(
@@ -483,18 +479,11 @@ object ScalaTestBuild extends Build
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.junit",
-        "org.scalatest.matchers",
-        "org.scalatest.mock",
         "org.scalatest.path",
         "org.scalatest.prop",
-        "org.scalatest.selenium",
-        "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
-        "org.scalatest.verb",
         "org.scalatest.words"
       ),
       OsgiKeys.importPackage := Seq(
@@ -522,7 +511,6 @@ object ScalaTestBuild extends Build
     }
     catch {
       case t: Throwable =>
-        println("###error folder: " + folder.getAbsoluteFile.getName)
         throw t
     }
   }
@@ -550,7 +538,8 @@ object ScalaTestBuild extends Build
           "com.google.inject" % "guice" % guiceVersion % "optional",
           "org.easymock" % "easymockclassextension" % easyMockVersion % "optional",
           "org.jmock" % "jmock-legacy" % jMockVersion % "optional",
-          "org.mockito" % "mockito-all" % mockitoVersion % "optional"
+          "org.mockito" % "mockito-all" % mockitoVersion % "optional",
+          "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion
         ),
       compile in Compile <<= compile in Compile dependsOn (
         // Compile other modules first, as some we'll need to copy from their src_managed folder
@@ -593,6 +582,42 @@ object ScalaTestBuild extends Build
 
         listAllFiles(resourcesTargetDir)
       }.taskValue
+    ).settings(osgiSettings: _*).settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest",
+        "org.scalatest.concurrent",
+        "org.scalatest.enablers",
+        "org.scalatest.events",
+        "org.scalatest.exceptions",
+        "org.scalatest.fixture",
+        "org.scalatest.junit",
+        "org.scalatest.matchers",
+        "org.scalatest.mock",
+        "org.scalatest.path",
+        "org.scalatest.prop",
+        "org.scalatest.selenium",
+        "org.scalatest.tags",
+        "org.scalatest.tagobjects",
+        "org.scalatest.testng",
+        "org.scalatest.time",
+        "org.scalatest.tools",
+        "org.scalatest.words"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc.",
+        "Main-Class" -> "org.scalatest.tools.Runner"
+      )
     ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic)
 
   lazy val scalatestJS = Project("scalatestJS", file("scalatest.js"))
@@ -638,18 +663,12 @@ object ScalaTestBuild extends Build
       "org.scalatest.events",
       "org.scalatest.exceptions",
       "org.scalatest.fixture",
-      "org.scalatest.junit",
       "org.scalatest.matchers",
-      "org.scalatest.mock",
       "org.scalatest.path",
       "org.scalatest.prop",
-      "org.scalatest.selenium",
-      "org.scalatest.tags",
       "org.scalatest.tagobjects",
-      "org.scalatest.testng",
       "org.scalatest.time",
       "org.scalatest.tools",
-      "org.scalatest.verb",
       "org.scalatest.words"
     ),
     OsgiKeys.importPackage := Seq(
@@ -671,6 +690,9 @@ object ScalaTestBuild extends Build
 
   lazy val root = Project("root", file("."))
     .settings(sharedSettings: _*)
+    .settings(
+      publishArtifact := false
+    )
     .aggregate(
       scalactic,
       scalatestCore,
@@ -689,6 +711,9 @@ object ScalaTestBuild extends Build
 
   lazy val rootJS = Project("js", file("js"))
     .settings(sharedSettings: _*)
+    .settings(
+      publishArtifact := false
+    )
     .aggregate(
       scalacticJS,
       scalatestCoreJS,
@@ -714,7 +739,8 @@ object ScalaTestBuild extends Build
           "com.google.inject" % "guice" % guiceVersion % "optional",
           "org.easymock" % "easymockclassextension" % easyMockVersion % "optional",
           "org.jmock" % "jmock-legacy" % jMockVersion % "optional",
-          "org.mockito" % "mockito-all" % mockitoVersion % "optional"
+          "org.mockito" % "mockito-all" % mockitoVersion % "optional",
+          "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion
         ),
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,
@@ -760,7 +786,6 @@ object ScalaTestBuild extends Build
         "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
-        "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
         "org.scalactic.anyvals",
@@ -818,18 +843,12 @@ object ScalaTestBuild extends Build
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
         "org.scalatest.path",
         "org.scalatest.prop",
-        "org.scalatest.selenium",
-        "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
-        "org.scalatest.verb",
         "org.scalatest.words",
         "org.scalactic",
         "org.scalactic.anyvals",
