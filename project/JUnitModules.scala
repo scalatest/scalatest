@@ -36,7 +36,7 @@ trait JUnitModules {
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-junit",
-      libraryDependencies += "junit" % "junit" % "4.10" % "optional"
+      libraryDependencies += "junit" % "junit" % "4.10"
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestJUnitTest"))
 
   lazy val scalatestJUnitTest = Project("scalatestJUnitTest", file("scalatest-junit-test"))
@@ -44,7 +44,6 @@ trait JUnitModules {
     .settings(
       testOptions in Test := scalatestTestOptions,
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies += "junit" % "junit" % "4.10" % "test",
       publishArtifact := false,
       publish := {},
       publishLocal := {}

@@ -127,14 +127,6 @@ trait RegularTests {
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies ++=
-        Seq(
-          "junit" % "junit" % "4.10" % "test",
-          "org.testng" % "testng" % "6.8.7" % "test",
-          "com.google.inject" % "guice" % "2.0" % "test",
-          "org.mockito" % "mockito-all" % "1.9.0" % "test",
-          "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "test"
-        ),
       testOptions in Test := scalatestTestOptions,
       publishArtifact := false,
       publish := {},

@@ -34,7 +34,7 @@ trait EasyMockModules {
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-easymock",
-      libraryDependencies += "org.easymock" % "easymockclassextension" % "3.1" % "optional"
+      libraryDependencies += "org.easymock" % "easymockclassextension" % "3.1"
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestEasyMockTest"))
 
   lazy val scalatestEasyMockTest = Project("scalatestEasyMockTest", file("scalatest-easymock-test"))
@@ -42,7 +42,6 @@ trait EasyMockModules {
     .settings(
       testOptions in Test := scalatestTestOptions,
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies += "org.easymock" % "easymockclassextension" % "3.1" % "test",
       publishArtifact := false,
       publish := {},
       publishLocal := {}

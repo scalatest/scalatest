@@ -40,8 +40,8 @@ trait TestNGModules {
       moduleName := "scalatest-testng",
       libraryDependencies ++=
         Seq(
-          "org.testng" % "testng" % "6.8.7" % "optional",
-          "com.google.inject" % "guice" % "2.0" % "optional"
+          "org.testng" % "testng" % "6.8.7",
+          "com.google.inject" % "guice" % "2.0"
         )
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestTestNGTest"))
 
@@ -52,8 +52,6 @@ trait TestNGModules {
       libraryDependencies ++= scalatestLibraryDependencies,
       libraryDependencies ++=
         Seq(
-          "org.testng" % "testng" % "6.8.7" % "test",
-          "com.google.inject" % "guice" % "2.0" % "test",
           "org.jmock" % "jmock-legacy" % "2.5.1" % "test"
         ),
       publishArtifact := false,

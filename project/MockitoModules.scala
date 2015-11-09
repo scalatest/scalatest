@@ -28,7 +28,7 @@ trait MockitoModules {
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-jmock",
-      libraryDependencies += "org.mockito" % "mockito-all" % "1.9.0" % "optional"
+      libraryDependencies += "org.mockito" % "mockito-all" % "1.9.0"
     ).dependsOn(scalatestCore)
 
 }

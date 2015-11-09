@@ -34,7 +34,7 @@ trait JMockModules {
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-jmock",
-      libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1" % "optional"
+      libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1"
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestJMockTest"))
 
   lazy val scalatestJMockTest = Project("scalatestJMockTest", file("scalatest-jmock-test"))
@@ -42,7 +42,6 @@ trait JMockModules {
     .settings(
       testOptions in Test := scalatestTestOptions,
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1" % "test",
       publishArtifact := false,
       publish := {},
       publishLocal := {}
