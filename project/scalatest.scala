@@ -10,6 +10,13 @@ import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object ScalaTestBuild extends Build
   with FeatureSpecModules
+  with FlatSpecModules
+  with FreeSpecModules
+  with FunSpecModules
+  with FunSuiteModules
+  with PropSpecModules
+  with WordSpecModules
+  with RefSpecModules
   with MatchersModules
   with JUnitModules
   with TestNGModules
@@ -396,7 +403,6 @@ object ScalaTestBuild extends Build
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
@@ -479,7 +485,6 @@ object ScalaTestBuild extends Build
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.tagobjects",
         "org.scalatest.time",
@@ -701,6 +706,13 @@ object ScalaTestBuild extends Build
       scalatestMustMatchers,
       scalatestMustMatchers,
       scalatestFeatureSpec,
+      scalatestFlatSpec,
+      scalatestFreeSpec,
+      scalatestFunSpec,
+      scalatestFunSuite,
+      scalatestPropSpec,
+      scalatestWordSpec,
+      scalatestRefSpec,
       scalatestJUnit,
       scalatestTestNG,
       scalatestEasyMock,
@@ -721,7 +733,13 @@ object ScalaTestBuild extends Build
       scalatestMatchersJS,
       scalatestMustMatchersJS,
       scalatestMustMatchersJS,
-      scalatestFeatureSpecJS
+      scalatestFeatureSpecJS,
+      scalatestFlatSpecJS,
+      scalatestFreeSpecJS,
+      scalatestFunSpecJS,
+      scalatestFunSuiteJS,
+      scalatestPropSpecJS,
+      scalatestWordSpecJS
     )
 
   lazy val scalatestAll = Project("scalatestAll", file("scalatest-all"))

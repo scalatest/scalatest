@@ -208,7 +208,6 @@ object GenScalaTestJS {
         "TimeoutTask.scala"             // skipped because timeout is not supported.
       )
     ) ++
-    copyDir("scalatest-core/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
     copyDir("scalatest-core/src/main/scala/org/scalatest/tagobjects", "org/scalatest/tagobjects", targetDir,
       List(
         "ChromeBrowser.scala",  // skipped because selenium not supported.
@@ -258,15 +257,183 @@ object GenScalaTestJS {
       ),
       targetDir
     ) ++
+    copyFiles(
+      "scalatest-featurespec-test/src/test/scala/org/scalatest/fixture",
+      "org/scalatest/fixture",
+      List(
+        "FeatureSpecSpec.scala",
+        "AsyncFeatureSpecLikeSpec.scala",
+        "AsyncFeatureSpecLikeSpec2.scala",
+        "AsyncFeatureSpecSpec.scala",
+        "AsyncFeatureSpecSpec2.scala"
+      ),
+      targetDir
+    )
+  }
+
+  def genFlatSpecMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyFiles(
+      "scalatest-flatspec/src/main/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "FlatSpecLike.scala",
+        "FlatSpec.scala",
+        "AsyncFlatSpecLike.scala",
+        "AsyncFlatSpec.scala"
+      ),
+      targetDir
+    ) ++
+    copyFiles(
+      "scalatest-flatspec/src/main/scala/org/scalatest/fixture",
+      "org/scalatest/fixture",
+      List(
+        "FlatSpecLike.scala",
+        "FlatSpec.scala",
+        "AsyncFlatSpecLike.scala",
+        "AsyncFlatSpec.scala"
+      ),
+      targetDir
+    )
+  }
+
+  def genFreeSpecMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyFiles(
+      "scalatest-freespec/src/main/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "FreeSpecLike.scala",
+        "FreeSpec.scala",
+        "AsyncFreeSpecLike.scala",
+        "AsyncFreeSpec.scala"
+      ),
+      targetDir
+    ) ++
+    copyFiles(
+      "scalatest-freespec/src/main/scala/org/scalatest/fixture",
+      "org/scalatest/fixture",
+      List(
+        "FreeSpecLike.scala",
+        "FreeSpec.scala",
+        "AsyncFreeSpecLike.scala",
+        "AsyncFreeSpec.scala"
+      ),
+      targetDir
+    ) ++
+    copyFiles(
+      "scalatest-freespec/src/main/scala/org/scalatest/path",
+      "org/scalatest/path",
+      List(
+        "FreeSpecLike.scala",
+        "FreeSpec.scala"
+      ),
+      targetDir
+    )
+  }
+
+  def genFunSpecMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyFiles(
+      "scalatest-funspec/src/main/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "FunSpecLike.scala",
+        "FunSpec.scala",
+        "AsyncFunSpecLike.scala",
+        "AsyncFunSpec.scala"
+      ),
+      targetDir
+    ) ++
+    copyFiles(
+      "scalatest-funspec/src/main/scala/org/scalatest/fixture",
+      "org/scalatest/fixture",
+      List(
+        "FunSpecLike.scala",
+        "FunSpec.scala",
+        "AsyncFunSpecLike.scala",
+        "AsyncFunSpec.scala"
+      ),
+      targetDir
+    ) ++
+    copyFiles(
+      "scalatest-funspec/src/main/scala/org/scalatest/path",
+      "org/scalatest/path",
+      List(
+        "FunSpecLike.scala",
+        "FunSpec.scala"
+      ),
+      targetDir
+    )
+  }
+
+  def genFunSuiteMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyFiles(
+      "scalatest-funsuite/src/main/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "FunSuiteLike.scala",
+        "FunSuite.scala",
+        "AsyncFunSuiteLike.scala",
+        "AsyncFunSuite.scala"
+      ),
+      targetDir
+    ) ++
+    copyFiles(
+      "scalatest-funsuite/src/main/scala/org/scalatest/fixture",
+      "org/scalatest/fixture",
+      List(
+        "FunSuiteLike.scala",
+        "FunSuite.scala",
+        "AsyncFunSuiteLike.scala",
+        "AsyncFunSuite.scala"
+      ),
+      targetDir
+    )
+  }
+
+  def genPropSpecMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyFiles(
+      "scalatest-propspec/src/main/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "PropSpecLike.scala",
+        "PropSpec.scala",
+        "AsyncPropSpecLike.scala",
+        "AsyncPropSpec.scala"
+      ),
+      targetDir
+    ) ++
       copyFiles(
-        "scalatest-featurespec-test/src/test/scala/org/scalatest/fixture",
+        "scalatest-propspec/src/main/scala/org/scalatest/fixture",
         "org/scalatest/fixture",
         List(
-          "FeatureSpecSpec.scala",
-          "AsyncFeatureSpecLikeSpec.scala",
-          "AsyncFeatureSpecLikeSpec2.scala",
-          "AsyncFeatureSpecSpec.scala",
-          "AsyncFeatureSpecSpec2.scala"
+          "PropSpecLike.scala",
+          "PropSpec.scala",
+          "AsyncPropSpecLike.scala",
+          "AsyncPropSpec.scala"
+        ),
+        targetDir
+      )
+  }
+
+  def genWordSpecMain(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
+    copyFiles(
+      "scalatest-wordspec/src/main/scala/org/scalatest",
+      "org/scalatest",
+      List(
+        "WordSpecLike.scala",
+        "WordSpec.scala",
+        "AsyncWordSpecLike.scala",
+        "AsyncWordSpec.scala"
+      ),
+      targetDir
+    ) ++
+      copyFiles(
+        "scalatest-wordspec/src/main/scala/org/scalatest/fixture",
+        "org/scalatest/fixture",
+        List(
+          "WordSpecLike.scala",
+          "WordSpec.scala",
+          "AsyncWordSpecLike.scala",
+          "AsyncWordSpec.scala"
         ),
         targetDir
       )
