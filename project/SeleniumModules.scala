@@ -18,31 +18,25 @@ import com.typesafe.sbt.osgi.SbtOsgi._
 import sbt._
 import sbt.Keys._
 
-trait EasyMockModules {
+trait SeleniumModules {
 
   def sharedSettings: Seq[Setting[_]]
 
   def scalatestCore: Project
 
-  def scalatestTestOptions: Seq[Tests.Argument]
+  def seleniumVersion: String
 
-  def scalatestLibraryDependencies: Seq[ModuleID]
-
-  def commonTest: Project
-
-  def easyMockVersion: String
-
-  lazy val scalatestEasyMock = Project("scalatestEasyMock", file("scalatest-easymock"))
+  lazy val scalatestSelenium = Project("scalatestSelenium", file("scalatest-selenium"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
-      moduleName := "scalatest-easymock",
-      libraryDependencies += "org.easymock" % "easymockclassextension" % easyMockVersion
+      moduleName := "scalatest-selenium",
+      libraryDependencies += "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion
     )
     .settings(osgiSettings: _*)
     .settings(
       OsgiKeys.exportPackage := Seq(
-        "org.scalatest.mock"
+        "org.scalatest.selenium"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -53,21 +47,11 @@ trait EasyMockModules {
         "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaTest EasyMock",
-        "Bundle-Description" -> "EasyMock support for ScalaTest, an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-Name" -> "ScalaTest Selenium",
+        "Bundle-Description" -> "Selenium support for ScalaTest, an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc."
       )
-    ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestEasyMockTest"))
-
-  lazy val scalatestEasyMockTest = Project("scalatestEasyMockTest", file("scalatest-easymock-test"))
-    .settings(sharedSettings: _*)
-    .settings(
-      testOptions in Test := scalatestTestOptions,
-      libraryDependencies ++= scalatestLibraryDependencies,
-      publishArtifact := false,
-      publish := {},
-      publishLocal := {}
-    ).dependsOn(scalatestEasyMock % "test", commonTest % "test")
+    ).dependsOn(scalatestCore)
 
 }

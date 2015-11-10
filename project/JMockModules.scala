@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+import com.typesafe.sbt.osgi.SbtOsgi._
 import sbt._
 import sbt.Keys._
 
@@ -29,12 +30,34 @@ trait JMockModules {
 
   def commonTest: Project
 
+  def jMockVersion: String
+
   lazy val scalatestJMock = Project("scalatestJMock", file("scalatest-jmock"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-jmock",
-      libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1" % "optional"
+      libraryDependencies += "org.jmock" % "jmock-legacy" % jMockVersion
+    )
+    .settings(osgiSettings: _*)
+    .settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.mock"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest JMock",
+        "Bundle-Description" -> "JMock support for ScalaTest, an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestJMockTest"))
 
   lazy val scalatestJMockTest = Project("scalatestJMockTest", file("scalatest-jmock-test"))
@@ -42,7 +65,6 @@ trait JMockModules {
     .settings(
       testOptions in Test := scalatestTestOptions,
       libraryDependencies ++= scalatestLibraryDependencies,
-      libraryDependencies += "org.jmock" % "jmock-legacy" % "2.5.1" % "test",
       publishArtifact := false,
       publish := {},
       publishLocal := {}

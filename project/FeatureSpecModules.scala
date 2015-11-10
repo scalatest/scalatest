@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+import com.typesafe.sbt.osgi.SbtOsgi._
 import sbt.Keys._
 import sbt._
 import org.scalajs.sbtplugin.ScalaJSPlugin
@@ -54,6 +55,27 @@ trait FeatureSpecModules {
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-featurespec"
+    )
+    .settings(osgiSettings: _*)
+    .settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest",
+        "org.scalatest.fixture"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest FeatureSpec",
+        "Bundle-Description" -> "ScalaTest FeatureSpec is style trait of ScalaTest, an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
     ).dependsOn(scalatestCore).aggregate(LocalProject("scalatestFeatureSpecTest"))
 
   lazy val scalatestFeatureSpecJS = Project("scalatestFeatureSpecJS", file("scalatest-featurespec.js"))
@@ -69,6 +91,27 @@ trait FeatureSpecModules {
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + root.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       test in Test := {},
       testOnly in Test := {}
+    )
+    .settings(osgiSettings: _*)
+    .settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest",
+        "org.scalatest.fixture"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest Feature Spec",
+        "Bundle-Description" -> "ScalaTest FeatureSpec is style trait of ScalaTest, an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
     ).dependsOn(scalatestCoreJS).aggregate(LocalProject("scalatestFeatureSpecTestJS")).enablePlugins(ScalaJSPlugin)
 
   lazy val scalatestFeatureSpecTests = Project("scalatestFeatureSpecTest", file("scalatest-featurespec-test"))

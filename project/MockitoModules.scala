@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+import com.typesafe.sbt.osgi.SbtOsgi._
 import sbt._
 import sbt.Keys._
 
@@ -23,12 +24,34 @@ trait MockitoModules {
 
   def scalatestCore: Project
 
+  def mockitoVersion: String
+
   lazy val scalatestMockito = Project("scalatestMockito", file("scalatest-mockito"))
     .settings(sharedSettings: _*)
     .settings(
       organization := "org.scalatest",
       moduleName := "scalatest-jmock",
-      libraryDependencies += "org.mockito" % "mockito-all" % "1.9.0" % "optional"
+      libraryDependencies += "org.mockito" % "mockito-all" % mockitoVersion
+    )
+    .settings(osgiSettings: _*)
+    .settings(
+      OsgiKeys.exportPackage := Seq(
+        "org.scalatest.mock"
+      ),
+      OsgiKeys.importPackage := Seq(
+        "org.scalatest.*",
+        "org.scalactic.*",
+        "scala.util.parsing.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.xml.*;version=\"$<range;[==,=+);$<replace;1.0.4;-;.>>\"",
+        "scala.*;version=\"$<range;[==,=+);$<replace;"+scalaBinaryVersion.value+";-;.>>\"",
+        "*;resolution:=optional"
+      ),
+      OsgiKeys.additionalHeaders:= Map(
+        "Bundle-Name" -> "ScalaTest Mockito",
+        "Bundle-Description" -> "Mockito support for ScalaTest, an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
+        "Bundle-DocURL" -> "http://www.scalatest.org/",
+        "Bundle-Vendor" -> "Artima, Inc."
+      )
     ).dependsOn(scalatestCore)
 
 }
