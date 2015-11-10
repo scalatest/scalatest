@@ -78,7 +78,19 @@ trait RegularTests {
           scalacheckDependency("optional"),
           "org.jmock" % "jmock-legacy" % "2.5.1" % "optional"
         )
-    ).dependsOn(scalacticMacro, LocalProject("scalatestCore"), LocalProject("scalatestMatchers"), LocalProject("scalatestFeatureSpec"))
+    ).dependsOn(
+    scalacticMacro,
+    LocalProject("scalatestCore"),
+    LocalProject("scalatestMatchers"),
+    LocalProject("scalatestFeatureSpec"),
+    LocalProject("scalatestFlatSpec"),
+    LocalProject("scalatestFreeSpec"),
+    LocalProject("scalatestFunSpec"),
+    LocalProject("scalatestFunSuite"),
+    LocalProject("scalatestPropSpec"),
+    LocalProject("scalatestWordSpec"),
+    LocalProject("scalatestRefSpec")
+  )
 
   // Common test classes used by scalactic.js and scalatest.js
   lazy val commonTestJS = Project("commonTestJS", file("common-test.js"))
@@ -90,7 +102,18 @@ trait RegularTests {
           GenCommonTestJS.genMain((sourceManaged in Compile).value / "scala" / "org" / "scalatest", version.value, scalaVersion.value)
         }.taskValue
       }
-    ).dependsOn(scalacticMacroJS, LocalProject("scalatestCoreJS"), LocalProject("scalatestMatchersJS"), LocalProject("scalatestFeatureSpecJS")).enablePlugins(ScalaJSPlugin)
+    ).dependsOn(
+      scalacticMacroJS,
+      LocalProject("scalatestCoreJS"),
+      LocalProject("scalatestMatchersJS"),
+      LocalProject("scalatestFeatureSpecJS"),
+      LocalProject("scalatestFlatSpecJS"),
+      LocalProject("scalatestFreeSpecJS"),
+      LocalProject("scalatestFunSpecJS"),
+      LocalProject("scalatestFunSuiteJS"),
+      LocalProject("scalatestPropSpecJS"),
+      LocalProject("scalatestWordSpecJS")
+    ).enablePlugins(ScalaJSPlugin)
 
   lazy val scalacticTest = Project("scalactic-test", file("scalactic-test"))
     .settings(sharedSettings: _*)

@@ -1194,7 +1194,17 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     requireNonNull(testName, args)
 
     // SKIP-SCALATESTJS-START
-    if (!this.isInstanceOf[Spec] && yeOldeTestNames.nonEmpty) {
+
+    def isSpec: Boolean =
+      try {
+        val specClass = Class.forName("org.scalatest.Spec")
+        specClass.isAssignableFrom(this.getClass)
+      }
+      catch {
+        case t: Throwable => false
+      }
+
+    if (!isSpec && yeOldeTestNames.nonEmpty) {
       if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
       else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
     }
