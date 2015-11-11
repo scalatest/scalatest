@@ -920,7 +920,21 @@ object ScalaTestBuild extends Build
     .settings(
       scalaVersion := buildScalaVersion,
       libraryDependencies += scalacheckDependency("compile")
-    ).dependsOn(scalacticMacro, scalactic, scalatestCore)
+    ).dependsOn(
+      scalacticMacro,
+      scalactic,
+      scalatestCore,
+      scalatestMatchers,
+      scalatestFlatSpec,
+      scalatestFeatureSpec,
+      scalatestFreeSpec,
+      scalatestFunSpec,
+      scalatestFunSuite,
+      scalatestRefSpec,
+      scalatestPropSpec,
+      scalatestWordSpec,
+      scalatestSelenium
+    )
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
