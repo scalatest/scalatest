@@ -20,21 +20,21 @@ import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>FunSuite</code>, which represents
+ * Implementation trait for class <code>AsyncFunSuite</code>, which represents
  * a suite of tests in which each test is represented as a function value.
  *
  * <p>
- * <a href="FunSuite.html"><code>FunSuite</code></a> is a class, not a trait,
+ * <a href="AsyncFunSuite.html"><code>AsyncFunSuite</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FunSuite</code> into some other class, you can use this
- * trait instead, because class <code>FunSuite</code> does nothing more than
+ * behavior of <code>AsyncFunSuite</code> into some other class, you can use this
+ * trait instead, because class <code>AsyncFunSuite</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FunSuite.html">detailed
- * overview of <code>FunSuite</code></a>.
+ * See the documentation of the class for a <a href="AsyncFunSuite.html">detailed
+ * overview of <code>AsyncFunSuite</code></a>.
  * </p>
  *
  * @author Bill Venners

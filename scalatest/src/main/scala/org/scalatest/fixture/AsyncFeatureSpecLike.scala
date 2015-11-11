@@ -27,22 +27,22 @@ import org.scalatest.exceptions.NotAllowedException
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>fixture.FeatureSpec</code>, which is
- * a sister class to <a href="../FeatureSpec.html"><code>org.scalatest.FeatureSpec</code></a> that can pass a
+ * Implementation trait for class <code>fixture.AsyncFeatureSpec</code>, which is
+ * a sister class to <a href="../AsyncFeatureSpec.html"><code>org.scalatest.AsyncFeatureSpec</code></a> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="FeatureSpec.html"><code>fixture.FeatureSpec</code></a> is a class,
+ * <a href="AsyncFeatureSpec.html"><code>fixture.AsyncFeatureSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.FeatureSpec</code> into some other
+ * to mix the behavior of <code>fixture.AsyncFeatureSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.FeatureSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>fixture.AsyncFeatureSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FeatureSpec.html">detailed
- * overview of <code>fixture.FeatureSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncFeatureSpec.html">detailed
+ * overview of <code>fixture.AsyncFeatureSpec</code></a>.
  * </p>
  *
  * @author Bill Venners

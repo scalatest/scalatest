@@ -26,22 +26,22 @@ import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>FlatSpec</code>, which facilitates a
+ * Implementation trait for class <code>AsyncFlatSpec</code>, which facilitates a
  * &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
  *
  * <p>
- * <a href="FlatSpec.html"><code>FlatSpec</code></a> is a class, not a trait,
+ * <a href="AsyncFlatSpec.html"><code>AsyncFlatSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FlatSpec</code> into some other class, you can use this
- * trait instead, because class <code>FlatSpec</code> does nothing more than
+ * behavior of <code>AsyncFlatSpec</code> into some other class, you can use this
+ * trait instead, because class <code>AsyncFlatSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FlatSpec.html">detailed
- * overview of <code>FlatSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncFlatSpec.html">detailed
+ * overview of <code>AsyncFlatSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
