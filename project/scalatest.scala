@@ -441,7 +441,7 @@ object ScalaTestBuild extends Build
         <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + root.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       jsDependencies += RuntimeDOM % "test",
@@ -656,7 +656,7 @@ object ScalaTestBuild extends Build
         <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + root.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       jsDependencies += RuntimeDOM % "test",
@@ -776,11 +776,11 @@ object ScalaTestBuild extends Build
       scalatestWordSpecJS
     )
 
-  lazy val scalatestAll = Project("scalatestAll", file("scalatest-all"))
+  lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaTest All",
-      name := "scalatest-all",
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
@@ -849,7 +849,7 @@ object ScalaTestBuild extends Build
         "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Name" -> "ScalaTest App",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc.",
@@ -857,13 +857,13 @@ object ScalaTestBuild extends Build
       )
     ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal")
 
-  lazy val scalatestAllJS = Project("scalatestAllJS", file("scalatest-all.js"))
+  lazy val scalatestAllJS = Project("scalatestAppJS", file("scalatest-app.js"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaTest All",
-      name := "scalatest-all",
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
       organization := "org.scalatest",
-      moduleName := "scalatest-all",
+      moduleName := "scalatest-app",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
@@ -907,7 +907,7 @@ object ScalaTestBuild extends Build
         "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Name" -> "ScalaTest App",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc.",
