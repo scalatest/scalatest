@@ -118,4 +118,4 @@ With Sonatype credentials and GPG file in place, you can now publish to Sonatype
 
 To publish scalactic, scalatest and scalatest-all (for Scala and Scala-js, version 2.11 and 2.10) to Sonatype, use the following command:
 
-  `$ sbt root/clean js/clean root/publishSigned js/publishSigned scalatest/publishSigned scalatestAll/publishSigned scalatestJS/publishSigned scalatestAllJS/publishSigned ++2.10.5 root/clean js/clean root/publishSigned js/publishSigned scalatest/publishSigned scalatestAll/publishSigned scalatestJS/publishSigned scalatestAllJS/publishSigned`
+  `$ sbt root/clean js/clean scalatest/clean scalatestJS/clean scalatestAll/clean scalatestAllJS/clean root/publishSigned js/publishSigned scalatest/publishSigned scalatestAll/publishSigned scalatestJS/publishSigned scalatestAllJS/publishSigned ++2.10.5 root/clean js/clean scalatest/clean scalatestJS/clean scalatestAll/clean scalatestAllJS/clean root/publishSigned js/publishSigned scalatest/publishSigned scalatestAll/publishSigned scalatestJS/publishSigned scalatestAllJS/publishSigned`
