@@ -20,12 +20,13 @@ import collection.mutable.ListBuffer
 
 class ExampleSpec extends FunSpec {
 
-  def fixture = 
-    new {
-      val builder = new StringBuilder("ScalaTest is ")
-      val buffer = new ListBuffer[String]
-    }
+  class Fixture {
+    val builder = new StringBuilder("ScalaTest is ")
+    val buffer = new ListBuffer[String]
+  }
   
+  def fixture = new Fixture
+
   describe("Testing") {
     it("should be easy") {
       val f = fixture

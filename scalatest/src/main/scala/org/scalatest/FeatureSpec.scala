@@ -818,12 +818,13 @@ import Suite.autoTagClassAnnotations
  * 
  * class ExampleSpec extends FeatureSpec {
  * 
- *   def fixture = 
- *     new {
- *       val builder = new StringBuilder("ScalaTest is designed to ")
- *       val buffer = new ListBuffer[String]
- *     }
- *   
+ *   class Fixture {
+ *     val builder = new StringBuilder("ScalaTest is designed to ")
+ *     val buffer = new ListBuffer[String]
+ *   }
+ *  
+ *   def fixture = new Fixture
+ *  
  *   feature("Simplicity") {
  *     scenario("User needs to read test code written by others") {
  *       val f = fixture

@@ -20,11 +20,12 @@ import collection.mutable.ListBuffer
 
 class ExampleSuite extends FunSuite {
 
-  def fixture = 
-    new {
-      val builder = new StringBuilder("ScalaTest is ")
-      val buffer = new ListBuffer[String]
-    }
+  class Fixture {
+    val builder = new StringBuilder("ScalaTest is ")
+    val buffer = new ListBuffer[String]
+  }
+  
+  def fixture = new Fixture
   
   test("Testing should be easy") {
     val f = fixture
