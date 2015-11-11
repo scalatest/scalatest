@@ -772,11 +772,12 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * 
  * class ExampleSpec extends Spec {
  * 
- *   def fixture = 
- *     new {
- *       val builder = new StringBuilder("ScalaTest is ")
- *       val buffer = new ListBuffer[String]
- *     }
+ *   class Fixture {
+ *     val builder = new StringBuilder("ScalaTest is ")
+ *     val buffer = new ListBuffer[String]
+ *   }
+ *   
+ *   def fixture = new Fixture
  *   
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
