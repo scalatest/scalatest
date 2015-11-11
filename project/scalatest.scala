@@ -39,7 +39,7 @@ object ScalaTestBuild extends Build
   // > ++ 2.10.5
   val buildScalaVersion = "2.11.7"
 
-  val releaseVersion = "3.0.0-SNAP12"
+  val releaseVersion = "3.0.0-SNAP13"
 
   val scalacheckVersion = "1.12.5"
 
@@ -441,7 +441,7 @@ object ScalaTestBuild extends Build
         <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + root.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       jsDependencies += RuntimeDOM % "test",
@@ -546,22 +546,40 @@ object ScalaTestBuild extends Build
           "org.mockito" % "mockito-all" % mockitoVersion % "optional",
           "org.seleniumhq.selenium" % "selenium-java" % seleniumVersion
         ),
-      compile in Compile <<= compile in Compile dependsOn (
-        // Compile other modules first, as some we'll need to copy from their src_managed folder
-        compile in Compile in scalatestCore,
-        compile in Compile in scalatestFeatureSpec
-      ),
       sourceGenerators in Compile += Def.task {
         val scalaTargetDir = (sourceManaged in Compile).value / "scala"
         val javaTargetDir = (sourceManaged in Compile).value / "java"
+        val htmlTargetDir = (sourceManaged in Compile).value / "html"
 
         // scalatest-core
         IO.copyDirectory(file("scalatest-core/src/main/scala"), scalaTargetDir, true)
         IO.copyDirectory(file("scalatest-core/src/main/java"), javaTargetDir, true)
+        IO.copyDirectory(file("scalatest-core/src/main/html"), htmlTargetDir, true)
         IO.copyDirectory(file("scalatest-core/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
 
         // scalatest-featurespec
         IO.copyDirectory(file("scalatest-featurespec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-flatspec
+        IO.copyDirectory(file("scalatest-flatspec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-freespec
+        IO.copyDirectory(file("scalatest-freespec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-ffunspec
+        IO.copyDirectory(file("scalatest-funspec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-funsuite
+        IO.copyDirectory(file("scalatest-funsuite/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-propspec
+        IO.copyDirectory(file("scalatest-propspec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-wordspec
+        IO.copyDirectory(file("scalatest-wordspec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-refspec
+        IO.copyDirectory(file("scalatest-refspec/src/main/scala"), scalaTargetDir, true)
 
         // scalatest-junit
         IO.copyDirectory(file("scalatest-junit/src/main/scala"), scalaTargetDir, true)
@@ -630,7 +648,7 @@ object ScalaTestBuild extends Build
     .settings(
       projectTitle := "ScalaTest",
       organization := "org.scalatest",
-      moduleName := "scalatest-core",
+      moduleName := "scalatest",
       initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
@@ -638,15 +656,10 @@ object ScalaTestBuild extends Build
         <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + root.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       jsDependencies += RuntimeDOM % "test",
-      compile in Compile <<= compile in Compile dependsOn (
-        // Compile other modules first, as some we'll need to copy from their src_managed folder
-        compile in Compile in scalatestCoreJS,
-        compile in Compile in scalatestFeatureSpecJS
-      ),
       sourceGenerators in Compile += Def.task {
         val scalaTargetDir = (sourceManaged in Compile).value / "scala"
         val javaTargetDir = (sourceManaged in Compile).value / "java"
@@ -656,6 +669,27 @@ object ScalaTestBuild extends Build
         IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
         IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/java"), javaTargetDir, true)
         IO.copyDirectory(file("scalatest-core.js/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/html"), htmlTargetDir, true)
+
+        // scalatest-featurespec
+        IO.copyDirectory(file("scalatest-featurespec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-flatspec
+        IO.copyDirectory(file("scalatest-flatspec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-freespec
+        IO.copyDirectory(file("scalatest-freespec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-ffunspec
+        IO.copyDirectory(file("scalatest-funspec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-funsuite
+        IO.copyDirectory(file("scalatest-funsuite/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-propspec
+        IO.copyDirectory(file("scalatest-propspec/src/main/scala"), scalaTargetDir, true)
+
+        // scalatest-wordspec
+        IO.copyDirectory(file("scalatest-wordspec/src/main/scala"), scalaTargetDir, true)
 
         listAllFiles(scalaTargetDir) ++ listAllFiles(javaTargetDir)
       }.taskValue,
@@ -742,11 +776,11 @@ object ScalaTestBuild extends Build
       scalatestWordSpecJS
     )
 
-  lazy val scalatestAll = Project("scalatestAll", file("scalatest-all"))
+  lazy val scalatestApp = Project("scalatestApp", file("scalatest-app"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaTest All",
-      name := "scalatest-all",
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
@@ -764,17 +798,14 @@ object ScalaTestBuild extends Build
       mappings in (Compile, packageBin) ++= mappings.in(scalactic, Compile, packageBin).value,
       // include the scalactic sources in the source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalactic, Compile, packageSrc).value,
-      compile in Compile <<= compile in Compile dependsOn (
-        // Build scalactic and scalatest first
-        compile in Compile in scalactic,
-        compile in Compile in scalatest
-        ),
       sourceGenerators in Compile += Def.task {
         val scalaTargetDir = (sourceManaged in Compile).value / "scala"
         val javaTargetDir = (sourceManaged in Compile).value / "java"
+        val htmlTargetDir = (sourceManaged in Compile).value / "html"
 
         IO.copyDirectory(file("scalatest/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/scala"), scalaTargetDir, true)
         IO.copyDirectory(file("scalatest/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/java"), javaTargetDir, true)
+        IO.copyDirectory(file("scalatest/target/scala-" + scalaBinaryVersion.value + "/src_managed/main/html"), htmlTargetDir, true)
 
         listAllFiles(scalaTargetDir) ++ listAllFiles(javaTargetDir)
       }.taskValue,
@@ -818,7 +849,7 @@ object ScalaTestBuild extends Build
         "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Name" -> "ScalaTest App",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc.",
@@ -826,24 +857,19 @@ object ScalaTestBuild extends Build
       )
     ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal")
 
-  lazy val scalatestAllJS = Project("scalatestAllJS", file("scalatest-all.js"))
+  lazy val scalatestAllJS = Project("scalatestAppJS", file("scalatest-app.js"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaTest All",
-      name := "scalatest-all",
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
       organization := "org.scalatest",
-      moduleName := "scalatest-all",
+      moduleName := "scalatest-app",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
       mappings in (Compile, packageBin) ++= mappings.in(scalacticJS, Compile, packageBin).value,
       // include the scalactic sources in the source jar
       mappings in (Compile, packageSrc) ++= mappings.in(scalacticJS, Compile, packageSrc).value,
-      compile in Compile <<= compile in Compile dependsOn (
-        // Build scalactic and scalatest first
-        compile in Compile in scalacticJS,
-        compile in Compile in scalatestJS
-        ),
       sourceGenerators in Compile += Def.task {
         val scalaTargetDir = (sourceManaged in Compile).value / "scala"
         val javaTargetDir = (sourceManaged in Compile).value / "java"
@@ -881,7 +907,7 @@ object ScalaTestBuild extends Build
         "*;resolution:=optional"
       ),
       OsgiKeys.additionalHeaders:= Map(
-        "Bundle-Name" -> "ScalaTest",
+        "Bundle-Name" -> "ScalaTest App",
         "Bundle-Description" -> "ScalaTest is an open-source test framework for the Java Platform designed to increase your productivity by letting you write fewer lines of test code that more clearly reveal your intent.",
         "Bundle-DocURL" -> "http://www.scalatest.org/",
         "Bundle-Vendor" -> "Artima, Inc.",
@@ -894,7 +920,21 @@ object ScalaTestBuild extends Build
     .settings(
       scalaVersion := buildScalaVersion,
       libraryDependencies += scalacheckDependency("compile")
-    ).dependsOn(scalacticMacro, scalactic, scalatestCore)
+    ).dependsOn(
+      scalacticMacro,
+      scalactic,
+      scalatestCore,
+      scalatestMatchers,
+      scalatestFlatSpec,
+      scalatestFeatureSpec,
+      scalatestFreeSpec,
+      scalatestFunSpec,
+      scalatestFunSuite,
+      scalatestRefSpec,
+      scalatestPropSpec,
+      scalatestWordSpec,
+      scalatestSelenium
+    )
 
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name

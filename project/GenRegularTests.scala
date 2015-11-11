@@ -80,8 +80,6 @@ object GenRegularTests4 extends GenRegularTestsBase {
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/TestLocationServices.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/TestLocationJUnitSuite.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/examples/ExampleCancelSpec.scala")
-    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/jmock/SuiteExpectations.scala")
-    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/jmock/TestReporter.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/RunInSpurtsSpec1.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/suiteprop/SuiteExamples.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/tools/scalasbt/SlowSampleSuite.scala")
@@ -91,6 +89,7 @@ object GenRegularTests4 extends GenRegularTestsBase {
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/tools/scalasbt/DoNotDiscoverSuite.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/tools/scalasbt/NestedConfigMapSuite.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/tools/scalasbt/SlowSampleSuite.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/tools/scalasbt/FaulthyBeforeAndAfterSuite.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/tools/scalasbt/SuiteWithFailedCanceledTests.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/tools/RunnerSpec.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/enablers/NoParamSpec.scala")
@@ -115,17 +114,16 @@ object GenRegularTests5 extends GenRegularTestsBase {
 
     // these are accessed through reflections.
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/SuiteExamples.scala")
-    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/StringFixture.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/examples/ExampleCancelInNestedSuite.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/MethodSuiteProp.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/TestLocationMethodServices.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/MethodSuiteExamples.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/events/TestLocationMethodJUnitSuite.scala")
-    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/junit/junit4helpers/TestWasCalledSuite.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/time/SpanMatchers.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/UnitSpec.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/suiteprop/SuiteExamples.scala")
     copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/EasySuite.scala")
+    copyFile(targetBaseDir, "scalatest-test/src/test/scala/org/scalatest/ExpectationHavePropertyMatchers.scala")
 
     super.genTest(targetBaseDir, version, scalaVersion)
   }

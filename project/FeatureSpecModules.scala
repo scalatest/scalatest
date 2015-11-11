@@ -46,8 +46,6 @@ trait FeatureSpecModules {
 
   def scalacticJS: Project
 
-  def scalatestAll: Project
-
   def root: Project
 
   lazy val scalatestFeatureSpec = Project("scalatestFeatureSpec", file("scalatest-featurespec"))
@@ -158,7 +156,7 @@ trait FeatureSpecModules {
       genSafeStylesTask,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genFeatureSpecMainJS),
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + root.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       test in Test := {},
       testOnly in Test := {}
     ).dependsOn(scalatestCoreJS).aggregate(LocalProject("scalatestSafeFeatureSpecTestJS")).enablePlugins(ScalaJSPlugin)
