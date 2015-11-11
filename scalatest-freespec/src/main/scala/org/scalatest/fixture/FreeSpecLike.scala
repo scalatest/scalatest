@@ -99,7 +99,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -107,7 +107,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -134,7 +134,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Unit /* Assertion */) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -167,7 +167,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Unit /* Assertion */) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
@@ -221,7 +221,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToRun(specText, tags, "in", testFun)
     }
 
@@ -243,7 +243,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -287,7 +287,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
+    def ignore(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(specText, tags, "ignore", testFun)
     }
 
@@ -309,7 +309,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Unit /* Assertion */) {
+    def ignore(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
     }
   }
@@ -378,7 +378,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToRun(string, List(), "in", testFun)
     }
 
@@ -400,7 +400,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -444,7 +444,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
+    def ignore(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(string, List(), "ignore", testFun)
     }
 
@@ -466,7 +466,7 @@ trait FreeSpecLike extends Suite with TestRegistration with Informing with Notif
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Unit /* Assertion */) {
+    def ignore(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
     }
 
