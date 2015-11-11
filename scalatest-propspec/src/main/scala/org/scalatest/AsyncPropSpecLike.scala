@@ -20,21 +20,21 @@ import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>PropSpec</code>, which represents
+ * Implementation trait for class <code>AsyncPropSpec</code>, which represents
  * a suite of property-based tests.
  *
  * <p>
- * <a href="PropSpec.html"><code>PropSpec</code></a> is a class, not a trait,
+ * <a href="AsyncPropSpec.html"><code>AsyncPropSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>PropSpec</code> into some other class, you can use this
- * trait instead, because class <code>PropSpec</code> does nothing more than
+ * behavior of <code>AsyncPropSpec</code> into some other class, you can use this
+ * trait instead, because class <code>AsyncPropSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="PropSpec.html">detailed
- * overview of <code>PropSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncPropSpec.html">detailed
+ * overview of <code>AsyncPropSpec</code></a>.
  * </p>
  *
  * @author Bill Venners

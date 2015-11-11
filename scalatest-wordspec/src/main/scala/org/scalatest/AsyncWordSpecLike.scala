@@ -28,17 +28,17 @@ import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>WordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
+ * Implementation trait for class <code>AsyncWordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are combined with text that specifies the behavior the tests verify.
  *
  * <p>
- * <a href="WordSpec.html"><code>WordSpec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to
- * mixing in traits compared to extending classes. If you need to mix the behavior of <code>WordSpec</code>
- * into some other class, you can use this trait instead, because class <code>WordSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <a href="AsyncWordSpec.html"><code>AsyncWordSpec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to
+ * mixing in traits compared to extending classes. If you need to mix the behavior of <code>AsyncWordSpec</code>
+ * into some other class, you can use this trait instead, because class <code>AsyncWordSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="WordSpec.html">detailed overview of <code>WordSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncWordSpec.html">detailed overview of <code>AsyncWordSpec</code></a>.
  * </p>
  *
  * @author Bill Venners

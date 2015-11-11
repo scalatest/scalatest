@@ -27,22 +27,22 @@ import org.scalatest.Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>fixture.FlatSpec</code>, which is
- * a sister class to <code>org.scalatest.FlatSpec</code> that can pass a
+ * Implementation trait for class <code>fixture.AsyncFlatSpec</code>, which is
+ * a sister class to <code>org.scalatest.AsyncFlatSpec</code> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="FlatSpec.html"><code>fixture.FlatSpec</code></a> is a class,
+ * <a href="AsyncFlatSpec.html"><code>fixture.AsyncFlatSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.FlatSpec</code> into some other
+ * to mix the behavior of <code>fixture.AsyncFlatSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.FlatSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>fixture.AsyncFlatSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FlatSpec.html">detailed
- * overview of <code>fixture.FlatSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncFlatSpec.html">detailed
+ * overview of <code>fixture.AsyncFlatSpec</code></a>.
  * </p>
  *
  * @author Bill Venners

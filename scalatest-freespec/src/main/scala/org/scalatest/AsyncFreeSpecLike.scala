@@ -27,23 +27,23 @@ import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>FreeSpec</code>, which
+ * Implementation trait for class <code>AsyncFreeSpec</code>, which
  * facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD),
  * in which tests are nested inside text clauses denoted with the dash
  * operator (<code>-</code>).
  *
  * <p>
- * <a href="FreeSpec.html"><code>FreeSpec</code></a> is a class, not a trait,
+ * <a href="AsyncFreeSpec.html"><code>AsyncFreeSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FreeSpec</code> into some other class, you can use this
- * trait instead, because class <code>FreeSpec</code> does nothing more than
+ * behavior of <code>AsyncFreeSpec</code> into some other class, you can use this
+ * trait instead, because class <code>AsyncFreeSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FreeSpec.html">detailed
- * overview of <code>FreeSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncFreeSpec.html">detailed
+ * overview of <code>AsyncFreeSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
