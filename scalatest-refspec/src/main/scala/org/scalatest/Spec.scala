@@ -279,7 +279,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  *
- * <a name="informers"></a><h2>Informers</h2></a>
+ * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
  * One of the objects to <code>Spec</code>'s <code>run</code> method is a <code>Reporter</code>, which
@@ -337,7 +337,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   + That's all folks! </span> 
  * </pre>
  *
- * <a name="documenters"></a><h2>Documenters</h2></a>
+ * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
  * <code>Spec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
@@ -412,7 +412,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <img class="stScreenShot" src="../../lib/spec.gif">
  *
- * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *
  * <p>
  * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of
@@ -477,7 +477,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <code>note</code> and <code>alert</code> text will not.)
  * </p>
  *
- * <a name="pendingTests"></a><h2>Pending tests</h2></a>
+ * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
  * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
