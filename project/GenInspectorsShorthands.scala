@@ -1047,7 +1047,7 @@ trait GenInspectorsShorthandsBase {
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAllSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -1076,7 +1076,7 @@ trait GenInspectorsShorthandsBase {
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -1109,7 +1109,7 @@ trait GenInspectorsShorthandsBase {
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAtLeastSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -1314,7 +1314,7 @@ trait GenInspectorsShorthandsBase {
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -1347,7 +1347,7 @@ trait GenInspectorsShorthandsBase {
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForEverySucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -1553,7 +1553,7 @@ trait GenInspectorsShorthandsBase {
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -1586,7 +1586,7 @@ trait GenInspectorsShorthandsBase {
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForExactlySucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -1792,7 +1792,7 @@ trait GenInspectorsShorthandsBase {
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -1825,7 +1825,7 @@ trait GenInspectorsShorthandsBase {
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForNoSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -2030,7 +2030,7 @@ trait GenInspectorsShorthandsBase {
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -2063,7 +2063,7 @@ trait GenInspectorsShorthandsBase {
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForBetweenSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -2270,7 +2270,7 @@ trait GenInspectorsShorthandsBase {
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -2303,7 +2303,7 @@ trait GenInspectorsShorthandsBase {
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAtMostSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -2521,7 +2521,7 @@ trait GenInspectorsShorthandsBase {
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }

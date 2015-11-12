@@ -50,7 +50,7 @@ class TwoSlowAndOneWeakTestExamples extends SuiteExamples {
   type FixtureServices = Services
 
   // SKIP-SCALATESTJS-START
-  class SpecExample extends Spec with Services {
+  class SpecExample extends RefSpec with Services {
     @SlowAsMolasses @WeakAsAKitten def `test first` = {}
     @SlowAsMolasses def `test second` = {}
     override val theTestNames = Vector("test first", "test second")

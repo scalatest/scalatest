@@ -26,8 +26,8 @@ trait MethodSuiteExamples extends Tables {
   type FixtureServices
 
   // SKIP-SCALATESTJS-START
-  def spec: Spec with FixtureServices
-  def fixtureSpec: fixture.Spec with FixtureServices
+  def spec: RefSpec with FixtureServices
+  def fixtureSpec: fixture.RefSpec with FixtureServices
   def junit3Suite: JUnit3Suite with FixtureServices
   def junitSuite: JUnitSuite with FixtureServices
   def testngSuite: TestNGSuite with FixtureServices

@@ -497,7 +497,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Network
   @org.scalatest.tags.Retryable
   @org.scalatest.tags.Slow
-  class BaseTagSpec extends Spec with FixtureServices
+  class BaseTagSpec extends RefSpec with FixtureServices
   class InheritedTagSpec extends BaseTagSpec {
     def `test something` {}
   }
@@ -513,7 +513,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Network
   @org.scalatest.tags.Retryable
   @org.scalatest.tags.Slow
-  class BaseTagFixtureSpec extends fixture.Spec with StringFixture with FixtureServices
+  class BaseTagFixtureSpec extends fixture.RefSpec with StringFixture with FixtureServices
   class InheritedTagFixtureSpec extends BaseTagFixtureSpec {
     def `test something` {}
   }

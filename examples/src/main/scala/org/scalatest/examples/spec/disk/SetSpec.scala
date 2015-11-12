@@ -18,7 +18,7 @@ package org.scalatest.examples.spec.disk
 import org.scalatest._
 import tags.Disk
 
-class SetSpec extends Spec {
+class SetSpec extends RefSpec {
 
   @Disk def `an empty Set should have size 0` {
     assert(Set.empty.size === 0)

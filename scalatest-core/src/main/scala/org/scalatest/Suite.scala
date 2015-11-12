@@ -1729,7 +1729,7 @@ private[scalatest] object Suite {
    to make room for the icon in that case. An info inside such a test will have level 1. And agin, in that
    case no need to subtract 1. Such a test is "outermost test" and the info inside is "in outermost test" in:
 
-class ArghSpec extends Spec with GivenWhenThen {
+class ArghSpec extends RefSpec with GivenWhenThen {
   info("in ArghSpec")
   it("outermost test") {
     info("in outermost test")

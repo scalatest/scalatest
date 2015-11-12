@@ -69,7 +69,7 @@ object ParallelTestExecutionInfoExamples extends Tables {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoSpec extends Spec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoSpec extends RefSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before {}  // how to fire info here?
   def `test 1` {}
   def `test 2` {}
@@ -88,7 +88,7 @@ protected[scalatest] class ExampleParallelTestExecutionInfoSpec extends Spec wit
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoFixtureSpec extends fixture.Spec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionInfoFixtureSpec extends fixture.RefSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution with StringFixture {
   before {}  // how to fire info here?
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) {}

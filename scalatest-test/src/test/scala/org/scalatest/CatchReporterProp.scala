@@ -380,7 +380,7 @@ class CatchReporterProp extends AllSuiteProp {
 trait CatchReporterFixtureServices {}
 
 @DoNotDiscover
-class ExampleCatchReporterSpec extends Spec with CatchReporterFixtureServices {
+class ExampleCatchReporterSpec extends RefSpec with CatchReporterFixtureServices {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}
@@ -388,7 +388,7 @@ class ExampleCatchReporterSpec extends Spec with CatchReporterFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleCatchReporterFixtureSpec extends fixture.Spec with CatchReporterFixtureServices with StringFixture {
+class ExampleCatchReporterFixtureSpec extends fixture.RefSpec with CatchReporterFixtureServices with StringFixture {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) {}
   def `test 3`(fixture: String) {}

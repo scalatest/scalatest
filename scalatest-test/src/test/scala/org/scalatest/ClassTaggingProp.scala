@@ -85,7 +85,7 @@ class ExampleClassTaggingFixtureSuite extends fixture.Suite with ClassTaggingFix
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingSpec extends Spec with ClassTaggingFixtureServices {
+class ExampleClassTaggingSpec extends RefSpec with ClassTaggingFixtureServices {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}
@@ -93,7 +93,7 @@ class ExampleClassTaggingSpec extends Spec with ClassTaggingFixtureServices {
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureSpec extends fixture.Spec with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureSpec extends fixture.RefSpec with ClassTaggingFixtureServices with StringFixture {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) {}
   def `test 3`(fixture: String) {}

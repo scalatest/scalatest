@@ -78,7 +78,7 @@ import scala.reflect.ClassTag
  * </p>
  *
  * <pre class="stHighlight">
- * class ExampleSpec extends Spec with Matchers with CustomMatchers {
+ * class ExampleSpec extends RefSpec with Matchers with CustomMatchers {
  * 
  *   describe("A temp file") {
  * 

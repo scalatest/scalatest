@@ -33,7 +33,7 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.NotAllowedException
 */
 
-class SuiteSuite extends Spec with SeveredStackTraces {
+class SuiteSuite extends RefSpec with SeveredStackTraces {
 
   def `test prettify Array` = {
 
@@ -52,7 +52,7 @@ class SuiteSuite extends Spec with SeveredStackTraces {
 
   def `test: execute should use dynamic tagging to enable Doenitz wildcards for encoded test names` {
 
-    class TestWasCalledSpec extends Spec {
+    class TestWasCalledSpec extends RefSpec {
       var theTestThisCalled = false
       var theTestThatCalled = false
       var theTestTheOtherCalled = false
@@ -130,7 +130,7 @@ class SuiteSuite extends Spec with SeveredStackTraces {
   }
 
   def `test test tags` = {
-    class TagSpec extends Spec {  
+    class TagSpec extends RefSpec {
       def `test no tag method` = {}
       @SlowAsMolasses
       def `test tag method` = {}
@@ -145,19 +145,19 @@ class SuiteSuite extends Spec with SeveredStackTraces {
   
   def `test runNestedSuites` = {
     
-    class NoTagSpec extends Spec
+    class NoTagSpec extends RefSpec
     @Ignore
-    class IgnoreSpec extends Spec {
+    class IgnoreSpec extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     @SlowAsMolasses
-    class SlowAsMolassesSpec extends Spec
+    class SlowAsMolassesSpec extends RefSpec
     @FastAsLight
-    class FastAsLightSpec extends Spec
+    class FastAsLightSpec extends RefSpec
     
-    class MasterSpec extends Spec {
+    class MasterSpec extends RefSpec {
       override def nestedSuites = Vector(new NoTagSpec(), new IgnoreSpec(), new SlowAsMolassesSpec(), new FastAsLightSpec())
       override def runNestedSuites(args: Args): Status = {
         super.runNestedSuites(args)
@@ -209,31 +209,31 @@ class SuiteSuite extends Spec with SeveredStackTraces {
   }
   
   def `test expectedTestCount` = {
-    class NoTagSpec extends Spec {
+    class NoTagSpec extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     @Ignore
-    class IgnoreSpec extends Spec {
+    class IgnoreSpec extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     @SlowAsMolasses
-    class SlowAsMolassesSpec extends Spec {
+    class SlowAsMolassesSpec extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     @FastAsLight
-    class FastAsLightSpec extends Spec {
+    class FastAsLightSpec extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
     }
     
-    class MasterSpec extends Spec {
+    class MasterSpec extends RefSpec {
       override def nestedSuites = Vector(new NoTagSpec(), new IgnoreSpec(), new SlowAsMolassesSpec(), new FastAsLightSpec())
       override def runNestedSuites(args: Args): Status = {
         super.runNestedSuites(args)
@@ -255,7 +255,7 @@ class SuiteSuite extends Spec with SeveredStackTraces {
   }
   
   def `test check chosenStyles` = {
-    class SimpleSpec extends Spec {
+    class SimpleSpec extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
@@ -263,23 +263,23 @@ class SuiteSuite extends Spec with SeveredStackTraces {
     
     val simpleSuite = new SimpleSpec()
     simpleSuite.run(None, Args(SilentReporter))
-    simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.Spec")), None, new Tracker, Set.empty))
+    simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.RefSpec")), None, new Tracker, Set.empty))
     val caught =
       intercept[NotAllowedException] {
         simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec")), None, new Tracker, Set.empty))
       }
     import OptionValues._
-    assert(caught.message.value === Resources.notTheChosenStyle("org.scalatest.Spec", "org.scalatest.FunSpec"))
+    assert(caught.message.value === Resources.notTheChosenStyle("org.scalatest.RefSpec", "org.scalatest.FunSpec"))
     val caught2 =
       intercept[NotAllowedException] {
         simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec", "org.scalatest.FreeSpec")), None, new Tracker, Set.empty))
       }
-    assert(caught2.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.Spec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec"))))
+    assert(caught2.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.RefSpec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec"))))
     val caught3 =
       intercept[NotAllowedException] {
         simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec")), None, new Tracker, Set.empty))
       }
-    assert(caught3.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.Spec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec"))))
+    assert(caught3.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.RefSpec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec"))))
   }
 
   def `test make list for humans` = {
@@ -296,7 +296,7 @@ class SuiteSuite extends Spec with SeveredStackTraces {
   }
 
   def `test stack depth` = {
-    class TestSpec extends Spec {
+    class TestSpec extends RefSpec {
       def `test failure` = {
         assert(1 === 2)
       }
@@ -329,15 +329,15 @@ class SuiteSuite extends Spec with SeveredStackTraces {
   // SuiteStarting events.
   //
   def `test formatter for SuiteStarting` = {
-    val emptySuite = new Spec {}
+    val emptySuite = new RefSpec {}
 
     val emptySuiteContainingNestedSuites =
       new Suites(emptySuite, new NormalSuite)
 
-    val nonEmptySuite = new Spec { def `test foo` = {} }
+    val nonEmptySuite = new RefSpec { def `test foo` = {} }
 
     val nonEmptySuiteContainingNestedSuites =
-      new Suites(emptySuite, new NormalSuite) with SpecLike
+      new Suites(emptySuite, new NormalSuite) with RefSpecLike
       {
         def `test foo` = {}
       }
@@ -372,11 +372,11 @@ class SuiteSuite extends Spec with SeveredStackTraces {
 }
 
 @DoNotDiscover
-class `My Test` extends Spec {}
+class `My Test` extends RefSpec {}
 @DoNotDiscover
-class NormalSuite extends Spec
+class NormalSuite extends RefSpec
 @DoNotDiscover
 @WrapWith(classOf[ConfigMapWrapperSuite]) 
-class WrappedSuite(configMap: Map[_, _]) extends Spec
+class WrappedSuite(configMap: Map[_, _]) extends RefSpec
 @DoNotDiscover
-class NotAccessibleSuite(name: String) extends Spec
+class NotAccessibleSuite(name: String) extends RefSpec

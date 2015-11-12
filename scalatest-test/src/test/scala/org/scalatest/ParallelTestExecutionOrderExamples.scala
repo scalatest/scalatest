@@ -69,7 +69,7 @@ object ParallelTestExecutionOrderExamples extends Tables {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderSpec extends Spec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderSpec extends RefSpec with OrderExpectedResults with ParallelTestExecution {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}
@@ -86,7 +86,7 @@ protected[scalatest] class ExampleParallelTestExecutionOrderSpec extends Spec wi
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderFixtureSpec extends fixture.Spec with OrderExpectedResults with ParallelTestExecution with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionOrderFixtureSpec extends fixture.RefSpec with OrderExpectedResults with ParallelTestExecution with StringFixture {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) {}
   def `test 3`(fixture: String) {}

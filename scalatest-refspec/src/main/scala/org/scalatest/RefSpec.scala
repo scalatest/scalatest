@@ -17,8 +17,8 @@ package org.scalatest
 
 import scala.collection.immutable.ListSet
 import Suite._
-import Spec.isTestMethod
-import Spec.equalIfRequiredCompactify
+import RefSpec.isTestMethod
+import RefSpec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
@@ -34,24 +34,24 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * As a result, using <code>Spec</code> can be a good choice in large projects where build times are a concern as well as when generating large numbers of
  * tests programatically via static code generators.
  * </td></tr></table>
- *
+ * 
  * <p>
  * Here's an example <code>Spec</code>:
  * </p>
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec
- *
+ * 
  * import org.scalatest.Spec
- *
- * class SetSpec extends Spec {
- *
+ * 
+ * class SetSpec extends RefSpec {
+ * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
  *       def &#96;should have size 0&#96; {
  *         assert(Set.empty.size === 0)
  *       }
- *
+ *     
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
  *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
@@ -77,7 +77,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * scala&gt; def &#96;an example&#96; = ()
  * an$u0020example: Unit
  * </pre>
- *
+ * 
  * <p>
  * <code>Spec</code> uses reflection to discover scope objects and test methods.
  * During discovery, <code>Spec</code> will consider any nested singleton object whose name
@@ -188,17 +188,17 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.ignore
- *
+ * 
  * import org.scalatest._
- *
- * class SetSpec extends Spec {
- *
+ * 
+ * class SetSpec extends RefSpec {
+ *   
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
  *       @Ignore def &#96;should have size 0&#96; {
  *         assert(Set.empty.size === 0)
  *       }
- *
+ *       
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
  *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
@@ -234,18 +234,18 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.ignoreall
- *
+ * 
  * import org.scalatest._
  *
  * @Ignore
- * class SetSpec extends Spec {
- *
+ * class SetSpec extends RefSpec {
+ *   
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
  *       def &#96;should have size 0&#96; {
  *         assert(Set.empty.size === 0)
  *       }
- *
+ *       
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
  *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
@@ -284,7 +284,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <p>
  * One of the objects to <code>Spec</code>'s <code>run</code> method is a <code>Reporter</code>, which
  * will collect and report information about the running suite of tests.
- * Information about suites and tests that were run, whether tests succeeded or failed,
+ * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
  * Most often the reporting done by default by <code>Spec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
@@ -298,26 +298,26 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.info
- *
+ * 
  * import collection.mutable
  * import org.scalatest._
- *
- * class SetSpec extends Spec with GivenWhenThen {
- *
+ * 
+ * class SetSpec extends RefSpec with GivenWhenThen {
+ *   
  *   object &#96;A mutable Set&#96; {
  *     def &#96;should allow an element to be added&#96; {
  *       Given("an empty mutable Set")
  *       val set = mutable.Set.empty[String]
- *
+ * 
  *       When("an element is added")
  *       set += "clarity"
- *
+ * 
  *       Then("the Set should have size 1")
  *       assert(set.size === 1)
- *
+ * 
  *       And("the Set should contain the added element")
  *       assert(set.contains("clarity"))
- *
+ * 
  *       info("That's all folks!")
  *     }
  *   }
@@ -330,11 +330,11 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * scala&gt; new SetSpec execute
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
- *   + Given an empty mutable Set
- *   + When an element is added
- *   + Then the Set should have size 1
- *   + And the Set should contain the added element
- *   + That's all folks! </span>
+ *   + Given an empty mutable Set 
+ *   + When an element is added 
+ *   + Then the Set should have size 1 
+ *   + And the Set should contain the added element 
+ *   + That's all folks! </span> 
  * </pre>
  *
  * <a name="documenters"></a><h2>Documenters</h2>
@@ -356,7 +356,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends Spec with GivenWhenThen {
+ * class SetSpec extends RefSpec with GivenWhenThen {
  *
  *   markup { """
  *
@@ -434,7 +434,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *
  *   object `A mutable Set` {
  *     def `should allow an element to be added` {
@@ -496,7 +496,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <p>
  * Because tests in ScalaTest can be designated as pending with <code>TestPendingException</code>, both the test name and any information
- * sent to the reporter when running the test can appear in the report of a test run.
+ * sent to the reporter when running the test can appear in the report of a test run. 
  * (The code of a pending test is executed just like any other test.) However, because the test completes abruptly
  * with <code>TestPendingException</code>, the test will be reported as pending, to indicate
  * the actual test, and possibly the functionality, has not yet been implemented.
@@ -509,15 +509,15 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.pending
- *
+ * 
  * import org.scalatest._
- *
- * class SetSpec extends Spec {
- *
+ * 
+ * class SetSpec extends RefSpec {
+ * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
  *       def &#96;should have size 0&#96; { pending }
- *
+ *       
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
  *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
@@ -548,7 +548,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <span class="stYellow">  - should have size 0 (pending)</span>
  * <span class="stGreen">  - should produce NoSuchElementException when head is invoked</span>
  * </pre>
- *
+ * 
  * <a name="taggingTests"></a><h2>Tagging tests</h2>
  *
  * <p>
@@ -565,14 +565,14 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre>
  * package org.scalatest.examples.spec.tagging;
- * import java.lang.annotation.*;
+ * import java.lang.annotation.*; 
  * import org.scalatest.TagAnnotation;
- *
+ * 
  * @TagAnnotation
  * @Retention(RetentionPolicy.RUNTIME)
  * @Target({ElementType.METHOD, ElementType.TYPE})
  * public @interface SlowTest {}
- *
+ * 
  * @TagAnnotation
  * @Retention(RetentionPolicy.RUNTIME)
  * @Target({ElementType.METHOD, ElementType.TYPE})
@@ -585,11 +585,11 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.tagging
- *
+ * 
  * import org.scalatest.Spec
- *
- * class SetSpec extends Spec {
- *
+ * 
+ * class SetSpec extends RefSpec {
+ * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
 
@@ -597,7 +597,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       def &#96;should have size 0&#96; {
  *         assert(Set.empty.size === 0)
  *       }
- *
+ *       
  *       @SlowTest @DbTest
  *       def &#96;should produce NoSuchElementException when head is invoked&#96; {
  *         assertThrows[NoSuchElementException] {
@@ -705,7 +705,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
  *     <p>
  *     The recommended default approach when most or all tests need the same fixture treatment. This general technique
- *     allows you, for example, to perform side effects at the beginning and end of all or most tests,
+ *     allows you, for example, to perform side effects at the beginning and end of all or most tests, 
  *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
  *     Use this technique unless:
  *     </p>
@@ -766,19 +766,19 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.getfixture
- *
+ * 
  * import org.scalatest.Spec
  * import collection.mutable.ListBuffer
- *
- * class ExampleSpec extends Spec {
- *
+ * 
+ * class ExampleSpec extends RefSpec {
+ * 
  *   class Fixture {
  *     val builder = new StringBuilder("ScalaTest is ")
  *     val buffer = new ListBuffer[String]
  *   }
- *
+ *   
  *   def fixture = new Fixture
- *
+ *   
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
  *       val f = fixture
@@ -787,7 +787,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       assert(f.buffer.isEmpty)
  *       f.buffer += "sweet"
  *     }
- *
+ *   
  *     def &#96;should be fun&#96; {
  *       val f = fixture
  *       f.builder.append("fun!")
@@ -799,7 +799,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </pre>
  *
  * <p>
- * The &ldquo;<code>f.</code>&rdquo; in front of each use of a fixture object provides a visual indication of which objects
+ * The &ldquo;<code>f.</code>&rdquo; in front of each use of a fixture object provides a visual indication of which objects 
  * are part of the fixture, but if you prefer, you can import the the members with &ldquo;<code>import f._</code>&rdquo; and use the names directly.
  * </p>
  *
@@ -825,20 +825,20 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.fixturecontext
- *
+ * 
  * import collection.mutable.ListBuffer
  * import org.scalatest.Spec
- *
- * class ExampleSpec extends Spec {
- *
+ * 
+ * class ExampleSpec extends RefSpec {
+ * 
  *   trait Builder {
  *     val builder = new StringBuilder("ScalaTest is ")
  *   }
- *
+ * 
  *   trait Buffer {
  *     val buffer = ListBuffer("ScalaTest", "is")
  *   }
- *
+ * 
  *   object &#96;Testing &#96; {
  *     // This test needs the StringBuilder fixture
  *     def &#96;should be productive&#96; {
@@ -848,7 +848,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       }
  *     }
  *   }
- *
+ * 
  *   object &#96;Test code&#96; {
  *     // This test needs the ListBuffer[String] fixture
  *     def &#96;should be readable&#96; {
@@ -857,7 +857,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *         assert(buffer === List("ScalaTest", "is", "readable!"))
  *       }
  *     }
- *
+ * 
  *     // This test needs both the StringBuilder and ListBuffer
  *     def &#96;should be clear and concise&#96; {
  *       new Builder with Buffer {
@@ -920,20 +920,20 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </pre>
  *
  * <p>
- * Here's an example in which <code>withFixture(NoArgTest)</code> is used to take a snapshot of the working directory if a test fails, and
+ * Here's an example in which <code>withFixture(NoArgTest)</code> is used to take a snapshot of the working directory if a test fails, and 
  * and send that information to the reporter:
  * </p>
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.noargtest
- *
+ * 
  * import java.io.File
  * import org.scalatest._
- *
- * class ExampleSpec extends Spec {
- *
+ * 
+ * class ExampleSpec extends RefSpec {
+ * 
  *   override def withFixture(test: NoArgTest) = {
- *
+ * 
  *     super.withFixture(test) match {
  *       case failed: Failed =&gt;
  *         val currDir = new File(".")
@@ -943,12 +943,12 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       case other =&gt; other
  *     }
  *   }
- *
+ * 
  *   object &#96;This test&#96; {
  *     def &#96;should succeed&#96; {
  *       assert(1 + 1 === 2)
  *     }
- *
+ * 
  *     def &#96;should fail&#96; {
  *       assert(1 + 1 === 3)
  *     }
@@ -995,9 +995,9 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.loanfixture
- *
+ * 
  * import java.util.concurrent.ConcurrentHashMap
- *
+ * 
  * object DbServer { // Simulating a database server
  *   type Db = StringBuffer
  *   private val databases = new ConcurrentHashMap[String, Db]
@@ -1010,14 +1010,14 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *     databases.remove(name)
  *   }
  * }
- *
+ * 
  * import org.scalatest.Spec
  * import DbServer._
  * import java.util.UUID.randomUUID
  * import java.io._
- *
- * class ExampleSpec extends Spec {
- *
+ * 
+ * class ExampleSpec extends RefSpec {
+ * 
  *   def withDatabase(testCode: Db =&gt; Any) {
  *     val dbName = randomUUID.toString
  *     val db = createDb(dbName) // create the fixture
@@ -1027,7 +1027,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *     }
  *     finally removeDb(dbName) // clean up the fixture
  *   }
- *
+ * 
  *   def withFile(testCode: (File, FileWriter) =&gt; Any) {
  *     val file = File.createTempFile("hello", "world") // create the fixture
  *     val writer = new FileWriter(file)
@@ -1037,7 +1037,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *     }
  *     finally writer.close() // clean up the fixture
  *   }
- *
+ * 
  *   object &#96;Testing &#96; {
  *     // This test needs the file fixture
  *     def &#96;should be productive&#96; {
@@ -1048,7 +1048,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       }
  *     }
  *   }
- *
+ *   
  *   object &#96;Test code&#96; {
  *     // This test needs the database fixture
  *     def &#96;should be readable&#96; {
@@ -1057,7 +1057,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *         assert(db.toString === "ScalaTest is readable!")
  *       }
  *     }
- *
+ * 
  *     // This test needs both the file and the database
  *     def &#96;should be clear and concise&#96; {
  *       withDatabase { db =&gt;
@@ -1117,14 +1117,14 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.oneargtest
- *
+ * 
  * import org.scalatest.fixture
  * import java.io._
- *
- * class ExampleSpec extends fixture.Spec {
- *
+ * 
+ * class ExampleSpec extends fixture.RefSpec {
+ * 
  *   case class FixtureParam(file: File, writer: FileWriter)
- *
+ * 
  *   def withFixture(test: OneArgTest) = {
  *
  *     // create the fixture
@@ -1145,13 +1145,13 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       f.writer.flush()
  *       assert(f.file.length === 18)
  *     }
- *
+ *  
  *     def &#96;should be fun&#96; { f&#58; FixtureParam =&gt;
  *       f.writer.write("fun!")
  *       f.writer.flush()
  *       assert(f.file.length === 17)
  *     }
- *   }
+ *   } 
  * }
  * </pre>
  *
@@ -1172,28 +1172,28 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * to mix in trait <a href="BeforeAndAfter.html"><code>BeforeAndAfter</code></a>.  With this trait you can denote a bit of code to run before each test
  * with <code>before</code> and/or after each test each test with <code>after</code>, like this:
  * </p>
- *
+ * 
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.beforeandafter
- *
+ * 
  * import org.scalatest.Spec
  * import org.scalatest.BeforeAndAfter
  * import collection.mutable.ListBuffer
- *
- * class ExampleSpec extends Spec with BeforeAndAfter {
- *
+ * 
+ * class ExampleSpec extends RefSpec with BeforeAndAfter {
+ * 
  *   val builder = new StringBuilder
  *   val buffer = new ListBuffer[String]
- *
+ * 
  *   before {
  *     builder.append("ScalaTest is ")
  *   }
- *
+ * 
  *   after {
  *     builder.clear()
  *     buffer.clear()
  *   }
- *
+ * 
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
  *       builder.append("easy!")
@@ -1201,7 +1201,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       assert(buffer.isEmpty)
  *       buffer += "sweet"
  *     }
- *
+ * 
  *     def &#96;should be fun&#96; {
  *       builder.append("fun!")
  *       assert(builder.toString === "ScalaTest is fun!")
@@ -1223,7 +1223,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <p>
  * Although <code>BeforeAndAfter</code> provides a minimal-boilerplate way to execute code before and after tests, it isn't designed to enable stackable
- * traits, because the order of execution would be non-obvious.  If you want to factor out before and after code that is common to multiple test suites, you
+ * traits, because the order of execution would be non-obvious.  If you want to factor out before and after code that is common to multiple test suites, you 
  * should use trait <code>BeforeAndAfterEach</code> instead, as shown later in the next section,
  * <a href="#composingFixtures.html">composing fixtures by stacking traits</a>.
  * </p>
@@ -1241,33 +1241,33 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.composingwithfixture
- *
+ * 
  * import org.scalatest._
  * import collection.mutable.ListBuffer
- *
+ * 
  * trait Builder extends SuiteMixin { this: Suite =&gt;
- *
+ * 
  *   val builder = new StringBuilder
- *
+ * 
  *   abstract override def withFixture(test: NoArgTest) = {
  *     builder.append("ScalaTest is ")
  *     try super.withFixture(test) // To be stackable, must call super.withFixture
  *     finally builder.clear()
  *   }
  * }
- *
+ * 
  * trait Buffer extends SuiteMixin { this: Suite =&gt;
- *
+ * 
  *   val buffer = new ListBuffer[String]
- *
+ * 
  *   abstract override def withFixture(test: NoArgTest) = {
  *     try super.withFixture(test) // To be stackable, must call super.withFixture
  *     finally buffer.clear()
  *   }
  * }
- *
- * class ExampleSpec extends Spec with Builder with Buffer {
- *
+ * 
+ * class ExampleSpec extends RefSpec with Builder with Buffer {
+ * 
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
  *       builder.append("easy!")
@@ -1275,7 +1275,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       assert(buffer.isEmpty)
  *       buffer += "sweet"
  *     }
- *
+ * 
  *     def &#96;should be fun&#96; {
  *       builder.append("fun!")
  *       assert(builder.toString === "ScalaTest is fun!")
@@ -1290,11 +1290,11 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * By mixing in both the <code>Builder</code> and <code>Buffer</code> traits, <code>ExampleSpec</code> gets both fixtures, which will be
  * initialized before each test and cleaned up after. The order the traits are mixed together determines the order of execution.
  * In this case, <code>Builder</code> is &ldquo;super&rdquo; to <code>Buffer</code>. If you wanted <code>Buffer</code> to be &ldquo;super&rdquo;
- * to <code>Builder</code>, you need only switch the order you mix them together, like this:
+ * to <code>Builder</code>, you need only switch the order you mix them together, like this: 
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Spec extends Spec with Buffer with Builder
+ * class Example2Spec extends RefSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1302,7 +1302,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Spec extends Spec with Builder
+ * class Example3Spec extends RefSpec with Builder
  * </pre>
  *
  * <p>
@@ -1317,38 +1317,38 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.composingbeforeandaftereach
- *
+ * 
  * import org.scalatest._
  * import org.scalatest.BeforeAndAfterEach
  * import collection.mutable.ListBuffer
- *
+ * 
  * trait Builder extends BeforeAndAfterEach { this: Suite =&gt;
- *
+ * 
  *   val builder = new StringBuilder
- *
+ * 
  *   override def beforeEach() {
  *     builder.append("ScalaTest is ")
  *     super.beforeEach() // To be stackable, must call super.beforeEach
  *   }
- *
+ * 
  *   override def afterEach() {
  *     try super.afterEach() // To be stackable, must call super.afterEach
  *     finally builder.clear()
  *   }
  * }
- *
+ * 
  * trait Buffer extends BeforeAndAfterEach { this: Suite =&gt;
- *
+ * 
  *   val buffer = new ListBuffer[String]
- *
+ * 
  *   override def afterEach() {
  *     try super.afterEach() // To be stackable, must call super.afterEach
  *     finally buffer.clear()
  *   }
  * }
- *
- * class ExampleSpec extends Spec with Builder with Buffer {
- *
+ * 
+ * class ExampleSpec extends RefSpec with Builder with Buffer {
+ * 
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
  *       builder.append("easy!")
@@ -1356,7 +1356,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *       assert(buffer.isEmpty)
  *       buffer += "sweet"
  *     }
- *
+ * 
  *     def &#96;should be fun&#96; {
  *       builder.append("fun!")
  *       assert(builder.toString === "ScalaTest is fun!")
@@ -1379,10 +1379,10 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * The difference between stacking traits that extend <code>BeforeAndAfterEach</code> versus traits that implement <code>withFixture</code> is
  * that setup and cleanup code happens before and after the test in <code>BeforeAndAfterEach</code>, but at the beginning and
  * end of the test in <code>withFixture</code>. Thus if a <code>withFixture</code> method completes abruptly with an exception, it is
- * considered a failed test. By contrast, if any of the <code>beforeEach</code> or <code>afterEach</code> methods of <code>BeforeAndAfterEach</code>
+ * considered a failed test. By contrast, if any of the <code>beforeEach</code> or <code>afterEach</code> methods of <code>BeforeAndAfterEach</code> 
  * complete abruptly, it is considered an aborted suite, which will result in a <a href="events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
  * </p>
- *
+ * 
  * <a name="sharedTests"></a><h2>Shared tests</h2>
  *
  * <p>
@@ -1394,8 +1394,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-@deprecated("Please use RefSpec instead.")
-class Spec extends SpecLike {
+class RefSpec extends RefSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
@@ -1408,20 +1407,19 @@ class Spec extends SpecLike {
   override def toString: String = Suite.suiteToString(None, this)
 }
 
-@deprecated("Please use RefSpec instead.")
-private[scalatest] object Spec {
+private[scalatest] object RefSpec {
 
   def isTestMethod(m: Method): Boolean = {
-
+    
     val isInstanceMethod = !Modifier.isStatic(m.getModifiers())
 
     val hasNoParams = m.getParameterTypes.isEmpty
 
     // name must have at least one encoded space: "$u0220"
     val includesEncodedSpace = m.getName.indexOf("$u0020") >= 0
-
+    
     val isOuterMethod = m.getName.endsWith("$$outer")
-
+    
     val isNestedMethod = m.getName.matches(".+\\$\\$.+\\$[1-9]+")
 
     //val isOuterMethod = m.getName.endsWith("$$$outer")
@@ -1429,15 +1427,15 @@ private[scalatest] object Spec {
     // println("m.getName: " + m.getName + ": " + maybe(isInstanceMethod) + "isInstanceMethod, " + maybe(hasNoParams) + "hasNoParams, " + maybe(includesEncodedSpace) + "includesEncodedSpace")
     isInstanceMethod && hasNoParams && includesEncodedSpace && !isOuterMethod && !isNestedMethod
   }
-
+  
   import java.security.MessageDigest
   import scala.io.Codec
-
+  
   // The following compactify code is written based on scala compiler source code at:-
   // https://github.com/scala/scala/blob/master/src/reflect/scala/reflect/internal/StdNames.scala#L47
-
+  
   private val compactifiedMarker = "$$$$"
-
+  
   def equalIfRequiredCompactify(value: String, compactified: String): Boolean = {
     if (compactified.matches(".+\\$\\$\\$\\$.+\\$\\$\\$\\$.+")) {
       val firstDolarIdx = compactified.indexOf("$$$$")
@@ -1445,12 +1443,12 @@ private[scalatest] object Spec {
       val prefix = compactified.substring(0, firstDolarIdx)
       val suffix = compactified.substring(lastDolarIdx + 4)
       val lastIndexOfDot = value.lastIndexOf(".")
-      val toHash =
-        if (lastIndexOfDot >= 0)
+      val toHash = 
+        if (lastIndexOfDot >= 0) 
           value.substring(0, value.length - 1).substring(value.lastIndexOf(".") + 1)
         else
           value
-
+          
       val bytes = Codec.toUTF8(toHash.toArray)
       val md5 = MessageDigest.getInstance("MD5")
       md5.update(bytes)

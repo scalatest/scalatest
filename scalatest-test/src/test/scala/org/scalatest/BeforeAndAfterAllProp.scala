@@ -99,7 +99,7 @@ trait BeforeAndAfterAllPropFixtureServices {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends RefSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   object `Scope 1` {
     def `Test 1` { Thread.sleep(10) }
     def `Test 2` { Thread.sleep(10) }
@@ -115,7 +115,7 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends Spec with Be
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureSpec extends fixture.Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureSpec extends fixture.RefSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   object `Scope 1` {
     def `Test 1`(fixture: String) { Thread.sleep(10) }
     def `Test 2`(fixture: String) { Thread.sleep(10) }

@@ -18,7 +18,7 @@ package org.scalatest.examples.spec.fixturecontext
 import collection.mutable.ListBuffer
 import org.scalatest.Spec
 
-class ExampleSpec extends Spec {
+class ExampleSpec extends RefSpec {
 
   trait Builder {
     val builder = new StringBuilder("ScalaTest is ")

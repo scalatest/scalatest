@@ -23,8 +23,8 @@ trait SuiteExamples extends Tables {
   type FixtureServices
 
   // SKIP-SCALATESTJS-START
-  val spec: Spec with FixtureServices
-  val fixtureSpec: fixture.Spec with FixtureServices
+  val spec: RefSpec with FixtureServices
+  val fixtureSpec: fixture.RefSpec with FixtureServices
   // SKIP-SCALATESTJS-END
 
   val funSuite: FunSuite with FixtureServices

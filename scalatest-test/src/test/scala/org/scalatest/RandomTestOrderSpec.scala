@@ -26,7 +26,7 @@ import Retries._
 class RandomTestOrderSpec extends FunSpec {
 
   // SKIP-SCALATESTJS-START
-  class ExampleSpec(listBuffer: ListBuffer[Int]) extends Spec with RandomTestOrder {
+  class ExampleSpec(listBuffer: ListBuffer[Int]) extends RefSpec with RandomTestOrder {
     def `test 1` {
       listBuffer += 0
     }
@@ -40,7 +40,7 @@ class RandomTestOrderSpec extends FunSpec {
     override def newInstance = new ExampleSpec(listBuffer)
   }
 
-  class ExampleFixtureSpec(listBuffer: ListBuffer[Int]) extends fixture.Spec with StringFixture with RandomTestOrder {
+  class ExampleFixtureSpec(listBuffer: ListBuffer[Int]) extends fixture.RefSpec with StringFixture with RandomTestOrder {
     def `test 1` {
       listBuffer += 0
     }

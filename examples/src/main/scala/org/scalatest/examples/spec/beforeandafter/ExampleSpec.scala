@@ -19,7 +19,7 @@ import org.scalatest.Spec
 import org.scalatest.BeforeAndAfter
 import collection.mutable.ListBuffer
 
-class ExampleSpec extends Spec with BeforeAndAfter {
+class ExampleSpec extends RefSpec with BeforeAndAfter {
  
   val builder = new StringBuilder
   val buffer = new ListBuffer[String]

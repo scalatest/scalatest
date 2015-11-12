@@ -18,7 +18,7 @@ package org.scalatest.examples.spec.ignore
 import org.scalatest.Spec
 import org.scalatest.Ignore
 
-class SetSpec extends Spec {
+class SetSpec extends RefSpec {
   
   object `A Set` {
     object `when empty` {

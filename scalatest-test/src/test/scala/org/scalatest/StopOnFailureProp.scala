@@ -99,7 +99,7 @@ trait StopOnFailureFixtureServices {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleStopOnFailureSpec extends Spec with StopOnFailure with StopOnFailureFixtureServices {
+class ExampleStopOnFailureSpec extends RefSpec with StopOnFailure with StopOnFailureFixtureServices {
   def `test 1` {}
   def `test 2` { pending }
   def `test 3` { cancel }
@@ -109,7 +109,7 @@ class ExampleStopOnFailureSpec extends Spec with StopOnFailure with StopOnFailur
 }
 
 @DoNotDiscover
-class ExampleStopOnFailureFixtureSpec extends fixture.Spec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
+class ExampleStopOnFailureFixtureSpec extends fixture.RefSpec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) { pending }
   def `test 3`(fixture: String) { cancel }

@@ -44,7 +44,7 @@ trait Buffer extends BeforeAndAfterEach { this: Suite =>
   }
 }
  
-class ExampleSpec extends Spec with Builder with Buffer {
+class ExampleSpec extends RefSpec with Builder with Buffer {
  
   object `Testing ` {
     def `should be easy` {
