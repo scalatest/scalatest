@@ -263,23 +263,23 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
     
     val simpleSuite = new SimpleSpec()
     simpleSuite.run(None, Args(SilentReporter))
-    simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.Spec")), None, new Tracker, Set.empty))
+    simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.RefSpec")), None, new Tracker, Set.empty))
     val caught =
       intercept[NotAllowedException] {
         simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec")), None, new Tracker, Set.empty))
       }
     import OptionValues._
-    assert(caught.message.value === Resources.notTheChosenStyle("org.scalatest.Spec", "org.scalatest.FunSpec"))
+    assert(caught.message.value === Resources.notTheChosenStyle("org.scalatest.RefSpec", "org.scalatest.FunSpec"))
     val caught2 =
       intercept[NotAllowedException] {
         simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec", "org.scalatest.FreeSpec")), None, new Tracker, Set.empty))
       }
-    assert(caught2.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.Spec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec"))))
+    assert(caught2.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.RefSpec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec"))))
     val caught3 =
       intercept[NotAllowedException] {
         simpleSuite.run(None, Args(SilentReporter, Stopper.default, Filter(), ConfigMap(CHOSEN_STYLES -> Set("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec")), None, new Tracker, Set.empty))
       }
-    assert(caught3.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.Spec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec"))))
+    assert(caught3.message.value === Resources.notOneOfTheChosenStyles("org.scalatest.RefSpec", Suite.makeListForHumans(Vector("org.scalatest.FunSpec", "org.scalatest.FreeSpec", "org.scalatest.FlatSpec"))))
   }
 
   def `test make list for humans` = {

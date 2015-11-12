@@ -332,7 +332,7 @@ trait RefSpecLike extends Suite with Informing with Notifying with Alerting with
   /**
    * Suite style name.
    */
-  final override val styleName: String = "org.scalatest.Spec"
+  final override val styleName: String = "org.scalatest.RefSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }
