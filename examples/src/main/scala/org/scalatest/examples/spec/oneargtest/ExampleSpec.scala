@@ -18,7 +18,7 @@ package org.scalatest.examples.spec.oneargtest
 import org.scalatest.fixture
 import java.io._
 
-class ExampleSpec extends fixture.Spec {
+class ExampleSpec extends fixture.RefSpec {
 
   case class FixtureParam(file: File, writer: FileWriter)
 

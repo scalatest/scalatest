@@ -71,7 +71,7 @@ trait TestNameFixtureServices { suite: Suite =>
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleTestNameSpec extends Spec with TestNameFixtureServices {
+class ExampleTestNameSpec extends RefSpec with TestNameFixtureServices {
   val expectedTestNames = 
     Set(
      "Testing 1 Scala code should be fun", 
@@ -141,7 +141,7 @@ class ExampleTestNameSpec extends Spec with TestNameFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestNameFixtureSpec extends fixture.Spec with TestNameFixtureServices with StringFixture {
+class ExampleTestNameFixtureSpec extends fixture.RefSpec with TestNameFixtureServices with StringFixture {
   
   val expectedTestNames = 
     Set(

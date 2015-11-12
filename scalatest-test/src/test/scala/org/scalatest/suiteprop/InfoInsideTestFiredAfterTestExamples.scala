@@ -52,7 +52,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   type FixtureServices = Services
 
   // SKIP-SCALATESTJS-START
-  class SpecExample extends Spec with Services  {
+  class SpecExample extends RefSpec with Services  {
     def `test method` = {
       info(msg)
     }

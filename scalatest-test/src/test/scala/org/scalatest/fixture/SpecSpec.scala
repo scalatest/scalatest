@@ -43,7 +43,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     /*
     it("should send InfoProvided events with aboutAPendingTest set to true and aboutACanceledTest set to false for info " +
             "calls made from a test that is pending") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: something`(r: Rep) {
           r.info("two integers")
           r.info("one is subracted from the other")
@@ -65,7 +65,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     it("should send InfoProvided events with aboutAPendingTest and aboutACanceledTest set to false for info " +
             "calls made from a test that is not pending or canceled") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: something`(r: Rep) {
           r.info("two integers")
           r.info("one is subracted from the other")
@@ -87,7 +87,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     it("should send InfoProvided events with aboutAPendingTest set to false and aboutACanceledTest set to true for info " +
             "calls made from a test that is canceled") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: something`(r: Rep) {
           r.info("two integers")
           r.info("one is subracted from the other")
@@ -110,7 +110,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 */
     
     it("should return the test names in alphabetical order from testNames") {
-      val a = new Spec {
+      val a = new RefSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("A Fixture") }
         def `it should do this`(fixture: String) {}
@@ -121,13 +121,13 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         a.testNames.iterator.toList
       }
 
-      val b = new Spec with StringFixture { }
+      val b = new RefSpec with StringFixture { }
 
       assertResult(List[String]()) {
         b.testNames.iterator.toList
       }
 
-      val c = new Spec {
+      val c = new RefSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("A Fixture") }
         def `test: that`(fixture: String) {}
@@ -140,7 +140,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should return test names nested in scope in alpahbetical order from testNames") {
-      val a = new Spec {
+      val a = new RefSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("A Fixture") }
         object `A Tester` {
@@ -153,7 +153,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         a.testNames.iterator.toList
       }
 
-      val b = new Spec {
+      val b = new RefSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("A Fixture") }
         object `A Tester` {
@@ -174,7 +174,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("test names should properly nest scopes in test names") {
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("A Fixture") }
         object `A Stack` {
@@ -193,7 +193,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should be able to mix in BeforeAndAfterEach with BeforeAndAfterAll without any problems") {
-      class MySpec extends Spec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
+      class MySpec extends RefSpec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("A Fixture") }
         object `A Stack` {
@@ -210,7 +210,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should register scopes and tests lazily after spec instance variables are created when testNames is invoked") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         val name = "ScalaTest"
         object `In Scope: ` {
           assert(name === "ScalaTest")
@@ -219,7 +219,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       a.testNames // Should execute assertion in the scope
     }
     it("should register scopes and tests lazily after spec instance variables are created when run is invoked") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         val name = "ScalaTest"
         object `In Scope: ` {
           assert(name === "ScalaTest")
@@ -228,7 +228,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       a.run(None, Args(SilentReporter)) // Should execute assertion in the scope
     }
     it("should register scopes and tests lazily after spec instance variables are created when expectedTestCount is invoked") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         val name = "ScalaTest"
         object `In Scope: ` {
           assert(name === "ScalaTest")
@@ -237,7 +237,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       a.expectedTestCount(Filter.default) // Should execute assertion in the scope
     }
     it("should register scopes and tests lazily after spec instance variables are created when tags is invoked") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         val name = "ScalaTest"
         object `In Scope: ` {
           assert(name === "ScalaTest")
@@ -248,7 +248,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
 /*
     it("should register scopes and tests lazily after spec instance variables are created") {
-      val a = new Spec {
+      val a = new RefSpec {
         val name = "ScalaTest"
         object `In Scope: ` {
           info(name)
@@ -263,7 +263,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 */
  
-    class TestWasCalledSpec extends Spec with StringFixture {
+    class TestWasCalledSpec extends RefSpec with StringFixture {
       var theTestThisCalled = false
       var theTestThatCalled = false
       def `test: this`(fixture: String) { theTestThisCalled = true }
@@ -288,7 +288,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         def `test: this`(fixture: String) { theTestThisCalled = true }
@@ -303,7 +303,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new Spec with StringFixture {
+      val b = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -319,7 +319,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new Spec with StringFixture {
+      val c = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         def `test: this`(fixture: String) { theTestThisCalled = true }
@@ -335,7 +335,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(c.theTestThisCalled)
       assert(!c.theTestThatCalled)
 
-      val d = new Spec with StringFixture {
+      val d = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -355,7 +355,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should ignore a test marked as ignored if run is invoked with that testName") {
 
-      val e = new Spec with StringFixture {
+      val e = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -374,7 +374,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should exclude a test with a tag included in the tagsToExclude set even if run is invoked with that testName") {
 
-      val e = new Spec with StringFixture {
+      val e = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -394,7 +394,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -411,7 +411,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new Spec with StringFixture {
+      val b = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -425,7 +425,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new Spec with StringFixture {
+      val c = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -440,7 +440,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new Spec with StringFixture {
+      val d = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -456,7 +456,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new Spec with StringFixture {
+      val e = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -476,7 +476,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new Spec with StringFixture {
+      val f = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -497,7 +497,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new Spec with StringFixture {
+      val g = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -518,7 +518,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new Spec with StringFixture {
+      val h = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -537,7 +537,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new Spec with StringFixture {
+      val i = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -556,7 +556,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new Spec with StringFixture {
+      val j = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -577,7 +577,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new Spec with StringFixture {
+      val k = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -601,7 +601,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should return a correct tags map from the tags method") {
 
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         object `This Spec should` {
           @Ignore
           def `test this`(fixture: String) {}
@@ -612,7 +612,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         a.tags
       }
 
-      val b = new Spec with StringFixture {
+      val b = new RefSpec with StringFixture {
         object `This Spec should` {
           def `test this`(fixture: String) { pending }
           @Ignore
@@ -623,7 +623,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         b.tags
       }
 
-      val c = new Spec with StringFixture {
+      val c = new RefSpec with StringFixture {
         object `This Spec should` {
           @Ignore
           def `test this`(fixture: String) {}
@@ -635,7 +635,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         c.tags
       }
 
-      val d = new Spec with StringFixture {
+      val d = new RefSpec with StringFixture {
         object `This Spec should` {
           @SlowAsMolasses
           def `test this`(fixture: String) { pending }
@@ -648,7 +648,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         d.tags
       }
 
-      val e = new Spec with StringFixture {
+      val e = new RefSpec with StringFixture {
         object `This Spec should` {
           def `test this`(fixture: String) { pending }
           def `test that`(fixture: String) { pending }
@@ -658,7 +658,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         e.tags
       }
 
-      val f = new Spec with StringFixture {
+      val f = new RefSpec with StringFixture {
         object `This Spec should` {
           @SlowAsMolasses
           @WeakAsAKitten
@@ -671,7 +671,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         f.tags
       }
 
-      val g = new Spec with StringFixture {
+      val g = new RefSpec with StringFixture {
         object `This Spec should` {
           @SlowAsMolasses
           @WeakAsAKitten
@@ -686,7 +686,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should throw IllegalArgumentException if run is passed a testName that does not exist") {
-      val spec = new Spec with StringFixture {
+      val spec = new RefSpec with StringFixture {
         var theTestThisCalled = false
         var theTestThatCalled = false
         def `test: this`(fixture: String) { theTestThisCalled = true }
@@ -701,20 +701,20 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should return the correct test count from its expectedTestCount method") {
 
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         def `test: this`(fixture: String) = ()
         def `test: that`(fixture: String) = ()
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
-      val b = new Spec with StringFixture {
+      val b = new RefSpec with StringFixture {
         @Ignore
         def `test: this`(fixture: String) = ()
         def `test: that`(fixture: String) = ()
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
-      val c = new Spec with StringFixture {
+      val c = new RefSpec with StringFixture {
         @FastAsLight
         def `test: this`(fixture: String) = ()
         def `test: that`(fixture: String) = ()
@@ -722,7 +722,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
-      val d = new Spec with StringFixture {
+      val d = new RefSpec with StringFixture {
         @FastAsLight
         @SlowAsMolasses
         def `test: this`(fixture: String) = ()
@@ -735,7 +735,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 1)
       assert(d.expectedTestCount(Filter()) === 3)
 
-      val e = new Spec with StringFixture {
+      val e = new RefSpec with StringFixture {
         @FastAsLight
         @SlowAsMolasses
         def `test: this`(fixture: String) = ()
@@ -754,7 +754,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should send an InfoProvided event for an info") {
-      class MySuite extends Spec with StringFixture {
+      class MySuite extends RefSpec with StringFixture {
         info(
           "hi there"
         )
@@ -770,7 +770,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should generate a TestPending message when the test body is (pending)") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
 
         def `test: do this`(fixture: String) { pending }
 
@@ -790,7 +790,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should generate a TestCanceled message when the test body includes a cancel call") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
 
         def `test: do this`(fixture: String) { cancel() }
 
@@ -810,7 +810,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should generate a TestCanceled message when the test body includes a failed assume call") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
 
         def `test: do this`(fixture: String) { assume(1 === 2) }
 
@@ -831,7 +831,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
             "known in JDK 1.5, excluding AssertionError") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         def `test: throws AssertionError`(fixture: String) { throw new AssertionError }
         def `test: throws plain old Error`(fixture: String) { throw new Error }
         def `test: throws Throwable`(fixture: String) { throw new Throwable }
@@ -844,7 +844,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         def `test: throws AssertionError`(fixture: String) { throw new OutOfMemoryError }
       }
       intercept[OutOfMemoryError] {
@@ -853,7 +853,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should invoke withFixture from runTest for no-arg test method") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         var withFixtureWasInvoked = false
         var theTestWasInvoked = false
         override def withFixture(test: OneArgTest): Outcome = {
@@ -873,7 +873,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should pass the correct test name in the OneArgTest passed to withFixture") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         var correctTestNameWasPassed = false
         override def withFixture(test: OneArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "test: something"
@@ -889,7 +889,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should pass the correct config map in the OneArgTest passed to withFixture") {
-      val a = new Spec with StringFixture {
+      val a = new RefSpec with StringFixture {
         var correctConfigMapWasPassed = false
         override def withFixture(test: OneArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
@@ -906,7 +906,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should, when a test method writes to the Informer, report the info in test completion event") {
       val msg = "hi there dude"
-      class MySpec extends Spec {
+      class MySpec extends RefSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test(msg) }
         def `test: with Informer`(fixture: String) {
@@ -946,7 +946,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         def `must start with proper words`(fixture: String) {}
       }
       val a = new MySpec
@@ -978,7 +978,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         def `must start with proper words`(fixture: String) {}
       }
       val a = new MySpec
@@ -1010,7 +1010,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         def `must start with proper words`(fixture: String) { fail() }
       }
       val a = new MySpec
@@ -1065,7 +1065,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `My Spec` {
           def `must start with proper words`(fixture: String) {}
         }
@@ -1124,7 +1124,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `My Spec` {
           def `must start with proper words`(fixture: String) {}
         }
@@ -1183,7 +1183,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object`My Spec` {
           def `must start with proper words`(fixture: String) { fail() }
         }
@@ -1259,7 +1259,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `My Spec` {
           object `must start` {
             def `with proper words`(fixture: String) {}
@@ -1336,7 +1336,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `My Spec` {
           object `must start` {
             def `with proper words`(fixture: String) { fail() }
@@ -1367,7 +1367,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         def `this thing must start with proper words`(fixture: String) {}
       }
       val a = new MySpec
@@ -1387,7 +1387,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         def `this thing must start with proper words`(fixture: String) { fail() }
       }
       val a = new MySpec
@@ -1409,7 +1409,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `A Stack` {
           def `needs to push and pop properly`(fixture: String) {}
         }
@@ -1448,7 +1448,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         def `it should send defined formatters`(fixture: String) {
           assert(true)
         }
@@ -1481,7 +1481,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         def `My spec text must have the proper words`(fixture: String) {}
       }
       val a = new MySpec
@@ -1508,7 +1508,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `A Stack` {
           def `My short name must have the proper words`(fixture: String) {}
         }
@@ -1537,7 +1537,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `A Stack` {
           object `(when empty)` {
             def `My short name must have the proper words`(fixture: String) {}
@@ -1572,7 +1572,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `A Stack` {
           def `should allow me to push`(fixture: String) {}
         }
@@ -1610,7 +1610,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with Matchers with StringFixture {
+      class MySpec extends RefSpec with Matchers with StringFixture {
         object `A Stack` {
           object `(when not empty)` {
             def `should allow me to pop`(fixture: String) {
@@ -1632,7 +1632,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("test durations are included in TestFailed and TestSucceeded events fired from Spec") {
 
-      class MySpec extends Spec with StringFixture {
+      class MySpec extends RefSpec with StringFixture {
         def `should succeed`(fixture: String) {}
         def `should fail`(fixture: String) { fail() }
       }
@@ -1646,7 +1646,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("suite durations are included in SuiteCompleted events fired from Spec") {
 
-      class MySpec extends Spec with StringFixture {
+      class MySpec extends RefSpec with StringFixture {
         override def nestedSuites = Vector(new org.scalatest.Suite {})
       }
 
@@ -1664,7 +1664,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with StringFixture {
+      class MySpec extends RefSpec with StringFixture {
         override def nestedSuites = Vector(new SuiteThatAborts {})
       }
 
@@ -1676,7 +1676,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("pending in a Spec should cause TestPending to be fired") {
 
-      class MySpec extends Spec with StringFixture {
+      class MySpec extends RefSpec with StringFixture {
         def `should be pending`(fixture: String) { pending }
       }
 
@@ -1688,7 +1688,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("should unwrap InvocationTargetException thrown from scope evaluation") {
       
-      class ExampleSpec extends Spec with StringFixture {
+      class ExampleSpec extends RefSpec with StringFixture {
         object `A Scope` {
           throw new AnnotationFormatError("boom!")
           def `Test 1` {}
@@ -1706,28 +1706,28 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     describe("the stopper") {
       
       it("should stop nested suites from being executed") {
-        class SpecA extends Spec with StringFixture {
+        class SpecA extends RefSpec with StringFixture {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecB extends Spec with StringFixture {
+        class SpecB extends RefSpec with StringFixture {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecC extends Spec with StringFixture {
+        class SpecC extends RefSpec with StringFixture {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecD extends Spec with StringFixture {
+        class SpecD extends RefSpec with StringFixture {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
@@ -1736,21 +1736,21 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
             status
           }
         }
-        class SpecE extends Spec with StringFixture {
+        class SpecE extends RefSpec with StringFixture {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecF extends Spec with StringFixture {
+        class SpecF extends RefSpec with StringFixture {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecG extends Spec with StringFixture {
+        class SpecG extends RefSpec with StringFixture {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
@@ -1805,7 +1805,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       
       it("should stop tests from being executed") {
 
-        class MySpec extends Spec with StringFixture {
+        class MySpec extends RefSpec with StringFixture {
           var theTestsExecutedCount = 0
           def `test: 1`(fixture: String) { theTestsExecutedCount += 1 }
           def `test: 2`(fixture: String) { theTestsExecutedCount += 1 }
@@ -1824,7 +1824,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
         val myStopper = Stopper.default
 
-        class MyStoppingSpec extends Spec with StringFixture {
+        class MyStoppingSpec extends RefSpec with StringFixture {
           var testsExecutedCount = 0
           def `test: 1`(fixture: String) { testsExecutedCount += 1 }
           def `test: 2`(fixture: String) { testsExecutedCount += 1 }
@@ -1845,7 +1845,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     describe("(with info calls)") {
-      class InfoInsideTestSpec extends Spec {
+      class InfoInsideTestSpec extends RefSpec {
         val msg = "hi there, dude"
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test(msg) }
@@ -1871,7 +1871,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         val ip: InfoProvided = testSucceeded(0).recordedEvents(0).asInstanceOf[InfoProvided]
         assert(spec.msg === ip.message)
       }
-      class InfoBeforeTestSpec extends Spec with StringFixture {
+      class InfoBeforeTestSpec extends RefSpec with StringFixture {
         val msg = "hi there, dude"
         val testName = "test name"
         info(msg)
@@ -1888,7 +1888,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       /*it("should, when the info appears in the body after a test, report the info after the test runs") {
         val msg = "hi there, dude"
         val testName = "test name"
-        class MySpec extends Spec {
+        class MySpec extends RefSpec {
           def `test name` {}
           info(msg)
         }
@@ -1898,7 +1898,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         assert(testSucceededIndex < infoProvidedIndex)
       }*/
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
-        class MySpec extends Spec with StringFixture {
+        class MySpec extends RefSpec with StringFixture {
           callInfo() // This should work fine
           def callInfo() {
             info("howdy")
@@ -1927,7 +1927,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     // TODO: This fails, and it looks like a real bug. Investigate and if true, fix.
     ignore("should pass a NoArgTest to withFixture for test methods that take no arguments") {
-      class MySpec extends fixture.Spec {
+      class MySpec extends fixture.RefSpec {
         type FixtureParam = String
         var aNoArgTestWasPassed = false
         var aOneArgTestWasPassed = false
@@ -1953,7 +1953,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(!s.aOneArgTestWasPassed)
     }
     it("should allow primitive type fixtures") {
-      val a = new Spec {
+      val a = new RefSpec {
       
         type FixtureParam = Int
         def withFixture(test: OneArgTest): Outcome = {
@@ -1975,7 +1975,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(a.takesAFixtureInvoked)
     }
     it("should allow both tests that take fixtures and tests that don't") {
-      val a = new Spec {
+      val a = new RefSpec {
 
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = {
@@ -2000,13 +2000,13 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
   describe("A Suite's execute method") {
     it("should throw NAE if passed null for configMap") {
-      class MySpec extends Spec with StringFixture
+      class MySpec extends RefSpec with StringFixture
       intercept[NullArgumentException] {
         (new MySpec).execute(configMap = null)
       }
     }
     it("should throw IAE if a testName is passed that does not exist on the suite") {
-      class MySpec extends Spec with StringFixture
+      class MySpec extends RefSpec with StringFixture
       intercept[IllegalArgumentException] {
         (new MySpec).execute(testName = "fred")
       }
@@ -2016,7 +2016,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   // TODO: ensure spec aborts if same name is used with and without communicator
   it("should discover method names and tags") {
 
-    val a = new Spec with StringFixture {
+    val a = new RefSpec with StringFixture {
       def `some test name`(fixture: String): Unit = ()
     }
     assert(a.expectedTestCount(Filter()) === 1)
@@ -2028,14 +2028,14 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
   it("should not return tests with no tags in the tags map") {
     
-    val a = new Spec with StringFixture {
+    val a = new RefSpec with StringFixture {
       def `test: not tagged`(fixture: String) = ()
     }
     assert(a.tags.keySet.size === 0)
   }
   
   it("should discover methods that return non-Unit") {
-    val a = new Spec with StringFixture {
+    val a = new RefSpec with StringFixture {
       def `test: this`(fixture: String): Int = 1
       def `test: that`(fixture: String): String = "hi"
     }
@@ -2045,7 +2045,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   }
   
   it("should not discover $$outer method generated by scala compiler as test") {
-    class SetSpec extends Spec with StringFixture {
+    class SetSpec extends RefSpec with StringFixture {
       object `A Set` {
         object `when empty` {
           def `should have size 0`(fixture: String) {
@@ -2067,7 +2067,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
   it("should send defined durations") {
 
-    class MySpec extends Spec with StringFixture {
+    class MySpec extends RefSpec with StringFixture {
       def `test succeeds`(fixture: String) = ()
       def `test fails`(fixture: String) { fail() }
     }
@@ -2079,7 +2079,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     assert(myReporter.testFailedWasFiredAndHadADuration)
   }
   
-  class SpecThatAborts extends Spec with StringFixture {
+  class SpecThatAborts extends RefSpec with StringFixture {
     override def run(testName: Option[String], args: Args): Status = {
       throw new RuntimeException("Aborting for testing purposes")
     }
@@ -2089,8 +2089,8 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
     // the spec duration is sent by runNestedSuites, so MySpec needs a
     // nested suite
-    class MySpec extends Spec with StringFixture {
-      override def nestedSuites = Vector(new Spec with StringFixture {})
+    class MySpec extends RefSpec with StringFixture {
+      override def nestedSuites = Vector(new RefSpec with StringFixture {})
       def `test Succeeds`(fixture: String) = ()
       def `test Fails`(fixture: String) { fail() }
     }
@@ -2106,7 +2106,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
     // the suite duration is sent by runNestedSuites, so MySuite needs a
     // nested suite
-    class MyOtherSpec extends Spec with StringFixture {
+    class MyOtherSpec extends RefSpec with StringFixture {
       override def nestedSuites = Vector(new SpecThatAborts)
       def `test Succeeds`(fixture: String) = ()
       def `test Fails`(fixture: String) { fail() }
@@ -2120,7 +2120,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   it("should fire TestPending event for a pending test") {
 
-    class MySpec extends Spec with StringFixture {
+    class MySpec extends RefSpec with StringFixture {
       def `this is a pending test`(fixture: String) { pending }
     }
 
@@ -2130,7 +2130,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     assert(myReporter.testPendingWasFired)
   }
 
-  class TestWasCalledSpec extends Spec with StringFixture {
+  class TestWasCalledSpec extends RefSpec with StringFixture {
     var theTestThisCalled = false
     var theTestThatCalled = false
     var theTestTheOtherCalled = false
@@ -2224,7 +2224,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
 
 /* Remove if indeed don't need
-    class TestWasCalledSpec extends Spec {
+    class TestWasCalledSpec extends RefSpec {
       var theTestThisCalled = false
       var theTestThatCalled = false
       var theTestTheOtherCalled = false
@@ -2318,7 +2318,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
     // + comes before -
     // but $plus comes after $minus
-    class ASpec extends Spec with StringFixture {
+    class ASpec extends RefSpec with StringFixture {
 
       def `test: the + operator should add`(fixture: String) {
         val sum = 1 + 1
@@ -2340,7 +2340,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   }
 
   def testTestTags() {
-    class TagSpec extends Spec with StringFixture {  
+    class TagSpec extends RefSpec with StringFixture {
       def testNoTagMethod(fixture: String) {}
       @SlowAsMolasses
       def testTagMethod(fixture: String) {}
@@ -2356,19 +2356,19 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   describe("when annotations are applied at the class level") {
     it("should propate those annotations to all tests in the class") {
     
-      class NoTagSpec extends Spec with StringFixture
+      class NoTagSpec extends RefSpec with StringFixture
       @Ignore
-      class IgnoreSpec extends Spec with StringFixture {
+      class IgnoreSpec extends RefSpec with StringFixture {
         def `test method 1`(fixture: String) {}
         def `test method 2`(fixture: String) {}
         def `test method 3`(fixture: String) {}
       }
       @SlowAsMolasses
-      class SlowAsMolassesSpec extends Spec with StringFixture
+      class SlowAsMolassesSpec extends RefSpec with StringFixture
       @FastAsLight
-      class FastAsLightSpec extends Spec with StringFixture
+      class FastAsLightSpec extends RefSpec with StringFixture
     
-      class MasterSpec extends Spec with StringFixture {
+      class MasterSpec extends RefSpec with StringFixture {
         override def nestedSuites = Vector(new NoTagSpec(), new IgnoreSpec(), new SlowAsMolassesSpec(), new FastAsLightSpec())
         override def runNestedSuites(args: Args): Status = {
           super.runNestedSuites(args)
@@ -2422,31 +2422,31 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
   describe("when its expectedTestCount method is invoked") {
     it("should return a count that takes into 'account' the passed filter") {
-      class NoTagSpec extends Spec with StringFixture {
+      class NoTagSpec extends RefSpec with StringFixture {
         def `test method 1`(fixture: String) {}
         def `test method 2`(fixture: String) {}
         def `test method 3`(fixture: String) {}
       }
       @Ignore
-      class IgnoreSpec extends Spec with StringFixture {
+      class IgnoreSpec extends RefSpec with StringFixture {
         def `test method 1`(fixture: String) {}
         def `test method 2`(fixture: String) {}
         def `test method 3`(fixture: String) {}
       }
       @SlowAsMolasses
-      class SlowAsMolassesSpec extends Spec with StringFixture {
+      class SlowAsMolassesSpec extends RefSpec with StringFixture {
         def `test method 1`(fixture: String) {}
         def `test method 2`(fixture: String) {}
         def `test method 3`(fixture: String) {}
       }
       @FastAsLight
-      class FastAsLightSpec extends Spec with StringFixture {
+      class FastAsLightSpec extends RefSpec with StringFixture {
         def `test method 1`(fixture: String) {}
         def `test method 2`(fixture: String) {}
         def `test method 3`(fixture: String) {}
       }
     
-      class MasterSpec extends Spec with StringFixture {
+      class MasterSpec extends RefSpec with StringFixture {
         override def nestedSuites = Vector(new NoTagSpec(), new IgnoreSpec(), new SlowAsMolassesSpec(), new FastAsLightSpec())
         override def runNestedSuites(args: Args): Status = {
           super.runNestedSuites(args)
@@ -2472,7 +2472,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
   it("should run only chosen styles, if specified, and throw an exception from run if a non-chosen style is attempted to be run") {
 
-    class SimpleSpec extends Spec with StringFixture {
+    class SimpleSpec extends RefSpec with StringFixture {
       def `test method 1`(fixture: String) {}
       def `test method 2`(fixture: String) {}
       def `test method 3`(fixture: String) {}
@@ -2501,7 +2501,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
   describe("when a test fails") {
     it("should send proper stack depth information") {
-      class TestSpec extends Spec with StringFixture {
+      class TestSpec extends RefSpec with StringFixture {
         def `test failure`(fixture: String) {
           assert(1 === 2)
         }
@@ -2515,7 +2515,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should fire TestFailed event with correct stack depth info when test failed") {
-      class TestSpec extends Spec with StringFixture {
+      class TestSpec extends RefSpec with StringFixture {
         def `it should fail`(fixture: String) {
           assert(1 === 2)
         }
@@ -2537,7 +2537,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should throw DuplicateTestNameException when overload test method with and without fixture is defined") {
-      class TestSpec extends Spec with StringFixture {
+      class TestSpec extends RefSpec with StringFixture {
         def `test 1` { }
         def `test 1`(fixture: String) { }
       }
@@ -2550,7 +2550,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should throw DuplicateTestNameException when overload test method with and without fixture is defined in scope") {
-      class TestSpec extends Spec with StringFixture {
+      class TestSpec extends RefSpec with StringFixture {
         object `scope 1` {
           def `test 1` { }
           def `test 1`(fixture: String) { }
@@ -2565,7 +2565,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2592,7 +2592,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2619,7 +2619,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2643,7 +2643,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should propagate AnnotationFormatError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2659,7 +2659,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should propagate AWTError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2675,7 +2675,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should propagate CoderMalfunctionError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2691,7 +2691,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should propagate FactoryConfigurationError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2707,7 +2707,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should propagate LinkageError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2723,7 +2723,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should propagate ThreadDeath when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2739,7 +2739,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2755,7 +2755,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
 
     it("should propagate VirtualMachineError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         type FixtureParam = String
         override def withFixture(test: OneArgTest): Outcome = test("test")
         object `a feature` {
@@ -2775,7 +2775,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
       var noArgWithFixtureWasCalled = false
 
-      val a = new Spec {
+      val a = new RefSpec {
 
         type FixtureParam = String
 
@@ -2800,11 +2800,11 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 }
 
 @DoNotDiscover
-class `My Spec` extends Spec with StringFixture {}
+class `My Spec` extends RefSpec with StringFixture {}
 @DoNotDiscover
-class NormalSpec extends Spec with StringFixture
+class NormalSpec extends RefSpec with StringFixture
 @DoNotDiscover
 @WrapWith(classOf[ConfigMapWrapperSuite]) 
-class WrappedSpec(configMap: Map[_, _]) extends Spec with StringFixture
+class WrappedSpec(configMap: Map[_, _]) extends RefSpec with StringFixture
 @DoNotDiscover
-class NotAccessibleSpec(name: String) extends Spec with StringFixture
+class NotAccessibleSpec(name: String) extends RefSpec with StringFixture

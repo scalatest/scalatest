@@ -96,7 +96,7 @@ class TestHoldingReporter(dispatch: Reporter, holdingTestSucceededName: String) 
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleParallelTestExecutionTestTimeoutSpec extends Spec with ParallelTestExecution with TestTimeoutExpectedResults {
+class ExampleParallelTestExecutionTestTimeoutSpec extends RefSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}
@@ -122,7 +122,7 @@ class ExampleParallelTestExecutionTestTimeoutSpec extends Spec with ParallelTest
 }
 
 @DoNotDiscover
-class ExampleParallelTestExecutionTestTimeoutFixtureSpec extends fixture.Spec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
+class ExampleParallelTestExecutionTestTimeoutFixtureSpec extends fixture.RefSpec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) {}
   def `test 3`(fixture: String) {}

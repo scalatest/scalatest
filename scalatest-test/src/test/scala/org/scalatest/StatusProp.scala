@@ -135,7 +135,7 @@ trait StatusFixtureServices { suite: Suite =>
 }
 
 @DoNotDiscover
-class ExampleStatusSpec extends Spec with StatusFixtureServices with ParallelTestExecution {
+class ExampleStatusSpec extends RefSpec with StatusFixtureServices with ParallelTestExecution {
   def `test 1` {}
   def `test 2` { throw new VirtualMachineError {} }
   def `test 3` {}
@@ -143,7 +143,7 @@ class ExampleStatusSpec extends Spec with StatusFixtureServices with ParallelTes
 }
 
 @DoNotDiscover
-class ExampleStatusFixtureSpec extends fixture.Spec with StatusFixtureServices with StringFixture with ParallelTestExecution {
+class ExampleStatusFixtureSpec extends fixture.RefSpec with StatusFixtureServices with StringFixture with ParallelTestExecution {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) { throw new VirtualMachineError {} }
   def `test 3`(fixture: String) {}

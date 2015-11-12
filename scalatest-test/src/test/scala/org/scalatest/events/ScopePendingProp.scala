@@ -90,7 +90,7 @@ class ExampleScopePendingFixtureSuite extends fixture.Suite with ScopePendingFix
 }
 
 @DoNotDiscover
-class ExampleScopePendingSpec extends Spec with ScopePendingFixtureServices {
+class ExampleScopePendingSpec extends RefSpec with ScopePendingFixtureServices {
   object `scope 1` {
     def `test 1` {}
     def `test 2` {}
@@ -110,7 +110,7 @@ class ExampleScopePendingSpec extends Spec with ScopePendingFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixtureSpec extends fixture.Spec with ScopePendingFixtureServices with StringFixture {
+class ExampleScopePendingFixtureSpec extends fixture.RefSpec with ScopePendingFixtureServices with StringFixture {
   object `scope 1` {
     def `test 1`(fixture: String) {}
     def `test 2`(fixture: String) {}

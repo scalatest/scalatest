@@ -37,7 +37,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     /*
     it("should send InfoProvided events with aboutAPendingTest set to true and aboutACanceledTest set to false for info " +
             "calls made from a test that is pending") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: something`(r: Rep) {
           r.info("two integers")
           r.info("one is subracted from the other")
@@ -59,7 +59,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     it("should send InfoProvided events with aboutAPendingTest and aboutACanceledTest set to false for info " +
             "calls made from a test that is not pending or canceled") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: something`(r: Rep) {
           r.info("two integers")
           r.info("one is subracted from the other")
@@ -81,7 +81,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     it("should send InfoProvided events with aboutAPendingTest set to false and aboutACanceledTest set to true for info " +
             "calls made from a test that is canceled") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: something`(r: Rep) {
           r.info("two integers")
           r.info("one is subracted from the other")
@@ -104,7 +104,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 */
     
     it("should return the test names in alphabetical order from testNames") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `it should do this`() {}
         def `it should do that`() {}
       }
@@ -113,13 +113,13 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         a.testNames.iterator.toList
       }
 
-      val b = new Spec {}
+      val b = new RefSpec {}
 
       assertResult(List[String]()) {
         b.testNames.iterator.toList
       }
 
-      val c = new Spec {
+      val c = new RefSpec {
         def `test: that`() {}
         def `test: this`() {}
       }
@@ -130,7 +130,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should return test names nested in scope in alpahbetical order from testNames") {
-      val a = new Spec {
+      val a = new RefSpec {
         object `A Tester` {
           def `should test that` {}
           def `should test this` {}
@@ -141,7 +141,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         a.testNames.iterator.toList
       }
 
-      val b = new Spec {
+      val b = new RefSpec {
         object `A Tester` {
           object `should be able to` {
             def `test this` {}
@@ -160,7 +160,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("test names should properly nest scopes in test names") {
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `A Stack` {
           object `(when not empty)` {
             def `must allow me to pop` {}
@@ -177,7 +177,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should be able to mix in BeforeAndAfterEach with BeforeAndAfterAll without any problems") {
-      class MySpec extends Spec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
+      class MySpec extends RefSpec with Matchers with BeforeAndAfterEach with BeforeAndAfterAll {
         object `A Stack` {
           object `(when not empty)` {
             def `should allow me to pop` {}
@@ -192,7 +192,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should register scopes and tests lazily after spec instance variables are created when testNames is invoked") {
-      val a = new Spec {
+      val a = new RefSpec {
         val name = "ScalaTest"
         object `In Scope: ` {
           assert(name === "ScalaTest")
@@ -201,7 +201,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       a.testNames // Should execute assertion in the scope
     }
     it("should register scopes and tests lazily after spec instance variables are created when run is invoked") {
-      val a = new Spec {
+      val a = new RefSpec {
         val name = "ScalaTest"
         object `In Scope: ` {
           assert(name === "ScalaTest")
@@ -210,7 +210,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       a.run(None, Args(SilentReporter)) // Should execute assertion in the scope
     }
     it("should register scopes and tests lazily after spec instance variables are created when expectedTestCount is invoked") {
-      val a = new Spec {
+      val a = new RefSpec {
         val name = "ScalaTest"
         object `In Scope: ` {
           assert(name === "ScalaTest")
@@ -219,7 +219,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       a.expectedTestCount(Filter.default) // Should execute assertion in the scope
     }
     it("should register scopes and tests lazily after spec instance variables are created when tags is invoked") {
-      val a = new Spec {
+      val a = new RefSpec {
         val name = "ScalaTest"
         object `In Scope: ` {
           assert(name === "ScalaTest")
@@ -230,7 +230,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 
 /*
     it("should register scopes and tests lazily after spec instance variables are created") {
-      val a = new Spec {
+      val a = new RefSpec {
         val name = "ScalaTest"
         object `In Scope: ` {
           info(name)
@@ -245,7 +245,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 */
  
-    class TestWasCalledSpec extends Spec {
+    class TestWasCalledSpec extends RefSpec {
       var theTestThisCalled = false
       var theTestThatCalled = false
       def `test: this`() { theTestThisCalled = true }
@@ -270,7 +270,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should report as ignored, and not run, tests marked ignored") {
 
-      val a = new Spec {
+      val a = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         def `test: this`() { theTestThisCalled = true }
@@ -285,7 +285,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(a.theTestThisCalled)
       assert(a.theTestThatCalled)
 
-      val b = new Spec {
+      val b = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -301,7 +301,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(!b.theTestThisCalled)
       assert(b.theTestThatCalled)
 
-      val c = new Spec {
+      val c = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         def `test: this`() { theTestThisCalled = true }
@@ -317,7 +317,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(c.theTestThisCalled)
       assert(!c.theTestThatCalled)
 
-      val d = new Spec {
+      val d = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -337,7 +337,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should ignore a test marked as ignored if run is invoked with that testName") {
 
-      val e = new Spec {
+      val e = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -356,7 +356,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should exclude a test with a tag included in the tagsToExclude set even if run is invoked with that testName") {
 
-      val e = new Spec {
+      val e = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -376,7 +376,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     it("should run only those tests selected by the tags to include and exclude sets") {
 
       // Nothing is excluded
-      val a = new Spec {
+      val a = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -393,7 +393,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(a.theTestThatCalled)
 
       // SlowAsMolasses is included, one test should be excluded
-      val b = new Spec {
+      val b = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -407,7 +407,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(!b.theTestThatCalled)
 
       // SlowAsMolasses is included, and both tests should be included
-      val c = new Spec {
+      val c = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @SlowAsMolasses
@@ -422,7 +422,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(c.theTestThatCalled)
 
       // SlowAsMolasses is included. both tests should be included but one ignored
-      val d = new Spec {
+      val d = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         @Ignore
@@ -438,7 +438,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(d.theTestThatCalled)
 
       // SlowAsMolasses included, FastAsLight excluded
-      val e = new Spec {
+      val e = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -458,7 +458,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(!e.theTestTheOtherCalled)
 
       // An Ignored test that was both included and excluded should not generate a TestIgnored event
-      val f = new Spec {
+      val f = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -479,7 +479,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(!f.theTestTheOtherCalled)
 
       // An Ignored test that was not included should not generate a TestIgnored event
-      val g = new Spec {
+      val g = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -500,7 +500,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(!g.theTestTheOtherCalled)
 
       // No tagsToInclude set, FastAsLight excluded
-      val h = new Spec {
+      val h = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -519,7 +519,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(h.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded
-      val i = new Spec {
+      val i = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -538,7 +538,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(i.theTestTheOtherCalled)
 
       // No tagsToInclude set, SlowAsMolasses excluded, TestIgnored should not be received on excluded ones
-      val j = new Spec {
+      val j = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -559,7 +559,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(j.theTestTheOtherCalled)
 
       // Same as previous, except Ignore specifically mentioned in excludes set
-      val k = new Spec {
+      val k = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         var theTestTheOtherCalled = false
@@ -583,7 +583,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should return a correct tags map from the tags method") {
 
-      val a = new Spec {
+      val a = new RefSpec {
         object `This Spec should` {
           @Ignore
           def `test this` {}
@@ -594,7 +594,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         a.tags
       }
 
-      val b = new Spec {
+      val b = new RefSpec {
         object `This Spec should` {
           def `test this` { pending }
           @Ignore
@@ -605,7 +605,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         b.tags
       }
 
-      val c = new Spec {
+      val c = new RefSpec {
         object `This Spec should` {
           @Ignore
           def `test this` {}
@@ -617,7 +617,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         c.tags
       }
 
-      val d = new Spec {
+      val d = new RefSpec {
         object `This Spec should` {
           @SlowAsMolasses
           def `test this` { pending }
@@ -630,7 +630,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         d.tags
       }
 
-      val e = new Spec {
+      val e = new RefSpec {
         object `This Spec should` {
           def `test this` { pending }
           def `test that` { pending }
@@ -640,7 +640,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         e.tags
       }
 
-      val f = new Spec {
+      val f = new RefSpec {
         object `This Spec should` {
           @SlowAsMolasses
           @WeakAsAKitten
@@ -653,7 +653,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         f.tags
       }
 
-      val g = new Spec {
+      val g = new RefSpec {
         object `This Spec should` {
           @SlowAsMolasses
           @WeakAsAKitten
@@ -668,7 +668,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should throw IllegalArgumentException if run is passed a testName that does not exist") {
-      val spec = new Spec {
+      val spec = new RefSpec {
         var theTestThisCalled = false
         var theTestThatCalled = false
         def `test: this`() { theTestThisCalled = true }
@@ -683,20 +683,20 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should return the correct test count from its expectedTestCount method") {
 
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: this`() = ()
         def `test: that` = ()
       }
       assert(a.expectedTestCount(Filter()) === 2)
 
-      val b = new Spec {
+      val b = new RefSpec {
         @Ignore
         def `test: this`() = ()
         def `test: that` = ()
       }
       assert(b.expectedTestCount(Filter()) === 1)
 
-      val c = new Spec {
+      val c = new RefSpec {
         @FastAsLight
         def `test: this`() = ()
         def `test: that` = ()
@@ -704,7 +704,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(c.expectedTestCount(Filter(Some(Set("org.scalatest.FastAsLight")), Set())) === 1)
       assert(c.expectedTestCount(Filter(None, Set("org.scalatest.FastAsLight"))) === 1)
 
-      val d = new Spec {
+      val d = new RefSpec {
         @FastAsLight
         @SlowAsMolasses
         def `test: this`() = ()
@@ -717,7 +717,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       assert(d.expectedTestCount(Filter(None, Set("org.scalatest.SlowAsMolasses"))) === 1)
       assert(d.expectedTestCount(Filter()) === 3)
 
-      val e = new Spec {
+      val e = new RefSpec {
         @FastAsLight
         @SlowAsMolasses
         def `test: this`() = ()
@@ -736,7 +736,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should send an InfoProvided event for an info") {
-      class MySuite extends Spec  {
+      class MySuite extends RefSpec  {
         info(
           "hi there"
         )
@@ -752,7 +752,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should generate a TestPending message when the test body is (pending)") {
-      val a = new Spec {
+      val a = new RefSpec {
 
         def `test: do this`() { pending }
 
@@ -772,7 +772,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should generate a TestCanceled message when the test body includes a cancel call") {
-      val a = new Spec {
+      val a = new RefSpec {
 
         def `test: do this`() { cancel() }
 
@@ -792,7 +792,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should generate a TestCanceled message when the test body includes a failed assume call") {
-      val a = new Spec {
+      val a = new RefSpec {
 
         def `test: do this`() { assume(1 === 2) }
 
@@ -813,7 +813,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should generate a test failure if a Throwable, or an Error other than direct Error subtypes " +
             "known in JDK 1.5, excluding AssertionError") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: throws AssertionError`() { throw new AssertionError }
         def `test: throws plain old Error`() { throw new Error }
         def `test: throws Throwable`() { throw new Throwable }
@@ -826,7 +826,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should propagate out Errors that are direct subtypes of Error in JDK 1.5, other than " +
             "AssertionError, causing Suites and Runs to abort.") {
-      val a = new Spec {
+      val a = new RefSpec {
         def `test: throws AssertionError`() { throw new OutOfMemoryError }
       }
       intercept[OutOfMemoryError] {
@@ -835,7 +835,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should invoke withFixture from runTest for no-arg test method") {
-      val a = new Spec {
+      val a = new RefSpec {
         var withFixtureWasInvoked = false
         var theTestWasInvoked = false
         override def withFixture(test: NoArgTest): Outcome = {
@@ -855,7 +855,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should pass the correct test name in the NoArgTest passed to withFixture") {
-      val a = new Spec {
+      val a = new RefSpec {
         var correctTestNameWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctTestNameWasPassed = test.name == "test: something"
@@ -871,7 +871,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should pass the correct config map in the NoArgTest passed to withFixture") {
-      val a = new Spec {
+      val a = new RefSpec {
         var correctConfigMapWasPassed = false
         override def withFixture(test: NoArgTest): Outcome = {
           correctConfigMapWasPassed = (test.configMap == ConfigMap("hi" -> 7))
@@ -888,7 +888,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should, when a test method writes to the Informer, report the info in test completion event") {
       val msg = "hi there dude"
-      class MySpec extends Spec {
+      class MySpec extends RefSpec {
         def `test: with Informer` {
           info(msg)
         }
@@ -926,7 +926,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         def `must start with proper words` {}
       }
       val a = new MySpec
@@ -958,7 +958,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         def `must start with proper words` {}
       }
       val a = new MySpec
@@ -990,7 +990,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         def `must start with proper words` { fail() }
       }
       val a = new MySpec
@@ -1045,7 +1045,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `My Spec` {
           def `must start with proper words` {}
         }
@@ -1104,7 +1104,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `My Spec` {
           def `must start with proper words` {}
         }
@@ -1163,7 +1163,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object`My Spec` {
           def `must start with proper words` { fail() }
         }
@@ -1239,7 +1239,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `My Spec` {
           object `must start` {
             def `with proper words` {}
@@ -1316,7 +1316,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `My Spec` {
           object `must start` {
             def `with proper words` { fail() }
@@ -1347,7 +1347,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         def `this thing must start with proper words` {}
       }
       val a = new MySpec
@@ -1367,7 +1367,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         def `this thing must start with proper words` { fail() }
       }
       val a = new MySpec
@@ -1389,7 +1389,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `A Stack` {
           def `needs to push and pop properly` {}
         }
@@ -1428,7 +1428,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         def `it should send defined formatters` {
           assert(true)
         }
@@ -1461,7 +1461,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         def `My spec text must have the proper words` {}
       }
       val a = new MySpec
@@ -1488,7 +1488,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `A Stack` {
           def `My short name must have the proper words` {}
         }
@@ -1517,7 +1517,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
           }
         }
       }
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `A Stack` {
           object `(when empty)` {
             def `My short name must have the proper words` {}
@@ -1552,7 +1552,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `A Stack` {
           def `should allow me to push` {}
         }
@@ -1590,7 +1590,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec with Matchers {
+      class MySpec extends RefSpec with Matchers {
         object `A Stack` {
           object `(when not empty)` {
             def `should allow me to pop` {
@@ -1612,7 +1612,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("test durations are included in TestFailed and TestSucceeded events fired from Spec") {
 
-      class MySpec extends Spec {
+      class MySpec extends RefSpec {
         def `should succeed` {}
         def `should fail` { fail() }
       }
@@ -1626,7 +1626,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("suite durations are included in SuiteCompleted events fired from Spec") {
 
-      class MySpec extends Spec {
+      class MySpec extends RefSpec {
         override def nestedSuites = Vector(new Suite {})
       }
 
@@ -1644,7 +1644,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         }
       }
 
-      class MySpec extends Spec {
+      class MySpec extends RefSpec {
         override def nestedSuites = Vector(new SuiteThatAborts {})
       }
 
@@ -1656,7 +1656,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("pending in a Spec should cause TestPending to be fired") {
 
-      class MySpec extends Spec {
+      class MySpec extends RefSpec {
         def `should be pending` { pending }
       }
 
@@ -1668,7 +1668,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     
     it("should unwrap InvocationTargetException thrown from scope evaluation") {
       
-      class ExampleSpec extends Spec {
+      class ExampleSpec extends RefSpec {
         object `A Scope` {
           throw new AnnotationFormatError("boom!")
           def `Test 1` {}
@@ -1686,28 +1686,28 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     describe("the stopper") {
       
       it("should stop nested suites from being executed") {
-        class SpecA extends Spec {
+        class SpecA extends RefSpec {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecB extends Spec {
+        class SpecB extends RefSpec {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecC extends Spec {
+        class SpecC extends RefSpec {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecD extends Spec {
+        class SpecD extends RefSpec {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
@@ -1716,21 +1716,21 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
             status
           }
         }
-        class SpecE extends Spec {
+        class SpecE extends RefSpec {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecF extends Spec {
+        class SpecF extends RefSpec {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
             super.run(testName, args)
           }
         }
-        class SpecG extends Spec {
+        class SpecG extends RefSpec {
           var executed = false;
           override def run(testName: Option[String], args: Args): Status = {
             executed = true
@@ -1786,7 +1786,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       
       it("should stop tests from being executed") {
 
-        class MySpec extends Spec {
+        class MySpec extends RefSpec {
           var theTestsExecutedCount = 0
           def `test: 1`() { theTestsExecutedCount += 1 }
           def `test: 2`() { theTestsExecutedCount += 1 }
@@ -1805,7 +1805,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 
         val myStopper = Stopper.default
 
-        class MyStoppingSpec extends Spec {
+        class MyStoppingSpec extends RefSpec {
           var testsExecutedCount = 0
           def `test: 1`() { testsExecutedCount += 1 }
           def `test: 2`() { testsExecutedCount += 1 }
@@ -1826,7 +1826,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     describe("(with info calls)") {
-      class InfoInsideTestSpec extends Spec {
+      class InfoInsideTestSpec extends RefSpec {
         val msg = "hi there, dude"
         def `test name` {
           info(msg)
@@ -1850,7 +1850,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         val ip: InfoProvided = testSucceeded(0).recordedEvents(0).asInstanceOf[InfoProvided]
         assert(spec.msg === ip.message)
       }
-      class InfoBeforeTestSpec extends Spec {
+      class InfoBeforeTestSpec extends RefSpec {
         val msg = "hi there, dude"
         val testName = "test name"
         info(msg)
@@ -1864,7 +1864,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
         assert(testStartingIndex < testSucceededIndex)
       }
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
-        class MySpec extends Spec {
+        class MySpec extends RefSpec {
           callInfo() // This should work fine
           def callInfo() {
             info("howdy")
@@ -1895,13 +1895,13 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   
   describe("A Suite's execute method") {
     it("should throw NAE if passed null for configMap") {
-      class MySpec extends Spec
+      class MySpec extends RefSpec
       intercept[NullArgumentException] {
         (new MySpec).execute(configMap = null)
       }
     }
     it("should throw IAE if a testName is passed that does not exist on the suite") {
-      class MySpec extends Spec
+      class MySpec extends RefSpec
       intercept[IllegalArgumentException] {
         (new MySpec).execute(testName = "fred")
       }
@@ -1910,7 +1910,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 
   it("should discover method names and tags") {
 
-    val a = new Spec {
+    val a = new RefSpec {
       def `some test name`: Unit = ()
     }
     assert(a.expectedTestCount(Filter()) === 1)
@@ -1922,14 +1922,14 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   
   it("should not return tests with no tags in the tags map") {
     
-    val a = new Spec {
+    val a = new RefSpec {
       def `test: not tagged` = ()
     }
     assert(a.tags.keySet.size === 0)
   }
   
   it("should discover methods that return non-Unit") {
-    val a = new Spec {
+    val a = new RefSpec {
       def `test: this`: Int = 1
       def `test: that`(): String = "hi"
     }
@@ -1939,7 +1939,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   }
   
   it("should not discover $$outer method generated by scala compiler as test") {
-    class SetSpec extends Spec {
+    class SetSpec extends RefSpec {
       object `A Set` {
         object `when empty` {
           def `should have size 0` {
@@ -1961,7 +1961,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   
   it("should send defined durations") {
 
-    class MySpec extends Spec {
+    class MySpec extends RefSpec {
       def `test succeeds` = ()
       def `test fails` { fail() }
     }
@@ -1973,7 +1973,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     assert(myReporter.testFailedWasFiredAndHadADuration)
   }
   
-  class SpecThatAborts extends Spec {
+  class SpecThatAborts extends RefSpec {
     override def run(testName: Option[String], args: Args): Status = {
       throw new RuntimeException("Aborting for testing purposes")
     }
@@ -1983,8 +1983,8 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 
     // the spec duration is sent by runNestedSuites, so MySpec needs a
     // nested suite
-    class MySpec extends Spec {
-      override def nestedSuites = Vector(new Spec {})
+    class MySpec extends RefSpec {
+      override def nestedSuites = Vector(new RefSpec {})
       def `test Succeeds`() = ()
       def `test Fails`() { fail() }
     }
@@ -2000,7 +2000,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 
     // the suite duration is sent by runNestedSuites, so MySuite needs a
     // nested suite
-    class MyOtherSpec extends Spec {
+    class MyOtherSpec extends RefSpec {
       override def nestedSuites = Vector(new SpecThatAborts)
       def `test Succeeds`() = ()
       def `test Fails`() { fail() }
@@ -2014,7 +2014,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 
   it("should fire TestPending event for a pending test") {
 
-    class MySpec extends Spec {
+    class MySpec extends RefSpec {
       def `this is a pending test` { pending }
     }
 
@@ -2024,7 +2024,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     assert(myReporter.testPendingWasFired)
   }
 
-  class TestWasCalledSpec extends Spec {
+  class TestWasCalledSpec extends RefSpec {
     var theTestThisCalled = false
     var theTestThatCalled = false
     var theTestTheOtherCalled = false
@@ -2118,7 +2118,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   
 
 /* Remove if indeed don't need
-    class TestWasCalledSpec extends Spec {
+    class TestWasCalledSpec extends RefSpec {
       var theTestThisCalled = false
       var theTestThatCalled = false
       var theTestTheOtherCalled = false
@@ -2212,7 +2212,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 
     // + comes before -
     // but $plus comes after $minus
-    class ASpec extends Spec {
+    class ASpec extends RefSpec {
 
       def `test: the + operator should add` {
         val sum = 1 + 1
@@ -2234,7 +2234,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   }
 
   def testTestTags() {
-    class TagSpec extends Spec {  
+    class TagSpec extends RefSpec {
       def testNoTagMethod() {}
       @SlowAsMolasses
       def testTagMethod() {}
@@ -2250,19 +2250,19 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   describe("when annotations are applied at the class level") {
     it("should propate those annotations to all tests in the class") {
     
-      class NoTagSpec extends Spec
+      class NoTagSpec extends RefSpec
       @Ignore
-      class IgnoreSpec extends Spec {
+      class IgnoreSpec extends RefSpec {
         def `test method 1` {}
         def `test method 2` {}
         def `test method 3` {}
       }
       @SlowAsMolasses
-      class SlowAsMolassesSpec extends Spec
+      class SlowAsMolassesSpec extends RefSpec
       @FastAsLight
-      class FastAsLightSpec extends Spec
+      class FastAsLightSpec extends RefSpec
     
-      class MasterSpec extends Spec {
+      class MasterSpec extends RefSpec {
         override def nestedSuites = Vector(new NoTagSpec(), new IgnoreSpec(), new SlowAsMolassesSpec(), new FastAsLightSpec())
         override def runNestedSuites(args: Args): Status = {
           super.runNestedSuites(args)
@@ -2316,31 +2316,31 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   
   describe("when its expectedTestCount method is invoked") {
     it("should return a count that takes into 'account' the passed filter") {
-      class NoTagSpec extends Spec {
+      class NoTagSpec extends RefSpec {
         def `test method 1` {}
         def `test method 2` {}
         def `test method 3` {}
       }
       @Ignore
-      class IgnoreSpec extends Spec {
+      class IgnoreSpec extends RefSpec {
         def `test method 1` {}
         def `test method 2` {}
         def `test method 3` {}
       }
       @SlowAsMolasses
-      class SlowAsMolassesSpec extends Spec {
+      class SlowAsMolassesSpec extends RefSpec {
         def `test method 1` {}
         def `test method 2` {}
         def `test method 3` {}
       }
       @FastAsLight
-      class FastAsLightSpec extends Spec {
+      class FastAsLightSpec extends RefSpec {
         def `test method 1` {}
         def `test method 2` {}
         def `test method 3` {}
       }
     
-      class MasterSpec extends Spec {
+      class MasterSpec extends RefSpec {
         override def nestedSuites = Vector(new NoTagSpec(), new IgnoreSpec(), new SlowAsMolassesSpec(), new FastAsLightSpec())
         override def runNestedSuites(args: Args): Status = {
           super.runNestedSuites(args)
@@ -2366,7 +2366,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   
   it("should run only chosen styles, if specified, and throw an exception from run if a non-chosen style is attempted to be run") {
 
-    class SimpleSpec extends Spec {
+    class SimpleSpec extends RefSpec {
       def `test method 1` {}
       def `test method 2` {}
       def `test method 3` {}
@@ -2395,7 +2395,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
   
   describe("when a test fails") {
     it("should send proper stack depth information") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         def `test failure`() {
           assert(1 === 2)
         }
@@ -2409,7 +2409,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
     
     it("should fire TestFailed event with correct stack depth info when test failed") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         def `it should fail` {
           assert(1 === 2)
         }
@@ -2431,7 +2431,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should generate NotAllowedException wrapping a TestFailedException when assert fails in scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           val a = 1
           assert(a == 2)
@@ -2456,7 +2456,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           val a = 1
           assume(a == 2)
@@ -2481,7 +2481,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new RuntimeException("on purpose")
         }
@@ -2503,7 +2503,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should propagate AnnotationFormatError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new AnnotationFormatError("on purpose")
         }
@@ -2517,7 +2517,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should propagate AWTError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new AWTError("on purpose")
         }
@@ -2531,7 +2531,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should propagate CoderMalfunctionError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new CoderMalfunctionError(new RuntimeException("on purpose"))
         }
@@ -2545,7 +2545,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should propagate FactoryConfigurationError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new FactoryConfigurationError("on purpose")
         }
@@ -2559,7 +2559,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should propagate LinkageError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new LinkageError("on purpose")
         }
@@ -2573,7 +2573,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should propagate ThreadDeath when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new ThreadDeath
         }
@@ -2587,7 +2587,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should propagate TransformerFactoryConfigurationError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new TransformerFactoryConfigurationError("on purpose")
         }
@@ -2601,7 +2601,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
     }
 
     it("should propagate VirtualMachineError when it is thrown inside scope") {
-      class TestSpec extends Spec {
+      class TestSpec extends RefSpec {
         object `a feature` {
           throw new VirtualMachineError("on purpose") {}
         }
@@ -2617,11 +2617,11 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
 }
 
 @DoNotDiscover
-class `My Spec` extends Spec {}
+class `My Spec` extends RefSpec {}
 @DoNotDiscover
-class NormalSpec extends Spec
+class NormalSpec extends RefSpec
 @DoNotDiscover
 @WrapWith(classOf[ConfigMapWrapperSuite]) 
-class WrappedSpec(configMap: Map[_, _]) extends Spec
+class WrappedSpec(configMap: Map[_, _]) extends RefSpec
 @DoNotDiscover
-class NotAccessibleSpec(name: String) extends Spec
+class NotAccessibleSpec(name: String) extends RefSpec

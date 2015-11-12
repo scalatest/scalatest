@@ -99,14 +99,14 @@ private[fixture] object FixtureNodeFamily  {
   private[scalatest] def getTestName(specText: String, parent: Branch): String = {
     val prefix = getPrefix(parent).trim
     if (prefix.isEmpty) {
-      // class MySpec extends Spec {
+      // class MySpec extends RefSpec {
       //   it("should pop when asked") {}
       // }
       // Should yield: "should pop when asked"
       specText
     }
     else {
-      // class MySpec extends Spec {
+      // class MySpec extends RefSpec {
       //   describe("A Stack") {
       //     it("must pop when asked") {}
       //   }

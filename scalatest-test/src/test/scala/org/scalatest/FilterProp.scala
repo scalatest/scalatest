@@ -57,10 +57,10 @@ class FilterProp extends SuiteProp {
   def testngSuite = new TestNGSuite {
     override def nestedSuites = Vector(new Suite {})
   }
-  def spec = new Spec {
+  def spec = new RefSpec {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureSpec = new fixture.Spec with StringFixture {
+  def fixtureSpec = new fixture.RefSpec with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
   // SKIP-SCALATESTJS-END

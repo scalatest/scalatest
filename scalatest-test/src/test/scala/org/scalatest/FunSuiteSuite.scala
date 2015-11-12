@@ -20,7 +20,7 @@ import org.scalatest.events._
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
 
-class YeOldeFunSuiteSpec extends Spec {
+class YeOldeFunSuiteSpec extends RefSpec {
 
   def `test that test methods with no tags dont show up in tags map` = {
     

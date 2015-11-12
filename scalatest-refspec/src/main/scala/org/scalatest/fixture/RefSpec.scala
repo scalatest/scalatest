@@ -18,7 +18,7 @@ package org.scalatest.fixture
 import scala.collection.immutable.ListSet
 import org.scalatest.Suite.{IgnoreAnnotation, autoTagClassAnnotations}
 import org.scalatest._
-import Spec._
+import RefSpec._
 import Suite._
 import org.scalatest.events.{TopOfClass, TopOfMethod}
 import scala.reflect.NameTransformer._
@@ -92,7 +92,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import org.scalatest.fixture
  * import java.io._
  * 
- * class ExampleSpec extends fixture.Spec {
+ * class ExampleSpec extends fixture.RefSpec {
  * 
  *   case class FixtureParam(file: File, writer: FileWriter)
  * 
@@ -181,7 +181,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   }
  * }
  * 
- * class ExampleSpec extends fixture.Spec with DbFixture {
+ * class ExampleSpec extends fixture.RefSpec with DbFixture {
  * 
  *   override def populateDb(db: Db) { // setup the fixture
  *     db.append("ScalaTest is ")
@@ -234,7 +234,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-abstract class Spec extends SpecLike {
+abstract class RefSpec extends RefSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
@@ -247,7 +247,7 @@ abstract class Spec extends SpecLike {
   override def toString: String = Suite.suiteToString(None, this)
 }
 
-private[scalatest] object Spec {
+private[scalatest] object RefSpec {
   
   def isTestMethod(m: Method): Boolean = {
 

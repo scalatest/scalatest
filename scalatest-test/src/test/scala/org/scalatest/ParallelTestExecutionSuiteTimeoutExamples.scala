@@ -109,14 +109,14 @@ class ExampleParallelTestExecutionSuiteTimeoutSpecPair extends SuiteTimeoutSuite
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutSpec extends Spec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutSpec extends RefSpec with ParallelTestExecution with SuiteTimeoutSetting {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureSpec extends fixture.Spec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutFixtureSpec extends fixture.RefSpec with ParallelTestExecution with SuiteTimeoutSetting with StringFixture {
   def `test 1`(fixture: String) {}
   def `test 2`(fixture: String) {}
   def `test 3`(fixture: String) {}

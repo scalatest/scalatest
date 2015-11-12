@@ -68,7 +68,7 @@ class LocationSpec extends FunSpec with Checkers {
   }
 
   // SKIP-SCALATESTJS-START
-  class TestLocationSpec extends Spec {
+  class TestLocationSpec extends RefSpec {
     def `test succeed` {
     }
 

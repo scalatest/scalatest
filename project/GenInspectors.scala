@@ -1464,7 +1464,7 @@ object GenInspectors {
         ),
         classTemplate = new ClassTemplate {
           val name = "ForAllInspectorsSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForAllTemplate(name, col, emptyCol, lhs)
@@ -1492,7 +1492,7 @@ object GenInspectors {
         ),
         classTemplate = new ClassTemplate {
           val name = "ForAtLeastInspectorsSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForAtLeastTemplate(name, col, emptyCol, lhs)
@@ -1520,7 +1520,7 @@ object GenInspectors {
         ),
         classTemplate = new ClassTemplate {
           val name = "ForAtMostInspectorsSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForAtMostTemplate(name, col, emptyCol, lhs)
@@ -1548,7 +1548,7 @@ object GenInspectors {
         ),
         classTemplate = new ClassTemplate {
           val name = "ForExactlyInspectorsSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForExactlyTemplate(name, col, emptyCol, lhs)
@@ -1576,7 +1576,7 @@ object GenInspectors {
         ),
         classTemplate = new ClassTemplate {
           val name = "ForNoInspectorsSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForNoTemplate(name, col, emptyCol, lhs)
@@ -1604,7 +1604,7 @@ object GenInspectors {
         ),
         classTemplate = new ClassTemplate {
           val name = "ForBetweenInspectorsSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForBetweenTemplate(name, col, bigCol, emptyCol, lhs)
@@ -1632,7 +1632,7 @@ object GenInspectors {
         ),
         classTemplate = new ClassTemplate {
           val name = "ForEveryInspectorsSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List.empty
           override val children = collectionTypes.map {
             case (name, col, bigCol, emptyCol, lhs) => new ForEveryTemplate(name, col, lhs)
@@ -1654,7 +1654,7 @@ object GenInspectors {
                           "collection.GenTraversable"),
         classTemplate = new ClassTemplate {
           val name = "NestedInspectorsSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Inspectors")
           override val children = {
             

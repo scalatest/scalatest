@@ -24,7 +24,7 @@ class JMockCycleSpec extends FlatSpec with Matchers {
 
   "The JMockCycle trait" should "work with multiple mocks" in {
 
-    val a = new fixture.Spec with JMockCycleFixture {
+    val a = new fixture.RefSpec with JMockCycleFixture {
       def `test that should fail`(cycle: JMockCycle) = {
         import cycle._
         trait OneFish {
@@ -100,7 +100,7 @@ class JMockCycleSpec extends FlatSpec with Matchers {
   }
 
   it should "provide sugar for invoking with methods that take matchers" in {
-    val a = new fixture.Spec with JMockCycleFixture {
+    val a = new fixture.RefSpec with JMockCycleFixture {
       def `test that should succeed`(cycle: JMockCycle) = {
         import cycle._
         trait OneFish {
@@ -148,7 +148,7 @@ class JMockCycleSpec extends FlatSpec with Matchers {
   }
 
   it should "provide sugar for invoking with methods that take non-matcher values" in {
-    val a = new fixture.Spec with JMockCycleFixture {
+    val a = new fixture.RefSpec with JMockCycleFixture {
       def `test that should succeed`(cycle: JMockCycle) = {
         import cycle._
         trait OneFish {

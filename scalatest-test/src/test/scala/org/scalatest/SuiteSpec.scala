@@ -30,7 +30,7 @@ protected[scalatest] class MandarinOrangeFunSpec(ns: Suite*) extends FunSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS-START
-protected[scalatest] class MandarinOrangeSpec(ns: Suite*) extends Spec {
+protected[scalatest] class MandarinOrangeSpec(ns: Suite*) extends RefSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS-END
@@ -65,7 +65,7 @@ protected[scalatest] class MandarinOrangeFixtureFunSpec(ns: Suite*) extends fixt
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS-START
-protected[scalatest] class MandarinOrangeFixtureSpec(ns: Suite*) extends fixture.Spec with MandarinOrangeFixture {
+protected[scalatest] class MandarinOrangeFixtureSpec(ns: Suite*) extends fixture.RefSpec with MandarinOrangeFixture {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS-END
@@ -107,7 +107,7 @@ class SuiteSpec extends FunSpec {
             ( new FunSuite, "FunSuite"),
             ( new FunSpec, "FunSpec"),
             // SKIP-SCALATESTJS-START
-            ( new Spec, "Spec"),
+            ( new RefSpec, "RefSpec"),
             // SKIP-SCALATESTJS-END
             ( new WordSpec, "WordSpec"),
             ( new FlatSpec, "FlatSpec"),

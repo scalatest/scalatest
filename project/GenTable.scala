@@ -982,7 +982,7 @@ val tableSuitePreamble = """
 import org.scalatest.Matchers._
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 
-class TableSuite extends Spec with TableDrivenPropertyChecks {
+class TableSuite extends RefSpec with TableDrivenPropertyChecks {
 """
 
 val tableSuiteTemplate = """

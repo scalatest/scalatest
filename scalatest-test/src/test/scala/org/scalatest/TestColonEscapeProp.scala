@@ -41,8 +41,8 @@ expired, so now it is only testing that no style traits handle test: prefixes sp
 */
 trait NonTestColonEscapeExamples extends Tables {
   // SKIP-SCALATESTJS-START
-  def spec: Spec
-  def fixtureSpec: fixture.Spec
+  def spec: RefSpec
+  def fixtureSpec: fixture.RefSpec
   def junit3Suite: JUnit3Suite
   def junitSuite: JUnitSuite
   def testngSuite: TestNGSuite
@@ -198,7 +198,7 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
 
   // SKIP-SCALATESTJS-START
   def spec = new ExampleSpec()
-  class ExampleSpec extends Spec {
+  class ExampleSpec extends RefSpec {
     def `test: A Succeeded Test` = {}
     def `test: A Failed Test` = { fail }
     @Ignore def `test: An Ignored Test` = {}
@@ -207,7 +207,7 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
   }
   
   def fixtureSpec = new ExampleFixtureSpec
-  class ExampleFixtureSpec extends fixture.Spec with StringFixture {
+  class ExampleFixtureSpec extends fixture.RefSpec with StringFixture {
     def `test: A Succeeded Test` = {}
     def `test: A Failed Test` = { fail }
     @Ignore def `test: An Ignored Test` = {}

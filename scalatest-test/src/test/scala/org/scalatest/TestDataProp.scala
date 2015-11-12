@@ -76,7 +76,7 @@ object TestDataTag extends Tag("org.scalatest.tags.TestDataTag")
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleTestDataSpec extends Spec with TestDataFixtureServices {
+class ExampleTestDataSpec extends RefSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"
@@ -99,7 +99,7 @@ class ExampleTestDataSpec extends Spec with TestDataFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleTestDataFixtureSpec extends fixture.Spec with TestDataFixtureServices with StringFixture {
+class ExampleTestDataFixtureSpec extends fixture.RefSpec with TestDataFixtureServices with StringFixture {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"

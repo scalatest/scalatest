@@ -17,8 +17,8 @@ package org.scalatest
 
 import scala.collection.immutable.ListSet
 import Suite._
-import Spec.isTestMethod
-import Spec.equalIfRequiredCompactify
+import RefSpec.isTestMethod
+import RefSpec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
@@ -41,9 +41,9 @@ import org.scalactic.Requirements._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait RefSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine(Resources.concurrentSpecMod, "SpecLike")
+  private final val engine = new Engine(Resources.concurrentSpecMod, "RefSpecLike")
   import engine._
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false
@@ -156,7 +156,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
   }
 
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
-  private[scalatest] val sourceFileName = "SpecLike.scala"
+  private[scalatest] val sourceFileName = "RefSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -214,7 +214,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    * <pre class="stHighlight">
    * import org.scalatest.Spec
    *
-   * class StackSpec extends Spec {
+   * class StackSpec extends RefSpec {
    *   object &#96;A Stack&#96; {
    *     object &#96;(when not empty)&#96; {
    *       def &#96;must allow me to pop&#96; {}

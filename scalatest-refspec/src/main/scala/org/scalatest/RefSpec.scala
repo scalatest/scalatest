@@ -17,8 +17,8 @@ package org.scalatest
 
 import scala.collection.immutable.ListSet
 import Suite._
-import Spec.isTestMethod
-import Spec.equalIfRequiredCompactify
+import RefSpec.isTestMethod
+import RefSpec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
@@ -44,7 +44,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * 
  * import org.scalatest.Spec
  * 
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -191,7 +191,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * 
  * import org.scalatest._
  * 
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *   
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -238,7 +238,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import org.scalatest._
  *
  * @Ignore
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *   
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -302,7 +302,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable
  * import org.scalatest._
  * 
- * class SetSpec extends Spec with GivenWhenThen {
+ * class SetSpec extends RefSpec with GivenWhenThen {
  *   
  *   object &#96;A mutable Set&#96; {
  *     def &#96;should allow an element to be added&#96; {
@@ -356,7 +356,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends Spec with GivenWhenThen {
+ * class SetSpec extends RefSpec with GivenWhenThen {
  *
  *   markup { """
  *
@@ -434,7 +434,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *
  *   object `A mutable Set` {
  *     def `should allow an element to be added` {
@@ -512,7 +512,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * 
  * import org.scalatest._
  * 
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -588,7 +588,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * 
  * import org.scalatest.Spec
  * 
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -770,7 +770,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import org.scalatest.Spec
  * import collection.mutable.ListBuffer
  * 
- * class ExampleSpec extends Spec {
+ * class ExampleSpec extends RefSpec {
  * 
  *   class Fixture {
  *     val builder = new StringBuilder("ScalaTest is ")
@@ -829,7 +829,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable.ListBuffer
  * import org.scalatest.Spec
  * 
- * class ExampleSpec extends Spec {
+ * class ExampleSpec extends RefSpec {
  * 
  *   trait Builder {
  *     val builder = new StringBuilder("ScalaTest is ")
@@ -930,7 +930,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import java.io.File
  * import org.scalatest._
  * 
- * class ExampleSpec extends Spec {
+ * class ExampleSpec extends RefSpec {
  * 
  *   override def withFixture(test: NoArgTest) = {
  * 
@@ -1016,7 +1016,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import java.util.UUID.randomUUID
  * import java.io._
  * 
- * class ExampleSpec extends Spec {
+ * class ExampleSpec extends RefSpec {
  * 
  *   def withDatabase(testCode: Db =&gt; Any) {
  *     val dbName = randomUUID.toString
@@ -1121,7 +1121,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import org.scalatest.fixture
  * import java.io._
  * 
- * class ExampleSpec extends fixture.Spec {
+ * class ExampleSpec extends fixture.RefSpec {
  * 
  *   case class FixtureParam(file: File, writer: FileWriter)
  * 
@@ -1180,7 +1180,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import org.scalatest.BeforeAndAfter
  * import collection.mutable.ListBuffer
  * 
- * class ExampleSpec extends Spec with BeforeAndAfter {
+ * class ExampleSpec extends RefSpec with BeforeAndAfter {
  * 
  *   val builder = new StringBuilder
  *   val buffer = new ListBuffer[String]
@@ -1266,7 +1266,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   }
  * }
  * 
- * class ExampleSpec extends Spec with Builder with Buffer {
+ * class ExampleSpec extends RefSpec with Builder with Buffer {
  * 
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
@@ -1294,7 +1294,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Spec extends Spec with Buffer with Builder
+ * class Example2Spec extends RefSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1302,7 +1302,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Spec extends Spec with Builder
+ * class Example3Spec extends RefSpec with Builder
  * </pre>
  *
  * <p>
@@ -1347,7 +1347,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   }
  * }
  * 
- * class ExampleSpec extends Spec with Builder with Buffer {
+ * class ExampleSpec extends RefSpec with Builder with Buffer {
  * 
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
@@ -1394,7 +1394,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-class Spec extends SpecLike {
+class RefSpec extends RefSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
@@ -1407,7 +1407,7 @@ class Spec extends SpecLike {
   override def toString: String = Suite.suiteToString(None, this)
 }
 
-private[scalatest] object Spec {
+private[scalatest] object RefSpec {
 
   def isTestMethod(m: Method): Boolean = {
     

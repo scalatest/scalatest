@@ -89,7 +89,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   }
   
   def spec = new TestLocationSpec
-  class TestLocationSpec extends Spec with FixtureServices {
+  class TestLocationSpec extends RefSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec"
     val expectedStartingList = List(TestStartingPair("A Spec test succeed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec$A$u0020Spec$", "test$u0020succeed()"), 
                                 TestStartingPair("A Spec test pending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec$A$u0020Spec$", "test$u0020pending()"), 
@@ -119,7 +119,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   }
   
   def fixtureSpec = new TestLocationFixtureSpec
-  class TestLocationFixtureSpec extends fixture.Spec with FixtureServices with StringFixture {
+  class TestLocationFixtureSpec extends fixture.RefSpec with FixtureServices with StringFixture {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec"
     val expectedStartingList = List(TestStartingPair("A Spec test succeed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSpec$A$u0020Spec$", "test$u0020succeed(java.lang.String)"), 
                                 TestStartingPair("A Spec test pending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSpec$A$u0020Spec$", "test$u0020pending(java.lang.String)"), 

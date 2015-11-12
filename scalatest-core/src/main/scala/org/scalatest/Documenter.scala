@@ -64,7 +64,7 @@ package org.scalatest
  * import org.scalatest.Spec
  * import scala.collection.mutable.Stack
  *
- * class StackSpec extends Spec {
+ * class StackSpec extends RefSpec {
  *
  *   markup("""
  *

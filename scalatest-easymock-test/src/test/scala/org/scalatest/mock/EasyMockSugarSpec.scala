@@ -21,7 +21,7 @@ import SharedHelpers._
 class EasyMockSugarSpec extends FlatSpec with Matchers {
   "The EasyMockSugar trait's whenExecuting method" should
           "work with multiple mocks passed in" in {
-    val a = new Spec with EasyMockSugar {
+    val a = new RefSpec with EasyMockSugar {
       def `test that should fail` = {
         trait OneFish {
           def eat(food: String) = ()
@@ -213,7 +213,7 @@ class EasyMockSugarSpec extends FlatSpec with Matchers {
   }
 
   it should "work with multiple mocks passed in as an implicit Seq" in {
-    val a = new Spec with EasyMockSugar {
+    val a = new RefSpec with EasyMockSugar {
       def `test that should fail` = {
         trait OneFish {
           def eat(food: String) = ()

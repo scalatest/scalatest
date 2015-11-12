@@ -52,7 +52,7 @@ trait DbFixture { this: fixture.Suite =>
   }
 }
  
-class ExampleSpec extends fixture.Spec with DbFixture {
+class ExampleSpec extends fixture.RefSpec with DbFixture {
  
   override def populateDb(db: Db) { // setup the fixture
     db.append("ScalaTest is ")

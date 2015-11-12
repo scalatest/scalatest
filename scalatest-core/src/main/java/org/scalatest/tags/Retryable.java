@@ -81,7 +81,7 @@ import org.scalatest.TagAnnotation;
  * import org.scalatest._
  * import tags.Disk
  *
- * class SetSpec extends Spec with Retries {
+ * class SetSpec extends RefSpec with Retries {
  *
  *   override def withFixture(test: NoArgTest) = {
  *     if (isRetryable(test))
