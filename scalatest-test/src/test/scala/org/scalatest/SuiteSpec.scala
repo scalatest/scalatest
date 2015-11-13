@@ -22,7 +22,9 @@ import SharedHelpers._
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalactic.exceptions.NullArgumentException
+// SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 protected[scalatest] class MandarinOrangeFunSuite(ns: Suite*) extends FunSuite {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector

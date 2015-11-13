@@ -17,7 +17,9 @@ package org.scalatest.suiteprop
 
 import org.scalatest._
 import prop.TableDrivenPropertyChecks
+// SKIP-SCALATESTJS-START
 import refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
 
