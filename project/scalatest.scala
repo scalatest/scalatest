@@ -453,13 +453,16 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
         "org.scalatest.concurrent",
+        "org.scalatest.easymock",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
+        "org.scalatest.jmock",
         "org.scalatest.junit",
         "org.scalatest.matchers",
         "org.scalatest.mock",
+        "org.scalatest.mockito",
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
@@ -515,7 +518,7 @@ object ScalatestBuild extends Build {
         <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       jsDependencies += RuntimeDOM % "test",
@@ -562,15 +565,11 @@ object ScalatestBuild extends Build {
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
         "org.scalatest.path",
         "org.scalatest.prop",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
@@ -620,11 +619,11 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestAll = Project("scalatestAll", file("."))
+  lazy val scalatestApp = Project("scalatestApp", file("."))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaTest All",
-      name := "scalatest-all",
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
@@ -648,13 +647,16 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
         "org.scalatest.concurrent",
+        "org.scalatest.easymock",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
+        "org.scalatest.jmock",
         "org.scalatest.junit",
         "org.scalatest.matchers",
         "org.scalatest.mock",
+        "org.scalatest.mockito",
         "org.scalatest.path",
         "org.scalatest.prop",
         "org.scalatest.refspec",
@@ -687,13 +689,13 @@ object ScalatestBuild extends Build {
       )
     ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest)
 
-  lazy val scalatestAllJS = Project("scalatestAllJS", file("scalatest-all.js"))
+  lazy val scalatestAppJS = Project("scalatestAppJS", file("scalatest-app.js"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaTest All",
-      name := "scalatest-all",
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
       organization := "org.scalatest",
-      moduleName := "scalatest-all",
+      moduleName := "scalatest-app",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
@@ -719,15 +721,11 @@ object ScalatestBuild extends Build {
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
         "org.scalatest.path",
         "org.scalatest.prop",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
