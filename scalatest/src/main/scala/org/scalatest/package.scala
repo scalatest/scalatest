@@ -88,9 +88,9 @@ package object scalatest {
    */
   type Assertion = Succeeded.type
 
-  /*@deprecated("Please use org.scalatest.refspec.RefSpecLike instead")
+  @deprecated("Please use org.scalatest.refspec.RefSpecLike instead")
   type SpecLike = refspec.RefSpecLike
 
   @deprecated("Please use org.scalatest.refspec.RefSpec instead")
-  type Spec = refspec.RefSpec*/
+  type Spec = refspec.RefSpec
 }
