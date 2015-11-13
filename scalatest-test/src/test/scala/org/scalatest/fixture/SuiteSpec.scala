@@ -251,7 +251,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   
   describe("OneArgTest") {
     it("should offer a factory method that takes another OneArgTest and a function that implements apply") {
-      class PassedFixtureWasSpec extends Spec {
+      class PassedFixtureWasSpec extends FunSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { 
           // These will fail the test if the wrapped tests's TestData is not passed through
@@ -263,7 +263,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           test("hi")
         }
         var passedFixtureWas = ""
-        def `some test`(s: String) { passedFixtureWas = s }
+        it("some test") { s => passedFixtureWas = s }
       }
 
       val a = new PassedFixtureWasSpec

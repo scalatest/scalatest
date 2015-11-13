@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalatest.junit._
 import org.scalatest.testng.TestNGSuite
 import org.junit.Test
+import org.scalatest.refspec.RefSpec
 
 class ClassTaggingProp extends AllSuiteProp {
 
@@ -85,7 +86,7 @@ class ExampleClassTaggingFixtureSuite extends fixture.Suite with ClassTaggingFix
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingSpec extends Spec with ClassTaggingFixtureServices {
+class ExampleClassTaggingSpec extends RefSpec with ClassTaggingFixtureServices {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}

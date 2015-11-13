@@ -17,6 +17,9 @@ package org.scalatest
 
 import org.scalatest.prop.Tables
 import org.scalatest.events.Event
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 trait OrderExpectedResults extends EventHelpers {
   def assertOrderTest(events: List[Event])
@@ -69,7 +72,7 @@ object ParallelTestExecutionOrderExamples extends Tables {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionOrderSpec extends Spec with OrderExpectedResults with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionOrderSpec extends RefSpec with OrderExpectedResults with ParallelTestExecution {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}

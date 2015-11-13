@@ -17,7 +17,7 @@ package org.scalatest.examples.spec.tagging
 
 import org.scalatest._
 
-class SetSpec extends Spec {
+class SetSpec extends RefSpec {
 
   object `A Set` {
     object `when empty` {

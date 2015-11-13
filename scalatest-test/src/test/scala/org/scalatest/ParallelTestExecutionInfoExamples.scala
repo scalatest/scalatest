@@ -17,6 +17,9 @@ package org.scalatest
 
 import org.scalatest.events.Event
 import org.scalatest.prop.Tables
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 trait InfoExpectedResults extends EventHelpers {
   def assertBeforeAfterInfo(events: List[Event])
@@ -69,7 +72,7 @@ object ParallelTestExecutionInfoExamples extends Tables {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionInfoSpec extends Spec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
+protected[scalatest] class ExampleParallelTestExecutionInfoSpec extends RefSpec with InfoExpectedResults with BeforeAndAfter with ParallelTestExecution {
   before {}  // how to fire info here?
   def `test 1` {}
   def `test 2` {}

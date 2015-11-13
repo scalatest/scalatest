@@ -68,7 +68,7 @@ import org.scalatest.TagAnnotation;
  * import org.scalatest._
  * import tags.Slow
  *
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *
  *   @Slow def &#96;an empty Set should have size 0&#96; {
  *     assert(Set.empty.size === 0)

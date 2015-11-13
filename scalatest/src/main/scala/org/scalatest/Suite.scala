@@ -1194,7 +1194,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     requireNonNull(testName, args)
 
     // SKIP-SCALATESTJS-START
-    if (!this.isInstanceOf[Spec] && yeOldeTestNames.nonEmpty) {
+    if (!this.isInstanceOf[refspec.RefSpec] && yeOldeTestNames.nonEmpty) {
       if (yeOldeTestNames.size > 1) println(s"""WARNING: methods with names starting with "test" exist on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run those methods as tests, please use trait Spec instead. The methods whose names start with "test" are: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
       else println(s"""WARNING: a method whose name starts with "test" exists on "${this.suiteName}" (fully qualified name: "${this.getClass.getName}"). The deprecation period for using Suite a style trait has expired, so methods starting with "test" will no longer be executed as tests. If you want to run that method as a test, please use trait Spec instead. The method whose name starts with "test" is: ${yeOldeTestNames.map(NameTransformer.decode(_)).mkString("\"", "\", \"", "\"")}.""")
     }
@@ -1719,7 +1719,7 @@ private[scalatest] object Suite {
    to make room for the icon in that case. An info inside such a test will have level 1. And agin, in that
    case no need to subtract 1. Such a test is "outermost test" and the info inside is "in outermost test" in:
 
-class ArghSpec extends Spec with GivenWhenThen {
+class ArghSpec extends RefSpec with GivenWhenThen {
   info("in ArghSpec")
   it("outermost test") {
     info("in outermost test")

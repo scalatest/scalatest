@@ -23,6 +23,9 @@ import scala.collection.mutable.ListBuffer
 import org.scalatest.events.ScopeClosed
 import org.scalatest.time.Span
 import org.scalatest.time.Millis
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 trait SuiteTimeoutSetting { s: ParallelTestExecution =>
   override abstract def sortingTimeout: Span = Span(300, Millis)
@@ -109,7 +112,7 @@ class ExampleParallelTestExecutionSuiteTimeoutSpecPair extends SuiteTimeoutSuite
 }
 
 @DoNotDiscover
-protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutSpec extends Spec with ParallelTestExecution with SuiteTimeoutSetting {
+protected[scalatest] class ExampleParallelTestExecutionSuiteTimeoutSpec extends RefSpec with ParallelTestExecution with SuiteTimeoutSetting {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}

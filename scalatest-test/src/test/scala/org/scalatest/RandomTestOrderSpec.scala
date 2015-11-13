@@ -23,10 +23,14 @@ import prop.TableDrivenPropertyChecks._
 import org.scalatest.tagobjects.Retryable
 import Retries._
 
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
+
 class RandomTestOrderSpec extends FunSpec {
 
   // SKIP-SCALATESTJS-START
-  class ExampleSpec(listBuffer: ListBuffer[Int]) extends Spec with RandomTestOrder {
+  class ExampleSpec(listBuffer: ListBuffer[Int]) extends RefSpec with RandomTestOrder {
     def `test 1` {
       listBuffer += 0
     }

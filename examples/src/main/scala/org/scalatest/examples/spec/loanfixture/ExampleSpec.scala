@@ -30,12 +30,12 @@ object DbServer { // Simulating a database server
   }
 }
 
-import org.scalatest.Spec
+import org.scalatest.refspec.RefSpec
 import DbServer._
 import java.util.UUID.randomUUID
 import java.io._
 
-class ExampleSpec extends Spec {
+class ExampleSpec extends RefSpec {
 
   def withDatabase(testCode: Db => Any) {
     val dbName = randomUUID.toString

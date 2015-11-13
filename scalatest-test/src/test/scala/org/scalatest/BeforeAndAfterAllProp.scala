@@ -21,6 +21,7 @@ import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
 import scala.compat.Platform
@@ -99,7 +100,7 @@ trait BeforeAndAfterAllPropFixtureServices {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
+protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends RefSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   object `Scope 1` {
     def `Test 1` { Thread.sleep(10) }
     def `Test 2` { Thread.sleep(10) }

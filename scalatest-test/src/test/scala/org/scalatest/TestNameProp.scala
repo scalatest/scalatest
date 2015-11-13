@@ -20,6 +20,7 @@ import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 
 class TestNameProp  extends AllSuiteProp {
@@ -71,7 +72,7 @@ trait TestNameFixtureServices { suite: Suite =>
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleTestNameSpec extends Spec with TestNameFixtureServices {
+class ExampleTestNameSpec extends RefSpec with TestNameFixtureServices {
   val expectedTestNames = 
     Set(
      "Testing 1 Scala code should be fun", 

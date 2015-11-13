@@ -16,6 +16,7 @@
 package org.scalatest.events
 // SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import org.scalatest._
 import SharedHelpers._
@@ -499,7 +500,7 @@ class LocationSuiteProp extends SuiteProp
 
   // SKIP-SCALATESTJS-START
   def spec = new TestLocationSpec
-  class TestLocationSpec extends Spec with FixtureServices {
+  class TestLocationSpec extends RefSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.LocationSuiteProp$TestLocationSpec"
     val expectedSuiteStartingList = List(TopOfClassPair(suiteTypeName + "$NestedSpec"),
       TopOfClassPair(suiteTypeName + "$AbortNestedSpec"),
@@ -511,17 +512,17 @@ class LocationSuiteProp extends SuiteProp
     val expectedTestFailedList = List(SeeStackDepthExceptionPair("test fail"))
     val expectedInfoProvidedList = List(LineInFilePair("test info", "LocationSuiteProp.scala", thisLineNumber + 4))
 
-    class NestedSpec extends Spec {
+    class NestedSpec extends RefSpec {
       def `test info` {
         info("test info")
       }
     }
-    class AbortNestedSpec extends Spec {
+    class AbortNestedSpec extends RefSpec {
       override protected def runNestedSuites(args: Args): Status = {
         throw new RuntimeException
       }
     }
-    class FailNestedSpec extends Spec {
+    class FailNestedSpec extends RefSpec {
       def `test fail` { fail }
     }
     override def nestedSuites = Vector(new NestedSpec, new AbortNestedSpec, new FailNestedSpec)

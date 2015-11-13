@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.refspec
 
 import scala.collection.immutable.ListSet
+import org.scalatest.{Suite, Finders, Resources}
 import Suite._
-import Spec.isTestMethod
-import Spec.equalIfRequiredCompactify
+import RefSpec.isTestMethod
+import RefSpec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
@@ -29,22 +30,22 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
- * Class <code>Spec</code> allows you to define tests as methods, which saves one function literal per test compared to style classes that represent tests as functions.
+ * Class <code>RefSpec</code> allows you to define tests as methods, which saves one function literal per test compared to style classes that represent tests as functions.
  * Fewer function literals translates into faster compile times and fewer generated class files, which can help minimize build times.
- * As a result, using <code>Spec</code> can be a good choice in large projects where build times are a concern as well as when generating large numbers of
+ * As a result, using <code>RefSpec</code> can be a good choice in large projects where build times are a concern as well as when generating large numbers of
  * tests programatically via static code generators.
  * </td></tr></table>
  * 
  * <p>
- * Here's an example <code>Spec</code>:
+ * Here's an example <code>RefSpec</code>:
  * </p>
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec
  * 
- * import org.scalatest.Spec
+ * import org.scalatest.RefSpec
  * 
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -63,7 +64,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </pre>
  *
  * <p>
- * A <code>Spec</code> can contain <em>scopes</em> and tests. You define a scope
+ * A <code>RefSpec</code> can contain <em>scopes</em> and tests. You define a scope
  * with a nested singleton object, and a test with a method. The names of both <em>scope objects</em> and <em>test methods</em>
  * must be expressed in back ticks and contain at least one space character.
  * <p>
@@ -79,10 +80,10 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </pre>
  * 
  * <p>
- * <code>Spec</code> uses reflection to discover scope objects and test methods.
- * During discovery, <code>Spec</code> will consider any nested singleton object whose name
+ * <code>RefSpec</code> uses reflection to discover scope objects and test methods.
+ * During discovery, <code>RefSpec</code> will consider any nested singleton object whose name
  * includes <code>$u0020</code> a scope object, and any method whose name includes <code>$u0020</code> a test method.
- * It will ignore any singleton objects or methods that do not include a <code>$u0020</code> character. Thus, <code>Spec</code> would
+ * It will ignore any singleton objects or methods that do not include a <code>$u0020</code> character. Thus, <code>RefSpec</code> would
  * not consider the following singleton object a scope object:
  * </p>
  *
@@ -102,10 +103,10 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *
  * <p>
  * Rather than performing this discovery during construction, when instance variables used by scope objects may as yet be uninitialized,
- * <code>Spec</code> performs discovery lazily, the first time a method needing the results of discovery is invoked.
+ * <code>RefSpec</code> performs discovery lazily, the first time a method needing the results of discovery is invoked.
  * For example, methods <code>run</code>, <code>runTests</code>, <code>tags</code>, <code>expectedTestCount</code>,
  * <code>runTest</code>, and <code>testNames</code> all ensure that scopes and tests have already been discovered prior to doing anything
- * else. Discovery is performed, and the results recorded, only once for each <code>Spec</code> instance.
+ * else. Discovery is performed, and the results recorded, only once for each <code>RefSpec</code> instance.
  * </p>
  *
  * <p>
@@ -116,7 +117,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <p>
- * When you execute a <code>Spec</code>, it will send <a href="events/Formatter.html"><code>Formatter</code></a>s in the events it sends to the
+ * When you execute a <code>RefSpec</code>, it will send <a href="events/Formatter.html"><code>Formatter</code></a>s in the events it sends to the
  * <a href="Reporter.html"><code>Reporter</code></a>. ScalaTest's built-in reporters will report these events in such a way
  * that the output is easy to read as an informal specification of the <em>subject</em> being tested.
  * For example, were you to run <code>SetSpec</code> from within the Scala interpreter:
@@ -180,7 +181,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * <p>
- * To support the common use case of temporarily disabling a test in a <code>Spec</code>, with the
+ * To support the common use case of temporarily disabling a test in a <code>RefSpec</code>, with the
  * good intention of resurrecting the test at a later time, you can annotate the test method with <code>@Ignore</code>.
  * For example, to temporarily disable the test method with the name <code>&#96;should have size zero"</code>, just annotate
  * it with <code>@Ignore</code>, like this:
@@ -191,7 +192,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * 
  * import org.scalatest._
  * 
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *   
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -238,7 +239,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import org.scalatest._
  *
  * @Ignore
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *   
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -282,11 +283,11 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
- * One of the objects to <code>Spec</code>'s <code>run</code> method is a <code>Reporter</code>, which
+ * One of the objects to <code>RefSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
  * will collect and report information about the running suite of tests.
  * Information about suites and tests that were run, whether tests succeeded or failed, 
  * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
- * Most often the reporting done by default by <code>Spec</code>'s methods will be sufficient, but
+ * Most often the reporting done by default by <code>RefSpec</code>'s methods will be sufficient, but
  * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
  * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
  * is provided via the <code>info</code> parameterless method.
@@ -302,7 +303,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable
  * import org.scalatest._
  * 
- * class SetSpec extends Spec with GivenWhenThen {
+ * class SetSpec extends RefSpec with GivenWhenThen {
  *   
  *   object &#96;A mutable Set&#96; {
  *     def &#96;should allow an element to be added&#96; {
@@ -324,7 +325,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * }
  * </pre>
  *
- * If you run this <code>Spec</code> from the interpreter, you will see the following output:
+ * If you run this <code>RefSpec</code> from the interpreter, you will see the following output:
  *
  * <pre class="stREPL">
  * scala&gt; new SetSpec execute
@@ -340,14 +341,14 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
- * <code>Spec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * <code>RefSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
  * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
  * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
  * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
  * </p>
  *
  * <p>
- * Here's an example <code>Spec</code> that uses <code>markup</code>:
+ * Here's an example <code>RefSpec</code> that uses <code>markup</code>:
  * </p>
  *
  * <pre class="stHighlight">
@@ -356,7 +357,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends Spec with GivenWhenThen {
+ * class SetSpec extends RefSpec with GivenWhenThen {
  *
  *   markup { """
  *
@@ -434,7 +435,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import collection.mutable
  * import org.scalatest._
  *
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *
  *   object `A mutable Set` {
  *     def `should allow an element to be added` {
@@ -503,7 +504,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <p>
- * You can mark a test as pending in <code>Spec</code> by using "<code>{ pending }</code>" as the body of the test method,
+ * You can mark a test as pending in <code>RefSpec</code> by using "<code>{ pending }</code>" as the body of the test method,
  * like this:
  * </p>
  *
@@ -512,7 +513,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * 
  * import org.scalatest._
  * 
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -552,10 +553,10 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <a name="taggingTests"></a><h2>Tagging tests</h2>
  *
  * <p>
- * A <code>Spec</code>'s tests may be classified into groups by <em>tagging</em> them with string names. When executing
- * a <code>Spec</code>, groups of tests can optionally be included and/or excluded. In this
+ * A <code>RefSpec</code>'s tests may be classified into groups by <em>tagging</em> them with string names. When executing
+ * a <code>RefSpec</code>, groups of tests can optionally be included and/or excluded. In this
  * trait's implementation, tags are indicated by annotations attached to the test method. To
- * create a new tag type to use in <code>Spec</code>s, simply define a new Java annotation that itself is annotated with
+ * create a new tag type to use in <code>RefSpec</code>s, simply define a new Java annotation that itself is annotated with
  * the <code>org.scalatest.TagAnnotation</code> annotation.
  * (Currently, for annotations to be
  * visible in Scala programs via Java reflection, the annotations themselves must be written in Java.) For example,
@@ -580,15 +581,15 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </pre>
  *
  * <p>
- * Given these annotations, you could tag <code>Spec</code> tests like this:
+ * Given these annotations, you could tag <code>RefSpec</code> tests like this:
  * </p>
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.tagging
  * 
- * import org.scalatest.Spec
+ * import org.scalatest.RefSpec
  * 
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  * 
  *   object &#96;A Set&#96; {
  *     object &#96;when empty&#96; {
@@ -620,7 +621,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <p>
- * A tag annotation also allows you to tag all the tests of a <code>Spec</code> in
+ * A tag annotation also allows you to tag all the tests of a <code>RefSpec</code> in
  * one stroke by annotating the class.  For more information and examples, see the
  * <a href="Tag.html">documentation for class <code>Tag</code></a>.
  * </p>
@@ -767,10 +768,10 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.getfixture
  * 
- * import org.scalatest.Spec
+ * import org.scalatest.RefSpec
  * import collection.mutable.ListBuffer
  * 
- * class ExampleSpec extends Spec {
+ * class ExampleSpec extends RefSpec {
  * 
  *   class Fixture {
  *     val builder = new StringBuilder("ScalaTest is ")
@@ -827,9 +828,9 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * package org.scalatest.examples.spec.fixturecontext
  * 
  * import collection.mutable.ListBuffer
- * import org.scalatest.Spec
+ * import org.scalatest.RefSpec
  * 
- * class ExampleSpec extends Spec {
+ * class ExampleSpec extends RefSpec {
  * 
  *   trait Builder {
  *     val builder = new StringBuilder("ScalaTest is ")
@@ -930,7 +931,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import java.io.File
  * import org.scalatest._
  * 
- * class ExampleSpec extends Spec {
+ * class ExampleSpec extends RefSpec {
  * 
  *   override def withFixture(test: NoArgTest) = {
  * 
@@ -1011,12 +1012,12 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   }
  * }
  * 
- * import org.scalatest.Spec
+ * import org.scalatest.RefSpec
  * import DbServer._
  * import java.util.UUID.randomUUID
  * import java.io._
  * 
- * class ExampleSpec extends Spec {
+ * class ExampleSpec extends RefSpec {
  * 
  *   def withDatabase(testCode: Db =&gt; Any) {
  *     val dbName = randomUUID.toString
@@ -1089,77 +1090,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
- * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.Spec</code>
- * and overriding <code>withFixture(OneArgTest)</code>.
- * Each test in a <code>fixture.Spec</code> takes a fixture as a parameter, allowing you to pass the fixture into
- * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
- * <code>withFixture</code> method that takes a <code>OneArgTest</code>. This <code>withFixture</code> method is responsible for
- * invoking the one-arg test function, so you can perform fixture set up before, and clean up after, invoking and passing
- * the fixture into the test function.
- * </p>
- *
- * <p>
- * To enable the stacking of traits that define <code>withFixture(NoArgTest)</code>, it is a good idea to let
- * <code>withFixture(NoArgTest)</code> invoke the test function instead of invoking the test
- * function directly. To do so, you'll need to convert the <code>OneArgTest</code> to a <code>NoArgTest</code>. You can do that by passing
- * the fixture object to the <code>toNoArgTest</code> method of <code>OneArgTest</code>. In other words, instead of
- * writing &ldquo;<code>test(theFixture)</code>&rdquo;, you'd delegate responsibility for
- * invoking the test function to the <code>withFixture(NoArgTest)</code> method of the same instance by writing:
- * </p>
- *
- * <pre>
- * withFixture(test.toNoArgTest(theFixture))
- * </pre>
- *
- * <p>
- * Here's a complete example:
- * </p>
- *
- * <pre class="stHighlight">
- * package org.scalatest.examples.spec.oneargtest
- * 
- * import org.scalatest.fixture
- * import java.io._
- * 
- * class ExampleSpec extends fixture.Spec {
- * 
- *   case class FixtureParam(file: File, writer: FileWriter)
- * 
- *   def withFixture(test: OneArgTest) = {
- *
- *     // create the fixture
- *     val file = File.createTempFile("hello", "world")
- *     val writer = new FileWriter(file)
- *     val theFixture = FixtureParam(file, writer)
- *
- *     try {
- *       writer.write("ScalaTest is ") // set up the fixture
- *       withFixture(test.toNoArgTest(theFixture)) // "loan" the fixture to the test
- *     }
- *     finally writer.close() // clean up the fixture
- *   }
- *
- *   object &#96;Testing &#96; {
- *     def &#96;should be easy&#96; { f&#58; FixtureParam =&gt;
- *       f.writer.write("easy!")
- *       f.writer.flush()
- *       assert(f.file.length === 18)
- *     }
- *  
- *     def &#96;should be fun&#96; { f&#58; FixtureParam =&gt;
- *       f.writer.write("fun!")
- *       f.writer.flush()
- *       assert(f.file.length === 17)
- *     }
- *   } 
- * }
- * </pre>
- *
- * <p>
- * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
- * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
- * the objects.  For more information on the <code>withFixture(OneArgTest)</code> technique, see the <a href="fixture/Spec.html">documentation for <code>fixture.Spec</code></a>.
- * </p>
+ * <code>fixture.Spec</code> is deprecated, please use <code>fixture.FunSpec</code> instead.
  *
  * <a name="beforeAndAfter"></a>
  * <h4>Mixing in <code>BeforeAndAfter</code></h4>
@@ -1176,11 +1107,11 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <pre class="stHighlight">
  * package org.scalatest.examples.spec.beforeandafter
  * 
- * import org.scalatest.Spec
+ * import org.scalatest.RefSpec
  * import org.scalatest.BeforeAndAfter
  * import collection.mutable.ListBuffer
  * 
- * class ExampleSpec extends Spec with BeforeAndAfter {
+ * class ExampleSpec extends RefSpec with BeforeAndAfter {
  * 
  *   val builder = new StringBuilder
  *   val buffer = new ListBuffer[String]
@@ -1266,7 +1197,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   }
  * }
  * 
- * class ExampleSpec extends Spec with Builder with Buffer {
+ * class ExampleSpec extends RefSpec with Builder with Buffer {
  * 
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
@@ -1294,7 +1225,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Spec extends Spec with Buffer with Builder
+ * class Example2Spec extends RefSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1302,7 +1233,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Spec extends Spec with Builder
+ * class Example3Spec extends RefSpec with Builder
  * </pre>
  *
  * <p>
@@ -1347,7 +1278,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   }
  * }
  * 
- * class ExampleSpec extends Spec with Builder with Buffer {
+ * class ExampleSpec extends RefSpec with Builder with Buffer {
  * 
  *   object &#96;Testing &#96; {
  *     def &#96;should be easy&#96; {
@@ -1386,15 +1317,15 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * <a name="sharedTests"></a><h2>Shared tests</h2>
  *
  * <p>
- * Because <code>Spec</code> represents tests as methods, you cannot share or otherwise dynamically generate tests. Instead, use static code generation
- * if you want to generate tests in a <code>Spec</code>. In other words, write a program that statically generates the entire source file of
- * a <code>Spec</code> subclass.
+ * Because <code>RefSpec</code> represents tests as methods, you cannot share or otherwise dynamically generate tests. Instead, use static code generation
+ * if you want to generate tests in a <code>RefSpec</code>. In other words, write a program that statically generates the entire source file of
+ * a <code>RefSpec</code> subclass.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-class Spec extends SpecLike {
+class RefSpec extends RefSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
@@ -1407,7 +1338,7 @@ class Spec extends SpecLike {
   override def toString: String = Suite.suiteToString(None, this)
 }
 
-private[scalatest] object Spec {
+private[scalatest] object RefSpec {
 
   def isTestMethod(m: Method): Boolean = {
     

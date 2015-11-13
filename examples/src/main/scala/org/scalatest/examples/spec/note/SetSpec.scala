@@ -18,7 +18,7 @@ package org.scalatest.examples.spec.note
 import collection.mutable
 import org.scalatest._
  
-class SetSpec extends Spec {
+class SetSpec extends RefSpec {
   
   object `A mutable Set` {
     def `should allow an element to be added` {

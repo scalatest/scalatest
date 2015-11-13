@@ -19,6 +19,7 @@ import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
 // SKIP-SCALATESTJS-START
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import org.scalatest._
 
@@ -68,7 +69,7 @@ class LocationSpec extends FunSpec with Checkers {
   }
 
   // SKIP-SCALATESTJS-START
-  class TestLocationSpec extends Spec {
+  class TestLocationSpec extends RefSpec {
     def `test succeed` {
     }
 
