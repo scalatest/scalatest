@@ -22,6 +22,7 @@ import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNGTest}
 import org.scalatest.testng.TestNGSuite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import Matchers._
@@ -41,7 +42,7 @@ expired, so now it is only testing that no style traits handle test: prefixes sp
 */
 trait NonTestColonEscapeExamples extends Tables {
   // SKIP-SCALATESTJS-START
-  def spec: Spec
+  def spec: RefSpec
   def fixtureSpec: fixture.Spec
   def junit3Suite: JUnit3Suite
   def junitSuite: JUnitSuite
@@ -198,7 +199,7 @@ class NonTestColonEscapeProp extends FunSuite with NonTestColonEscapeExamples {
 
   // SKIP-SCALATESTJS-START
   def spec = new ExampleSpec()
-  class ExampleSpec extends Spec {
+  class ExampleSpec extends RefSpec {
     def `test: A Succeeded Test` = {}
     def `test: A Failed Test` = { fail }
     @Ignore def `test: An Ignored Test` = {}

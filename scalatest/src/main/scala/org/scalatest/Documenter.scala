@@ -61,10 +61,10 @@ package org.scalatest
  * </p>
  * 
  * <pre class="stHighlight">
- * import org.scalatest.Spec
+ * import org.scalatest.refspec.RefSpec
  * import scala.collection.mutable.Stack
  *
- * class StackSpec extends Spec {
+ * class StackSpec extends RefSpec {
  *
  *   markup("""
  *

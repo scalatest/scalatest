@@ -17,6 +17,9 @@ package org.scalatest
 
 import scala.collection.immutable.TreeSet
 import org.scalactic.exceptions.NullArgumentException
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class FilterSpec extends FunSpec {
   
@@ -597,7 +600,7 @@ class FilterSpec extends FunSpec {
   describe("(when invoke apply on test names with suite annotation)") {
     
     @FastAsLight
-    class TagSuite extends Spec {
+    class TagSuite extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       @SlowAsMolasses
@@ -606,14 +609,14 @@ class FilterSpec extends FunSpec {
       def `test method 4` = {}
     }
     
-    class NoTagSuite extends Spec {
+    class NoTagSuite extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       def `test method 3` = {}
       def `test method 4` = {}
     }
     
-    class InsideTagSuite extends Spec {
+    class InsideTagSuite extends RefSpec {
       def `test method 1` = {}
       def `test method 2` = {}
       @SlowAsMolasses

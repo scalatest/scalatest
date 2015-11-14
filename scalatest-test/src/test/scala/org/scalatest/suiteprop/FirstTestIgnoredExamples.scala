@@ -16,6 +16,9 @@
 package org.scalatest.suiteprop
 
 import org.scalatest._
+// SKIP-SCALATESTJS-START
+import refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class FirstTestIgnoredExamples extends SuiteExamples {
 
@@ -50,7 +53,7 @@ class FirstTestIgnoredExamples extends SuiteExamples {
   type FixtureServices = Services
 
   // SKIP-SCALATESTJS-START
-  class SpecExample extends Spec with Services {
+  class SpecExample extends RefSpec with Services {
     @Ignore def `test first` = {}
     def `test second` = {}
     override val theTestNames = Vector("test first", "test second")

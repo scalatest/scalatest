@@ -18,7 +18,7 @@ package org.scalatest.examples.spec.cpu
 import org.scalatest._
 import tags.CPU
 
-class SetSpec extends Spec {
+class SetSpec extends RefSpec {
 
   @CPU def `an empty Set should have size 0` {
     assert(Set.empty.size === 0)

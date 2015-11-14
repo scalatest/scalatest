@@ -23,6 +23,7 @@ import org.testng.annotations.{Test => TestNG }
 import scala.collection.mutable.ListBuffer
 import org.scalatest.tools.SuiteRunner
 import SharedHelpers._
+import org.scalatest.refspec.RefSpec
 
 class StatusProp extends AllSuiteProp {
   
@@ -135,7 +136,7 @@ trait StatusFixtureServices { suite: Suite =>
 }
 
 @DoNotDiscover
-class ExampleStatusSpec extends Spec with StatusFixtureServices with ParallelTestExecution {
+class ExampleStatusSpec extends RefSpec with StatusFixtureServices with ParallelTestExecution {
   def `test 1` {}
   def `test 2` { throw new VirtualMachineError {} }
   def `test 3` {}

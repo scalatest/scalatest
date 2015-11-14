@@ -20,6 +20,7 @@ import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
 
@@ -99,7 +100,7 @@ trait StopOnFailureFixtureServices {
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleStopOnFailureSpec extends Spec with StopOnFailure with StopOnFailureFixtureServices {
+class ExampleStopOnFailureSpec extends RefSpec with StopOnFailure with StopOnFailureFixtureServices {
   def `test 1` {}
   def `test 2` { pending }
   def `test 3` { cancel }

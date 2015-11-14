@@ -21,6 +21,9 @@ import org.scalatest.time.Millis
 import org.scalatest.prop.Tables
 import org.scalatest.events.TestSucceeded
 import org.scalatest.tools.TestSortingReporter
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 trait TestTimeoutExpectedResults extends EventHelpers { s: ParallelTestExecution =>
   def assertTestTimeoutTest(events: List[Event])
@@ -96,7 +99,7 @@ class TestHoldingReporter(dispatch: Reporter, holdingTestSucceededName: String) 
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleParallelTestExecutionTestTimeoutSpec extends Spec with ParallelTestExecution with TestTimeoutExpectedResults {
+class ExampleParallelTestExecutionTestTimeoutSpec extends RefSpec with ParallelTestExecution with TestTimeoutExpectedResults {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}

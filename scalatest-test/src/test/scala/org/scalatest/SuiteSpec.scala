@@ -22,6 +22,9 @@ import SharedHelpers._
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalactic.exceptions.NullArgumentException
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 protected[scalatest] class MandarinOrangeFunSuite(ns: Suite*) extends FunSuite {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
@@ -30,7 +33,7 @@ protected[scalatest] class MandarinOrangeFunSpec(ns: Suite*) extends FunSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS-START
-protected[scalatest] class MandarinOrangeSpec(ns: Suite*) extends Spec {
+protected[scalatest] class MandarinOrangeSpec(ns: Suite*) extends RefSpec {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
 }
 // SKIP-SCALATESTJS-END
@@ -107,7 +110,7 @@ class SuiteSpec extends FunSpec {
             ( new FunSuite, "FunSuite"),
             ( new FunSpec, "FunSpec"),
             // SKIP-SCALATESTJS-START
-            ( new Spec, "Spec"),
+            ( new RefSpec, "RefSpec"),
             // SKIP-SCALATESTJS-END
             ( new WordSpec, "WordSpec"),
             ( new FlatSpec, "FlatSpec"),

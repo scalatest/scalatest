@@ -46,6 +46,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
+@deprecated("Please use org.scalatest.fixture.FunSpec instead")
 trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
@@ -229,9 +230,9 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.Spec
+   * import org.scalatest.refspec.RefSpec
    *
-   * class StackSpec extends Spec {
+   * class StackSpec extends RefSpec {
    *   object &#96;A Stack&#96; {
    *     object &#96;(when not empty)&#96; {
    *       def &#96;must allow me to pop&#96; {}

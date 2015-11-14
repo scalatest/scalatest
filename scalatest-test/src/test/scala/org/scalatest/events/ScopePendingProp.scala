@@ -18,6 +18,9 @@ package org.scalatest.events
 import org.scalatest.AllSuiteProp
 import org.scalatest._
 import SharedHelpers._
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class ScopePendingProp extends AllSuiteProp {
 
@@ -90,7 +93,7 @@ class ExampleScopePendingFixtureSuite extends fixture.Suite with ScopePendingFix
 }
 
 @DoNotDiscover
-class ExampleScopePendingSpec extends Spec with ScopePendingFixtureServices {
+class ExampleScopePendingSpec extends RefSpec with ScopePendingFixtureServices {
   object `scope 1` {
     def `test 1` {}
     def `test 2` {}

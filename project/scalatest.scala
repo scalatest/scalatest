@@ -426,7 +426,7 @@ object ScalatestBuild extends Build {
      genCodeTask,
      genFactoriesTask,
      genCompatibleClassesTask,
-     genSafeStylesTask,
+     //genSafeStylesTask,
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
      sourceGenerators in Compile <+=
@@ -439,8 +439,8 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
-     sourceGenerators in Compile <+=
-       (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMain),
+     /*sourceGenerators in Compile <+=
+       (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMain),*/
      scalatestDocSourcesSetting,
      sourceGenerators in Compile += {
        Def.task{
@@ -453,15 +453,19 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
         "org.scalatest.concurrent",
+        "org.scalatest.easymock",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
+        "org.scalatest.jmock",
         "org.scalatest.junit",
         "org.scalatest.matchers",
         "org.scalatest.mock",
+        "org.scalatest.mockito",
         "org.scalatest.path",
         "org.scalatest.prop",
+        "org.scalatest.refspec",
         "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
@@ -514,7 +518,7 @@ object ScalatestBuild extends Build {
         <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
           <artifact name="javax.servlet" type="orbit" ext="jar"/>
         </dependency>,
-      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestAll.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
+      scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
       jsDependencies += RuntimeDOM % "test",
@@ -530,7 +534,7 @@ object ScalatestBuild extends Build {
         }.taskValue
       },
       genFactoriesTask,
-      genSafeStylesTask,
+      //genSafeStylesTask,
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS),
       sourceGenerators in Compile <+=
@@ -539,8 +543,8 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS),
       sourceGenerators in Compile <+=
         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS),
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS),
+      /*sourceGenerators in Compile <+=
+        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS),*/
       /*genMustMatchersTask,
       genGenTask,
       genTablesTask,
@@ -561,15 +565,11 @@ object ScalatestBuild extends Build {
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
         "org.scalatest.path",
         "org.scalatest.prop",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
@@ -619,11 +619,11 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers", "GenMustMatchersTests.scala")(GenMustMatchersTests.genTestForScalaJS)
     ).dependsOn(scalatestJS % "test", commonTestJS % "test").enablePlugins(ScalaJSPlugin)
 
-  lazy val scalatestAll = Project("scalatestAll", file("."))
+  lazy val scalatestApp = Project("scalatestApp", file("."))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaTest All",
-      name := "scalatest-all",
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
       organization := "org.scalatest",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
@@ -647,15 +647,19 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
         "org.scalatest.concurrent",
+        "org.scalatest.easymock",
         "org.scalatest.enablers",
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
+        "org.scalatest.jmock",
         "org.scalatest.junit",
         "org.scalatest.matchers",
         "org.scalatest.mock",
+        "org.scalatest.mockito",
         "org.scalatest.path",
         "org.scalatest.prop",
+        "org.scalatest.refspec",
         "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
@@ -685,13 +689,13 @@ object ScalatestBuild extends Build {
       )
     ).dependsOn(scalacticMacro % "compile-internal, test-internal", scalactic % "compile-internal", scalatest % "compile-internal").aggregate(scalactic, scalatest)
 
-  lazy val scalatestAllJS = Project("scalatestAllJS", file("scalatest-all.js"))
+  lazy val scalatestAppJS = Project("scalatestAppJS", file("scalatest-app.js"))
     .settings(sharedSettings: _*)
     .settings(
-      projectTitle := "ScalaTest All",
-      name := "scalatest-all",
+      projectTitle := "ScalaTest App",
+      name := "scalatest-app",
       organization := "org.scalatest",
-      moduleName := "scalatest-all",
+      moduleName := "scalatest-app",
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       // include the scalactic classes and resources in the jar
@@ -717,15 +721,11 @@ object ScalatestBuild extends Build {
         "org.scalatest.events",
         "org.scalatest.exceptions",
         "org.scalatest.fixture",
-        "org.scalatest.junit",
         "org.scalatest.matchers",
-        "org.scalatest.mock",
         "org.scalatest.path",
         "org.scalatest.prop",
-        "org.scalatest.selenium",
         "org.scalatest.tags",
         "org.scalatest.tagobjects",
-        "org.scalatest.testng",
         "org.scalatest.time",
         "org.scalatest.tools",
         "org.scalatest.verb",
@@ -934,17 +934,17 @@ object ScalatestBuild extends Build {
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
-  lazy val genSafeStyleTests = Project("genSafeStyleTests", file("gentests/GenSafeStyles"))
+  /*lazy val genSafeStyleTests = Project("genSafeStyleTests", file("gentests/GenSafeStyles"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genSafeStyleTestsTask,
       sourceGenerators in Test <+=
         (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensafestyletests", "GenSafeStyles.scala")(GenSafeStyles.genTest)
-    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
+    ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")*/
 
   lazy val gentests = Project("gentests", file("gentests"))
     .aggregate(genMustMatchersTests1, genMustMatchersTests2, genMustMatchersTests3, genMustMatchersTests4, genGenTests, genTablesTests, genInspectorsTests, genInspectorsShorthandsTests1,
-               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests, genSafeStyleTests)
+               genInspectorsShorthandsTests2, genTheyTests, genContainTests1, genContainTests2, genSortedTests, genLoneElementTests, genEmptyTests/*, genSafeStyleTests*/)
 
   lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
     .settings(
@@ -1105,7 +1105,7 @@ object ScalatestBuild extends Build {
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)
   }
 
-  val genSafeStyles = TaskKey[Unit]("gensafestyles", "Generate safe style traits.")
+  /*val genSafeStyles = TaskKey[Unit]("gensafestyles", "Generate safe style traits.")
   val genSafeStylesTask = genSafeStyles <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenSafeStyles.genMain(new File(mainTargetDir, "scala/gensafestyles"), theVersion, theScalaVersion)
   }
@@ -1113,7 +1113,7 @@ object ScalatestBuild extends Build {
   val genSafeStyleTestsTaskKey = TaskKey[Unit]("gensafestyletests", "Generate Safe Style tests")
   val genSafeStyleTestsTask = genSafeStyleTestsTaskKey <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
     GenSafeStyles.genTest(new File(testTargetDir, "scala/gensafestyles"), theVersion, theScalaVersion)
-  }
+  }*/
 
   //
   // Prepares source files for running scaladoc.

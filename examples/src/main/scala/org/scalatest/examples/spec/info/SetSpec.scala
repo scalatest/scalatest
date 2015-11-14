@@ -18,7 +18,7 @@ package org.scalatest.examples.spec.info
 import collection.mutable
 import org.scalatest._
  
-class SetSpec extends Spec with GivenWhenThen {
+class SetSpec extends RefSpec with GivenWhenThen {
   
   object `A mutable Set` {
     def `should allow an element to be added` {

@@ -15,9 +15,9 @@
  */
 package org.scalatest.examples.spec
 
-import org.scalatest.Spec
+import org.scalatest.refspec.RefSpec
 
-class SetSpec extends Spec {
+class SetSpec extends RefSpec {
 
   object `A Set` {
     object `when empty` {

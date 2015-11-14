@@ -20,6 +20,7 @@ import org.scalatest.junit.JUnitSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
 import org.scalatest.testng.TestNGSuite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
 
@@ -76,7 +77,7 @@ object TestDataTag extends Tag("org.scalatest.tags.TestDataTag")
 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
-class ExampleTestDataSpec extends Spec with TestDataFixtureServices {
+class ExampleTestDataSpec extends RefSpec with TestDataFixtureServices {
   val expectedTestData = new TestData {
     val configMap = ConfigMap("key1" -> "value1") 
     val name = "Scope 1 Scope 2 test 1"

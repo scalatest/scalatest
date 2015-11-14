@@ -13,37 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalatest.refspec
 
 import scala.collection.immutable.ListSet
+import org.scalatest._
 import Suite._
-import Spec.isTestMethod
-import Spec.equalIfRequiredCompactify
+import RefSpec.isTestMethod
+import RefSpec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalactic.Requirements._
 
 /**
- * Implementation trait for class <code>Spec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
+ * Implementation trait for class <code>RefSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
  * are methods, optionally nested inside singleton objects defining textual scopes.
  * 
  * <p>
- * <a href="Spec.html"><code>Spec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to
- * mixing in traits compared to extending classes. If you need to mix the behavior of <code>Spec</code>
- * into some other class, you can use this trait instead, because class <code>Spec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <a href="RefSpec.html"><code>RefSpec</code></a> is a class, not a trait, to minimize compile time given there is a slight compiler overhead to
+ * mixing in traits compared to extending classes. If you need to mix the behavior of <code>RefSpec</code>
+ * into some other class, you can use this trait instead, because class <code>RefSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="Spec.html">detailed overview of <code>Spec</code></a>.
+ * See the documentation of the class for a <a href="RefSpec.html">detailed overview of <code>RefSpec</code></a>.
  * </p>
  *
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait RefSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
-  private final val engine = new Engine(Resources.concurrentSpecMod, "SpecLike")
+  private final val engine = new Engine(Resources.concurrentSpecMod, "RefSpecLike")
   import engine._
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false
@@ -156,7 +157,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
   }
 
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
-  private[scalatest] val sourceFileName = "SpecLike.scala"
+  private[scalatest] val sourceFileName = "RefSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
@@ -173,7 +174,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    * Returns a <code>Notifier</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>Spec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>RefSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -183,7 +184,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    * Returns an <code>Alerter</code> that during test execution will forward strings (and other objects) passed to its
    * <code>apply</code> method to the current reporter. If invoked in a constructor, it
    * will register the passed string for forwarding later during test execution. If invoked while this
-   * <code>Spec</code> is being executed, such as from inside a test function, it will forward the information to
+   * <code>RefSpec</code> is being executed, such as from inside a test function, it will forward the information to
    * the current reporter immediately. If invoked at any other time, it will
    * print to the standard output. This method can be called safely by any thread.
    */
@@ -201,20 +202,20 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
   protected def markup: Documenter = atomicDocumenter.get
   
   /**
-   * An immutable <code>Set</code> of test names. If this <code>Spec</code> contains no tests, this method returns an
+   * An immutable <code>Set</code> of test names. If this <code>RefSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
    * <p>
    * This trait's implementation of this method will return a set that contains the names of all registered tests. The set's
    * iterator will return those names in the order in which the tests were registered. Each test's name is composed
    * of the concatenation of the text of each surrounding describer, in order from outside in, and the text of the
-   * example itself, with all components separated by a space. For example, consider this <code>Spec</code>:
+   * example itself, with all components separated by a space. For example, consider this <code>RefSpec</code>:
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.Spec
+   * import org.scalatest.RefSpec
    *
-   * class StackSpec extends Spec {
+   * class StackSpec extends RefSpec {
    *   object &#96;A Stack&#96; {
    *     object &#96;(when not empty)&#96; {
    *       def &#96;must allow me to pop&#96; {}
@@ -227,7 +228,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
    * </pre>
    *
    * <p>
-   * Invoking <code>testNames</code> on this <code>Spec</code> will yield a set that contains the following
+   * Invoking <code>testNames</code> on this <code>RefSpec</code> will yield a set that contains the following
    * two test name strings:
    * </p>
    *
@@ -287,7 +288,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
-   * the <code>Set</code> of tags for the test. If this <code>Spec</code> contains no tags, this method returns an empty <code>Map</code>.
+   * the <code>Set</code> of tags for the test. If this <code>RefSpec</code> contains no tags, this method returns an empty <code>Map</code>.
    *
    * <p>
    * This trait's implementation of this method uses Java reflection to discover any Java annotations attached to its test methods. The
@@ -308,7 +309,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
   }
   
   /**
-   * Run zero to many of this <code>Spec</code>'s tests.
+   * Run zero to many of this <code>RefSpec</code>'s tests.
    *
    * @param testName an optional name of one test to run. If <code>None</code>, all relevant tests should be run.
    *                 I.e., <code>None</code> acts like a wildcard that means run all relevant tests in this <code>Suite</code>.
@@ -332,7 +333,7 @@ trait SpecLike extends Suite with Informing with Notifying with Alerting with Do
   /**
    * Suite style name.
    */
-  final override val styleName: String = "org.scalatest.Spec"
+  final override val styleName: String = "org.scalatest.refspec.RefSpec"
     
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
 }

@@ -19,6 +19,7 @@ import org.scalatest.junit.{JUnitSuite, JUnit3Suite}
 import org.scalatest.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG}
+import org.scalatest.refspec.RefSpec
 
 trait InheritedTagFixtureServices
 
@@ -497,7 +498,7 @@ class InheritedTagProp extends SuiteProp {
   @org.scalatest.tags.Network
   @org.scalatest.tags.Retryable
   @org.scalatest.tags.Slow
-  class BaseTagSpec extends Spec with FixtureServices
+  class BaseTagSpec extends RefSpec with FixtureServices
   class InheritedTagSpec extends BaseTagSpec {
     def `test something` {}
   }

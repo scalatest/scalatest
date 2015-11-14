@@ -116,6 +116,6 @@ If you would like to export a particular private key into a separate GPG file, y
 
 With Sonatype credentials and GPG file in place, you can now publish to Sonatype.
 
-To publish scalactic, scalatest and scalatest-all (for Scala and Scala-js, version 2.11 and 2.10) to Sonatype, use the following command:
+To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.11 and 2.10) to Sonatype, use the following command:
 
-  `$ sbt clean publishSigned "project scalatestAllJS" clean publishSigned ++2.10.5 "project scalatestAll" clean publishSigned "project scalatestAllJS" clean publishSigned`
+  `$ sbt clean publishSigned "project scalatestAppJS" clean publishSigned ++2.10.5 "project scalatestApp" clean publishSigned "project scalatestAppJS" clean publishSigned`

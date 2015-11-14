@@ -17,6 +17,9 @@ package org.scalatest.suiteprop
 
 import org.scalatest._
 import prop.TableDrivenPropertyChecks
+// SKIP-SCALATESTJS-START
+import refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
 
@@ -52,7 +55,7 @@ class InfoInsideTestFiredAfterTestExamples extends SuiteExamples {
   type FixtureServices = Services
 
   // SKIP-SCALATESTJS-START
-  class SpecExample extends Spec with Services  {
+  class SpecExample extends RefSpec with Services  {
     def `test method` = {
       info(msg)
     }

@@ -1043,11 +1043,12 @@ trait GenInspectorsShorthandsBase {
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
-          "collection.GenMap"
+          "collection.GenMap",
+          "org.scalatest.refspec.RefSpec"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAllSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -1072,11 +1073,12 @@ trait GenInspectorsShorthandsBase {
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
-            "collection.GenMap"
+            "collection.GenMap",
+            "org.scalatest.refspec.RefSpec"
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -1105,11 +1107,12 @@ trait GenInspectorsShorthandsBase {
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
-          "collection.GenMap"
+          "collection.GenMap",
+          "org.scalatest.refspec.RefSpec"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAtLeastSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -1310,11 +1313,12 @@ trait GenInspectorsShorthandsBase {
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
-            "collection.GenMap"
+            "collection.GenMap",
+            "org.scalatest.refspec.RefSpec"
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -1343,11 +1347,12 @@ trait GenInspectorsShorthandsBase {
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
-          "collection.GenMap"
+          "collection.GenMap",
+          "org.scalatest.refspec.RefSpec"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForEverySucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -1549,11 +1554,12 @@ trait GenInspectorsShorthandsBase {
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
-            "collection.GenMap"
+            "collection.GenMap",
+            "org.scalatest.refspec.RefSpec"
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -1582,11 +1588,12 @@ trait GenInspectorsShorthandsBase {
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
-          "collection.GenMap"
+          "collection.GenMap",
+          "org.scalatest.refspec.RefSpec"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForExactlySucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -1788,11 +1795,12 @@ trait GenInspectorsShorthandsBase {
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
-            "collection.GenMap"
+            "collection.GenMap",
+            "org.scalatest.refspec.RefSpec"
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -1821,11 +1829,12 @@ trait GenInspectorsShorthandsBase {
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
-          "collection.GenMap"
+          "collection.GenMap",
+          "org.scalatest.refspec.RefSpec"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForNoSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -2026,11 +2035,12 @@ trait GenInspectorsShorthandsBase {
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
-            "collection.GenMap"
+            "collection.GenMap",
+            "org.scalatest.refspec.RefSpec"
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -2059,11 +2069,12 @@ trait GenInspectorsShorthandsBase {
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
-          "collection.GenMap"
+          "collection.GenMap",
+          "org.scalatest.refspec.RefSpec"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForBetweenSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -2266,11 +2277,12 @@ trait GenInspectorsShorthandsBase {
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
-            "collection.GenMap"
+            "collection.GenMap",
+            "org.scalatest.refspec.RefSpec"
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }
@@ -2299,11 +2311,12 @@ trait GenInspectorsShorthandsBase {
           "FailureMessages.decorateToStringValue",
           "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
           "collection.GenTraversable",
-          "collection.GenMap"
+          "collection.GenMap",
+          "org.scalatest.refspec.RefSpec"
         ),
         classTemplate = new ClassTemplate {
           val name = "InspectorShorthandsForAtMostSucceededSpec"
-          override val extendName = Some("Spec")
+          override val extendName = Some("RefSpec")
           override val withList = List("Matchers")
           override val children = succeedTests
         }
@@ -2517,11 +2530,12 @@ trait GenInspectorsShorthandsBase {
             "FailureMessages.decorateToStringValue",
             "org.scalatest.matchers.{BePropertyMatcher, BePropertyMatchResult, HavePropertyMatcher, HavePropertyMatchResult}",
             "collection.GenTraversable",
-            "collection.GenMap"
+            "collection.GenMap",
+            "org.scalatest.refspec.RefSpec"
           ),
           classTemplate = new ClassTemplate {
             val name = className
-            override val extendName = Some("Spec")
+            override val extendName = Some("RefSpec")
             override val withList = List("Matchers")
             override val children = new InspectorShorthandsHelpersTemplate :: failedTests
           }

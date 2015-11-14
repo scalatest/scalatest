@@ -18,7 +18,7 @@ package org.scalatest.examples.spec.oneinstancepertest
 import org.scalatest._
 import collection.mutable.ListBuffer
 
-class ExampleSpec extends Spec with OneInstancePerTest {
+class ExampleSpec extends RefSpec with OneInstancePerTest {
 
   val builder = new StringBuilder("ScalaTest is ")
   val buffer = new ListBuffer[String]

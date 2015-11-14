@@ -17,6 +17,7 @@ package org.scalatest.events
 
 import org.scalatest._
 import SharedHelpers._
+import refspec.RefSpec
 
 class LocationMethodSuiteProp extends MethodSuiteProp {
   
@@ -89,7 +90,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   }
   
   def spec = new TestLocationSpec
-  class TestLocationSpec extends Spec with FixtureServices {
+  class TestLocationSpec extends RefSpec with FixtureServices {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec"
     val expectedStartingList = List(TestStartingPair("A Spec test succeed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec$A$u0020Spec$", "test$u0020succeed()"), 
                                 TestStartingPair("A Spec test pending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec$A$u0020Spec$", "test$u0020pending()"), 

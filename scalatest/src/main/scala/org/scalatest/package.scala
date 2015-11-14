@@ -87,4 +87,12 @@ package object scalatest {
    * an exception that indicates a failed, canceled, or pending test.
    */
   type Assertion = Succeeded.type
+
+  // SKIP-SCALATESTJS-START
+  @deprecated("Please use org.scalatest.refspec.RefSpecLike instead")
+  type SpecLike = refspec.RefSpecLike
+
+  @deprecated("Please use org.scalatest.refspec.RefSpec instead")
+  type Spec = refspec.RefSpec
+  // SKIP-SCALATESTJS-END
 }

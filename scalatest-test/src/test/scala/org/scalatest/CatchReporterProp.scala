@@ -26,6 +26,9 @@ import org.scalatest.tools.SuiteSortingReporter
 import org.scalatest.time._
 import org.scalatest.tools.TestSortingReporter
 import SharedHelpers._
+// SKIP-SCALATESTJS-START
+import org.scalatest.refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class CatchReporterProp extends AllSuiteProp {
 
@@ -380,7 +383,7 @@ class CatchReporterProp extends AllSuiteProp {
 trait CatchReporterFixtureServices {}
 
 @DoNotDiscover
-class ExampleCatchReporterSpec extends Spec with CatchReporterFixtureServices {
+class ExampleCatchReporterSpec extends RefSpec with CatchReporterFixtureServices {
   def `test 1` {}
   def `test 2` {}
   def `test 3` {}
