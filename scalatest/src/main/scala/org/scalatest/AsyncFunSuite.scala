@@ -15,6 +15,18 @@
  */
 package org.scalatest
 
+/**
+ * Enables testing of asynchronous code without blocking,
+ * using a style consistent with traditional <code>FunSuite</code> tests.
+ *
+ * <p>
+ * Given a <code>Future</code> returned by the code you are testing,
+ * you need not block until the <code>Future</code> completes before
+ * performing assertions against its value. You can instead map those
+ * assertions onto the <code>Future</code> and return the resulting
+ * <code>Future[Assertion]</code> to ScalaTest. The test will complete
+ * asynchronously, when the <code>Future[Assertion]</code> completes.
+ */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
   /**
