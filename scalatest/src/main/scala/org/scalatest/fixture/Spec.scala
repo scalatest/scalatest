@@ -261,7 +261,7 @@ private[scalatest] object Spec {
     
     val isOuterMethod = m.getName.endsWith("$$outer")
     
-    val isNestedMethod = m.getName.matches(".+\\$\\$.+\\$[1-9]+")
+    val isNestedMethod = m.getName.matches(".+\\$\\$.+\\$[1-9][0-9]*")
 
     // def maybe(b: Boolean) = if (b) "" else "!"
     // println("m.getName: " + m.getName + ": " + maybe(isInstanceMethod) + "isInstanceMethod, " + maybe(hasNoParams) + "hasNoParams, " + maybe(includesEncodedSpace) + "includesEncodedSpace")
