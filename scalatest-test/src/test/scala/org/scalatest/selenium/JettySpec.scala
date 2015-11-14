@@ -16,14 +16,14 @@
 package org.scalatest.selenium
 
 import org.scalatest._
-import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.server.{ServerConnector, Server}
 import org.eclipse.jetty.webapp.WebAppContext
 
 trait JettySpec extends FunSpec {
-  
+
   private val serverThread = new Thread() {
     private val server = new Server(0)
-    
+
     override def run() {
       val webapp = new WebAppContext("webapp", "/")
       server.setHandler(webapp)
@@ -31,27 +31,30 @@ trait JettySpec extends FunSpec {
       server.start()
       server.join()
     }
-    
+
     def done() {
       server.stop()
     }
-    
+
     def isStarted = server.isStarted()
+
     def getHost = {
-      val conn = server.getConnectors()(0)
-      "http://localhost:" + conn.getLocalPort + "/"
+      val conn = server.getConnectors collectFirst {
+        case conn: ServerConnector =>
+          "http://localhost:" + conn.getLocalPort + "/"
+      } get
     }
   }
 
   import scala.language.reflectiveCalls
-  
+
   lazy val host = serverThread.getHost
 
   override def run(testName: Option[String], args: Args): Status = {
     serverThread.start()
     while (!serverThread.isStarted)
       Thread.sleep(10)
-    
+
     try super.run(testName, args)
     finally serverThread.done()
   }
