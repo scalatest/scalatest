@@ -59,13 +59,13 @@ import org.scalactic.Requirements._
  * Why? Because unlike <code>AssertionError</code>, <code>TestFailedException</code> carries information about exactly
  * which item in the stack trace represents
  * the line of test code that failed, which can help users more quickly find an offending line of code in a failing test.
+ * In addition, ScalaTest's <code>assert</code> provides better error messages than Scala's <code>assert</code>.
  * <p>
  *
  * <p>
  * If you pass the previous <code>Boolean</code> expression, <code>left == right</code> to <code>assert</code> in a ScalaTest test,
  * a failure will be reported that, because <code>assert</code> is implemented as a macro,
  * includes reporting the left and right values.
- *
  * For example, given the same code as above but using ScalaTest assertions:
  *
  * <pre class="stHighlight">
@@ -181,6 +181,21 @@ import org.scalactic.Requirements._
  *
  * <pre class="stHighlight">
  * fail("I've got a bad feeling about this")
+ * </pre>
+ *
+ * <a name="achievingSuccess"></a>
+ * <h2>Achieving success</h2>
+ *
+ * <p>
+ * In async style tests, you must end your test body with either <code>Future[Assertion]</code> or
+ * <code>Assertion</code>. If a test body or function body passed to <code>Future.map</code> does
+ * not end with type <code>Assertion</code>, you can fix the type error by placing
+ * <code>succeed</code> at the end of the
+ * test or function body:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * succeed // Has type Assertion
  * </pre>
  *
  * <a name="interceptedExceptions"></a>
@@ -1335,7 +1350,19 @@ trait Assertions extends TripleEquals {
         throw new TestFailedException(Resources.pendingUntilFixed, 2)
   }
 
-  final val succeed: Succeeded.type = Succeeded
+  /**
+   * The <code>Succeeded</code> singleton.
+   *
+   * <p>
+   * You can use <code>succeed</code> to solve a type error when an async test 
+   * does not end in either <code>Future[Assertion]</code> or <code>Assertion</code>.
+   * Because <code>Assertion</code> is a type alias for <code>Succeeded.type</code>,
+   * putting <code>succeed</code> at the end of a test body (or at the end of a
+   * function being used to map the final future of a test body) will solve
+   * the type error.
+   * </p>
+   */
+  final val succeed: Assertion = Succeeded
 }
 
 /**
