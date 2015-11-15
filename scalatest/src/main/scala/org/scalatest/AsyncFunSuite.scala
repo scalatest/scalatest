@@ -26,6 +26,40 @@ package org.scalatest
  * assertions onto the <code>Future</code> and return the resulting
  * <code>Future[Assertion]</code> to ScalaTest. The test will complete
  * asynchronously, when the <code>Future[Assertion]</code> completes.
+ *
+ * Here's an example <code>AsyncFunSuite</code>:
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite
+
+ * import org.scalatest.AsyncFunSuite
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class AddSuite extends AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *
+ *   test("addSoon will eventually compute a sum of passed Ints") {
+ *     val futureSum: Future[Int] = addSoon(1, 2)
+ *     // You can map assertions onto a Future, then return
+ *     // the resulting Future[Assertion] to ScalaTest:
+ *     futureSum map { sum =&gt; assert(sum == 3) }
+ *   } 
+ *
+ *   def addNow(addends: Int*): Int = addends.sum
+ *
+ *   test("addNow will immediately compute a sum of passed Ints") {
+ *     val sum: Int = addNow(1, 2)
+ *     // You can also write synchronous tests, which
+ *     // must result in type Assertion:
+ *     assert(sum == 3)
+ *   }
+ * }
+ * </pre>
+ *
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
