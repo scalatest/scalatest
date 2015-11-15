@@ -188,8 +188,10 @@ import org.scalactic.Requirements._
  *
  * <p>
  * In async style tests, you must end your test body with either <code>Future[Assertion]</code> or
- * <code>Assertion</code>. If a test body or function body passed to <code>Future.map</code> does
- * not end with type <code>Assertion</code>, you can fix the type error by placing
+ * <code>Assertion</code>. ScalaTest's assertions (including matcher expressions) have result type
+ * <code>Assertion</code>, so ending with an assertion will satisfy the compiler.
+ * If a test body or function body passed to <code>Future.map</code> does
+ * <em>not</em> end with type <code>Assertion</code>, however, you can fix the type error by placing
  * <code>succeed</code> at the end of the
  * test or function body:
  * </p>
