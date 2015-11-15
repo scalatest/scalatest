@@ -939,7 +939,7 @@ object Or {
    * fixed to <code>ErrorMessage</code> and its "good" type, <code>G</code>, left unspecified.
    * </p>
    */
-  trait B[BAD] {
+  private[scalactic] trait B[BAD] {
 
     /**
      * Type member that provides a curried alias to  <code>G</code> <code>Or</code> <code>B</code>.
@@ -1031,7 +1031,7 @@ object Or {
    * fixed to <code>Int</code> and its "bad" type, <code>B</code>, left unspecified.
    * </p>
    */
-  trait G[GOOD] {
+  private[scalactic] trait G[GOOD] {
 
     /**
      * Type member that provides a curried alias to  <code>G</code> <code>Or</code> <code>B</code>.
