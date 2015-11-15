@@ -166,6 +166,133 @@ package org.scalatest
  * <code>TestRegistrationClosedException</code>.
  * </p>
  *
+ * <a name="executionContext"></a><h2>Execution context</h2>
+ *
+ * <p>
+ * Here I'll describe that you must define an executionContext, and the test bodies will
+ * be executed on those threads. Show an example in JVM and JS. 
+ * </p>
+ *
+ * <p>
+ * Then I'll describe one-at-a time default, and that if you want parallel execution
+ * you mix in PTE. But if the execution context includes multiple threads, then
+ * you'll need to synchronize access to shared mutable state.
+ * </p>
+ *
+ * <a name="ignoredTests"></a><h2>Ignored tests</h2>
+ *
+ * <p>
+ * To support the common use case of temporarily disabling a test, with the
+ * good intention of resurrecting the test at a later time, <code>AsyncFunSuite</code> provides registration
+ * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.ignore
+ *
+ * import org.scalatest.AsyncFunSuite
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class AddSuite extends AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *
+ *   ignore("addSoon will eventually compute a sum of passed Ints") {
+ *     val futureSum: Future[Int] = addSoon(1, 2)
+ *     // You can map assertions onto a Future, then return
+ *     // the resulting Future[Assertion] to ScalaTest:
+ *     futureSum map { sum =&gt; assert(sum == 3) }
+ *   }
+ *
+ *   def addNow(addends: Int*): Int = addends.sum
+ *
+ *   test("addNow will immediately compute a sum of passed Ints") {
+ *     val sum: Int = addNow(1, 2)
+ *     // You can also write synchronous tests. The body
+ *     // must have result type Assertion:
+ *     assert(sum == 3)
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * If you run this version of <code>AddSuite</code> with:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; new AddSuite execute
+ * </pre>
+ *
+ * <p>
+ * It will run only the second test and report that the first test was ignored:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * <span class="stGreen">AddSuite:</span>
+ * <span class="stYellow">- addSoon will eventually compute a sum of passed Ints !!! IGNORED !!!</span>
+ * <span class="stGreen">- addNow will immediately compute a sum of passed Ints</span>
+ * </pre>
+ *
+ * <p>
+ * If you wish to temporarily ignore an entire suite of tests, you can (on the JVM, not Scala.js) annotate the test class with <code>@Ignore</code>, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.ignoreall
+ *
+ * import org.scalatest.AsyncFunSuite
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ * import org.scalatest.Ignore
+ *
+ * @Ignore
+ * class AddSuite extends AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *
+ *   test("addSoon will eventually compute a sum of passed Ints") {
+ *     val futureSum: Future[Int] = addSoon(1, 2)
+ *     // You can map assertions onto a Future, then return
+ *     // the resulting Future[Assertion] to ScalaTest:
+ *     futureSum map { sum =&gt; assert(sum == 3) }
+ *   }
+ *
+ *   def addNow(addends: Int*): Int = addends.sum
+ *
+ *   test("addNow will immediately compute a sum of passed Ints") {
+ *     val sum: Int = addNow(1, 2)
+ *     // You can also write synchronous tests. The body
+ *     // must have result type Assertion:
+ *     assert(sum == 3)
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * When you mark a test class with a tag annotation, ScalaTest will mark each test defined in that class with that tag.
+ * Thus, marking the <code>AddSuite</code> in the above example with the <code>@Ignore</code> tag annotation means that both tests
+ * in the class will be ignored. If you run the above <code>AddSuite</code> in the Scala interpreter, you'll see:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; new AddSuite execute
+ * <span class="stGreen">AddSuite:</span>
+ * <span class="stYellow">- addSoon will eventually compute a sum of passed Ints !!! IGNORED !!!
+ * - addNow will immediately compute a sum of passed Ints !!! IGNORED !!!</span>
+ * </pre>
+ *
+ * <p>
+ * Note that marking a test class as ignored won't prevent it from being discovered by ScalaTest. Ignored classes
+ * will be discovered and run, and all their tests will be reported as ignored. This is intended to keep the ignored
+ * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
+ * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a>
+ * annotation instead.
+ * </p>
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 

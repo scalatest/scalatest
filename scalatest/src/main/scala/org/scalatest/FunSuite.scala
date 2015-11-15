@@ -84,7 +84,7 @@ import Suite.autoTagClassAnnotations
  * <p>
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>FunSuite</code> provides registration
- * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example: to temporarily
+ * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
