@@ -533,9 +533,9 @@ import Suite.autoTagClassAnnotations
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
- * defined tag annotation interfaces with fully qualified names, <code>com.mycompany.tags.SlowTest</code> and
+ * defined a tag annotation interface with fully qualified name,
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create matching tags for <code>FunSpec</code>s like this:
+ * create a matching tag for <code>FunSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -543,7 +543,6 @@ import Suite.autoTagClassAnnotations
  * 
  * import org.scalatest.Tag
  * 
- * object SlowTest extends Tag("com.mycompany.tags.SlowTest")
  * object DbTest extends Tag("com.mycompany.tags.DbTest")
  * </pre>
  *
@@ -553,16 +552,17 @@ import Suite.autoTagClassAnnotations
  *
  * <pre class="stHighlight">
  * import org.scalatest.FunSpec
+ * import org.scalatest.tagobjects.Slow
  * 
  * class SetSpec extends FunSpec {
  * 
  *   describe("A Set") {
  *     describe("when empty") {
- *       it("should have size 0", SlowTest) {
+ *       it("should have size 0", Slow) {
  *         assert(Set.empty.size === 0)
  *       }
  *       
- *       it("should produce NoSuchElementException when head is invoked", SlowTest, DbTest) {
+ *       it("should produce NoSuchElementException when head is invoked", Slow, DbTest) {
  *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
@@ -573,7 +573,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * This code marks both tests with the <code>com.mycompany.tags.SlowTest</code> tag, 
+ * This code marks both tests with the <code>org.scalatest.tags.Slow</code> tag, 
  * and the second test with the <code>com.mycompany.tags.DbTest</code> tag.
  * </p>
  *

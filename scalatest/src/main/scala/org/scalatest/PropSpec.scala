@@ -536,9 +536,9 @@ import Suite.autoTagClassAnnotations
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
- * defined tag annotation interfaces with fully qualified names, <code>com.mycompany.tags.SlowTest</code> and
+ * defined a tag annotation interface with fully qualified names,
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create matching tags for <code>PropSpec</code>s like this:
+ * create a matching tag for <code>PropSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -546,7 +546,6 @@ import Suite.autoTagClassAnnotations
  *
  * import org.scalatest.Tag
  *
- * object SlowTest extends Tag("com.mycompany.tags.SlowTest")
  * object DbTest extends Tag("com.mycompany.tags.DbTest")
  * </pre>
  *
@@ -557,6 +556,7 @@ import Suite.autoTagClassAnnotations
  * <pre class="stHighlight">
  * import org.scalatest._
  * import prop._
+ * import tagobjects.Slow
  * import scala.collection.immutable._
  * 
  * class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
@@ -569,14 +569,14 @@ import Suite.autoTagClassAnnotations
  *       TreeSet.empty[Int]
  *     )
  * 
- *   property("an empty Set should have size 0", SlowTest) {
+ *   property("an empty Set should have size 0", Slow) {
  *     forAll(examples) { set =&gt;
  *       set.size should be (0)
  *     }
  *   }
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException",
- *       SlowTest, DbTest) {
+ *       Slow, DbTest) {
  * 
  *     forAll(examples) { set =&gt;
  *       a [NoSuchElementException] should be thrownBy { set.head }
@@ -586,7 +586,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * This code marks both tests with the <code>com.mycompany.tags.SlowTest</code> tag, 
+ * This code marks both tests with the <code>org.scalatest.tags.Slow</code> tag, 
  * and the second test with the <code>com.mycompany.tags.DbTest</code> tag.
  * </p>
  *
