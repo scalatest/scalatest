@@ -293,6 +293,98 @@ package org.scalatest
  * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a>
  * annotation instead.
  * </p>
+ *
+ * <a name="pendingTests"></a><h2>Pending tests</h2>
+ *
+ * <p>
+ * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
+ * pending tests is to facilitate a style of testing in which documentation of behavior is sketched
+ * out before tests are written to verify that behavior (and often, before the behavior of
+ * the system being tested is itself implemented). Such sketches form a kind of specification of
+ * what tests and functionality to implement later.
+ * </p>
+ *
+ * <p>
+ * To support this style of testing, a test can be given a name that specifies one
+ * bit of behavior required by the system being tested. The test can also include some code that
+ * sends more information about the behavior to the reporter when the tests run. At the end of the test,
+ * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
+ * </p>
+ *
+ * <p>
+ * Because tests in ScalaTest can be designated as pending with <code>TestPendingException</code>, both the test name and any information
+ * sent to the reporter when running the test can appear in the report of a test run. (In other words,
+ * the code of a pending test is executed just like any other test.) However, because the test completes abruptly
+ * with <code>TestPendingException</code>, the test will be reported as pending, to indicate
+ * the actual test, and possibly the functionality, has not yet been implemented. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.pending
+ *
+ * import org.scalatest.AsyncFunSuite
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class AddSuite extends AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *
+ *   test("addSoon will eventually compute a sum of passed Ints") (pending)
+ *
+ *   def addNow(addends: Int*): Int = addends.sum
+ *
+ *   test("addNow will immediately compute a sum of passed Ints") {
+ *     val sum: Int = addNow(1, 2)
+ *     // You can also write synchronous tests. The body
+ *     // must have result type Assertion:
+ *     assert(sum == 3)
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * (Note: "<code>(pending)</code>" is the body of the test. Thus the test contains just one statement, an invocation
+ * of the <code>pending</code> method, which throws <code>TestPendingException</code>.)
+ * If you run this version of <code>AddSuite</code> with:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; new AddSuite execute
+ * </pre>
+ *
+ * <p>
+ * It will run both tests, but report that first test is pending. You'll see:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * <span class="stGreen">AddSuite:</span>
+ * <span class="stYellow">- addSoon will eventually compute a sum of passed Ints (pending)</span>
+ * <span class="stGreen">- addNow will immediately compute a sum of passed Ints</span>
+ * </pre>
+ * 
+ * <p>
+ * One difference between an ignored test and a pending one is that an ignored test is intended to be used during a
+ * significant refactorings of the code under test, when tests break and you don't want to spend the time to fix
+ * all of them immediately. You can mark some of those broken tests as ignored temporarily, so that you can focus the red
+ * bar on just failing tests you actually want to fix immediately. Later you can go back and fix the ignored tests.
+ * In other words, by ignoring some failing tests temporarily, you can more easily notice failed tests that you actually
+ * want to fix. By contrast, a pending test is intended to be used before a test and/or the code under test is written.
+ * Pending indicates you've decided to write a test for a bit of behavior, but either you haven't written the test yet, or
+ * have only written part of it, or perhaps you've written the test but don't want to implement the behavior it tests
+ * until after you've implemented a different bit of behavior you realized you need first. Thus ignored tests are designed
+ * to facilitate refactoring of existing code whereas pending tests are designed to facilitate the creation of new code.
+ * </p>
+ *
+ * <p>
+ * One other difference between ignored and pending tests is that ignored tests are implemented as a test tag that is
+ * excluded by default. Thus an ignored test is never executed. By contrast, a pending test is implemented as a
+ * test that throws <code>TestPendingException</code> (which is what calling the <code>pending</code> method does). Thus
+ * the body of pending tests are executed up until they throw <code>TestPendingException</code>.
+ * </p>
+ *
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
