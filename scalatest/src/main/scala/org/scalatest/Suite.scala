@@ -998,7 +998,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
 
   /**
-   *  Run the passed test function in the context of a fixture established by this method.
+   * Run the passed test function in the context of a fixture established by this method.
    *
    * <p>
    * This method should set up the fixture needed by the tests of the
