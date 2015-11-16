@@ -234,7 +234,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-@deprecated("Please use org.scalatest.fixture.FunSpec instead")
+@deprecated("fixture.Spec has been deprecated and will be removed in a future version of ScalaTest. Please use org.scalatest.fixture.FunSpec instead.")
 abstract class Spec extends SpecLike {
 
   /**
