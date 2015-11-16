@@ -166,19 +166,40 @@ package org.scalatest
  * <code>TestRegistrationClosedException</code>.
  * </p>
  *
- * <a name="executionContext"></a><h2>Execution context</h2>
+ * <a name="executionContext"></a><h2>The execution context and parallel execution</h2>
  *
  * <p>
- * Here I'll describe that you must define an executionContext, and the test bodies will
- * be executed on those threads. Show an example in JVM and JS. 
+ * In an <code>AsyncFunSuite</code> you will need to define an implicit
+ * <code>ExecutionContext</code> named <code>executionContext</code>. This
+ * execution context will be used by <code>AsyncFunSuite</code> to 
+ * transform the <code>Future[Assertion]</code>s returned by tests
+ * into the <code>Future[Outcome]</code> returned by the test function
+ * passed to <code>withAsyncFixture</code>.
+ * It is also intended to be used in the tests when an <code>ExecutionContext</code>
+ * is needed, including when you map assertions onto a future.
+ * </p>
+ * 
+ * <p>
+ * By default, tests in an <code>AsyncFunSuite</code> will be executed one after
+ * another, <em>i.e.</em>, serially. This is true whether those tests are synchronous
+ * or asynchronous, no matter what threads are involved. This default behavior allows
+ * you to re-use a shared fixture, such as an external database that needs to be cleaned
+ * after each test, in multiple tests.
  * </p>
  *
  * <p>
- * Then I'll describe one-at-a time default, and that if you want parallel execution
- * you mix in PTE. But if the execution context includes multiple threads, then
- * you'll need to synchronize access to shared mutable state.
+ * If you want the tests of an <code>AsyncFunSuite</code> to be executed in parallel, you
+ * must mix in <code>ParallelTestExecution</code>.
+ * If <code>ParallelTestExecution</code> is mixed in but no distributor is passed, 
+ * tests will be started sequentially, by the single thread that invoked <code>run</code>,
+ * without waiting for tests to complete before the next test is started. Nevertheless,
+ * asynchronous tests will be allowed to <em>complete</em> in parallel, using threads
+ * from the <code>executionContext</code>. If <code>ParallelTestExecution</code> is mixed
+ * in and a distributor is passed, tests will be started in parallel, using threads from
+ * the distributor and allowed to complete in parallel, using threads from the
+ * <code>executionContext</code>.
  * </p>
- *
+ * 
  * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * <p>
