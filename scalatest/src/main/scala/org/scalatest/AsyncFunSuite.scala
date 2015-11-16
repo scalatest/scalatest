@@ -385,6 +385,88 @@ package org.scalatest
  * the body of pending tests are executed up until they throw <code>TestPendingException</code>.
  * </p>
  *
+ * <a name="taggingTests"></a><h2>Tagging tests</h2>
+ *
+ * <p>
+ * An <code>AsyncFunSuite</code>'s tests may be classified into groups by <em>tagging</em> them with string names.
+ * As with any suite, when executing an <code>AsyncFunSuite</code>, groups of tests can
+ * optionally be included and/or excluded. To tag an <code>AsyncFunSuite</code>'s tests,
+ * you pass objects that extend class <code>org.scalatest.Tag</code> to methods
+ * that register tests. Class <code>Tag</code> takes one parameter, a string name.  If you have
+ * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
+ * will probably want to use tag names on your test functions that match. To do so, simply 
+ * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
+ * defined a tag annotation interface with fully qualified name,
+ * <code>com.mycompany.tags.DbTest</code>, then you could
+ * create a matching tag for <code>AsyncFunSuite</code>s like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.tagging
+ *
+ * import org.scalatest.Tag
+ *
+ * object DbTest extends Tag("com.mycompany.tags.DbTest")
+ * </pre>
+ *
+ * <p>
+ * Given these definitions, you could place <code>AsyncFunSuite</code> tests into groups like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * import org.scalatest.AsyncFunSuite
+ * import org.scalatest.tagobjects.Slow
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class AddSuite extends AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *
+ *   test("addSoon will eventually compute a sum of passed Ints", Slow) {
+ *     val futureSum: Future[Int] = addSoon(1, 2)
+ *     // You can map assertions onto a Future, then return
+ *     // the resulting Future[Assertion] to ScalaTest:
+ *     futureSum map { sum =&gt; assert(sum == 3) }
+ *   }
+ *
+ *   def addNow(addends: Int*): Int = addends.sum
+ *
+ *   test("addNow will immediately compute a sum of passed Ints",
+ *       Slow, DbTest) {
+ *
+ *     val sum: Int = addNow(1, 2)
+ *     // You can also write synchronous tests. The body
+ *     // must have result type Assertion:
+ *     assert(sum == 3)
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * This code marks both tests with the <code>org.scalatest.tags.Slow</code> tag, 
+ * and the second test with the <code>com.mycompany.tags.DbTest</code> tag.
+ * </p>
+ *
+ * <p>
+ * The <code>run</code> method takes a <code>Filter</code>, whose constructor takes an optional
+ * <code>Set[String]</code> called <code>tagsToInclude</code> and a <code>Set[String]</code> called
+ * <code>tagsToExclude</code>. If <code>tagsToInclude</code> is <code>None</code>, all tests will be run
+ * except those those belonging to tags listed in the
+ * <code>tagsToExclude</code> <code>Set</code>. If <code>tagsToInclude</code> is defined, only tests
+ * belonging to tags mentioned in the <code>tagsToInclude</code> set, and not mentioned in <code>tagsToExclude</code>,
+ * will be run.
+ * </p>
+ *
+ * <p>
+ * It is recommended, though not required, that you create a corresponding tag annotation when you
+ * create a <code>Tag</code> object. A tag annotation allows you to tag all the tests of an <code>AsyncFunSuite</code> in
+ * one stroke by annotating the class. For more information and examples, see the
+ * <a href="Tag.html">documentation for class <code>Tag</code></a>.
+ * </p>
+ *
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
