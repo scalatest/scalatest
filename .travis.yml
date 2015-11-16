@@ -41,6 +41,7 @@ env:
     - MODE=genLoneElementTests
     - MODE=genEmptyTests
     - MODE=examples
+    - MODE=examplesJS
 #    - MODE=genSafeStyleTests
 
 branches:

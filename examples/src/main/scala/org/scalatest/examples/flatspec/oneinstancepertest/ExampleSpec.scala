@@ -18,7 +18,7 @@ package org.scalatest.examples.flatspec.oneinstancepertest
 import org.scalatest._
 import collection.mutable.ListBuffer
 
-class ExampleSuite extends FlatSpec with OneInstancePerTest {
+class ExampleSpec extends FlatSpec with OneInstancePerTest {
 
   val builder = new StringBuilder("ScalaTest is ")
   val buffer = new ListBuffer[String]
@@ -34,5 +34,7 @@ class ExampleSuite extends FlatSpec with OneInstancePerTest {
     builder.append("fun!")
     assert(builder.toString === "ScalaTest is fun!")
     assert(buffer.isEmpty)
-  } 
+  }
+
+  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSpec
 }

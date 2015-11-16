@@ -299,7 +299,16 @@ if [[ $MODE = 'examples' ]] ; then
   #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
   while true; do echo "..."; sleep 60; done &
   project examples
-  sbt ++$TRAVIS_SCALA_VERSION compile test:compile
+  sbt ++$TRAVIS_SCALA_VERSION examples/compile examples/test:compile
+  rc=$?
+  kill %1
+  exit $rc
+fi
+
+if [[ $MODE = 'examplesJS' ]] ; then
+  #this echo is required to keep travis alive, because some compilation parts are silent for more than 10 minutes
+  while true; do echo "..."; sleep 60; done &
+  sbt ++$TRAVIS_SCALA_VERSION examplesJS/compile examplesJS/test:compile
   rc=$?
   kill %1
   exit $rc

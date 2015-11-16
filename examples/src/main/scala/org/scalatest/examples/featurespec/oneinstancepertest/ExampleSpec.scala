@@ -18,7 +18,7 @@ package org.scalatest.examples.featurespec.oneinstancepertest
 import org.scalatest._
 import collection.mutable.ListBuffer
 
-class ExampleSuite extends FeatureSpec with OneInstancePerTest {
+class ExampleSpec extends FeatureSpec with OneInstancePerTest {
 
   val builder = new StringBuilder("ScalaTest is designed to ")
   val buffer = new ListBuffer[String]
@@ -37,4 +37,6 @@ class ExampleSuite extends FeatureSpec with OneInstancePerTest {
       assert(buffer.isEmpty)
     } 
   }
+
+  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSpec
 }
