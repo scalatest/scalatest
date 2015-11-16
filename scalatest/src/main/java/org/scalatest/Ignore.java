@@ -104,6 +104,10 @@ import java.lang.annotation.*;
  * <span class="stYellow">- an empty Set should have size 0 !!! IGNORED !!!</span>
  * <span class="stGreen">- invoking head on an empty Set should produce NoSuchElementException</span>
  * </pre>
+ * 
+ * <p>
+ * Note that because reflection is not supported on Scala.js, this annotation will only work on the JVM, not on Scala.js.
+ * </p>
  *
  * @author Bill Venners
  * @author Chua Chee Seng

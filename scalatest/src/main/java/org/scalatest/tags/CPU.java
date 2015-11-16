@@ -86,6 +86,10 @@ import org.scalatest.TagAnnotation;
  * The main use case of annotating a test or suite of tests is to select or deselect them during runs by supplying tags to include and/or exclude. For more information,
  * see the relevant section in the documentation of object <a href="../tools/Runner$.html#specifyingTagsToIncludeAndExclude"><code>Runner</code></a>.
  * </p>
+ * 
+ * <p>
+ * Note that because reflection is not supported on Scala.js, this annotation will only work on the JVM, not on Scala.js.
+ * </p>
  */
 @TagAnnotation("cpu")
 @Retention(RetentionPolicy.RUNTIME)

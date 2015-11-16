@@ -20,5 +20,4 @@ private[scalatest] class DeferredAbortedSuite(t: Throwable) extends Suite {
   override def run(testName: Option[String], args: Args): Status = {
     throw t
   }
-
 }
