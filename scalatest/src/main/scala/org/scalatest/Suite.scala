@@ -823,16 +823,18 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val formatter = formatterForSuiteStarting(thisSuite)
       dispatch(SuiteStarting(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), formatter, Some(getTopOfClass(thisSuite))))
 
-      run(
-        None,
-        Args(dispatch,
-        Stopper.default,
-        filter,
-        configMap,
-        None,
-        tracker,
-        Set.empty)
-      )
+      val status =
+        run(
+          None,
+          Args(dispatch,
+          Stopper.default,
+          filter,
+          configMap,
+          None,
+          tracker,
+          Set.empty)
+        )
+      status.waitUntilCompleted()
       val suiteCompletedFormatter = formatterForSuiteCompleted(thisSuite)
       val duration = System.currentTimeMillis - suiteStartTime
       dispatch(SuiteCompleted(tracker.nextOrdinal(), thisSuite.suiteName, thisSuite.suiteId, Some(thisSuite.getClass.getName), Some(duration), suiteCompletedFormatter, Some(getTopOfClass(thisSuite))))
