@@ -952,6 +952,17 @@ object ScalatestBuild extends Build {
       libraryDependencies += scalacheckDependency("compile")
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
+  lazy val examplesJS = Project("examplesJS", file("examples.js"), delegates = scalatest :: Nil)
+    .settings(
+      scalaVersion := buildScalaVersion,
+      libraryDependencies += scalacheckDependency("compile"),
+      sourceGenerators in Compile += {
+        Def.task {
+          GenExamplesJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+        }.taskValue
+      }
+    ).dependsOn(scalacticMacroJS, scalacticJS, scalatestJS).enablePlugins(ScalaJSPlugin)
+
   def genFiles(name: String, generatorSource: String)(gen: (File, String, String) => Unit)(basedir: File, outDir: File, theVersion: String, theScalaVersion: String): Seq[File] = {
     val tdir = outDir / "scala" / name
     val jdir = outDir / "java" / name

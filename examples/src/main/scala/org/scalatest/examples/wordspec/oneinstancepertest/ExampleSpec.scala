@@ -18,7 +18,7 @@ package org.scalatest.examples.wordspec.oneinstancepertest
 import org.scalatest._
 import collection.mutable.ListBuffer
 
-class ExampleSuite extends WordSpec with OneInstancePerTest {
+class ExampleSpec extends WordSpec with OneInstancePerTest {
 
   val builder = new StringBuilder("ScalaTest is ")
   val buffer = new ListBuffer[String]
@@ -37,4 +37,6 @@ class ExampleSuite extends WordSpec with OneInstancePerTest {
       assert(buffer.isEmpty)
     } 
   }
+
+  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSpec
 }

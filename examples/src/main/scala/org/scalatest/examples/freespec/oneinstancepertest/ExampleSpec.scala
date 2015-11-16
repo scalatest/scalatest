@@ -18,7 +18,7 @@ package org.scalatest.examples.freespec.oneinstancepertest
 import org.scalatest._
 import collection.mutable.ListBuffer
 
-class ExampleSuite extends FreeSpec with OneInstancePerTest {
+class ExampleSpec extends FreeSpec with OneInstancePerTest {
 
   val builder = new StringBuilder("ScalaTest is ")
   val buffer = new ListBuffer[String]
@@ -37,4 +37,6 @@ class ExampleSuite extends FreeSpec with OneInstancePerTest {
       assert(buffer.isEmpty)
     } 
   }
+
+  //SCALATESTJS-ONLY def newInstance: Suite with OneInstancePerTest = new ExampleSpec
 }
