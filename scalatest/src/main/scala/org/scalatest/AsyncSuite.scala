@@ -18,6 +18,7 @@ package org.scalatest
 import scala.concurrent.Future
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.concurrent.ExecutionContext
+import scala.language.implicitConversions // To convert Assertion to Future[Assertion]
 
 trait AsyncSuite extends Suite { thisAsyncSuite =>
 

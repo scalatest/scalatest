@@ -488,6 +488,186 @@ package org.scalatest
  * <a href="Tag.html">documentation for class <code>Tag</code></a>.
  * </p>
  *
+ * <a name="sharedFixtures"></a>
+ * <h2>Shared fixtures</h2>
+ *
+ * <p>
+ * A test <em>fixture</em> is composed of the objects and other artifacts (files, sockets, database
+ * connections, <em>etc.</em>) tests use to do their work.
+ * When multiple tests need to work with the same fixtures, it is important to try and avoid
+ * duplicating the fixture code across those tests. The more code duplication you have in your
+ * tests, the greater drag the tests will have on refactoring the actual production code.
+ * </p>
+ *
+ * <p>
+ * ScalaTest recommends three techniques to eliminate such code duplication:
+ * </p>
+ *
+ * <ul>
+ * <li>Refactor using Scala</li>
+ * <li>Override <code>withAsyncFixture</code></li>
+ * <li>Mix in a <em>before-and-after</em> trait</li>
+ * </ul>
+ *
+ * <p>Each technique is geared towards helping you reduce code duplication without introducing
+ * instance <code>var</code>s, shared mutable objects, or other dependencies between tests. Eliminating shared
+ * mutable state across tests will make your test code easier to reason about and more amenable for parallel
+ * test execution.</p><p>The following sections
+ * describe these techniques, including explaining the recommended usage
+ * for each. But first, here's a table summarizing the options:</p>
+ *
+ * <table style="border-collapse: collapse; border: 1px solid black">
+ *
+ * <tr>
+ *   <td colspan="2" style="background-color: #CCCCCC; border-width: 1px; padding: 3px; padding-top: 7px; border: 1px solid black; text-align: left">
+ *     <strong>Refactor using Scala when different tests need different fixtures.</strong>
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#getFixtureMethods">get-fixture methods</a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     The <em>extract method</em> refactor helps you create a fresh instances of mutable fixture objects in each test
+ *     that needs them, but doesn't help you clean them up when you're done.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#loanFixtureMethods">loan-fixture methods</a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Factor out dupicate code with the <em>loan pattern</em> when different tests need different fixtures <em>that must be cleaned up afterwards</em>.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td colspan="2" style="background-color: #CCCCCC; border-width: 1px; padding: 3px; padding-top: 7px; border: 1px solid black; text-align: left">
+ *     <strong>Override <code>withAsyncFixture</code> when most or all tests need the same fixture.</strong>
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#withAsyncFixtureNoArgAsyncTest">
+ *       <code>withAsyncFixture(NoArgAsyncTest)</code></a>
+ *     </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     <p>
+ *     The recommended default approach when most or all tests need the same fixture treatment. This general technique
+ *     allows you, for example, to perform side effects at the beginning and end of all or most tests, 
+ *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
+ *     Use this technique unless:
+ *     </p>
+ *  <ul>
+ *  <li>Different tests need different fixtures (refactor using Scala instead)</li>
+ *  <li>An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</li>
+ *  <li>You have objects to pass into tests (override <code>withAsyncFixture(<em>One</em>ArgAsyncTest)</code> instead)</li>
+ *  </ul>
+ *  </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#withAsyncFixtureOneArgAsyncTest">
+ *       <code>withAsyncFixture(OneArgAsyncTest)</code>
+ *     </a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Use when you want to pass the same fixture object or objects as a parameter into all or most tests.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td colspan="2" style="background-color: #CCCCCC; border-width: 1px; padding: 3px; padding-top: 7px; border: 1px solid black; text-align: left">
+ *     <strong>Mix in a before-and-after trait when you want an aborted suite, not a failed test, if the fixture code fails.</strong>
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#beforeAndAfter"><code>BeforeAndAfter</code></a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Use this boilerplate-buster when you need to perform the same side-effects before and/or after tests, rather than at the beginning or end of tests.
+ *   </td>
+ * </tr>
+ *
+ * <tr>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
+ *     <a href="#composingFixtures"><code>BeforeAndAfterEach</code></a>
+ *   </td>
+ *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
+ *     Use when you want to <em>stack traits</em> that perform the same side-effects before and/or after tests, rather than at the beginning or end of tests.
+ *   </td>
+ * </tr>
+ *
+ * </table>
+ *
+ * <a name="getFixtureMethods"></a>
+ * <h4>Calling get-fixture methods</h4>
+ *
+ * <p>
+ * If you need to create the same mutable fixture objects in multiple tests, and don't need to clean them up after using them, the simplest approach is to write one or
+ * more <em>get-fixture</em> methods. A get-fixture method returns a new instance of a needed fixture object (or an holder object containing
+ * multiple fixture objects) each time it is called. You can call a get-fixture method at the beginning of each
+ * test that needs the fixture, storing the returned object or objects in local variables. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.getfixture
+ *
+ * import org.scalatest.AsyncFunSuite
+ * import collection.mutable.ListBuffer
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class ExampleSuite extends AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   class Fixture {
+ *     val builder = new StringBuilder("ScalaTest is ")
+ *     val buffer = new ListBuffer[String]
+ *   }
+ *
+ *   def fixture = new Fixture
+ *
+ *   test("Testing should be easy") {
+ *     val f = fixture
+ *     f.builder.append("easy!")
+ *     val fut = Future { (f.builder.toString, f.buffer.toList) }
+ *     fut map { case (s, xs) =>
+ *       assert(s === "ScalaTest is easy!")
+ *       assert(xs.isEmpty)
+ *       f.buffer += "sweet"
+ *       succeed
+ *     }
+ *   } 
+ *
+ *   test("Testing should be fun") {
+ *     val f = fixture
+ *     f.builder.append("fun!")
+ *     val fut = Future { (f.builder.toString, f.buffer.toList) }
+ *     fut map { case (s, xs) =>
+ *       assert(s === "ScalaTest is fun!")
+ *       assert(xs.isEmpty)
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * The &ldquo;<code>f.</code>&rdquo; in front of each use of a fixture object provides a visual indication of which objects 
+ * are part of the fixture, but if you prefer, you can import the the members with &ldquo;<code>import f._</code>&rdquo; and use the names directly.
+ * </p>
+ *
+ * <p>
+ * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method. For example, if you could pass
+ * in an initial value for a mutable fixture object as a parameter to the get-fixture method.
+ * </p>
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
