@@ -787,6 +787,125 @@ package org.scalatest
  * implementation.
  * </p>
  *
+ * <a name="loanFixtureMethods"></a>
+ * <h4>Calling loan-fixture methods</h4>
+ *
+ * <p>
+ * If you need to both pass a fixture object into a test <em>and</em> perform cleanup at the end of the test, you'll need to use the <em>loan pattern</em>.
+ * If different tests need different fixtures that require cleanup, you can implement the loan pattern directly by writing <em>loan-fixture</em> methods.
+ * A loan-fixture method takes a function whose body forms part or all of a test's code. It creates a fixture, passes it to the test code by invoking the
+ * function, then cleans up the fixture after the function returns.
+ * </p>
+ *
+ * <p>
+ * The following example shows three tests that use two fixtures, a database and a file. Both require cleanup after, so each is provided via a
+ * loan-fixture method. (In this example, the database is simulated with a <code>StringBuffer</code>.)
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.loanfixture
+ *
+ * import java.util.concurrent.ConcurrentHashMap
+ *
+ * object DbServer { // Simulating a database server
+ *   type Db = StringBuffer
+ *   private val databases = new ConcurrentHashMap[String, Db]
+ *   def createDb(name: String): Db = {
+ *     val db = new StringBuffer
+ *     databases.put(name, db)
+ *     db
+ *   }
+ *   def removeDb(name: String): Unit = {
+ *     databases.remove(name)
+ *   }
+ * }
+ *
+ * import org.scalatest._
+ * import DbServer._
+ * import java.util.UUID.randomUUID
+ * import java.io._
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class ExampleSuite extends AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   def withDatabase(testCode: Future[Db] =&gt; Future[Assertion]) = {
+ *     val dbName = randomUUID.toString
+ *     val futureDb = Future { createDb(dbName) } // create the fixture
+ *     val futurePopulatedDb =
+ *       futureDb map { db =&gt;
+ *         db.append("ScalaTest is ") // perform setup 
+ *       }
+ *     val futureAssertion = testCode(futurePopulatedDb) // "loan" the fixture to the test
+ *     futureAssertion onComplete { _ =&gt; removeDb(dbName) } // clean up the fixture
+ *     futureAssertion
+ *   }
+ *
+ *   def withFile(testCode: (File, FileWriter) =&gt; Future[Assertion]) = {
+ *     val file = File.createTempFile("hello", "world") // create the fixture
+ *     val writer = new FileWriter(file)
+ *     try {
+ *       writer.write("ScalaTest is ") // set up the fixture
+ *       val futureAssertion = testCode(file, writer) // "loan" the fixture to the test
+ *       futureAssertion onComplete { _ =&gt; writer.close() } // clean up the fixture
+ *       futureAssertion
+ *     }
+ *     catch {
+ *       case ex: Throwable =&gt;
+ *         writer.close() // clean up the fixture
+ *         throw ex
+ *     }
+ *   }
+ *
+ *   // This test needs the file fixture
+ *   test("Testing should be productive") {
+ *     withFile { (file, writer) =&gt;
+ *       writer.write("productive!")
+ *       writer.flush()
+ *       assert(file.length === 24)
+ *     }
+ *   }
+ *
+ *   // This test needs the database fixture
+ *   test("Test code should be readable") {
+ *     withDatabase { futureDb =&gt;
+ *       futureDb map { db =&gt;
+ *         db.append("readable!")
+ *         assert(db.toString === "ScalaTest is readable!")
+ *       }
+ *     }
+ *   }
+ *
+ *   // This test needs both the file and the database
+ *   test("Test code should be clear and concise") {
+ *     withDatabase { futureDb =&gt;
+ *       withFile { (file, writer) =&gt; // loan-fixture methods compose
+ *         futureDb map { db =&gt;
+ *           db.append("clear!")
+ *           writer.write("concise!")
+ *           writer.flush()
+ *           assert(db.toString === "ScalaTest is clear!")
+ *           assert(file.length === 21)
+ *         }
+ *       }
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * As demonstrated by the last test, loan-fixture methods compose. Not only do loan-fixture methods allow you to
+ * give each test the fixture it needs, they allow you to give a test multiple fixtures and clean everything up afterwards.
+ * </p>
+ *
+ * <p>
+ * Also demonstrated in this example is the technique of giving each test its own "fixture sandbox" to play in. When your fixtures
+ * involve external side-effects, like creating files or databases, it is a good idea to give each file or database a unique name as is
+ * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
+ * </p>
+ *
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
