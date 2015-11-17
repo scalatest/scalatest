@@ -59,7 +59,7 @@ import Suite.autoTagClassAnnotations
  * <p>
  * A <code>FunSpec</code> contains <em>describe clauses</em> and tests. You define a describe clause
  * with <code>describe</code>, and a test with either <code>it</code> or <code>they</code>. 
- * <code>describe</code>,  <code>it</code>, and and <code>they</code> are methods, defined in
+ * <code>describe</code>,  <code>it</code>, and <code>they</code> are methods, defined in
  * <code>FunSpec</code>, which will be invoked
  * by the primary constructor of <code>SetSpec</code>. 
  * A describe clause names, or gives more information about, the <em>subject</em> (class or other entity) you are specifying
@@ -890,7 +890,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Here's an example in which <code>withFixture(NoArgTest)</code> is used to take a snapshot of the working directory if a test fails, and 
- * and send that information to the reporter:
+ * send that information to the reporter:
  * </p>
  *
  * <pre class="stHighlight">

@@ -999,7 +999,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Here's an example in which <code>withFixture(NoArgTest)</code> is used to take a snapshot of the working directory if a test fails, and 
- * and send that information to the reporter:
+ * send that information to the reporter:
  * </p>
  *
  * <pre class="stHighlight">
