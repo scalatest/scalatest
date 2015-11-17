@@ -639,7 +639,7 @@ package org.scalatest
  *     val f = fixture
  *     f.builder.append("easy!")
  *     val fut = Future { (f.builder.toString, f.buffer.toList) }
- *     fut map { case (s, xs) =>
+ *     fut map { case (s, xs) =&gt;
  *       assert(s === "ScalaTest is easy!")
  *       assert(xs.isEmpty)
  *       f.buffer += "sweet"
@@ -651,7 +651,7 @@ package org.scalatest
  *     val f = fixture
  *     f.builder.append("fun!")
  *     val fut = Future { (f.builder.toString, f.buffer.toList) }
- *     fut map { case (s, xs) =>
+ *     fut map { case (s, xs) =&gt;
  *       assert(s === "ScalaTest is fun!")
  *       assert(xs.isEmpty)
  *     }
@@ -668,6 +668,125 @@ package org.scalatest
  * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method. For example, if you could pass
  * in an initial value for a mutable fixture object as a parameter to the get-fixture method.
  * </p>
+ *
+ * <a name="withAsyncFixtureNoArgAsyncTest"></a>
+ * <h4>Overriding <code>withAsyncFixture(NoArgAsyncTest)</code></h4>
+ *
+ * <p>
+ * Although the get-fixture method approach takes care of setting up a fixture at the beginning of each
+ * test, it doesn't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
+ * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withAsyncFixture(NoArgAsyncTest)</code>, a
+ * method defined in trait <a href="AsyncSuite.html"><code>AsyncSuite</code></a>, a supertrait of <code>AsyncFunSuite</code>.
+ * </p>
+ *
+ * <p>
+ * Trait <code>AsyncFunSuite</code>'s <code>runTest</code> method passes a no-arg async test function to
+ * <code>withAsyncFixture(NoArgAsyncTest)</code>. It is <code>withAsyncFixture</code>'s
+ * responsibility to invoke that test function. The default implementation of <code>withAsyncFixture</code> simply
+ * invokes the function and returns the result, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Default implementation in trait AsyncSuite
+ * protected def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
+ *   test()
+ * }
+ * </pre>
+ *
+ * <p>
+ * You can, therefore, override <code>withAsyncFixture</code> to perform setup before invoking the test function,
+ * and/or perform cleanup after the test completes (by registering the cleanup code as a callback on the <code>Future[Outcome]</code>
+ * returned by the test function).
+ * </p>
+ *
+ * <p>
+ * The <code>withAsyncFixture</code> method is designed to be stacked, and to enable this, you should always call the <code>super</code> implementation
+ * of <code>withAsyncFixture</code>, and let it invoke the test function rather than invoking the test function directly. In other words, instead of writing
+ * &ldquo;<code>test()</code>&rdquo;, you should write &ldquo;<code>super.withAsyncFixture(test)</code>&rdquo;, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * override def withAsyncFixture(test: NoArgTest) = {
+ *
+ *   // Perform setup
+ *   val futureOutcome =
+ *     super.withAsyncFixture(test) // Invoke the test function
+ *
+ *   futureOutcome onComplete { _ =&gt;
+ *     // Perform cleanup
+ *   }
+ *
+ *   futureOutcome
+ * }
+ * </pre>
+ *
+ * <p>
+ * Here's an example in which <code>withAsyncFixture(NoArgAsyncTest)</code> is used to take a snapshot of the working directory if a test fails, and 
+ * send that information to the standard output stream:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.noargtest
+ *
+ * import java.io.File
+ * import org.scalatest._
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class ExampleSuite extends AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   override def withAsyncFixture(test: NoArgAsyncTest) = {
+ *
+ *     val futureOutcome = super.withAsyncFixture(test)
+ *
+ *     futureOutcome onSuccess {
+ *       case failed: Failed =&gt;
+ *         val currDir = new File(".")
+ *         val fileNames = currDir.list()
+ *         println("Dir snapshot: " + fileNames.mkString(", "))
+ *         failed
+ *       case other =&gt; other
+ *     }
+ *
+ *     futureOutcome
+ *   }
+ *
+ *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *
+ *   test("This test should succeed") {
+ *     addSoon(1, 1) map { sum =&gt; assert(sum === 2) }
+ *   }
+ *
+ *   test("This test should fail") {
+ *     addSoon(1, 1) map { sum =&gt; assert(sum === 3) }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Running this version of <code>ExampleSuite</code> in the interpreter in a directory with two files, <code>hello.txt</code> and <code>world.txt</code>
+ * would give the following output:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; new ExampleSuite execute
+ * <span class="stGreen">ExampleSuite:
+ * - this test should succeed</span>
+ * Dir snapshot: hello.txt, world.txt
+ * <span class="stRed">- this test should fail *** FAILED ***
+ *   2 did not equal 3 (<console>:33)</span>
+ * </pre>
+ *
+ * <p>
+ * Note that the <a href="Suite$NoArgTest.html"><code>NoArgAsyncTest</code></a> passed to <code>withAsyncFixture</code>, in addition to
+ * an <code>apply</code> method that executes the test, also includes the test name and the <a href="#configMapSection">config
+ * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withAsyncFixture</code>
+ * implementation.
+ * </p>
+ *
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
