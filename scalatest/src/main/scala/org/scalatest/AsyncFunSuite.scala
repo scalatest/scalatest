@@ -906,6 +906,98 @@ package org.scalatest
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
+ * <a name="withFixtureOneArgTest"></a>
+ * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
+ *
+ * <p>
+ * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.AsyncSuite</code>
+ * and overriding <code>withAsyncFixture(OneArgAsyncTest)</code>.
+ * Each test in a <code>fixture.AsyncSuite</code> takes a fixture as a parameter, allowing you to pass the fixture into
+ * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
+ * <code>withAsyncFixture</code> method that takes a <code>OneArgAsyncTest</code>. This <code>withAsyncFixture</code> method is responsible for
+ * invoking the one-arg async test function, so you can perform fixture set up before, invoking and passing
+ * the fixture into the test function, and perform clean up after the test completes (by registering the cleanup code as a
+ * callback on the Future[Outcome] returned by the test function).
+ * </p>
+ *
+ * <p>
+ * To enable the stacking of traits that define <code>withAsyncFixture(NoArgAsyncTest)</code>, it is a good idea to let
+ * <code>withAsyncFixture(NoArgAsyncTest)</code> invoke the test function instead of invoking the test
+ * function directly. To do so, you'll need to convert the <code>OneArgAsyncTest</code> to a <code>NoArgAsyncTest</code>. You can do that by passing
+ * the fixture object to the <code>toNoArgAsyncTest</code> method of <code>OneArgAsyncTest</code>. In other words, instead of
+ * writing &ldquo;<code>test(theFixture)</code>&rdquo;, you'd delegate responsibility for
+ * invoking the test function to the <code>withAsyncFixture(NoArgAsyncTest)</code> method of the same instance by writing:
+ * </p>
+ *
+ * <pre>
+ * withAsyncFixture(test.toNoArgAsyncTest(theFixture))
+ * </pre>
+ *
+ * <p>
+ * Here's a complete example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.oneargasynctest
+ *
+ * import org.scalatest._
+ * import java.io._
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class ExampleSuite extends fixture.AsyncFunSuite {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   case class FixtureParam(file: File, writer: FileWriter)
+ *
+ *   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
+ *
+ *     // create the fixture
+ *     val file = File.createTempFile("hello", "world")
+ *     val writer = new FileWriter(file)
+ *     val theFixture = FixtureParam(file, writer)
+ *
+ *     try {
+ *       writer.write("ScalaTest is ") // set up the fixture
+ *       // "loan" the fixture to the test
+ *       withAsyncFixture(test.toNoArgAsyncTest(theFixture))
+ *     }
+ *     catch {
+ *       case ex: Throwable =&gt;
+ *         writer.close() // clean up the fixture
+ *         throw ex
+ *     }
+ *   }
+ *
+ *   test("Testing should be easy") { f =&gt;
+ *     val futureFile =
+ *       Future {
+ *         f.writer.write("easy!")
+ *         f.writer.flush()
+ *         f.file
+ *       }
+ *     futureFile map { file =&gt; assert(file.length === 18) }
+ *   }
+ *
+ *   test("Testing should be fun") { f =&gt;
+ *     val futureFile =
+ *       Future {
+ *         f.writer.write("fun!")
+ *         f.writer.flush()
+ *         f.file
+ *       }
+ *     futureFile map { file =&gt; assert(file.length === 17) }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
+ * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
+ * the objects.  For more information on the <code>withAsyncFixture(OneArgAsyncTest)</code> technique, see the <a href="fixture/AsyncFunSuite.html">documentation for <code>fixture.AsyncFunSuite</code></a>.
+ * </p>
+ *
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
