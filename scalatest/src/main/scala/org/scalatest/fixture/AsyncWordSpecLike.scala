@@ -72,20 +72,20 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
 
   private[scalatest] val sourceFileName = "WordSpecRegistering.scala"
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -107,18 +107,18 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[Assertion]) {
+  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerTest(specText, OldTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, OldTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**
@@ -140,18 +140,18 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[Assertion]) {
+  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-    engine.registerIgnoredTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerIgnoredTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
@@ -265,7 +265,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * @param testFun the test function
      */
     def in(testFun: FixtureParam => Future[Assertion]) {
-      registerTestToRun(specText, tags, "in", testFun)
+      registerAsyncTestToRun(specText, tags, "in", testFun)
     }
 
     /**
@@ -287,7 +287,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * @param testFun the test function
      */
     def in(testFun: () => Future[Assertion]) {
-      registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
+      registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
     }
 
     /**
@@ -331,7 +331,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Future[Assertion]) {
-      registerTestToIgnore(specText, tags, "ignore", testFun)
+      registerAsyncTestToIgnore(specText, tags, "ignore", testFun)
     }
 
     /**
@@ -353,7 +353,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * @param testFun the test function
      */
     def ignore(testFun: () => Future[Assertion]) {
-      registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
+      registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
     }
   }
 
@@ -395,7 +395,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * @param testFun the test function
      */
     def in(testFun: FixtureParam => Future[Assertion]) {
-      registerTestToRun(string, List(), "in", testFun)
+      registerAsyncTestToRun(string, List(), "in", testFun)
     }
 
     /**
@@ -417,7 +417,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * @param testFun the test function
      */
     def in(testFun: () => Future[Assertion]) {
-      registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
+      registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
     }
 
     /**
@@ -461,7 +461,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Future[Assertion]) {
-      registerTestToIgnore(string, List(), "ignore", testFun)
+      registerAsyncTestToIgnore(string, List(), "ignore", testFun)
     }
 
     /**
@@ -483,7 +483,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * @param testFun the test function
      */
     def ignore(testFun: () => Future[Assertion]) {
-      registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
+      registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
 
     }
 

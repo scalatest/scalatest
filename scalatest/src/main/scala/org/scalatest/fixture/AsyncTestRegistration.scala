@@ -39,7 +39,7 @@ trait AsyncTestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
 
   /**
    * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
@@ -49,5 +49,5 @@ trait AsyncTestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
 }
