@@ -97,4 +97,35 @@ trait AsyncSuite extends Suite { thisAsyncSuite =>
   def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
     test()
   }
+
+  /**
+   * Ensures a cleanup function is executed whether a future-producing function that produces a
+   * valid future or completes abruptly with an exception. 
+   *
+   * <p>
+   * If the by-name passed as the first parameter, <code>future</code>, completes abruptly with an exception
+   * this method will catch that exception, invoke the cleanup function passed as the second parameter,
+   * <code>cleanup</code>, then rethrow the exception. Otherwise, this method will register the cleanup
+   * function to be invoked after the resulting future completes.
+   * </p>
+   *
+   * @param future a by-name that will produce a future
+   * @param cleanup a by-name that must be invoked when the future completes, or immediately if
+   *            an exception is thrown by the future-producing function
+   * @return the future produced by the first by-name parameter, with an invocation of the second
+   *            by-name parameter registered to execute when the future completes.
+   */
+  def withCleanup[T](future: => Future[T])(cleanup: => Unit): Future[T] = {
+    val result: Future[T] =
+      try future // evaluate the by-name once
+      catch {
+        case ex: Throwable =>
+          cleanup  // execute the clean up
+          throw ex // rethrow the same exception
+      }
+    // Made it this far, so register the cleanup as a 
+    // callback on the Future
+    result onComplete { _ => cleanup }
+    result
+  }
 }

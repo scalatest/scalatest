@@ -31,17 +31,14 @@ class ExampleSuite extends fixture.AsyncFunSuite {
     // create the fixture
     val file = File.createTempFile("hello", "world")
     val writer = new FileWriter(file)
-    val theFixture = FixtureParam(file, writer)
 
-    try {
+    withCleanup {
       writer.write("ScalaTest is ") // set up the fixture
+      val theFixture = FixtureParam(file, writer)
       // "loan" the fixture to the test
       withAsyncFixture(test.toNoArgAsyncTest(theFixture))
-    }
-    catch {
-      case ex: Throwable =>
-        writer.close() // clean up the fixture
-        throw ex
+    } {
+      writer.close() // clean up the fixture
     }
   }
 
