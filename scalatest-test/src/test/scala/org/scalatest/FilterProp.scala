@@ -20,6 +20,7 @@ import org.scalatest.events.Ordinal
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
 import org.scalatest.testng.TestNGSuite
+import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
 
@@ -57,7 +58,7 @@ class FilterProp extends SuiteProp {
   def testngSuite = new TestNGSuite {
     override def nestedSuites = Vector(new Suite {})
   }
-  def spec = new Spec {
+  def spec = new RefSpec {
     override def nestedSuites = Vector(new Suite {})
   }
   def fixtureSpec = new fixture.Spec with StringFixture {

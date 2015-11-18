@@ -20,11 +20,12 @@ import collection.mutable.ListBuffer
 
 class ExampleSpec extends FlatSpec {
 
-  def fixture = 
-    new {
-      val builder = new StringBuilder("ScalaTest is ")
-      val buffer = new ListBuffer[String]
-    }
+  class Fixture {
+    val builder = new StringBuilder("ScalaTest is ")
+    val buffer = new ListBuffer[String]
+  }
+  
+  def fixture = new Fixture
   
   "Testing" should "be easy" in {
     val f = fixture

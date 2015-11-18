@@ -16,6 +16,9 @@
 package org.scalatest.suiteprop
 
 import org.scalatest._
+// SKIP-SCALATESTJS-START
+import refspec.RefSpec
+// SKIP-SCALATESTJS-END
 
 class TwoSlowTestsExample extends SuiteExamples {
 
@@ -50,7 +53,7 @@ class TwoSlowTestsExample extends SuiteExamples {
   type FixtureServices = Services
 
   // SKIP-SCALATESTJS-START
-  class SpecExample extends Spec with Services {
+  class SpecExample extends RefSpec with Services {
     @SlowAsMolasses def `test first` = {}
     @Ignore @SlowAsMolasses def `test second` = {}
     override val theTestNames = Vector("test first", "test second")

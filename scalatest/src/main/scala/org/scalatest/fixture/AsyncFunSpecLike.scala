@@ -28,22 +28,22 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>fixture.FunSpec</code>, which is
- * a sister class to <code>org.scalatest.FunSpec</code> that can pass a
+ * Implementation trait for class <code>fixture.AsyncFunSpec</code>, which is
+ * a sister class to <code>org.scalatest.AsyncFunSpec</code> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="FunSpec.html"><code>fixture.FunSpec</code></a> is a class,
+ * <a href="AsyncFunSpec.html"><code>fixture.AsyncFunSpec</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.FunSpec</code> into some other
+ * to mix the behavior of <code>fixture.AsyncFunSpec</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.FunSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>fixture.AsyncFunSpec</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FunSpec.html">detailed
- * overview of <code>fixture.FunSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncFunSpec.html">detailed
+ * overview of <code>fixture.AsyncFunSpec</code></a>.
  * </p>
  *
  * @author Bill Venners

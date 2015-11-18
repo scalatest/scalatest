@@ -245,6 +245,7 @@ object GenScalaTestJS {
         "ShouldFileBePropertyMatcherSpec.scala",    // skipped because depends on java.io.File
         "ShouldLogicalMatcherExprSpec.scala",       // skipped because depends on mockito
         "ShouldSameInstanceAsSpec.scala",     // skipped because identical string in js env is always the same instance.
+        "RefSpecSpec.scala",          // skipped because depends on java reflections.
         "SpecSpec.scala",          // skipped because depends on java reflections.
         "StatusProp.scala",        // skipped because uses VirtualMachineError
         "StreamlinedXmlEqualitySpec.scala",    // skipped because use scala.xml

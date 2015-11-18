@@ -92,7 +92,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -100,7 +100,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -109,7 +109,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
   }
 
   class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Unit /* Assertion */) {
+    def apply(testFun: FixtureParam => Any /* Assertion */) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -118,7 +118,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
       //SCALATESTJS-ONLY val stackDepthAdjustment = -5
       engine.registerTest(testName, Transformer(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
-    def apply(testFun: () => Unit /* Assertion */) {
+    def apply(testFun: () => Any /* Assertion */) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -147,7 +147,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
     new ResultOfPropertyInvocation(testName, testTags: _*)
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Unit /* Assertion */) {
+    def apply(testFun: FixtureParam => Any /* Assertion */) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -156,7 +156,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
       engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
-    def apply(testFun: () => Unit /* Assertion */) {
+    def apply(testFun: () => Any /* Assertion */) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -334,7 +334,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Unit /* Assertion */) = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Any /* Assertion */) = {
     fixture => { f; Succeeded }
   }
 
@@ -347,7 +347,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
    * @return a function of <code>FixtureParam => Any</code>
    */
 /*
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Unit /* Assertion */): (FixtureParam => Unit /* Assertion */) =
+  protected implicit def convertNoArgToFixtureFunction(fun: () => Any /* Assertion */): (FixtureParam => Any /* Assertion */) =
     new NoArgTestWrapper(fun)
 */
 

@@ -632,9 +632,8 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <code>org.scalatest.FunSpec</code>, nested suites are executed then tests are executed. In an
    * <code>org.scalatest.path.FunSpec</code> it would be the opposite. To make the code easy to reason about,
    * therefore, this is just not allowed. If you want to add nested suites to a <code>path.FunSpec</code>, you can
-   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> or
-   * <a href="../Specs.html"><code>Specs</code></a> object and put them in whatever order
-   * you wish.
+   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a>
+   * object and put them in whatever order you wish.
    * </p>
    *
    * <p>
@@ -656,9 +655,8 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <code>org.scalatest.FunSpec</code>, nested suites are executed then tests are executed. In an
    * <code>org.scalatest.path.FunSpec</code> it would be the opposite. To make the code easy to reason about,
    * therefore, this is just not allowed. If you want to add nested suites to a <code>path.FunSpec</code>, you can
-   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a> or
-   * <a href="../Specs.html"><code>Specs</code></a> object and put them in whatever order
-   * you wish.
+   * instead wrap them all in a <a href="../Suites.html"><code>Suites</code></a>
+   * object and put them in whatever order you wish.
    * </p>
    *
    * <p>

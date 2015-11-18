@@ -68,7 +68,7 @@ import org.scalatest.TagAnnotation;
  * import org.scalatest._
  * import tags.Disk
  *
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *
  *   @Disk def &#96;an empty Set should have size 0&#96; {
  *     assert(Set.empty.size === 0)
@@ -85,6 +85,10 @@ import org.scalatest.TagAnnotation;
  * <p>
  * The main use case of annotating a test or suite of tests is to select or deselect them during runs by supplying tags to include and/or exclude. For more information,
  * see the relevant section in the documentation of object <a href="../tools/Runner$.html#specifyingTagsToIncludeAndExclude"><code>Runner</code></a>.
+ * </p>
+ * 
+ * <p>
+ * Note that because reflection is not supported on Scala.js, this annotation will only work on the JVM, not on Scala.js.
  * </p>
  */
 @TagAnnotation("disk")

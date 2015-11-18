@@ -17,10 +17,10 @@ package org.scalatest.examples.featurespec.tagging
 
 import org.scalatest.Tag
 
-object SlowTest extends Tag("com.mycompany.tags.SlowTest")
 object DbTest extends Tag("com.mycompany.tags.DbTest")
 
 import org.scalatest.FeatureSpec
+import org.scalatest.tagobjects.Slow
 
 class TVSet {
   private var on: Boolean = false
@@ -33,14 +33,14 @@ class TVSet {
 class TVSetSpec extends FeatureSpec {
 
   feature("TV power button") {
-    scenario("User presses power button when TV is off", SlowTest) {
+    scenario("User presses power button when TV is off", Slow) {
       val tv = new TVSet
       assert(!tv.isOn)
       tv.pressPowerButton()
       assert(tv.isOn)
     }
 
-    scenario("User presses power button when TV is on", SlowTest, DbTest) {
+    scenario("User presses power button when TV is on", Slow, DbTest) {
       val tv = new TVSet
       tv.pressPowerButton()
       assert(tv.isOn)

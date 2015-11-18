@@ -26,22 +26,22 @@ import org.scalatest.exceptions.NotAllowedException
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>FeatureSpec</code>, which represents
+ * Implementation trait for class <code>AsyncFeatureSpec</code>, which represents
  * a suite of tests in which each test represents one <em>scenario</em> of a
  * <em>feature</em>.
  *
  * <p>
- * <a href="FeatureSpec.html"><code>FeatureSpec</code></a> is a class, not a
+ * <a href="AsyncFeatureSpec.html"><code>AsyncFeatureSpec</code></a> is a class, not a
  * trait, to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FeatureSpec</code> into some other class, you can use this
- * trait instead, because class <code>FeatureSpec</code> does nothing more than
+ * behavior of <code>AsyncFeatureSpec</code> into some other class, you can use this
+ * trait instead, because class <code>AsyncFeatureSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FeatureSpec.html">detailed
- * overview of <code>FeatureSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncFeatureSpec.html">detailed
+ * overview of <code>AsyncFeatureSpec</code></a>.
  * </p>
  *
  * @author Bill Venners

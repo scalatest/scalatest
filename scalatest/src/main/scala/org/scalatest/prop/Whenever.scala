@@ -76,7 +76,7 @@ trait Whenever {
    * </p>
    *
    * <pre class="stHighlight">
-   * import org.scalatest.matchers.ShouldMatchers._
+   * import org.scalatest.matchers.Matchers._
    *
    * forAll (fractions) { (n: Int, d: Int) =>
    *

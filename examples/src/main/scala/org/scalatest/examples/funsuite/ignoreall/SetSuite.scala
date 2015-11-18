@@ -26,7 +26,7 @@ class SetSuite extends FunSuite {
   }
 
   test("Invoking head on an empty Set should produce NoSuchElementException") {
-    intercept[NoSuchElementException] {
+    assertThrows[NoSuchElementException] {
       Set.empty.head
     }
   }

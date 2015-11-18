@@ -98,7 +98,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -106,7 +106,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
     engine.registerTest(Resources.scenario(testText.trim), Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -115,7 +115,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
   }
 
   class ResultOfScenarioInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Unit /* Assertion */): Unit = {
+    def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -124,7 +124,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
       //SCALATESTJS-ONLY val stackDepthAdjustment = -5
       engine.registerTest(Resources.scenario(specText.trim), Transformer(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
     }
-    def apply(testFun: () => Unit /* Assertion */): Unit = {
+    def apply(testFun: () => Any /* Assertion */): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -157,7 +157,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
     new ResultOfScenarioInvocation(specText, testTags: _*)
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Unit /* Assertion */): Unit = {
+    def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -166,7 +166,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
       engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
-    def apply(testFun: () => Unit /* Assertion */): Unit = {
+    def apply(testFun: () => Any /* Assertion */): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -386,7 +386,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Unit /* Assertion */ = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Any /* Assertion */ = {
     fixture => { f; Succeeded }
   }
 
@@ -402,7 +402,7 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
    * @return a function of <code>FixtureParam => Any</code>
    */
 /*
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Unit /* Assertion */): (FixtureParam => Unit /* Assertion */) =
+  protected implicit def convertNoArgToFixtureFunction(fun: () => Any /* Assertion */): (FixtureParam => Any /* Assertion */) =
     new NoArgTestWrapper(fun)
 */
 

@@ -17,21 +17,21 @@ package org.scalatest.examples.funsuite.tagging
 
 import org.scalatest.Tag
 
-object SlowTest extends Tag("com.mycompany.tags.SlowTest")
 object DbTest extends Tag("com.mycompany.tags.DbTest")
 
 import org.scalatest.FunSuite
+import org.scalatest.tagobjects.Slow
 
 class SetSuite extends FunSuite {
 
-  test("An empty Set should have size 0", SlowTest) {
+  test("An empty Set should have size 0", Slow) {
     assert(Set.empty.size === 0)
   }
 
   test("Invoking head on an empty Set should produce NoSuchElementException",
-       SlowTest, DbTest)
+       Slow, DbTest)
   {
-    intercept[NoSuchElementException] {
+    assertThrows[NoSuchElementException] {
       Set.empty.head
     }
   }

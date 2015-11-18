@@ -21,22 +21,22 @@ import org.scalatest.Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>fixture.FunSuite</code>, which is
- * a sister class to <code>org.scalatest.FunSuite</code> that can pass a
+ * Implementation trait for class <code>fixture.AsyncFunSuite</code>, which is
+ * a sister class to <code>org.scalatest.AsyncFunSuite</code> that can pass a
  * fixture object into its tests.
  *
  * <p>
- * <a href="FunSuite.html"><code>fixture.FunSuite</code></a> is a class,
+ * <a href="AsyncFunSuite.html"><code>fixture.AsyncFunSuite</code></a> is a class,
  * not a trait, to minimize compile time given there is a slight compiler
  * overhead to mixing in traits compared to extending classes. If you need
- * to mix the behavior of <code>fixture.FunSuite</code> into some other
+ * to mix the behavior of <code>fixture.AsyncFunSuite</code> into some other
  * class, you can use this trait instead, because class
- * <code>fixture.FunSuite</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
+ * <code>fixture.AsyncFunSuite</code> does nothing more than extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FunSuite.html">detailed
- * overview of <code>fixture.FunSuite</code></a>.
+ * See the documentation of the class for a <a href="AsyncFunSuite.html">detailed
+ * overview of <code>fixture.AsyncFunSuite</code></a>.
  * </p>
  *
  * @author Bill Venners

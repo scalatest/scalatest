@@ -46,7 +46,7 @@ package org.scalatest
  *       }
  *       
  *       "should produce NoSuchElementException when head is invoked" in {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }

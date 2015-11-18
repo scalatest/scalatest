@@ -32,7 +32,7 @@ import enablers.Size
 import enablers.Messaging
 
 // TODO: check not not and not not not to make sure those negative failure messages make sense.
-class ShouldHavePropertiesSpec extends Spec with ShouldMatchers with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
+class ShouldHavePropertiesSpec extends RefSpec with ShouldMatchers with Checkers with ReturnsNormallyThrowsAssertion with BookPropertyMatchers {
 
   // Checking for a specific size
   object `The 'have (' syntax` {

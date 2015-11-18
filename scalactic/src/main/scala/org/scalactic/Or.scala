@@ -865,9 +865,9 @@ object Or {
    * <p>
    * This trait is used to curry the type parameters of <code>Or</code>, which takes two type parameters,
    * into a type (this trait) which takes one parameter, and another (its type member) which
-   * takes the other. For example, type <code>Or[G, B]</code> (which can be written in infix form
-   * as <code>G Or B</code>) can be expressed in curried form as <code>Or.BAD[B]#GOOD[G]</code>.
-   * Leaving off the final <code>G</code> type parameter yields a "type lambda," such as <code>Or.BAD[ErrorMessage]#GOOD</code>.
+   * takes the other. For example, type <code>Or[GOOD, BAD]</code> (which can be written in infix form
+   * as <code>GOOD Or BAD</code>) can be expressed in curried form as <code>Or.B[BAD]#G[GOOD]</code>.
+   * Leaving off the final <code>GOOD</code> type parameter yields a "type lambda," such as <code>Or.B[ErrorMessage]#G</code>.
    * </p>
    *
    * <p>
@@ -896,20 +896,24 @@ object Or {
    * </p>
    *
    * <pre>
-   * scala&gt; example(Good(3))
-   * &lt;console&gt;:26: error: no type parameters for method example: (ca: Context[A])Context[A] exist
-   *     so that it can be applied to arguments (org.scalactic.Good[Int,Nothing])
+   * scala&gt; val or: Int Or ErrorMessage = Good(3)
+   * or: org.scalactic.Or[Int,org.scalactic.ErrorMessage] = Good(3)
+   *
+   * scala&gt; example(or)
+   * &lt;console&gt;:16: error: no type parameters for method example: (ca: Context[A])Context[A] exist so that it can be applied to arguments (org.scalactic.Or[Int,org.scalactic.ErrorMessage])
    *  --- because ---
    * argument expression's type is not compatible with formal parameter type;
-   *  found   : org.scalactic.Good[Int,Nothing]
+   *  found   : org.scalactic.Or[Int,org.scalactic.ErrorMessage]
+   *     (which expands to)  org.scalactic.Or[Int,String]
    *  required: ?Context[?A]
-   *               example(Good(3))
-   *               ^
-   * &lt;console&gt;:26: error: type mismatch;
-   *  found   : org.scalactic.Good[Int,Nothing]
+   *        example(or)
+   *        ^
+   * &lt;console&gt;:16: error: type mismatch;
+   *  found   : org.scalactic.Or[Int,org.scalactic.ErrorMessage]
+   *     (which expands to)  org.scalactic.Or[Int,String]
    *  required: Context[A]
-   *               example(Good(3))
-   *                           ^
+   *        example(or)
+   *                ^
    * </pre>
    *
    * <p>
@@ -917,8 +921,8 @@ object Or {
    * </p>
    *
    * <pre>
-   * scala&gt; example[({type L[G] = G Or String})#L, Int](Good(3))
-   * res1: org.scalactic.Or[Int,String] = Good(3)
+   * scala&gt; example[({type L[G] = G Or ErrorMessage})#L, Int](or)
+   * res1: org.scalactic.Or[Int,org.scalactic.ErrorMessage] = Good(3)
    * </pre>
    *
    * <p>
@@ -926,25 +930,25 @@ object Or {
    * </p>
    *
    * <pre>
-   * scala&gt; example[Or.BAD[String]#GOOD, Int](Good(3))
-   * res2: org.scalactic.Or[Int,String] = Good(3)
+   * scala&gt; example[Or.B[ErrorMessage]#G, Int](or)
+   * res2: org.scalactic.Or[Int,org.scalactic.ErrorMessage] = Good(3)
    * </pre>
    * 
    * <p>
-   * You can read <code>Or.BAD[String]#GOOD</code> as: an <code>Or</code> with its "bad" type
-   * fixed to <code>String</code> and its "good" type left unspecified.
+   * You can read <code>Or.B[ErrorMessage]#G</code> as: an <code>Or</code> with its "bad" type, <code>B</code>,
+   * fixed to <code>ErrorMessage</code> and its "good" type, <code>G</code>, left unspecified.
    * </p>
    */
-  trait BAD[B] {
+  private[scalactic] trait B[BAD] {
 
     /**
      * Type member that provides a curried alias to  <code>G</code> <code>Or</code> <code>B</code>.
      *
      * <p>
-     * See the main documentation for trait <code>BAD</code> for more detail.
+     * See the main documentation for trait <code>B</code> for more detail.
      * </p>
      */
-    type GOOD[G] = G Or B
+    type G[GOOD] = GOOD Or BAD
   }
 
   /**
@@ -953,9 +957,9 @@ object Or {
    * <p>
    * This trait is used to curry the type parameters of <code>Or</code>, which takes two type parameters,
    * into a type (this trait) which takes one parameter, and another (its type member) which
-   * takes the other. For example, type <code>Or[G, B]</code> (which can be written in infix form
-   * as <code>G Or B</code>) can be expressed in curried form as <code>Or.GOOD[G]#BAD[B]</code>.
-   * Leaving off the final <code>BAD</code> type parameter yields a "type lambda," such as <code>Or.GOOD[Int]#BAD</code>.
+   * takes the other. For example, type <code>Or[GOOD, BAD]</code> (which can be written in infix form
+   * as <code>GOOD Or BAD</code>) can be expressed in curried form as <code>Or.G[GOOD]#B[BAD]</code>.
+   * Leaving off the final <code>B</code> type parameter yields a "type lambda," such as <code>Or.G[Int]#B</code>.
    * </p>
    *
    * <p>
@@ -984,20 +988,24 @@ object Or {
    * </p>
    *
    * <pre>
-   * scala&gt; example(Good(3))
-   * &lt;console&gt;:26: error: no type parameters for method example: (ca: Context[A])Context[A] exist
-   *     so that it can be applied to arguments (org.scalactic.Good[Int,Nothing])
+   * scala&gt; val or: Int Or ErrorMessage = Good(3)
+   * or: org.scalactic.Or[Int,org.scalactic.ErrorMessage] = Good(3)
+   *
+   * scala&gt; example(or)
+   * &lt;console&gt;:16: error: no type parameters for method example: (ca: Context[A])Context[A] exist so that it can be applied to arguments (org.scalactic.Or[Int,org.scalactic.ErrorMessage])
    *  --- because ---
    * argument expression's type is not compatible with formal parameter type;
-   *  found   : org.scalactic.Good[Int,Nothing]
+   *  found   : org.scalactic.Or[Int,org.scalactic.ErrorMessage]
+   *     (which expands to)  org.scalactic.Or[Int,String]
    *  required: ?Context[?A]
-   *               example(Good(3))
-   *               ^
-   * &lt;console&gt;:26: error: type mismatch;
-   *  found   : org.scalactic.Good[Int,Nothing]
+   *        example(or)
+   *        ^
+   * &lt;console&gt;:16: error: type mismatch;
+   *  found   : org.scalactic.Or[Int,org.scalactic.ErrorMessage]
+   *     (which expands to)  org.scalactic.Or[Int,String]
    *  required: Context[A]
-   *               example(Good(3))
-   *                           ^
+   *        example(or)
+   *                ^
    * </pre>
    *
    * <p>
@@ -1005,8 +1013,8 @@ object Or {
    * </p>
    *
    * <pre>
-   * scala&gt; example[({type L[B] = Int Or B})#L, String](Good(3))
-   * res1: org.scalactic.Or[Int,String] = Good(3)
+   * scala&gt; example[({type L[B] = Int Or B})#L, ErrorMessage](or)
+   * res1: org.scalactic.Or[Int,org.scalactic.ErrorMessage] = Good(3)
    * </pre>
    *
    * <p>
@@ -1014,25 +1022,25 @@ object Or {
    * </p>
    *
    * <pre>
-   * scala&gt; example[Or.GOOD[Int]#BAD, String](Good(3))
-   * res15: org.scalactic.Or[Int,String] = Good(3)
+   * scala&gt; example[Or.G[Int]#B, ErrorMessage](or)
+   * res15: org.scalactic.Or[Int,org.scalactic.ErrorMessage] = Good(3)
    * </pre>
    * 
    * <p>
-   * You can read <code>Or.GOOD[Int]#BAD</code> as: an <code>Or</code> with its "good" type 
-   * fixed to <code>Int</code> and its "bad" type left unspecified.
+   * You can read <code>Or.G[Int]#B</code> as: an <code>Or</code> with its "good" type, <code>G</code>,
+   * fixed to <code>Int</code> and its "bad" type, <code>B</code>, left unspecified.
    * </p>
    */
-  trait GOOD[G] {
+  private[scalactic] trait G[GOOD] {
 
     /**
      * Type member that provides a curried alias to  <code>G</code> <code>Or</code> <code>B</code>.
      *
      * <p>
-     * See the main documentation for trait <code>GOOD</code> for more detail.
+     * See the main documentation for trait <code>G</code> for more detail.
      * </p>
      */
-    type BAD[B] = G Or B
+    type B[BAD] = GOOD Or BAD
   }
 
   /**

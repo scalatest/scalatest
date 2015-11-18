@@ -2340,7 +2340,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
   }
 
   def testTestTags() {
-    class TagSpec extends Spec with StringFixture {  
+    class TagSpec extends Spec with StringFixture {
       def testNoTagMethod(fixture: String) {}
       @SlowAsMolasses
       def testTagMethod(fixture: String) {}

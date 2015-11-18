@@ -22,8 +22,8 @@ package org.scalatest.testng {
   import org.jmock.Expectations
   import org.hamcrest.core.IsAnything
   import org.scalatest.events._
-  import org.scalatest.mock.JMockCycle
-  import org.scalatest.mock.JMockCycleFixture
+  import org.scalatest.jmock.JMockCycle
+  import org.scalatest.jmock.JMockCycleFixture
   import org.scalatest.fixture
 
   class TestNGSuiteSuite extends fixture.FunSuite with JMockCycleFixture with SuiteExpectations {

@@ -91,7 +91,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -99,9 +99,9 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -2
+    val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
     engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
@@ -126,7 +126,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -155,10 +155,10 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
-    val stackDepthAdjustment = -3
+    val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
@@ -273,7 +273,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
+    def in(testFun: => Any /* Assertion */) {
       registerTestToRun(specText, tags, "in", testFun _)
     }
 
@@ -313,7 +313,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */) {
+    def ignore(testFun: => Any /* Assertion */) {
       registerTestToIgnore(specText, tags, "ignore", testFun _)
     }
   }       
@@ -351,7 +351,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(f: => Unit /* Assertion */) {
+    def in(f: => Any /* Assertion */) {
       registerTestToRun(string, List(), "in", f _)
     }
 
@@ -371,7 +371,7 @@ trait WordSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(f: => Unit /* Assertion */) {
+    def ignore(f: => Any /* Assertion */) {
       registerTestToIgnore(string, List(), "ignore", f _)
     }
 

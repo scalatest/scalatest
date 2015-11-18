@@ -235,7 +235,7 @@ trait Suite extends org.scalatest.Suite { thisSuite =>
    *       }
    *
    *       "should produce NoSuchElementException when head is invoked" in {
-   *         intercept[NoSuchElementException] {
+   *         assertThrows[NoSuchElementException] {
    *           Set.empty.head
    *         }
    *       }

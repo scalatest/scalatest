@@ -47,7 +47,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *     
  *       it("should produce NoSuchElementException when head is invoked") {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -59,7 +59,7 @@ import Suite.autoTagClassAnnotations
  * <p>
  * A <code>FunSpec</code> contains <em>describe clauses</em> and tests. You define a describe clause
  * with <code>describe</code>, and a test with either <code>it</code> or <code>they</code>. 
- * <code>describe</code>,  <code>it</code>, and and <code>they</code> are methods, defined in
+ * <code>describe</code>,  <code>it</code>, and <code>they</code> are methods, defined in
  * <code>FunSpec</code>, which will be invoked
  * by the primary constructor of <code>SetSpec</code>. 
  * A describe clause names, or gives more information about, the <em>subject</em> (class or other entity) you are specifying
@@ -149,7 +149,7 @@ import Suite.autoTagClassAnnotations
  * <em>Note: <code>FunSpec</code>'s syntax is in great part inspired by <a href="http://rspec.info/" target="_blank">RSpec</a>, a Ruby BDD framework.</em>
  *</p>
  *
- * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
+ * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * <p>
  * To support the common use case of temporarily disabling a test, with the
@@ -172,7 +172,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       it("should produce NoSuchElementException when head is invoked") {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -201,7 +201,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * If you wish to temporarily ignore an entire suite of tests, you can annotate the test class with <code>@Ignore</code>, like this:
+ * If you wish to temporarily ignore an entire suite of tests, you can (on the JVM, not Scala.js) annotate the test class with <code>@Ignore</code>, like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -220,7 +220,7 @@ import Suite.autoTagClassAnnotations
  *       }
  *       
  *       it("should produce NoSuchElementException when head is invoked") {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -248,11 +248,11 @@ import Suite.autoTagClassAnnotations
  * Note that marking a test class as ignored won't prevent it from being discovered by ScalaTest. Ignored classes
  * will be discovered and run, and all their tests will be reported as ignored. This is intended to keep the ignored
  * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
- * prevent a class from being discovered at all, use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
+ * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
  * </p>
  *
  *
- * <a name="informers"></a><h2>Informers</h2></a>
+ * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
  * One of the parameters to <code>FunSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
@@ -310,7 +310,7 @@ import Suite.autoTagClassAnnotations
  *   + That's all folks! </span> 
  * </pre>
  *
- * <a name="documenters"></a><h2>Documenters</h2></a>
+ * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
  * <code>FunSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
@@ -385,7 +385,7 @@ import Suite.autoTagClassAnnotations
  *
  * <img class="stScreenShot" src="../../lib/funSpec.gif">
  *
- * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *
  * <p>
  * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of
@@ -450,7 +450,7 @@ import Suite.autoTagClassAnnotations
  * <code>note</code> and <code>alert</code> text will not.)
  * </p>
  *
- * <a name="pendingTests"></a><h2>Pending tests</h2></a>
+ * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
  * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
@@ -492,7 +492,7 @@ import Suite.autoTagClassAnnotations
  *       it("should have size 0") (pending)
  *       
  *       it("should produce NoSuchElementException when head is invoked") {
- *         intercept[NoSuchElementException] {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -533,9 +533,9 @@ import Suite.autoTagClassAnnotations
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
- * defined tag annotation interfaces with fully qualified names, <code>com.mycompany.tags.SlowTest</code> and
+ * defined a tag annotation interface with fully qualified name,
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create matching tags for <code>FunSpec</code>s like this:
+ * create a matching tag for <code>FunSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -543,7 +543,6 @@ import Suite.autoTagClassAnnotations
  * 
  * import org.scalatest.Tag
  * 
- * object SlowTest extends Tag("com.mycompany.tags.SlowTest")
  * object DbTest extends Tag("com.mycompany.tags.DbTest")
  * </pre>
  *
@@ -553,17 +552,18 @@ import Suite.autoTagClassAnnotations
  *
  * <pre class="stHighlight">
  * import org.scalatest.FunSpec
+ * import org.scalatest.tagobjects.Slow
  * 
  * class SetSpec extends FunSpec {
  * 
  *   describe("A Set") {
  *     describe("when empty") {
- *       it("should have size 0", SlowTest) {
+ *       it("should have size 0", Slow) {
  *         assert(Set.empty.size === 0)
  *       }
  *       
- *       it("should produce NoSuchElementException when head is invoked", SlowTest, DbTest) {
- *         intercept[NoSuchElementException] {
+ *       it("should produce NoSuchElementException when head is invoked", Slow, DbTest) {
+ *         assertThrows[NoSuchElementException] {
  *           Set.empty.head
  *         }
  *       }
@@ -573,7 +573,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * This code marks both tests with the <code>com.mycompany.tags.SlowTest</code> tag, 
+ * This code marks both tests with the <code>org.scalatest.tags.Slow</code> tag, 
  * and the second test with the <code>com.mycompany.tags.DbTest</code> tag.
  * </p>
  *
@@ -741,11 +741,12 @@ import Suite.autoTagClassAnnotations
  * 
  * class ExampleSpec extends FunSpec {
  * 
- *   def fixture = 
- *     new {
- *       val builder = new StringBuilder("ScalaTest is ")
- *       val buffer = new ListBuffer[String]
- *     }
+ *   class Fixture {
+ *     val builder = new StringBuilder("ScalaTest is ")
+ *     val buffer = new ListBuffer[String]
+ *   }
+ *
+ *   def fixture = new Fixture
  *   
  *   describe("Testing") {
  *     it("should be easy") {
@@ -889,7 +890,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Here's an example in which <code>withFixture(NoArgTest)</code> is used to take a snapshot of the working directory if a test fails, and 
- * and send that information to the reporter:
+ * send that information to the reporter:
  * </p>
  *
  * <pre class="stHighlight">
@@ -933,7 +934,7 @@ import Suite.autoTagClassAnnotations
  * scala&gt; new ExampleSuite execute
  * <span class="stGreen">ExampleSuite:
  * This test
- * - should succeed
+ * - should succeed</span>
  * <span class="stRed">- should fail *** FAILED ***
  *   2 did not equal 3 (<console>:33)
  *   + Dir snapshot: hello.txt, world.txt </span>
@@ -1053,7 +1054,6 @@ import Suite.autoTagClassAnnotations
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
- * </pre>
  * <a name="withFixtureOneArgTest"></a>
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
@@ -1523,13 +1523,13 @@ import Suite.autoTagClassAnnotations
  *       }
  * 
  *       it("should complain on peek") {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           emptyStack.peek
  *         }
  *       }
  * 
  *       it("should complain on pop") {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           emptyStack.pop
  *         }
  *       }
@@ -1554,7 +1554,7 @@ import Suite.autoTagClassAnnotations
  *       it should behave like nonEmptyStack(fullStack, lastValuePushed)
  * 
  *       it("should complain on a push") {
- *         intercept[IllegalStateException] {
+ *         assertThrows[IllegalStateException] {
  *           fullStack.push(10)
  *         }
  *       }

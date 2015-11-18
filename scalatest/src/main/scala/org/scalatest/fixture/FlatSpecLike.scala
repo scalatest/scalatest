@@ -98,7 +98,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -106,7 +106,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Unit /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -133,7 +133,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Unit /* Assertion */) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */) {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
@@ -292,8 +292,8 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
-      registerTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper[FixtureParam, Unit /* Assertion */](testFun))
+    def in(testFun: () => Any /* Assertion */) {
+      registerTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper[FixtureParam, Any /* Assertion */](testFun))
     }
 
     /**
@@ -315,7 +315,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun)
     }
 
@@ -363,7 +363,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Unit /* Assertion */) {
+    def ignore(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -388,7 +388,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
+    def ignore(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun)
     }
   }
@@ -461,7 +461,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -484,7 +484,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun)
     }
 
@@ -530,7 +530,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Unit /* Assertion */) {
+    def ignore(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -553,7 +553,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
+    def ignore(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun)
     }
 
@@ -827,7 +827,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -850,7 +850,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, tags, "in", testFun)
     }
 
@@ -898,7 +898,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Unit /* Assertion */) {
+    def ignore(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -923,7 +923,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
+    def ignore(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun)
     }
   }
@@ -996,7 +996,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1019,7 +1019,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + name.trim, List(), "in", testFun)
     }
 
@@ -1065,7 +1065,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Unit /* Assertion */) {
+    def ignore(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -1088,7 +1088,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
+    def ignore(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun)
     }
 
@@ -1362,7 +1362,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1387,7 +1387,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun)
     }
 
@@ -1490,7 +1490,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1514,7 +1514,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun)
     }
 
@@ -1742,7 +1742,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + rest.trim, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1765,7 +1765,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Unit /* Assertion */) {
+    def ignore(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -1788,7 +1788,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + rest.trim, List(), "in", testFun)
     }
 
@@ -1811,7 +1811,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
+    def ignore(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun)
     }
   }
@@ -1895,7 +1895,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Unit /* Assertion */) {
+    def in(testFun: () => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + rest.trim, tagsList, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -1920,7 +1920,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Unit /* Assertion */) {
+    def ignore(testFun: () => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", new NoArgTestWrapper(testFun))
     }
 
@@ -1943,7 +1943,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Unit /* Assertion */) {
+    def in(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToRun(verb.trim + " " + rest.trim, tagsList, "in", testFun)
     }
 
@@ -1968,7 +1968,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Unit /* Assertion */) {
+    def ignore(testFun: FixtureParam => Any /* Assertion */) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun)
     }
   }
@@ -2078,7 +2078,7 @@ trait FlatSpecLike extends Suite with TestRegistration with ShouldVerb with Must
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Unit /* Assertion */) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4

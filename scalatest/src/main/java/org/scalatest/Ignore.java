@@ -79,7 +79,7 @@ import java.lang.annotation.*;
  *
  * import org.scalatest._
  *
- * class SetSpec extends Spec {
+ * class SetSpec extends RefSpec {
  *
  *   @Ignore def &#96;an empty Set should have size 0&#96; {
  *     assert(Set.empty.size === 0)
@@ -104,6 +104,10 @@ import java.lang.annotation.*;
  * <span class="stYellow">- an empty Set should have size 0 !!! IGNORED !!!</span>
  * <span class="stGreen">- invoking head on an empty Set should produce NoSuchElementException</span>
  * </pre>
+ * 
+ * <p>
+ * Note that because reflection is not supported on Scala.js, this annotation will only work on the JVM, not on Scala.js.
+ * </p>
  *
  * @author Bill Venners
  * @author Chua Chee Seng

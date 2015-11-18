@@ -18,7 +18,7 @@ package org.scalatest.examples.featurespec.composingwithfixture
 import org.scalatest._
 import collection.mutable.ListBuffer
 
-trait Builder extends AbstractSuite { this: Suite =>
+trait Builder extends SuiteMixin { this: Suite =>
 
   val builder = new StringBuilder
 
@@ -29,7 +29,7 @@ trait Builder extends AbstractSuite { this: Suite =>
   }
 }
 
-trait Buffer extends AbstractSuite { this: Suite =>
+trait Buffer extends SuiteMixin { this: Suite =>
 
   val buffer = new ListBuffer[String]
 

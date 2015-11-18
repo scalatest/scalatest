@@ -40,6 +40,9 @@ env:
     - MODE=genSortedTests
     - MODE=genLoneElementTests
     - MODE=genEmptyTests
+    - MODE=examples
+    - MODE=examplesJS
+#    - MODE=genSafeStyleTests
 
 branches:
   only:

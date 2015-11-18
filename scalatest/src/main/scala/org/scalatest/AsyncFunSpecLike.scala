@@ -21,23 +21,23 @@ import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 
 /**
- * Implementation trait for class <code>FunSpec</code>, which
+ * Implementation trait for class <code>AsyncFunSpec</code>, which
  * facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD),
  * in which tests are combined with text that specifies the behavior the tests
  * verify.
  *
  * <p>
- * <a href="FunSpec.html"><code>FunSpec</code></a> is a class, not a trait,
+ * <a href="AsyncFunSpec.html"><code>AsyncFunSpec</code></a> is a class, not a trait,
  * to minimize compile time given there is a slight compiler overhead to
  * mixing in traits compared to extending classes. If you need to mix the
- * behavior of <code>FunSpec</code> into some other class, you can use this
- * trait instead, because class <code>FunSpec</code> does nothing more than
+ * behavior of <code>AsyncFunSpec</code> into some other class, you can use this
+ * trait instead, because class <code>AsyncFunSpec</code> does nothing more than
  * extend this trait and add a nice <code>toString</code> implementation.
  * </p>
  *
  * <p>
- * See the documentation of the class for a <a href="FunSpec.html">detailed
- * overview of <code>FunSpec</code></a>.
+ * See the documentation of the class for a <a href="AsyncFunSpec.html">detailed
+ * overview of <code>AsyncFunSpec</code></a>.
  * </p>
  *
  * @author Bill Venners

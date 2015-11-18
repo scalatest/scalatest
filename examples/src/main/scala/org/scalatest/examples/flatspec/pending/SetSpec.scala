@@ -22,7 +22,7 @@ class SetSpec extends FlatSpec {
   "An empty Set" should "have size 0" in (pending)
     
   it should "produce NoSuchElementException when head is invoked" in {
-    intercept[NoSuchElementException] {
+    assertThrows[NoSuchElementException] {
       Set.empty.head
     }
   }

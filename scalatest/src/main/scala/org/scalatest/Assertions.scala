@@ -59,13 +59,13 @@ import org.scalactic.Requirements._
  * Why? Because unlike <code>AssertionError</code>, <code>TestFailedException</code> carries information about exactly
  * which item in the stack trace represents
  * the line of test code that failed, which can help users more quickly find an offending line of code in a failing test.
+ * In addition, ScalaTest's <code>assert</code> provides better error messages than Scala's <code>assert</code>.
  * <p>
  *
  * <p>
  * If you pass the previous <code>Boolean</code> expression, <code>left == right</code> to <code>assert</code> in a ScalaTest test,
  * a failure will be reported that, because <code>assert</code> is implemented as a macro,
  * includes reporting the left and right values.
- *
  * For example, given the same code as above but using ScalaTest assertions:
  *
  * <pre class="stHighlight">
@@ -183,8 +183,26 @@ import org.scalactic.Requirements._
  * fail("I've got a bad feeling about this")
  * </pre>
  *
+ * <a name="achievingSuccess"></a>
+ * <h2>Achieving success</h2>
+ *
+ * <p>
+ * In async style tests, you must end your test body with either <code>Future[Assertion]</code> or
+ * <code>Assertion</code>. ScalaTest's assertions (including matcher expressions) have result type
+ * <code>Assertion</code>, so ending with an assertion will satisfy the compiler.
+ * If a test body or function body passed to <code>Future.map</code> does
+ * <em>not</em> end with type <code>Assertion</code>, however, you can fix the type error by placing
+ * <code>succeed</code> at the end of the
+ * test or function body:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * succeed // Has type Assertion
+ * </pre>
+ *
  * <a name="interceptedExceptions"></a>
- * <h2>Intercepted exceptions</h2>
+ * <a name="expectedExceptions"></a>
+ * <h2>Expected exceptions</h2>
  *
  * <p>
  * Sometimes you need to test whether a method throws an expected exception under certain circumstances, such
@@ -210,24 +228,38 @@ import org.scalactic.Requirements._
  * </p>
  *
  * <p>
- * To make this common use case easier to express and read, ScalaTest provides an <code>intercept</code>
- * method. You use it like this:
+ * To make this common use case easier to express and read, ScalaTest provides two methods:
+ * <code>assertThrows</code> and <code>intercept</code>.
+ * Here's how you use <code>assertThrows</code>:
  * </p>
  *
  * <pre class="stHighlight">
  * val s = "hi"
- * intercept[IndexOutOfBoundsException] {
+ * assertThrows[IndexOutOfBoundsException] {
  *   s.charAt(-1)
  * }
  * </pre>
  *
  * <p>
  * This code behaves much like the previous example. If <code>charAt</code> throws an instance of <code>IndexOutOfBoundsException</code>,
- * <code>intercept</code> will return that exception. But if <code>charAt</code> completes normally, or throws a different
- * exception, <code>intercept</code> will complete abruptly with a <code>TestFailedException</code>. <code>intercept</code> returns the
- * caught exception so that you can inspect it further if you wish, for example, to ensure that data contained inside
- * the exception has the expected values.
+ * <code>assertThrows</code> will return <code>Succeeded</code>. But if <code>charAt</code> completes normally, or throws a different
+ * exception, <code>assertThrows</code> will complete abruptly with a <code>TestFailedException</code>.
  * </p>
+ *
+ * <p>
+ * The <code>intercept</code> method behaves the same as <code>assertThrows</code>, except that instead of returning <code>Succeeded</code>,
+ * <code>intercept</code> returns the caught exception so that you can inspect it further if you wish. For example, you may need
+ * to ensure that data contained inside the exception have expected values. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * val s = "hi"
+ * val caught =
+ *   intercept[IndexOutOfBoundsException] {
+ *     s.charAt(-1)
+ *   }
+ * assert(caught.getMessage.indexOf("-1") != -1)
+ * </pre>
  *
  * <a name="checkingThatCodeDoesNotCompile"></a>
  * <h2>Checking that a snippet of code does or does not compile</h2>
@@ -776,13 +808,22 @@ trait Assertions extends TripleEquals {
    * for example), this method will complete abruptly with a <code>TestFailedException</code>.
    * </p>
    *
+   * <p>
+   * Also note that the difference between this method and <code>assertThrows</code> is that this method
+   * returns the expected exception, so it lets you perform further assertions on
+   * that exception. By contrast, the <code>assertThrows</code> method returns <code>Succeeded</code>, which means it can
+   * serve as the last statement in an async- or safe-style suite. <code>assertThrows</code> also indicates to the reader
+   * of the code that nothing further is expected about the thrown exception other than its type.
+   * The recommended usage is to use <code>assertThrows</code> by default, <code>intercept</code> only when you
+   * need to inspect the caught exception further.
+   * </p>
+   *
    * @param f the function value that should throw the expected exception
    * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
    * type parameter.
    * @return the intercepted exception, if it is of the expected type
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
-   *    that's an instance of the specified type
-   *     passed <code>expected</code> value.
+   *    that's an instance of the specified type.
    */
   def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): T = {
     val clazz = classTag.runtimeClass
@@ -809,6 +850,39 @@ trait Assertions extends TripleEquals {
     }
   }
 
+  /**
+   * Ensure that an expected exception is thrown by the passed function value. The thrown exception must be an instance of the
+   * type specified by the type parameter of this method. This method invokes the passed
+   * function. If the function throws an exception that's an instance of the specified type,
+   * this method returns <code>Succeeded</code>. Else, whether the passed function returns normally
+   * or completes abruptly with a different exception, this method throws <code>TestFailedException</code>.
+   *
+   * <p>
+   * Note that the type specified as this method's type parameter may represent any subtype of
+   * <code>AnyRef</code>, not just <code>Throwable</code> or one of its subclasses. In
+   * Scala, exceptions can be caught based on traits they implement, so it may at times make sense
+   * to specify a trait that the intercepted exception's class must mix in. If a class instance is
+   * passed for a type that could not possibly be used to catch an exception (such as <code>String</code>,
+   * for example), this method will complete abruptly with a <code>TestFailedException</code>.
+   * </p>
+   *
+   * <p>
+   * Also note that the difference between this method and <code>intercept</code> is that this method
+   * does not return the expected exception, so it does not let you perform further assertions on
+   * that exception. Instead, this method returns <code>Succeeded</code>, which means it can
+   * serve as the last statement in an async- or safe-style suite. It also indicates to the reader
+   * of the code that nothing further is expected about the thrown exception other than its type.
+   * The recommended usage is to use <code>assertThrows</code> by default, <code>intercept</code> only when you
+   * need to inspect the caught exception further.
+   * </p>
+   *
+   * @param f the function value that should throw the expected exception
+   * @param classTag an implicit <code>ClassTag</code> representing the type of the specified
+   * type parameter.
+   * @return the <code>Succeeded</code> singleton, if an exception of the expected type is thrown
+   * @throws TestFailedException if the passed function does not complete abruptly with an exception
+   *    that's an instance of the specified type.
+   */
   def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Assertion = {
     val clazz = classTag.runtimeClass
     val threwExpectedException =
@@ -1278,7 +1352,19 @@ trait Assertions extends TripleEquals {
         throw new TestFailedException(Resources.pendingUntilFixed, 2)
   }
 
-  final val succeed: Succeeded.type = Succeeded
+  /**
+   * The <code>Succeeded</code> singleton.
+   *
+   * <p>
+   * You can use <code>succeed</code> to solve a type error when an async test 
+   * does not end in either <code>Future[Assertion]</code> or <code>Assertion</code>.
+   * Because <code>Assertion</code> is a type alias for <code>Succeeded.type</code>,
+   * putting <code>succeed</code> at the end of a test body (or at the end of a
+   * function being used to map the final future of a test body) will solve
+   * the type error.
+   * </p>
+   */
+  final val succeed: Assertion = Succeeded
 }
 
 /**

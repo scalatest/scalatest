@@ -54,7 +54,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -162,7 +162,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =>
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -186,7 +186,7 @@ import Suite.autoTagClassAnnotations
  * <span class="stGreen">- invoking head on an empty Set should produce NoSuchElementException</span>
  * </pre>
  *
- * <a name="informers"></a><h2>Informers</h2></a>
+ * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
  * One of the parameters to <code>PropSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
@@ -266,7 +266,7 @@ import Suite.autoTagClassAnnotations
  *   + And the Set should contain the added element</span>
  * </pre>
  *
- * <a name="documenters"></a><h2>Documenters</h2></a>
+ * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
  * <code>PropSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
@@ -354,7 +354,7 @@ import Suite.autoTagClassAnnotations
  *
  * <img class="stScreenShot" src="../../lib/propSpec.gif">
  *
- * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *
  * <p>
  * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of
@@ -428,7 +428,7 @@ import Suite.autoTagClassAnnotations
  * <code>note</code> and <code>alert</code> text will not.)
  * </p>
  *
- * <a name="pendingTests"></a><h2>Pending tests</h2></a>
+ * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
  * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of
@@ -476,7 +476,7 @@ import Suite.autoTagClassAnnotations
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
@@ -536,9 +536,9 @@ import Suite.autoTagClassAnnotations
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
  * will probably want to use tag names on your test functions that match. To do so, simply 
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
- * defined tag annotation interfaces with fully qualified names, <code>com.mycompany.tags.SlowTest</code> and
+ * defined a tag annotation interface with fully qualified names,
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create matching tags for <code>PropSpec</code>s like this:
+ * create a matching tag for <code>PropSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -546,7 +546,6 @@ import Suite.autoTagClassAnnotations
  *
  * import org.scalatest.Tag
  *
- * object SlowTest extends Tag("com.mycompany.tags.SlowTest")
  * object DbTest extends Tag("com.mycompany.tags.DbTest")
  * </pre>
  *
@@ -557,6 +556,7 @@ import Suite.autoTagClassAnnotations
  * <pre class="stHighlight">
  * import org.scalatest._
  * import prop._
+ * import tagobjects.Slow
  * import scala.collection.immutable._
  * 
  * class SetSpec extends PropSpec with TableDrivenPropertyChecks with Matchers {
@@ -569,24 +569,24 @@ import Suite.autoTagClassAnnotations
  *       TreeSet.empty[Int]
  *     )
  * 
- *   property("an empty Set should have size 0", SlowTest) {
+ *   property("an empty Set should have size 0", Slow) {
  *     forAll(examples) { set =&gt;
  *       set.size should be (0)
  *     }
  *   }
  * 
  *   property("invoking head on an empty set should produce NoSuchElementException",
- *       SlowTest, DbTest) {
+ *       Slow, DbTest) {
  * 
  *     forAll(examples) { set =&gt;
- *       evaluating { set.head } should produce [NoSuchElementException]
+ *       a [NoSuchElementException] should be thrownBy { set.head }
  *     }
  *   }
  * }
  * </pre>
  *
  * <p>
- * This code marks both tests with the <code>com.mycompany.tags.SlowTest</code> tag, 
+ * This code marks both tests with the <code>org.scalatest.tags.Slow</code> tag, 
  * and the second test with the <code>com.mycompany.tags.DbTest</code> tag.
  * </p>
  *
@@ -840,7 +840,7 @@ import Suite.autoTagClassAnnotations
  *   property("invoking head on an empty set should produce NoSuchElementException") {
  *     new EmptySetExamples {
  *       forAll(examples) { set =&gt;
- *         evaluating { set.head } should produce [NoSuchElementException]
+ *         a [NoSuchElementException] should be thrownBy { set.head }
  *       }
  *     }
  *   }
