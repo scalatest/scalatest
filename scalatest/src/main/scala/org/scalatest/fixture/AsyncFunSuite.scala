@@ -130,22 +130,98 @@ package org.scalatest.fixture
  * </pre>
  *
  * <p>
- * If a test fails, the <code>OneArgAsyncTest</code> function will result in a [[org.scalatest.Failed Failed]] wrapping the exception describing the failure.
- * To ensure clean up happens even if a test fails, you should invoke the test function from inside a <code>try</code> block and do the cleanup in a
- * <code>finally</code> clause, as shown in the previous example.
+ * If a test fails, the <code>OneArgAsyncTest</code> function will result in a [[org.scalatest.Failed Failed]] wrapping the exception describing
+ * the failure. To ensure clean up happens even if a test fails, you should invoke the test function and do the cleanup using
+ * <code>withCleanup</code>, as shown in the previous example. The <code>withCleanup</code> method, defined in <code>AsyncSuite</code>, ensures
+ * the second, cleanup block of code is executed, whether the the first block throws an exception or returns a future. If it returns a
+ * future, the cleanup will be executed when the future completes.
  * </p>
  *
  * <a name="sharingFixturesAcrossClasses"></a><h2>Sharing fixtures across classes</h2>
  *
  * <p>
- * If multiple test classes need the same fixture, you can define the <code>FixtureParam</code> and <code>withAsyncFixture(OneArgAsyncTest)</code> implementations
- * in a trait, then mix that trait into the test classes that need it. For example, if your application requires a database and your integration tests
- * use that database, you will likely have many test classes that need a database fixture. You can create a "database fixture" trait that creates a
- * database with a unique name, passes the connector into the test, then removes the database once the test completes. This is shown in the following example:
+ * If multiple test classes need the same fixture, you can define the <code>FixtureParam</code> and <code>withAsyncFixture(OneArgAsyncTest)</code>
+ * implementations in a trait, then mix that trait into the test classes that need it. For example, if your application requires a database and your
+ * integration tests use that database, you will likely have many test classes that need a database fixture. You can create a "database fixture" trait
+ * that creates a database with a unique name, passes the connector into the test, then removes the database once the test completes. This is shown in
+ * the following example:
  * </p>
  * 
  * <pre class="stHighlight">
- * package org.scalatest.examples.fixture.funsuite.sharing
+ * package org.scalatest.examples.fixture.asyncfunsuite.sharing
+ *
+ * import java.util.concurrent.ConcurrentHashMap
+ * import org.scalatest._
+ * import DbServer._
+ * import java.util.UUID.randomUUID
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * object DbServer { // Simulating a database server
+ *   type Db = StringBuffer
+ *   private val databases = new ConcurrentHashMap[String, Db]
+ *   def createDb(name: String): Db = {
+ *     val db = new StringBuffer
+ *     databases.put(name, db)
+ *     db
+ *   }
+ *   def removeDb(name: String) {
+ *     databases.remove(name)
+ *   }
+ * }
+ *
+ * trait DbFixture { this: fixture.AsyncSuite =&gt;
+ *
+ *   type FixtureParam = Db
+ *
+ *   // Allow clients to populate the database after
+ *   // it is created
+ *   def populateDb(db: Db) {}
+ *
+ *   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
+ *     val dbName = randomUUID.toString
+ *     val db = createDb(dbName) // create the fixture
+ *     withCleanup {
+ *       populateDb(db) // setup the fixture
+ *       withAsyncFixture(test.toNoArgAsyncTest(db)) // "loan" the fixture to the test
+ *     } {
+ *       removeDb(dbName) // ensure the fixture will be cleaned up
+ *     }
+ *   }
+ * }
+
+class ExampleSuite extends fixture.AsyncFunSuite with DbFixture {
+
+  implicit val executionContext = ExecutionContext.Implicits.global
+
+  override def populateDb(db: Db) { // setup the fixture
+    db.append("ScalaTest is ")
+  }
+
+  test("testing should be easy") { db =&gt;
+    Future {
+      db.append("easy!")
+      assert(db.toString === "ScalaTest is easy!")
+    }
+  }
+
+  test("testing should be fun") { db =&gt;
+    Future {
+      db.append("fun!")
+      assert(db.toString === "ScalaTest is fun!")
+    }
+  }
+
+  // This test doesn't need a Db
+  test("test code should be clear") { () =&gt;
+    Future {
+      val buf = new StringBuffer
+      buf.append("ScalaTest code is ")
+      buf.append("clear!")
+      assert(buf.toString === "ScalaTest code is clear!")
+    }
+  }
+}
  * </pre>
  *
  * <p>

@@ -181,21 +181,21 @@ import org.scalatest.Suite.autoTagClassAnnotations
  *   }
  * 
  *   test("testing should be easy") { db =&gt;
- *       db.append("easy!")
- *       assert(db.toString === "ScalaTest is easy!")
+ *     db.append("easy!")
+ *     assert(db.toString === "ScalaTest is easy!")
  *   }
  * 
  *   test("testing should be fun") { db =&gt;
- *       db.append("fun!")
- *       assert(db.toString === "ScalaTest is fun!")
+ *     db.append("fun!")
+ *     assert(db.toString === "ScalaTest is fun!")
  *   }
  * 
  *   // This test doesn't need a Db
  *   test("test code should be clear") { () =&gt;
- *       val buf = new StringBuffer
- *       buf.append("ScalaTest code is ")
- *       buf.append("clear!")
- *       assert(buf.toString === "ScalaTest code is clear!")
+ *     val buf = new StringBuffer
+ *     buf.append("ScalaTest code is ")
+ *     buf.append("clear!")
+ *     assert(buf.toString === "ScalaTest code is clear!")
  *   }
  * }
  * </pre>
