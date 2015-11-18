@@ -44,28 +44,25 @@ class ExampleSuite extends AsyncFunSuite {
   def withDatabase(testCode: Future[Db] => Future[Assertion]) = {
     val dbName = randomUUID.toString
     val futureDb = Future { createDb(dbName) } // create the fixture
-    val futurePopulatedDb =
-      futureDb map { db =>
-        db.append("ScalaTest is ") // perform setup 
-      }
-    val futureAssertion = testCode(futurePopulatedDb) // "loan" the fixture to the test
-    futureAssertion onComplete { _ => removeDb(dbName) } // clean up the fixture
-    futureAssertion
+    withCleanup {
+      val futurePopulatedDb =
+        futureDb map { db =>
+          db.append("ScalaTest is ") // perform setup 
+        }
+      testCode(futurePopulatedDb) // "loan" the fixture to the test code
+    } {
+      removeDb(dbName) // ensure the fixture will be cleaned up
+    }
   }
 
   def withFile(testCode: (File, FileWriter) => Future[Assertion]) = {
     val file = File.createTempFile("hello", "world") // create the fixture
     val writer = new FileWriter(file)
-    try {
+    withCleanup {
       writer.write("ScalaTest is ") // set up the fixture
-      val futureAssertion = testCode(file, writer) // "loan" the fixture to the test
-      futureAssertion onComplete { _ => writer.close() } // clean up the fixture
-      futureAssertion
-    }
-    catch {
-      case ex: Throwable =>
-        writer.close() // clean up the fixture
-        throw ex
+      testCode(file, writer) // "loan" the fixture to the test code
+    } {
+      writer.close() // ensure the fixture will be cleaned up
     }
   }
 

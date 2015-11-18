@@ -834,28 +834,25 @@ package org.scalatest
  *   def withDatabase(testCode: Future[Db] =&gt; Future[Assertion]) = {
  *     val dbName = randomUUID.toString
  *     val futureDb = Future { createDb(dbName) } // create the fixture
- *     val futurePopulatedDb =
- *       futureDb map { db =&gt;
- *         db.append("ScalaTest is ") // perform setup 
- *       }
- *     val futureAssertion = testCode(futurePopulatedDb) // "loan" the fixture to the test
- *     futureAssertion onComplete { _ =&gt; removeDb(dbName) } // clean up the fixture
- *     futureAssertion
+ *     withCleanup {
+ *       val futurePopulatedDb =
+ *         futureDb map { db =&gt;
+ *           db.append("ScalaTest is ") // perform setup 
+ *         }
+ *       testCode(futurePopulatedDb) // "loan" the fixture to the test code
+ *     } {
+ *       removeDb(dbName) // ensure the fixture will be cleaned up
+ *     }
  *   }
  *
  *   def withFile(testCode: (File, FileWriter) =&gt; Future[Assertion]) = {
  *     val file = File.createTempFile("hello", "world") // create the fixture
  *     val writer = new FileWriter(file)
- *     try {
+ *     withCleanup {
  *       writer.write("ScalaTest is ") // set up the fixture
- *       val futureAssertion = testCode(file, writer) // "loan" the fixture to the test
- *       futureAssertion onComplete { _ =&gt; writer.close() } // clean up the fixture
- *       futureAssertion
- *     }
- *     catch {
- *       case ex: Throwable =&gt;
- *         writer.close() // clean up the fixture
- *         throw ex
+ *       testCode(file, writer) // "loan" the fixture to the test code
+ *     } {
+ *       writer.close() // ensure the fixture will be cleaned up
  *     }
  *   }
  *
@@ -963,7 +960,7 @@ package org.scalatest
  *       // "loan" the fixture to the test
  *       withAsyncFixture(test.toNoArgAsyncTest(theFixture))
  *     } {
- *       writer.close() // clean up the fixture
+ *       writer.close() // ensure the fixture will be cleaned up
  *     }
  *   }
  *

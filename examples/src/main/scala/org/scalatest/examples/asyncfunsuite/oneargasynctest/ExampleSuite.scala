@@ -38,7 +38,7 @@ class ExampleSuite extends fixture.AsyncFunSuite {
       // "loan" the fixture to the test
       withAsyncFixture(test.toNoArgAsyncTest(theFixture))
     } {
-      writer.close() // clean up the fixture
+      writer.close() // ensure the fixture will be cleaned up
     }
   }
 

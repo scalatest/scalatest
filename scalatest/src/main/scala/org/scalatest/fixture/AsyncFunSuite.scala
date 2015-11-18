@@ -103,7 +103,7 @@ package org.scalatest.fixture
  *       // "loan" the fixture to the test
  *       withAsyncFixture(test.toNoArgAsyncTest(theFixture))
  *     } {
- *       writer.close() // clean up the fixture
+ *       writer.close() // ensure the fixture will be cleaned up
  *     }
  *   }
  *
