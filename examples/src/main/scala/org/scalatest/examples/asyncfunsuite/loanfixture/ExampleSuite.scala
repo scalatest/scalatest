@@ -16,6 +16,7 @@
 package org.scalatest.examples.asyncfunsuite.loanfixture
 
 import java.util.concurrent.ConcurrentHashMap
+import java.io._
 
 object DbServer { // Simulating a database server
   type Db = StringBuffer
@@ -30,10 +31,16 @@ object DbServer { // Simulating a database server
   }
 }
 
+class ThreadSafeFileWriter(file: File) {
+  private final val fw = new FileWriter(file)
+  def write(s: String): Unit = synchronized { fw.write(s) }
+  def close(): Unit = synchronized { fw.close() }
+  def flush(): Unit = synchronized { fw.flush() }
+}
+
 import org.scalatest._
 import DbServer._
 import java.util.UUID.randomUUID
-import java.io._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
@@ -55,9 +62,9 @@ class ExampleSuite extends AsyncFunSuite {
     }
   }
 
-  def withFile(testCode: (File, FileWriter) => Future[Assertion]) = {
+  def withFile(testCode: (File, ThreadSafeFileWriter) => Future[Assertion]) = {
     val file = File.createTempFile("hello", "world") // create the fixture
-    val writer = new FileWriter(file)
+    val writer = new ThreadSafeFileWriter(file)
     withCleanup {
       writer.write("ScalaTest is ") // set up the fixture
       testCode(file, writer) // "loan" the fixture to the test code

@@ -20,17 +20,24 @@ import java.io._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
+class ThreadSafeFileWriter(file: File) {
+  private final val fw = new FileWriter(file)
+  def write(s: String): Unit = synchronized { fw.write(s) }
+  def close(): Unit = synchronized { fw.close() }
+  def flush(): Unit = synchronized { fw.flush() }
+}
+
 class ExampleSuite extends fixture.AsyncFunSuite {
 
   implicit val executionContext = ExecutionContext.Implicits.global
 
-  case class FixtureParam(file: File, writer: FileWriter)
+  case class FixtureParam(file: File, writer: ThreadSafeFileWriter)
 
   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
 
     // create the fixture
     val file = File.createTempFile("hello", "world")
-    val writer = new FileWriter(file)
+    val writer = new ThreadSafeFileWriter(file)
 
     withCleanup {
       writer.write("ScalaTest is ") // set up the fixture

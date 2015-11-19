@@ -821,6 +821,7 @@ package org.scalatest
  * package org.scalatest.examples.asyncfunsuite.loanfixture
  *
  * import java.util.concurrent.ConcurrentHashMap
+ * import java.io._
  *
  * object DbServer { // Simulating a database server
  *   type Db = StringBuffer
@@ -835,10 +836,16 @@ package org.scalatest
  *   }
  * }
  *
+ * class ThreadSafeFileWriter(file: File) {
+ *   private final val fw = new FileWriter(file)
+ *   def write(s: String): Unit = synchronized { fw.write(s) }
+ *   def close(): Unit = synchronized { fw.close() }
+ *   def flush(): Unit = synchronized { fw.flush() }
+ * }
+ *
  * import org.scalatest._
  * import DbServer._
  * import java.util.UUID.randomUUID
- * import java.io._
  * import scala.concurrent.Future
  * import scala.concurrent.ExecutionContext
  *
@@ -860,9 +867,9 @@ package org.scalatest
  *     }
  *   }
  *
- *   def withFile(testCode: (File, FileWriter) =&gt; Future[Assertion]) = {
+ *   def withFile(testCode: (File, ThreadSafeFileWriter) =&gt; Future[Assertion]) = {
  *     val file = File.createTempFile("hello", "world") // create the fixture
- *     val writer = new FileWriter(file)
+ *     val writer = new ThreadSafeFileWriter(file)
  *     withCleanup {
  *       writer.write("ScalaTest is ") // set up the fixture
  *       testCode(file, writer) // "loan" the fixture to the test code
@@ -951,24 +958,31 @@ package org.scalatest
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.asyncfunsuite.oneargasynctest
- *
+ * 
  * import org.scalatest._
  * import java.io._
  * import scala.concurrent.Future
  * import scala.concurrent.ExecutionContext
- *
+ * 
+ * class ThreadSafeFileWriter(file: File) {
+ *   private final val fw = new FileWriter(file)
+ *   def write(s: String): Unit = synchronized { fw.write(s) }
+ *   def close(): Unit = synchronized { fw.close() }
+ *   def flush(): Unit = synchronized { fw.flush() }
+ * }
+ * 
  * class ExampleSuite extends fixture.AsyncFunSuite {
- *
+ * 
  *   implicit val executionContext = ExecutionContext.Implicits.global
- *
- *   case class FixtureParam(file: File, writer: FileWriter)
- *
+ * 
+ *   case class FixtureParam(file: File, writer: ThreadSafeFileWriter)
+ * 
  *   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
- *
+ * 
  *     // create the fixture
  *     val file = File.createTempFile("hello", "world")
- *     val writer = new FileWriter(file)
- *
+ *     val writer = new ThreadSafeFileWriter(file)
+ * 
  *     withCleanup {
  *       writer.write("ScalaTest is ") // set up the fixture
  *       val theFixture = FixtureParam(file, writer)
@@ -978,7 +992,7 @@ package org.scalatest
  *       writer.close() // ensure the fixture will be cleaned up
  *     }
  *   }
- *
+ * 
  *   test("Testing should be easy") { f =&gt;
  *     val futureFile =
  *       Future {
@@ -988,7 +1002,7 @@ package org.scalatest
  *       }
  *     futureFile map { file =&gt; assert(file.length === 18) }
  *   }
- *
+ * 
  *   test("Testing should be fun") { f =&gt;
  *     val futureFile =
  *       Future {
