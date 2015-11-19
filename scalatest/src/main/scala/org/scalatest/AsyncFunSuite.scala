@@ -1021,6 +1021,99 @@ package org.scalatest
  * the objects.  For more information on the <code>withAsyncFixture(OneArgAsyncTest)</code> technique, see the <a href="fixture/AsyncFunSuite.html">documentation for <code>fixture.AsyncFunSuite</code></a>.
  * </p>
  *
+ * <a name="beforeAndAfter"></a>
+ * <h4>Mixing in <code>BeforeAndAfter</code></h4>
+ *
+ * <p>
+ * In all the shared fixture examples shown so far, the activities of creating, setting up, and cleaning up the fixture objects have been
+ * performed <em>during</em> the test.  This means that if an exception occurs during any of these activities, it will be reported as a test failure.
+ * Sometimes, however, you may want setup to happen <em>before</em> the test starts, and cleanup <em>after</em> the test has completed, so that if an
+ * exception occurs during setup or cleanup, the entire suite aborts and no more tests are attempted. The simplest way to accomplish this in ScalaTest is
+ * to mix in trait <a href="BeforeAndAfter.html"><code>BeforeAndAfter</code></a>.  With this trait you can denote a bit of code to run before each test
+ * with <code>before</code> and/or after each test each test with <code>after</code>, like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.beforeandafter
+ *
+ * import org.scalatest.AsyncFunSuite
+ * import org.scalatest.BeforeAndAfter
+ * import collection.mutable.ListBuffer
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ *
+ * class ThreadSafeListBufferOfString {
+ *   private final val buf = ListBuffer.empty[String]
+ *   def += (s: String): Unit = synchronized { buf += s }
+ *   def toList: List[String] = synchronized { buf.toList }
+ *   def clear(): Unit = synchronized { buf.clear() }
+ *   def isEmpty: Boolean = synchronized { buf.isEmpty }
+ * }
+ *
+ * class ThreadSafeStringBuilder {
+ *   private final val bldr = new StringBuilder
+ *   def append(s: String): Unit =
+ *     synchronized {
+ *       bldr.append(s)
+ *     }
+ *   def clear(): Unit = synchronized { bldr.clear() }
+ *   override def toString = synchronized { bldr.toString }
+ * }
+ *
+ * class ExampleSuite extends AsyncFunSuite with BeforeAndAfter {
+ *
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ *
+ *   final val builder = new ThreadSafeStringBuilder
+ *   final val buffer = new ThreadSafeListBufferOfString
+ *
+ *   before {
+ *     builder.append("ScalaTest is ")
+ *   }
+ *
+ *   after {
+ *     builder.clear()
+ *     buffer.clear()
+ *   }
+ *
+ *   test("testing should be easy") {
+ *     Future {
+ *       builder.append("easy!")
+ *       assert(builder.toString === "ScalaTest is easy!")
+ *       assert(buffer.isEmpty)
+ *       buffer += "sweet"
+ *       succeed
+ *     }
+ *   }
+ *
+ *   test("testing should be fun") {
+ *     Future {
+ *       builder.append("fun!")
+ *       assert(builder.toString === "ScalaTest is fun!")
+ *       assert(buffer.isEmpty)
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Note that the only way <code>before</code> and <code>after</code> code can communicate with test code is via some side-effecting mechanism, commonly by
+ * reassigning instance <code>var</code>s or by changing the state of mutable objects held from instance <code>val</code>s (as in this example). If using
+ * instance <code>var</code>s or mutable objects held from instance <code>val</code>s you wouldn't be able to run tests in parallel in the same instance
+ * of the test class unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
+ * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
+ * don't need to synchronize. If you mixed <code>ParallelTestExecution</code> into the <code>ExampleSuite</code> above, the tests would run in parallel just fine
+ * without any synchronization needed on the mutable <code>StringBuilder</code> and <code>ListBuffer[String]</code> objects.
+ * </p>
+ *
+ * <p>
+ * Although <code>BeforeAndAfter</code> provides a minimal-boilerplate way to execute code before and after tests, it isn't designed to enable stackable
+ * traits, because the order of execution would be non-obvious.  If you want to factor out before and after code that is common to multiple test suites, you 
+ * should use trait <code>BeforeAndAfterEach</code> instead, as shown later in the next section,
+ * <a href="#composingFixtures.html">composing fixtures by stacking traits</a>.
+ * </p>
+ *
+
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
