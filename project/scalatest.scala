@@ -170,7 +170,7 @@ object ScalatestBuild extends Build {
       "org.easymock" % "easymockclassextension" % "3.1" % "optional",
       "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
-      "org.testng" % "testng" % "6.8.7" % "optional",
+      "org.testng" % "testng" % "6.9.9" % "optional",
       "com.google.inject" % "guice" % "2.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
       "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
