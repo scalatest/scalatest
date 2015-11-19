@@ -618,40 +618,55 @@ package org.scalatest
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.asyncfunsuite.getfixture
- *
+
  * import org.scalatest.AsyncFunSuite
  * import collection.mutable.ListBuffer
  * import scala.concurrent.Future
  * import scala.concurrent.ExecutionContext
- *
+ * 
+ * class ThreadSafeListBufferOfString {
+ *   private final val buf = ListBuffer.empty[String]
+ *   def += (s: String): Unit = synchronized { buf += s }
+ *   def toList: List[String] = synchronized { buf.toList }
+ * }
+ * 
+ * class ThreadSafeStringBuilder(init: String) {
+ *   private final val bldr = new StringBuilder(init)
+ *   def append(s: String): Unit =
+ *     synchronized {
+ *       bldr.append(s)
+ *     }
+ *   override def toString = synchronized { bldr.toString }
+ * }
+ * 
  * class ExampleSuite extends AsyncFunSuite {
- *
+ * 
  *   implicit val executionContext = ExecutionContext.Implicits.global
- *
+ * 
  *   class Fixture {
- *     val builder = new StringBuilder("ScalaTest is ")
- *     val buffer = new ListBuffer[String]
+ *     final val builder = new ThreadSafeStringBuilder("ScalaTest is ")
+ *     final val buffer = new ThreadSafeListBufferOfString
  *   }
- *
+ * 
  *   def fixture = new Fixture
- *
+ * 
  *   test("Testing should be easy") {
  *     val f = fixture
  *     f.builder.append("easy!")
  *     val fut = Future { (f.builder.toString, f.buffer.toList) }
- *     fut map { case (s, xs) =&gt;
+ *     fut map { case (s, xs) =>
  *       assert(s === "ScalaTest is easy!")
  *       assert(xs.isEmpty)
  *       f.buffer += "sweet"
  *       succeed
  *     }
- *   } 
- *
+ *   }
+ * 
  *   test("Testing should be fun") {
  *     val f = fixture
  *     f.builder.append("fun!")
  *     val fut = Future { (f.builder.toString, f.buffer.toList) }
- *     fut map { case (s, xs) =&gt;
+ *     fut map { case (s, xs) =>
  *       assert(s === "ScalaTest is fun!")
  *       assert(xs.isEmpty)
  *     }
@@ -907,8 +922,8 @@ package org.scalatest
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
- * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a <code>fixture.AsyncSuite</code>
- * and overriding <code>withAsyncFixture(OneArgAsyncTest)</code>.
+ * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a
+ * <code>fixture.AsyncSuite</code> and overriding <code>withAsyncFixture(OneArgAsyncTest)</code>.
  * Each test in a <code>fixture.AsyncSuite</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
  * <code>withAsyncFixture</code> method that takes a <code>OneArgAsyncTest</code>. This <code>withAsyncFixture</code> method is responsible for

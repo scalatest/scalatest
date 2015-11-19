@@ -20,13 +20,28 @@ import collection.mutable.ListBuffer
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
+class ThreadSafeListBufferOfString {
+  private final val buf = ListBuffer.empty[String]
+  def += (s: String): Unit = synchronized { buf += s }
+  def toList: List[String] = synchronized { buf.toList }
+}
+
+class ThreadSafeStringBuilder(init: String) {
+  private final val bldr = new StringBuilder(init)
+  def append(s: String): Unit =
+    synchronized {
+      bldr.append(s)
+    }
+  override def toString = synchronized { bldr.toString }
+}
+
 class ExampleSuite extends AsyncFunSuite {
 
   implicit val executionContext = ExecutionContext.Implicits.global
 
   class Fixture {
-    val builder = new StringBuilder("ScalaTest is ")
-    val buffer = new ListBuffer[String]
+    final val builder = new ThreadSafeStringBuilder("ScalaTest is ")
+    final val buffer = new ThreadSafeListBufferOfString
   }
 
   def fixture = new Fixture
