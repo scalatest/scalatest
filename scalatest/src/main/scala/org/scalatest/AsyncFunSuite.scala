@@ -1113,7 +1113,146 @@ package org.scalatest
  * <a href="#composingFixtures.html">composing fixtures by stacking traits</a>.
  * </p>
  *
-
+ * <a name="composingFixtures"></a><h2>Composing fixtures by stacking traits</h2>
+ *
+ * <p>
+ * In larger projects, teams often end up with several different fixtures that test classes need in different combinations,
+ * and possibly initialized (and cleaned up) in different orders. A good way to accomplish this in ScalaTest is to factor the individual
+ * fixtures into traits that can be composed using the <em>stackable trait</em> pattern. This can be done, for example, by placing
+ * <code>withFixture</code> methods in several traits, each of which call <code>super.withFixture</code>. Here's an example in
+ * which the <code>StringBuilder</code> and <code>ListBuffer[String]</code> fixtures used in the previous examples have been
+ * factored out into two <em>stackable fixture traits</em> named <code>Builder</code> and <code>Buffer</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.composingwithfixture
+ * 
+ * import org.scalatest._
+ * import org.scalatest.SuiteMixin
+ * import collection.mutable.ListBuffer
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ * 
+ * class ThreadSafeListBufferOfString {
+ *   private final val buf = ListBuffer.empty[String]
+ *   def += (s: String): Unit = synchronized { buf += s }
+ *   def toList: List[String] = synchronized { buf.toList }
+ *   def clear(): Unit = synchronized { buf.clear() }
+ *   def isEmpty: Boolean = synchronized { buf.isEmpty }
+ * }
+ * 
+ * class ThreadSafeStringBuilder {
+ *   private final val bldr = new StringBuilder
+ *   def append(s: String): Unit =
+ *     synchronized {
+ *       bldr.append(s)
+ *     }
+ *   def clear(): Unit = synchronized { bldr.clear() }
+ *   override def toString = synchronized { bldr.toString }
+ * }
+ * 
+ * trait Builder extends AsyncSuiteMixin { this: AsyncSuite =>
+ * 
+ *   final val builder = new ThreadSafeStringBuilder
+ * 
+ *   abstract override def withAsyncFixture(test: NoArgAsyncTest) = {
+ *     builder.append("ScalaTest is ")
+ *     withCleanup {
+ *       super.withAsyncFixture(test) // To be stackable, must call super.withAsyncFixture
+ *     } {
+ *       builder.clear()
+ *     }
+ *   }
+ * }
+ * 
+ * trait Buffer extends AsyncSuiteMixin { this: AsyncSuite =>
+ * 
+ *   final val buffer = new ThreadSafeListBufferOfString
+ * 
+ *   abstract override def withAsyncFixture(test: NoArgAsyncTest) = {
+ *     withCleanup {
+ *       super.withAsyncFixture(test) // To be stackable, must call super.withAsyncFixture
+ *     } {
+ *       buffer.clear()
+ *     }
+ *   }
+ * }
+ * 
+ * class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
+ * 
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ * 
+ *   test("Testing should be easy") {
+ *     Future {
+ *       builder.append("easy!")
+ *       assert(builder.toString === "ScalaTest is easy!")
+ *       assert(buffer.isEmpty)
+ *       buffer += "sweet"
+ *       succeed
+ *     }
+ *   }
+ * 
+ *   test("Testing should be fun") {
+ *     Future {
+ *       builder.append("fun!")
+ *       assert(builder.toString === "ScalaTest is fun!")
+ *       assert(buffer.isEmpty)
+ *       buffer += "clear"
+ *       succeed
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * By mixing in both the <code>Builder</code> and <code>Buffer</code> traits, <code>ExampleSuite</code> gets both fixtures, which will be
+ * initialized before each test and cleaned up after. The order the traits are mixed together determines the order of execution.
+ * In this case, <code>Builder</code> is &ldquo;super&rdquo; to <code>Buffer</code>. If you wanted <code>Buffer</code> to be &ldquo;super&rdquo;
+ * to <code>Builder</code>, you need only switch the order you mix them together, like this: 
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * class Example2Suite extends Suite with Buffer with Builder
+ * </pre>
+ *
+ * <p>
+ * And if you only need one fixture you mix in only that trait:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * class Example3Suite extends Suite with Builder
+ * </pre>
+ *
+ * <p>
+ * Another way to create stackable fixture traits is by extending the <a href="BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>
+ * and/or <a href="BeforeAndAfterAll.html"><code>BeforeAndAfterAll</code></a> traits.
+ * <code>BeforeAndAfterEach</code> has a <code>beforeEach</code> method that will be run before each test (like JUnit's <code>setUp</code>),
+ * and an <code>afterEach</code> method that will be run after (like JUnit's <code>tearDown</code>).
+ * Similarly, <code>BeforeAndAfterAll</code> has a <code>beforeAll</code> method that will be run before all tests,
+ * and an <code>afterAll</code> method that will be run after all tests. Here's what the previously shown example would look like if it
+ * were rewritten to use the <code>BeforeAndAfterEach</code> methods instead of <code>withFixture</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncfunsuite.composingbeforeandaftereach
+ * </pre>
+ *
+ * <p>
+ * To get the same ordering as <code>withFixture</code>, place your <code>super.beforeEach</code> call at the end of each
+ * <code>beforeEach</code> method, and the <code>super.afterEach</code> call at the beginning of each <code>afterEach</code>
+ * method, as shown in the previous example. It is a good idea to invoke <code>super.afterEach</code> in a <code>try</code>
+ * block and perform cleanup in a <code>finally</code> clause, as shown in the previous example, because this ensures the
+ * cleanup code is performed even if <code>super.afterEach</code> throws an exception.
+ * </p>
+ *
+ * <p>
+ * The difference between stacking traits that extend <code>BeforeAndAfterEach</code> versus traits that implement <code>withFixture</code> is
+ * that setup and cleanup code happens before and after the test in <code>BeforeAndAfterEach</code>, but at the beginning and
+ * end of the test in <code>withFixture</code>. Thus if a <code>withFixture</code> method completes abruptly with an exception, it is
+ * considered a failed test. By contrast, if any of the <code>beforeEach</code> or <code>afterEach</code> methods of <code>BeforeAndAfterEach</code> 
+ * complete abruptly, it is considered an aborted suite, which will result in a <a href="events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
+ * </p>
+ * 
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
