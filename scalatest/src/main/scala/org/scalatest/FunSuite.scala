@@ -1447,7 +1447,7 @@ import Suite.autoTagClassAnnotations
  *   test("pop is invoked on an empty stack") {
  *     val stack = emptyStack
  *     assertThrows[IllegalStateException] {
- *       emptyStack.pop
+ *       stack.pop
  *     }
  *   }
  *

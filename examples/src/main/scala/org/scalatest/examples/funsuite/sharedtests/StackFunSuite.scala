@@ -22,7 +22,7 @@ class Stack[T] {
   val MAX = 10
   private val buf = new ListBuffer[T]
 
-  def push(o: T) {
+  def push(o: T): Unit = {
     if (!full)
       buf.prepend(o)
     else
@@ -54,7 +54,7 @@ import org.scalatest.FunSuite
 
 trait FunSuiteStackBehaviors { this: FunSuite =>
 
-  def nonEmptyStack(createNonEmptyStack: => Stack[Int], lastItemAdded: Int) {
+  def nonEmptyStack(createNonEmptyStack: => Stack[Int], lastItemAdded: Int): Unit = {
 
     test("empty is invoked on this non-empty stack: " + createNonEmptyStack.toString) {
       val stack = createNonEmptyStack
@@ -76,7 +76,7 @@ trait FunSuiteStackBehaviors { this: FunSuite =>
     }
   }
 
-  def nonFullStack(createNonFullStack: => Stack[Int]) {
+  def nonFullStack(createNonFullStack: => Stack[Int]): Unit = {
 
     test("full is invoked on this non-full stack: " + createNonFullStack.toString) {
       val stack = createNonFullStack
@@ -135,7 +135,7 @@ class StackFunSuite extends FunSuite with FunSuiteStackBehaviors {
   test("pop is invoked on an empty stack") {
     val stack = emptyStack
     assertThrows[IllegalStateException] {
-      emptyStack.pop
+      stack.pop
     }
   }
 
