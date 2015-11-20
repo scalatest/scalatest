@@ -173,7 +173,7 @@ object ScalatestBuild extends Build {
       "org.testng" % "testng" % "6.9.9" % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
+      "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
@@ -182,8 +182,8 @@ object ScalatestBuild extends Build {
   def scalatestTestLibraryDependencies =
     Seq(
       "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test"
+      "org.eclipse.jetty" % "jetty-server" % "9.3.6.v20151106" % "test",
+      "org.eclipse.jetty" % "jetty-webapp" % "9.3.6.v20151106" % "test"
     )
 
   def scalatestJSLibraryDependencies =
@@ -425,10 +425,6 @@ object ScalatestBuild extends Build {
      initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
-     ivyXML :=
-       <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
-         <artifact name="javax.servlet" type="orbit" ext="jar"/>
-       </dependency>,
      libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
      libraryDependencies ++= scalatestLibraryDependencies,
      genMustMatchersTask,
@@ -532,10 +528,6 @@ object ScalatestBuild extends Build {
       initialCommands in console := """|import org.scalatest._
                                       |import org.scalactic._
                                       |import Matchers._""".stripMargin,
-      ivyXML :=
-        <dependency org="org.eclipse.jetty.orbit" name="javax.servlet" rev="3.0.0.v201112011016">
-          <artifact name="javax.servlet" type="orbit" ext="jar"/>
-        </dependency>,
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
