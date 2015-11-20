@@ -171,7 +171,7 @@ object ScalatestBuild extends Build {
       "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
       "org.mockito" % "mockito-all" % "1.10.19" % "optional",
       "org.testng" % "testng" % "6.9.9" % "optional",
-      "com.google.inject" % "guice" % "2.0" % "optional",
+      "com.google.inject" % "guice" % "4.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
       "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
