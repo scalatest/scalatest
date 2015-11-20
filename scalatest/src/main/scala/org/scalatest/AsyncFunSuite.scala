@@ -1260,7 +1260,7 @@ package org.scalatest
  *   override def toString = synchronized { bldr.toString }
  * }
  * 
- * trait Builder extends BeforeAndAfterEach { this: Suite =>
+ * trait Builder extends BeforeAndAfterEach { this: Suite =&gt;
  * 
  *   val builder = new ThreadSafeStringBuilder
  * 
@@ -1275,7 +1275,7 @@ package org.scalatest
  *   }
  * }
  * 
- * trait Buffer extends BeforeAndAfterEach { this: Suite =>
+ * trait Buffer extends BeforeAndAfterEach { this: Suite =&gt;
  * 
  *   val buffer = new ThreadSafeListBufferOfString
  * 
