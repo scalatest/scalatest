@@ -168,7 +168,7 @@ object ScalatestBuild extends Build {
     Seq(
       "org.scala-sbt" % "test-interface" % "1.0" % "optional",
       "org.easymock" % "easymockclassextension" % "3.2" % "optional",
-      "org.jmock" % "jmock-legacy" % "2.5.1" % "optional",
+      "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
       "org.mockito" % "mockito-all" % "1.9.0" % "optional",
       "org.testng" % "testng" % "6.9.9" % "optional",
       "com.google.inject" % "guice" % "2.0" % "optional",
