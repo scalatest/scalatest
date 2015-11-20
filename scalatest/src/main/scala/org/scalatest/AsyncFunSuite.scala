@@ -1235,6 +1235,80 @@ package org.scalatest
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.asyncfunsuite.composingbeforeandaftereach
+ * 
+ * import org.scalatest._
+ * import org.scalatest.BeforeAndAfterEach
+ * import collection.mutable.ListBuffer
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
+ * 
+ * class ThreadSafeListBufferOfString {
+ *   private final val buf = ListBuffer.empty[String]
+ *   def += (s: String): Unit = synchronized { buf += s }
+ *   def toList: List[String] = synchronized { buf.toList }
+ *   def clear(): Unit = synchronized { buf.clear() }
+ *   def isEmpty: Boolean = synchronized { buf.isEmpty }
+ * }
+ * 
+ * class ThreadSafeStringBuilder {
+ *   private final val bldr = new StringBuilder
+ *   def append(s: String): Unit =
+ *     synchronized {
+ *       bldr.append(s)
+ *     }
+ *   def clear(): Unit = synchronized { bldr.clear() }
+ *   override def toString = synchronized { bldr.toString }
+ * }
+ * 
+ * trait Builder extends BeforeAndAfterEach { this: Suite =>
+ * 
+ *   val builder = new ThreadSafeStringBuilder
+ * 
+ *   override def beforeEach() {
+ *     builder.append("ScalaTest is ")
+ *     super.beforeEach() // To be stackable, must call super.beforeEach
+ *   }
+ * 
+ *   override def afterEach() {
+ *     try super.afterEach() // To be stackable, must call super.afterEach
+ *     finally builder.clear()
+ *   }
+ * }
+ * 
+ * trait Buffer extends BeforeAndAfterEach { this: Suite =>
+ * 
+ *   val buffer = new ThreadSafeListBufferOfString
+ * 
+ *   override def afterEach() {
+ *     try super.afterEach() // To be stackable, must call super.afterEach
+ *     finally buffer.clear()
+ *   }
+ * }
+ * 
+ * class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
+ * 
+ *   implicit val executionContext = ExecutionContext.Implicits.global
+ * 
+ *   test("Testing should be easy") {
+ *     Future {
+ *       builder.append("easy!")
+ *       assert(builder.toString === "ScalaTest is easy!")
+ *       assert(buffer.isEmpty)
+ *       buffer += "sweet"
+ *       succeed
+ *     }
+ *   }
+ * 
+ *   test("Testing should be fun") {
+ *     Future {
+ *       builder.append("fun!")
+ *       assert(builder.toString === "ScalaTest is fun!")
+ *       assert(buffer.isEmpty)
+ *       buffer += "clear"
+ *       succeed
+ *     }
+ *   }
+ * }
  * </pre>
  *
  * <p>
