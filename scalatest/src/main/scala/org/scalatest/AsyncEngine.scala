@@ -190,6 +190,8 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
               reportTestFailed(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, durationToReport, formatter,  Some(SeeStackDepthException))
               FailedStatus
           }
+        // We will only get here if an exception that should cause a Suite to abort rather than a test
+        // to fail has happeend. In that case, we should return AbortedStatus(ex). Write a test first.
         case Failure(ex) => throw ex
       }
     }

@@ -29,12 +29,10 @@ class ExampleSuite extends AsyncFunSuite {
     val futureOutcome = super.withAsyncFixture(test)
 
     futureOutcome onSuccess {
-      case failed: Failed =>
+      case _: Failed =>
         val currDir = new File(".")
         val fileNames = currDir.list()
         println("Dir snapshot: " + fileNames.mkString(", "))
-        failed
-      case other => other
     }
 
     futureOutcome

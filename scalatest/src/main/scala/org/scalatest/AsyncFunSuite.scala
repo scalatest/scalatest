@@ -710,8 +710,12 @@ package org.scalatest
  *
  * <p>
  * You can, therefore, override <code>withAsyncFixture</code> to perform setup before invoking the test function,
- * and/or perform cleanup after the test completes (by registering the cleanup code as a callback on the <code>Future[Outcome]</code>
- * returned by the test function).
+ * and/or perform cleanup after the test completes. The recommended way to ensure cleanup is performed after a test completes is
+ * to use the <code>withCleanup</code> helper method, defined in supertrait <a href="AsyncSuite.html"><code>AsyncSuite</code></a>,
+ * which will ensure that
+ * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
+ * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
+ * to execute asynchronously when the future completes.
  * </p>
  *
  * <p>
@@ -724,25 +728,47 @@ package org.scalatest
  * // Your implementation
  * override def withAsyncFixture(test: NoArgTest) = {
  *
- *   // Perform setup
- *   val futureOutcome =
+ *   // Perform setup here
+ * 
+ *   withCleanup {
  *     super.withAsyncFixture(test) // Invoke the test function
- *
- *   futureOutcome onComplete { _ =&gt;
- *     // Perform cleanup
+ *   } {
+ *     // Perform cleanup here
  *   }
- *
- *   futureOutcome
  * }
  * </pre>
  *
  * <p>
- * Here's an example in which <code>withAsyncFixture(NoArgAsyncTest)</code> is used to take a snapshot of the working directory if a test fails, and 
+ * If you have no cleanup to perform, you can write <code>withAsyncFixture</code> like this instead:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * override def withAsyncFixture(test: NoArgTest) = {
+ *
+ *   // Perform setup here
+ *
+ *   super.withAsyncFixture(test) // Invoke the test function
+ * }
+ * </pre>
+ *
+ * <p>
+ * If you want to perform an action only for certain outcomes, you'll need to 
+ * register code performing that action as a callback on the <code>Future</code> using
+ * one of <code>Future</code> registration methods: <code>onComplete</code>, <code>onSuccess</code>,
+ * or <code>onFailure</code>. Note that if a test fails, that will be treated as a
+ * <code>scala.util.Success(org.scalatest.Failure)</code>. So if you want to perform an 
+ * action if a test fails, for example, you'd register the callaback using <code>onSuccess</code>.
+ * </p>
+ *
+ * <p>
+ * Here's an example in which <code>withAsyncFixture(NoArgAsyncTest)</code> is used to take a
+ * snapshot of the working directory if a test fails, and 
  * send that information to the standard output stream:
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.asyncfunsuite.noargtest
+ * package org.scalatest.examples.asyncfunsuite.noargasynctest
  *
  * import java.io.File
  * import org.scalatest._
@@ -758,12 +784,10 @@ package org.scalatest
  *     val futureOutcome = super.withAsyncFixture(test)
  *
  *     futureOutcome onSuccess {
- *       case failed: Failed =&gt;
+ *       case _: Failed =&gt;
  *         val currDir = new File(".")
  *         val fileNames = currDir.list()
  *         println("Dir snapshot: " + fileNames.mkString(", "))
- *         failed
- *       case other =&gt; other
  *     }
  *
  *     futureOutcome
@@ -802,6 +826,33 @@ package org.scalatest
  * implementation.
  * </p>
  *
+ * <p>
+ * Lastly, if you want to transform the outcome in some way in <code>withAsyncFixture</code>, you'll need to use either the
+ * <code>map</code> or <code>transform</code> methods of <code>Future</code>, like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * // Your implementation
+ * override def withAsyncFixture(test: NoArgTest) = {
+ *
+ *   // Perform setup here
+ *
+ *   val futureOutcome = super.withAsyncFixture(test) // Invoke the test function
+ *
+ *   futureOutcome map { outcome =&gt;
+ *     // transform the outcome into a new outcome here
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * Note that a <code>NoArgAsyncTest</code>'s <code>apply</code> method will only return a <code>Failure</code> if
+ * the test completes abruptly with an exception (such as <code>OutOfMemoryError</code>) that should
+ * cause the suite to abort rather than the test to fail. Thus usually you would use <code>map</code>
+ * to transform future outcomes, not <code>transform</code>, so that such suite-aborting exceptions pass through
+ * unchanged.  The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
+ * </p>
+ * 
  * <a name="loanFixtureMethods"></a>
  * <h4>Calling loan-fixture methods</h4>
  *
