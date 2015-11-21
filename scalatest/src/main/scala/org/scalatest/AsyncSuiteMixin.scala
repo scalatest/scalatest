@@ -18,46 +18,47 @@ package org.scalatest
 import scala.concurrent.Future
 
 /**
- * Trait defining abstract "lifecycle" methods that are implemented in <a href="Suite.html#lifecycle-methods"><code>Suite</code></a> and can
- * be overridden in stackable modification traits.
+ * Trait defining abstract "lifecycle" methods that are implemented in <a href="AsyncSuite.html#lifecycle-methods"><code>AsyncSuite</code></a>
+ * and can be overridden in stackable modification traits.
  *
  * <p>
- * The main purpose of <code>SuiteMixin</code> is to differentiate core <code>Suite</code>
- * style traits, such as <a href="Spec.html"><code>Spec</code></a>, <a href="FunSuite.html"><code>FunSuite</code></a>, and <a href="FunSpec.html"><code>FunSpec</code></a> from stackable
- * modification traits for <code>Suite</code>s such as <a href="BeforeAndAfterEach.html"><code>BeforeAndAfterEach</code></a>, <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>,
- * and <a href="SequentialNestedSuiteExecution.html"><code>SequentialNestedSuiteExecution</code></a>. Because these stackable traits extend <code>SuiteMixin</code>
- * instead of <code>Suite</code>, you can't define a suite by simply extending one of the stackable traits:
+ * The main use case for this trait is to override <code>withAsyncFixture</code> in a mixin trait.
+ * Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
- * class MySuite extends BeforeAndAfterEach // Won't compile
+ * trait Builder extends AsyncSuiteMixin { this: AsyncSuite =&gt;
+ * 
+ *   final val builder = new ThreadSafeStringBuilder
+ * 
+ *   abstract override def withAsyncFixture(test: NoArgAsyncTest) = {
+ *     builder.append("ScalaTest is ")
+ *     withCleanup {
+ *       super.withAsyncFixture(test) // To be stackable, must call super.withAsyncFixture
+ *     } {
+ *       builder.clear()
+ *     }
+ *   }
+ * }
  * </pre>
- *
- * <p>
- * Instead, you need to extend a core <code>Suite</code> trait and mix the stackable <code>BeforeAndAfterEach</code> trait
- * into that, like this:
- * </p>
- *
- * <pre class="stHighlight">
- * class MySuite extends FunSuite with BeforeAndAfterEach // Compiles fine
- * </pre>
- *
- * @author Bill Venners
  */
 trait AsyncSuiteMixin extends SuiteMixin { this: AsyncSuite =>
 
   /**
-   * Runs the passed test function with a fixture established by this method.
+   * Run the passed test function in the context of a fixture established by this method.
    *
    * <p>
    * This method should set up the fixture needed by the tests of the
-   * current suite, invoke the test function, and if needed, perform any clean
+   * current suite, invoke the test function, and if needed, register a callback
+   * on the resulting <code>Future[Outcome]</code> to perform any clean
    * up needed after the test completes. Because the <code>NoArgTest</code> function
    * passed to this method takes no parameters, preparing the fixture will require
-   * side effects, such as initializing an external database.
+   * side effects, such as reassigning instance <code>var</code>s in this <code>Suite</code> or initializing
+   * a globally accessible external database. If you want to avoid reassigning instance <code>var</code>s
+   * you can use <a href="fixture/AsyncSuite.html">fixture.AsyncSuite</a>.
    * </p>
    *
-   * @param test the no-arg test function to run with a fixture
+   * @param test the no-arg async test function to run with a fixture
    */
   protected def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome]
 }

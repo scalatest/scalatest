@@ -20,6 +20,46 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions // To convert Assertion to Future[Assertion]
 
+/*
+ * TODO: Fill in here and also add a lifecycle-methods to Suite, which is linked to
+ * from SuiteMixin.
+ */
+/**
+ * The base trait of ScalaTest's async testing styles, which enables testing of
+ * asynchronous code without blocking.
+ *
+ * <p>
+ * This trait provides a final override of <code>withFixture</code>, declared in
+ * supertrait <code>Suite</code>, because the <code>withFixture</code> lifecycle
+ * method assumes synchronous testing:
+ * </p>
+ *
+ * <pre>
+ * def withFixture(test: NoArgTest): Outcome
+ * </pre>
+ *
+ * <p>
+ * The test function interface, <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a>, offers an <code>apply</code> method
+ * that also returns <a href="Outcome.html"><code>Outcome</code></a>:
+ * </p>
+ *
+ * <pre>
+ * // In trait NoArgTest:
+ * def apply(): Outcome
+ * </pre>
+ *
+ * <p>
+ * Because the result of a test is an <code>Outcome</code>, when the test function returns, the test must have completed already. It
+ * will already be one of <a href="Succeeded$.html"><code>Succeeded</code></a>, <a href="Failed.html"><code>Failed</code></a>, <a href="Canceled.html"><code>Canceled</code></a>, or <a href="Pending$.html"></code>Pending</code></a>. This is
+ * also true when <code>withFixture</code> returns: because the result type of <code>withFixture</code> is <code>Outcome</code>,
+ * the test by definition has already completed.
+ * </p>
+ *
+ * <p>
+ * Huh, was just about to write that this trait overrides runTest, but it doesn't. That's done in all the Async*Like
+ * traits. But I think it should be here. Going to check this in and try that.
+ * </p>
+ */
 trait AsyncSuite extends Suite { thisAsyncSuite =>
 
   /**
