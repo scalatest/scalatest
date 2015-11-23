@@ -20,51 +20,25 @@ import collection.mutable.ListBuffer
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-class ThreadSafeListBufferOfString {
-  private final val buf = ListBuffer.empty[String]
-  def += (s: String): Unit = synchronized { buf += s }
-  def toList: List[String] = synchronized { buf.toList }
-}
-
-class ThreadSafeStringBuilder(init: String) {
-  private final val bldr = new StringBuilder(init)
-  def append(s: String): Unit =
-    synchronized {
-      bldr.append(s)
-    }
-  override def toString = synchronized { bldr.toString }
-}
-
 class ExampleSuite extends AsyncFunSuite {
 
   implicit val executionContext = ExecutionContext.Implicits.global
 
-  class Fixture {
-    final val builder = new ThreadSafeStringBuilder("ScalaTest is ")
-    final val buffer = new ThreadSafeListBufferOfString
-  }
-
-  def fixture = new Fixture
+  def fixture: Future[String] = Future { "ScalaTest is " }
 
   test("Testing should be easy") {
-    val f = fixture
-    f.builder.append("easy!")
-    val fut = Future { (f.builder.toString, f.buffer.toList) }
-    fut map { case (s, xs) =>
+    val future = fixture
+    val result = future map { s => s + "easy!" }
+    result map { s =>
       assert(s === "ScalaTest is easy!")
-      assert(xs.isEmpty)
-      f.buffer += "sweet"
-      succeed
     }
   }
 
   test("Testing should be fun") {
-    val f = fixture
-    f.builder.append("fun!")
-    val fut = Future { (f.builder.toString, f.buffer.toList) }
-    fut map { case (s, xs) =>
+    val future = fixture
+    val result = future map { s => s + "fun!" }
+    result map { s =>
       assert(s === "ScalaTest is fun!")
-      assert(xs.isEmpty)
     }
   }
 }
