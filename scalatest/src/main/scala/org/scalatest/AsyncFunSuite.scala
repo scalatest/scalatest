@@ -964,7 +964,7 @@ package org.scalatest
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
- * <a name="withFixtureOneArgTest"></a>
+ * <a name="withAsyncFixtureOneArgAsyncTest"></a>
  * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
@@ -1003,53 +1003,58 @@ package org.scalatest
  * import scala.concurrent.Future
  * import scala.concurrent.ExecutionContext
  * 
- * class ThreadSafeFileWriter(file: File) {
- *   private final val fw = new FileWriter(file)
- *   def write(s: String): Unit = synchronized { fw.write(s) }
- *   def close(): Unit = synchronized { fw.close() }
- *   def flush(): Unit = synchronized { fw.flush() }
+ * // Defining actor messages
+ * sealed abstract class StringOp
+ * case object Clear extends StringOp
+ * case class Append(value: String) extends StringOp
+ * case object GetValue
+ * 
+ * class StringActor { // Simulating an actor
+ *   private final val sb = new StringBuilder
+ *   def !(op: StringOp): Unit =
+ *     synchronized {
+ *       op match {
+ *         case Append(value) =&gt; sb.append(value)
+ *         case Clear =&gt; sb.clear()
+ *       }
+ *     }
+ *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
+ *     Future {
+ *       synchronized { sb.toString }
+ *     }
  * }
  * 
  * class ExampleSuite extends fixture.AsyncFunSuite {
  * 
  *   implicit val executionContext = ExecutionContext.Implicits.global
  * 
- *   case class FixtureParam(file: File, writer: ThreadSafeFileWriter)
+ *   type FixtureParam = StringActor
  * 
  *   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
  * 
- *     // create the fixture
- *     val file = File.createTempFile("hello", "world")
- *     val writer = new ThreadSafeFileWriter(file)
- * 
+ *     val actor = new StringActor
  *     withCleanup {
- *       writer.write("ScalaTest is ") // set up the fixture
- *       val theFixture = FixtureParam(file, writer)
- *       // "loan" the fixture to the test
- *       withAsyncFixture(test.toNoArgAsyncTest(theFixture))
+ *       actor ! Append("ScalaTest is ") // set up the fixture
+ *       withAsyncFixture(test.toNoArgAsyncTest(actor))
  *     } {
- *       writer.close() // ensure the fixture will be cleaned up
+ *       actor ! Clear // ensure the fixture will be cleaned up
  *     }
  *   }
  * 
- *   test("Testing should be easy") { f =&gt;
- *     val futureFile =
- *       Future {
- *         f.writer.write("easy!")
- *         f.writer.flush()
- *         f.file
- *       }
- *     futureFile map { file =&gt; assert(file.length === 18) }
+ *   test("Testing should be easy") { actor =&gt;
+ *     actor ! Append("easy!")
+ *     val futureString = actor ? GetValue
+ *     futureString map { s =&gt;
+ *       assert(s === "ScalaTest is easy!")
+ *     }
  *   }
  * 
- *   test("Testing should be fun") { f =&gt;
- *     val futureFile =
- *       Future {
- *         f.writer.write("fun!")
- *         f.writer.flush()
- *         f.file
- *       }
- *     futureFile map { file =&gt; assert(file.length === 17) }
+ *   test("Testing should be fun") { actor =&gt;
+ *     actor ! Append("fun!")
+ *     val futureString = actor ? GetValue
+ *     futureString map { s =&gt;
+ *       assert(s === "ScalaTest is fun!")
+ *     }
  *   }
  * }
  * </pre>
