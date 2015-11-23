@@ -956,9 +956,9 @@ object ScalatestBuild extends Build {
     .settings(
       scalaVersion := buildScalaVersion,
       libraryDependencies += scalacheckDependency("compile"),
-      sourceGenerators in Compile += {
+      sourceGenerators in Test += {
         Def.task {
-          GenExamplesJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenExamplesJS.genScala((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
     ).dependsOn(scalacticMacroJS, scalacticJS, scalatestJS).enablePlugins(ScalaJSPlugin)
