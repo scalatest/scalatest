@@ -16,7 +16,9 @@
 package org.scalatest.examples.asyncfunsuite.loanfixture
 
 import java.util.concurrent.ConcurrentHashMap
-import java.io._
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 object DbServer { // Simulating a database server
   type Db = StringBuffer
@@ -31,11 +33,25 @@ object DbServer { // Simulating a database server
   }
 }
 
-class ThreadSafeFileWriter(file: File) {
-  private final val fw = new FileWriter(file)
-  def write(s: String): Unit = synchronized { fw.write(s) }
-  def close(): Unit = synchronized { fw.close() }
-  def flush(): Unit = synchronized { fw.flush() }
+// Defining actor messages
+sealed abstract class StringOp
+case object Clear extends StringOp
+case class Append(value: String) extends StringOp
+case object GetValue
+
+class StringActor { // Simulating an actor
+  private final val sb = new StringBuilder
+  def !(op: StringOp): Unit =
+    synchronized {
+      op match {
+        case Append(value) => sb.append(value)
+        case Clear => sb.clear()
+      }
+    }
+  def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
+    Future {
+      synchronized { sb.toString }
+    }
 }
 
 import org.scalatest._
@@ -49,7 +65,7 @@ class ExampleSuite extends AsyncFunSuite {
   implicit val executionContext = ExecutionContext.Implicits.global
 
   def withDatabase(testCode: Future[Db] => Future[Assertion]) = {
-    val dbName = randomUUID.toString
+    val dbName = randomUUID.toString // generate a unique db name
     val futureDb = Future { createDb(dbName) } // create the fixture
     withCleanup {
       val futurePopulatedDb =
@@ -62,23 +78,24 @@ class ExampleSuite extends AsyncFunSuite {
     }
   }
 
-  def withFile(testCode: (File, ThreadSafeFileWriter) => Future[Assertion]) = {
-    val file = File.createTempFile("hello", "world") // create the fixture
-    val writer = new ThreadSafeFileWriter(file)
+  def withActor(testCode: StringActor => Future[Assertion]) = {
+    val actor = new StringActor
     withCleanup {
-      writer.write("ScalaTest is ") // set up the fixture
-      testCode(file, writer) // "loan" the fixture to the test code
+      actor ! Append("ScalaTest is ") // set up the fixture
+      testCode(actor) // "loan" the fixture to the test code
     } {
-      writer.close() // ensure the fixture will be cleaned up
+      actor ! Clear // ensure the fixture will be cleaned up
     }
   }
 
-  // This test needs the file fixture
+  // This test needs the actor fixture
   test("Testing should be productive") {
-    withFile { (file, writer) =>
-      writer.write("productive!")
-      writer.flush()
-      assert(file.length === 24)
+    withActor { actor =>
+      actor ! Append("productive!")
+      val futureString = actor ? GetValue
+      futureString map { s =>
+        assert(s === "ScalaTest is productive!")
+      }
     }
   }
 
@@ -95,13 +112,15 @@ class ExampleSuite extends AsyncFunSuite {
   // This test needs both the file and the database
   test("Test code should be clear and concise") {
     withDatabase { futureDb =>
-      withFile { (file, writer) => // loan-fixture methods compose
-        futureDb map { db =>
+      withActor { actor => // loan-fixture methods compose
+        actor ! Append("concise!")
+        val futureString = actor ? GetValue
+        val futurePair: Future[(Db, String)] =
+          futureDb zip futureString
+        futurePair map { case (db, s) =>
           db.append("clear!")
-          writer.write("concise!")
-          writer.flush()
           assert(db.toString === "ScalaTest is clear!")
-          assert(file.length === 21)
+          assert(s === "ScalaTest is concise!")
         }
       }
     }

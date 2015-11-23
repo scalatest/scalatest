@@ -841,7 +841,9 @@ package org.scalatest
  * package org.scalatest.examples.asyncfunsuite.loanfixture
  *
  * import java.util.concurrent.ConcurrentHashMap
- * import java.io._
+ *
+ * import scala.concurrent.Future
+ * import scala.concurrent.ExecutionContext
  *
  * object DbServer { // Simulating a database server
  *   type Db = StringBuffer
@@ -856,11 +858,25 @@ package org.scalatest
  *   }
  * }
  *
- * class ThreadSafeFileWriter(file: File) {
- *   private final val fw = new FileWriter(file)
- *   def write(s: String): Unit = synchronized { fw.write(s) }
- *   def close(): Unit = synchronized { fw.close() }
- *   def flush(): Unit = synchronized { fw.flush() }
+ * // Defining actor messages
+ * sealed abstract class StringOp
+ * case object Clear extends StringOp
+ * case class Append(value: String) extends StringOp
+ * case object GetValue
+ *
+ * class StringActor { // Simulating an actor
+ *   private final val sb = new StringBuilder
+ *   def !(op: StringOp): Unit =
+ *     synchronized {
+ *       op match {
+ *         case Append(value) =&gt; sb.append(value)
+ *         case Clear =&gt; sb.clear()
+ *       }
+ *     }
+ *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
+ *     Future {
+ *       synchronized { sb.toString }
+ *     }
  * }
  *
  * import org.scalatest._
@@ -874,7 +890,7 @@ package org.scalatest
  *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   def withDatabase(testCode: Future[Db] =&gt; Future[Assertion]) = {
- *     val dbName = randomUUID.toString
+ *     val dbName = randomUUID.toString // generate a unique db name
  *     val futureDb = Future { createDb(dbName) } // create the fixture
  *     withCleanup {
  *       val futurePopulatedDb =
@@ -887,23 +903,24 @@ package org.scalatest
  *     }
  *   }
  *
- *   def withFile(testCode: (File, ThreadSafeFileWriter) =&gt; Future[Assertion]) = {
- *     val file = File.createTempFile("hello", "world") // create the fixture
- *     val writer = new ThreadSafeFileWriter(file)
+ *   def withActor(testCode: StringActor =&gt; Future[Assertion]) = {
+ *     val actor = new StringActor
  *     withCleanup {
- *       writer.write("ScalaTest is ") // set up the fixture
- *       testCode(file, writer) // "loan" the fixture to the test code
+ *       actor ! Append("ScalaTest is ") // set up the fixture
+ *       testCode(actor) // "loan" the fixture to the test code
  *     } {
- *       writer.close() // ensure the fixture will be cleaned up
+ *       actor ! Clear // ensure the fixture will be cleaned up
  *     }
  *   }
  *
- *   // This test needs the file fixture
+ *   // This test needs the actor fixture
  *   test("Testing should be productive") {
- *     withFile { (file, writer) =&gt;
- *       writer.write("productive!")
- *       writer.flush()
- *       assert(file.length === 24)
+ *     withActor { actor =&gt;
+ *       actor ! Append("productive!")
+ *       val futureString = actor ? GetValue
+ *       futureString map { s =&gt;
+ *         assert(s === "ScalaTest is productive!")
+ *       }
  *     }
  *   }
  *
@@ -920,13 +937,15 @@ package org.scalatest
  *   // This test needs both the file and the database
  *   test("Test code should be clear and concise") {
  *     withDatabase { futureDb =&gt;
- *       withFile { (file, writer) =&gt; // loan-fixture methods compose
- *         futureDb map { db =&gt;
+ *       withActor { actor =&gt; // loan-fixture methods compose
+ *         actor ! Append("concise!")
+ *         val futureString = actor ? GetValue
+ *         val futurePair: Future[(Db, String)] =
+ *           futureDb zip futureString
+ *         futurePair map { case (db, s) =&gt;
  *           db.append("clear!")
- *           writer.write("concise!")
- *           writer.flush()
  *           assert(db.toString === "ScalaTest is clear!")
- *           assert(file.length === 21)
+ *           assert(s === "ScalaTest is concise!")
  *         }
  *       }
  *     }
@@ -941,7 +960,7 @@ package org.scalatest
  *
  * <p>
  * Also demonstrated in this example is the technique of giving each test its own "fixture sandbox" to play in. When your fixtures
- * involve external side-effects, like creating files or databases, it is a good idea to give each file or database a unique name as is
+ * involve external side-effects, like creating databases, it is a good idea to give each database a unique name as is
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
