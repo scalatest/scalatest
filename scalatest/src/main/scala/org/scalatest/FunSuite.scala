@@ -608,17 +608,17 @@ import Suite.autoTagClassAnnotations
  *     Use this technique unless:
  *     </p>
  *     <table>
- *       <tr><td>&nbsp;*&nbsp;</td>
+ *       <tr><td style="vertical-align: top;">&nbsp;&bull;&nbsp;</td>
  *         <td>
  *           Different tests need different fixtures (refactor using Scala
  *           instead)
  *         </td>
- *       </tr><tr><td>&nbsp;*&nbsp;</td>
+ *       </tr><tr><td style="vertical-align: top;">&nbsp;&bull;&nbsp;</td>
  *         <td>
  *           An exception in fixture code should abort the suite, not fail the
  *           test (use a <em>before-and-after</em> trait instead)
  *         </td>
- *       </tr><tr><td>&nbsp;*&nbsp;</td>
+ *       </tr><tr><td style="vertical-align: top;">&nbsp;&bull;&nbsp;</td>
  *         <td>
  *           You have objects to pass into tests (override
  *           <code>withFixture(<em> One</em>ArgTest)</code> instead)
