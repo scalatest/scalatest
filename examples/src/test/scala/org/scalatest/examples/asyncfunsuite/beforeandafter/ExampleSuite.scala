@@ -21,55 +21,54 @@ import collection.mutable.ListBuffer
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-class ThreadSafeListBufferOfString {
-  private final val buf = ListBuffer.empty[String]
-  def += (s: String): Unit = synchronized { buf += s }
-  def toList: List[String] = synchronized { buf.toList }
-  def clear(): Unit = synchronized { buf.clear() }
-  def isEmpty: Boolean = synchronized { buf.isEmpty }
-}
+// Defining actor messages
+sealed abstract class StringOp
+case object Clear extends StringOp
+case class Append(value: String) extends StringOp
+case object GetValue
 
-class ThreadSafeStringBuilder {
-  private final val bldr = new StringBuilder
-  def append(s: String): Unit =
+class StringActor { // Simulating an actor
+  private final val sb = new StringBuilder
+  def !(op: StringOp): Unit =
     synchronized {
-      bldr.append(s)
+      op match {
+        case Append(value) => sb.append(value)
+        case Clear => sb.clear()
+      }
     }
-  def clear(): Unit = synchronized { bldr.clear() }
-  override def toString = synchronized { bldr.toString }
+  def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
+    Future {
+      synchronized { sb.toString }
+    }
 }
 
 class ExampleSuite extends AsyncFunSuite with BeforeAndAfter {
 
   implicit val executionContext = ExecutionContext.Implicits.global
 
-  final val builder = new ThreadSafeStringBuilder
-  final val buffer = new ThreadSafeListBufferOfString
+  final val actor = new StringActor
 
   before {
-    builder.append("ScalaTest is ")
+    actor ! Append("ScalaTest is ") // set up the fixture
   }
 
   after {
-    builder.clear()
-    buffer.clear()
+    actor ! Clear // clean up the fixture
   }
 
   test("testing should be easy") {
-    Future {
-      builder.append("easy!")
-      assert(builder.toString === "ScalaTest is easy!")
-      assert(buffer.isEmpty)
-      buffer += "sweet"
-      succeed
+    actor ! Append("easy!")
+    val futureString = actor ? GetValue
+    futureString map { s =>
+      assert(s === "ScalaTest is easy!")
     }
   }
 
   test("testing should be fun") {
-    Future {
-      builder.append("fun!")
-      assert(builder.toString === "ScalaTest is fun!")
-      assert(buffer.isEmpty)
+    actor ! Append("fun!")
+    val futureString = actor ? GetValue
+    futureString map { s =>
+      assert(s === "ScalaTest is fun!")
     }
   }
 }
