@@ -170,7 +170,7 @@ object ScalatestBuild extends Build {
       "org.easymock" % "easymockclassextension" % "3.2" % "optional",
       "org.jmock" % "jmock-legacy" % "2.8.1" % "optional",
       "org.mockito" % "mockito-all" % "1.10.19" % "optional",
-      "org.testng" % "testng" % "6.9.9" % "optional",
+      "org.testng" % "testng" % "6.7" % "optional",
       "com.google.inject" % "guice" % "4.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
       "org.seleniumhq.selenium" % "selenium-java" % "2.45.0" % "optional",
@@ -182,8 +182,8 @@ object ScalatestBuild extends Build {
   def scalatestTestLibraryDependencies =
     Seq(
       "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "9.3.6.v20151106" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "9.3.6.v20151106" % "test"
+      "org.eclipse.jetty" % "jetty-server" % "8.1.18.v20150929" % "test",
+      "org.eclipse.jetty" % "jetty-webapp" % "8.1.18.v20150929" % "test"
     )
 
   def scalatestJSLibraryDependencies =
