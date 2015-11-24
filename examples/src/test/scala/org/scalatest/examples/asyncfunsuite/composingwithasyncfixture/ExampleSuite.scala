@@ -109,7 +109,7 @@ class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
     futurePair map { case (str, lst) =>
       assert(str === "ScalaTest is fun!")
       assert(lst.isEmpty)
-      bufferActor ! Append("sweet")
+      bufferActor ! Append("awesome")
       succeed
     }
   }

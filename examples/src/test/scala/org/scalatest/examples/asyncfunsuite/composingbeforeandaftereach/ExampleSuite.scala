@@ -21,46 +21,64 @@ import collection.mutable.ListBuffer
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-class ThreadSafeListBufferOfString {
-  private final val buf = ListBuffer.empty[String]
-  def += (s: String): Unit = synchronized { buf += s }
-  def toList: List[String] = synchronized { buf.toList }
-  def clear(): Unit = synchronized { buf.clear() }
-  def isEmpty: Boolean = synchronized { buf.isEmpty }
+// Defining actor messages
+sealed abstract class StringOp
+case object Clear extends StringOp
+case class Append(value: String) extends StringOp
+case object GetValue
+
+class StringBuilderActor { // Simulating an actor
+  private final val sb = new StringBuilder
+  def !(op: StringOp): Unit =
+    synchronized {
+      op match {
+        case Append(value) => sb.append(value)
+        case Clear => sb.clear()
+      }
+    }
+  def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
+    Future {
+      synchronized { sb.toString }
+    }
 }
 
-class ThreadSafeStringBuilder {
-  private final val bldr = new StringBuilder
-  def append(s: String): Unit =
+class StringBufferActor {
+  private final val buf = ListBuffer.empty[String]
+  def !(op: StringOp): Unit =
     synchronized {
-      bldr.append(s)
+      op match {
+        case Append(value) => buf += value
+        case Clear => buf.clear()
+      }
     }
-  def clear(): Unit = synchronized { bldr.clear() }
-  override def toString = synchronized { bldr.toString }
+  def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[List[String]] =
+    Future {
+      synchronized { buf.toList }
+    }
 }
 
 trait Builder extends BeforeAndAfterEach { this: Suite =>
 
-  val builder = new ThreadSafeStringBuilder
+  final val builderActor = new StringBuilderActor
 
   override def beforeEach() {
-    builder.append("ScalaTest is ")
+    builderActor ! Append("ScalaTest is ")
     super.beforeEach() // To be stackable, must call super.beforeEach
   }
 
   override def afterEach() {
     try super.afterEach() // To be stackable, must call super.afterEach
-    finally builder.clear()
+    finally builderActor ! Clear
   }
 }
 
 trait Buffer extends BeforeAndAfterEach { this: Suite =>
 
-  val buffer = new ThreadSafeListBufferOfString
+  final val bufferActor = new StringBufferActor
 
   override def afterEach() {
     try super.afterEach() // To be stackable, must call super.afterEach
-    finally buffer.clear()
+    finally bufferActor ! Clear
   }
 }
 
@@ -69,21 +87,27 @@ class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
   implicit val executionContext = ExecutionContext.Implicits.global
 
   test("Testing should be easy") {
-    Future {
-      builder.append("easy!")
-      assert(builder.toString === "ScalaTest is easy!")
-      assert(buffer.isEmpty)
-      buffer += "sweet"
+    builderActor ! Append("easy!")
+    val futureString = builderActor ? GetValue
+    val futureList = bufferActor ? GetValue
+    val futurePair: Future[(String, List[String])] = futureString zip futureList
+    futurePair map { case (str, lst) =>
+      assert(str === "ScalaTest is easy!")
+      assert(lst.isEmpty)
+      bufferActor ! Append("sweet")
       succeed
     }
   }
 
   test("Testing should be fun") {
-    Future {
-      builder.append("fun!")
-      assert(builder.toString === "ScalaTest is fun!")
-      assert(buffer.isEmpty)
-      buffer += "clear"
+    builderActor ! Append("fun!")
+    val futureString = builderActor ? GetValue
+    val futureList = bufferActor ? GetValue
+    val futurePair: Future[(String, List[String])] = futureString zip futureList
+    futurePair map { case (str, lst) =>
+      assert(str === "ScalaTest is fun!")
+      assert(lst.isEmpty)
+      bufferActor ! Append("awesome")
       succeed
     }
   }
