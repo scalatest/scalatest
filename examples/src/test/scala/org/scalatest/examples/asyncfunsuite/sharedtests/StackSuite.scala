@@ -19,174 +19,217 @@ import scala.collection.mutable.ListBuffer
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-class ThreadSafeStack[T] {
+// Stack operations
+case class Push[T](value: T)
+sealed abstract class StackOp
+case object Pop extends StackOp
+case object Peek extends StackOp
+case object Size extends StackOp
 
-  final val MAX = 10
+// Stack info
+case class StackInfo[T](top: Option[T], size: Int, max: Int) {
+  require(size >= 0, "size was less than zero")
+  require(max >= size, "max was less than size")
+  val isFull: Boolean = size == max
+  val isEmpty: Boolean = size == 0
+}
+
+class StackActor[T](Max: Int, name: String) {
+
   private final val buf = new ListBuffer[T]
 
-  def push(o: T): Unit =
+  def !(push: Push[T]): Unit =
     synchronized {
-      if (buf.size != MAX)
-        buf.prepend(o)
+      if (buf.size != Max)
+        buf.prepend(push.value)
       else
         throw new IllegalStateException("can't push onto a full stack")
     }
 
-  def pop(): T =
+  def ?(op: StackOp)(implicit c: ExecutionContext): Future[StackInfo[T]] =
     synchronized {
-      if (buf.size != 0)
-        buf.remove(0)
-      else
-        throw new IllegalStateException("can't pop an empty stack")
+      op match {
+        case Pop => 
+          Future {
+            if (buf.size != 0)
+              StackInfo(Some(buf.remove(0)), buf.size, Max)
+            else
+              throw new IllegalStateException("can't pop an empty stack")
+          }
+        case Peek => 
+          Future {
+            if (buf.size != 0)
+              StackInfo(Some(buf(0)), buf.size, Max)
+            else
+              throw new IllegalStateException("can't peek an empty stack")
+          }
+        case Size => 
+          Future { StackInfo(None, buf.size, Max) }
+      }
     }
 
-  def peek: T =
-    synchronized {
-      if (buf.size != 0)
-        buf(0)
-      else
-        throw new IllegalStateException("can't pop an empty stack")
-    }
-
-  def full: Boolean = synchronized { buf.size == MAX }
-  def empty: Boolean = synchronized { buf.size == 0 }
-  def size = synchronized { buf.size }
-
-  override def toString =
-    synchronized { buf.mkString("ThreadSafeStack(", ", ", ")") }
+  override def toString: String = name
 }
 
 import org.scalatest.AsyncFunSuite
 
-trait FunSuiteStackBehaviors { this: AsyncFunSuite =>
+trait AsyncFunSuiteStackBehaviors { this: AsyncFunSuite =>
 
-  def nonEmptyStack( createNonEmptyStack: => Future[ThreadSafeStack[Int]],
-      lastItemAdded: Int, name: String): Unit = {
+  def nonEmptyStackActor(createNonEmptyStackActor: => StackActor[Int],
+        lastItemAdded: Int, name: String): Unit = {
 
-    test("empty is invoked on this non-empty stack: " + name) {
-      val futureStack = createNonEmptyStack
-      futureStack map { stack => assert(!stack.empty) }
-    }
-
-    test("peek is invoked on this non-empty stack: " + name) {
-      val futureStack = createNonEmptyStack
-      futureStack map { stack =>
-        val size = stack.size
-        assert(stack.peek === lastItemAdded)
-        assert(stack.size === size)
+    test("Size is fired at non-empty stack actor: " + name) {
+      val stackActor = createNonEmptyStackActor
+      val futureStackInfo = stackActor ? Size
+      futureStackInfo map { stackInfo =>
+        assert(!stackInfo.isEmpty)
       }
     }
 
-    test("pop is invoked on this non-empty stack: " + name) {
-      val futureStack = createNonEmptyStack
-      futureStack map { stack =>
-        val size = stack.size
-        assert(stack.pop === lastItemAdded)
-        assert(stack.size === size - 1)
+    test("Peek is fired at non-empty stack actor: " + name) {
+      val stackActor = createNonEmptyStackActor
+      val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
+        for {
+          beforePeek <- stackActor ? Size
+          afterPeek <- stackActor ? Peek
+        } yield (beforePeek, afterPeek)
+      futurePair map { case (beforePeek, afterPeek) =>
+        assert(afterPeek.top === Some(lastItemAdded))
+        assert(afterPeek.size === beforePeek.size)
+      }
+    }
+
+    test("Pop is fired at non-empty stack actor: " + name) {
+      val stackActor = createNonEmptyStackActor
+      val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
+        for {
+          beforePop <- stackActor ? Size
+          afterPop <- stackActor ? Pop
+        } yield (beforePop, afterPop)
+      futurePair map { case (beforePop, afterPop) =>
+        assert(afterPop.top === Some(lastItemAdded))
+        assert(afterPop.size === beforePop.size - 1)
       }
     }
   }
 
-  def nonFullStack(createNonFullStack: => Future[ThreadSafeStack[Int]],
-      name: String): Unit = {
+  def nonFullStackActor(createNonFullStackActor: => StackActor[Int], name: String): Unit = {
 
-    test("full is invoked on this non-full stack: " + name) {
-      val futureStack = createNonFullStack
-      futureStack map { stack => assert(!stack.full) }
+    test("non-full stack actor is not full: " + name) {
+      val stackActor = createNonFullStackActor
+      val futureStackInfo = stackActor ? Size
+      futureStackInfo map { stackInfo =>
+        assert(!stackInfo.isFull)
+      }
     }
 
-    test("push is invoked on this non-full stack: " + name) {
-      val futureStack = createNonFullStack
-      futureStack map { stack =>
-        val size = stack.size
-        stack.push(7)
-        assert(stack.size === size + 1)
-        assert(stack.peek === 7)
+    test("Push is fired at non-full stack actor: " + name) {
+      val stackActor = createNonFullStackActor
+      val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
+        for {
+          beforePush <- stackActor ? Size
+          afterPush <- { stackActor ! Push(7); stackActor ? Peek }
+        } yield (beforePush, afterPush)
+      futurePair map { case (beforePush, afterPush) =>
+        assert(afterPush.top === Some(7))
+        assert(afterPush.size === beforePush.size + 1)
       }
     }
   }
 }
 
-class StackFunSuite extends AsyncFunSuite with FunSuiteStackBehaviors {
+class StackSuite extends AsyncFunSuite with AsyncFunSuiteStackBehaviors {
+
+  val Max = 10
+  val LastValuePushed = Max - 1
 
   implicit val executionContext = ExecutionContext.Implicits.global
 
   // Stack fixture creation methods
-  val emptyStackName = "empty stack"
-  def emptyStack = Future { new ThreadSafeStack[Int] }
+  val emptyStackActorName = "empty stack actor"
+  def emptyStackActor = new StackActor[Int](Max, emptyStackActorName )
 
-  val fullStackName = "full stack"
-  def fullStack =
-    Future {
-      val stack = new ThreadSafeStack[Int]
-      for (i <- 0 until stack.MAX)
-        stack.push(i)
-      stack
-    }
-
-  val almostEmptyStackName = "almost empty stack"
-  def almostEmptyStack =
-    Future {
-      val stack = new ThreadSafeStack[Int]
-      stack.push(9)
-      stack
-    }
-
-  val almostFullStackName = "almost full stack"
-  def almostFullStack =
-    Future {
-      val stack = new ThreadSafeStack[Int]
-      for (i <- 1 to 9)
-        stack.push(i)
-      stack
-    }
-
-  val lastValuePushed = 9
-
-  test("empty is invoked on an empty stack") {
-    val futureStack = emptyStack
-    futureStack map { stack => assert(stack.empty) }
+  val fullStackActorName = "full stack actor"
+  def fullStackActor = {
+    val stackActor = new StackActor[Int](Max, fullStackActorName )
+    for (i <- 0 until Max)
+      stackActor ! Push(i)
+    stackActor
   }
 
-  test("peek is invoked on an empty stack") {
-    val futureStack = emptyStack
-    futureStack map { stack =>
-      assertThrows[IllegalStateException] {
-        stack.peek
-      }
+  val almostEmptyStackActorName = "almost empty stack actor"
+  def almostEmptyStackActor = {
+    val stackActor = new StackActor[Int](Max, almostEmptyStackActorName )
+    stackActor ! Push(LastValuePushed)
+    stackActor
+  }
+
+  val almostFullStackActorName = "almost full stack actor"
+  def almostFullStackActor = {
+    val stackActor = new StackActor[Int](Max, almostFullStackActorName)
+    for (i <- 1 to LastValuePushed)
+      stackActor ! Push(i)
+    stackActor
+  }
+
+  test("an empty stack actor is empty") {
+    val stackActor = emptyStackActor
+    val futureStackInfo = stackActor ? Size
+    futureStackInfo map { stackInfo =>
+      assert(stackInfo.isEmpty)
     }
   }
 
-  test("pop is invoked on an empty stack") {
-    val futureStack = emptyStack
-    futureStack map { stack =>
-      assertThrows[IllegalStateException] {
-        stack.pop
-      }
+  test("Peek is fired at an empty stack actor") {
+    val stackActor = emptyStackActor
+    val futureStackInfo = stackActor ? Peek
+
+    futureStackInfo.failed.transform(
+      ex => ex match {
+        case ex: IllegalStateException => succeed
+        case ex: Throwable => fail("Expected an IllegalStateException, but got " + ex.getClass.getSimpleName)
+      },
+      ex => fail("Expected an IllegalStateException, but got no exception")
+    )
+
+    // recoverOn[IllegalArgumentException](futureStackInfo)
+  }
+
+  test("Pop is fired at an empty stack actor") {
+    val stackActor = emptyStackActor
+    val futureStackInfo = stackActor ? Pop
+
+    futureStackInfo.failed.transform(
+      ex => ex match {
+        case ex: IllegalStateException => succeed
+        case ex: Throwable => fail("Expected an IllegalStateException, but got " + ex.getClass.getSimpleName)
+      },
+      ex => fail("Expected an IllegalStateException, but got no exception")
+    )
+
+    // recoverOn[IllegalArgumentException](futureStackInfo)
+  }
+
+  testsFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
+  testsFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
+
+  testsFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
+  testsFor(nonFullStackActor(almostFullStackActor, almostFullStackActorName))
+
+  test("a full stack actor is full") {
+    val stackActor = fullStackActor
+    val futureStackInfo = stackActor ? Size
+    futureStackInfo map { stackInfo =>
+      assert(stackInfo.isFull)
     }
   }
 
-  testsFor(nonEmptyStack(almostEmptyStack, lastValuePushed,
-      almostEmptyStackName))
-  testsFor(nonFullStack(almostEmptyStack, almostEmptyStackName))
+  testsFor(nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName))
 
-  testsFor(nonEmptyStack(almostFullStack, lastValuePushed,
-      almostFullStackName))
-  testsFor(nonFullStack(almostFullStack, almostFullStackName))
-
-  test("full is invoked on a full stack") {
-    val futureStack = fullStack
-    futureStack map { stack => assert(stack.full) }
-  }
-
-  testsFor(nonEmptyStack(fullStack, lastValuePushed, fullStackName))
-
-  test("push is invoked on a full stack") {
-    val futureStack = fullStack
-    futureStack map { stack =>
-      assertThrows[IllegalStateException] {
-        stack.push(10)
-      }
+  test("Push is fired at a full stack actor") {
+    val stackActor = fullStackActor
+    assertThrows[IllegalStateException] {
+      stackActor ! Push(10)
     }
   }
 }
