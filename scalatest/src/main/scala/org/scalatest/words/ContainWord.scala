@@ -42,6 +42,32 @@ final class ContainWord {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
+   * list should contain (null)
+   *                     ^
+   * </pre>
+   */
+  def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
+    new MatcherFactory1[Any, Containing] {
+      def matcher[U <: Any : Containing]: Matcher[U] =
+        new Matcher[U] {
+          def apply(left: U): MatchResult = {
+            val containing = implicitly[Containing[U]]
+            MatchResult(
+              containing.contains(left, null),
+              Resources.rawDidNotContainNull,
+              Resources.rawContainedNull,
+              Vector(left)
+            )
+          }
+          override def toString: String = "contain (null)"
+        }
+      override def toString: String = "contain (null)"
+    }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
    * Array(1, 2) should (contain (2) and contain (1))
    *                             ^
    * </pre>

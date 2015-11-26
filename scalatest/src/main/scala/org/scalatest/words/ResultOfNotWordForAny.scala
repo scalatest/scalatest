@@ -454,6 +454,21 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
+   * object should not contain (null)
+   *                   ^
+   * </pre>
+   */
+  def contain(nullValue: Null)(implicit containing: Containing[T]): Assertion = {
+    if (containing.contains(left, null) != shouldBeTrue)
+      indicateFailure(shouldBeTrue, FailureMessages.didNotContainNull(left), FailureMessages.containedNull(left))
+    else
+      indicateSuccess(shouldBeTrue, FailureMessages.containedNull(left), FailureMessages.didNotContainNull(left))
+  }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
    * object should not contain ("one")
    *                   ^
    * </pre>
