@@ -70,13 +70,9 @@ package org.scalatest
  * </p>
  *
  * <p>
- * <code>AsyncFunSuite</code> allows you to test asynchronous code without blocking. Instead of using
- * <code>scala.concurrent.Await</code> or <code>org.scalatest.concurrent.ScalaFutures</code> to 
- * block until a <code>Future</code> completes, then performing assertions on the result of the
- * <code>Future</code>, you map the assertions directly onto the <code>Future</code>. ScalaTest
- * assertions and matchers have result type <code>Assertion</code>. Thus the result type of the
- * first test in the example above is <code>Future[Assertion]</code>. For clarity, here's the relevant code
- * in a REPL session:
+ * Starting with version 3.0.0, ScalaTest assertions and matchers have result type <code>Assertion</code>.
+ * The result type of the first test in the example above, therefore, is <code>Future[Assertion]</code>.
+ * For clarity, here's the relevant code in a REPL session:
  * </p>
  *
  * <pre class="stREPL">
@@ -121,24 +117,21 @@ package org.scalatest
  * </pre>
  * 
  * <p>
- * The second test will be implicitly converted to <code>Future[Assertion]</code> and registered.
- * The implicit conversion is from <code>Assertion</code> to <code>Future[Assertion]</code>, so
- * you must end synchronous tests in some ScalaTest assertion or matcher expression. If you need to,
- * you can put <code>succeed</code> at the end of the test body. <code>succeed</code> is a field in
- * trait <code>Assertions</code> that returns the <code>Succeeded</code> singleton:
+ * When <code>AddSuite</code> is constructed, the second test will be implicitly converted to
+ * <code>Future[Assertion]</code> and registered. The implicit conversion is from <code>Assertion</code>
+ * to <code>Future[Assertion]</code>, so you must end synchronous tests in some ScalaTest assertion
+ * or matcher expression. If a test would not otherwise end in type <code>Assertion</code>, you can
+ * place <code>succeed</code> at the end of the test. A field in trait <code>Assertions</code>,
+ * <code>succeed</code> returns the <code>Succeeded</code> singleton:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import org.scalatest.Assertions._
- * import org.scalatest.Assertions._
- *
  * scala&gt; succeed
  * res2: org.scalatest.Assertion = Succeeded
  * </pre>
  *
  * <p>
- * Thus placing <code>succeed</code> at the end of a test body will solve
- * the type error:
+ * Thus placing <code>succeed</code> at the end of a test body will satisfy the type checker:
  * </p>
  *
  * <pre class="stHighlight">
