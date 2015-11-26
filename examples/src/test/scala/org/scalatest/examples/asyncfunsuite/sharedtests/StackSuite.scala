@@ -181,33 +181,15 @@ class StackSuite extends AsyncFunSuite with AsyncFunSuiteStackBehaviors {
   }
 
   test("Peek is fired at an empty stack actor") {
-    val stackActor = emptyStackActor
-    val futureStackInfo = stackActor ? Peek
-
-    futureStackInfo.failed.transform(
-      ex => ex match {
-        case ex: IllegalStateException => succeed
-        case ex: Throwable => fail("Expected an IllegalStateException, but got " + ex.getClass.getSimpleName)
-      },
-      ex => fail("Expected an IllegalStateException, but got no exception")
-    )
-
-    // recoverOn[IllegalArgumentException](futureStackInfo)
+    recoverToSucceededIf[IllegalStateException] {
+      emptyStackActor ? Peek
+    }
   }
 
   test("Pop is fired at an empty stack actor") {
-    val stackActor = emptyStackActor
-    val futureStackInfo = stackActor ? Pop
-
-    futureStackInfo.failed.transform(
-      ex => ex match {
-        case ex: IllegalStateException => succeed
-        case ex: Throwable => fail("Expected an IllegalStateException, but got " + ex.getClass.getSimpleName)
-      },
-      ex => fail("Expected an IllegalStateException, but got no exception")
-    )
-
-    // recoverOn[IllegalArgumentException](futureStackInfo)
+    recoverToSucceededIf[IllegalStateException] {
+      emptyStackActor ? Pop
+    }
   }
 
   testsFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))

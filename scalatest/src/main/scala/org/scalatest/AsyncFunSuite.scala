@@ -1643,16 +1643,14 @@ package org.scalatest
  *   }
  * 
  *   test("Peek is fired at an empty stack actor") {
- *     val stackActor = emptyStackActor
- *     assertThrows[IllegalStateException] {
- *       stackActor ? Peek
+ *     recoverToSucceededIf[IllegalStateException] {
+ *       emptyStackActor ? Peek
  *     }
  *   }
  * 
  *   test("Pop is fired at an empty stack actor") {
- *     val stackActor = emptyStackActor
- *     assertThrows[IllegalStateException] {
- *       stackActor ? Pop
+ *     recoverToSucceededIf[IllegalStateException] {
+ *       emptyStackActor ? Pop
  *     }
  *   }
  * 

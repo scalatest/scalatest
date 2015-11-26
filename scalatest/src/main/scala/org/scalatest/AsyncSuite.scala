@@ -182,7 +182,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * unchanged.  The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
  * </p>
  */
-trait AsyncSuite extends Suite { thisAsyncSuite =>
+trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
 
   /**
    * An implicit execution context used by async styles to transform <code>Future[Assertion]</code> values
