@@ -47,6 +47,23 @@ trait RecoverMethods {
     )
   }
 
+  def recoverToSucceededIf[T <: AnyRef](future: Future[Any])(implicit classTag: ClassTag[T], exCtx: ExecutionContext): Future[Assertion] = {
+    val clazz = classTag.runtimeClass
+    future.failed.transform(
+      ex =>
+        if (!clazz.isAssignableFrom(ex.getClass)) {
+          val message = Resources.wrongException(clazz.getName, ex.getClass.getName)
+          throw newAssertionFailedExceptionForRecover(Some(message), Some(ex), failStackDepthForRecover)
+        }
+        else Succeeded
+      ,
+      ex => {
+        val message = Resources.exceptionExpected(clazz.getName)
+        throw newAssertionFailedExceptionForRecover(Some(message), None, failStackDepthForRecover)
+      }
+    )
+  }
+
   private[scalatest] def newAssertionFailedExceptionForRecover(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {
       case (None, None) => new TestFailedException(stackDepth)

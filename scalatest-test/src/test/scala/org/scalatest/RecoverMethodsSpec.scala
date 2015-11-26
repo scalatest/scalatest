@@ -66,7 +66,7 @@ class RecoverMethodsSpec extends FunSpec with RecoverMethods with ScalaFutures {
       assert(futureInt.futureValue == 42)
     }
 
-    it("should fail TFE if no exception is thrown") {
+    it("should fail with TFE if no exception is thrown") {
       val futureTfe =
         recoverToExceptionIf[IllegalArgumentException] { Future { "hi" } }
       assert(futureTfe.failed.futureValue.isInstanceOf[TestFailedException])
@@ -88,59 +88,67 @@ class RecoverMethodsSpec extends FunSpec with RecoverMethods with ScalaFutures {
           recoverToExceptionIf[IllegalArgumentException] {
             Future { throw wrongException }
           }
-        assert(futureCaught.failed.futureValue.getCause eq wrongException)
+        val caught = futureCaught.failed.futureValue
+        assert(caught.isInstanceOf[TestFailedException])
+        assert(caught.getCause eq wrongException)
       }
     }
   }
-/*
-  describe("The assertThrows method") {
-    it("should catch subtypes") {
+
+  describe("The recoverToSucceededIf method") {
+    it("should recover to subtypes") {
       class MyException extends RuntimeException
       class MyExceptionSubClass extends MyException
-      assertThrows[MyException] {
-        throw new MyException
-      }
-      assertThrows[MyException] {
-        throw new MyExceptionSubClass
-      }
+      val myEx = new MyException
+      val futureMyEx =
+        recoverToSucceededIf[MyException] {
+          Future { throw myEx }
+        }
+      assert(futureMyEx.futureValue eq Succeeded)
+      val myExSub = new MyExceptionSubClass
+      val futureMyExSub =
+        recoverToSucceededIf[MyException] {
+          Future { throw myExSub }
+        }
+      assert(futureMyExSub.futureValue eq Succeeded)
       // Try with a trait
       trait MyTrait {
-        def someRandomMethod() {}
+        def someRandomMethod: Int = 42
       }
       class AnotherException extends RuntimeException with MyTrait
-      assertThrows[MyTrait] {
-        throw new AnotherException
-      }
+      val futureCaught =
+        recoverToSucceededIf[MyTrait] {
+          Future { throw new AnotherException }
+        }
+      assert(futureCaught.futureValue eq Succeeded)
     }
 
     it("should return Succeeded") {
       val e = new RuntimeException
-      val result = assertThrows[RuntimeException] {
-        throw e
-      }
-      assert(result eq Succeeded)
+      val futureResult =
+        recoverToSucceededIf[RuntimeException] {
+          Future { throw e }
+        }
+      assert(futureResult.futureValue eq Succeeded)
     }
 
-    it("should throw TFE if no exception is thrown") {
-      val caught =
-        intercept[TestFailedException] {
-          assertThrows[Exception] { "hi" }
-        }
-      assert(caught.isInstanceOf[TestFailedException])
+    it("should fail with TFE if no exception is thrown") {
+      val futureTfe =
+        recoverToSucceededIf[IllegalArgumentException] { Future { "hi" } }
+      assert(futureTfe.failed.futureValue.isInstanceOf[TestFailedException])
     }
 
     describe("when the bit of code throws the wrong exception") {
       it("should include that wrong exception as the TFE's cause") {
         val wrongException = new RuntimeException("oops!")
-        val caught =
-          intercept[TestFailedException] {
-            assertThrows[IllegalArgumentException] {
-              throw wrongException
-            }
+        val futureCaught =
+          recoverToSucceededIf[IllegalArgumentException] {
+            Future { throw wrongException }
           }
-        assert(caught.cause.value eq wrongException)
+        val caught = futureCaught.failed.futureValue
+        assert(caught.isInstanceOf[TestFailedException])
+        assert(caught.getCause eq wrongException)
       }
     }
   }
-*/
 }
