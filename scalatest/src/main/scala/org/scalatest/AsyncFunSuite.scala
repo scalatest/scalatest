@@ -193,6 +193,121 @@ package org.scalatest
  * <code>executionContext</code>.
  * </p>
  * 
+ * <a name="futuresAndExpectedExceptions"></a><h2>Futures and expected exceptions</h2>
+ *
+ * <p>
+ * If you need to test for expected exceptions in the context of futures, you can use the
+ * <code>recoverToSucceededIf</code> and <code>recoverToExceptionIf</code> methods of trait
+ * <a href="RecoverMethods.html"><code>RecoverMethods</code></a>. Because this trait is mixed into
+ * supertrait <code>AsyncSuite</code>, both of these methods are
+ * available by default in an <code>AsyncFunSuite</code>.
+ * </p>
+ *
+ * <p>
+ * If you just want to ensure that a future fails with a particular exception type, and do
+ * not need to inspect the exception further, use <code>recoverToSucceededIf</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * recoverToSucceededIf[IllegalStateException] { // Result type: Future[Assertion]
+ *   emptyStackActor ? Peek
+ * }
+ * </pre>
+ *
+ * <p>
+ * The <code>recoverToSucceededIf</code> method performs a job similar to
+ * <a href="Assertions.html#expectedExceptions"><code>assertThrows</code></a>, except
+ * in the context of a future. It transforms a <code>Future</code> of any type into a
+ * <code>Future[Assertion]</code> that succeeds only if the original future fails with the specified
+ * exception. Here's an example in the REPL:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest.RecoverMethods._
+ * import org.scalatest.RecoverMethods._
+ * 
+ * scala&gt; import scala.concurrent.Future
+ * import scala.concurrent.Future
+ * 
+ * scala&gt; import scala.concurrent.ExecutionContext.Implicits.global
+ * import scala.concurrent.ExecutionContext.Implicits.global
+ * 
+ * scala&gt; recoverToSucceededIf[IllegalStateException] {
+ *      |   Future { throw new IllegalStateException }
+ *      | }
+ * res0: scala.concurrent.Future[org.scalatest.Assertion] = ...
+ * 
+ * scala&gt; res0.value
+ * res1: Option[scala.util.Try[org.scalatest.Assertion]] = Some(Success(Succeeded))
+ * </pre>
+ * 
+ * <p>
+ * Otherwise it fails with an error message similar to those given by <code>assertThrows</code>:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; recoverToSucceededIf[IllegalStateException] {
+ *      |   Future { throw new RuntimeException }
+ *      | }
+ * res2: scala.concurrent.Future[org.scalatest.Assertion] = ...
+ * 
+ * scala&gt; res2.value
+ * res3: Option[scala.util.Try[org.scalatest.Assertion]] =
+ *     Some(Failure(org.scalatest.exceptions.TestFailedException: Expected exception
+ *       java.lang.IllegalStateException to be thrown, but java.lang.RuntimeException
+ *       was thrown))
+ * 
+ * scala&gt; recoverToSucceededIf[IllegalStateException] {
+ *      |   Future { 42 }
+ *      | }
+ * res4: scala.concurrent.Future[org.scalatest.Assertion] = ...
+ * 
+ * scala&gt; res4.value
+ * res5: Option[scala.util.Try[org.scalatest.Assertion]] =
+ *     Some(Failure(org.scalatest.exceptions.TestFailedException: Expected exception
+ *       java.lang.IllegalStateException to be thrown, but no exception was thrown))
+ * </pre>
+ *
+ * <p>
+ * The <code>recoverToExceptionIf</code> method differs from the <code>recoverToSucceededIf</code> in
+ * its behavior when the assertion succeeds: <code>recoverToSucceededIf</code> yields a <code>Future[Assertion]</code>,
+ * whereas <code>recoverToExceptionIf</code> yields a <code>Future[T]</code>, where <code>T</code> is the
+ * expected exception type.
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * recoverToExceptionIf[IllegalStateException] { // Result type: Future[IllegalStateException]
+ *   emptyStackActor ? Peek
+ * }
+ * </pre>
+ *
+ * <p>
+ * In other words, <code>recoverToExpectionIf</code> is to
+ * <a href="Assertions.html#expectedExceptions"><code>intercept</code></a> as
+ * <code>recovertToSucceededIf</code> is to <code>assertThrows</code>. The first one allows you to perform further
+ * assertions on the expected exception. The second one gives you a result type that will satisfy the type checker
+ * at the end of the test body. Here's an example showing <code>recoverToExceptionIf</code> in the REPL:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; val futureEx =
+ *      |   recoverToExceptionIf[IllegalStateException] {
+ *      |     Future { throw new IllegalStateException("hello") }
+ *      |   }
+ * futureEx: scala.concurrent.Future[IllegalStateException] = ...
+ * 
+ * scala&gt; futureEx.value
+ * res6: Option[scala.util.Try[IllegalStateException]] =
+ *     Some(Success(java.lang.IllegalStateException: hello))
+ * 
+ * scala&gt; futureEx map { ex =&gt; assert(ex.getMessage == "world") }
+ * res7: scala.concurrent.Future[org.scalatest.Assertion] = ...
+ * 
+ * scala&gt; res7.value
+ * res8: Option[scala.util.Try[org.scalatest.Assertion]] =
+ *     Some(Failure(org.scalatest.exceptions.TestFailedException: "[hello]" did not equal "[world]"))
+ * </pre>
+ *
  * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * <p>
