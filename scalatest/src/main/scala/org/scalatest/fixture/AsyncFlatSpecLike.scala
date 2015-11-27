@@ -117,7 +117,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, OldTransformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, AsyncPendingTransformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**
@@ -2048,7 +2048,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerIgnoredAsyncTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
   /**

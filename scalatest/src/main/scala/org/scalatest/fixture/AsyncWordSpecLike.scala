@@ -105,7 +105,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerAsyncTest(specText, OldTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**
@@ -138,7 +138,7 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerIgnoredAsyncTest(specText, OldTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
   }
 
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
