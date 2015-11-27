@@ -29,8 +29,8 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * asynchronous code without blocking.
  *
  * <p>
- * This trait provides a final override of <code>withFixture</code>, declared in
- * supertrait <code>Suite</code>, because the <code>withFixture</code> lifecycle
+ * This trait provides a final override of <code>withFixture(NoArgTest)</code>, declared in
+ * supertrait <code>Suite</code>, because the <code>withFixture(NoArgTest)</code> lifecycle
  * method assumes synchronous testing. Here is its signature:
  * </p>
  *
@@ -49,16 +49,16 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * </pre>
  *
  * <p>
- * Because the result of a test is an <code>Outcome</code>, when the test function returns, the test must have completed already. It
+ * Because the result of a test is an <code>Outcome</code>, when the test function returns, the test body must have determined an outcome already. It
  * will already be one of <a href="Succeeded$.html"><code>Succeeded</code></a>, <a href="Failed.html"><code>Failed</code></a>, <a href="Canceled.html"><code>Canceled</code></a>, or <a href="Pending$.html"></code>Pending</code></a>. This is
- * also true when <code>withFixture</code> returns: because the result type of <code>withFixture</code> is <code>Outcome</code>,
- * the test by definition has already completed.
+ * also true when <code>withFixture(NoArgTest)</code> returns: because the result type of <code>withFixture(NoArgTest)</code> is <code>Outcome</code>,
+ * the test has by definition already finished execution.
  * </p>
  *
  * <p>
  * This trait overrides and makes abstract the <code>runTest</code> method. Subtraits must 
- * must implement this method to call <code>withAsyncFixture</code> instead of <code>withFixture</code>,
- * where <code>withAsyncFixture</code> is a new method declared in this trait with the following
+ * must implement this method to call <code>withAsyncFixture(NoArgAsyncTest)</code> instead of <code>withFixture(NoArgTest)</code>,
+ * where <code>withAsyncFixture(NoArgAsyncTest)</code> is a new method declared in this trait with the following
  * signature and implementation:
  * </p>
  *
@@ -69,7 +69,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * </pre>
  *
  * <p>
- * Instead of returning <code>Outcome</code> like <code>withFixture</code>, the <code>withAsyncFixture</code>
+ * Instead of returning <code>Outcome</code> like <code>withFixture</code>, the <code>withAsyncFixture</code> method
  * returns a <code>Future[Outcome]</code>. Similarly, the <code>apply</code> method of test function interface,
  * <code>NoArgAsyncTest</code>, returns <code>Future[Outcome]</code>:
  * </p>
@@ -81,11 +81,11 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  *
  * <p>
  * The <code>withAsyncFixture</code> method supports async testing, because when the test function returns,
- * the test has not necessarily completed.
+ * the test body has not necessarily finished execution.
  * </p>
  *
  * <p>
- * The recommended way to ensure cleanup is performed after a test completes is
+ * The recommended way to ensure cleanup is performed after a test body finishes execution is
  * to use the <code>withCleanup</code> helper method, also defined in this trait, which will ensure that
  * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
  * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
@@ -101,7 +101,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: NoArgTest) = {
+ * override def withAsyncFixture(test: NoArgAsyncTest) = {
  *
  *   // Perform setup here
  *
@@ -119,7 +119,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: NoArgTest) = {
+ * override def withAsyncFixture(test: NoArgAsyncTest) = {
  *
  *   // Perform setup here
  *
@@ -139,7 +139,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: NoArgTest) = {
+ * override def withAsyncFixture(test: NoArgAsyncTest) = {
  *
  *   // Perform setup here
  *
@@ -162,7 +162,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * 
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: NoArgTest) = {
+ * override def withAsyncFixture(test: NoArgAsyncTest) = {
  *
  *   // Perform setup here
  *
