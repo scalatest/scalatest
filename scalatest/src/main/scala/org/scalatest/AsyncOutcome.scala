@@ -46,6 +46,7 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
       for (f <- queue.iterator)
         f(Failure(ex))
       status.setFailed()
+      status.setUnreportedException(ex)
       status.setCompleted()
   } /* fills in ctx here */
 

@@ -1682,6 +1682,9 @@ private[scalatest] object Suite {
       // got ScalaTest to compile under Android.
       case e if e.getClass.getName == "java.awt.AWTError" => true
       // SKIP-SCALATESTJS-END
+      // case ee: java.util.concurrent.ExecutionException =>
+      //   val cause = ee.getCause
+      //   if (cause != null) anExceptionThatShouldCauseAnAbort(ee.getCause) else false
       case _ => false
     }
 

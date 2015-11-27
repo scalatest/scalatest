@@ -51,6 +51,7 @@ trait AsyncFunSuiteLike extends AsyncSuite with AsyncTestRegistration { thisSuit
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending
           case tfe: exceptions.TestFailedException => Failed(tfe)
+          // case ex: java.util.concurrent.ExecutionException if ex.getCause != null && !Suite.anExceptionThatShouldCauseAnAbort(ex.getCause) => Failed(ex.getCause)
           case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
         }
       )/* fills in executionContext here */

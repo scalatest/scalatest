@@ -167,32 +167,30 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
               val durationToReport = theTest.recordedDuration.getOrElse(duration)
               val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) // TODO: zap this
               reportTestSucceeded(theSuite, report, tracker, testName, theTest.testText, recordEvents, durationToReport, formatter, theSuite.rerunner, theTest.location)
-              SucceededStatus
 
             case Pending =>
               val duration = System.currentTimeMillis - testStartTime
               // testWasPending = true so info's printed out in the finally clause show up yellow
               val recordEvents = messageRecorderForThisTest.recordedEvents(true, false) // TODO: Zap this
               reportTestPending(theSuite, report, tracker, testName, theTest.testText, recordEvents, duration, formatter, theTest.location)
-              SucceededStatus
 
             case Canceled(e) =>
               val duration = System.currentTimeMillis - testStartTime
               // testWasCanceled = true so info's printed out in the finally clause show up yellow
               val recordEvents = messageRecorderForThisTest.recordedEvents(false, true) // TODO: zap this
               reportTestCanceled(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, duration, formatter, theTest.location)
-              SucceededStatus
 
             case Failed(e) =>
               val duration = System.currentTimeMillis - testStartTime
               val durationToReport = theTest.recordedDuration.getOrElse(duration)
               val recordEvents = messageRecorderForThisTest.recordedEvents(false, false) // TODO: Zap this
               reportTestFailed(theSuite, report, e, testName, theTest.testText, recordEvents, theSuite.rerunner, tracker, durationToReport, formatter,  Some(SeeStackDepthException))
-              FailedStatus
           }
         // We will only get here if an exception that should cause a Suite to abort rather than a test
-        // to fail has happeend. In that case, we should return AbortedStatus(ex). Write a test first.
-        case Failure(ex) => throw ex
+        // to fail has happened. In that case, it will be reported as a suite abort, because of this line of code:
+        // status.setUnreportedException(ex)
+        // in AsyncOutcome.scala
+        case Failure(ex) => 
       }
     }
     asyncOutcome.toStatus
