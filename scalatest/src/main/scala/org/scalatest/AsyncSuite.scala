@@ -191,6 +191,14 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    */
   implicit def executionContext: ExecutionContext
 
+  private def anAsyncExceptionThatShouldCauseAnAbort(ex: Throwable): Boolean =
+    ex match {
+      // Not sure why a thrown OutOfMemoryError in our test is showing up nested inside
+      // an ExecutionException, but since it is, look inside.
+      case ee: java.util.concurrent.ExecutionException if ex.getCause != null => Suite.anExceptionThatShouldCauseAnAbort(ex.getCause)
+      case other => Suite.anExceptionThatShouldCauseAnAbort(other)
+    }
+
   /**
    * Transform the test outcome, `Registration` type to `AsyncOutcome`.
    *
@@ -205,8 +213,7 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending
           case tfe: exceptions.TestFailedException => Failed(tfe)
-          // case ex: java.util.concurrent.ExecutionException if ex.getCause != null && !Suite.anExceptionThatShouldCauseAnAbort(ex.getCause) => Failed(ex.getCause)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+          case ex: Throwable if !anAsyncExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
         }
       )/* fills in executionContext here */
     }

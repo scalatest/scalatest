@@ -22,6 +22,7 @@ import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf
 import events.Ordinal
 import scala.concurrent.Future
+import concurrent.Eventually._
 
 class AsyncEngineSpec extends FlatSpec with Matchers {
 
@@ -119,7 +120,7 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     engine.testPath("Given an empty list when 2 is inserted then the list has only 2 in it") should be (List(0, 1, 0))
   }
 
-  "AsyncEngine" should "abort a suite if an exception that should cause an abort is thrown in a test" ignore {
+  "AsyncEngine" should "abort a suite if an exception that should cause an abort is thrown in a test" in {
     val ex = new OutOfMemoryError("I meant to do that!")
     class MySpec extends AsyncFunSuite {
       // SKIP-SCALATESTJS-START
@@ -135,7 +136,8 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     val myReporter = new EventRecordingReporter
     val status = s.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
     myReporter.suiteCompletedEventsReceived should have size 0
-    status.unreportedException shouldBe defined
+    println("@#@#@#@#@#@: " + status.toString)
+    eventually { status.unreportedException shouldBe defined }
 /*
  class SuiteThatAborts extends Suite {
       override def run(testName: Option[String], args: Args): Status = {

@@ -580,7 +580,23 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
     }
   }
 
-  override def unreportedException: Option[Throwable] = synchronized { asyncException }
+  /*
+   * If this is defined, it means a suite needs to be aborted because of this exception.
+   * This one will include ones that come because one of the nested statuses ended up with an
+   * unreported exception or a callback registered with whenCompleted?
+   */
+  override def unreportedException: Option[Throwable] = {
+    synchronized {
+      if (asyncException.isDefined) asyncException
+      else {
+        val optStatusWithUnrepEx = statuses.find(_.unreportedException.isDefined)
+        for {
+          status <- optStatusWithUnrepEx
+          unrepEx <- status.unreportedException 
+        } yield unrepEx
+      }
+    }
+  }
 /*
     synchronized {
       statuses.map(_.unreportedException).find(_.isDefined).flatten

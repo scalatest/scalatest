@@ -101,7 +101,7 @@ class StatusSpec extends fixture.FunSpec {
 
   describe("SucceededStatus ") {
 
-    it("should invoke a function registered with whenCompleted, passing a succeeded value") { status =>
+    it("should invoke a function registered with whenCompleted, passing a succeeded value") { () =>
 
       @volatile var callbackInvoked = false
       @volatile var succeeded = false
@@ -119,7 +119,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(succeeded === true)
     }
 
-    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value") { status =>
+    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value") { () =>
       // register two callbacks
       // ensure neither was executed yet
       // complete the status
@@ -155,7 +155,7 @@ class StatusSpec extends fixture.FunSpec {
 
   describe("FailedStatus ") {
 
-    it("should invoke a function registered with whenCompleted, passing a failed value") { status =>
+    it("should invoke a function registered with whenCompleted, passing a failed value") { () =>
 
       @volatile var callbackInvoked = false
       @volatile var succeeded = true
@@ -173,7 +173,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(succeeded === false)
     }
 
-    it("should invoke multiple functions registered with whenCompleted, passing a failed value") { status =>
+    it("should invoke multiple functions registered with whenCompleted, passing a failed value") { () =>
       // register two callbacks
       // ensure neither was executed yet
       // complete the status
@@ -208,7 +208,7 @@ class StatusSpec extends fixture.FunSpec {
   }
 
   describe("CompositeStatus ") {
-    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully") { status =>
+    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully") { () =>
 
       @volatile var firstCallbackInvoked = false
       @volatile var secondCallbackInvoked = false
@@ -252,6 +252,19 @@ class StatusSpec extends fixture.FunSpec {
       // ensure they were passed the correct success value
       assert(firstSucceeded === true)
       assert(secondSucceeded === true)
+    }
+    it("should search its nested status for unreportedExceptions") { () =>
+      val nestedStatus1 = new ScalaTestStatefulStatus
+      val nestedStatus2 = new ScalaTestStatefulStatus
+      val compoStatus = new CompositeStatus(Set(nestedStatus1, nestedStatus2))
+
+      assert(compoStatus.unreportedException.isEmpty)
+
+      val ex = new Exception("oops")
+      nestedStatus1.setUnreportedException(ex)
+
+      assert(compoStatus.unreportedException.isDefined)
+      assert(compoStatus.unreportedException.get eq ex)
     }
   }
 }
