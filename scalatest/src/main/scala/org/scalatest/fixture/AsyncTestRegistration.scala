@@ -23,16 +23,6 @@ import org.scalatest.Assertion
 trait AsyncTestRegistration { theSuite: Suite =>
 
   /**
-   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
-   *
-   * @param testFun test function
-   * @return function that returns `AsyncOutcome`
-   */
-  private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome = {
-    throw new Exception("THIS IS NOT BEING USED")
-  }
-
-  /**
    * Register a test.
    *
    * @param testText the test text

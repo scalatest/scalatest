@@ -192,6 +192,26 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
   implicit def executionContext: ExecutionContext
 
   /**
+   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
+   *
+   * @param testFun test function
+   * @return function that returns `AsyncOutcome`
+   */
+  private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
+    () => {
+      val futureAssertion = testFun
+      FutureOutcome(
+        futureAssertion.recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          // case ex: java.util.concurrent.ExecutionException if ex.getCause != null && !Suite.anExceptionThatShouldCauseAnAbort(ex.getCause) => Failed(ex.getCause)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )/* fills in executionContext here */
+    }
+
+  /**
    * Implicitly converts an <code>Assertion</code> to a <code>Future[Assertion]</code>.
    *
    * <p>

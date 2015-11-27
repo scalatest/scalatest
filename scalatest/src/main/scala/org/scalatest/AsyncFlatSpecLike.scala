@@ -50,19 +50,6 @@ import scala.concurrent.Future
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
 trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb { thisSuite =>
 
-  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
-    () => {
-      val futureAssertion = testFun
-      FutureOutcome(
-        futureAssertion.recover {
-          case ex: exceptions.TestCanceledException => Canceled(ex)
-          case _: exceptions.TestPendingException => Pending
-          case tfe: exceptions.TestFailedException => Failed(tfe)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-        }
-      )
-    }
-
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
     () => {
       PastOutcome(

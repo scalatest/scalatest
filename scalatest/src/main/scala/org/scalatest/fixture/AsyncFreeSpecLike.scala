@@ -52,19 +52,6 @@ import scala.concurrent.Future
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
 trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite =>
 
-  override private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
-    (fixture: FixtureParam) => {
-      val futureUnit = testFun(fixture)
-      FutureOutcome(
-        futureUnit.map(u => Succeeded).recover {
-          case ex: exceptions.TestCanceledException => Canceled(ex)
-          case _: exceptions.TestPendingException => Pending
-          case tfe: exceptions.TestFailedException => Failed(tfe)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-        }
-      )
-    }
-
   private final val engine = new AsyncFixtureEngine[FixtureParam](Resources.concurrentFixtureFreeSpecMod, "FixtureFreeSpec")
 
   import engine._

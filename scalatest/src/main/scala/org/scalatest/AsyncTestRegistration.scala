@@ -24,15 +24,6 @@ import scala.concurrent.Future
 trait AsyncTestRegistration { theSuite: Suite =>
 
   /**
-   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
-   *
-   * @param testFun test function
-   * @return function that returns `AsyncOutcome`
-   */
-  private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
-    throw new Exception("NOT USING THIS")
-
-  /**
    * Register a test.
    *
    * @param testText the test text

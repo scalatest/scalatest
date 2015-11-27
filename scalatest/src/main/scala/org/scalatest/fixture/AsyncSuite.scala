@@ -20,8 +20,187 @@ import org.scalatest.exceptions.StackDepthExceptionHelper._
 
 import scala.concurrent.Future
 
+// TODO: Scaladoc
+/**
+ * The base trait of ScalaTest's async testing styles in which each test , which enables testing of
+ * asynchronous code without blocking.
+ *
+ * <p>
+ * This trait provides a final override of <code>withFixture</code>, declared in
+ * supertrait <code>Suite</code>, because the <code>withFixture</code> lifecycle
+ * method assumes synchronous testing. Here is its signature:
+ * </p>
+ *
+ * <pre>
+ * def withFixture(test: NoArgTest): Outcome
+ * </pre>
+ *
+ * <p>
+ * The test function interface, <a href="Suite$NoArgTest.html"><code>NoArgTest</code></a>, offers an <code>apply</code> method
+ * that also returns <a href="Outcome.html"><code>Outcome</code></a>:
+ * </p>
+ *
+ * <pre>
+ * // In trait NoArgTest:
+ * def apply(): Outcome
+ * </pre>
+ *
+ * <p>
+ * Because the result of a test is an <code>Outcome</code>, when the test function returns, the test must have completed already. It
+ * will already be one of <a href="Succeeded$.html"><code>Succeeded</code></a>, <a href="Failed.html"><code>Failed</code></a>, <a href="Canceled.html"><code>Canceled</code></a>, or <a href="Pending$.html"></code>Pending</code></a>. This is
+ * also true when <code>withFixture</code> returns: because the result type of <code>withFixture</code> is <code>Outcome</code>,
+ * the test by definition has already completed.
+ * </p>
+ *
+ * <p>
+ * This trait overrides and makes abstract the <code>runTest</code> method. Subtraits must 
+ * must implement this method to call <code>withAsyncFixture</code> instead of <code>withFixture</code>,
+ * where <code>withAsyncFixture</code> is a new method declared in this trait with the following
+ * signature and implementation:
+ * </p>
+ *
+ * <pre>
+ * def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
+ *   test()
+ * }
+ * </pre>
+ *
+ * <p>
+ * Instead of returning <code>Outcome</code> like <code>withFixture</code>, the <code>withAsyncFixture</code>
+ * returns a <code>Future[Outcome]</code>. Similarly, the <code>apply</code> method of test function interface,
+ * <code>NoArgAsyncTest</code>, returns <code>Future[Outcome]</code>:
+ * </p>
+ *
+ * <pre>
+ * // In trait NoArgAsyncTest:
+ * def apply(): Future[Outcome]
+ * </pre>
+ *
+ * <p>
+ * The <code>withAsyncFixture</code> method supports async testing, because when the test function returns,
+ * the test has not necessarily completed.
+ * </p>
+ *
+ * <p>
+ * The recommended way to ensure cleanup is performed after a test completes is
+ * to use the <code>withCleanup</code> helper method, also defined in this trait, which will ensure that
+ * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
+ * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
+ * to execute asynchronously when the future completes.
+ * </p>
+ *
+ * <p>
+ * The <code>withAsyncFixture</code> method is designed to be stacked, and to enable this, you should always call the <code>super</code> implementation
+ * of <code>withAsyncFixture</code>, and let it invoke the test function rather than invoking the test function directly. In other words, instead of writing
+ * &ldquo;<code>test()</code>&rdquo;, you should write &ldquo;<code>super.withAsyncFixture(test)</code>&rdquo;. Thus, the recommended
+ * structure of a <code>withAsyncFixture</code> implementation that performs cleanup looks like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * override def withAsyncFixture(test: NoArgTest) = {
+ *
+ *   // Perform setup here
+ *
+ *   withCleanup {
+ *     super.withAsyncFixture(test) // Invoke the test function
+ *   } {
+ *     // Perform cleanup here
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * If you have no cleanup to perform, you can write <code>withAsyncFixture</code> like this instead:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * override def withAsyncFixture(test: NoArgTest) = {
+ *
+ *   // Perform setup here
+ *
+ *   super.withAsyncFixture(test) // Invoke the test function
+ * }
+ * </pre>
+ *
+ * <p>
+ * If you want to perform an action only for certain outcomes, you'll need to 
+ * register code performing that action as a callback on the <code>Future</code> using
+ * one of <code>Future</code> registration methods: <code>onComplete</code>, <code>onSuccess</code>,
+ * or <code>onFailure</code>. Note that if a test fails, that will be treated as a
+ * <code>scala.util.Success(org.scalatest.Failure)</code>. So if you want to perform an 
+ * action if a test fails, for example, you'd register the callaback using <code>onSuccess</code>,
+ * like this:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // Your implementation
+ * override def withAsyncFixture(test: NoArgTest) = {
+ *
+ *   // Perform setup here
+ *
+ *   val futureOutcome = super.withAsyncFixture(test) // Invoke the test function
+ *
+ *   futureOutcome onSuccess {
+ *     case _: Failed =&gt;
+ *       // perform action that you want to occur
+ *       // only if a test fails here
+ *   }
+ *
+ *   futureOutcome
+ * }
+ * </pre>
+ *
+ * <p>
+ * Lastly, if you want to transform the outcome in some way in <code>withAsyncFixture</code>, you'll need to use either the
+ * <code>map</code> or <code>transform</code> methods of <code>Future</code>, like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * // Your implementation
+ * override def withAsyncFixture(test: NoArgTest) = {
+ *
+ *   // Perform setup here
+ *
+ *   val futureOutcome = super.withAsyncFixture(test) // Invoke the test function
+ *
+ *   futureOutcome map { outcome =&gt;
+ *     // transform the outcome into a new outcome here
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * Note that a <code>NoArgAsyncTest</code>'s <code>apply</code> method will only return a <code>Failure</code> if
+ * the test completes abruptly with an exception (such as <code>OutOfMemoryError</code>) that should
+ * cause the suite to abort rather than the test to fail. Thus usually you would use <code>map</code>
+ * to transform future outcomes, not <code>transform</code>, so that such suite-aborting exceptions pass through
+ * unchanged.  The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
+ * </p>
+ */
 trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSuite {
 
+  /**
+   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
+   *
+   * @param testFun test function
+   * @return function that returns `AsyncOutcome`
+   */
+  private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
+    (fixture: FixtureParam) => {
+      val futureUnit = testFun(fixture)
+      FutureOutcome(
+        futureUnit.map(u => Succeeded).recover {
+          case ex: exceptions.TestCanceledException => Canceled(ex)
+          case _: exceptions.TestPendingException => Pending
+          case tfe: exceptions.TestFailedException => Failed(tfe)
+          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
+        }
+      )
+    }
+
+  // TODO: Scaladoc
   final override def withFixture(test: OneArgTest): Outcome = {
     throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncFixtures.scala", "withFixture"))
   }

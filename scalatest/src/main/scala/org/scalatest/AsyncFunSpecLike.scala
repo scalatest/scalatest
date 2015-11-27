@@ -46,19 +46,6 @@ import scala.concurrent.Future
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
 trait AsyncFunSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite =>
 
-  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
-    () => {
-      val futureAssertion = testFun
-      FutureOutcome(
-        futureAssertion.recover {
-          case ex: exceptions.TestCanceledException => Canceled(ex)
-          case _: exceptions.TestPendingException => Pending
-          case tfe: exceptions.TestFailedException => Failed(tfe)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-        }
-      )
-    }
-
   private final val engine = new AsyncEngine(Resources.concurrentSpecMod, "FunSpec")
 
   import engine._
