@@ -496,7 +496,10 @@ class ExpectationsSpec extends FunSpec with Expectations {
 
       it("should return No with correct fact message when parse failed") {
         val fact = expectCompiles("println(\"test)")
-        assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("unclosed string literal", "println(\"test)"))
+        if (scala.util.Properties.versionString.contains("2.10"))
+          assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
+        else
+          assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("unclosed string literal", "println(\"test)"))
         assert(!fact.isVacuousYes)
       }
     }
@@ -548,12 +551,15 @@ class ExpectationsSpec extends FunSpec with Expectations {
           )
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
-        assert(fact.factMessage == Resources.expectedNoErrorButGotParseError(
-          "unclosed string literal",
-          """
-            |println("test)
-            |""".stripMargin
-        ))
+        if (scala.util.Properties.versionString.contains("2.10"))
+          assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
+        else
+          assert(fact.factMessage == Resources.expectedNoErrorButGotParseError(
+            "unclosed string literal",
+            """
+              |println("test)
+              |""".stripMargin
+          ))
         assert(!fact.isVacuousYes)
       }
     }
@@ -583,7 +589,10 @@ class ExpectationsSpec extends FunSpec with Expectations {
         val fact = expectTypeError("println(\"test)")
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
-        assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
+        if (scala.util.Properties.versionString.contains("2.10"))
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
+        else
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("unclosed string literal", "println(\"test)"))
         assert(!fact.isVacuousYes)
       }
     }
@@ -634,12 +643,15 @@ class ExpectationsSpec extends FunSpec with Expectations {
 
         assert(fact.isInstanceOf[Fact.Leaf])
         assert(fact.isNo)
-        assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
-          "unclosed string literal",
-          """
-            |println("test)
-            |""".stripMargin
-        ))
+        if (scala.util.Properties.versionString.contains("2.10"))
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but '}' found.", "\nprintln(\"test)\n"))
+        else
+          assert(fact.factMessage == Resources.expectedTypeErrorButGotParseError(
+            "unclosed string literal",
+            """
+              |println("test)
+              |""".stripMargin
+          ))
         assert(!fact.isVacuousYes)
       }
     }
