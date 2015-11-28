@@ -136,12 +136,21 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     val myReporter = new EventRecordingReporter
     val status = s.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
     myReporter.suiteCompletedEventsReceived should have size 0
-    println("@#@#@#@#@#@: " + status.toString)
     eventually { status.unreportedException shouldBe defined }
+
+    
 /*
- class SuiteThatAborts extends Suite {
-      override def run(testName: Option[String], args: Args): Status = {
-        throw new RuntimeException("Aborting for testing purposes")
+    // THings like OutOfMemoryError in a test didn't cause a suite abort, it killed the thread all the
+    // way back up. Suite aborts were caused by before or after code that died. Now we have a new problem
+    // in async of what do we do when a test dies with OutOfMemoryError. Can't just propagate it back.
+    // Unless there's someplace we can throw it, maybe have to report SuiteAborted. 
+    class SuiteThatAborts extends AsyncFunSuite {
+      // SKIP-SCALATESTJS-START
+      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+      test("should abort this suite") {
+        Future.failed(ex)
       }
     }
 
@@ -150,10 +159,9 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     }
 
     val myFunSuite = new MyFunSuite
-    val myReporter = new SuiteDurationReporter
-    myFunSuite.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
-    assert(myReporter.suiteAbortedWasFiredAndHadADuration)
-
+    val mySecondReporter = new SuiteDurationReporter
+    myFunSuite.run(None, Args(mySecondReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    eventually { assert(mySecondReporter.suiteAbortedWasFiredAndHadADuration) }
 */
   }
 }

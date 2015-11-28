@@ -220,18 +220,6 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
         case None =>
       }
       statusToReturn
-/*
-      val statusToReturn: Status =
-        if (!args.runTestInNewInstance)
-          runTestStatus thenRun { afterEach(testDataFor(testName, args.configMap)); SucceededStatus } // Make sure that afterEach is called even if runTest completes abruptly.
-        else
-          runTestStatus
-      thrownException match {
-        case Some(e) => throw e
-        case None =>
-      }
-      statusToReturn
-*/
     }
     catch {
       case laterException: Exception =>

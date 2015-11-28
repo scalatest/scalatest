@@ -190,6 +190,23 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         // to fail has happened. In that case, it will be reported as a suite abort, because of this line of code:
         // status.setUnreportedException(ex)
         // in AsyncOutcome.scala
+        // Well not sure. Maybe we just throw it, like we did before. This was to let the thread die. But it is a tad odd,
+        // because the test didn't complete. Almost need a TestAborted event, but if it is truly fatal, then that means
+        // please try and die gracefully, not fire a scalatest and continue. More like want to have fatalException and
+        // unreportedException. unreportedException is for when before or after code blows up, or a constructor blows up.
+        // fatalException is for anExceptionThatShouldCauseASuiteToAbort no matter when it happens. And maybe once that
+        // happens, everything just blows up with that exception. 
+/*
+  suiteAbortingException: Option[Throwable] // These would be 2 different things.
+  threadKillingException: Option[Throwable]
+
+   or could do unreportedException and fatalException
+   extraTestException
+   exceptionToReport
+   exceptionToRethrow
+
+   I like unreportedException and isFatal
+*/
         case Failure(ex) => 
       }
     }
