@@ -143,6 +143,14 @@ sealed trait Status { thisStatus =>
   }
 
   // True means succeeded, false means a test failure or suite abort happened.
+  /**
+   * Converts this <code>Status</code> to a <code>Future[Boolean]</code> where <code>Success(true)</code> means
+   * no tests failed and suites aborted, <code>Success(false)</code>, means at least one test failed or one
+   * suite aborted and those events were reported via the <code>Reporter</code>, <code>Failure(ex)</code> means
+   * a suite aborted but the exception, <code>ex</code>, was not reported to the <code>Reporter</code>.
+   * 
+   * TODO: Write the test and code to ensure this future fails if an unreportedException has been installed.
+   */
   final def toFuture: Future[Boolean] = {
     val promise = Promise[Boolean]
     whenCompleted { t => promise.complete(t) }
@@ -180,25 +188,23 @@ sealed trait Status { thisStatus =>
    * and after all tests and nested suites. If any "before" or "after"
    * code completes abruptly with an exception (of any type, not just test-fatal types) on a thread taken
    * from an async suite's execution context, this exception will
-   * installed as an <code>unreportedException</code> of the relevant <code>Status</code>.
+   * installed as an <code>unreportedException</code> of the relevant <code>Status</code>. TODO: Is that true. Tests will tell.
    * </p>
    *
    * <p>
-   * In addition, ScalaTest <code>Suite</code> exposes many lifecycle methods, such as <code>run</code>,
-   * <code>runTests</code>, <em>etc</em>., that users can override to customize
-   * the framework. If any lifecycle method completes abruptly with an exception, that also occurs outside
-   * the body of a test. As a result, such exceptions will be
+   * In addition, ScalaTest <code>Suite</code> exposes four "run" lifecycle methods--<code>run</code>,
+   * <code>runNestedSuites</code>, <code>runTests</code>, and <code>runTest</code>--that users can override to customize
+   * the framework. If a "run" lifecycle methods completes abruptly with an exception, that exception occurs outside
+   * the context of a test body. As a result, such exceptions will be
    * installed as an <code>unreportedException</code> of the relevant <code>Status</code>.
-   * </p>
-   *
-   * <p>
    * </p>
    *
    * <p>
    * The <code>toFuture</code> method on <code>Status</code> returns a <code>Future[Boolean]</code>. If the <code>Future</code>
-   * success with the <code>Boolean</code> value of <code>true</code>, that indicates no tests failed and no suites aborted
+   * succeeds with the <code>Boolean</code> value of <code>true</code>, that indicates no tests failed and no suites aborted
    * during the activity represented
-   * by this <code>Status</code>. If a test failed or suite aborted, and that event was reported by a fired ScalaTest <code>Event</code>, the
+   * by this <code>Status</code>. If a test failed or suite aborted, and that event was reported by a fired ScalaTest
+   * <a href="events.Event.html"><code>Event</code></a>, the
    * <code>Future</code> will succeed with the value <code>false</code>. If an unreported exception has been installed
    * on the <code>Status</code>, however, the <code>Future</code> will fail with that exception.
    * </p>
@@ -206,7 +212,7 @@ sealed trait Status { thisStatus =>
   def unreportedException: Option[Throwable] = None
 
   /**
-   * Registers a by-name function that produces an optional exception, which will be executed
+   * Registers a by-name function (producing an optional exception) to execute
    * after this <code>Status</code> completes.
    *
    * <p>
