@@ -17,8 +17,7 @@ package org.scalatest
 
 import scala.collection.GenSet
 import java.io.Serializable
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ExecutionException, Future, Promise}
 import scala.util.{Try, Success, Failure}
 
 /**
@@ -294,6 +293,11 @@ sealed trait Status { thisStatus =>
             if (!result) returnedStatus.setFailed()
           }
           catch {
+            case ex: Throwable if Suite.anExceptionThatShouldCauseAnAbort(ex) =>
+              val execEx = new ExecutionException(ex)
+              returnedStatus.setUnreportedException(execEx)
+              throw execEx
+
             case ex: Throwable => returnedStatus.setUnreportedException(ex)
           }
           finally {

@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import scala.concurrent.ExecutionException
 import scala.util.{Failure, Success}
 
 class StatusSpec extends fixture.FunSpec {
@@ -352,6 +353,17 @@ class StatusSpec extends fixture.FunSpec {
         status.succeeds
       }
       assert(e == t)
+    }
+    it("withAfterEffect should wrap AnnotationFormatError as in ExecutionException and rethrow it") { () =>
+      val status = new ScalaTestStatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      status.withAfterEffect {
+        throw e
+      }
+      val t = intercept[ExecutionException] {
+        status.setCompleted()
+      }
+      assert(t.getCause == e)
     }
   }
 
