@@ -607,24 +607,11 @@ import Suite.autoTagClassAnnotations
  *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
  *     Use this technique unless:
  *     </p>
- *     <table>
- *       <tr><td style="vertical-align: top;">&nbsp;&bull;&nbsp;</td>
- *         <td>
- *           Different tests need different fixtures (refactor using Scala
- *           instead)
- *         </td>
- *       </tr><tr><td style="vertical-align: top;">&nbsp;&bull;&nbsp;</td>
- *         <td>
- *           An exception in fixture code should abort the suite, not fail the
- *           test (use a <em>before-and-after</em> trait instead)
- *         </td>
- *       </tr><tr><td style="vertical-align: top;">&nbsp;&bull;&nbsp;</td>
- *         <td>
- *           You have objects to pass into tests (override
- *           <code>withFixture(OneArgTest)</code> instead)
- *         </td>
- *       </tr>
- *     </table>
+ *     <dl>
+ *     <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">Different tests need different fixtures (refactor using Scala instead)</dd>
+ *     <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</dd>
+ *     <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">You have objects to pass into tests (override <code>withFixture(OneArgTest)</code> instead)</dd>
+ *     </dl>
  *  </td>
  * </tr>
  *
