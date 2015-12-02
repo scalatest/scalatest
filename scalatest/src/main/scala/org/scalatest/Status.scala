@@ -284,35 +284,6 @@ sealed trait Status { thisStatus =>
    * simplify the thing. Then also what happens if it is that, is the inner exception, the real one
    * is allowed to propagate up the call stack.
    */
-  def withAfterEffect(f: => Option[Throwable]): Status = {
-    val returnedStatus = new ScalaTestStatefulStatus
-    whenCompleted { tri =>
-      tri match {
-        case Success(result) => 
-          f match {
-            case None =>
-              if (!result) returnedStatus.setFailed()
-              returnedStatus.setCompleted()
-            case Some(ex) =>
-              returnedStatus.setUnreportedException(ex)
-              returnedStatus.setCompleted()
-          }
-        case Failure(originalEx) =>
-          f match {
-            case None =>
-              returnedStatus.setUnreportedException(originalEx)
-              returnedStatus.setCompleted()
-            case Some(ex) =>
-              returnedStatus.setUnreportedException(originalEx)
-              println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:") 
-              ex.printStackTrace()
-              returnedStatus.setCompleted()
-          }
-      }
-    }
-    returnedStatus
-  }
-
   def withAfterEffectNew(f: => Unit): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { tri =>
