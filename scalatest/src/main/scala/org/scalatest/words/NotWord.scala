@@ -974,6 +974,33 @@ final class NotWord {
   }
 
   /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * list should (not contain (null))
+   *                  ^
+   * </pre>
+   */
+  def contain(nullValue: Null): MatcherFactory1[Any, Containing] = {
+    new MatcherFactory1[Any, Containing] {
+      def matcher[U : Containing]: Matcher[U] =
+        new Matcher[U] {
+          def apply(left: U): MatchResult = {
+            val containing = implicitly[Containing[U]]
+            MatchResult(
+              !containing.contains(left, null),
+              Resources.rawContainedNull,
+              Resources.rawDidNotContainNull,
+              Vector(left)
+            )
+          }
+          override def toString: String = "not contain null"
+        }
+      override def toString: String = "not contain null"
+    }
+  }
+
+  /**
    * This method enables the following syntax: 
    *
    * <pre class="stHighlight">
