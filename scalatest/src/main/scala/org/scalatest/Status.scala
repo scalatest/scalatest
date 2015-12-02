@@ -464,6 +464,10 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   // SKIP-SCALATESTJS-START
   def waitUntilCompleted() {
     synchronized { latch }.await()
+    unreportedException match {
+      case Some(ue) => throw ue
+      case None => // Do nothing
+    }
   }
   // SKIP-SCALATESTJS-END
 
@@ -578,6 +582,10 @@ final class StatefulStatus extends Status with Serializable {
    */
   def waitUntilCompleted() {
     synchronized { latch }.await()
+    unreportedException match {
+      case Some(ue) => throw ue
+      case None => // Do nothing
+    }
   }
   // SKIP-SCALATESTJS-END
 
