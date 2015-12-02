@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import scala.util.Success
+import scala.util.{Failure, Success}
 
 class StatusSpec extends fixture.FunSpec {
   
@@ -151,6 +151,14 @@ class StatusSpec extends fixture.FunSpec {
       assert(firstSucceeded === true)
       assert(secondSucceeded === true)
     }
+
+    it("toFuture should return Future[Boolean] that is completed and has value Some(Success(true))") { () =>
+      val status = SucceededStatus
+      assert(status.unreportedException == None)
+      val future = status.toFuture
+      assert(future.isCompleted)
+      assert(future.value == Some(Success(true)))
+    }
   }
 
   describe("FailedStatus ") {
@@ -205,6 +213,27 @@ class StatusSpec extends fixture.FunSpec {
       assert(firstSucceeded === false)
       assert(secondSucceeded === false)
     }
+
+    it("toFuture should return Future[Boolean] that is completed and has value Some(Success(false))") { () =>
+      val status = FailedStatus
+      assert(status.unreportedException == None)
+      val future = status.toFuture
+      assert(future.isCompleted)
+      assert(future.value == Some(Success(false)))
+    }
+  }
+
+  describe("AbortedStatus") {
+
+    it("toFuture should return Future[Boolean] that is completed and has value Some(Failure(unreportedException))") { () =>
+      val e = new IllegalArgumentException("test")
+      val status = AbortedStatus(e)
+      assert(status.unreportedException == Some(e))
+      val future = status.toFuture
+      assert(future.isCompleted)
+      assert(future.value == Some(Failure(e)))
+    }
+
   }
 
   describe("CompositeStatus ") {
@@ -265,6 +294,82 @@ class StatusSpec extends fixture.FunSpec {
 
       assert(compoStatus.unreportedException.isDefined)
       assert(compoStatus.unreportedException.get eq ex)
+    }
+  }
+
+  describe("ScalaTestStatefulStatus") {
+    it("toFuture should return Future[Boolean] that will be complete later and has correct value of Option[Try[Boolean]]") { () =>
+      val status1 = new ScalaTestStatefulStatus
+      val future1 = status1.toFuture
+      assert(status1.unreportedException == None)
+      assert(!future1.isCompleted)
+      assert(future1.value == None)
+      status1.setCompleted()
+      assert(status1.unreportedException == None)
+      assert(future1.isCompleted)
+      assert(future1.value == Some(Success(true)))
+
+      val status2 = new ScalaTestStatefulStatus
+      val future2 = status2.toFuture
+      assert(status2.unreportedException == None)
+      assert(!future2.isCompleted)
+      assert(future2.value == None)
+      status2.setFailed()
+      status2.setCompleted()
+      assert(status2.unreportedException == None)
+      assert(future2.isCompleted)
+      assert(future2.value == Some(Success(false)))
+
+      val status3 = new ScalaTestStatefulStatus
+      val future3 = status3.toFuture
+      assert(status3.unreportedException == None)
+      assert(!future3.isCompleted)
+      assert(future3.value == None)
+      status3.setFailed()
+      val e = new IllegalArgumentException("test")
+      status3.setUnreportedException(e)
+      status3.setCompleted()
+      assert(status3.unreportedException == Some(e))
+      assert(future3.isCompleted)
+      assert(future3.value == Some(Failure(e)))
+    }
+  }
+
+  describe("StatefulStatus") {
+    it("toFuture should return Future[Boolean] that will be complete later and has correct value of Option[Try[Boolean]]") { () =>
+      val status1 = new StatefulStatus
+      val future1 = status1.toFuture
+      assert(status1.unreportedException == None)
+      assert(!future1.isCompleted)
+      assert(future1.value == None)
+      status1.setCompleted()
+      assert(status1.unreportedException == None)
+      assert(future1.isCompleted)
+      assert(future1.value == Some(Success(true)))
+
+      val status2 = new StatefulStatus
+      val future2 = status2.toFuture
+      assert(status2.unreportedException == None)
+      assert(!future2.isCompleted)
+      assert(future2.value == None)
+      status2.setFailed()
+      status2.setCompleted()
+      assert(status2.unreportedException == None)
+      assert(future2.isCompleted)
+      assert(future2.value == Some(Success(false)))
+
+      val status3 = new StatefulStatus
+      val future3 = status3.toFuture
+      assert(status3.unreportedException == None)
+      assert(!future3.isCompleted)
+      assert(future3.value == None)
+      status3.setFailed()
+      val e = new IllegalArgumentException("test")
+      status3.setUnreportedException(e)
+      status3.setCompleted()
+      assert(status3.unreportedException == Some(e))
+      assert(future3.isCompleted)
+      assert(future3.value == Some(Failure(e)))
     }
   }
 }
