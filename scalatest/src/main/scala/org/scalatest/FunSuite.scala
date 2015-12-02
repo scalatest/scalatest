@@ -621,7 +621,7 @@ import Suite.autoTagClassAnnotations
  *       </tr><tr><td style="vertical-align: top;">&nbsp;&bull;&nbsp;</td>
  *         <td>
  *           You have objects to pass into tests (override
- *           <code>withFixture(<em> One</em>ArgTest)</code> instead)
+ *           <code>withFixture(OneArgTest)</code> instead)
  *         </td>
  *       </tr>
  *     </table>
