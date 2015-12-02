@@ -333,6 +333,26 @@ class StatusSpec extends fixture.FunSpec {
       assert(future3.isCompleted)
       assert(future3.value == Some(Failure(e)))
     }
+    it("waitUntilCompleted should throw unreportedException if set") { () =>
+      val status = new ScalaTestStatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setUnreportedException(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.waitUntilCompleted()
+      }
+      assert(e == t)
+    }
+    it("succeeds should throw unreportedException if set") { () =>
+      val status = new ScalaTestStatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setUnreportedException(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.succeeds
+      }
+      assert(e == t)
+    }
   }
 
   describe("StatefulStatus") {
@@ -370,6 +390,26 @@ class StatusSpec extends fixture.FunSpec {
       assert(status3.unreportedException == Some(e))
       assert(future3.isCompleted)
       assert(future3.value == Some(Failure(e)))
+    }
+    it("waitUntilCompleted should throw unreportedException if set") { () =>
+      val status = new StatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setUnreportedException(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.waitUntilCompleted()
+      }
+      assert(e == t)
+    }
+    it("succeeds should throw unreportedException if set") { () =>
+      val status = new StatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setUnreportedException(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.succeeds
+      }
+      assert(e == t)
     }
   }
 }
