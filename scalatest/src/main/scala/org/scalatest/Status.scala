@@ -312,6 +312,41 @@ sealed trait Status { thisStatus =>
     }
     returnedStatus
   }
+
+  def withAfterEffectNew(f: => Unit): Status = {
+    val returnedStatus = new ScalaTestStatefulStatus
+    whenCompleted { tri =>
+      tri match {
+        case Success(result) =>
+          try {
+            f
+            if (!result) returnedStatus.setFailed()
+          }
+          catch {
+            case ex: Throwable => returnedStatus.setUnreportedException(ex)
+          }
+          finally {
+            returnedStatus.setCompleted()
+          }
+
+        case Failure(originalEx) =>
+          try {
+            f
+            returnedStatus.setUnreportedException(originalEx)
+          }
+          catch {
+            case ex: Throwable =>
+              returnedStatus.setUnreportedException(originalEx)
+              println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
+              ex.printStackTrace()
+          }
+          finally {
+            returnedStatus.setCompleted()
+          }
+      }
+    }
+    returnedStatus
+  }
 }
 
 /**

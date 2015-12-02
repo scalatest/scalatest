@@ -268,18 +268,8 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
       case None =>
         if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
           // runStatus may not be completed, call afterAll only after it is completed
-          runStatus withAfterEffect {
-            try {
-              afterAll(args.configMap)
-              None
-            }
-            catch {
-              case laterException: Exception =>
-                thrownException match { // If both run and afterAll throw an exception, report the test exception
-                  case None => Some(laterException)
-                  case someEarlierException => someEarlierException
-                }
-            }
+          runStatus withAfterEffectNew {
+            afterAll(args.configMap)
           }
         }
         else runStatus
