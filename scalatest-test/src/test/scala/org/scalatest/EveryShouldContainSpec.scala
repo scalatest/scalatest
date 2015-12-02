@@ -27,6 +27,7 @@ class EveryShouldContainSpec extends FunSpec {
   describe("a List") {
 
     val xs: Every[String] = Every("hi", "hi", "hi")
+    val xsWithNull: Every[String] = Every("hi", "hi", "hi", null)
     val caseLists: Every[String] = Every("tell", "them", "Hi")
 
     describe("when used with contain (value) syntax") {
@@ -87,6 +88,17 @@ class EveryShouldContainSpec extends FunSpec {
         caseLists should contain ("HI")
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS contains null value") {
+        xsWithNull should contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when LHS did not contain null value") {
+        val e = intercept[TestFailedException] {
+          xs should contain (null)
+        }
+        e.message.get should be (Resources.didNotContainNull(decorateToStringValue(xs)))
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
 
     describe("when used with not contain value syntax") {
@@ -146,6 +158,17 @@ class EveryShouldContainSpec extends FunSpec {
           caseLists should not contain "HI"
         }
         normalizedInvokedCount should be (4)
+      }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs should not contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull should not contain (null)
+        }
+        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
     }
 
@@ -211,6 +234,17 @@ class EveryShouldContainSpec extends FunSpec {
         }
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs should not (contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull should not (contain (null))
+        }
+        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
 
     describe("when used with (not contain value) syntax") {
@@ -274,6 +308,17 @@ class EveryShouldContainSpec extends FunSpec {
         }
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs should (not contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull should (not contain (null))
+        }
+        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
 
     describe("when used with shouldNot contain value syntax") {
@@ -333,6 +378,17 @@ class EveryShouldContainSpec extends FunSpec {
           caseLists shouldNot contain ("HI")
         }
         normalizedInvokedCount should be (4)
+      }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs shouldNot contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull shouldNot contain (null)
+        }
+        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
     }
 
@@ -398,6 +454,17 @@ class EveryShouldContainSpec extends FunSpec {
         }
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs shouldNot (contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull shouldNot (contain (null))
+        }
+        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
   }
 
@@ -406,6 +473,7 @@ class EveryShouldContainSpec extends FunSpec {
     val list123s: Every[Every[Int]] = Every(Every(1, 2, 3), Every(1, 2, 3), Every(1, 2, 3))
     val lists: Every[Every[Int]] = Every(Every(1, 2, 3), Every(1, 2, 3), Every(4, 5, 6))
     val hiLists: Every[Every[String]] = Every(Every("hi"), Every("hi"), Every("hi"))
+    val hiNullLists: Every[Every[String]] = Every(Every("hi", null), Every("hi", null), Every("hi", null))
 
     describe("when used with contain (value) syntax") {
 
@@ -489,6 +557,19 @@ class EveryShouldContainSpec extends FunSpec {
         all (hiHeHoLists) should contain ("HO")
         normalizedInvokedCount should be (12)
       }
+      it("should do nothing when used with null and LHS contains null value") {
+        all (hiNullLists) should contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when all elements of LHS did not contain null value") {
+        val e = intercept[TestFailedException] {
+          all (hiLists) should contain (null)
+        }
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiLists(0)) + " did not contain null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiLists)))
+      }
     }
     describe("when used with not contain value syntax") {
 
@@ -531,6 +612,19 @@ class EveryShouldContainSpec extends FunSpec {
         intercept[TestFailedException] {
           (all (hiLists) should not contain "HI ") (after being trimmed and lowerCased)
         }
+      }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) should not contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) should not contain (null)
+        }
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
       }
     }
     describe("when used with not (contain (value)) syntax") {
@@ -575,6 +669,19 @@ class EveryShouldContainSpec extends FunSpec {
           (all (hiLists) should not (contain ("HI "))) (after being trimmed and lowerCased)
         }
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) should not (contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) should not (contain (null))
+        }
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
+      }
     }
     describe("when used with (not contain value) syntax") {
 
@@ -617,6 +724,19 @@ class EveryShouldContainSpec extends FunSpec {
         intercept[TestFailedException] {
           (all (hiLists) should (not contain "HI ")) (after being trimmed and lowerCased)
         }
+      }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) should (not contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) should (not contain (null))
+        }
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
       }
     }
 
@@ -662,6 +782,19 @@ class EveryShouldContainSpec extends FunSpec {
           (all (hiLists) shouldNot contain ("HI ")) (after being trimmed and lowerCased)
         }
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) shouldNot contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) shouldNot contain (null)
+        }
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
+      }
     }
     describe("when used with shouldNot (contain (value)) syntax") {
 
@@ -704,6 +837,19 @@ class EveryShouldContainSpec extends FunSpec {
         intercept[TestFailedException] {
           (all (hiLists) shouldNot (contain ("HI "))) (after being trimmed and lowerCased)
         }
+      }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) shouldNot (contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) shouldNot (contain (null))
+        }
+        e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
       }
     }
   }

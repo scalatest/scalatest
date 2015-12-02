@@ -3715,6 +3715,23 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * This method enables the following syntax:
      *
      * <pre class="stHighlight">
+     * all (xs) should not contain (null)
+     *                     ^
+     * </pre>
+     */
+    def contain(nullValue: Null)(implicit containing: Containing[T]): Assertion = {
+      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+        if ((containing.contains(e, null)) != shouldBeTrue) {
+          indicateFailure(shouldBeTrue, FailureMessages.didNotContainNull(e), FailureMessages.containedNull(e), None, innerStackDepth)
+        }
+        else indicateSuccess(shouldBeTrue, FailureMessages.containedNull(e), FailureMessages.didNotContainNull(e))
+      }
+    }
+
+    /**
+     * This method enables the following syntax:
+     *
+     * <pre class="stHighlight">
      * all (xs) should not contain ("one")
      *                     ^
      * </pre>
