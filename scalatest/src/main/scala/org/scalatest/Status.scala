@@ -17,8 +17,7 @@ package org.scalatest
 
 import scala.collection.GenSet
 import java.io.Serializable
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ExecutionException, Future, Promise}
 import scala.util.{Try, Success, Failure}
 
 /**
@@ -203,8 +202,7 @@ sealed trait Status { thisStatus =>
    * no tests failed and suites aborted, <code>Success(false)</code>, means at least one test failed or one
    * suite aborted and those events were reported via the <code>Reporter</code>, <code>Failure(ex)</code> means
    * a suite aborted but the exception, <code>ex</code>, was not reported to the <code>Reporter</code>.
-   * 
-   * TODO: Write the test and code to ensure this future fails if an unreportedException has been installed.
+   *
    */
   final def toFuture: Future[Boolean] = {
     val promise = Promise[Boolean]
@@ -285,29 +283,40 @@ sealed trait Status { thisStatus =>
    * simplify the thing. Then also what happens if it is that, is the inner exception, the real one
    * is allowed to propagate up the call stack.
    */
-  def withAfterEffect(f: => Option[Throwable]): Status = {
+  def withAfterEffect(f: => Unit): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { tri =>
       tri match {
-        case Success(result) => 
-          f match {
-            case None =>
-              if (!result) returnedStatus.setFailed()
-              returnedStatus.setCompleted()
-            case Some(ex) =>
-              returnedStatus.setUnreportedException(ex)
-              returnedStatus.setCompleted()
+        case Success(result) =>
+          try {
+            f
+            if (!result) returnedStatus.setFailed()
           }
+          catch {
+            case ex: Throwable if Suite.anExceptionThatShouldCauseAnAbort(ex) =>
+              val execEx = new ExecutionException(ex)
+              returnedStatus.setUnreportedException(execEx)
+              throw execEx
+
+            case ex: Throwable => returnedStatus.setUnreportedException(ex)
+          }
+          finally {
+            returnedStatus.setCompleted()
+          }
+
         case Failure(originalEx) =>
-          f match {
-            case None =>
+          try {
+            f
+            returnedStatus.setUnreportedException(originalEx)
+          }
+          catch {
+            case ex: Throwable =>
               returnedStatus.setUnreportedException(originalEx)
-              returnedStatus.setCompleted()
-            case Some(ex) =>
-              returnedStatus.setUnreportedException(originalEx)
-              println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:") 
+              println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
               ex.printStackTrace()
-              returnedStatus.setCompleted()
+          }
+          finally {
+            returnedStatus.setCompleted()
           }
       }
     }
@@ -465,6 +474,10 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   // SKIP-SCALATESTJS-START
   def waitUntilCompleted() {
     synchronized { latch }.await()
+    unreportedException match {
+      case Some(ue) => throw ue
+      case None => // Do nothing
+    }
   }
   // SKIP-SCALATESTJS-END
 
@@ -545,6 +558,14 @@ final class StatefulStatus extends Status with Serializable {
   private var succeeded = true
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
+  private var asyncException: Option[Throwable] = None
+
+  override def unreportedException: Option[Throwable] = {
+    synchronized {
+      asyncException
+    }
+  }
+
   // SKIP-SCALATESTJS-START
   /**
    * Blocking call that waits until completion, as indicated by an invocation of <code>setCompleted</code> on this instance, then returns returns <code>false</code> 
@@ -571,6 +592,10 @@ final class StatefulStatus extends Status with Serializable {
    */
   def waitUntilCompleted() {
     synchronized { latch }.await()
+    unreportedException match {
+      case Some(ue) => throw ue
+      case None => // Do nothing
+    }
   }
   // SKIP-SCALATESTJS-END
 
@@ -590,6 +615,17 @@ final class StatefulStatus extends Status with Serializable {
       if (isCompleted)
         throw new IllegalStateException("status is already completed")
       succeeded = false
+    }
+  }
+
+  def setUnreportedException(ex: Throwable): Unit = {
+    // TODO: Throw an exception if it is a fatal one?
+    // TODO: Throw an exception if already have an exception in here.
+    synchronized {
+      if (isCompleted)
+        throw new IllegalStateException("status is already completed")
+      succeeded = false
+      asyncException = Some(ex)
     }
   }
 

@@ -734,7 +734,14 @@ class Framework extends SbtFramework {
       if (!isDone.getAndSet(true)) {
 
         // Wait until all status is completed
-        statusList.asScala.foreach(_.waitUntilCompleted())
+        statusList.asScala.foreach { s =>
+          try {
+            s.waitUntilCompleted()
+          }
+          catch {
+            case t: Throwable => // TODO: What should we do here?
+          }
+        }
 
         serverThread.get match {
           case Some(thread) =>
