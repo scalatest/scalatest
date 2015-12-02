@@ -284,7 +284,7 @@ sealed trait Status { thisStatus =>
    * simplify the thing. Then also what happens if it is that, is the inner exception, the real one
    * is allowed to propagate up the call stack.
    */
-  def withAfterEffectNew(f: => Unit): Status = {
+  def withAfterEffect(f: => Unit): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { tri =>
       tri match {

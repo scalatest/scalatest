@@ -229,7 +229,7 @@ trait BeforeAndAfterEach extends SuiteMixin {
     try {
       val statusToReturn: Status =
         if (!args.runTestInNewInstance) {
-          runTestStatus withAfterEffectNew {
+          runTestStatus withAfterEffect {
             afterEach()
           } // Make sure that afterEach is called even if runTest completes abruptly.
         }
