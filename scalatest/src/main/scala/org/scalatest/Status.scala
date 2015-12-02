@@ -203,8 +203,7 @@ sealed trait Status { thisStatus =>
    * no tests failed and suites aborted, <code>Success(false)</code>, means at least one test failed or one
    * suite aborted and those events were reported via the <code>Reporter</code>, <code>Failure(ex)</code> means
    * a suite aborted but the exception, <code>ex</code>, was not reported to the <code>Reporter</code>.
-   * 
-   * TODO: Write the test and code to ensure this future fails if an unreportedException has been installed.
+   *
    */
   final def toFuture: Future[Boolean] = {
     val promise = Promise[Boolean]
@@ -545,6 +544,14 @@ final class StatefulStatus extends Status with Serializable {
   private var succeeded = true
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
+  private var asyncException: Option[Throwable] = None
+
+  override def unreportedException: Option[Throwable] = {
+    synchronized {
+      asyncException
+    }
+  }
+
   // SKIP-SCALATESTJS-START
   /**
    * Blocking call that waits until completion, as indicated by an invocation of <code>setCompleted</code> on this instance, then returns returns <code>false</code> 
@@ -590,6 +597,17 @@ final class StatefulStatus extends Status with Serializable {
       if (isCompleted)
         throw new IllegalStateException("status is already completed")
       succeeded = false
+    }
+  }
+
+  def setUnreportedException(ex: Throwable): Unit = {
+    // TODO: Throw an exception if it is a fatal one?
+    // TODO: Throw an exception if already have an exception in here.
+    synchronized {
+      if (isCompleted)
+        throw new IllegalStateException("status is already completed")
+      succeeded = false
+      asyncException = Some(ex)
     }
   }
 
