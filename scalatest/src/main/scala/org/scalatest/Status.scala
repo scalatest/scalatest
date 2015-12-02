@@ -22,15 +22,29 @@ import scala.concurrent.Promise
 import scala.util.{Try, Success, Failure}
 
 /**
- * The result status of running a test or a suite.
+ * The result status of running a test or a suite, which is used to support parallel and asynchronous execution of tests.
  *
  * <p>
  * This trait is the result type of the "run" lifecycle methods of trait <a href="Suite.html#lifecycle-methods"><code>Suite</code></a>:
  * <code>run</code>, <code>runNestedSuites</code>, <code>runTests</code>, and <code>runTest</code>. It can be used to determine whether
- * a test or suite has completed, and if completed, whether it succeeded or failed. The main use case for this trait in ScalaTest is to
- * enable <a href="BeforeAndAfterAll.html"><code>BeforeAndAfterAll</code></a>'s <code>afterAll</code>
- * method to wait until all relevant tests and nested suites have completed before performing the "after all" code, even if those tests are
- * nested suites are run in parallel.
+ * a test or suite has completed, and if so, whether it succeeded, and if not, whether an exception was thrown that was
+ * not yet reported via a ScalaTest event. A <code>Status</code> is like a domain-specific <code>Future[Boolean]</code>, where:
+ * </p>
+ *
+ * <ul>
+ * <li>an activity in which no test failed and no suite aborted is represented by <code>Success(true)</code></li>
+ * <li>an activity during which at least one test failed or one suite aborted, but all exceptions that occured
+ *     were reported by a ScalaTest events (such as <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a>)
+ *     is represented by <code>Success(false)</code></li>
+ * <li>an activity during which at least one test failed or one suite aborted and at least one exception occurred that was
+ *     <em>not</em> reported via a ScalaTest event is represented by <code>Failure(unreportedException)</code></li>
+ * </ul>
+ *
+ * <p>
+ * One use case of <code>Status</code> is to ensure that "after" code (such as an <code>afterEach</code> or <code>afterAll</code> method)
+ * does not execute until after the relevant entity (a single test or all tests and nested suites) has completed.
+ * Another use case is to implement the default behavior of asynchronous styles, in which subsequent each test does not begin
+ * execution until after the previous test has completed.
  * </p>
  */
 sealed trait Status { thisStatus =>
@@ -42,30 +56,38 @@ sealed trait Status { thisStatus =>
    * returns <code>false</code>, or if an unreported exception has been installed, completes abruptly with that exception.
    * 
    * <p>
-   * This only reports <code>false</code> if there was a failed test or aborted suite in the context of the "run" lifecycle method it was returned from. For example,
-   * if you call <code>succeeds</code> on the return <code>Status</code> of <code>runTest</code>, it returns (after that test has completed) <code>true</code> if the
-   * test whose name was passed to <code>runTest</code> succeeded, <code>false</code> if that test failed (or the suite aborts). If you call
-   * <code>succeeds</code> on the return value of <code>runTests</code>, by contrast, it returns (after the suite's tests have completed) <code>true</code> only
-   * if all tests in the suite succeeded. If any test in the suite fails (or the whole suite aborts), the <code>succeeds</code> call will return <code>false</code>. 
-   * The <code>Status</code> returned from <code>runNestedSuites</code> will return true only if all tests in all nested suites (and their nested suites, etc.) fired
-   * off by that <code>runNestedSuites</code> call succeed and no suites abort. 
-   * Simlarly, the <code>Status</code> returned from <code>run</code> will return true only if all tests in all nested suites (and their nested suites, etc.) fired
-   * off by that <code>run</code> call succeed and no suites abort. 
+   * This only reports <code>false</code> if there was a failed test or aborted suite in the context of the "run" lifecycle method it was returned from.
+   * For example, if you call <code>succeeds</code> on the return <code>Status</code> of <code>runTest</code>, it returns (after that test has
+   * completed) <code>true</code> if the test whose name was passed to <code>runTest</code> succeeded, <code>false</code> if that test failed (or
+   * the suite aborts). If you call <code>succeeds</code> on the return value of <code>runTests</code>, by contrast, it returns (after the suite's
+   * tests have completed) <code>true</code> only if all tests in the suite succeeded. If any test in the suite fails (or the whole suite aborts),
+   * the <code>succeeds</code> call will return <code>false</code>. The <code>Status</code> returned from <code>runNestedSuites</code> will return
+   * true only if all tests in all nested suites (and their nested suites, etc.) fired off by that <code>runNestedSuites</code> call succeed and
+   * no suites abort. Simlarly, the <code>Status</code> returned from <code>run</code> will return true only if all tests in all nested suites
+   * (and their nested suites, etc.) fired off by that <code>run</code> call succeed and no suites abort. 
    * </p>
    *
    * <p>
-   * Note: because blocking is not possible on Scala.js, this method is not available on Scala.js.
+   * <em>Note: because blocking is not possible on Scala.js, this method is not available on Scala.js.</em>
    * </p>
    *
    * @return <code>true</code> if no tests failed and no suites aborted, <code>false</code> otherwise
+   * @throws Throwable if an exception occurred during the activity represented by this <code>Status</code> that was not reported
+   *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>, this
+   *            method will complete abruptly with that unreported exception after the <code>Status</code> has completed.
    */
   def succeeds(): Boolean
   // SKIP-SCALATESTJS-END
 
   /**
-   * Non-blocking call that indicates whether the all the tests or nested suites fired off by the run method that returned the <code>Status</code> have completed.
-   * Because this is non-blocking, you can use this to poll the completion status.
+   * Non-blocking call that indicates whether the all the tests or nested suites fired off by the run method that returned the
+   * <code>Status</code> have completed. Because this is non-blocking, you can use this to poll the completion status.
    * 
+   * <p>
+   * Note: this method will not indicate whether a test has failed, suite has aborted, or an unreported exception has been installed.
+   * It just indicates whether the <code>Status</code> has completed or not by returning <code>true</code> or <code>false</code>.
+   * </p>
+   *
    * @return <code>true</code> if the test or suite run is already completed, <code>false</code> otherwise.
    */
   def isCompleted: Boolean
@@ -73,43 +95,65 @@ sealed trait Status { thisStatus =>
   // TODO: Implement the functionality that waitUntilCompleted throws the unreported exception.
   // SKIP-SCALATESTJS-START
   /**
-   * Blocking call that returns only after the underlying test or suite is completed.
+   * Blocking call that returns only after the underlying test or suite is completed, completing abruptly with an exception
+   * if an unreported exception has been installed.
    *
    * <p>
-   * Note: because blocking is not possible on Scala.js, this method is not available on Scala.js.
+   * <em>Note: because blocking is not possible on Scala.js, this method is not available on Scala.js.</em>
    * </p>
+   *
+   * @throws Throwable if an exception occurred during the activity represented by this <code>Status</code> that was not reported
+   *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>, this
+   *            method will complete abruptly with that unreported exception after the <code>Status</code> has completed.
    */
   def waitUntilCompleted()
   // SKIP-SCALATESTJS-END
 
   /**
-   * Registers the passed function to be executed when this status completes.
+   * Registers the passed callback function to be executed when this status completes.
    *
    * <p>
    * If an unreported exception has been installed on this <code>Status</code>, the 
-   * <code>Try</code> passed will be a <code>Failure</code> containing that exception. Otherwise
+   * <code>Try</code> passed into the callback function will be a <code>Failure</code> containing that exception. Otherwise
    * the <code>Try</code> will be a <code>Success</code> containing true if no tests failed
-   * or suites completed during the activity represented by this <code>Status</code>.
+   * or suites completed during the activity represented by this <code>Status</code>, else <code>false</code>. 
    * </p>
    *
    * <p>
-   * You may register multiple functions, which on completion will be executed in an undefined
+   * You may register multiple callback functions, which on completion will be executed in an undefined
    * order.
    * </p>
+   *
+   * <p>
+   * The callback functions registered with <code>whenCompleted</code> will be executed <em>after</em> the <code>Status</code>
+   * has completed. If the <code>Status</code> has already completed, functions passed to this method will be
+   * executed immediately by the calling thread before returning.
+   * </p>
+   *
+   * <p>
+   * Any exception thrown by a callback function will be propagated back on the thread used to invoke the callback.
+   * </p>
+   *
+   * @param callback the callback function to execute once this <code>Status</code> has completed
    */
-  def whenCompleted(f: Try[Boolean] => Unit)
+  def whenCompleted(callback: Try[Boolean] => Unit)
 
    // Specify whether the passed by-name is executed after all after effects and
-   // or call backs have been executed.
+   // or call backs have been executed. Hmm. I think this one is used to fire events. So do
+   // we need to wait for that? One difference between this and withAfterEffect could be tht
+   // it ah, yes, so this happens after the darn ... yes I think this doesn't wait. So any
+   // exception thrown here won't be installed as an unreportedException. Reason is that
+   // the whole shebang has already completed?
   /**
    * Registers a <code>Status</code>-producing by-name function to execute after this
-   * <code>Status</code> completes.
+   * <code>Status</code> completes, returning a <code>Status</code> that mirrors the <code>Status</code>
+   * returned by the by-name.
    *
    * <p>
    * This method is used by async styles to ensure that by default, each subsequent test in an async-style
-   * suite begins execution * only after the previous test has completed. This method is <em>not</em> invoked if
-   * <code>ParallelTestExection</code> is mixed into an async style, allowing tests of the suite to execute
-   * in parallel.
+   * suite begins execution only after the previous test has completed. This method is <em>not</em> used if
+   * <code>ParallelTestExection</code> is mixed into an async style. Instead, tests are allowed to begin
+   * execution concurrently.
    * </p>
    *
    * <p>
@@ -120,9 +164,20 @@ sealed trait Status { thisStatus =>
    * be available immediately.
    * </p>
    *
+   *
+   * <p>
+   * If a by-name function passed to this method
+   * </p>
+   *
    * @param status A <code>Status</code>-producing by-name function to invoke after this <code>Status</code> has completed.
-   * @return a <code>Status </code> that represents the status of executing the by-name passed to this method.
+   * @return a <code>Status </code> that represents the status of executing the by-name function passed to this method.
    */
+/*
+ Same thing here. If it throws an exception that is reported as the unreportedException. When does this status
+ complete though? I think at that time it can complete no matter what happens underneath. Oh yes, that's ture
+  because the Status will never come back. If it is a test-aborting exception, it will be wrapped in ExecutionException,
+  and also the inner one will be allowed to propagate up the call stack.
+*/
   final def thenRun(f: => Status): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { _ =>
@@ -221,6 +276,14 @@ sealed trait Status { thisStatus =>
    * and <code>BeforeAndAfterEachTestData</code> to ensure "after" code is executed after
    * the relevant test completes, or the case of <code>BeforeAndAfterAll</code>, tests and nested suites complete.
    *  <code>BeforeAndAfterAll</code>, </p>
+   *
+   * So what's wierd about this one is that I have it returning Option[Throwable], because that
+   * was what I had in hand, but I need to specify what happens if the method throws an exception
+   * anyway, so maybe it should be thrown instead of optionally returned. Also, what
+   * happens if it is a test-aborting exception. I think what should happen is it shows up
+   * in the status as an unreportedException, but wrapped in an ExecutionException. This would
+   * simplify the thing. Then also what happens if it is that, is the inner exception, the real one
+   * is allowed to propagate up the call stack.
    */
   def withAfterEffect(f: => Option[Throwable]): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
@@ -584,6 +647,11 @@ final class StatefulStatus extends Status with Serializable {
   }
 }
 
+/*
+The tricky one here is what if multiple unreported exceptions exist in the inner statuses. For that
+I might pick the highest priority one? I.e., if there's a fatal one pick that? Nah, not really.
+Just pick a random one and printStackTrace the others? Sure why not.
+*/
 /**
  * Composite <code>Status</code> that aggregates its completion and failed states of set of other <code>Status</code>es passed to its constructor.
  *
