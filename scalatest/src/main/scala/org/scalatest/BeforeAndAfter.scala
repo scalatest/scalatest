@@ -192,13 +192,12 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
 
     var thrownException: Option[Throwable] = None
 
-    beforeFunctionAtomic.get match {
-      case Some(fun) => if (!args.runTestInNewInstance) fun()
-      case None =>
-    }
-
     val runTestStatus: Status =
       try {
+        beforeFunctionAtomic.get match {
+          case Some(fun) => if (!args.runTestInNewInstance) fun()
+          case None =>
+        }
         super.runTest(testName, args)
       }
       catch {
@@ -210,19 +209,19 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
     try {
       val statusToReturn: Status =
         if (!args.runTestInNewInstance) {
+          // Make sure that afterEach is called even if runTest completes abruptly.
           runTestStatus withAfterEffect {
             try {
               afterFunctionAtomic.get match {
                 case Some(fun) => fun()
                 case None =>
               }
-              None
             }
-            catch { 
-              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
-                Some(e)
+            catch {
+              case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) && thrownException.isDefined =>
+                // We will swallow the exception thrown from after if it is not test-aborting and exception was already thrown by before or test itself.
             }
-          } // Make sure that afterEach is called even if runTest completes abruptly.
+          }
         }
         else
           runTestStatus
@@ -234,7 +233,7 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
     }
     catch {
       case laterException: Exception =>
-        thrownException match { // If both run and afterAll throw an exception, report the test exception
+        thrownException match { // If both run and after throw an exception, report the test exception
           case Some(earlierException) => throw earlierException
           case None => throw laterException
         }

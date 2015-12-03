@@ -398,5 +398,26 @@ class BeforeAndAfterEachTestDataSuite extends FunSuite {
     assert(!a.afterAllCalled)
   }
   // SKIP-SCALATESTJS-END
+
+  test("Should run afterEach, but not tests if beforeEach completes abruptly") {
+
+    class MySuite extends FunSpec with BeforeAndAfterEachTestData {
+      var afterIsCalled = false
+      var testIsCalled = false
+      override def beforeEach(testData: TestData) { throw new NumberFormatException }
+      override def afterEach(testData: TestData) {
+        afterIsCalled = true
+      }
+      it("test July") {
+        testIsCalled = true
+      }
+    }
+    val a = new MySuite
+    assertThrows[NumberFormatException] {
+      a.run(Some("test July"), Args(StubReporter))
+    }
+    assert(a.afterIsCalled)
+    assert(!a.testIsCalled)
+  }
 }
 

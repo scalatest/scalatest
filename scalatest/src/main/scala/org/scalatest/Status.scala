@@ -17,8 +17,7 @@ package org.scalatest
 
 import scala.collection.GenSet
 import java.io.Serializable
-import scala.concurrent.Future
-import scala.concurrent.Promise
+import scala.concurrent.{ExecutionException, Future, Promise}
 import scala.util.{Try, Success, Failure}
 
 /**
@@ -181,17 +180,31 @@ sealed trait Status { thisStatus =>
   final def thenRun(f: => Status): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { _ =>
-      val innerStatus = f
-      innerStatus.whenCompleted { tri =>
-        tri match {
-          case Success(false) => 
-            returnedStatus.setFailed()
-          case Failure(ex) => 
-            returnedStatus.setFailed()
-            returnedStatus.setUnreportedException(ex)
-          case _ =>
+      try {
+        val innerStatus = f
+        innerStatus.whenCompleted { tri =>
+          tri match {
+            case Success(false) =>
+              returnedStatus.setFailed()
+            case Failure(ex) =>
+              returnedStatus.setFailed()
+              returnedStatus.setUnreportedException(ex)
+            case _ =>
+          }
+          returnedStatus.setCompleted()
         }
-        returnedStatus.setCompleted()
+      }
+      catch {
+        case ex: Throwable =>
+          if (Suite.anExceptionThatShouldCauseAnAbort(ex)) {
+            returnedStatus.setUnreportedException(new ExecutionException(ex))
+            returnedStatus.setCompleted()
+            throw ex
+          }
+          else {
+            returnedStatus.setUnreportedException(ex)
+            returnedStatus.setCompleted()
+          }
       }
     }
     returnedStatus
@@ -284,29 +297,40 @@ sealed trait Status { thisStatus =>
    * simplify the thing. Then also what happens if it is that, is the inner exception, the real one
    * is allowed to propagate up the call stack.
    */
-  def withAfterEffect(f: => Option[Throwable]): Status = {
+  def withAfterEffect(f: => Unit): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { tri =>
       tri match {
-        case Success(result) => 
-          f match {
-            case None =>
-              if (!result) returnedStatus.setFailed()
-              returnedStatus.setCompleted()
-            case Some(ex) =>
-              returnedStatus.setUnreportedException(ex)
-              returnedStatus.setCompleted()
+        case Success(result) =>
+          try {
+            f
+            if (!result) returnedStatus.setFailed()
           }
+          catch {
+            case ex: Throwable if Suite.anExceptionThatShouldCauseAnAbort(ex) =>
+              val execEx = new ExecutionException(ex)
+              returnedStatus.setUnreportedException(execEx)
+              throw ex
+
+            case ex: Throwable => returnedStatus.setUnreportedException(ex)
+          }
+          finally {
+            returnedStatus.setCompleted()
+          }
+
         case Failure(originalEx) =>
-          f match {
-            case None =>
+          try {
+            f
+            returnedStatus.setUnreportedException(originalEx)
+          }
+          catch {
+            case ex: Throwable =>
               returnedStatus.setUnreportedException(originalEx)
-              returnedStatus.setCompleted()
-            case Some(ex) =>
-              returnedStatus.setUnreportedException(originalEx)
-              println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:") 
+              println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
               ex.printStackTrace()
-              returnedStatus.setCompleted()
+          }
+          finally {
+            returnedStatus.setCompleted()
           }
       }
     }
@@ -408,7 +432,7 @@ case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisA
    * 
    * @return <code>true</code>
    */
-  def succeeds() = false
+  def succeeds() = throw ex
   // SKIP-SCALATESTJS-END
 
   /**
@@ -422,7 +446,7 @@ case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisA
   /**
    * Always returns immediately.
    */
-  def waitUntilCompleted() {}
+  def waitUntilCompleted(): Unit = throw ex
   // SKIP-SCALATESTJS-END
 
   /**
