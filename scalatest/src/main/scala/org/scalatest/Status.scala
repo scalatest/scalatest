@@ -180,17 +180,31 @@ sealed trait Status { thisStatus =>
   final def thenRun(f: => Status): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { _ =>
-      val innerStatus = f
-      innerStatus.whenCompleted { tri =>
-        tri match {
-          case Success(false) => 
-            returnedStatus.setFailed()
-          case Failure(ex) => 
-            returnedStatus.setFailed()
-            returnedStatus.setUnreportedException(ex)
-          case _ =>
+      try {
+        val innerStatus = f
+        innerStatus.whenCompleted { tri =>
+          tri match {
+            case Success(false) =>
+              returnedStatus.setFailed()
+            case Failure(ex) =>
+              returnedStatus.setFailed()
+              returnedStatus.setUnreportedException(ex)
+            case _ =>
+          }
+          returnedStatus.setCompleted()
         }
-        returnedStatus.setCompleted()
+      }
+      catch {
+        case ex: Throwable =>
+          if (Suite.anExceptionThatShouldCauseAnAbort(ex)) {
+            returnedStatus.setUnreportedException(new ExecutionException(ex))
+            returnedStatus.setCompleted()
+            throw ex
+          }
+          else {
+            returnedStatus.setUnreportedException(ex)
+            returnedStatus.setCompleted()
+          }
       }
     }
     returnedStatus
