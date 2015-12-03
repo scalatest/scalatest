@@ -144,7 +144,6 @@ class StatusSpec extends fixture.FunSpec {
         status.setCompleted()
       }
       assert(t == e)
-      println("###" + returnedStatus.isCompleted)
       assert(returnedStatus.unreportedException.isDefined)
       assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
       assert(returnedStatus.unreportedException.get.getCause == e)
