@@ -97,7 +97,96 @@ class StatusSpec extends fixture.FunSpec {
     it("should be serializable") { status =>
       SharedHelpers.serializeRoundtrip(status)
     }
+
+    it("waitUntilCompleted should throw unreportedException if set") { () =>
+      val status = new StatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setUnreportedException(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.waitUntilCompleted()
+      }
+      assert(e == t)
+    }
+    it("succeeds should throw unreportedException if set") { () =>
+      val status = new StatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setUnreportedException(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.succeeds
+      }
+      assert(e == t)
+    }
+    it("withAfterEffect should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
+      val status = new StatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val returnedStatus =
+        status.withAfterEffect {
+          throw e
+        }
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.setCompleted()
+      }
+      assert(t == e)
+      assert(returnedStatus.unreportedException.isDefined)
+      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
+      assert(returnedStatus.unreportedException.get.getCause == e)
+    }
+    it("thenRun should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
+      val status = new StatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val returnedStatus =
+        status.thenRun {
+          throw e
+        }
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.setCompleted()
+      }
+      assert(t == e)
+      println("###" + returnedStatus.isCompleted)
+      assert(returnedStatus.unreportedException.isDefined)
+      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
+      assert(returnedStatus.unreportedException.get.getCause == e)
+    }
+
     // SKIP-SCALATESTJS-END
+
+    it("toFuture should return Future[Boolean] that will be complete later and has correct value of Option[Try[Boolean]]") { () =>
+      val status1 = new StatefulStatus
+      val future1 = status1.toFuture
+      assert(status1.unreportedException == None)
+      assert(!future1.isCompleted)
+      assert(future1.value == None)
+      status1.setCompleted()
+      assert(status1.unreportedException == None)
+      assert(future1.isCompleted)
+      assert(future1.value == Some(Success(true)))
+
+      val status2 = new StatefulStatus
+      val future2 = status2.toFuture
+      assert(status2.unreportedException == None)
+      assert(!future2.isCompleted)
+      assert(future2.value == None)
+      status2.setFailed()
+      status2.setCompleted()
+      assert(status2.unreportedException == None)
+      assert(future2.isCompleted)
+      assert(future2.value == Some(Success(false)))
+
+      val status3 = new StatefulStatus
+      val future3 = status3.toFuture
+      assert(status3.unreportedException == None)
+      assert(!future3.isCompleted)
+      assert(future3.value == None)
+      status3.setFailed()
+      val e = new IllegalArgumentException("test")
+      status3.setUnreportedException(e)
+      status3.setCompleted()
+      assert(status3.unreportedException == Some(e))
+      assert(future3.isCompleted)
+      assert(future3.value == Some(Failure(e)))
+    }
   }
 
   describe("SucceededStatus ") {
@@ -431,95 +520,6 @@ class StatusSpec extends fixture.FunSpec {
         status.setCompleted()
       }
       assert(t == e)
-      assert(returnedStatus.unreportedException.isDefined)
-      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
-      assert(returnedStatus.unreportedException.get.getCause == e)
-    }
-  }
-
-  describe("StatefulStatus") {
-    it("toFuture should return Future[Boolean] that will be complete later and has correct value of Option[Try[Boolean]]") { () =>
-      val status1 = new StatefulStatus
-      val future1 = status1.toFuture
-      assert(status1.unreportedException == None)
-      assert(!future1.isCompleted)
-      assert(future1.value == None)
-      status1.setCompleted()
-      assert(status1.unreportedException == None)
-      assert(future1.isCompleted)
-      assert(future1.value == Some(Success(true)))
-
-      val status2 = new StatefulStatus
-      val future2 = status2.toFuture
-      assert(status2.unreportedException == None)
-      assert(!future2.isCompleted)
-      assert(future2.value == None)
-      status2.setFailed()
-      status2.setCompleted()
-      assert(status2.unreportedException == None)
-      assert(future2.isCompleted)
-      assert(future2.value == Some(Success(false)))
-
-      val status3 = new StatefulStatus
-      val future3 = status3.toFuture
-      assert(status3.unreportedException == None)
-      assert(!future3.isCompleted)
-      assert(future3.value == None)
-      status3.setFailed()
-      val e = new IllegalArgumentException("test")
-      status3.setUnreportedException(e)
-      status3.setCompleted()
-      assert(status3.unreportedException == Some(e))
-      assert(future3.isCompleted)
-      assert(future3.value == Some(Failure(e)))
-    }
-    it("waitUntilCompleted should throw unreportedException if set") { () =>
-      val status = new StatefulStatus
-      val e = new IllegalArgumentException("test")
-      status.setUnreportedException(e)
-      status.setCompleted()
-      val t = intercept[IllegalArgumentException] {
-        status.waitUntilCompleted()
-      }
-      assert(e == t)
-    }
-    it("succeeds should throw unreportedException if set") { () =>
-      val status = new StatefulStatus
-      val e = new IllegalArgumentException("test")
-      status.setUnreportedException(e)
-      status.setCompleted()
-      val t = intercept[IllegalArgumentException] {
-        status.succeeds
-      }
-      assert(e == t)
-    }
-    it("withAfterEffect should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
-      val status = new StatefulStatus
-      val e = new java.lang.annotation.AnnotationFormatError("test")
-      val returnedStatus =
-        status.withAfterEffect {
-          throw e
-        }
-      val t = intercept[java.lang.annotation.AnnotationFormatError] {
-        status.setCompleted()
-      }
-      assert(t == e)
-      assert(returnedStatus.unreportedException.isDefined)
-      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
-      assert(returnedStatus.unreportedException.get.getCause == e)
-    }
-    it("thenRun should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
-      val status = new StatefulStatus
-      val e = new java.lang.annotation.AnnotationFormatError("test")
-      val returnedStatus =
-        status.thenRun {
-          throw e
-        }
-      val t = intercept[java.lang.annotation.AnnotationFormatError] {
-        status.setCompleted()
-      }
-      assert(t == e)
-      println("###" + returnedStatus.isCompleted)
       assert(returnedStatus.unreportedException.isDefined)
       assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
       assert(returnedStatus.unreportedException.get.getCause == e)
