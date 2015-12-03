@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import scala.concurrent.ExecutionException
 import scala.util.{Failure, Success}
 
 class StatusSpec extends fixture.FunSpec {
@@ -371,6 +372,21 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(e == t)
     }
+    it("withAfterEffect should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
+      val status = new ScalaTestStatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val returnedStatus =
+        status.withAfterEffect {
+          throw e
+        }
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.setCompleted()
+      }
+      assert(t == e)
+      assert(returnedStatus.unreportedException.isDefined)
+      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
+      assert(returnedStatus.unreportedException.get.getCause == e)
+    }
   }
 
   describe("StatefulStatus") {
@@ -428,6 +444,21 @@ class StatusSpec extends fixture.FunSpec {
         status.succeeds
       }
       assert(e == t)
+    }
+    it("withAfterEffect should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
+      val status = new StatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val returnedStatus =
+        status.withAfterEffect {
+          throw e
+        }
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.setCompleted()
+      }
+      assert(t == e)
+      assert(returnedStatus.unreportedException.isDefined)
+      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
+      assert(returnedStatus.unreportedException.get.getCause == e)
     }
   }
 }
