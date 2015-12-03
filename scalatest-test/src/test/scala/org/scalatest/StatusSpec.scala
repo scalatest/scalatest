@@ -234,6 +234,24 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Failure(e)))
     }
 
+    it("waitUntilCompleted should throw unreportedException if set") { () =>
+      val e = new IllegalArgumentException("test")
+      val status = new AbortedStatus(e)
+      val t = intercept[IllegalArgumentException] {
+        status.waitUntilCompleted()
+      }
+      assert(e == t)
+    }
+
+    it("succeeds should throw unreportedException if set") { () =>
+      val e = new IllegalArgumentException("test")
+      val status = new AbortedStatus(e)
+      val t = intercept[IllegalArgumentException] {
+        status.succeeds
+      }
+      assert(e == t)
+    }
+
   }
 
   describe("CompositeStatus ") {

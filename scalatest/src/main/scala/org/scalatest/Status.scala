@@ -408,7 +408,7 @@ case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisA
    * 
    * @return <code>true</code>
    */
-  def succeeds() = false
+  def succeeds() = throw ex
   // SKIP-SCALATESTJS-END
 
   /**
@@ -422,7 +422,7 @@ case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisA
   /**
    * Always returns immediately.
    */
-  def waitUntilCompleted() {}
+  def waitUntilCompleted(): Unit = throw ex
   // SKIP-SCALATESTJS-END
 
   /**
