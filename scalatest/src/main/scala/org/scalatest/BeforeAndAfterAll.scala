@@ -206,18 +206,46 @@ trait BeforeAndAfterAll extends SuiteMixin { this: Suite =>
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed .
   */
   abstract override def run(testName: Option[String], args: Args): Status = {
-    if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
-      beforeAll()
-
     val (runStatus, thrownException) =
       try {
+        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
+          beforeAll()
         (super.run(testName, args), None)
       }
       catch {
         case e: Exception => (FailedStatus, Some(e))
       }
 
-    thrownException match {
+    try {
+      val statusToReturn =
+        if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
+          // runStatus may not be completed, call afterAll only after it is completed
+          runStatus withAfterEffect {
+            try {
+             afterAll()
+            }
+            catch {
+              case laterException: Exception if !Suite.anExceptionThatShouldCauseAnAbort(laterException) && thrownException.isDefined =>
+              // We will swallow the exception thrown from after if it is not test-aborting and exception was already thrown by before or test itself.
+            }
+          }
+        }
+        else runStatus
+      thrownException match {
+        case Some(e) => throw e
+        case None =>
+      }
+      statusToReturn
+    }
+    catch {
+      case laterException: Exception =>
+        thrownException match { // If both before/run and after throw an exception, report the earlier exception
+          case Some(earlierException) => throw earlierException
+          case None => throw laterException
+        }
+    }
+
+    /*thrownException match {
       case Some(earlierException) =>
         try {
           if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected))
@@ -234,21 +262,17 @@ trait BeforeAndAfterAll extends SuiteMixin { this: Suite =>
       case None =>
         if (!args.runTestInNewInstance && (expectedTestCount(args.filter) > 0 || invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected)) {
           // runStatus may not be completed, call afterAll only after it is completed
-          runStatus withAfterEffect {
+          runStatus withAfterEffectNew {
             try {
               afterAll()
-              None
             }
             catch {
-              case laterException: Exception =>
-                thrownException match { // If both run and afterAll throw an exception, report the test exception
-                  case None => Some(laterException)
-                  case someEarlierException => someEarlierException
-                }
+              case laterException: Exception if !Suite.anExceptionThatShouldCauseAnAbort(laterException) && thrownException.isDefined =>
+                // We will swallow the exception thrown from after if it is not test-aborting and exception it already thrown by before or test itself.
             }
           }
         }
         else runStatus
-    }
+    }*/
   }
 }

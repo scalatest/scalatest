@@ -143,6 +143,27 @@ class BeforeAndAfterSuite extends FunSuite {
     import OptionValues._
     assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
+
+  test("If before completes abruptly super.runTest returns will not be executed, but after will be executed") {
+
+    class MySuite extends FunSpec with BeforeAndAfter {
+      var afterIsCalled = false
+      var testIsCalled = false
+      before { throw new NumberFormatException }
+      after {
+        afterIsCalled = true
+      }
+      it("test July") {
+        testIsCalled = true
+      }
+    }
+    val a = new MySuite
+    assertThrows[NumberFormatException] {
+      a.run(Some("test July"), Args(StubReporter))
+    }
+    assert(a.afterIsCalled)
+    assert(!a.testIsCalled)
+  }
  
   // test exceptions with run
   test("If before is called twice, the second invocation should produce NotAllowedException") {

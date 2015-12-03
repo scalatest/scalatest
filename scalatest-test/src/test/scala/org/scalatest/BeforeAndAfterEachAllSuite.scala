@@ -274,6 +274,31 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     import OptionValues._
     assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
   }
+
+  test("If beforeAll completes abruptly, no test will be executed, but afterAll will be executed") {
+
+    class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
+      var afterAllIsCalled = false
+      var test1IsCalled = false
+      var test2IsCalled = false
+      var test3IsCalled = false
+
+      override def beforeAll() { throw new NumberFormatException }
+      override def afterAll() { afterAllIsCalled = true }
+
+      it("test 1") { test1IsCalled = true }
+      it("test 2") { test2IsCalled = true }
+      it("test 3") { test3IsCalled = true }
+    }
+    val a = new MySuite
+    assertThrows[NumberFormatException] {
+      a.run(Some("test July"), Args(StubReporter))
+    }
+    assert(a.afterAllIsCalled)
+    assert(!a.test1IsCalled)
+    assert(!a.test2IsCalled)
+    assert(!a.test3IsCalled)
+  }
 }
 
 class BeforeAndAfterEachAllExtendingSuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {

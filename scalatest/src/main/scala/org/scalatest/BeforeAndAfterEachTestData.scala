@@ -188,9 +188,9 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
 
     var thrownException: Option[Throwable] = None
 
-    if (!args.runTestInNewInstance) beforeEach(testDataFor(testName, args.configMap))
     val runTestStatus: Status =
       try {
+        if (!args.runTestInNewInstance) beforeEach(testDataFor(testName, args.configMap))
         super.runTest(testName, args)
       }
       catch {
@@ -205,11 +205,10 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
           runTestStatus withAfterEffect {
             try {
               afterEach(testDataFor(testName, args.configMap))
-              None
             }
             catch { 
-              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
-                Some(e)
+              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) && thrownException.isDefined =>
+                // We will swallow the exception thrown from afterEach if it is not test-aborting and exception was already thrown by beforeEach or test itself.
             }
           } // Make sure that afterEach is called even if runTest completes abruptly.
         }

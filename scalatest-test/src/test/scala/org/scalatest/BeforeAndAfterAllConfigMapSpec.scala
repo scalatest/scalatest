@@ -411,5 +411,30 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       import OptionValues._
       assert(status.unreportedException.value.isInstanceOf[NumberFormatException])
     }
+
+    it("should, ff beforeAll completes abruptly, no test will be executed, but afterAll will be executed") {
+
+      class MySuite extends FunSpec with BeforeAndAfterAllConfigMap {
+        var afterAllIsCalled = false
+        var test1IsCalled = false
+        var test2IsCalled = false
+        var test3IsCalled = false
+
+        override def beforeAll(configMap: ConfigMap) { throw new NumberFormatException }
+        override def afterAll(configMap: ConfigMap) { afterAllIsCalled = true }
+
+        it("test 1") { test1IsCalled = true }
+        it("test 2") { test2IsCalled = true }
+        it("test 3") { test3IsCalled = true }
+      }
+      val a = new MySuite
+      assertThrows[NumberFormatException] {
+        a.run(Some("test July"), Args(StubReporter))
+      }
+      assert(a.afterAllIsCalled)
+      assert(!a.test1IsCalled)
+      assert(!a.test2IsCalled)
+      assert(!a.test3IsCalled)
+    }
   }
 }
