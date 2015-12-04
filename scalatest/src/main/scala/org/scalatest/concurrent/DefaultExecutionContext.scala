@@ -15,31 +15,32 @@
  */
 package org.scalatest.concurrent
 
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
+import scala.concurrent.ExecutionContext
 import java.util.concurrent.Executors
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.ThreadFactory
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit
 
 class DefaultExecutionContext extends ExecutionContext {
 
-  val execSvc: ExecutorService = Executors.newFixedThreadPool(1, Executors.defaultThreadFactory)
-  private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]
+  /*val execSvc: ExecutorService = Executors.newFixedThreadPool(1, Executors.defaultThreadFactory)
+  private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]*/
+
+  val executor = Executors.newSingleThreadScheduledExecutor()
 
   def execute(runnable: Runnable): Unit = {
-    val future: Future[_] = execSvc.submit(runnable)
-    futureQueue.put(future)
+    executor.schedule(new Runnable {
+      def run(): Unit = {
+        try {
+          runnable.run()
+        }
+        catch {
+          case t: Throwable => reportFailure(t)
+        }
+      }
+    }, 0L, TimeUnit.SECONDS)
   }
 
   def reportFailure(t: Throwable): Unit =
     t.printStackTrace()
-
-  // Do we need this?  probably not for now..
-  /*def waitUntilDone() {
-    while (futureQueue.peek != null)
-      futureQueue.poll().get()
-  }*/
 
 }
 

@@ -192,7 +192,7 @@ class AsyncFunSuiteLikeSpec2 extends org.scalatest.AsyncFunSpec {
       @volatile var count = 0
 
       class ExampleSuite extends AsyncFunSuiteLike {
-        
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
