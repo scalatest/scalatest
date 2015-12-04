@@ -20,7 +20,6 @@ import org.scalatest._
 import DbServer._
 import java.util.UUID.randomUUID
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 
 object DbServer { // Simulating a database server
   type Db = StringBuffer
@@ -56,8 +55,6 @@ trait DbFixture { this: fixture.AsyncSuite =>
 }
 
 class ExampleSuite extends fixture.AsyncFunSuite with DbFixture {
-
-  implicit val executionContext = ExecutionContext.Implicits.global
 
   override def populateDb(db: Db) { // setup the fixture
     db.append("ScalaTest is ")

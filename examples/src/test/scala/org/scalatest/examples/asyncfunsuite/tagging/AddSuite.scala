@@ -22,11 +22,8 @@ object DbTest extends Tag("com.mycompany.tags.DbTest")
 import org.scalatest.AsyncFunSuite
 import org.scalatest.tagobjects.Slow
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 
 class AddSuite extends AsyncFunSuite {
-
-  implicit val executionContext = ExecutionContext.Implicits.global
 
   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
 

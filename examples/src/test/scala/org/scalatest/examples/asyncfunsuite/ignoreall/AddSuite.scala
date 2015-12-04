@@ -17,13 +17,10 @@ package org.scalatest.examples.asyncfunsuite.ignoreall
 
 import org.scalatest.AsyncFunSuite
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 import org.scalatest.Ignore
 
 @Ignore
 class AddSuite extends AsyncFunSuite {
-
-  implicit val executionContext = ExecutionContext.Implicits.global
 
   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
 

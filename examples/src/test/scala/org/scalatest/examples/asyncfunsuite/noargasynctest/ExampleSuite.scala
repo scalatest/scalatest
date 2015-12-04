@@ -18,11 +18,8 @@ package org.scalatest.examples.asyncfunsuite.noargasynctest
 import java.io.File
 import org.scalatest._
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 
 class ExampleSuite extends AsyncFunSuite {
-
-  implicit val executionContext = ExecutionContext.Implicits.global
 
   override def withAsyncFixture(test: NoArgAsyncTest) = {
 

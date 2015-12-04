@@ -57,12 +57,8 @@ class StringActor { // Simulating an actor
 import org.scalatest._
 import DbServer._
 import java.util.UUID.randomUUID
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 
 class ExampleSuite extends AsyncFunSuite {
-
-  implicit val executionContext = ExecutionContext.Implicits.global
 
   def withDatabase(testCode: Future[Db] => Future[Assertion]) = {
     val dbName = randomUUID.toString // generate a unique db name

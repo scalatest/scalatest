@@ -44,8 +44,6 @@ class StringActor { // Simulating an actor
 
 class ExampleSuite extends AsyncFunSuite with BeforeAndAfter {
 
-  implicit val executionContext = ExecutionContext.Implicits.global
-
   final val actor = new StringActor
 
   before {

@@ -43,8 +43,6 @@ class StringActor { // Simulating an actor
 
 class ExampleSuite extends fixture.AsyncFunSuite {
 
-  implicit val executionContext = ExecutionContext.Implicits.global
-
   type FixtureParam = StringActor
 
   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {

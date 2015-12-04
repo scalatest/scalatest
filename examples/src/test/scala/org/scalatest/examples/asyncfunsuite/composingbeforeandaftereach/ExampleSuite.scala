@@ -84,8 +84,6 @@ trait Buffer extends BeforeAndAfterEach { this: Suite =>
 
 class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
 
-  implicit val executionContext = ExecutionContext.Implicits.global
-
   test("Testing should be easy") {
     builderActor ! Append("easy!")
     val futureString = builderActor ? GetValue

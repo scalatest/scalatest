@@ -19,7 +19,7 @@ import scala.concurrent.ExecutionContext
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class DefaultExecutionContext extends ExecutionContext {
+private[scalatest] class DefaultExecutionContext extends ExecutionContext {
 
   /*val execSvc: ExecutorService = Executors.newFixedThreadPool(1, Executors.defaultThreadFactory)
   private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]*/

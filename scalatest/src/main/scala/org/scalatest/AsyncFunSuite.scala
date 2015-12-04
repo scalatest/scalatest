@@ -34,11 +34,8 @@ package org.scalatest
 
  * import org.scalatest.AsyncFunSuite
  * import scala.concurrent.Future
- * import scala.concurrent.ExecutionContext
  *
  * class AddSuite extends AsyncFunSuite {
- *
- *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *
@@ -321,11 +318,8 @@ package org.scalatest
  *
  * import org.scalatest.AsyncFunSuite
  * import scala.concurrent.Future
- * import scala.concurrent.ExecutionContext
  *
  * class AddSuite extends AsyncFunSuite {
- *
- *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *
@@ -374,13 +368,10 @@ package org.scalatest
  *
  * import org.scalatest.AsyncFunSuite
  * import scala.concurrent.Future
- * import scala.concurrent.ExecutionContext
  * import org.scalatest.Ignore
  *
  * @Ignore
  * class AddSuite extends AsyncFunSuite {
- *
- *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *
@@ -453,11 +444,8 @@ package org.scalatest
  *
  * import org.scalatest.AsyncFunSuite
  * import scala.concurrent.Future
- * import scala.concurrent.ExecutionContext
  *
  * class AddSuite extends AsyncFunSuite {
- *
- *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *
@@ -546,11 +534,8 @@ package org.scalatest
  * import org.scalatest.AsyncFunSuite
  * import org.scalatest.tagobjects.Slow
  * import scala.concurrent.Future
- * import scala.concurrent.ExecutionContext
  *
  * class AddSuite extends AsyncFunSuite {
- *
- *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *
@@ -730,11 +715,8 @@ package org.scalatest
  * import org.scalatest.AsyncFunSuite
  * import collection.mutable.ListBuffer
  * import scala.concurrent.Future
- * import scala.concurrent.ExecutionContext
  *
  * class ExampleSuite extends AsyncFunSuite {
- *
- *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   def fixture: Future[String] = Future { "ScalaTest is " }
  *
@@ -850,11 +832,8 @@ package org.scalatest
  * import java.io.File
  * import org.scalatest._
  * import scala.concurrent.Future
- * import scala.concurrent.ExecutionContext
  *
  * class ExampleSuite extends AsyncFunSuite {
- *
- *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   override def withAsyncFixture(test: NoArgAsyncTest) = {
  *
@@ -990,12 +969,8 @@ package org.scalatest
  * import org.scalatest._
  * import DbServer._
  * import java.util.UUID.randomUUID
- * import scala.concurrent.Future
- * import scala.concurrent.ExecutionContext
  *
  * class ExampleSuite extends AsyncFunSuite {
- *
- *   implicit val executionContext = ExecutionContext.Implicits.global
  *
  *   def withDatabase(testCode: Future[Db] =&gt; Future[Assertion]) = {
  *     val dbName = randomUUID.toString // generate a unique db name
@@ -1134,8 +1109,6 @@ package org.scalatest
  * 
  * class ExampleSuite extends fixture.AsyncFunSuite {
  * 
- *   implicit val executionContext = ExecutionContext.Implicits.global
- * 
  *   type FixtureParam = StringActor
  * 
  *   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
@@ -1217,8 +1190,6 @@ package org.scalatest
  * 
  * class ExampleSuite extends AsyncFunSuite with BeforeAndAfter {
  * 
- *   implicit val executionContext = ExecutionContext.Implicits.global
- * 
  *   final val actor = new StringActor
  * 
  *   before {
@@ -1276,7 +1247,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.asyncfunsuite.composingwithfixture
+ * package org.scalatest.examples.asyncfunsuite.composingwithasyncfixture
  * 
  * import org.scalatest._
  * import org.scalatest.SuiteMixin
@@ -1348,8 +1319,6 @@ package org.scalatest
  * }
  * 
  * class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
- * 
- *   implicit val executionContext = ExecutionContext.Implicits.global
  * 
  *   test("Testing should be easy") {
  *     builderActor ! Append("easy!")
@@ -1479,8 +1448,6 @@ package org.scalatest
  * }
  * 
  * class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
- * 
- *   implicit val executionContext = ExecutionContext.Implicits.global
  * 
  *   test("Testing should be easy") {
  *     builderActor ! Append("easy!")
@@ -1712,8 +1679,6 @@ package org.scalatest
  * 
  *   val Max = 10
  *   val LastValuePushed = Max - 1
- * 
- *   implicit val executionContext = ExecutionContext.Implicits.global
  * 
  *   // Stack fixture creation methods
  *   val emptyStackActorName = "empty stack actor"

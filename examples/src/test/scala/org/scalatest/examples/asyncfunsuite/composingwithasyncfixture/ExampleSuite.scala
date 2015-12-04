@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.examples.asyncfunsuite.composingwithfixture
+package org.scalatest.examples.asyncfunsuite.composingwithasyncfixture
 
 import org.scalatest._
 import org.scalatest.SuiteMixin
@@ -85,8 +85,6 @@ trait Buffer extends AsyncSuiteMixin { this: AsyncSuite =>
 }
 
 class ExampleSuite extends AsyncFunSuite with Builder with Buffer {
-
-  implicit val executionContext = ExecutionContext.Implicits.global
 
   test("Testing should be easy") {
     builderActor ! Append("easy!")

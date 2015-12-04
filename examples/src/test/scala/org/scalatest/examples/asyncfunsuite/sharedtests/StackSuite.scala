@@ -143,8 +143,6 @@ class StackSuite extends AsyncFunSuite with AsyncFunSuiteStackBehaviors {
   val Max = 10
   val LastValuePushed = Max - 1
 
-  implicit val executionContext = ExecutionContext.Implicits.global
-
   // Stack fixture creation methods
   val emptyStackActorName = "empty stack actor"
   def emptyStackActor = new StackActor[Int](Max, emptyStackActorName )

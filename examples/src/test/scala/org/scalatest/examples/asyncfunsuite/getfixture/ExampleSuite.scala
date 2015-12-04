@@ -18,11 +18,8 @@ package org.scalatest.examples.asyncfunsuite.getfixture
 import org.scalatest.AsyncFunSuite
 import collection.mutable.ListBuffer
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 
 class ExampleSuite extends AsyncFunSuite {
-
-  implicit val executionContext = ExecutionContext.Implicits.global
 
   def fixture: Future[String] = Future { "ScalaTest is " }
 
