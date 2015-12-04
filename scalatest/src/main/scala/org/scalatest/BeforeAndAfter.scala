@@ -190,6 +190,7 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
   */
   abstract protected override def runTest(testName: String, args: Args): Status = {
 
+    // Do I need to make this volatile?
     var thrownException: Option[Throwable] = None
 
     val runTestStatus: Status =
@@ -203,7 +204,8 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
       catch {
         case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
           thrownException = Some(e)
-          FailedStatus
+          FailedStatus // I think if this happens, we just want to try the after code, swallowing exceptions, right here. No
+                       // need to do it asynchronously. I suspect that would simplify the code.
       }
     // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
     try {

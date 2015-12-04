@@ -106,7 +106,7 @@ class StatusSpec extends fixture.FunSpec {
       val t = intercept[IllegalArgumentException] {
         status.waitUntilCompleted()
       }
-      assert(e == t)
+      assert(e eq t)
     }
     it("succeeds should throw unreportedException if set") { () =>
       val status = new StatefulStatus
@@ -116,9 +116,9 @@ class StatusSpec extends fixture.FunSpec {
       val t = intercept[IllegalArgumentException] {
         status.succeeds
       }
-      assert(e == t)
+      assert(e eq t)
     }
-    it("withAfterEffect should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
+    it("withAfterEffect should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
       val status = new StatefulStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
       val returnedStatus =
@@ -126,14 +126,14 @@ class StatusSpec extends fixture.FunSpec {
           throw e
         }
       val t = intercept[java.lang.annotation.AnnotationFormatError] {
-        status.setCompleted()
+        status.setCompleted() // StatefulStatus.setCompleted() executes the callbacks on the calling thread
       }
-      assert(t == e)
+      assert(t eq e)
       assert(returnedStatus.unreportedException.isDefined)
       assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
-      assert(returnedStatus.unreportedException.get.getCause == e)
+      assert(returnedStatus.unreportedException.get.getCause eq e)
     }
-    it("thenRun should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
+    it("thenRun should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
       val status = new StatefulStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
       val returnedStatus =
@@ -141,12 +141,12 @@ class StatusSpec extends fixture.FunSpec {
           throw e
         }
       val t = intercept[java.lang.annotation.AnnotationFormatError] {
-        status.setCompleted()
+        status.setCompleted() // StatefulStatus.setCompleted() executes the callbacks on the calling thread
       }
-      assert(t == e)
+      assert(t eq e)
       assert(returnedStatus.unreportedException.isDefined)
       assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
-      assert(returnedStatus.unreportedException.get.getCause == e)
+      assert(returnedStatus.unreportedException.get.getCause eq e)
     }
 
     // SKIP-SCALATESTJS-END
@@ -249,7 +249,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Success(true)))
     }
 
-    it("thenRun should propagate the AnnotationFormatError thrown in thenRun code") { () =>
+    it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = SucceededStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
       val t = intercept[java.lang.annotation.AnnotationFormatError] {
@@ -257,7 +257,7 @@ class StatusSpec extends fixture.FunSpec {
           throw e
         }
       }
-      assert(t == e)
+      assert(t eq e)
     }
   }
 
@@ -322,7 +322,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Success(false)))
     }
 
-    it("thenRun should propagate the AnnotationFormatError thrown in thenRun code") { () =>
+    it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = FailedStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
       val t = intercept[java.lang.annotation.AnnotationFormatError] {
@@ -330,7 +330,7 @@ class StatusSpec extends fixture.FunSpec {
           throw e
         }
       }
-      assert(t == e)
+      assert(t eq e)
     }
   }
 
@@ -345,25 +345,25 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Failure(e)))
     }
 
-    it("waitUntilCompleted should throw unreportedException if set") { () =>
+    it("waitUntilCompleted should throw unreportedException") { () =>
       val e = new IllegalArgumentException("test")
       val status = new AbortedStatus(e)
       val t = intercept[IllegalArgumentException] {
         status.waitUntilCompleted()
       }
-      assert(e == t)
+      assert(e eq t)
     }
 
-    it("succeeds should throw unreportedException if set") { () =>
+    it("succeeds should throw unreportedException") { () =>
       val e = new IllegalArgumentException("test")
       val status = new AbortedStatus(e)
       val t = intercept[IllegalArgumentException] {
         status.succeeds
       }
-      assert(e == t)
+      assert(e eq t)
     }
 
-    it("thenRun should propagate the AnnotationFormatError thrown in thenRun code") { () =>
+    it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = AbortedStatus(new IllegalArgumentException("test"))
       val e = new java.lang.annotation.AnnotationFormatError("test")
       val t = intercept[java.lang.annotation.AnnotationFormatError] {
@@ -371,9 +371,8 @@ class StatusSpec extends fixture.FunSpec {
           throw e
         }
       }
-      assert(t == e)
+      assert(t eq e)
     }
-
   }
 
   describe("CompositeStatus ") {
@@ -481,7 +480,7 @@ class StatusSpec extends fixture.FunSpec {
       val t = intercept[IllegalArgumentException] {
         status.waitUntilCompleted()
       }
-      assert(e == t)
+      assert(e eq t)
     }
     it("succeeds should throw unreportedException if set") { () =>
       val status = new ScalaTestStatefulStatus
@@ -491,9 +490,9 @@ class StatusSpec extends fixture.FunSpec {
       val t = intercept[IllegalArgumentException] {
         status.succeeds
       }
-      assert(e == t)
+      assert(e eq t)
     }
-    it("withAfterEffect should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
+    it("withAfterEffect should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
       val status = new ScalaTestStatefulStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
       val returnedStatus =
@@ -503,12 +502,12 @@ class StatusSpec extends fixture.FunSpec {
       val t = intercept[java.lang.annotation.AnnotationFormatError] {
         status.setCompleted()
       }
-      assert(t == e)
+      assert(t eq e)
       assert(returnedStatus.unreportedException.isDefined)
       assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
-      assert(returnedStatus.unreportedException.get.getCause == e)
+      assert(returnedStatus.unreportedException.get.getCause eq e)
     }
-    it("thenRun should wrap AnnotationFormatError in ExecutionException before setting it as unreportedException, and rethrow the original AnnotationFormatError") { () =>
+    it("thenRun should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
       val status = new ScalaTestStatefulStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
       val returnedStatus =
@@ -518,10 +517,10 @@ class StatusSpec extends fixture.FunSpec {
       val t = intercept[java.lang.annotation.AnnotationFormatError] {
         status.setCompleted()
       }
-      assert(t == e)
+      assert(t eq e)
       assert(returnedStatus.unreportedException.isDefined)
       assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
-      assert(returnedStatus.unreportedException.get.getCause == e)
+      assert(returnedStatus.unreportedException.get.getCause eq e)
     }
   }
 }

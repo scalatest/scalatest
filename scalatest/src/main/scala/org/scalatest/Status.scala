@@ -297,7 +297,7 @@ sealed trait Status { thisStatus =>
    * simplify the thing. Then also what happens if it is that, is the inner exception, the real one
    * is allowed to propagate up the call stack.
    */
-  def withAfterEffect(f: => Unit): Status = {
+  final def withAfterEffect(f: => Unit): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { tri =>
       tri match {
@@ -424,9 +424,12 @@ object FailedStatus extends Status with Serializable {
   def whenCompleted(f: Try[Boolean] => Unit) { f(Success(false)) }
 }
 
+// TODO: Indicate this is by definition complet when it is constructed. Search also where it is used
+// to make sure we really want it.
 case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisAbortedStatus =>
 
   // SKIP-SCALATESTJS-START
+// TODO: Document that it always completes abruptly with probably call ex val unreportedException
   /**
    * Always returns <code>false</code>.
    * 
@@ -514,6 +517,8 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     }
   }
 
+  // TODO: Specify that this method invokes the callbacks on the invoking thread after it releases the lock
+  // such that the Status has completed.
   def setCompleted() {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
