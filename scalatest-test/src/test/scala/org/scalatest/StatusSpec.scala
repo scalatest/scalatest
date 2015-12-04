@@ -190,24 +190,6 @@ class StatusSpec extends fixture.FunSpec {
 
   describe("SucceededStatus ") {
 
-    it("should invoke a function registered with whenCompleted, passing a succeeded value") { () =>
-
-      @volatile var callbackInvoked = false
-      @volatile var succeeded = false
-
-      val status = SucceededStatus
-
-      // register callback
-      status.whenCompleted { st =>
-        callbackInvoked = true
-        succeeded = (st == Success(true))
-      }
-
-      // ensure it was executed
-      assert(callbackInvoked)
-      assert(succeeded === true)
-    }
-
     it("should invoke multiple functions registered with whenCompleted, passing a succeeded value") { () =>
       // register two callbacks
       // ensure neither was executed yet
@@ -262,24 +244,6 @@ class StatusSpec extends fixture.FunSpec {
   }
 
   describe("FailedStatus ") {
-
-    it("should invoke a function registered with whenCompleted, passing a failed value") { () =>
-
-      @volatile var callbackInvoked = false
-      @volatile var succeeded = true
-
-      val status = FailedStatus
-
-      // register callback
-      status.whenCompleted { st =>
-        callbackInvoked = true
-        succeeded = (st == Success(true))
-      }
-
-      // ensure it was executed
-      assert(callbackInvoked)
-      assert(succeeded === false)
-    }
 
     it("should invoke multiple functions registered with whenCompleted, passing a failed value") { () =>
       // register two callbacks
