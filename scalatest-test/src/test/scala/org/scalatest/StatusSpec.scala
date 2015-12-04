@@ -345,6 +345,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Failure(e)))
     }
 
+    // SKIP-SCALATESTJS-START
     it("waitUntilCompleted should throw unreportedException") { () =>
       val e = new IllegalArgumentException("test")
       val status = new AbortedStatus(e)
@@ -362,6 +363,7 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(e eq t)
     }
+    // SKIP-SCALATESTJS-END
 
     it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = AbortedStatus(new IllegalArgumentException("test"))
@@ -472,6 +474,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future3.isCompleted)
       assert(future3.value == Some(Failure(e)))
     }
+    // SKIP-SCALATESTJS-START
     it("waitUntilCompleted should throw unreportedException if set") { () =>
       val status = new ScalaTestStatefulStatus
       val e = new IllegalArgumentException("test")
@@ -492,6 +495,7 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(e eq t)
     }
+    // SKIP-SCALATESTJS-END
     it("withAfterEffect should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
       val status = new ScalaTestStatefulStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")

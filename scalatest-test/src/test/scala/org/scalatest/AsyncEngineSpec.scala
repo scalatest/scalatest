@@ -22,7 +22,9 @@ import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf
 import events.Ordinal
 import scala.concurrent.Future
+// SKIP-SCALATESTJS-START
 import concurrent.Eventually._
+// SKIP-SCALATESTJS-END
 
 class AsyncEngineSpec extends FlatSpec with Matchers {
 
@@ -120,6 +122,7 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     engine.testPath("Given an empty list when 2 is inserted then the list has only 2 in it") should be (List(0, 1, 0))
   }
 
+  // SKIP-SCALATESTJS-START
   "AsyncEngine" should "abort a suite if an exception that should cause an abort is thrown in a test" in {
     val ex = new OutOfMemoryError("I meant to do that!")
     class MySpec extends AsyncFunSuite {
@@ -132,7 +135,7 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     val status = s.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
     myReporter.suiteCompletedEventsReceived should have size 0
     eventually { status.unreportedException shouldBe defined }
-
+  // SKIP-SCALATESTJS-END
     
 /*
     // THings like OutOfMemoryError in a test didn't cause a suite abort, it killed the thread all the
@@ -158,5 +161,8 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     myFunSuite.run(None, Args(mySecondReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
     eventually { assert(mySecondReporter.suiteAbortedWasFiredAndHadADuration) }
 */
+  // SKIP-SCALATESTJS-START
   }
+  // SKIP-SCALATESTJS-END
+
 }
