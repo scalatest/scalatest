@@ -20,19 +20,10 @@ import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.SharedHelpers.EventRecordingReporter
 
 class RandomAsyncTestExecutionSpec extends AsyncFunSuite /* with RandomTestOrder*/ { thisOuterSuite =>
-  
-  // SKIP-SCALATESTJS-START
-  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
   private val buf = ListBuffer.empty[Int]
 
   class ExampleSpec extends AsyncFunSuite with RandomTestOrder {
-    // SKIP-SCALATESTJS-START
-    implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
     test("test one") { thisOuterSuite.synchronized { buf += 1 }; succeed }
     test("test two") { thisOuterSuite.synchronized { buf += 2 }; succeed }

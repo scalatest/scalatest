@@ -26,17 +26,7 @@ import scala.concurrent.Promise
 // This tests that BeforeAndAfterEachTestData works correctly when mixed into an AsyncSuite
 class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
-  // SKIP-SCALATESTJS-START
-  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
   class TheSuper extends AsyncFunSuite {
-
-    // SKIP-SCALATESTJS-START
-    implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
     @volatile var runTestWasCalled = false
     @volatile var runWasCalled = false
@@ -228,11 +218,6 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
        
     class MySuite extends AsyncFunSuite with BeforeAndAfterEachTestData {
 
-      // SKIP-SCALATESTJS-START
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
       override def afterEach(td: TestData) { throw new NumberFormatException }
       test("test October") { succeed }
     }
@@ -325,8 +310,6 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
 
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
       var afterAllCalled = false
       test("test 1") {
         throw new java.lang.annotation.AnnotationFormatError("test")
@@ -346,8 +329,6 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("Should propagate and not run afterEach if super.runTest throw java.nio.charset.CoderMalfunctionError") {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
-
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
       var afterAllCalled = false
       test("test 1") {
@@ -369,8 +350,6 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
 
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
       var afterAllCalled = false
       test("test 1") {
         throw new javax.xml.parsers.FactoryConfigurationError()
@@ -390,8 +369,6 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("Should propagate and not run afterEach if super.runTest throw java.lang.LinkageError") {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
-
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
       var afterAllCalled = false
       test("test 1") {
@@ -413,8 +390,6 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
 
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-
       var afterAllCalled = false
       test("test 1") {
         throw new javax.xml.transform.TransformerFactoryConfigurationError()
@@ -434,8 +409,6 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("Should propagate and not run afterEach if super.runTest throw java.lang.VirtualMachineError") {
 
     class ExampleSpec extends AsyncFunSuite with BeforeAndAfterEachTestData {
-
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
 
       var afterAllCalled = false
       test("test 1") {

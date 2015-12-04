@@ -21,11 +21,6 @@ import org.scalatest.concurrent.SleepHelper
 
 class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
 
-  // SKIP-SCALATESTJS-START
-  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
   override def newInstance = new AsyncFunSuiteSpec2
 
   describe("AsyncFunSuite") {
@@ -33,11 +28,6 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         val a = 1
 
@@ -98,11 +88,6 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
 
       class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         val a = 1
 
         test("test 1") {
@@ -154,11 +139,6 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
 
       class ExampleSuite extends AsyncFunSuite {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         test("test 1") {
           Future {
             SleepHelper.sleep(30)
@@ -201,11 +181,6 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
       @volatile var count = 0
 
       class ExampleSuite extends AsyncFunSuite {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         test("test 1") {
           SleepHelper.sleep(30)

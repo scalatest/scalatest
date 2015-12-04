@@ -28,11 +28,6 @@ class AsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -95,11 +90,6 @@ class AsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -154,11 +144,6 @@ class AsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -206,11 +191,6 @@ class AsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends AsyncFeatureSpecLike {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =

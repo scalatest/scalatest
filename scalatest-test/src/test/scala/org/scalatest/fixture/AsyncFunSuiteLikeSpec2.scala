@@ -22,21 +22,11 @@ import org.scalatest.concurrent.SleepHelper
 
 class AsyncFunSuiteLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
-  // SKIP-SCALATESTJS-START
-  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
   describe("AsyncFunSuiteLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSuite extends AsyncFunSuiteLike with ParallelTestExecution {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -101,11 +91,6 @@ class AsyncFunSuiteLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -161,11 +146,6 @@ class AsyncFunSuiteLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -212,11 +192,6 @@ class AsyncFunSuiteLikeSpec2 extends org.scalatest.AsyncFunSpec {
       @volatile var count = 0
 
       class ExampleSuite extends AsyncFunSuiteLike {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =

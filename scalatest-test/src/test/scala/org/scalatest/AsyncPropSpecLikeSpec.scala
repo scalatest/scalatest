@@ -27,11 +27,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         val a = 1
 
         property("test 1") {
@@ -90,11 +85,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         val a = 1
 
         property("test 1") {
@@ -145,11 +135,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncPropSpecLike {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         property("test 1") {
           Future {
             SleepHelper.sleep(30)
@@ -193,11 +178,6 @@ class AsyncPropSpecLikeSpec extends FunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends AsyncPropSpecLike {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         property("test 1") {
           SleepHelper.sleep(30)
