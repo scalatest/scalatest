@@ -21,21 +21,11 @@ import org.scalatest.concurrent.SleepHelper
 
 class AsyncFunSpecLikeSpec2 extends AsyncFunSpec {
 
-  // SKIP-SCALATESTJS-START
-  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
   describe("AsyncFunSpecLike") {
 
     it("can be used for tests that return Future under parallel async test execution") {
 
       class ExampleSpec extends AsyncFunSpecLike with ParallelTestExecution {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         val a = 1
 
@@ -96,11 +86,6 @@ class AsyncFunSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFunSpecLike with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         val a = 1
 
         it("test 1") {
@@ -152,11 +137,6 @@ class AsyncFunSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFunSpecLike {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         it("test 1") {
           Future {
             SleepHelper.sleep(30)
@@ -199,11 +179,6 @@ class AsyncFunSpecLikeSpec2 extends AsyncFunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends AsyncFunSpecLike {
-
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
         it("test 1") {
           SleepHelper.sleep(3000)

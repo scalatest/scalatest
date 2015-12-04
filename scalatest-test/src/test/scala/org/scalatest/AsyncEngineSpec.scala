@@ -123,11 +123,6 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
   "AsyncEngine" should "abort a suite if an exception that should cause an abort is thrown in a test" in {
     val ex = new OutOfMemoryError("I meant to do that!")
     class MySpec extends AsyncFunSuite {
-      // SKIP-SCALATESTJS-START
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
       test("should abort the suite") {
         Future.failed(ex)
       }
