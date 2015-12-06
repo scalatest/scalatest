@@ -27,12 +27,15 @@ import org.scalactic.Prettifier
 import org.scalactic.exceptions.NullArgumentException
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatest.concurrent.ScalaFutures
 
 class RecoverMethodsSpec extends FunSpec with RecoverMethods with ScalaFutures {
 
-  // implicit val execCtx = 
+  // SKIP-SCALATESTJS-START
+  implicit val execCtx = scala.concurrent.ExecutionContext.Implicits.global
+  // SKIP-SCALATESTJS-END
+  //SCALATESTJS-ONLY implicit val execCtx = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
   val fileName: String = "RecoverMethodsSpec.scala"
 
   describe("The recoverToExceptionIf method") {

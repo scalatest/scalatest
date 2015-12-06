@@ -189,10 +189,12 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    * returned by tests into <code>Future[Outcome]</code> values, and can be used within the async tests themselves,
    * for example, when mapping assertions onto futures.
    */
+  implicit def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+/*
   // SKIP-SCALATESTJS-START
-  implicit def executionContext: ExecutionContext = concurrent.DefaultExecutionContext.Implicits.global
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+*/
 
   private def anAsyncExceptionThatShouldCauseAnAbort(ex: Throwable): Boolean =
     ex match {
@@ -245,6 +247,9 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
     throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncSuite.scala", "withFixture"))
   }
 
+  // TODO: Document how exceptions are treated. I.e., that TestConceledException becomes Success(Canceled), 
+  // TestPendingException becomes Success(Pending), non-test-fatal exceptions become Success(Failed), and
+  // test-fatal exceptions become Failure(ex)
   /**
    * A test function taking no arguments and returning a <code>Future[Outcome]</code>.
    *

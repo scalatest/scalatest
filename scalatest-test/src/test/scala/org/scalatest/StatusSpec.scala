@@ -249,6 +249,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Success(true)))
     }
 
+    // SKIP-SCALATESTJS-START
     it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = SucceededStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
@@ -259,6 +260,7 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(t eq e)
     }
+    // SKIP-SCALATESTJS-END
   }
 
   describe("FailedStatus ") {
@@ -322,6 +324,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(future.value == Some(Success(false)))
     }
 
+    // SKIP-SCALATESTJS-START
     it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = FailedStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
@@ -332,6 +335,7 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(t eq e)
     }
+    // SKIP-SCALATESTJS-END
   }
 
   describe("AbortedStatus") {
@@ -363,7 +367,6 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(e eq t)
     }
-    // SKIP-SCALATESTJS-END
 
     it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
       val status = AbortedStatus(new IllegalArgumentException("test"))
@@ -375,6 +378,7 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(t eq e)
     }
+    // SKIP-SCALATESTJS-END
   }
 
   describe("CompositeStatus ") {
@@ -495,7 +499,6 @@ class StatusSpec extends fixture.FunSpec {
       }
       assert(e eq t)
     }
-    // SKIP-SCALATESTJS-END
     it("withAfterEffect should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
       val status = new ScalaTestStatefulStatus
       val e = new java.lang.annotation.AnnotationFormatError("test")
@@ -526,5 +529,6 @@ class StatusSpec extends fixture.FunSpec {
       assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
       assert(returnedStatus.unreportedException.get.getCause eq e)
     }
+    // SKIP-SCALATESTJS-END
   }
 }

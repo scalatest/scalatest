@@ -19,6 +19,7 @@ import scala.concurrent.ExecutionContext
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
+/*
 private[scalatest] class DefaultExecutionContext extends ExecutionContext {
 
   /*val execSvc: ExecutorService = Executors.newFixedThreadPool(1, Executors.defaultThreadFactory)
@@ -51,3 +52,4 @@ object DefaultExecutionContext {
   }
 
 }
+*/

@@ -22,9 +22,9 @@ import scala.concurrent.ExecutionContext
 
 object DbServer { // Simulating a database server
   type Db = StringBuffer
-  private val databases = new ConcurrentHashMap[String, Db]
+  private final val databases = new ConcurrentHashMap[String, Db]
   def createDb(name: String): Db = {
-    val db = new StringBuffer
+    val db = new StringBuffer // java.lang.StringBuffer is thread-safe
     databases.put(name, db)
     db
   }

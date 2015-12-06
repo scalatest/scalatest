@@ -414,6 +414,14 @@ package org.scalatest
  * annotation instead.
  * </p>
  *
+ * <p>
+ * If you want to ignore all tests of a suite on Scala.js, where annotations can't be inspected at runtime, you'll need
+ * to change <code>test</code> to <code>ignore</code> at each test. To make a suite non-discoverable on Scala.js, ensure it
+ * does not declare a public no-arg constructor.  You can either declare a public constructor that takes one or more
+ * arguments, or make the no-arg constructor non-public.  Because this technique will also make the suite non-discoverable
+ * on the JVM, it is a good approach for suites you want to run on both Scala.js and the JVM.
+ * </p>
+ *
  * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
@@ -593,7 +601,7 @@ package org.scalatest
  * </p>
  *
  * <p>
- * ScalaTest recommends three techniques to eliminate such code duplication:
+ * ScalaTest recommends three techniques to eliminate such code duplication in async styles:
  * </p>
  *
  * <ul>
@@ -604,9 +612,12 @@ package org.scalatest
  *
  * <p>Each technique is geared towards helping you reduce code duplication without introducing
  * instance <code>var</code>s, shared mutable objects, or other dependencies between tests. Eliminating shared
- * mutable state across tests will make your test code easier to reason about and more amenable for parallel
- * test execution.</p><p>The following sections
- * describe these techniques, including explaining the recommended usage
+ * mutable state across tests will make your test code easier to reason about and eliminate the need to
+ * synchronize access to shared mutable state on the JVM.
+ * </p>
+ *
+ * <p>
+ * The following sections describe these techniques, including explaining the recommended usage
  * for each. But first, here's a table summarizing the options:</p>
  *
  * <table style="border-collapse: collapse; border: 1px solid black">
@@ -817,7 +828,7 @@ package org.scalatest
  * one of <code>Future</code> registration methods: <code>onComplete</code>, <code>onSuccess</code>,
  * or <code>onFailure</code>. Note that if a test fails, that will be treated as a
  * <code>scala.util.Success(org.scalatest.Failure)</code>. So if you want to perform an 
- * action if a test fails, for example, you'd register the callaback using <code>onSuccess</code>.
+ * action if a test fails, for example, you'd register the callback using <code>onSuccess</code>.
  * </p>
  *
  * <p>
@@ -934,9 +945,9 @@ package org.scalatest
  *
  * object DbServer { // Simulating a database server
  *   type Db = StringBuffer
- *   private val databases = new ConcurrentHashMap[String, Db]
+ *   private final val databases = new ConcurrentHashMap[String, Db]
  *   def createDb(name: String): Db = {
- *     val db = new StringBuffer
+ *     val db = new StringBuffer // java.lang.StringBuffer is thread-safe
  *     databases.put(name, db)
  *     db
  *   }
@@ -1056,9 +1067,8 @@ package org.scalatest
  * Each test in a <code>fixture.AsyncSuite</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
  * <code>withAsyncFixture</code> method that takes a <code>OneArgAsyncTest</code>. This <code>withAsyncFixture</code> method is responsible for
- * invoking the one-arg async test function, so you can perform fixture set up before, invoking and passing
- * the fixture into the test function, and perform clean up after the test completes (by registering the cleanup code as a
- * callback on the Future[Outcome] returned by the test function).
+ * invoking the one-arg async test function, so you can perform fixture set up before invoking and passing
+ * the fixture into the test function, and ensure clean up is performed after the test completes.
  * </p>
  *
  * <p>
@@ -1141,9 +1151,10 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * In this example, the tests actually required two fixture objects, a <code>File</code> and a <code>FileWriter</code>. In such situations you can
- * simply define the <code>FixtureParam</code> type to be a tuple containing the objects, or as is done in this example, a case class containing
- * the objects.  For more information on the <code>withAsyncFixture(OneArgAsyncTest)</code> technique, see the <a href="fixture/AsyncFunSuite.html">documentation for <code>fixture.AsyncFunSuite</code></a>.
+ * In this example, the tests required one fixture objects, a <code>StringActor</code>. If your tests need multiple fixture objects, you can
+ * simply define the <code>FixtureParam</code> type to be a tuple containing the objects or, alternatively, a case class containing
+ * the objects.  For more information on the <code>withAsyncFixture(OneArgAsyncTest)</code> technique, see
+ * the <a href="fixture/AsyncFunSuite.html">documentation for <code>fixture.AsyncFunSuite</code></a>.
  * </p>
  *
  * <a name="beforeAndAfter"></a>
@@ -1842,3 +1853,34 @@ abstract class AsyncFunSuite extends AsyncFunSuiteLike {
    */
   override def toString: String = Suite.suiteToString(None, this)
 }
+/*
+May take from this later:
+
+In an AsyncFunSuite, threads that transform and perform callbacks for Futures
+are taken from the implicit execution context. On Scala.js, you need not
+worry about thread synchronization, because JavaScript is essentially
+single-threaded. On the JVM, however, multiple transformations and callbacks of Futures
+that operate on mutable state will need to be synchronized, because
+they may be performed by different thrads.
+
+The best way to avoid this issue is to avoid mutable state in the first place-i.e.,
+to use a functional style. Use Futures only to transform immutable objects without any
+side effects. When that is not practical, one option on the JVM is to block, either using
+scala.concurrent.Await or the methods of ScalaFutures.  Blocking will also allow you
+to use a synchronous style, such as FunSuite, which doesn't take threads fron
+an execution context. Synchronous styles are designed so that you need not worry
+about synchronizing access to mutable state shared between tests, because only
+one thread executes each test. Even if you ix in PTE, you need not synchronize access
+to instance variables because each test is executed in its own instance of the test
+class, so each test has its own copy of the instance variables. 
+
+On Scala.js, you can't block, so using Await or ScalaFutures will not work if you
+Futures are truly asynchronous (involve calling APIs that work outside of the JS thread)
+On Scala.js, therefore, you must use async style tests to test asynchrounous code,
+but you need not worry about synchronoization. ON the JVM, you can block,
+so you have the option to use synchronous style tests to test asynchronous code.
+
+If you choose to write async-style tests on the JVM, you must ensure that the objects you 
+manipulate through Futures are thread-safe (and the easiest way to do that is make them
+immutable).
+*/

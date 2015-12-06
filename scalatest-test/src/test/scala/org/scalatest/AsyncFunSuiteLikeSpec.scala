@@ -27,6 +27,8 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         val a = 1
 
         test("test 1") {
@@ -85,6 +87,8 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         val a = 1
 
         test("test 1") {
@@ -135,6 +139,8 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
 
       class ExampleSuite extends AsyncFunSuiteLike {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         test("test 1") {
           Future {
             SleepHelper.sleep(30)
@@ -178,6 +184,8 @@ class AsyncFunSuiteLikeSpec extends FunSpec {
       @volatile var count = 0
 
       class ExampleSuite extends AsyncFunSuiteLike {
+
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         test("test 1") {
           SleepHelper.sleep(30)

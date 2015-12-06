@@ -28,6 +28,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -90,6 +92,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -144,6 +148,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -191,6 +197,8 @@ class AsyncFeatureSpecSpec extends org.scalatest.FunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends AsyncFeatureSpec {
+
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =

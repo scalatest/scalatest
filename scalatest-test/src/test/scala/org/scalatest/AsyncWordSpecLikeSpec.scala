@@ -27,6 +27,8 @@ class AsyncWordSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         val a = 1
 
         "test 1" in {
@@ -85,6 +87,8 @@ class AsyncWordSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         val a = 1
 
         "test 1" in {
@@ -135,6 +139,8 @@ class AsyncWordSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncWordSpecLike {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         "test 1" in {
           Future {
             SleepHelper.sleep(30)
@@ -178,6 +184,8 @@ class AsyncWordSpecLikeSpec extends FunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends AsyncWordSpecLike {
+
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         "test 1" in {
           SleepHelper.sleep(30)

@@ -496,10 +496,15 @@ class ExpectationsSpec extends FunSpec with Expectations {
 
       it("should return No with correct fact message when parse failed") {
         val fact = expectCompiles("println(\"test)")
+        // SKIP-SCALATESTJS-START
         if (scala.util.Properties.versionString.contains("2.10"))
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("reflective compilation has failed: \n\nunclosed string literal\n')' expected but eof found.", "println(\"test)"))
         else
           assert(fact.factMessage == Resources.expectedNoErrorButGotParseError("unclosed string literal", "println(\"test)"))
+        // SKIP-SCALATESTJS-END
+
+        //SCALATESTJS-ONLY assert(fact.factMessage.indexOf("unclosed string literal") >= 0)
+        //SCALATESTJS-ONLY assert(fact.factMessage.indexOf("println(\"test)") >= 0)
         assert(!fact.isVacuousYes)
       }
     }

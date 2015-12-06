@@ -27,6 +27,8 @@ class AsyncFunSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpecLike with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         val a = 1
 
         it("test 1") {
@@ -85,6 +87,8 @@ class AsyncFunSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpecLike with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         val a = 1
 
         it("test 1") {
@@ -135,6 +139,8 @@ class AsyncFunSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpecLike {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         it("test 1") {
           Future {
             SleepHelper.sleep(30)
@@ -178,6 +184,8 @@ class AsyncFunSpecLikeSpec extends FunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends AsyncFunSpecLike {
+
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         it("test 1") {
           SleepHelper.sleep(3000)
