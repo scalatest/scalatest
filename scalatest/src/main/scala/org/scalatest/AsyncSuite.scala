@@ -191,8 +191,9 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    * for example, when mapping assertions onto futures.
    */
   // SKIP-SCALATESTJS-START
-  implicit def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
-  //implicit def executionContext: ExecutionContext = concurrent.DefaultExecutionContext.Implicits.global
+  //implicit def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+  private lazy val defaultExecutionContext = new concurrent.DefaultExecutionContext
+  implicit def executionContext: ExecutionContext = defaultExecutionContext
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 

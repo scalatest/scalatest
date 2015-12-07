@@ -222,6 +222,43 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
     }
 
+    // SKIP-SCALATESTJS-START
+    it("should run tests and its future in same main thread") {
+
+      var mainThread = Thread.currentThread
+      var test1Thread: Option[Thread] = None
+      var test2Thread: Option[Thread] = None
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        scenario("test 1") {
+          Future {
+            test1Thread = Some(Thread.currentThread)
+            succeed
+          }
+        }
+
+        scenario("test 2") {
+          Future {
+            test2Thread = Some(Thread.currentThread)
+            succeed
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.waitUntilCompleted()
+
+      assert(test1Thread.isDefined)
+      assert(test1Thread.get == mainThread)
+      assert(test2Thread.isDefined)
+      assert(test2Thread.get == mainThread)
+    }
+    // SKIP-SCALATESTJS-END
+
   }
 
 }
