@@ -184,17 +184,17 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  */
 trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
 
+
   /**
    * An implicit execution context used by async styles to transform <code>Future[Assertion]</code> values
    * returned by tests into <code>Future[Outcome]</code> values, and can be used within the async tests themselves,
    * for example, when mapping assertions onto futures.
    */
-  implicit def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
-/*
   // SKIP-SCALATESTJS-START
+  implicit def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+  //implicit def executionContext: ExecutionContext = concurrent.DefaultExecutionContext.Implicits.global
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-*/
 
   private def anAsyncExceptionThatShouldCauseAnAbort(ex: Throwable): Boolean =
     ex match {

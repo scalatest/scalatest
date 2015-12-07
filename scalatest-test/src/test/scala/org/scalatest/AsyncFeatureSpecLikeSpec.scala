@@ -84,7 +84,7 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       assert(rep.testIgnoredEventsReceived(0).testName == "Scenario: test 5")
     }
 
-    it("can be used for tests that did not return Future under parallel async test execution") {
+    /*it("can be used for tests that did not return Future under parallel async test execution") {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
@@ -219,7 +219,7 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       assert(rep.testStartingEventsReceived.length == 3)
       assert(rep.testSucceededEventsReceived.length == 3)
 
-    }
+    }*/
 
   }
 

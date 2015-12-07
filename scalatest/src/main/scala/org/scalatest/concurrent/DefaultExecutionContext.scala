@@ -18,6 +18,7 @@ package org.scalatest.concurrent
 import scala.concurrent.ExecutionContext
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.LinkedBlockingQueue
 
 /*
 private[scalatest] class DefaultExecutionContext extends ExecutionContext {
@@ -25,23 +26,30 @@ private[scalatest] class DefaultExecutionContext extends ExecutionContext {
   /*val execSvc: ExecutorService = Executors.newFixedThreadPool(1, Executors.defaultThreadFactory)
   private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]*/
 
-  val executor = Executors.newSingleThreadScheduledExecutor()
+  private val queue = new LinkedBlockingQueue[Runnable]
+
+  //val executor = Executors.newSingleThreadScheduledExecutor()
 
   def execute(runnable: Runnable): Unit = {
-    executor.schedule(new Runnable {
-      def run(): Unit = {
-        try {
-          runnable.run()
-        }
-        catch {
-          case t: Throwable => reportFailure(t)
-        }
-      }
-    }, 0L, TimeUnit.SECONDS)
+    println("###put into queue!!!")
+    queue.put(runnable)
+    println("***queue size after put: " + queue.size)
   }
 
   def reportFailure(t: Throwable): Unit =
     t.printStackTrace()
+
+  def runNow(): Unit = {
+    println("###runNow!!! size: " + queue.size)
+    val itr = queue.iterator
+    while(itr.hasNext) {
+      println("---running...")
+      val r = itr.next
+      r.run()
+    }
+    println("###completed")
+    queue.clear()
+  }
 
 }
 
