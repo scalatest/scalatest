@@ -31,24 +31,16 @@ private[scalatest] class DefaultExecutionContext extends ExecutionContext {
   //val executor = Executors.newSingleThreadScheduledExecutor()
 
   def execute(runnable: Runnable): Unit = {
-    println("###put into queue!!!")
     queue.put(runnable)
-    println("***queue size after put: " + queue.size)
   }
 
   def reportFailure(t: Throwable): Unit =
     t.printStackTrace()
 
   def runNow(): Unit = {
-    println("###runNow!!! size: " + queue.size)
-    val itr = queue.iterator
-    while(itr.hasNext) {
-      println("---running...")
-      val r = itr.next
-      r.run()
+    while (queue.peek != null) {
+      queue.poll().run()
     }
-    println("###completed")
-    queue.clear()
   }
 
 }
