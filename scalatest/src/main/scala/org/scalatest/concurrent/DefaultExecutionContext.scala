@@ -20,15 +20,9 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.LinkedBlockingQueue
 
-/*
 private[scalatest] class DefaultExecutionContext extends ExecutionContext {
 
-  /*val execSvc: ExecutorService = Executors.newFixedThreadPool(1, Executors.defaultThreadFactory)
-  private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]*/
-
   private val queue = new LinkedBlockingQueue[Runnable]
-
-  //val executor = Executors.newSingleThreadScheduledExecutor()
 
   def execute(runnable: Runnable): Unit = {
     queue.put(runnable)
@@ -44,12 +38,3 @@ private[scalatest] class DefaultExecutionContext extends ExecutionContext {
   }
 
 }
-
-object DefaultExecutionContext {
-
-  object Implicits {
-    implicit lazy val global: ExecutionContext = new DefaultExecutionContext
-  }
-
-}
-*/
