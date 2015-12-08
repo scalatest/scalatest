@@ -16,7 +16,7 @@
 package org.scalatest
 
 import SharedHelpers.EventRecordingReporter
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 
 class AsyncFeatureSpecLikeSpec extends FunSpec {
@@ -223,7 +223,7 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
     }
 
     // SKIP-SCALATESTJS-START
-    it("should run tests and its future in same main thread") {
+    it("should run tests and its future in same main thread when use SerialExecutionContext") {
 
       var mainThread = Thread.currentThread
       var test1Thread: Option[Thread] = None
@@ -231,6 +231,8 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFeatureSpecLike {
+
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
 
         scenario("test 1") {
           Future {
