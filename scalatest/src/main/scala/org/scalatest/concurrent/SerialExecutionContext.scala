@@ -20,7 +20,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.LinkedBlockingQueue
 
-private[scalatest] class DefaultExecutionContext extends ExecutionContext {
+private[scalatest] class SerialExecutionContext extends ExecutionContext {
 
   private val queue = new LinkedBlockingQueue[Runnable]
 
