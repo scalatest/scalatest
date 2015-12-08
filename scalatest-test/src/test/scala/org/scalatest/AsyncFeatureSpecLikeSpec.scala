@@ -228,6 +228,7 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       var mainThread = Thread.currentThread
       var test1Thread: Option[Thread] = None
       var test2Thread: Option[Thread] = None
+      var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
@@ -250,12 +251,17 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       val rep = new EventRecordingReporter
       val suite = new ExampleSpec
       val status = suite.run(None, Args(reporter = rep))
+      status.whenCompleted { s =>
+        onCompleteThread = Some(Thread.currentThread)
+      }
       status.waitUntilCompleted()
 
       assert(test1Thread.isDefined)
       assert(test1Thread.get == mainThread)
       assert(test2Thread.isDefined)
       assert(test2Thread.get == mainThread)
+      assert(onCompleteThread.isDefined)
+      assert(onCompleteThread.get == mainThread)
     }
     // SKIP-SCALATESTJS-END
 
