@@ -92,7 +92,7 @@ class ExampleSpec extends AsyncFunSpec with Builder with Buffer {
       val futureList = bufferActor ? GetValue
       val futurePair: Future[(String, List[String])] = futureString zip futureList
       futurePair map { case (str, lst) =>
-        assert(str === "ScalaTest is easy!")
+        assert(str == "ScalaTest is easy!")
         assert(lst.isEmpty)
         bufferActor ! Append("sweet")
         succeed
@@ -105,7 +105,7 @@ class ExampleSpec extends AsyncFunSpec with Builder with Buffer {
       val futureList = bufferActor ? GetValue
       val futurePair: Future[(String, List[String])] = futureString zip futureList
       futurePair map { case (str, lst) =>
-        assert(str === "ScalaTest is fun!")
+        assert(str == "ScalaTest is fun!")
         assert(lst.isEmpty)
         bufferActor ! Append("awesome")
         succeed

@@ -53,12 +53,12 @@ class ExampleSpec extends AsyncFunSpec with BeforeAndAfter {
     actor ! Clear // clean up the fixture
   }
 
-  describe("testing") {
+  describe("Testing") {
     it("should be easy") {
       actor ! Append("easy!")
       val futureString = actor ? GetValue
       futureString map { s =>
-        assert(s === "ScalaTest is easy!")
+        assert(s == "ScalaTest is easy!")
       }
     }
 
@@ -66,7 +66,7 @@ class ExampleSpec extends AsyncFunSpec with BeforeAndAfter {
       actor ! Append("fun!")
       val futureString = actor ? GetValue
       futureString map { s =>
-        assert(s === "ScalaTest is fun!")
+        assert(s == "ScalaTest is fun!")
       }
     }
   }

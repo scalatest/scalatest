@@ -94,8 +94,8 @@ trait AsyncFunSpecStackBehaviors { this: AsyncFunSpec =>
           afterPeek <- stackActor ? Peek
         } yield (beforePeek, afterPeek)
       futurePair map { case (beforePeek, afterPeek) =>
-        assert(afterPeek.top === Some(lastItemAdded))
-        assert(afterPeek.size === beforePeek.size)
+        assert(afterPeek.top == Some(lastItemAdded))
+        assert(afterPeek.size == beforePeek.size)
       }
     }
 
@@ -107,8 +107,8 @@ trait AsyncFunSpecStackBehaviors { this: AsyncFunSpec =>
           afterPop <- stackActor ? Pop
         } yield (beforePop, afterPop)
       futurePair map { case (beforePop, afterPop) =>
-        assert(afterPop.top === Some(lastItemAdded))
-        assert(afterPop.size === beforePop.size - 1)
+        assert(afterPop.top == Some(lastItemAdded))
+        assert(afterPop.size == beforePop.size - 1)
       }
     }
   }
@@ -131,8 +131,8 @@ trait AsyncFunSpecStackBehaviors { this: AsyncFunSpec =>
           afterPush <- { stackActor ! Push(7); stackActor ? Peek }
         } yield (beforePush, afterPush)
       futurePair map { case (beforePush, afterPush) =>
-        assert(afterPush.top === Some(7))
-        assert(afterPush.size === beforePush.size + 1)
+        assert(afterPush.top == Some(7))
+        assert(afterPush.size == beforePush.size + 1)
       }
     }
   }

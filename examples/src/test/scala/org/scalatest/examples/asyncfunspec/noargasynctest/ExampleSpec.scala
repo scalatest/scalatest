@@ -39,11 +39,11 @@ class ExampleSpec extends AsyncFunSpec {
 
   describe("This test") {
     it("should succeed") {
-      addSoon(1, 1) map { sum => assert(sum === 2) }
+      addSoon(1, 1) map { sum => assert(sum == 2) }
     }
 
     it("should fail") {
-      addSoon(1, 1) map { sum => assert(sum === 3) }
+      addSoon(1, 1) map { sum => assert(sum == 3) }
     }
   }
 }

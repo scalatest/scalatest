@@ -27,7 +27,7 @@ class ExampleSpec extends AsyncFunSpec {
       val future = fixture
       val result = future map { s => s + "easy!" }
       result map { s =>
-        assert(s === "ScalaTest is easy!")
+        assert(s == "ScalaTest is easy!")
       }
     }
 
@@ -35,7 +35,7 @@ class ExampleSpec extends AsyncFunSpec {
       val future = fixture
       val result = future map { s => s + "fun!" }
       result map { s =>
-        assert(s === "ScalaTest is fun!")
+        assert(s == "ScalaTest is fun!")
       }
     }
   }

@@ -91,7 +91,7 @@ class ExampleSpec extends AsyncFunSpec {
         actor ! Append("productive!")
         val futureString = actor ? GetValue
         futureString map { s =>
-          assert(s === "ScalaTest is productive!")
+          assert(s == "ScalaTest is productive!")
         }
       }
     }
@@ -103,7 +103,7 @@ class ExampleSpec extends AsyncFunSpec {
       withDatabase { futureDb =>
         futureDb map { db =>
           db.append("readable!")
-          assert(db.toString === "ScalaTest is readable!")
+          assert(db.toString == "ScalaTest is readable!")
         }
       }
     }
@@ -118,8 +118,8 @@ class ExampleSpec extends AsyncFunSpec {
             futureDb zip futureString
           futurePair map { case (db, s) =>
             db.append("clear!")
-            assert(db.toString === "ScalaTest is clear!")
-            assert(s === "ScalaTest is concise!")
+            assert(db.toString == "ScalaTest is clear!")
+            assert(s == "ScalaTest is concise!")
           }
         }
       }

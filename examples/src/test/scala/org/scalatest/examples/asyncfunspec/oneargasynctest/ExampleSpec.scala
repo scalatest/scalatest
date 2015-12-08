@@ -60,7 +60,7 @@ class ExampleSpec extends fixture.AsyncFunSpec {
       actor ! Append("easy!")
       val futureString = actor ? GetValue
       futureString map { s =>
-        assert(s === "ScalaTest is easy!")
+        assert(s == "ScalaTest is easy!")
       }
     }
 
@@ -68,7 +68,7 @@ class ExampleSpec extends fixture.AsyncFunSpec {
       actor ! Append("fun!")
       val futureString = actor ? GetValue
       futureString map { s =>
-        assert(s === "ScalaTest is fun!")
+        assert(s == "ScalaTest is fun!")
       }
     }
   }

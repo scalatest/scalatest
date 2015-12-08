@@ -54,7 +54,7 @@ class ExampleSuite extends AsyncFunSuite with BeforeAndAfter {
     actor ! Clear // clean up the fixture
   }
 
-  test("testing should be easy") {
+  test("Testing should be easy") {
     actor ! Append("easy!")
     val futureString = actor ? GetValue
     futureString map { s =>
@@ -62,7 +62,7 @@ class ExampleSuite extends AsyncFunSuite with BeforeAndAfter {
     }
   }
 
-  test("testing should be fun") {
+  test("Testing should be fun") {
     actor ! Append("fun!")
     val futureString = actor ? GetValue
     futureString map { s =>
