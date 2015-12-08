@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2015 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.examples.asyncfunsuite.beforeandafter
+package org.scalatest.examples.asyncfeaturespec.oneargasynctest
 
-import org.scalatest.AsyncFunSuite
-import org.scalatest.BeforeAndAfter
-import collection.mutable.ListBuffer
+import org.scalatest._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
@@ -42,31 +40,36 @@ class StringActor { // Simulating an actor
     }
 }
 
-class ExampleSuite extends AsyncFunSuite with BeforeAndAfter {
+class ExampleSpec extends fixture.AsyncFeatureSpec {
 
-  final val actor = new StringActor
+  type FixtureParam = StringActor
 
-  before {
-    actor ! Append("ScalaTest is ") // set up the fixture
-  }
+  def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
 
-  after {
-    actor ! Clear // clean up the fixture
-  }
-
-  test("Testing should be easy") {
-    actor ! Append("easy!")
-    val futureString = actor ? GetValue
-    futureString map { s =>
-      assert(s === "ScalaTest is easy!")
+    val actor = new StringActor
+    withCleanup {
+      actor ! Append("ScalaTest is designed to ") // set up the fixture
+      withAsyncFixture(test.toNoArgAsyncTest(actor))
+    } {
+      actor ! Clear // ensure the fixture will be cleaned up
     }
   }
 
-  test("Testing should be fun") {
-    actor ! Append("fun!")
-    val futureString = actor ? GetValue
-    futureString map { s =>
-      assert(s === "ScalaTest is fun!")
+  feature("Simplicity") {
+    scenario("User needs to read test code written by others") { actor =>
+      actor ! Append("encourage clear code!")
+      val futureString = actor ? GetValue
+      futureString map { s =>
+        assert(s === "ScalaTest is designed to encourage clear code!")
+      }
+    }
+
+    scenario("User needs to understand what the tests are doing") { actor =>
+      actor ! Append("be easy to reason about!")
+      val futureString = actor ? GetValue
+      futureString map { s =>
+        assert(s === "ScalaTest is designed to be easy to reason about!")
+      }
     }
   }
 }
