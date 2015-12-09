@@ -16,8 +16,10 @@
 package org.scalatest
 
 import SharedHelpers.EventRecordingReporter
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
+
+import scala.util.Success
 
 class AsyncFeatureSpecLikeSpec extends FunSpec {
 
@@ -265,6 +267,69 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       assert(onCompleteThread.isDefined)
       assert(onCompleteThread.get == mainThread)
     }
+
+    it("should run tests and its true async future in the same thread when use SerialExecutionContext") {
+      var mainThread = Thread.currentThread
+      @volatile var test1Thread: Option[Thread] = None
+      @volatile var test2Thread: Option[Thread] = None
+      var onCompleteThread: Option[Thread] = None
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        scenario("test 1") {
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            1000
+          )
+          promise.future.map { s =>
+            test1Thread = Some(Thread.currentThread)
+            s
+          }
+        }
+
+        scenario("test 2") {
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            500
+          )
+          promise.future.map { s =>
+            test2Thread = Some(Thread.currentThread)
+            s
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.whenCompleted { s =>
+        onCompleteThread = Some(Thread.currentThread)
+      }
+      status.waitUntilCompleted()
+
+      assert(test1Thread.isDefined)
+      assert(test1Thread.get == mainThread)
+      assert(test2Thread.isDefined)
+      assert(test2Thread.get == mainThread)
+      assert(onCompleteThread.isDefined)
+      assert(onCompleteThread.get == mainThread)
+    }
+
     // SKIP-SCALATESTJS-END
 
   }

@@ -15,10 +15,11 @@
  */
 package org.scalatest.concurrent
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.LinkedBlockingQueue
+import org.scalatest.Outcome
 
 private[scalatest] class SerialExecutionContext extends ExecutionContext {
 
@@ -31,9 +32,11 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
   def reportFailure(t: Throwable): Unit =
     t.printStackTrace()
 
-  def runNow(): Unit = {
-    while (queue.peek != null) {
-      queue.poll().run()
+  def runNow(future: Future[Outcome]): Unit = {
+    while (!future.isCompleted) {
+      while (queue.peek != null)
+        queue.poll().run()
+      SleepHelper.sleep(10)
     }
   }
 
