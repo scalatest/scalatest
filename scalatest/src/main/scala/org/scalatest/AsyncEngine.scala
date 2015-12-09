@@ -33,6 +33,7 @@ import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
+import scala.concurrent.ExecutionContext
 
 import scala.util.{Failure, Success}
 
@@ -124,7 +125,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     args: Args,
     includeIcon: Boolean,
     invokeWithFixture: TestLeaf => AsyncOutcome
-  ): Status = {
+  )(implicit executionContext: ExecutionContext): Status = {
 
     requireNonNull(testName, args)
     
@@ -157,7 +158,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       }
 
     asyncOutcome.onComplete { trial =>
-      // println("###onComplete in the FORK!!")
+      //println("###onComplete in the FORK!!")
       trial match {
         case Success(outcome) =>
           outcome match {
@@ -210,6 +211,12 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         case Failure(ex) => 
       }
     }
+
+    executionContext match {
+      case dec: concurrent.SerialExecutionContext => dec.runNow(asyncOutcome.toFutureOutcome)
+      case _ =>
+    }
+
     asyncOutcome.toStatus
   }
 
