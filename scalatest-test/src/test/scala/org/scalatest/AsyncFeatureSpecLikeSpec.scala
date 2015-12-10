@@ -330,6 +330,33 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       assert(onCompleteThread.get == mainThread)
     }
 
+    it("should not run out of stack space with nested futures when using SerialExecutionContext") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        // Note we get a StackOverflowError with the following execution
+        // context.
+        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        def sum(xs: List[Int]): Future[Int] = 
+          xs match {
+            case Nil => Future.successful(0)
+            case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
+          }
+
+        scenario("test 1") {
+          val fut: Future[Int] = sum((1 to 50000).toList)
+          fut.map(total => assert(total == 1250025000))
+        }
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.waitUntilCompleted()
+      assert(!rep.testSucceededEventsReceived.isEmpty)
+    }
     // SKIP-SCALATESTJS-END
 
   }
