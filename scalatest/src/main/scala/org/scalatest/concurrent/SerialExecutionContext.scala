@@ -15,41 +15,29 @@
  */
 package org.scalatest.concurrent
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.LinkedBlockingQueue
+import org.scalatest.Outcome
 
-/*
-private[scalatest] class DefaultExecutionContext extends ExecutionContext {
+private[scalatest] class SerialExecutionContext extends ExecutionContext {
 
-  /*val execSvc: ExecutorService = Executors.newFixedThreadPool(1, Executors.defaultThreadFactory)
-  private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]*/
-
-  val executor = Executors.newSingleThreadScheduledExecutor()
+  private val queue = new LinkedBlockingQueue[Runnable]
 
   def execute(runnable: Runnable): Unit = {
-    executor.schedule(new Runnable {
-      def run(): Unit = {
-        try {
-          runnable.run()
-        }
-        catch {
-          case t: Throwable => reportFailure(t)
-        }
-      }
-    }, 0L, TimeUnit.SECONDS)
+    queue.put(runnable)
   }
 
   def reportFailure(t: Throwable): Unit =
     t.printStackTrace()
 
-}
-
-object DefaultExecutionContext {
-
-  object Implicits {
-    implicit lazy val global: ExecutionContext = new DefaultExecutionContext
+  def runNow(future: Future[Outcome]): Unit = {
+    while (!future.isCompleted) {
+      while (queue.peek != null)
+        queue.poll().run()
+      SleepHelper.sleep(10)
+    }
   }
 
 }
-*/
