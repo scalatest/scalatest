@@ -1060,7 +1060,7 @@ package org.scalatest
  * </p>
  *
  * <a name="withAsyncFixtureOneArgAsyncTest"></a>
- * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
+ * <h4>Overriding <code>withAsyncFixture(OneArgTest)</code></h4>
  *
  * <p>
  * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a
@@ -1231,13 +1231,23 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * Note that the only way <code>before</code> and <code>after</code> code can communicate with test code is via some side-effecting mechanism, commonly by
- * reassigning instance <code>var</code>s or by changing the state of mutable objects held from instance <code>val</code>s (as in this example). If using
- * instance <code>var</code>s or mutable objects held from instance <code>val</code>s you wouldn't be able to run tests in parallel in the same instance
- * of the test class unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
- * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
- * don't need to synchronize. If you mixed <code>ParallelTestExecution</code> into the <code>ExampleSuite</code> above, the tests would run in parallel just fine
- * without any synchronization needed on the mutable <code>StringBuilder</code> and <code>ListBuffer[String]</code> objects.
+ * Note that the only way <code>before</code> and <code>after</code> code can communicate with test code is via some
+ * side-effecting mechanism, commonly by reassigning instance <code>var</code>s or by changing the state of mutable
+ * objects held from instance <code>val</code>s (as in this example). If using instance <code>var</code>s or
+ * mutable objects held from instance <code>val</code>s you wouldn't be able to run tests in parallel in the same instance
+ * of the test class (on the JVM, not Scala.js) unless you synchronized access to the shared, mutable state.
+ * </p>
+ *
+ * <p>
+ * Note that on the JVM, you may need to worry about synchronizing access to shared mutable
+ * fixture state, because the execution context may assign different threads to process
+ * different <code>Future</code> transformations. Although access to mutable state along
+ * the same linear chain of <code>Future</code> transformations need not be synchronized,
+ * it can be difficult to spot cases where these constraints are violated. The best approach
+ * is to use only immutable objects when transforming <code>Future</code>s. When that's not
+ * practical, involve only thread-safe mutable objects, as is done in the above example.
+ * On Scala.js, by contrast, you need not worry about thread synchronization, because
+ * in effect only one thread exists.
  * </p>
  *
  * <p>
@@ -1253,8 +1263,8 @@ package org.scalatest
  * In larger projects, teams often end up with several different fixtures that test classes need in different combinations,
  * and possibly initialized (and cleaned up) in different orders. A good way to accomplish this in ScalaTest is to factor the individual
  * fixtures into traits that can be composed using the <em>stackable trait</em> pattern. This can be done, for example, by placing
- * <code>withFixture</code> methods in several traits, each of which call <code>super.withFixture</code>. Here's an example in
- * which the <code>StringBuilder</code> and <code>ListBuffer[String]</code> fixtures used in the previous examples have been
+ * <code>withAsyncFixture</code> methods in several traits, each of which call <code>super.withAsyncFixture</code>. Here's an example in
+ * which the <code>StringBuilderActor</code> and <code>StringBufferActor</code> fixtures used in the previous examples have been
  * factored out into two <em>stackable fixture traits</em> named <code>Builder</code> and <code>Buffer</code>:
  * </p>
  *
@@ -1372,7 +1382,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * And if you only need one fixture you mix in only that trait:
+ * If you only need one fixture you mix in only that trait:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1386,7 +1396,7 @@ package org.scalatest
  * and an <code>afterEach</code> method that will be run after (like JUnit's <code>tearDown</code>).
  * Similarly, <code>BeforeAndAfterAll</code> has a <code>beforeAll</code> method that will be run before all tests,
  * and an <code>afterAll</code> method that will be run after all tests. Here's what the previously shown example would look like if it
- * were rewritten to use the <code>BeforeAndAfterEach</code> methods instead of <code>withFixture</code>:
+ * were rewritten to use the <code>BeforeAndAfterEach</code> methods instead of <code>withAsyncFixture</code>:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1490,7 +1500,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * To get the same ordering as <code>withFixture</code>, place your <code>super.beforeEach</code> call at the end of each
+ * To get the same ordering as <code>withAsyncFixture</code>, place your <code>super.beforeEach</code> call at the end of each
  * <code>beforeEach</code> method, and the <code>super.afterEach</code> call at the beginning of each <code>afterEach</code>
  * method, as shown in the previous example. It is a good idea to invoke <code>super.afterEach</code> in a <code>try</code>
  * block and perform cleanup in a <code>finally</code> clause, as shown in the previous example, because this ensures the
@@ -1498,9 +1508,9 @@ package org.scalatest
  * </p>
  *
  * <p>
- * The difference between stacking traits that extend <code>BeforeAndAfterEach</code> versus traits that implement <code>withFixture</code> is
+ * The difference between stacking traits that extend <code>BeforeAndAfterEach</code> versus traits that implement <code>withAsyncFixture</code> is
  * that setup and cleanup code happens before and after the test in <code>BeforeAndAfterEach</code>, but at the beginning and
- * end of the test in <code>withFixture</code>. Thus if a <code>withFixture</code> method completes abruptly with an exception, it is
+ * end of the test in <code>withAsyncFixture</code>. Thus if a <code>withAsyncFixture</code> method completes abruptly with an exception, it is
  * considered a failed test. By contrast, if any of the <code>beforeEach</code> or <code>afterEach</code> methods of <code>BeforeAndAfterEach</code> 
  * complete abruptly, it is considered an aborted suite, which will result in a <a href="events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
  * </p>
@@ -1510,11 +1520,11 @@ package org.scalatest
  * <p>
  * Sometimes you may want to run the same test code on different fixture objects. In other words, you may want to write tests that are "shared"
  * by different fixture objects.
- * To accomplish this in a <code>FunSuite</code>, you first place shared tests in
+ * To accomplish this in an <code>AsyncFunSuite</code>, you first place shared tests in
  * <em>behavior functions</em>. These behavior functions will be
- * invoked during the construction phase of any <code>FunSuite</code> that uses them, so that the tests they contain will
- * be registered as tests in that <code>FunSuite</code>.
- * For example, given this stack class:
+ * invoked during the construction phase of any <code>AsyncFunSuite</code> that uses them, so that the tests they contain will
+ * be registered as tests in that <code>AsyncFunSuite</code>.
+ * For example, given this <code>StackActor</code> class:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1574,19 +1584,19 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * You may want to test the <code>Stack</code> class in different states: empty, full, with one item, with one item less than capacity,
+ * You may want to test the stack represented by the <code>StackActor</code> class in different states: empty, full, with one item, with one item less than capacity,
  * <em>etc</em>. You may find you have several tests that make sense any time the stack is non-empty. Thus you'd ideally want to run
  * those same tests for three stack fixture objects: a full stack, a stack with a one item, and a stack with one item less than
  * capacity. With shared tests, you can factor these tests out into a behavior function, into which you pass the
- * stack fixture to use when running the tests. So in your <code>FunSuite</code> for stack, you'd invoke the
+ * stack fixture to use when running the tests. So in your <code>AsyncFunSuite</code> for <code>StackActor</code>, you'd invoke the
  * behavior function three times, passing in each of the three stack fixtures so that the shared tests are run for all three fixtures.
  * </p>
  *
  * <p>
  * You can define a behavior function that encapsulates these shared tests inside the <code>FunSuite</code> that uses them. If they are shared
- * between different <code>FunSuite</code>s, however, you could also define them in a separate trait that is mixed into
- * each <code>FunSuite</code> that uses them.
- * <a name="StackBehaviors">For</a> example, here the <code>nonEmptyStack</code> behavior function (in this case, a
+ * between different <code>AsyncFunSuite</code>s, however, you could also define them in a separate trait that is mixed into
+ * each <code>AsyncFunSuite</code> that uses them.
+ * <a name="StackBehaviors">For</a> example, here the <code>nonEmptyStackActor</code> behavior function (in this case, a
  * behavior <em>method</em>) is defined in a trait along with another
  * method containing shared tests for non-full stacks:
  * </p>
@@ -1661,29 +1671,17 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * Given these behavior functions, you could invoke them directly, but <code>FunSuite</code> offers a DSL for the purpose,
+ * Given these behavior functions, you could invoke them directly, but <code>AsyncFunSuite</code> offers a DSL for the purpose,
  * which looks like this:
  * </p>
  *
  * <pre class="stHighlight">
- * testsFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
- * testsFor(nonFullStack(stackWithOneItem))
+ * testsFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
+ * testsFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
  * </pre>
  *
  * <p>
- * If you prefer to use an imperative style to change fixtures, for example by mixing in <code>BeforeAndAfterEach</code> and
- * reassigning a <code>stack</code> <code>var</code> in <code>beforeEach</code>, you could write your behavior functions
- * in the context of that <code>var</code>, which means you wouldn't need to pass in the stack fixture because it would be
- * in scope already inside the behavior function. In that case, your code would look like this:
- * </p>
- *
- * <pre class="stHighlight">
- * testsFor(nonEmptyStack) // assuming lastValuePushed is also in scope inside nonEmptyStack
- * testsFor(nonFullStack)
- * </pre>
- *
- * <p>
- * The recommended style, however, is the functional, pass-all-the-needed-values-in style. Here's an example:
+ * Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1797,20 +1795,22 @@ package org.scalatest
  * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
- * In a <code>FunSuite</code> there is no nesting construct analogous to <code>FunSpec</code>'s <code>describe</code> clause.
+ * In a <code>AsyncFunSuite</code> there is no nesting construct analogous to
+ * <code>AsyncFunSpec</code>'s <code>describe</code> clause.
  * Therefore, you need to do a bit of
- * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in a
- * <code>FunSuite</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can pass this string
- * the same way you pass any other data needed by the shared tests, or just call <code>toString</code> on the shared fixture object.
- * This is the approach taken by the previous <code>FunSuiteStackBehaviors</code> example.
+ * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in an
+ * <code>AsyncFunSuite</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call
+ * <code>toString</code> on the shared fixture object, or pass this string
+ * the same way you pass any other data needed by the shared tests.
+ * This is the approach taken by the previous <code>AsyncFunSuiteStackBehaviors</code> example.
  * </p>
  *
  * <p>
- * Given this <code>FunSuiteStackBehaviors</code> trait, calling it with the <code>stackWithOneItem</code> fixture, like this:
+ * Given this <code>AsyncFunSuiteStackBehaviors</code> trait, calling it with the <code>stackWithOneItem</code> fixture, like this:
  * </p>
  *
  * <pre class="stHighlight">
- * testsFor(nonEmptyStack(stackWithOneItem, lastValuePushed))
+ * testsFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
  * </pre>
  *
  * <p>
@@ -1818,9 +1818,9 @@ package org.scalatest
  * </p>
  *
  * <ul>
- * <li><code>empty is invoked on this non-empty stack: Stack(9)</code></li>
- * <li><code>peek is invoked on this non-empty stack: Stack(9)</code></li>
- * <li><code>pop is invoked on this non-empty stack: Stack(9)</code></li>
+ * <li><code>Size is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>Peek is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>Pop is fired at non-empty stack actor: almost empty stack actor</code></li>
  * </ul>
  *
  * <p>
@@ -1836,11 +1836,10 @@ package org.scalatest
  * </p>
  *
  * <ul>
- * <li><code>empty is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)</code></li>
- * <li><code>peek is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)</code></li>
- * <li><code>pop is invoked on this non-empty stack: Stack(9, 8, 7, 6, 5, 4, 3, 2, 1)</code></li>
+ * <li><code>Size is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>Peek is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>Pop is fired at non-empty stack actor: almost full stack actor</code></li>
  * </ul>
- *
  */
 abstract class AsyncFunSuite extends AsyncFunSuiteLike {
 
