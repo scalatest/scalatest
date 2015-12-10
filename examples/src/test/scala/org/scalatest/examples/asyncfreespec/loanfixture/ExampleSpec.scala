@@ -108,7 +108,7 @@ class ExampleSpec extends AsyncFreeSpec {
       }
     }
 
-    // This test needs both the file and the database
+    // This test needs both the actor and the database
     "should be clear and concise" in {
       withDatabase { futureDb =>
         withActor { actor => // loan-fixture methods compose

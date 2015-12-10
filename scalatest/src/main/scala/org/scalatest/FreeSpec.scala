@@ -704,9 +704,10 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * It is recommended, though not required, that you create a corresponding tag annotation when you
- * create a <code>Tag</code> object. A tag annotation allows you to tag all the tests of a <code>FreeSpec</code> in
+ * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>FreeSpec</code> in
  * one stroke by annotating the class. For more information and examples, see the
- * <a href="Tag.html">documentation for class <code>Tag</code></a>.
+ * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
+ * tag each test individually at the test site.
  * </p>
  *
  * <a name="sharedFixtures"></a>

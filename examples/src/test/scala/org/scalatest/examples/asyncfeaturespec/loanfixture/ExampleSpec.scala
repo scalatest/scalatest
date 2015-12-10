@@ -85,7 +85,7 @@ class ExampleSpec extends AsyncFeatureSpec {
   }
 
   feature("Simplicity") {
-    // This test needs the file fixture
+    // This test needs the actor fixture
     scenario("User needs to read test code written by others") {
       withActor { actor =>
         actor ! Append("encourage clear code!")
@@ -104,7 +104,7 @@ class ExampleSpec extends AsyncFeatureSpec {
         }
       }
     }
-    // This test needs both the file and the database
+    // This test needs both the actor and the database
     scenario("User needs to write tests") {
       withDatabase { futureDb =>
         withActor { actor => // loan-fixture methods compose

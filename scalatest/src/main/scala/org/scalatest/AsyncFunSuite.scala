@@ -118,8 +118,8 @@ package org.scalatest
  * <code>Future[Assertion]</code> and registered. The implicit conversion is from <code>Assertion</code>
  * to <code>Future[Assertion]</code>, so you must end synchronous tests in some ScalaTest assertion
  * or matcher expression. If a test would not otherwise end in type <code>Assertion</code>, you can
- * place <code>succeed</code> at the end of the test. A field in trait <code>Assertions</code>,
- * <code>succeed</code> returns the <code>Succeeded</code> singleton:
+ * place <code>succeed</code> at the end of the test. <code>succeed</code>, a field in trait <code>Assertions</code>,
+ * returns the <code>Succeeded</code> singleton:
  * </p>
  *
  * <pre class="stREPL">
@@ -213,7 +213,7 @@ package org.scalatest
  *
  * <p>
  * The <code>recoverToSucceededIf</code> method performs a job similar to
- * <a href="Assertions.html#expectedExceptions"><code>assertThrows</code></a>, except
+ * <a href="Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>, except
  * in the context of a future. It transforms a <code>Future</code> of any type into a
  * <code>Future[Assertion]</code> that succeeds only if the original future fails with the specified
  * exception. Here's an example in the REPL:
@@ -280,9 +280,9 @@ package org.scalatest
  *
  * <p>
  * In other words, <code>recoverToExpectionIf</code> is to
- * <a href="Assertions.html#expectedExceptions"><code>intercept</code></a> as
- * <code>recovertToSucceededIf</code> is to <code>assertThrows</code>. The first one allows you to perform further
- * assertions on the expected exception. The second one gives you a result type that will satisfy the type checker
+ * <a href="Assertions.html#interceptMethod"><code>intercept</code></a> as
+ * <code>recovertToSucceededIf</code> is to <a href="Assertions.html#assertThrowsMethod"><code>assertThrows</code></a>. The first one allows you to
+ * perform further assertions on the expected exception. The second one gives you a result type that will satisfy the type checker
  * at the end of the test body. Here's an example showing <code>recoverToExceptionIf</code> in the REPL:
  * </p>
  *
@@ -416,10 +416,10 @@ package org.scalatest
  *
  * <p>
  * If you want to ignore all tests of a suite on Scala.js, where annotations can't be inspected at runtime, you'll need
- * to change <code>test</code> to <code>ignore</code> at each test. To make a suite non-discoverable on Scala.js, ensure it
+ * to change <code>test</code> to <code>ignore</code> at each test site. To make a suite non-discoverable on Scala.js, ensure it
  * does not declare a public no-arg constructor.  You can either declare a public constructor that takes one or more
  * arguments, or make the no-arg constructor non-public.  Because this technique will also make the suite non-discoverable
- * on the JVM, it is a good approach for suites you want to run on both Scala.js and the JVM.
+ * on the JVM, it is a good approach for suites you want to run (but not be discoverable) on both Scala.js and the JVM.
  * </p>
  *
  * <a name="pendingTests"></a><h2>Pending tests</h2>
@@ -434,8 +434,7 @@ package org.scalatest
  *
  * <p>
  * To support this style of testing, a test can be given a name that specifies one
- * bit of behavior required by the system being tested. The test can also include some code that
- * sends more information about the behavior to the reporter when the tests run. At the end of the test,
+ * bit of behavior required by the system being tested. At the end of the test,
  * it can call method <code>pending</code>, which will cause it to complete abruptly with <code>TestPendingException</code>.
  * </p>
  *
@@ -491,7 +490,7 @@ package org.scalatest
  * </pre>
  * 
  * <p>
- * One difference between an ignored test and a pending one is that an ignored test is intended to be used during a
+ * One difference between an ignored test and a pending one is that an ignored test is intended to be used during
  * significant refactorings of the code under test, when tests break and you don't want to spend the time to fix
  * all of them immediately. You can mark some of those broken tests as ignored temporarily, so that you can focus the red
  * bar on just failing tests you actually want to fix immediately. Later you can go back and fix the ignored tests.
@@ -584,9 +583,10 @@ package org.scalatest
  *
  * <p>
  * It is recommended, though not required, that you create a corresponding tag annotation when you
- * create a <code>Tag</code> object. A tag annotation allows you to tag all the tests of an <code>AsyncFunSuite</code> in
+ * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of an <code>AsyncFunSuite</code> in
  * one stroke by annotating the class. For more information and examples, see the
- * <a href="Tag.html">documentation for class <code>Tag</code></a>.
+ * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
+ * tag each test individually at the test site.
  * </p>
  *
  * <a name="sharedFixtures"></a>
@@ -715,7 +715,7 @@ package org.scalatest
  *
  * <p>
  * If you need to create the same mutable fixture objects in multiple tests, and don't need to clean them up after using them, the simplest approach is to write one or
- * more <em>get-fixture</em> methods. A get-fixture method returns a new instance of a needed fixture object (or an holder object containing
+ * more <em>get-fixture</em> methods. A get-fixture method returns a new instance of a needed fixture object (or a holder object containing
  * multiple fixture objects) each time it is called. You can call a get-fixture method at the beginning of each
  * test that needs the fixture, storing the returned object or objects in local variables. Here's an example:
  * </p>
@@ -751,7 +751,7 @@ package org.scalatest
  *
  * <p>
  * If you need to configure fixture objects differently in different tests, you can pass configuration into the get-fixture method.
- * For example, if you could pass in an initial value for a fixture object as a parameter to the get-fixture method.
+ * For example, you could pass in an initial value for a fixture object as a parameter to the get-fixture method.
  * </p>
  *
  * <a name="withAsyncFixtureNoArgAsyncTest"></a>
@@ -781,8 +781,8 @@ package org.scalatest
  * <p>
  * You can, therefore, override <code>withAsyncFixture</code> to perform setup before invoking the test function,
  * and/or perform cleanup after the test completes. The recommended way to ensure cleanup is performed after a test completes is
- * to use the <code>withCleanup</code> helper method, defined in supertrait <a href="AsyncSuite.html"><code>AsyncSuite</code></a>,
- * which will ensure that
+ * to use the <code>withCleanup</code> helper method, defined in supertrait <a href="AsyncSuite.html"><code>AsyncSuite</code></a>.
+ * The <code>withCleanup</code> method will ensure that
  * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
  * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
  * to execute asynchronously when the future completes.
@@ -825,9 +825,9 @@ package org.scalatest
  * <p>
  * If you want to perform an action only for certain outcomes, you'll need to 
  * register code performing that action as a callback on the <code>Future</code> using
- * one of <code>Future</code> registration methods: <code>onComplete</code>, <code>onSuccess</code>,
+ * one of <code>Future</code>'s registration methods: <code>onComplete</code>, <code>onSuccess</code>,
  * or <code>onFailure</code>. Note that if a test fails, that will be treated as a
- * <code>scala.util.Success(org.scalatest.Failure)</code>. So if you want to perform an 
+ * <code>scala.util.Success(org.scalatest.Failed)</code>. So if you want to perform an 
  * action if a test fails, for example, you'd register the callback using <code>onSuccess</code>.
  * </p>
  *
@@ -888,7 +888,7 @@ package org.scalatest
  *
  * <p>
  * Note that the <a href="Suite$NoArgTest.html"><code>NoArgAsyncTest</code></a> passed to <code>withAsyncFixture</code>, in addition to
- * an <code>apply</code> method that executes the test, also includes the test name and the <a href="#configMapSection">config
+ * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap.html">config
  * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withAsyncFixture</code>
  * implementation.
  * </p>
@@ -913,11 +913,12 @@ package org.scalatest
  * </pre>
  * 
  * <p>
- * Note that a <code>NoArgAsyncTest</code>'s <code>apply</code> method will only return a <code>Failure</code> if
- * the test completes abruptly with an exception (such as <code>OutOfMemoryError</code>) that should
+ * Note that a <code>NoArgAsyncTest</code>'s <code>apply</code> method will return a <code>scala.util.Failure</code> only if
+ * the test completes abruptly with a "test-fatal" exception (such as <code>OutOfMemoryError</code>) that should
  * cause the suite to abort rather than the test to fail. Thus usually you would use <code>map</code>
- * to transform future outcomes, not <code>transform</code>, so that such suite-aborting exceptions pass through
- * unchanged.  The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
+ * to transform future outcomes, not <code>transform</code>, so that such test-fatal exceptions pass through
+ * unchanged. The suite will abort asynchronously with any exception returned from <code>NoArgAsyncTest</code>'s
+ * apply method in a <code>scala.util.Failure</code>.
  * </p>
  * 
  * <a name="loanFixtureMethods"></a>
@@ -1028,7 +1029,7 @@ package org.scalatest
  *     }
  *   }
  *
- *   // This test needs both the file and the database
+ *   // This test needs both the actor and the database
  *   test("Test code should be clear and concise") {
  *     withDatabase { futureDb =&gt;
  *       withActor { actor =&gt; // loan-fixture methods compose
@@ -1151,7 +1152,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * In this example, the tests required one fixture objects, a <code>StringActor</code>. If your tests need multiple fixture objects, you can
+ * In this example, the tests required one fixture object, a <code>StringActor</code>. If your tests need multiple fixture objects, you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects or, alternatively, a case class containing
  * the objects.  For more information on the <code>withAsyncFixture(OneArgAsyncTest)</code> technique, see
  * the <a href="fixture/AsyncFunSuite.html">documentation for <code>fixture.AsyncFunSuite</code></a>.

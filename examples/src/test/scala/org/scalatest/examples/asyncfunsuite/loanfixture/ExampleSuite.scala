@@ -105,7 +105,7 @@ class ExampleSuite extends AsyncFunSuite {
     }
   }
 
-  // This test needs both the file and the database
+  // This test needs both the actor and the database
   test("Test code should be clear and concise") {
     withDatabase { futureDb =>
       withActor { actor => // loan-fixture methods compose

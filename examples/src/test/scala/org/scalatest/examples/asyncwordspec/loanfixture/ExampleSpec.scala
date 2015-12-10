@@ -108,7 +108,7 @@ class ExampleSpec extends AsyncWordSpec {
       }
     }
 
-    // This test needs both the file and the database
+    // This test needs both the actor and the database
     "be clear and concise" in {
       withDatabase { futureDb =>
         withActor { actor => // loan-fixture methods compose

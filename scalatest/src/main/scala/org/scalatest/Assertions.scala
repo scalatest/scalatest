@@ -233,9 +233,10 @@ import org.scalactic.Requirements._
  * Here's how you use <code>assertThrows</code>:
  * </p>
  *
+ * <a name="assertThrowsMethod"></a>
  * <pre class="stHighlight">
  * val s = "hi"
- * assertThrows[IndexOutOfBoundsException] {
+ * assertThrows[IndexOutOfBoundsException] { // Result type: Assertion
  *   s.charAt(-1)
  * }
  * </pre>
@@ -252,10 +253,11 @@ import org.scalactic.Requirements._
  * to ensure that data contained inside the exception have expected values. Here's an example:
  * </p>
  *
+ * <a name="interceptMethod"></a>
  * <pre class="stHighlight">
  * val s = "hi"
  * val caught =
- *   intercept[IndexOutOfBoundsException] {
+ *   intercept[IndexOutOfBoundsException] { // Result type: IndexOutOfBoundsException
  *     s.charAt(-1)
  *   }
  * assert(caught.getMessage.indexOf("-1") != -1)
