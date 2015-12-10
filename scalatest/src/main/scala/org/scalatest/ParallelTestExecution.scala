@@ -17,7 +17,7 @@ package org.scalatest
 
 import events.Event
 import org.scalatest.time.Span
-import tools.{DistributedTestRunnerSuite, TestSortingReporter}
+import org.scalatest.tools.{TestSpecificReporter, DistributedTestRunnerSuite, TestSortingReporter}
 
 /**
  * Trait that causes that the tests of any suite it is mixed into to be run in parallel if
@@ -264,13 +264,7 @@ trait ParallelTestExecution extends OneInstancePerTest { this: Suite =>
         super.run(testName, args)
     }
   }
-  
-  private[scalatest] def createTestSpecificReporter(testSorter: DistributedTestSorter, testName: String): Reporter = {
-    class TestSpecificReporter(testSorter: DistributedTestSorter, testName: String) extends Reporter {
-      def apply(event: Event) {
-        testSorter.apply(testName, event)
-      }
-    }
+
+  protected[scalatest] def createTestSpecificReporter(testSorter: DistributedTestSorter, testName: String): Reporter =
     new TestSpecificReporter(testSorter, testName)
-  }
 }

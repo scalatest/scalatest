@@ -2099,7 +2099,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
       )
     }
 
-    runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
+    runTestImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, invokeWithAsyncFixture)
   }
 
   /**
@@ -2164,7 +2164,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
   }
 
   override def run(testName: Option[String], args: Args): Status = {
-    runImpl(thisSuite, testName, args, super.run)
+    runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
   }
 
   /**

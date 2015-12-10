@@ -23,6 +23,8 @@ import Suite.IgnoreTagName
 import org.scalatest.Suite._
 import org.scalatest.events.LineInFile
 import org.scalatest.events.SeeStackDepthException
+import org.scalatest.tools.TestSortingReporter
+import org.scalatest.tools.TestSpecificReporter
 import scala.annotation.tailrec
 import org.scalatest.Suite.checkChosenStyles
 import org.scalatest.events.Event
@@ -124,10 +126,18 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testName: String,
     args: Args,
     includeIcon: Boolean,
+    parallelAsyncTestExecution: Boolean,
     invokeWithFixture: TestLeaf => AsyncOutcome
   )(implicit executionContext: ExecutionContext): Status = {
 
     requireNonNull(testName, args)
+
+    if (!parallelAsyncTestExecution) {
+      // Tell the TSR that the test is being distributed
+      for (sorter <- args.distributedTestSorter)
+        sorter.distributingTest(testName)
+    }
+
     
     import args._
 
@@ -210,12 +220,19 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 */
         case Failure(ex) => 
       }
+
+      if (!parallelAsyncTestExecution) {
+        for (sorter <- args.distributedTestSorter)
+          sorter.completedTest(testName)
+      }
     }
 
+    // SKIP-SCALATESTJS-START
     executionContext match {
       case dec: concurrent.SerialExecutionContext => dec.runNow(asyncOutcome.toFutureOutcome)
       case _ =>
     }
+    // SKIP-SCALATESTJS-END
 
     asyncOutcome.toStatus
   }
@@ -290,12 +307,29 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   def runTestsImpl(
     theSuite: Suite,
     testName: Option[String],
-    args: Args,
+    passedInArgs: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
     runTest: (String, Args) => Status
   ): Status = {
-    requireNonNull(testName, args)
+    requireNonNull(testName, passedInArgs)
+
+    val args =
+      if (!parallelAsyncTestExecution) {
+        if (passedInArgs.runTestInNewInstance)
+          passedInArgs // This is the test-specific instance
+        else {
+          if (passedInArgs.distributedTestSorter.isEmpty) {
+            val sortingTimeout = Suite.testSortingReporterTimeout // TODO: should pass in this
+            val testSortingReporter = new TestSortingReporter(theSuite.suiteId, passedInArgs.reporter, sortingTimeout, theSuite.testNames.size, passedInArgs.distributedSuiteSorter, System.err)
+            passedInArgs.copy(reporter = testSortingReporter, distributedTestSorter = Some(testSortingReporter))
+          }
+          else
+            passedInArgs
+        }
+      }
+      else
+        passedInArgs
 
     import args._
 
@@ -332,9 +366,20 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   def runImpl(
     theSuite: Suite,
     testName: Option[String],
-    args: Args,
+    passedInArgs: Args,
+    parallelAsyncTestExecution: Boolean,
     superRun: (Option[String], Args) => Status
   ): Status = {
+
+    val args =
+      if (!parallelAsyncTestExecution)
+        (testName, passedInArgs.distributedTestSorter) match {
+          case (Some(name), Some(sorter)) => passedInArgs.copy(reporter = new TestSpecificReporter(sorter, name))
+          case _ => passedInArgs
+        }
+      else
+        passedInArgs
+
     import args._
 
     // Set the flag that indicates registration is closed (because run has now been invoked),
