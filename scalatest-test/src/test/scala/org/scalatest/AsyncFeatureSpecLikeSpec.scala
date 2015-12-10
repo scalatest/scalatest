@@ -29,6 +29,8 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         val a = 1
 
         scenario("test 1") {
@@ -89,6 +91,8 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         val a = 1
 
         scenario("test 1") {
@@ -140,6 +144,8 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         scenario("test 1") {
           Future {
             SleepHelper.sleep(30)
@@ -183,6 +189,8 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends AsyncFeatureSpecLike {
+
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         scenario("test 1") {
           SleepHelper.sleep(30)
@@ -355,6 +363,8 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         scenario("test 1") {
           Future {
             SleepHelper.sleep(60)
@@ -397,6 +407,8 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
     it("should run tests that does not return Future and report their result in serial") {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
+
+        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         scenario("test 1") {
           SleepHelper.sleep(60)
