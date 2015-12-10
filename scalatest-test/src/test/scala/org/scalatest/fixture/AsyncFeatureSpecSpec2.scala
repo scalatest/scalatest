@@ -15,10 +15,12 @@
  */
 package org.scalatest.fixture
 
-import scala.concurrent.{Promise, Future}
+import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import org.scalatest.concurrent.SleepHelper
+
+import scala.util.Success
 
 class AsyncFeatureSpecSpec2 extends org.scalatest.AsyncFunSpec {
 
@@ -225,6 +227,259 @@ class AsyncFeatureSpecSpec2 extends org.scalatest.AsyncFunSpec {
       promise.future.map { repo =>
         assert(repo.testStartingEventsReceived.length == 3)
         assert(repo.testSucceededEventsReceived.length == 3)
+      }
+    }
+
+    // SKIP-SCALATESTJS-START
+    it("should run tests and its future in same main thread when use SerialExecutionContext") {
+
+      var mainThread = Thread.currentThread
+      var test1Thread: Option[Thread] = None
+      var test2Thread: Option[Thread] = None
+      var onCompleteThread: Option[Thread] = None
+
+      class ExampleSpec extends AsyncFeatureSpec {
+
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
+
+        scenario("test 1") { fixture =>
+          Future {
+            test1Thread = Some(Thread.currentThread)
+            succeed
+          }
+        }
+
+        scenario("test 2") { fixture =>
+          Future {
+            test2Thread = Some(Thread.currentThread)
+            succeed
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.whenCompleted { s =>
+        onCompleteThread = Some(Thread.currentThread)
+      }
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(test1Thread.isDefined)
+        assert(test1Thread.get == mainThread)
+        assert(test2Thread.isDefined)
+        assert(test2Thread.get == mainThread)
+        assert(onCompleteThread.isDefined)
+        assert(onCompleteThread.get == mainThread)
+      }
+    }
+
+    it("should run tests and its true async future in the same thread when use SerialExecutionContext") {
+      var mainThread = Thread.currentThread
+      @volatile var test1Thread: Option[Thread] = None
+      @volatile var test2Thread: Option[Thread] = None
+      var onCompleteThread: Option[Thread] = None
+
+      class ExampleSpec extends AsyncFeatureSpec {
+
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
+
+        scenario("test 1") { fixture =>
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            1000
+          )
+          promise.future.map { s =>
+            test1Thread = Some(Thread.currentThread)
+            s
+          }
+        }
+
+        scenario("test 2") { fixture =>
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            500
+          )
+          promise.future.map { s =>
+            test2Thread = Some(Thread.currentThread)
+            s
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.whenCompleted { s =>
+        onCompleteThread = Some(Thread.currentThread)
+      }
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(test1Thread.isDefined)
+        assert(test1Thread.get == mainThread)
+        assert(test2Thread.isDefined)
+        assert(test2Thread.get == mainThread)
+        assert(onCompleteThread.isDefined)
+        assert(onCompleteThread.get == mainThread)
+      }
+    }
+
+    it("should not run out of stack space with nested futures when using SerialExecutionContext") {
+
+      class ExampleSpec extends AsyncFeatureSpec {
+
+        // Note we get a StackOverflowError with the following execution
+        // context.
+        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
+
+        def sum(xs: List[Int]): Future[Int] =
+          xs match {
+            case Nil => Future.successful(0)
+            case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
+          }
+
+        scenario("test 1") { fixture =>
+          val fut: Future[Int] = sum((1 to 50000).toList)
+          fut.map(total => assert(total == 1250025000))
+        }
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(!rep.testSucceededEventsReceived.isEmpty)
+      }
+    }
+    // SKIP-SCALATESTJS-END
+
+    it("should run tests that returns Future and report their result in serial") {
+
+      class ExampleSpec extends AsyncFeatureSpec {
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
+
+        scenario("test 1") { fixture =>
+          Future {
+            SleepHelper.sleep(60)
+            succeed
+          }
+        }
+
+        scenario("test 2") { fixture =>
+          Future {
+            SleepHelper.sleep(30)
+            succeed
+          }
+        }
+
+        scenario("test 3") { fixture =>
+          Future {
+            succeed
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+        assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+        assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+        assert(rep.testSucceededEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+        assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 2")
+        assert(rep.testSucceededEventsReceived(2).testName == "Scenario: test 3")
+      }
+    }
+
+    it("should run tests that does not return Future and report their result in serial") {
+
+      class ExampleSpec extends AsyncFeatureSpec {
+
+        type FixtureParam = String
+        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+          test("testing")
+
+        scenario("test 1") { fixture =>
+          SleepHelper.sleep(60)
+          succeed
+        }
+
+        scenario("test 2") { fixture =>
+          SleepHelper.sleep(30)
+          succeed
+        }
+
+        scenario("test 3") { fixture =>
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+        assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+        assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+        assert(rep.testSucceededEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+        assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 2")
+        assert(rep.testSucceededEventsReceived(2).testName == "Scenario: test 3")
       }
     }
 

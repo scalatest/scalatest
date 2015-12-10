@@ -16,8 +16,10 @@
 package org.scalatest
 
 import SharedHelpers.EventRecordingReporter
-import scala.concurrent.{Promise, Future}
+import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest.concurrent.SleepHelper
+
+import scala.util.Success
 
 class AsyncFunSpecLikeSpec2 extends AsyncFunSpec {
 
@@ -208,6 +210,239 @@ class AsyncFunSpecLikeSpec2 extends AsyncFunSpec {
       promise.future.map { repo =>
         assert(repo.testStartingEventsReceived.length == 3)
         assert(repo.testSucceededEventsReceived.length == 3)
+      }
+    }
+
+    // SKIP-SCALATESTJS-START
+    it("should run tests and its future in same main thread when use SerialExecutionContext") {
+
+      var mainThread = Thread.currentThread
+      var test1Thread: Option[Thread] = None
+      var test2Thread: Option[Thread] = None
+      var onCompleteThread: Option[Thread] = None
+
+      class ExampleSpec extends AsyncFunSpecLike {
+
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        it("test 1") {
+          Future {
+            test1Thread = Some(Thread.currentThread)
+            succeed
+          }
+        }
+
+        it("test 2") {
+          Future {
+            test2Thread = Some(Thread.currentThread)
+            succeed
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.whenCompleted { s =>
+        onCompleteThread = Some(Thread.currentThread)
+      }
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(test1Thread.isDefined)
+        assert(test1Thread.get == mainThread)
+        assert(test2Thread.isDefined)
+        assert(test2Thread.get == mainThread)
+        assert(onCompleteThread.isDefined)
+        assert(onCompleteThread.get == mainThread)
+      }
+    }
+
+    it("should run tests and its true async future in the same thread when use SerialExecutionContext") {
+      var mainThread = Thread.currentThread
+      @volatile var test1Thread: Option[Thread] = None
+      @volatile var test2Thread: Option[Thread] = None
+      var onCompleteThread: Option[Thread] = None
+
+      class ExampleSpec extends AsyncFunSpecLike {
+
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        it("test 1") {
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            1000
+          )
+          promise.future.map { s =>
+            test1Thread = Some(Thread.currentThread)
+            s
+          }
+        }
+
+        it("test 2") {
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            500
+          )
+          promise.future.map { s =>
+            test2Thread = Some(Thread.currentThread)
+            s
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.whenCompleted { s =>
+        onCompleteThread = Some(Thread.currentThread)
+      }
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(test1Thread.isDefined)
+        assert(test1Thread.get == mainThread)
+        assert(test2Thread.isDefined)
+        assert(test2Thread.get == mainThread)
+        assert(onCompleteThread.isDefined)
+        assert(onCompleteThread.get == mainThread)
+      }
+    }
+
+    it("should not run out of stack space with nested futures when using SerialExecutionContext") {
+
+      class ExampleSpec extends AsyncFunSpecLike {
+
+        // Note we get a StackOverflowError with the following execution
+        // context.
+        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        def sum(xs: List[Int]): Future[Int] =
+          xs match {
+            case Nil => Future.successful(0)
+            case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
+          }
+
+        it("test 1") {
+          val fut: Future[Int] = sum((1 to 50000).toList)
+          fut.map(total => assert(total == 1250025000))
+        }
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(!rep.testSucceededEventsReceived.isEmpty)
+      }
+    }
+    // SKIP-SCALATESTJS-END
+
+    it("should run tests that returns Future and report their result in serial") {
+
+      class ExampleSpec extends AsyncFunSpecLike {
+
+        it("test 1") {
+          Future {
+            SleepHelper.sleep(60)
+            succeed
+          }
+        }
+
+        it("test 2") {
+          Future {
+            SleepHelper.sleep(30)
+            succeed
+          }
+        }
+
+        it("test 3") {
+          Future {
+            succeed
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testStartingEventsReceived(0).testName == "test 1")
+        assert(rep.testStartingEventsReceived(1).testName == "test 2")
+        assert(rep.testStartingEventsReceived(2).testName == "test 3")
+        assert(rep.testSucceededEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+        assert(rep.testSucceededEventsReceived(1).testName == "test 2")
+        assert(rep.testSucceededEventsReceived(2).testName == "test 3")
+      }
+    }
+
+    it("should run tests that does not return Future and report their result in serial") {
+
+      class ExampleSpec extends AsyncFunSpecLike {
+
+        it("test 1") {
+          SleepHelper.sleep(60)
+          succeed
+        }
+
+        it("test 2") {
+          SleepHelper.sleep(30)
+          succeed
+        }
+
+        it("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testStartingEventsReceived(0).testName == "test 1")
+        assert(rep.testStartingEventsReceived(1).testName == "test 2")
+        assert(rep.testStartingEventsReceived(2).testName == "test 3")
+        assert(rep.testSucceededEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived(0).testName == "test 1")
+        assert(rep.testSucceededEventsReceived(1).testName == "test 2")
+        assert(rep.testSucceededEventsReceived(2).testName == "test 3")
       }
     }
 
