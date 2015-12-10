@@ -227,10 +227,12 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       }
     }
 
+    // SKIP-SCALATESTJS-START
     executionContext match {
       case dec: concurrent.SerialExecutionContext => dec.runNow(asyncOutcome.toFutureOutcome)
       case _ =>
     }
+    // SKIP-SCALATESTJS-END
 
     asyncOutcome.toStatus
   }
