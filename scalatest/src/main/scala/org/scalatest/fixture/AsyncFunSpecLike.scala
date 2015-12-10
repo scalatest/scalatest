@@ -476,7 +476,7 @@ trait AsyncFunSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite
       )
     }
 
-    runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
+    runTestImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, invokeWithAsyncFixture)
   }
 
   /**
@@ -542,7 +542,7 @@ trait AsyncFunSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite
   }
 
   override def run(testName: Option[String], args: Args): Status = {
-    runImpl(thisSuite, testName, args, super.run)
+    runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
   }
 
   /**

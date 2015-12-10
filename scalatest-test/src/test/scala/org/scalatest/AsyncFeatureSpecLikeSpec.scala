@@ -29,8 +29,6 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         val a = 1
 
         scenario("test 1") {
@@ -91,8 +89,6 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         val a = 1
 
         scenario("test 1") {
@@ -144,8 +140,6 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-
         scenario("test 1") {
           Future {
             SleepHelper.sleep(30)
@@ -189,8 +183,6 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       @volatile var count = 0
 
       class ExampleSpec extends AsyncFeatureSpecLike {
-
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         scenario("test 1") {
           SleepHelper.sleep(30)
@@ -358,6 +350,86 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       assert(!rep.testSucceededEventsReceived.isEmpty)
     }
     // SKIP-SCALATESTJS-END
+
+    it("should run tests that returns Future and report their result in serial") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        scenario("test 1") {
+          Future {
+            SleepHelper.sleep(60)
+            succeed
+          }
+        }
+
+        scenario("test 2") {
+          Future {
+            SleepHelper.sleep(30)
+            succeed
+          }
+        }
+
+        scenario("test 3") {
+          Future {
+            succeed
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+      assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+      assert(rep.testSucceededEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 2")
+      assert(rep.testSucceededEventsReceived(2).testName == "Scenario: test 3")
+    }
+
+    it("should run tests that does not return Future and report their result in serial") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        scenario("test 1") {
+          SleepHelper.sleep(60)
+          succeed
+        }
+
+        scenario("test 2") {
+          SleepHelper.sleep(30)
+          succeed
+        }
+
+        scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+      assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+      assert(rep.testSucceededEventsReceived.length == 3)
+      assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 2")
+      assert(rep.testSucceededEventsReceived(2).testName == "Scenario: test 3")
+    }
 
   }
 
