@@ -314,7 +314,7 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    * @param fun the property check function to apply to each row of this <code>TableFor$n$</code>
    */
   def apply[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
-    asserting.check(heading, rows: _*)(fun)
+    asserting.forAll(heading, rows: _*)(fun)
   }
 
   /**
@@ -1295,7 +1295,7 @@ $columnsOfIndexes$
   def genTableAsserting(targetDir: File, scalaJS: Boolean): Unit = {
 
     val doCheckMethodTemplate: String =
-      "def check[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+      "def forAll[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
 
     def doCheckMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
