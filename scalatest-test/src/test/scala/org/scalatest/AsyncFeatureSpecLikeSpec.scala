@@ -330,6 +330,41 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       assert(onCompleteThread.get == mainThread)
     }
 
+    it("should not hang if a Future completes with nothing on the queue") {
+      // Despite not having a notify registered as a callback on the Future
+      // passed to SerialExecutionContext.runNow, it is not possible to get
+      // a test to hang, because there's always one more transformation after
+      // the Future[Assertion] completes, and that's the one that transforms
+      // the Future[Assertion] to a Future[Outcome]. That will cause a
+      // job to be enqueued via SerialExecutionContext.execute, and that
+      // will do the final notify. After running that job, the Future passed
+      // to runNow will be complete, and runNow will return.
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+
+        scenario("test 1") {
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            1000
+          )
+          promise.future
+        }
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.waitUntilCompleted()
+      assert(!rep.testSucceededEventsReceived.isEmpty)
+    }
+
     it("should not run out of stack space with nested futures when using SerialExecutionContext") {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
