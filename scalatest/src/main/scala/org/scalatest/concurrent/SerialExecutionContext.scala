@@ -27,6 +27,7 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
 
   def execute(runnable: Runnable): Unit = {
     queue.put(runnable)
+    synchronized { notifyAll() }
   }
 
   def reportFailure(t: Throwable): Unit =
@@ -35,9 +36,10 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
   def runNow(future: Future[Outcome]): Unit = {
     while (!future.isCompleted) {
       while (queue.peek != null)
-        queue.poll().run()
+        queue.poll().run() // What to do about exceptions here?
       if (!future.isCompleted)
-        SleepHelper.sleep(10)
+        synchronized { wait() }
+        // SleepHelper.sleep(10)
     }
   }
 
