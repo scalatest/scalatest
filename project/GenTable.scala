@@ -1294,13 +1294,13 @@ $columnsOfIndexes$
 
   def genTableAsserting(targetDir: File, scalaJS: Boolean): Unit = {
 
-    val doCheckMethodTemplate: String =
+    val doForAllMethodTemplate: String =
       "def forAll[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
 
-    def doCheckMethod(i: Int): String = {
+    def doForAllMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(doCheckMethodTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(doForAllMethodTemplate)
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1332,9 +1332,9 @@ $columnsOfIndexes$
         st.toString
     }
 
-    def doCheckMethodImpl(i: Int): String = {
-      val checkImplTemplate: String =
-        doCheckMethodTemplate + """ = {
+    def doForAllMethodImpl(i: Int): String = {
+      val forAllImplTemplate: String =
+        doForAllMethodTemplate + """ = {
           |  for ((($alphaLower$), idx) <- rows.zipWithIndex) {
           |    try {
           |      fun($alphaLower$)
@@ -1379,7 +1379,7 @@ $columnsOfIndexes$
 
       val alpha = "abcdefghijklmnopqrstuv"
 
-      val st = new org.antlr.stringtemplate.StringTemplate(checkImplTemplate)
+      val st = new org.antlr.stringtemplate.StringTemplate(forAllImplTemplate)
       val alphaLower = alpha.take(i).mkString(", ")
       val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
       val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
@@ -1441,7 +1441,7 @@ $columnsOfIndexes$
          |
          |trait TableAsserting[T] {
          |  type Result
-         |  $checkMethods$
+         |  $forAllMethods$
          |  def forEvery[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
          |  def exists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
          |}
@@ -1450,7 +1450,7 @@ $columnsOfIndexes$
          |
          |  abstract class TableAssertingImpl[T] extends TableAsserting[T] {
          |
-         |    $checkMethodImpls$
+         |    $forAllMethodImpls$
          |
          |    private[scalatest] case class ForResult[T](passedCount: Int = 0,
          |                          discardedCount: Int = 0,
@@ -1618,11 +1618,11 @@ $columnsOfIndexes$
     val bw = new BufferedWriter(new FileWriter(new File(targetDir, "TableAsserting.scala")))
 
     try {
-      val checkMethods = (for (i <- 1 to 22) yield doCheckMethod(i)).mkString("\n\n")
-      val checkMethodImpls = (for (i <- 1 to 22) yield doCheckMethodImpl(i)).mkString("\n\n")
+      val forAllMethods = (for (i <- 1 to 22) yield doForAllMethod(i)).mkString("\n\n")
+      val forAllMethodImpls = (for (i <- 1 to 22) yield doForAllMethodImpl(i)).mkString("\n\n")
       val st = new org.antlr.stringtemplate.StringTemplate(mainTemplate)
-      st.setAttribute("checkMethods", checkMethods)
-      st.setAttribute("checkMethodImpls", checkMethodImpls)
+      st.setAttribute("forAllMethods", forAllMethods)
+      st.setAttribute("forAllMethodImpls", forAllMethodImpls)
       bw.write(st.toString)
     }
     finally {
