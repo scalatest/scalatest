@@ -48,7 +48,6 @@ import scala.util.{Try, Success, Failure}
  */
 sealed trait Status { thisStatus =>
 
-  // TODO: Implement the functionality that succeeds throws the unreported exception.
   // SKIP-SCALATESTJS-START
   /**
    * Blocking call that waits until completion, then returns returns <code>true</code> if no tests failed and no suites aborted, else
@@ -91,7 +90,6 @@ sealed trait Status { thisStatus =>
    */
   def isCompleted: Boolean
 
-  // TODO: Implement the functionality that waitUntilCompleted throws the unreported exception.
   // SKIP-SCALATESTJS-START
   /**
    * Blocking call that returns only after the underlying test or suite is completed, completing abruptly with an exception
@@ -137,12 +135,6 @@ sealed trait Status { thisStatus =>
    */
   def whenCompleted(callback: Try[Boolean] => Unit)
 
-   // Specify whether the passed by-name is executed after all after effects and
-   // or call backs have been executed. Hmm. I think this one is used to fire events. So do
-   // we need to wait for that? One difference between this and withAfterEffect could be tht
-   // it ah, yes, so this happens after the darn ... yes I think this doesn't wait. So any
-   // exception thrown here won't be installed as an unreportedException. Reason is that
-   // the whole shebang has already completed?
   /**
    * Registers a <code>Status</code>-producing by-name function to execute after this
    * <code>Status</code> completes, returning a <code>Status</code> that mirrors the <code>Status</code>
@@ -168,15 +160,22 @@ sealed trait Status { thisStatus =>
    * If a by-name function passed to this method
    * </p>
    *
+   * <strong>Specify whether the passed by-name is executed after all after effects and
+   * or call backs have been executed. Hmm. I think this one is used to fire events. So do
+   * we need to wait for that? One difference between this and withAfterEffect could be tht
+   * it ah, yes, so this happens after the darn ... yes I think this doesn't wait. So any
+   * exception thrown here won't be installed as an unreportedException. Reason is that
+   * the whole shebang has already completed?</strong>
+   *
+   *
+   * <strong>Same thing here. If it throws an exception that is reported as the unreportedException. When does this status
+   * complete though? I think at that time it can complete no matter what happens underneath. Oh yes, that's ture
+   *  because the Status will never come back. If it is a test-aborting exception, it will be wrapped in ExecutionException,
+   *  and also the inner one will be allowed to propagate up the call stack.</strong>
+   *
    * @param status A <code>Status</code>-producing by-name function to invoke after this <code>Status</code> has completed.
    * @return a <code>Status </code> that represents the status of executing the by-name function passed to this method.
    */
-/*
- Same thing here. If it throws an exception that is reported as the unreportedException. When does this status
- complete though? I think at that time it can complete no matter what happens underneath. Oh yes, that's ture
-  because the Status will never come back. If it is a test-aborting exception, it will be wrapped in ExecutionException,
-  and also the inner one will be allowed to propagate up the call stack.
-*/
   final def thenRun(f: => Status): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
     whenCompleted { _ =>
@@ -210,13 +209,13 @@ sealed trait Status { thisStatus =>
     returnedStatus
   }
 
-  // True means succeeded, false means a test failure or suite abort happened.
   /**
    * Converts this <code>Status</code> to a <code>Future[Boolean]</code> where <code>Success(true)</code> means
    * no tests failed and suites aborted, <code>Success(false)</code>, means at least one test failed or one
    * suite aborted and those events were reported via the <code>Reporter</code>, <code>Failure(ex)</code> means
    * a suite aborted but the exception, <code>ex</code>, was not reported to the <code>Reporter</code>.
    *
+   * <strong>True means succeeded, false means a test failure or suite abort happened.</strong>
    */
   final def toFuture: Future[Boolean] = {
     val promise = Promise[Boolean]
@@ -424,14 +423,16 @@ object FailedStatus extends Status with Serializable {
   def whenCompleted(f: Try[Boolean] => Unit) { f(Success(false)) }
 }
 
-// TODO: Indicate this is by definition complet when it is constructed. Search also where it is used
-// to make sure we really want it.
+/** TODO: Indicate this is by definition complet when it is constructed. Search also where it is used
+ *to make sure we really want it.
+ */
 case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisAbortedStatus =>
 
   // SKIP-SCALATESTJS-START
-// TODO: Document that it always completes abruptly with probably call ex val unreportedException
   /**
    * Always returns <code>false</code>.
+   *
+   * TODO: Document that it always completes abruptly with probably call ex val unreportedException
    * 
    * @return <code>true</code>
    */
@@ -517,8 +518,6 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     }
   }
 
-  // TODO: Specify that this method invokes the callbacks on the invoking thread after it releases the lock
-  // such that the Status has completed.
   def setCompleted() {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
@@ -653,7 +652,12 @@ final class StatefulStatus extends Status with Serializable {
    *
    * <p>
    * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to completed.
+   * </p>
+   *
    * <p>
+   * <strong>TODO: Specify that this method invokes the callbacks on the invoking thread after it releases the lock
+   * such that the Status has completed.</strong>
+   * </p>
    */
   def setCompleted() {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
@@ -702,13 +706,12 @@ final class StatefulStatus extends Status with Serializable {
   }
 }
 
-/*
-The tricky one here is what if multiple unreported exceptions exist in the inner statuses. For that
-I might pick the highest priority one? I.e., if there's a fatal one pick that? Nah, not really.
-Just pick a random one and printStackTrace the others? Sure why not.
-*/
 /**
  * Composite <code>Status</code> that aggregates its completion and failed states of set of other <code>Status</code>es passed to its constructor.
+ *
+ * <strong>The tricky one here is what if multiple unreported exceptions exist in the inner statuses. For that
+ * I might pick the highest priority one? I.e., if there's a fatal one pick that? Nah, not really.
+ * Just pick a random one and printStackTrace the others? Sure why not.</strong>
  *
  * @param status the <code>Status</code>es out of which this status is composed.
  */
@@ -815,10 +818,10 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
     }
   }
 
-  /*
-   * If this is defined, it means a suite needs to be aborted because of this exception.
+  /**
+   * <strong>If this is defined, it means a suite needs to be aborted because of this exception.
    * This one will include ones that come because one of the nested statuses ended up with an
-   * unreported exception or a callback registered with whenCompleted?
+   * unreported exception or a callback registered with whenCompleted?</strong>
    */
   override def unreportedException: Option[Throwable] = {
     synchronized {
@@ -832,10 +835,5 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
       }
     }
   }
-/*
-    synchronized {
-      statuses.map(_.unreportedException).find(_.isDefined).flatten
-    }
-*/
 }
 
