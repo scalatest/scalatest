@@ -36,7 +36,8 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
     while (!future.isCompleted) {
       while (queue.peek != null)
         queue.poll().run()
-      SleepHelper.sleep(10)
+      if (!future.isCompleted)
+        SleepHelper.sleep(10)
     }
   }
 
