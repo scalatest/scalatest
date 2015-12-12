@@ -1545,7 +1545,6 @@ $columnsOfIndexes$
          |  type Result
          |  $forAllMethods$
          |  $forEveryMethods$
-         |  def doForEvery[E <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
          |  def exists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
          |}
          |
@@ -1620,7 +1619,7 @@ $columnsOfIndexes$
          |      innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
          |    }
          |
-         |    def doForEvery[E <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    private def doForEvery[E <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
          |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
          |      val messageList = result.failedElements.map(_._3)
