@@ -187,7 +187,7 @@ sealed trait Status { thisStatus =>
               returnedStatus.setFailed()
             case Failure(ex) =>
               returnedStatus.setFailed()
-              returnedStatus.setUnreportedException(ex)
+              returnedStatus.setFailedWith(ex)
             case _ =>
           }
           returnedStatus.setCompleted()
@@ -196,12 +196,12 @@ sealed trait Status { thisStatus =>
       catch {
         case ex: Throwable =>
           if (Suite.anExceptionThatShouldCauseAnAbort(ex)) {
-            returnedStatus.setUnreportedException(new ExecutionException(ex))
+            returnedStatus.setFailedWith(new ExecutionException(ex))
             returnedStatus.setCompleted()
             throw ex
           }
           else {
-            returnedStatus.setUnreportedException(ex)
+            returnedStatus.setFailedWith(ex)
             returnedStatus.setCompleted()
           }
       }
@@ -308,10 +308,10 @@ sealed trait Status { thisStatus =>
           catch {
             case ex: Throwable if Suite.anExceptionThatShouldCauseAnAbort(ex) =>
               val execEx = new ExecutionException(ex)
-              returnedStatus.setUnreportedException(execEx)
+              returnedStatus.setFailedWith(execEx)
               throw ex
 
-            case ex: Throwable => returnedStatus.setUnreportedException(ex)
+            case ex: Throwable => returnedStatus.setFailedWith(ex)
           }
           finally {
             returnedStatus.setCompleted()
@@ -320,11 +320,11 @@ sealed trait Status { thisStatus =>
         case Failure(originalEx) =>
           try {
             f
-            returnedStatus.setUnreportedException(originalEx)
+            returnedStatus.setFailedWith(originalEx)
           }
           catch {
             case ex: Throwable =>
-              returnedStatus.setUnreportedException(originalEx)
+              returnedStatus.setFailedWith(originalEx)
               println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
               ex.printStackTrace()
           }
@@ -507,7 +507,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     }
   }
 
-  def setUnreportedException(ex: Throwable): Unit = {
+  def setFailedWith(ex: Throwable): Unit = {
     // TODO: Throw an exception if it is a fatal one?
     // TODO: Throw an exception if already have an exception in here.
     synchronized {
@@ -636,7 +636,7 @@ final class StatefulStatus extends Status with Serializable {
     }
   }
 
-  def setUnreportedException(ex: Throwable): Unit = {
+  def setFailedWith(ex: Throwable): Unit = {
     // TODO: Throw an exception if it is a fatal one?
     // TODO: Throw an exception if already have an exception in here.
     synchronized {
