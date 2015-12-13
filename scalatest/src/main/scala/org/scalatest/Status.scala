@@ -40,8 +40,13 @@ import scala.util.{Try, Success, Failure}
  * </ul>
  *
  * <p>
+ * Note that pending and canceled tests will not cause a <code>Status</code> to fail. Only failed tests
+ * and aborted suites will cause a <code>Status</code> to fail.
+ * </p>
+ *
+ * <p>
  * One use case of <code>Status</code> is to ensure that "after" code (such as an <code>afterEach</code> or <code>afterAll</code> method)
- * does not execute until after the relevant entity (a single test or all tests and nested suites) has completed.
+ * does not execute until after the relevant entity (one test, one suite, or all of a suite's tests or nested suites) has completed.
  * Another use case is to implement the default behavior of asynchronous styles, in which subsequent each test does not begin
  * execution until after the previous test has completed.
  * </p>
@@ -54,15 +59,31 @@ sealed trait Status { thisStatus =>
    * returns <code>false</code>, or if an unreported exception has been installed, completes abruptly with that exception.
    * 
    * <p>
-   * This only reports <code>false</code> if there was a failed test or aborted suite in the context of the "run" lifecycle method it was returned from.
-   * For example, if you call <code>succeeds</code> on the return <code>Status</code> of <code>runTest</code>, it returns (after that test has
-   * completed) <code>true</code> if the test whose name was passed to <code>runTest</code> succeeded, <code>false</code> if that test failed (or
-   * the suite aborts). If you call <code>succeeds</code> on the return value of <code>runTests</code>, by contrast, it returns (after the suite's
-   * tests have completed) <code>true</code> only if all tests in the suite succeeded. If any test in the suite fails (or the whole suite aborts),
-   * the <code>succeeds</code> call will return <code>false</code>. The <code>Status</code> returned from <code>runNestedSuites</code> will return
-   * true only if all tests in all nested suites (and their nested suites, etc.) fired off by that <code>runNestedSuites</code> call succeed and
-   * no suites abort. Simlarly, the <code>Status</code> returned from <code>run</code> will return true only if all tests in all nested suites
-   * (and their nested suites, etc.) fired off by that <code>run</code> call succeed and no suites abort. 
+   * This method only reports <code>false</code> if there was a failed test or aborted suite in the context of the "run" lifecycle method
+   * from which it was returned.
+   * For example, if you call <code>succeeds</code> on a <code>Status</code> returned by <code>runTest</code>, <code>succeeds</code>
+   * will (after that test has completed) return <code>false</code> if the test whose name was passed to <code>runTest</code> fails,
+   * else it will return <code>true</code>.
+   * In other words, so long as the test doesn't fail &#8212;whether the test succeeds, is canceled, or is pending&#8212;<code>succeeds</code>
+   * will return <code>true</code>. 
+   * If you call <code>succeeds</code> on a <code>Status</code> returned by <code>runTests</code>, by contrast, <code>succeeds</code>
+   * will (after the suite's
+   * tests have completed) return <code>true</code> only if none of the tests in the suite fail. If any test in the suite fails,
+   * <code>succeeds</code> will return <code>false</code>.
+   * If you call <code>succeeds</code> on a <code>Status</code> returned by <code>runNestedSuites</code>, <code>succeeds</code> will
+   * return true only if no tests fail and no suites abort when running all nested suites (and their nested suites, recursively).
+   * Similarly, if you call <code>succeeds</code> on a <code>Status</code> returned by <code>run</code>, <code>succeeds</code> will
+   * return true only if no tests fail and no suites abort when running all tests nested suites (and their nested suites, recursively).
+   * </p>
+   *
+   * <p>
+   * If this <code>Status</code> fails with an "unreported exception," an exception that occurred during the
+   * activity represented by this <code>Status</code> that was not reported to the <code>Reporter</code> via a
+   * ScalaTest event, the <code>succeeds</code> method will complete abruptly with that exception. If the
+   * original exception was a test-fatal exception, such as <code>StackOverflowError</code>, the 
+   * <code>unreportedException</code> method will return a <code>java.util.ExecutionException</code> that contains
+   * the original test-fatal exception as its cause. The <code>succeeds</code> method will in that case
+   * complete abruptly with the <code>ExecutionException</code> that wraps the original test-fatal exception.
    * </p>
    *
    * <p>
@@ -78,8 +99,9 @@ sealed trait Status { thisStatus =>
   // SKIP-SCALATESTJS-END
 
   /**
-   * Non-blocking call that indicates whether the all the tests or nested suites fired off by the run method that returned the
-   * <code>Status</code> have completed. Because this is non-blocking, you can use this to poll the completion status.
+   * Non-blocking call that indicates whether the entity represented by this
+   * <code>Status</code> (one test, one suite, or all of a suite's tests or nested suites) has completed. Because this is non-blocking,
+   * you can use this to poll the completion status.
    * 
    * <p>
    * Note: this method will not indicate whether a test has failed, suite has aborted, or an unreported exception has been installed.
@@ -113,12 +135,15 @@ sealed trait Status { thisStatus =>
    * If an unreported exception has been installed on this <code>Status</code>, the 
    * <code>Try</code> passed into the callback function will be a <code>Failure</code> containing that exception. Otherwise
    * the <code>Try</code> will be a <code>Success</code> containing true if no tests failed
-   * or suites completed during the activity represented by this <code>Status</code>, else <code>false</code>. 
+   * or suites aborted during the activity represented by this <code>Status</code>, else <code>false</code>. 
+   * Otherwise, at least one test failed or suite aborted, and any exception that occurred was reported
+   * via a ScalaTest event, so the <code>Try</code> will be a <code>Success</code> containing <code>false</code>.
    * </p>
    *
    * <p>
    * You may register multiple callback functions, which on completion will be executed in an undefined
-   * order.
+   * order. Note that these callbacks are executed <em>after</em> the <code>Status</code> completes. ScalaTest
+   * uses this method to fire events to the <code>Reporter</code>.
    * </p>
    *
    * <p>
