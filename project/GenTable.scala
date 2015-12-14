@@ -1307,7 +1307,7 @@ $columnsOfIndexes$
   def genTableAsserting(targetDir: File, scalaJS: Boolean): Unit = {
 
     val doForAllMethodTemplate: String =
-      "def forAll[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+      "def forAll[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
 
     def doForAllMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1424,7 +1424,7 @@ $columnsOfIndexes$
     }
 
     val doForEveryMethodTemplate: String =
-      "def forEvery[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+      "def forEvery[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
 
     def doForEveryMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1475,7 +1475,7 @@ $columnsOfIndexes$
           "rows"
       val forEveryImplTemplate: String =
         doForEveryMethodTemplate + """ = {
-                                   |  doForEvery[Tuple$n$[$alphaUpper$], ASSERTION](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "forEvery", 2)((row: $rowType$) => fun($row$))
+                                   |  doForEvery[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "forEvery", 2)((row: $rowType$) => fun($row$))
                                    |}
                                  """.stripMargin
 
@@ -1519,7 +1519,7 @@ $columnsOfIndexes$
     }
 
     val doExistsMethodTemplate: String =
-      "def exists[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+      "def exists[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
 
     def doExistsMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1570,7 +1570,7 @@ $columnsOfIndexes$
           "rows"
       val forEveryImplTemplate: String =
         doExistsMethodTemplate + """ = {
-                                     |  doExists[Tuple$n$[$alphaUpper$], ASSERTION](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2)((row: $rowType$) => fun($row$))
+                                     |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2)((row: $rowType$) => fun($row$))
                                      |}
                                    """.stripMargin
 
@@ -1642,7 +1642,7 @@ $columnsOfIndexes$
          |import org.scalatest.exceptions.StackDepth
          |import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
          |
-         |trait TableAsserting[T] {
+         |trait TableAsserting[ASSERTION] {
          |  type Result
          |  $forAllMethods$
          |  $forEveryMethods$
@@ -1651,7 +1651,7 @@ $columnsOfIndexes$
          |
          |abstract class UnitTableAsserting {
          |
-         |  abstract class TableAssertingImpl[T] extends TableAsserting[T] {
+         |  abstract class TableAssertingImpl[ASSERTION] extends TableAsserting[ASSERTION] {
          |
          |    $forAllMethodImpls$
          |
@@ -1663,7 +1663,7 @@ $columnsOfIndexes$
          |                          passedElements: IndexedSeq[(Int, E)] = IndexedSeq.empty,
          |                          failedElements: IndexedSeq[(Int, E, Throwable)] = IndexedSeq.empty)
          |
-         |    private[scalatest] def runAndCollectResult[E <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[E], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION): ForResult[E] = {
+         |    private[scalatest] def runAndCollectResult[E <: Product](namesOfArgs: List[String], rows: Seq[E], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION): ForResult[E] = {
          |      import org.scalatest.InspectorsHelper.{shouldPropagate, indentErrorMessages}
          |
          |      @scala.annotation.tailrec
@@ -1720,7 +1720,7 @@ $columnsOfIndexes$
          |      innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
          |    }
          |
-         |    private def doForEvery[E <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    private def doForEvery[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
          |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
          |      val messageList = result.failedElements.map(_._3)
@@ -1735,7 +1735,7 @@ $columnsOfIndexes$
          |
          |    $existsMethodImpls$
          |
-         |    private def doExists[E <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    private def doExists[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
          |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
          |      if (result.passedCount == 0) {
