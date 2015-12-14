@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+/*package org.scalatest
 
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.{ExecutionContext, Promise, Future}
@@ -448,4 +448,4 @@ class AsyncPropSpecSpec2 extends AsyncFunSpec {
 
   }
 
-}
+}*/

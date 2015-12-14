@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+/*package org.scalatest.fixture
 
 import org.scalatest._
 import scala.collection.immutable.ListSet
@@ -320,4 +320,4 @@ trait AsyncPropSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
   final override val styleName: String = "org.scalatest.fixture.PropSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
-}
+}*/
