@@ -321,6 +321,10 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
     asserting.forEvery(heading, rows: _*)(fun)
   }
 
+  def exists[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+    asserting.exists(heading, rows: _*)(fun)
+  }
+
   /**
    * A string representation of this object, which includes the heading strings as well as the rows of data.
    */
@@ -914,8 +918,9 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def exists[A, ASSERTION](table: TableFor1[A])(fun: (A) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
-    asserting.exists[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
+  def exists[A, ASSERTION](table: TableFor1[A])(fun: A => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+    table.exists(fun)
+    //asserting.exists[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
   }
 
                                           """
@@ -929,7 +934,8 @@ val propertyCheckForEveryTemplate = """
    * @param fun the property check function to apply to each row of data in the table
    */
   def exists[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
-    asserting.exists[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
+    table.exists(fun)
+    //asserting.exists[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
   }
                                       """
 
@@ -1512,6 +1518,101 @@ $columnsOfIndexes$
         st.toString
     }
 
+    val doExistsMethodTemplate: String =
+      "def exists[$alphaUpper$, ASSERTION](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+
+    def doExistsMethod(i: Int): String = {
+      val alpha = "abcdefghijklmnopqrstuv"
+
+      val st = new org.antlr.stringtemplate.StringTemplate(doExistsMethodTemplate)
+      val alphaLower = alpha.take(i).mkString(", ")
+      val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+      val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+      val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+      val strings = List.fill(i)("String").mkString(", ")
+      val argsNamedArgSeq =
+        for (argsIdx <- 0 until i) yield
+        "\"" + "arg" + argsIdx + "\""
+      val argsNamedArg = argsNamedArgSeq.mkString(",")
+      val sumOfArgs = alpha.take(i).mkString(" + ")
+      val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+      val rawRows =
+        for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+      val columnsOfIndexes = rawRows.mkString(",\n")
+      st.setAttribute("n", i)
+      st.setAttribute("alphaLower", alphaLower)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("alphaName", alphaName)
+      st.setAttribute("strings", strings)
+      st.setAttribute("argsNamedArg", argsNamedArg)
+      st.setAttribute("namesAndValues", namesAndValues)
+      st.setAttribute("sumOfArgs", sumOfArgs)
+      st.setAttribute("argNames", argNames)
+      st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+      if (scalaJS)
+        transform(st.toString)
+      else
+        st.toString
+    }
+
+    def doExistsMethodImpl(i: Int): String = {
+      val heading =
+        if (i == 1)
+          "heading"
+        else
+          (1 to i).map(x => "heading._" + x).mkString(", ")
+      val row = (1 to i).map(x => "row._" + x).mkString(", ")
+      val rows =
+        if (i == 1)
+          "rows.map(Tuple1.apply[A])"
+        else
+          "rows"
+      val forEveryImplTemplate: String =
+        doExistsMethodTemplate + """ = {
+                                     |  doExists[Tuple$n$[$alphaUpper$], ASSERTION](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2)((row: $rowType$) => fun($row$))
+                                     |}
+                                   """.stripMargin
+
+      val alpha = "abcdefghijklmnopqrstuv"
+
+      val st = new org.antlr.stringtemplate.StringTemplate(forEveryImplTemplate)
+      val alphaLower = alpha.take(i).mkString(", ")
+      val alphaUpper = alpha.take(i).toUpperCase.mkString(", ")
+      val alphaName = alpha.take(i).map(_ + "Name").mkString(", ")
+      val namesAndValues = alpha.take(i).map(c => "              \"    \" + " + c + "Name + \" = \" + " + c).mkString("", " + \",\" + \"\\n\" +\n", " + \"\\n\" +\n")
+      val strings = List.fill(i)("String").mkString(", ")
+      val argsNamedArgSeq =
+        for (argsIdx <- 0 until i) yield
+        "\"" + "arg" + argsIdx + "\""
+      val argsNamedArg = argsNamedArgSeq.mkString(",")
+      val sumOfArgs = alpha.take(i).mkString(" + ")
+      val argNames = alpha.map("\"" + _ + "\"").take(i).mkString(", ")
+      val rawRows =
+        for (idx <- 0 to 9) yield
+        List.fill(i)("  " + idx).mkString(" *     (", ", ", ")")
+      val columnsOfIndexes = rawRows.mkString(",\n")
+      val rowType = if (i == 1) "Tuple1[A]" else "(" + alphaUpper + ")"
+      st.setAttribute("n", i)
+      st.setAttribute("alphaLower", alphaLower)
+      st.setAttribute("alphaUpper", alphaUpper)
+      st.setAttribute("alphaName", alphaName)
+      st.setAttribute("strings", strings)
+      st.setAttribute("argsNamedArg", argsNamedArg)
+      st.setAttribute("namesAndValues", namesAndValues)
+      st.setAttribute("sumOfArgs", sumOfArgs)
+      st.setAttribute("argNames", argNames)
+      st.setAttribute("columnsOfIndexes", columnsOfIndexes)
+      st.setAttribute("heading", heading)
+      st.setAttribute("rowType", rowType)
+      st.setAttribute("row", row)
+      st.setAttribute("rows", rows)
+      if (scalaJS)
+        transform(st.toString)
+      else
+        st.toString
+    }
+
     val mainTemplate =
       """/*
          | * Copyright 2001-2015 Artima, Inc.
@@ -1545,7 +1646,7 @@ $columnsOfIndexes$
          |  type Result
          |  $forAllMethods$
          |  $forEveryMethods$
-         |  def exists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result
+         |  $existsMethods$
          |}
          |
          |abstract class UnitTableAsserting {
@@ -1632,7 +1733,9 @@ $columnsOfIndexes$
          |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
          |    }
          |
-         |    def exists[T <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[T], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: T => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    $existsMethodImpls$
+         |
+         |    private def doExists[E <: Product, ASSERTION](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
          |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
          |      if (result.passedCount == 0) {
@@ -1727,11 +1830,15 @@ $columnsOfIndexes$
       val forAllMethodImpls = (for (i <- 1 to 22) yield doForAllMethodImpl(i)).mkString("\n\n")
       val forEveryMethods = (for (i <- 1 to 22) yield doForEveryMethod(i)).mkString("\n\n")
       val forEveryMethodImpls = (for (i <- 1 to 22) yield doForEveryMethodImpl(i)).mkString("\n\n")
+      val existsMethods = (for (i <- 1 to 22) yield doExistsMethod(i)).mkString("\n\n")
+      val existsMethodImpls = (for (i <- 1 to 22) yield doExistsMethodImpl(i)).mkString("\n\n")
       val st = new org.antlr.stringtemplate.StringTemplate(mainTemplate)
       st.setAttribute("forAllMethods", forAllMethods)
       st.setAttribute("forAllMethodImpls", forAllMethodImpls)
       st.setAttribute("forEveryMethods", forEveryMethods)
       st.setAttribute("forEveryMethodImpls", forEveryMethodImpls)
+      st.setAttribute("existsMethods", existsMethods)
+      st.setAttribute("existsMethodImpls", existsMethodImpls)
       bw.write(st.toString)
     }
     finally {
