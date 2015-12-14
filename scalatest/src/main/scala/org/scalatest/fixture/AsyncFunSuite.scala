@@ -140,7 +140,7 @@ package org.scalatest.fixture
  * </pre>
  *
  * <p>
- * If a test fails, the <code>OneArgAsyncTest</code> function will result in a [[org.scalatest.Failed Failed]] wrapping the exception describing
+ * If a test fails, the <code>OneArgAsyncTest</code> function will result in an [[org.scalatest.Failed org.scalatest.Failed]] wrapping the exception describing
  * the failure. To ensure clean up happens even if a test fails, you should invoke the test function and do the cleanup using
  * <code>withCleanup</code>, as shown in the previous example. The <code>withCleanup</code> method, defined in <code>AsyncSuite</code>, ensures
  * the second, cleanup block of code is executed, whether the the first block throws an exception or returns a future. If it returns a
