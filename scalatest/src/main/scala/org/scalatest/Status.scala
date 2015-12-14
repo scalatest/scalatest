@@ -55,8 +55,10 @@ sealed trait Status { thisStatus =>
 
   // SKIP-SCALATESTJS-START
   /**
-   * Blocking call that waits until completion, then returns returns <code>true</code> if no tests failed and no suites aborted, else
-   * returns <code>false</code>, or if an unreported exception has been installed, completes abruptly with that exception.
+   * Blocking call that waits until the entity represented by this <code>Status</code> (one test, one suite, or all of
+   * a suite's tests or nested suites) has completed, then returns <code>true</code> if no tests failed and no
+   * suites aborted, else returns <code>false</code>, or if an unreported exception has been installed, completes
+   * abruptly with that exception.
    * 
    * <p>
    * This method only reports <code>false</code> if there was a failed test or aborted suite in the context of the "run" lifecycle method
@@ -90,10 +92,9 @@ sealed trait Status { thisStatus =>
    * <em>Note: because blocking is not possible on Scala.js, this method is not available on Scala.js.</em>
    * </p>
    *
-   * @return <code>true</code> if no tests failed and no suites aborted, <code>false</code> otherwise
-   * @throws Throwable if an exception occurred during the activity represented by this <code>Status</code> that was not reported
-   *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>, this
-   *            method will complete abruptly with that unreported exception after the <code>Status</code> has completed.
+   * @return after waiting until completion, <code>true</code> if no tests failed and no suites aborted, <code>false</code> otherwise
+   * @throws unreportedException if an exception occurred during the activity represented by this <code>Status</code> that was not reported
+   *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>.
    */
   def succeeds(): Boolean
   // SKIP-SCALATESTJS-END
@@ -114,16 +115,26 @@ sealed trait Status { thisStatus =>
 
   // SKIP-SCALATESTJS-START
   /**
-   * Blocking call that returns only after the underlying test or suite is completed, completing abruptly with an exception
-   * if an unreported exception has been installed.
+   * Blocking call that waits until the entity represented by this <code>Status</code> (one test, one suite, or all of
+   * a suite's tests or nested suites) has completed, then either returns normally, or if an unreported exception has
+   * been installed, completes abruptly with that unreported exception.
+   *
+   * <p>
+   * If this <code>Status</code> fails with an "unreported exception," an exception that occurred during the
+   * activity represented by this <code>Status</code> that was not reported to the <code>Reporter</code> via a
+   * ScalaTest event, the <code>waitUntilCompleted</code> method will complete abruptly with that exception. If the
+   * original exception was a test-fatal exception, such as <code>StackOverflowError</code>, the 
+   * <code>unreportedException</code> method will return a <code>java.util.ExecutionException</code> that contains
+   * the original test-fatal exception as its cause. The <code>waitUntilCompleted</code> method will in that case
+   * complete abruptly with the <code>ExecutionException</code> that wraps the original test-fatal exception.
+   * </p>
    *
    * <p>
    * <em>Note: because blocking is not possible on Scala.js, this method is not available on Scala.js.</em>
    * </p>
    *
-   * @throws Throwable if an exception occurred during the activity represented by this <code>Status</code> that was not reported
-   *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>, this
-   *            method will complete abruptly with that unreported exception after the <code>Status</code> has completed.
+   * @throws unreportedException if an exception occurred during the activity represented by this <code>Status</code> that was not reported
+   *            via a ScalaTest event and therefore was installed as an unreported exception on this <code>Status</code>.
    */
   def waitUntilCompleted()
   // SKIP-SCALATESTJS-END
@@ -136,19 +147,11 @@ sealed trait Status { thisStatus =>
    * <code>Try</code> passed into the callback function will be a <code>Failure</code> containing that exception. Otherwise
    * the <code>Try</code> will be a <code>Success</code> containing true if no tests failed
    * or suites aborted during the activity represented by this <code>Status</code>, else <code>false</code>. 
-   * Otherwise, at least one test failed or suite aborted, and any exception that occurred was reported
-   * via a ScalaTest event, so the <code>Try</code> will be a <code>Success</code> containing <code>false</code>.
-   * </p>
-   *
-   * <p>
-   * You may register multiple callback functions, which on completion will be executed in an undefined
-   * order. Note that these callbacks are executed <em>after</em> the <code>Status</code> completes. ScalaTest
-   * uses this method to fire events to the <code>Reporter</code>.
    * </p>
    *
    * <p>
    * The callback functions registered with <code>whenCompleted</code> will be executed <em>after</em> the <code>Status</code>
-   * has completed. If the <code>Status</code> has already completed, functions passed to this method will be
+   * has completed, in an undefined order. If the <code>Status</code> has already completed, functions passed to this method will be
    * executed immediately by the calling thread before returning.
    * </p>
    *
@@ -156,47 +159,61 @@ sealed trait Status { thisStatus =>
    * Any exception thrown by a callback function will be propagated back on the thread used to invoke the callback.
    * </p>
    *
+   * <p>
+   * Internally ScalaTest uses this method to register callbacks that
+   * fire completion events (<code>TestSucceeded</code>, <code>TestFailed</code>,
+   * <code>SuiteCompleted</code>, <em>etc.</em>) to the <code>Reporter</code>.
+   * </p>
+   *
    * @param callback the callback function to execute once this <code>Status</code> has completed
    */
   def whenCompleted(callback: Try[Boolean] => Unit)
 
+  // TODO: We are not yet propagating installed unreported exceptions in thenRun. Write the tests and implement the code.
   /**
    * Registers a <code>Status</code>-producing by-name function to execute after this
    * <code>Status</code> completes, returning a <code>Status</code> that mirrors the <code>Status</code>
    * returned by the by-name.
    *
    * <p>
-   * This method is used by async styles to ensure that by default, each subsequent test in an async-style
-   * suite begins execution only after the previous test has completed. This method is <em>not</em> used if
-   * <code>ParallelTestExection</code> is mixed into an async style. Instead, tests are allowed to begin
-   * execution concurrently.
-   * </p>
-   *
-   * <p>
-   * The <code>Status</code> returned by this method will completes when the status produced by the 
+   * The <code>Status</code> returned by this method will complete when the status produced by the 
    * <code>Status</code> produced by the passed-by name completes. The returned <code>Status</code>
    * will complete with the same <code>succeeds</code> and <code>unreportedException</code> values.
    * But unlike the <code>Status</code> produced by the by-name, the returned <code>Status</code> will
    * be available immediately.
    * </p>
    *
-   *
    * <p>
-   * If a by-name function passed to this method
+   * If the by-name function passed to this method completes abruptly with a <em>non-test-fatal</em> exception,
+   * that exception will be caught and installed as the <code>unreportedException</code> on the
+   * <code>Status</code> returned by this method. The <code>Status</code> returned by this method
+   * will then complete. The thread that attempted to evaluate the by-name function will be allowed
+   * to continue (<code>i.e.</code>, the non-test-fatal exception will <em>not</em> be rethrown
+   * on that thread).
    * </p>
    *
-   * <strong>Specify whether the passed by-name is executed after all after effects and
-   * or call backs have been executed. Hmm. I think this one is used to fire events. So do
-   * we need to wait for that? One difference between this and withAfterEffect could be tht
-   * it ah, yes, so this happens after the darn ... yes I think this doesn't wait. So any
-   * exception thrown here won't be installed as an unreportedException. Reason is that
-   * the whole shebang has already completed?</strong>
+   * <p>
+   * If the by-name function passed to this method completes abruptly with a <em>test-fatal</em> exception,
+   * such as <code>StackOverflowError</code>, that exception will be caught and a new
+   * <code>java.util.concurrent.ExecutionException</code> that contains the test-fatal exception as its
+   * cause will be installed as the <code>unreportedException</code> on the
+   * <code>Status</code> returned by this method. The <code>Status</code> returned by this method
+   * will then complete. The original test-fatal exception will then be rethrown on the
+   * thread that attempted to evaluate the by-name function.
+   * </p>
    *
+   * <p>
+   * If an unreported exception is installed on this <code>Status</code>, the passed by-name function will
+   * <em>not</em> be executed. Instead, the same unreported exception will be installed on the <code>Status</code>
+   * returned by this method.
+   * </p>
    *
-   * <strong>Same thing here. If it throws an exception that is reported as the unreportedException. When does this status
-   * complete though? I think at that time it can complete no matter what happens underneath. Oh yes, that's ture
-   *  because the Status will never come back. If it is a test-aborting exception, it will be wrapped in ExecutionException,
-   *  and also the inner one will be allowed to propagate up the call stack.</strong>
+   * <p>
+   * Internally, ScalaTest uses this method in async styles to ensure that by default, each subsequent test in an async-style
+   * suite begins execution only after the previous test has completed. This method is <em>not</em> used if
+   * <code>ParallelTestExection</code> is mixed into an async style. Instead, tests are allowed to begin
+   * execution concurrently.
+   * </p>
    *
    * @param status A <code>Status</code>-producing by-name function to invoke after this <code>Status</code> has completed.
    * @return a <code>Status </code> that represents the status of executing the by-name function passed to this method.
@@ -237,10 +254,12 @@ sealed trait Status { thisStatus =>
   /**
    * Converts this <code>Status</code> to a <code>Future[Boolean]</code> where <code>Success(true)</code> means
    * no tests failed and suites aborted, <code>Success(false)</code>, means at least one test failed or one
-   * suite aborted and those events were reported via the <code>Reporter</code>, <code>Failure(ex)</code> means
-   * a suite aborted but the exception, <code>ex</code>, was not reported to the <code>Reporter</code>.
+   * suite aborted and any thrown exception was was reported to the <code>Reporter</code> via a ScalaTest
+   * event, <code>Failure(unreportedException)</code> means
+   * an exception, <code>unreportedException</code>, was thrown that was not reported to the <code>Reporter</code>
+   * via a ScalaTest event.
    *
-   * <strong>True means succeeded, false means a test failure or suite abort happened.</strong>
+   * @return a <code>Future[Boolean]</code> representing this <code>Status</code>.
    */
   final def toFuture: Future[Boolean] = {
     val promise = Promise[Boolean]
@@ -248,8 +267,10 @@ sealed trait Status { thisStatus =>
     promise.future
   }
 
+  // TODO: Make sure to test what happens when before and after code throw exceptions.
   /**
-   * An exception that was not reported by the activity represented by this <code>Status</code>.
+   * An exception that was thrown during the activity represented by this <code>Status</code> that
+   * was not reported via a ScalaTest event fired to the <code>Reporter</code> by the
    *
    * <p>
    * When a test executes, "non-test-fatal" thrown exceptions are reported by the events
@@ -276,10 +297,10 @@ sealed trait Status { thisStatus =>
    * body of an actual test. For example, traits <code>BeforeAndAfter</code>,  <code>BeforeAndAfterEach</code>,
    * and <code>BeforeAndAfterEachTestData</code> execute code before and after tests. Traits
    * <code>BeforeAndAfterAll</code> and </p><code>BeforeAndAfterAllConfigMap</code> execute code before
-   * and after all tests and nested suites. If any "before" or "after"
+   * and after all tests and nested suites of a suite. If any "before" or "after"
    * code completes abruptly with an exception (of any type, not just test-fatal types) on a thread taken
    * from an async suite's execution context, this exception will
-   * installed as an <code>unreportedException</code> of the relevant <code>Status</code>. TODO: Is that true. Tests will tell.
+   * installed as an <code>unreportedException</code> of the relevant <code>Status</code>.
    * </p>
    *
    * <p>
@@ -299,27 +320,55 @@ sealed trait Status { thisStatus =>
    * <code>Future</code> will succeed with the value <code>false</code>. If an unreported exception has been installed
    * on the <code>Status</code>, however, the <code>Future</code> will fail with that exception.
    * </p>
+   *
+   * @return a optional unreported <code>Throwable</code>
    */
   def unreportedException: Option[Throwable] = None
 
+  // TODO: Currently we are attempting to execution the after code. This is a change from how
+  // ScalaTest has behaved from the beginning, and it is inconsistent also with thenRun. So 
+  // I think I want to go back to how we were doing it before, if the before code blows up
+  // or runTest, etc., then we don't attempt the after code.
   /**
    * Registers a by-name function (producing an optional exception) to execute
    * after this <code>Status</code> completes.
    *
    * <p>
-   * This method is used by traits <code>BeforeAndAfter</code>,
-   * <code>BeforeAndAfterAllConfigMap</code>, <code>BeforeAndAfterEach</code>,
-   * and <code>BeforeAndAfterEachTestData</code> to ensure "after" code is executed after
-   * the relevant test completes, or the case of <code>BeforeAndAfterAll</code>, tests and nested suites complete.
-   *  <code>BeforeAndAfterAll</code>, </p>
+   * If the by-name function passed to this method completes abruptly with a <em>non-test-fatal</em> exception,
+   * that exception will be caught and installed as the <code>unreportedException</code> on the
+   * <code>Status</code> returned by this method. The <code>Status</code> returned by this method
+   * will then complete. The thread that attempted to evaluate the by-name function will be allowed
+   * to continue (<code>i.e.</code>, the non-test-fatal exception will <em>not</em> be rethrown
+   * on that thread).
+   * </p>
    *
-   * So what's wierd about this one is that I have it returning Option[Throwable], because that
-   * was what I had in hand, but I need to specify what happens if the method throws an exception
-   * anyway, so maybe it should be thrown instead of optionally returned. Also, what
-   * happens if it is a test-aborting exception. I think what should happen is it shows up
-   * in the status as an unreportedException, but wrapped in an ExecutionException. This would
-   * simplify the thing. Then also what happens if it is that, is the inner exception, the real one
-   * is allowed to propagate up the call stack.
+   * <p>
+   * If the by-name function passed to this method completes abruptly with a <em>test-fatal</em> exception,
+   * such as <code>StackOverflowError</code>, that exception will be caught and a new
+   * <code>java.util.concurrent.ExecutionException</code> that contains the test-fatal exception as its
+   * cause will be installed as the <code>unreportedException</code> on the
+   * <code>Status</code> returned by this method. The <code>Status</code> returned by this method
+   * will then complete. The original test-fatal exception will then be rethrown on the
+   * thread that attempted to evaluate the by-name function.
+   * </p>
+   *
+   * <p>
+   * If an unreported exception is installed on this <code>Status</code>, the passed by-name function will
+   * <em>not</em> be executed. Instead, the same unreported exception will be installed on the <code>Status</code>
+   * returned by this method.
+   * </p>
+   *
+   * <p>
+   * Internally, ScalaTest uses this method in traits <code>BeforeAndAfter</code>,
+   * <code>BeforeAndAfterEach</code>, and <code>BeforeAndAfterEachTestData</code> to ensure "after" code is
+   * executed after the relevant test has completed, and in traits <code>BeforeAndAfterAll</code> and
+   * <code>BeforeAndAfterAllConfigMap</code> to ensure "after" code is executed after the
+   * relevant tests and nested suites have completed.
+   * </p>
+   *
+   * @param f A by-name function to invoke after this <code>Status</code> has completed.
+   * @return a <code>Status</code> that represents this <code>Status</code>,
+   *         modified by any exception thrown by the passed by-name function.
    */
   final def withAfterEffect(f: => Unit): Status = {
     val returnedStatus = new ScalaTestStatefulStatus
@@ -611,7 +660,7 @@ final class StatefulStatus extends Status with Serializable {
 
   // SKIP-SCALATESTJS-START
   /**
-   * Blocking call that waits until completion, as indicated by an invocation of <code>setCompleted</code> on this instance, then returns returns <code>false</code> 
+   * Blocking call that waits until completion, as indicated by an invocation of <code>setCompleted</code> on this instance, then returns <code>false</code> 
    * if <code>setFailed</code> was called on this instance, else returns <code>true</code>.
    * 
    * @return <code>true</code> if no tests failed and no suites aborted, <code>false</code> otherwise

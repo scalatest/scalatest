@@ -443,23 +443,25 @@ import Suite.getMethodForTestName
  * </p>
  *
  * <a name="errorHandling"></a>
- * <h2>Treatment of <code>java.lang.Error</code>s</h2>
+ * <h2>"Test-fatal" exceptions</h2>
  *
  * <p>
  * The Javadoc documentation for <code>java.lang.Error</code> states:
  * </p>
  *
  * <blockquote>
- * An <code>Error</code> is a subclass of <code>Throwable</code> that indicates serious problems that a reasonable application should not try to catch. Most
+ * An <code>Error</code> is a subclass of <code>Throwable</code> that indicates serious problems that a reasonable application
+ * should not try to catch. Most
  * such errors are abnormal conditions.
  * </blockquote>
  *
  * <p>
- * Because <code>Error</code>s are used to denote serious errors, trait <code>Suite</code> and its subtypes in the ScalaTest API do not always treat a test
- * that completes abruptly with an <code>Error</code> as a test failure, but sometimes as an indication that serious problems
- * have arisen that should cause the run to abort. For example, if a test completes abruptly with an <code>OutOfMemoryError</code>, 
- * it will not be reported as a test failure, but will instead cause the run to abort. Because not everyone uses <code>Error</code>s only to represent serious
- * problems, however, ScalaTest only behaves this way for the following exception types (and their subclasses):
+ * Because <code>Error</code>s are used to denote serious errors, trait <code>Suite</code> and its subtypes in the ScalaTest API
+ * do not always treat a test that completes abruptly with an <code>Error</code> as a test failure, but sometimes as an indication
+ * that serious problems have arisen that should cause the run to abort. For example, if a test completes abruptly with an
+ * <code>OutOfMemoryError</code>, it will not be reported as a test failure, but will instead cause the run to abort. Because not
+ * everyone uses <code>Error</code>s only to represent serious
+ * problems, however, ScalaTest only behaves this way for the following <em>test-fatal</em> exception types (and their subclasses):
  * </p>
  *
  * <ul>
@@ -474,9 +476,10 @@ import Suite.getMethodForTestName
  * </ul>
  *
  * <p>
- * The previous list includes all <code>Error</code>s that exist as part of Java 1.5 API, excluding <code>java.lang.AssertionError</code>. ScalaTest
- * does treat a thrown <code>AssertionError</code> as an indication of a test failure. In addition, any other <code>Error</code> that is not an instance of a
- * type mentioned in the previous list will be caught by the <code>Suite</code> traits in the ScalaTest API and reported as the cause of a test failure. 
+ * The previous list includes all <code>Error</code>s that exist as part of Java 1.5 API, excluding <code>java.lang.AssertionError</code>.
+ * ScalaTest does treat a thrown <code>AssertionError</code> as an indication of a test failure. In addition, any other
+ * <code>Error</code> that is not an instance of a type mentioned in the previous list will be caught by the <code>Suite</code> traits
+ * in the ScalaTest API and reported as the cause of a test failure. 
  * </p>
  *
  * <p>
