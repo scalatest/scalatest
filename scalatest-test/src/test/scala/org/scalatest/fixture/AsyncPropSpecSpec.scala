@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+/*package org.scalatest.fixture
 
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
@@ -479,4 +479,4 @@ class AsyncPropSpecSpec extends org.scalatest.FunSpec {
 
   }
 
-}
+}*/

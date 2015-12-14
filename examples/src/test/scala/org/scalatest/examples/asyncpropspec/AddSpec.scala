@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.examples.asyncpropspec
+/*package org.scalatest.examples.asyncpropspec
 
 import org.scalatest.AsyncPropSpec
 import scala.concurrent.Future
@@ -59,5 +59,5 @@ class AddSpec extends AsyncPropSpec with TableDrivenPropertyChecks {
       assert(sum == expectedSum)
     }
   }
-}
+}*/
 

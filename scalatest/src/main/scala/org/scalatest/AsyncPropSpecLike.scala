@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+/*package org.scalatest
 
 import scala.collection.immutable.ListSet
 import Suite.autoTagClassAnnotations
@@ -221,4 +221,4 @@ trait AsyncPropSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
   final override val styleName: String = "org.scalatest.PropSpec"
 
   override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = createTestDataFor(testName, theConfigMap, this)
-}
+}*/
