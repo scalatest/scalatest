@@ -1822,27 +1822,32 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new StackSuite execute
- * <span class="stGreen">StackSuite:
- * StackSuite:
- * - an empty stack actor is empty
- * - Peek is fired at an empty stack actor
- * - Pop is fired at an empty stack actor
- * - Size is fired at non-empty stack actor: almost empty stack actor
- * - Peek is fired at non-empty stack actor: almost empty stack actor
- * - Pop is fired at non-empty stack actor: almost empty stack actor
- * - non-full stack actor is not full: almost empty stack actor
- * - Push is fired at non-full stack actor: almost empty stack actor
- * - Size is fired at non-empty stack actor: almost full stack actor
- * - Peek is fired at non-empty stack actor: almost full stack actor
- * - Pop is fired at non-empty stack actor: almost full stack actor
- * - non-full stack actor is not full: almost full stack actor
- * - Push is fired at non-full stack actor: almost full stack actor
- * - a full stack actor is full
- * - Size is fired at non-empty stack actor: full stack actor
- * - Peek is fired at non-empty stack actor: full stack actor
- * - Pop is fired at non-empty stack actor: full stack actor
- * - Push is fired at a full stack actor</span>
+ * scala&gt; new StackSpec execute
+ * <span class="stGreen">StackSpec:
+A Stack
+  (when empty)
+  - should be empty
+  - should complain on peek
+  - should complain on pop
+  (with one item)
+  - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor
+  - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor
+  - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor
+  - should return non-full StackInfo when Size is fired at non-full stack actor: almost empty stack actor
+  - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost empty stack actor
+  (with one item less than capacity)
+  - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor
+  - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor
+  - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor
+  - should return non-full StackInfo when Size is fired at non-full stack actor: almost full stack actor
+  - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost full stack actor
+  (full)
+  - should be full
+  - should return non-empty StackInfo when Size is fired at non-empty stack actor: full stack actor
+  - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: full stack actor
+  - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: full stack actor
+  - should complain on a push
+ * </span>
  * </pre>
  *
  * <p>
