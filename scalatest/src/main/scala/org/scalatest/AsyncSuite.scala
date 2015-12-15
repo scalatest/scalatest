@@ -320,10 +320,25 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
           cleanup  // execute the clean up
           throw ex // rethrow the same exception
       }
-    // Made it this far, so register the cleanup as a 
-    // callback on the Future
-    result onComplete { _ => cleanup }
-    result
+    // First deal with Failure, and mimic finally semantics
+    // but in future-space. The recoverWith will only execute
+    // if this is a Failure, and will only return a Failure,
+    // so the subsequent map will only happen if this recoverWith
+    // does not happen.
+    result recoverWith {
+      case firstEx: Throwable => 
+        try {
+          cleanup
+          Future.failed(firstEx)
+        }
+        catch {
+          case secondEx: Throwable =>
+            Future.failed(secondEx)
+        }
+    } map { v => // Ensure cleanup happens for the Success case
+      cleanup
+      v
+    }
   }
 
   /**
