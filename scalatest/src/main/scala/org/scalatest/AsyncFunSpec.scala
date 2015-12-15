@@ -906,7 +906,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; new ExampleSpec execute
  * <span class="stGreen">ExampleSpec:
  * This test
  * - should succeed</span>
@@ -1407,7 +1407,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * By mixing in both the <code>Builder</code> and <code>Buffer</code> traits, <code>ExampleSuite</code> gets both fixtures, which will be
+ * By mixing in both the <code>Builder</code> and <code>Buffer</code> traits, <code>ExampleSpec</code> gets both fixtures, which will be
  * initialized before each test and cleaned up after. The order the traits are mixed together determines the order of execution.
  * In this case, <code>Builder</code> is &ldquo;super&rdquo; to <code>Buffer</code>. If you wanted <code>Buffer</code> to be &ldquo;super&rdquo;
  * to <code>Builder</code>, you need only switch the order you mix them together, like this:
