@@ -17,7 +17,7 @@ package org.scalatest
 
 /**
  * Enables testing of asynchronous code without blocking,
- * using a style consistent with traditional <code>FunSpec</code> tests.
+ * using a style consistent with traditional <code>WordSpec</code> tests.
  *
  * <p>
  * Given a <code>Future</code> returned by the code you are testing,
@@ -27,7 +27,7 @@ package org.scalatest
  * <code>Future[Assertion]</code> to ScalaTest. The test will complete
  * asynchronously, when the <code>Future[Assertion]</code> completes.
  *
- * Here's an example <code>AsyncFunSpec</code>:
+ * Here's an example <code>AsyncWordSpec</code>:
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.asyncwordspec
@@ -44,7 +44,7 @@ package org.scalatest
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
- *       futureSum map { sum => assert(sum == 3) }
+ *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
  *   }
  *
@@ -62,11 +62,11 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * &ldquo;<code>it</code>&rdquo; is a method, defined in <code>AsyncFunSpec</code>, which will be invoked
+ * &ldquo;<code>it</code>&rdquo; is a method, defined in <code>AsyncWordSpec</code>, which will be invoked
  * by the primary constructor of <code>AddSpec</code>. You specify the name of the test as
  * a string between the parentheses, and the test code itself between curly braces.
  * The test code is a function passed as a by-name parameter to <code>it</code>, which registers
- * it for later execution. The result type of the by-name in an <code>AsyncFunSpec</code> must
+ * it for later execution. The result type of the by-name in an <code>AsyncWordSpec</code> must
  * be <code>Future[Assertion]</code>.
  * </p>
  *
@@ -145,17 +145,17 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * An <code>AsyncFunSpec</code>'s lifecycle has two phases: the <em>registration</em> phase and the
+ * An <code>AsyncWordSpec</code>'s lifecycle has two phases: the <em>registration</em> phase and the
  * <em>ready</em> phase. It starts in registration phase and enters ready phase the first time
  * <code>run</code> is called on it. It then remains in ready phase for the remainder of its lifetime.
  * </p>
  *
  * <p>
- * Tests can only be registered with the <code>it</code> method while the <code>AsyncFunSpec</code> is
- * in its registration phase. Any attempt to register a test after the <code>AsyncFunSpec</code> has
- * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>AsyncFunSpec</code>,
+ * Tests can only be registered with the <code>it</code> method while the <code>AsyncWordSpec</code> is
+ * in its registration phase. Any attempt to register a test after the <code>AsyncWordSpec</code> has
+ * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>AsyncWordSpec</code>,
  * will be met with a thrown <code>TestRegistrationClosedException</code>. The recommended style
- * of using <code>AsyncFunSpec</code> is to register tests during object construction as is done in all
+ * of using <code>AsyncWordSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
  * </p>
@@ -163,9 +163,9 @@ package org.scalatest
  * <a name="executionContext"></a><h2>The execution context and parallel execution</h2>
  *
  * <p>
- * In an <code>AsyncFunSpec</code> you will need to define an implicit
+ * In an <code>AsyncWordSpec</code> you will need to define an implicit
  * <code>ExecutionContext</code> named <code>executionContext</code>. This
- * execution context will be used by <code>AsyncFunSpec</code> to
+ * execution context will be used by <code>AsyncWordSpec</code> to
  * transform the <code>Future[Assertion]</code>s returned by tests
  * into the <code>Future[Outcome]</code> returned by the test function
  * passed to <code>withAsyncFixture</code>.
@@ -174,7 +174,7 @@ package org.scalatest
  * </p>
  *
  * <p>
- * By default, tests in an <code>AsyncFunSpec</code> will be executed one after
+ * By default, tests in an <code>AsyncWordSpec</code> will be executed one after
  * another, <em>i.e.</em>, serially. This is true whether those tests are synchronous
  * or asynchronous, no matter what threads are involved. This default behavior allows
  * you to re-use a shared fixture, such as an external database that needs to be cleaned
@@ -182,7 +182,7 @@ package org.scalatest
  * </p>
  *
  * <p>
- * If you want the tests of an <code>AsyncFunSpec</code> to be executed in parallel, you
+ * If you want the tests of an <code>AsyncWordSpec</code> to be executed in parallel, you
  * must mix in <code>ParallelTestExecution</code>.
  * If <code>ParallelTestExecution</code> is mixed in but no distributor is passed,
  * tests will be started sequentially, by the single thread that invoked <code>run</code>,
@@ -201,7 +201,7 @@ package org.scalatest
  * <code>recoverToSucceededIf</code> and <code>recoverToExceptionIf</code> methods of trait
  * <a href="RecoverMethods.html"><code>RecoverMethods</code></a>. Because this trait is mixed into
  * supertrait <code>AsyncSuite</code>, both of these methods are
- * available by default in an <code>AsyncFunSpec</code>.
+ * available by default in an <code>AsyncWordSpec</code>.
  * </p>
  *
  * <p>
@@ -313,7 +313,7 @@ package org.scalatest
  *
  * <p>
  * To support the common use case of temporarily disabling a test, with the
- * good intention of resurrecting the test at a later time, <code>AsyncFunSpec</code> provides registration
+ * good intention of resurrecting the test at a later time, <code>AsyncWordSpec</code> provides registration
  * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example:
  * </p>
  *
@@ -332,7 +332,7 @@ package org.scalatest
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
- *       futureSum map { sum => assert(sum == 3) }
+ *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
  *   }
  *
@@ -390,7 +390,7 @@ package org.scalatest
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
- *       futureSum map { sum => assert(sum == 3) }
+ *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
  *   }
  *
@@ -571,7 +571,7 @@ package org.scalatest
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
- *       futureSum map { sum => assert(sum == 3) }
+ *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
  *   }
  *
@@ -756,16 +756,16 @@ package org.scalatest
  *   "Testing" should {
  *     "be easy" in {
  *       val future = fixture
- *       val result = future map { s => s + "easy!" }
- *       result map { s =>
+ *       val result = future map { s =&gt; s + "easy!" }
+ *       result map { s =&gt;
  *         assert(s == "ScalaTest is easy!")
  *       }
  *     }
  *
  *     "be fun" in {
  *       val future = fixture
- *       val result = future map { s => s + "fun!" }
- *       result map { s =>
+ *       val result = future map { s =&gt; s + "fun!" }
+ *       result map { s =&gt;
  *         assert(s == "ScalaTest is fun!")
  *       }
  *     }
@@ -875,7 +875,7 @@ package org.scalatest
  *     val futureOutcome = super.withAsyncFixture(test)
  *
  *     futureOutcome onSuccess {
- *       case _: Failed =>
+ *       case _: Failed =&gt;
  *         val currDir = new File(".")
  *         val fileNames = currDir.list()
  *         println("Dir snapshot: " + fileNames.mkString(", "))
@@ -888,11 +888,11 @@ package org.scalatest
  *
  *   "This test" should {
  *     "succeed" in {
- *       addSoon(1, 1) map { sum => assert(sum == 2) }
+ *       addSoon(1, 1) map { sum =&gt; assert(sum == 2) }
  *     }
  *
  *     "fail" in {
- *       addSoon(1, 1) map { sum => assert(sum == 3) }
+ *       addSoon(1, 1) map { sum =&gt; assert(sum == 3) }
  *     }
  *   }
  * }
@@ -994,8 +994,8 @@ package org.scalatest
  *   def !(op: StringOp): Unit =
  *     synchronized {
  *       op match {
- *         case Append(value) => sb.append(value)
- *         case Clear => sb.clear()
+ *         case Append(value) =&gt; sb.append(value)
+ *         case Clear =&gt; sb.clear()
  *       }
  *     }
  *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
@@ -1010,12 +1010,12 @@ package org.scalatest
  *
  * class ExampleSpec extends AsyncWordSpec {
  *
- *   def withDatabase(testCode: Future[Db] => Future[Assertion]) = {
+ *   def withDatabase(testCode: Future[Db] =&gt; Future[Assertion]) = {
  *     val dbName = randomUUID.toString // generate a unique db name
  *     val futureDb = Future { createDb(dbName) } // create the fixture
  *     withCleanup {
  *       val futurePopulatedDb =
- *         futureDb map { db =>
+ *         futureDb map { db =&gt;
  *           db.append("ScalaTest is ") // perform setup
  *         }
  *       testCode(futurePopulatedDb) // "loan" the fixture to the test code
@@ -1024,7 +1024,7 @@ package org.scalatest
  *     }
  *   }
  *
- *   def withActor(testCode: StringActor => Future[Assertion]) = {
+ *   def withActor(testCode: StringActor =&gt; Future[Assertion]) = {
  *     val actor = new StringActor
  *     withCleanup {
  *       actor ! Append("ScalaTest is ") // set up the fixture
@@ -1037,10 +1037,10 @@ package org.scalatest
  *   "Testing" should {
  *     // This test needs the actor fixture
  *     "be productive" in {
- *       withActor { actor =>
+ *       withActor { actor =&gt;
  *         actor ! Append("productive!")
  *         val futureString = actor ? GetValue
- *         futureString map { s =>
+ *         futureString map { s =&gt;
  *           assert(s == "ScalaTest is productive!")
  *         }
  *       }
@@ -1050,8 +1050,8 @@ package org.scalatest
  *   "Test code" should {
  *     // This test needs the database fixture
  *     "be readable" in {
- *       withDatabase { futureDb =>
- *         futureDb map { db =>
+ *       withDatabase { futureDb =&gt;
+ *         futureDb map { db =&gt;
  *           db.append("readable!")
  *           assert(db.toString == "ScalaTest is readable!")
  *         }
@@ -1060,13 +1060,13 @@ package org.scalatest
  *
  *     // This test needs both the actor and the database
  *     "be clear and concise" in {
- *       withDatabase { futureDb =>
- *         withActor { actor => // loan-fixture methods compose
+ *       withDatabase { futureDb =&gt;
+ *         withActor { actor =&gt; // loan-fixture methods compose
  *           actor ! Append("concise!")
  *           val futureString = actor ? GetValue
  *           val futurePair: Future[(Db, String)] =
  *             futureDb zip futureString
- *           futurePair map { case (db, s) =>
+ *           futurePair map { case (db, s) =&gt;
  *             db.append("clear!")
  *             assert(db.toString == "ScalaTest is clear!")
  *             assert(s == "ScalaTest is concise!")
@@ -1137,8 +1137,8 @@ package org.scalatest
  *   def !(op: StringOp): Unit =
  *     synchronized {
  *       op match {
- *         case Append(value) => sb.append(value)
- *         case Clear => sb.clear()
+ *         case Append(value) =&gt; sb.append(value)
+ *         case Clear =&gt; sb.clear()
  *       }
  *     }
  *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
@@ -1163,18 +1163,18 @@ package org.scalatest
  *   }
  *
  *   "Testing" should {
- *     "be easy" in { actor =>
+ *     "be easy" in { actor =&gt;
  *       actor ! Append("easy!")
  *       val futureString = actor ? GetValue
- *       futureString map { s =>
+ *       futureString map { s =&gt;
  *         assert(s == "ScalaTest is easy!")
  *       }
  *     }
  *
- *     "be fun" in { actor =>
+ *     "be fun" in { actor =&gt;
  *       actor ! Append("fun!")
  *       val futureString = actor ? GetValue
- *       futureString map { s =>
+ *       futureString map { s =&gt;
  *         assert(s == "ScalaTest is fun!")
  *       }
  *     }
@@ -1220,8 +1220,8 @@ package org.scalatest
  *   def !(op: StringOp): Unit =
  *     synchronized {
  *       op match {
- *         case Append(value) => sb.append(value)
- *         case Clear => sb.clear()
+ *         case Append(value) =&gt; sb.append(value)
+ *         case Clear =&gt; sb.clear()
  *       }
  *     }
  *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
@@ -1246,7 +1246,7 @@ package org.scalatest
  *     "be easy" in {
  *       actor ! Append("easy!")
  *       val futureString = actor ? GetValue
- *       futureString map { s =>
+ *       futureString map { s =&gt;
  *         assert(s == "ScalaTest is easy!")
  *       }
  *     }
@@ -1254,7 +1254,7 @@ package org.scalatest
  *     "be fun" in {
  *       actor ! Append("fun!")
  *       val futureString = actor ? GetValue
- *       futureString map { s =>
+ *       futureString map { s =&gt;
  *         assert(s == "ScalaTest is fun!")
  *       }
  *     }
@@ -1320,8 +1320,8 @@ package org.scalatest
  *   def !(op: StringOp): Unit =
  *     synchronized {
  *       op match {
- *         case Append(value) => sb.append(value)
- *         case Clear => sb.clear()
+ *         case Append(value) =&gt; sb.append(value)
+ *         case Clear =&gt; sb.clear()
  *       }
  *     }
  *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
@@ -1335,8 +1335,8 @@ package org.scalatest
  *   def !(op: StringOp): Unit =
  *     synchronized {
  *       op match {
- *         case Append(value) => buf += value
- *         case Clear => buf.clear()
+ *         case Append(value) =&gt; buf += value
+ *         case Clear =&gt; buf.clear()
  *       }
  *     }
  *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[List[String]] =
@@ -1345,7 +1345,7 @@ package org.scalatest
  *     }
  * }
  *
- * trait Builder extends AsyncSuiteMixin { this: AsyncSuite =>
+ * trait Builder extends AsyncSuiteMixin { this: AsyncSuite =&gt;
  *
  *   final val builderActor = new StringBuilderActor
  *
@@ -1359,7 +1359,7 @@ package org.scalatest
  *   }
  * }
  *
- * trait Buffer extends AsyncSuiteMixin { this: AsyncSuite =>
+ * trait Buffer extends AsyncSuiteMixin { this: AsyncSuite =&gt;
  *
  *   final val bufferActor = new StringBufferActor
  *
@@ -1380,7 +1380,7 @@ package org.scalatest
  *       val futureString = builderActor ? GetValue
  *       val futureList = bufferActor ? GetValue
  *       val futurePair: Future[(String, List[String])] = futureString zip futureList
- *       futurePair map { case (str, lst) =>
+ *       futurePair map { case (str, lst) =&gt;
  *         assert(str == "ScalaTest is easy!")
  *         assert(lst.isEmpty)
  *         bufferActor ! Append("sweet")
@@ -1393,7 +1393,7 @@ package org.scalatest
  *       val futureString = builderActor ? GetValue
  *       val futureList = bufferActor ? GetValue
  *       val futurePair: Future[(String, List[String])] = futureString zip futureList
- *       futurePair map { case (str, lst) =>
+ *       futurePair map { case (str, lst) =&gt;
  *         assert(str == "ScalaTest is fun!")
  *         assert(lst.isEmpty)
  *         bufferActor ! Append("awesome")
@@ -1434,27 +1434,27 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * package org.scalatest.examples.asyncfunspec.composingbeforeandaftereach
- *
+ * package org.scalatest.examples.asyncwordspec.composingbeforeandaftereach
+ * 
  * import org.scalatest._
  * import org.scalatest.BeforeAndAfterEach
  * import collection.mutable.ListBuffer
  * import scala.concurrent.Future
  * import scala.concurrent.ExecutionContext
- *
+ * 
  * // Defining actor messages
  * sealed abstract class StringOp
  * case object Clear extends StringOp
  * case class Append(value: String) extends StringOp
  * case object GetValue
- *
+ * 
  * class StringBuilderActor { // Simulating an actor
  *   private final val sb = new StringBuilder
  *   def !(op: StringOp): Unit =
  *     synchronized {
  *       op match {
- *         case Append(value) => sb.append(value)
- *         case Clear => sb.clear()
+ *         case Append(value) =&gt; sb.append(value)
+ *         case Clear =&gt; sb.clear()
  *       }
  *     }
  *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[String] =
@@ -1462,14 +1462,14 @@ package org.scalatest
  *       synchronized { sb.toString }
  *     }
  * }
- *
+ * 
  * class StringBufferActor {
  *   private final val buf = ListBuffer.empty[String]
  *   def !(op: StringOp): Unit =
  *     synchronized {
  *       op match {
- *         case Append(value) => buf += value
- *         case Clear => buf.clear()
+ *         case Append(value) =&gt; buf += value
+ *         case Clear =&gt; buf.clear()
  *       }
  *     }
  *   def ?(get: GetValue.type)(implicit c: ExecutionContext): Future[List[String]] =
@@ -1477,55 +1477,55 @@ package org.scalatest
  *       synchronized { buf.toList }
  *     }
  * }
- *
- * trait Builder extends BeforeAndAfterEach { this: Suite =>
- *
+ * 
+ * trait Builder extends BeforeAndAfterEach { this: Suite =&gt;
+ * 
  *   final val builderActor = new StringBuilderActor
- *
+ * 
  *   override def beforeEach() {
  *     builderActor ! Append("ScalaTest is ")
  *     super.beforeEach() // To be stackable, must call super.beforeEach
  *   }
- *
+ * 
  *   override def afterEach() {
  *     try super.afterEach() // To be stackable, must call super.afterEach
  *     finally builderActor ! Clear
  *   }
  * }
- *
- * trait Buffer extends BeforeAndAfterEach { this: Suite =>
- *
+ * 
+ * trait Buffer extends BeforeAndAfterEach { this: Suite =&gt;
+ * 
  *   final val bufferActor = new StringBufferActor
- *
+ * 
  *   override def afterEach() {
  *     try super.afterEach() // To be stackable, must call super.afterEach
  *     finally bufferActor ! Clear
  *   }
  * }
- *
- * class ExampleSpec extends AsyncFunSpec with Builder with Buffer {
- *
- *   describe("Testing") {
- *
- *     it("should be easy") {
+ * 
+ * class ExampleSpec extends AsyncWordSpec with Builder with Buffer {
+ * 
+ *   "Testing" should {
+ * 
+ *     "be easy" in {
  *       builderActor ! Append("easy!")
  *       val futureString = builderActor ? GetValue
  *       val futureList = bufferActor ? GetValue
  *       val futurePair: Future[(String, List[String])] = futureString zip futureList
- *       futurePair map { case (str, lst) =>
+ *       futurePair map { case (str, lst) =&gt;
  *         assert(str == "ScalaTest is easy!")
  *         assert(lst.isEmpty)
  *         bufferActor ! Append("sweet")
  *         succeed
  *       }
  *     }
- *
- *     it("should be fun") {
+ * 
+ *     "be fun" in {
  *       builderActor ! Append("fun!")
  *       val futureString = builderActor ? GetValue
  *       val futureList = bufferActor ? GetValue
  *       val futurePair: Future[(String, List[String])] = futureString zip futureList
- *       futurePair map { case (str, lst) =>
+ *       futurePair map { case (str, lst) =&gt;
  *         assert(str == "ScalaTest is fun!")
  *         assert(lst.isEmpty)
  *         bufferActor ! Append("awesome")
@@ -1580,8 +1580,8 @@ package org.scalatest
  *
  * // Stack info
  * case class StackInfo[T](top: Option[T], size: Int, max: Int) {
- *   require(size >= 0, "size was less than zero")
- *   require(max >= size, "max was less than size")
+ *   require(size &gt; 0, "size was less than zero")
+ *   require(max &gt; size, "max was less than size")
  *   val isFull: Boolean = size == max
  *   val isEmpty: Boolean = size == 0
  * }
@@ -1601,21 +1601,21 @@ package org.scalatest
  *   def ?(op: StackOp)(implicit c: ExecutionContext): Future[StackInfo[T]] =
  *     synchronized {
  *       op match {
- *         case Pop =>
+ *         case Pop =&gt;
  *           Future {
  *             if (buf.size != 0)
  *               StackInfo(Some(buf.remove(0)), buf.size, Max)
  *             else
  *               throw new IllegalStateException("can't pop an empty stack")
  *           }
- *         case Peek =>
+ *         case Peek =&gt;
  *           Future {
  *             if (buf.size != 0)
  *               StackInfo(Some(buf(0)), buf.size, Max)
  *             else
  *               throw new IllegalStateException("can't peek an empty stack")
  *           }
- *         case Size =>
+ *         case Size =&gt;
  *           Future { StackInfo(None, buf.size, Max) }
  *       }
  *     }
@@ -1645,15 +1645,15 @@ package org.scalatest
  * <pre class="stHighlight">
  * import org.scalatest.AsyncWordSpec
  *
- * trait AsyncWordSpecStackBehaviors { this: AsyncWordSpec =>
+ * trait AsyncWordSpecStackBehaviors { this: AsyncWordSpec =&gt;
  *
- *   def nonEmptyStackActor(createNonEmptyStackActor: => StackActor[Int],
+ *   def nonEmptyStackActor(createNonEmptyStackActor: =&gt; StackActor[Int],
  *         lastItemAdded: Int, name: String): Unit = {
  *
  *     ("return non-empty StackInfo when Size is fired at non-empty stack actor: " + name) in {
  *       val stackActor = createNonEmptyStackActor
  *       val futureStackInfo = stackActor ? Size
- *       futureStackInfo map { stackInfo =>
+ *       futureStackInfo map { stackInfo =&gt;
  *         assert(!stackInfo.isEmpty)
  *       }
  *     }
@@ -1662,10 +1662,10 @@ package org.scalatest
  *       val stackActor = createNonEmptyStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
- *           beforePeek <- stackActor ? Size
- *           afterPeek <- stackActor ? Peek
+ *           beforePeek &lt;- stackActor ? Size
+ *           afterPeek &lt;- stackActor ? Peek
  *         } yield (beforePeek, afterPeek)
- *       futurePair map { case (beforePeek, afterPeek) =>
+ *       futurePair map { case (beforePeek, afterPeek) =&gt;
  *         assert(afterPeek.top == Some(lastItemAdded))
  *         assert(afterPeek.size == beforePeek.size)
  *       }
@@ -1675,22 +1675,22 @@ package org.scalatest
  *       val stackActor = createNonEmptyStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
- *           beforePop <- stackActor ? Size
- *           afterPop <- stackActor ? Pop
+ *           beforePop &lt;- stackActor ? Size
+ *           afterPop &lt;- stackActor ? Pop
  *         } yield (beforePop, afterPop)
- *       futurePair map { case (beforePop, afterPop) =>
+ *       futurePair map { case (beforePop, afterPop) =&gt;
  *         assert(afterPop.top == Some(lastItemAdded))
  *         assert(afterPop.size == beforePop.size - 1)
  *       }
  *     }
  *   }
  *
- *   def nonFullStackActor(createNonFullStackActor: => StackActor[Int], name: String): Unit = {
+ *   def nonFullStackActor(createNonFullStackActor: =&gt; StackActor[Int], name: String): Unit = {
  *
  *     ("return non-full StackInfo when Size is fired at non-full stack actor: " + name) in {
  *       val stackActor = createNonFullStackActor
  *       val futureStackInfo = stackActor ? Size
- *       futureStackInfo map { stackInfo =>
+ *       futureStackInfo map { stackInfo =&gt;
  *         assert(!stackInfo.isFull)
  *       }
  *     }
@@ -1699,10 +1699,10 @@ package org.scalatest
  *       val stackActor = createNonFullStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
- *           beforePush <- stackActor ? Size
- *           afterPush <- { stackActor ! Push(7); stackActor ? Peek }
+ *           beforePush &lt;- stackActor ? Size
+ *           afterPush &lt;- { stackActor ! Push(7); stackActor ? Peek }
  *         } yield (beforePush, afterPush)
- *       futurePair map { case (beforePush, afterPush) =>
+ *       futurePair map { case (beforePush, afterPush) =&gt;
  *         assert(afterPush.top == Some(7))
  *         assert(afterPush.size == beforePush.size + 1)
  *       }
@@ -1738,7 +1738,7 @@ package org.scalatest
  *   val fullStackActorName = "full stack actor"
  *   def fullStackActor = {
  *     val stackActor = new StackActor[Int](Max, fullStackActorName )
- *     for (i <- 0 until Max)
+ *     for (i &lt;- 0 until Max)
  *       stackActor ! Push(i)
  *     stackActor
  *   }
@@ -1753,7 +1753,7 @@ package org.scalatest
  *   val almostFullStackActorName = "almost full stack actor"
  *   def almostFullStackActor = {
  *     val stackActor = new StackActor[Int](Max, almostFullStackActorName)
- *     for (i <- 1 to LastValuePushed)
+ *     for (i &lt;- 1 to LastValuePushed)
  *       stackActor ! Push(i)
  *     stackActor
  *   }
@@ -1763,7 +1763,7 @@ package org.scalatest
  *       "be empty" in {
  *         val stackActor = emptyStackActor
  *         val futureStackInfo = stackActor ? Size
- *         futureStackInfo map { stackInfo =>
+ *         futureStackInfo map { stackInfo =&gt;
  *           assert(stackInfo.isEmpty)
  *         }
  *       }
@@ -1792,7 +1792,7 @@ package org.scalatest
  *       "be full" in {
  *         val stackActor = fullStackActor
  *         val futureStackInfo = stackActor ? Size
- *         futureStackInfo map { stackInfo =>
+ *         futureStackInfo map { stackInfo =&gt;
  *           assert(stackInfo.isFull)
  *         }
  *       }
@@ -1805,7 +1805,6 @@ package org.scalatest
  *       }
  *     }
  *   }
- *
  * }
  * </pre>
  *
@@ -1848,7 +1847,7 @@ package org.scalatest
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
  * In a <code>AsyncFunSuite</code> there is no nesting construct analogous to
- * <code>AsyncFunSpec</code>'s <code>describe</code> clause.
+ * <code>AsyncWordSpec</code>'s <code>describe</code> clause.
  * Therefore, you need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in an
  * <code>AsyncFunSuite</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call

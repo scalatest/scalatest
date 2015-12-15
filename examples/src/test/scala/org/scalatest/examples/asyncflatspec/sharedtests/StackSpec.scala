@@ -214,5 +214,4 @@ class StackSpec extends AsyncFlatSpec with AsyncFlatSpecStackBehaviors {
       stackActor ! Push(10)
     }
   }
-
 }

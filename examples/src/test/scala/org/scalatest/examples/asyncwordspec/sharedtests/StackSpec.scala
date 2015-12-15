@@ -217,5 +217,4 @@ class StackSpec extends AsyncWordSpec with AsyncWordSpecStackBehaviors {
       }
     }
   }
-
 }
