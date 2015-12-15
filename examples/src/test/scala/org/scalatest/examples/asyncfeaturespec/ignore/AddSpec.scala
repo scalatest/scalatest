@@ -23,7 +23,7 @@ class AddSpec extends AsyncFeatureSpec {
   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
 
   feature("addSoon") {
-    scenario("when passed Ints will eventually compute a sum") {
+    ignore("when passed Ints will eventually compute a sum") {
       val futureSum: Future[Int] = addSoon(1, 2)
       // You can map assertions onto a Future, then return
       // the resulting Future[Assertion] to ScalaTest:
