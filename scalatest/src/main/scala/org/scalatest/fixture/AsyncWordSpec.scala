@@ -16,18 +16,18 @@
 package org.scalatest.fixture
 
 /**
- * A sister class to <code>org.scalatest.AsyncFunSpec</code> that can pass a fixture object into its tests.
+ * A sister class to <code>org.scalatest.AsyncWordSpec</code> that can pass a fixture object into its tests.
  *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
- * Use class <code>fixture.AsyncFunSpec</code> in situations for which <a href="../AsyncFunSpec.html"><code>AsyncFunSpec</code></a>
+ * Use class <code>fixture.AsyncWordSpec</code> in situations for which <a href="../AsyncWordSpec.html"><code>AsyncWordSpec</code></a>
  * would be a good choice, when all or most tests need the same fixture objects
- * that must be cleaned up afterwards. <em>Note: <code>fixture.AsyncFunSpec</code> is intended for use in special situations, with class <code>AsyncFunSpec</code> used for general needs. For
- * more insight into where <code>fixture.AsyncFunSpec</code> fits in the big picture, see the <a href="../AsyncFunSpec.html#withAsyncFixtureOneArgAsyncTest"><code>withAsyncFixture(OneArgAsyncTest)</code></a> subsection of the <a href="../AsyncFunSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AsyncFunSpec</code>.</em>
+ * that must be cleaned up afterwards. <em>Note: <code>fixture.AsyncWordSpec</code> is intended for use in special situations, with class <code>AsyncWordSpec</code> used for general needs. For
+ * more insight into where <code>fixture.AsyncWordSpec</code> fits in the big picture, see the <a href="../AsyncWordSpec.html#withAsyncFixtureOneArgAsyncTest"><code>withAsyncFixture(OneArgAsyncTest)</code></a> subsection of the <a href="../AsyncWordSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AsyncWordSpec</code>.</em>
  * </td></tr></table>
  *
  * <p>
- * Class <code>fixture.AsyncFunSpec</code> behaves similarly to class <code>org.scalatest.AsyncFunSpec</code>, except that tests may have a
+ * Class <code>fixture.AsyncWordSpec</code> behaves similarly to class <code>org.scalatest.AsyncWordSpec</code>, except that tests may have a
  * fixture parameter. The type of the
  * fixture parameter is defined by the abstract <code>FixtureParam</code> type, which is a member of this class.
  * This class also contains an abstract <code>withAsyncFixture</code> method. This <code>withAsyncFixture</code> method
@@ -40,7 +40,7 @@ package org.scalatest.fixture
  * </p>
  *
  * <p>
- * Subclasses of this class must, therefore, do three things differently from a plain old <code>org.scalatest.AsyncFunSpec</code>:
+ * Subclasses of this class must, therefore, do three things differently from a plain old <code>org.scalatest.AsyncWordSpec</code>:
  * </p>
  *
  * <ol>
