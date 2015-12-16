@@ -949,13 +949,13 @@ object ScalatestBuild extends Build {
   lazy val examples = Project("examples", file("examples"), delegates = scalatest :: Nil)
     .settings(
       scalaVersion := buildScalaVersion,
-      libraryDependencies += scalacheckDependency("compile")
+      libraryDependencies += scalacheckDependency("test")
     ).dependsOn(scalacticMacro, scalactic, scalatest)
 
   lazy val examplesJS = Project("examplesJS", file("examples.js"), delegates = scalatest :: Nil)
     .settings(
       scalaVersion := buildScalaVersion,
-      libraryDependencies += scalacheckDependency("compile"),
+      libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       sourceGenerators in Test += {
         Def.task {
           GenExamplesJS.genScala((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
