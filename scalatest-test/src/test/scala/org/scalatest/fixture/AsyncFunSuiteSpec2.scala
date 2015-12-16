@@ -240,8 +240,6 @@ class AsyncFunSuiteSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncFunSuite {
 
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
-
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -288,8 +286,6 @@ class AsyncFunSuiteSpec2 extends org.scalatest.AsyncFunSpec {
       var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFunSuite {
-
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -356,8 +352,7 @@ class AsyncFunSuiteSpec2 extends org.scalatest.AsyncFunSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
-        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+        // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =

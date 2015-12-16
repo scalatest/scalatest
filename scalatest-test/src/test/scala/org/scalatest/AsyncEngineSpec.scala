@@ -144,9 +144,9 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     // Unless there's someplace we can throw it, maybe have to report SuiteAborted. 
     class SuiteThatAborts extends AsyncFunSuite {
       // SKIP-SCALATESTJS-START
-      implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+      implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+      //SCALATESTJS-ONLY implicit def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
       test("should abort this suite") {
         Future.failed(ex)
       }

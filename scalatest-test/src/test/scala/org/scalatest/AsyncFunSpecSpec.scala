@@ -29,7 +29,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ { // Can resurrect Expectations tests later
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         val a = 1
 
@@ -108,7 +108,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpec with ParallelTestExecution /* with Expectations */ {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         val a = 1
 
@@ -176,7 +176,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpec {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         it("test 1") {
           Future {
@@ -222,7 +222,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpec {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         it("test 1") {
           SleepHelper.sleep(30)
@@ -266,8 +266,6 @@ class AsyncFunSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpec {
 
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
-
         it("test 1") {
           Future {
             test1Thread = Some(Thread.currentThread)
@@ -307,8 +305,6 @@ class AsyncFunSpecSpec extends FunSpec {
       var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFunSpec {
-
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
 
         it("test 1") {
           val promise = Promise[Assertion]
@@ -368,8 +364,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
-        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+        // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -395,7 +390,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpec {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         it("test 1") {
           Future {
@@ -440,7 +435,7 @@ class AsyncFunSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFunSpec {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         it("test 1") {
           SleepHelper.sleep(60)

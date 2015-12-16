@@ -225,8 +225,6 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
 
       class ExampleSpec extends AsyncFunSuite {
 
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
-
         test("test 1") {
           Future {
             test1Thread = Some(Thread.currentThread)
@@ -269,8 +267,6 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
       var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFunSuite {
-
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
 
         test("test 1") {
           val promise = Promise[Assertion]
@@ -333,8 +329,7 @@ class AsyncFunSuiteSpec2 extends AsyncFunSpec with ParallelTestExecution {
 
         // Note we get a StackOverflowError with the following execution
         // context.
-        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+        // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {

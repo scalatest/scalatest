@@ -26,9 +26,9 @@ import scala.concurrent.Promise
 class BeforeAndAfterEachAllSuite extends FunSuite {
 
   // SKIP-SCALATESTJS-START
-  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+  implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
+  //SCALATESTJS-ONLY implicit def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
   class TheSuper extends FunSpec {
     var runTestWasCalled = false

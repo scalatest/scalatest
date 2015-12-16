@@ -29,7 +29,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec with ParallelTestExecution {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         val a = 1
 
@@ -90,7 +90,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec with ParallelTestExecution {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         val a = 1
 
@@ -143,7 +143,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         scenario("test 1") {
           Future {
@@ -189,7 +189,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         scenario("test 1") {
           SleepHelper.sleep(3000)
@@ -224,7 +224,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
     }
 
     // SKIP-SCALATESTJS-START
-    it("should run tests and its future in same main thread when use SerialExecutionContext") {
+    it("should run tests and its future in same main thread when using SerialExecutionContext") {
 
       var mainThread = Thread.currentThread
       var test1Thread: Option[Thread] = None
@@ -232,8 +232,6 @@ class AsyncFeatureSpecSpec extends FunSpec {
       var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFeatureSpec {
-
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
 
         scenario("test 1") {
           Future {
@@ -248,7 +246,6 @@ class AsyncFeatureSpecSpec extends FunSpec {
             succeed
           }
         }
-
       }
 
       val rep = new EventRecordingReporter
@@ -274,8 +271,6 @@ class AsyncFeatureSpecSpec extends FunSpec {
       var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFeatureSpec {
-
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
 
         scenario("test 1") {
           val promise = Promise[Assertion]
@@ -310,7 +305,6 @@ class AsyncFeatureSpecSpec extends FunSpec {
             s
           }
         }
-
       }
 
       val rep = new EventRecordingReporter
@@ -335,8 +329,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
-        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+        // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {
@@ -362,7 +355,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         scenario("test 1") {
           Future {
@@ -383,7 +376,6 @@ class AsyncFeatureSpecSpec extends FunSpec {
             succeed
           }
         }
-
       }
 
       val rep = new EventRecordingReporter
@@ -407,7 +399,7 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
       class ExampleSpec extends AsyncFeatureSpec {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         scenario("test 1") {
           SleepHelper.sleep(60)
@@ -422,7 +414,6 @@ class AsyncFeatureSpecSpec extends FunSpec {
         scenario("test 3") {
           succeed
         }
-
       }
 
       val rep = new EventRecordingReporter
@@ -441,7 +432,5 @@ class AsyncFeatureSpecSpec extends FunSpec {
       assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 2")
       assert(rep.testSucceededEventsReceived(2).testName == "Scenario: test 3")
     }
-
   }
-
 }

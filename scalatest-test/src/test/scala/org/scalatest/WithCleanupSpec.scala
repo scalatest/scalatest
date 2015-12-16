@@ -20,7 +20,9 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import scala.util.Success
 import scala.util.Failure
+// SKIP-SCALATESTJS-START
 import org.scalatest.concurrent.Eventually._
+// SKIP-SCALATESTJS-END
 import org.scalatest.OutcomeOf.outcomeOf
 import org.scalatest.concurrent.ScalaFutures._
 
@@ -29,7 +31,9 @@ class WithCleanupSpec extends FunSpec {
   describe("AsyncSuite's withCleanup method") {
     val asyncSuite =
       new AsyncSuite {
-        override val executionContext: ExecutionContext = ExecutionContext.Implicits.global
+// SKIP-SCALATESTJS-START
+        override def executionContext: ExecutionContext = ExecutionContext.Implicits.global
+// SKIP-SCALATESTJS-END
       }
     describe("when an exception is immediately thrown") {
       it("should perform the side effect and rethrow the same exception") {
@@ -78,7 +82,9 @@ class WithCleanupSpec extends FunSpec {
             }
           assert(!sideEffectWasExecuted)
           promise.success(Succeeded)
+          // SKIP-SCALATESTJS-START
           eventually { assert(sideEffectWasExecuted) }
+          // SKIP-SCALATESTJS-END
           assert(fut.value == Some(Success(Succeeded)))
         }
       }
@@ -94,7 +100,9 @@ class WithCleanupSpec extends FunSpec {
             }
           assert(!sideEffectWasExecuted)
           promise.success(Pending)
+          // SKIP-SCALATESTJS-START
           eventually { assert(sideEffectWasExecuted) }
+          // SKIP-SCALATESTJS-END
           assert(fut.value == Some(Success(Pending)))
         }
       }
@@ -111,7 +119,9 @@ class WithCleanupSpec extends FunSpec {
             }
           assert(!sideEffectWasExecuted)
           promise.success(canceled)
+          // SKIP-SCALATESTJS-START
           eventually { assert(sideEffectWasExecuted) }
+          // SKIP-SCALATESTJS-END
           assert(fut.value == Some(Success(canceled)))
         }
       }
@@ -128,7 +138,9 @@ class WithCleanupSpec extends FunSpec {
             }
           assert(!sideEffectWasExecuted)
           promise.success(failed)
+          // SKIP-SCALATESTJS-START
           eventually { assert(sideEffectWasExecuted) }
+          // SKIP-SCALATESTJS-END
           assert(fut.value == Some(Success(failed)))
         }
       }
@@ -145,7 +157,9 @@ class WithCleanupSpec extends FunSpec {
             }
           assert(!sideEffectWasExecuted)
           promise.failure(ex)
+          // SKIP-SCALATESTJS-START
           eventually { assert(sideEffectWasExecuted) }
+          // SKIP-SCALATESTJS-END
           assert(fut.failed.futureValue eq ex)
         }
         describe("but a second exception is thrown by the cleanup clause") {
@@ -163,7 +177,9 @@ class WithCleanupSpec extends FunSpec {
               }
             assert(!sideEffectWasExecuted)
             promise.failure(firstEx)
+            // SKIP-SCALATESTJS-START
             eventually { assert(sideEffectWasExecuted) }
+            // SKIP-SCALATESTJS-END
             assert(fut.value == Some(Failure(secondEx)))
           }
         }

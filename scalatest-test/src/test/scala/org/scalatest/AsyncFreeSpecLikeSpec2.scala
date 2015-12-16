@@ -225,8 +225,6 @@ class AsyncFreeSpecLikeSpec2 extends AsyncFunSpec {
 
       class ExampleSpec extends AsyncFreeSpecLike {
 
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
-
         "test 1" in {
           Future {
             test1Thread = Some(Thread.currentThread)
@@ -269,8 +267,6 @@ class AsyncFreeSpecLikeSpec2 extends AsyncFunSpec {
       var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFreeSpecLike {
-
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
 
         "test 1" in {
           val promise = Promise[Assertion]
@@ -333,8 +329,7 @@ class AsyncFreeSpecLikeSpec2 extends AsyncFunSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
-        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+        // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         def sum(xs: List[Int]): Future[Int] =
           xs match {

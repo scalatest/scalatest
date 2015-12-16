@@ -30,7 +30,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -94,7 +94,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       class ExampleSuite extends AsyncFunSuite with ParallelTestExecution {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -150,7 +150,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       class ExampleSuite extends AsyncFunSuite {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -200,7 +200,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       class ExampleSuite extends AsyncFunSuite {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -248,8 +248,6 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFunSuite {
 
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
-
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -293,8 +291,6 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
       var onCompleteThread: Option[Thread] = None
 
       class ExampleSpec extends AsyncFunSuite {
-
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -358,8 +354,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
         // Note we get a StackOverflowError with the following execution
         // context.
-        // override implicit val executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
-        override implicit val executionContext: ExecutionContext = new concurrent.SerialExecutionContext
+        // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -389,7 +384,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFunSuite {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
@@ -438,7 +433,7 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
 
       class ExampleSpec extends AsyncFunSuite {
 
-        //SCALATESTJS-ONLY implicit override val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
