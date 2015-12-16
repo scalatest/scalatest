@@ -16,18 +16,18 @@
 package org.scalatest.fixture
 
 /**
- * A sister class to <code>org.scalatest.AsyncFunSpec</code> that can pass a fixture object into its tests.
+ * A sister class to <code>org.scalatest.AsyncFeatureSpec</code> that can pass a fixture object into its tests.
  *
  * <table><tr><td class="usage">
  * <strong>Recommended Usage</strong>:
- * Use class <code>fixture.AsyncFunSpec</code> in situations for which <a href="../AsyncFunSpec.html"><code>AsyncFunSpec</code></a>
+ * Use class <code>fixture.AsyncFeatureSpec</code> in situations for which <a href="../AsyncFeatureSpec.html"><code>AsyncFeatureSpec</code></a>
  * would be a good choice, when all or most tests need the same fixture objects
- * that must be cleaned up afterwards. <em>Note: <code>fixture.AsyncFunSpec</code> is intended for use in special situations, with class <code>AsyncFunSpec</code> used for general needs. For
- * more insight into where <code>fixture.AsyncFunSpec</code> fits in the big picture, see the <a href="../AsyncFunSpec.html#withAsyncFixtureOneArgAsyncTest"><code>withAsyncFixture(OneArgAsyncTest)</code></a> subsection of the <a href="../AsyncFunSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AsyncFunSpec</code>.</em>
+ * that must be cleaned up afterwards. <em>Note: <code>fixture.AsyncFeatureSpec</code> is intended for use in special situations, with class <code>AsyncFeatureSpec</code> used for general needs. For
+ * more insight into where <code>fixture.AsyncFeatureSpec</code> fits in the big picture, see the <a href="../AsyncFeatureSpec.html#withAsyncFixtureOneArgAsyncTest"><code>withAsyncFixture(OneArgAsyncTest)</code></a> subsection of the <a href="../AsyncFeatureSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AsyncFeatureSpec</code>.</em>
  * </td></tr></table>
  *
  * <p>
- * Class <code>fixture.AsyncFunSpec</code> behaves similarly to class <code>org.scalatest.AsyncFunSpec</code>, except that tests may have a
+ * Class <code>fixture.AsyncFeatureSpec</code> behaves similarly to class <code>org.scalatest.AsyncFeatureSpec</code>, except that tests may have a
  * fixture parameter. The type of the
  * fixture parameter is defined by the abstract <code>FixtureParam</code> type, which is a member of this class.
  * This class also contains an abstract <code>withAsyncFixture</code> method. This <code>withAsyncFixture</code> method
@@ -40,7 +40,7 @@ package org.scalatest.fixture
  * </p>
  *
  * <p>
- * Subclasses of this class must, therefore, do three things differently from a plain old <code>org.scalatest.AsyncFunSpec</code>:
+ * Subclasses of this class must, therefore, do three things differently from a plain old <code>org.scalatest.AsyncFeatureSpec</code>:
  * </p>
  *
  * <ol>
