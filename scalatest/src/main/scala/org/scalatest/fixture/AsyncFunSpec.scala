@@ -159,7 +159,7 @@ package org.scalatest.fixture
  * </p>
  *
  * <pre class="stHighlight">
- *  * package org.scalatest.examples.fixture.asyncfunspec.sharing
+ * package org.scalatest.examples.fixture.asyncfunspec.sharing
  *
  * import java.util.concurrent.ConcurrentHashMap
  * import org.scalatest._
