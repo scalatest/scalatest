@@ -221,12 +221,11 @@ package org.scalatest.fixture
  *
  *   // This test doesn't need a Db
  *   "Test code" should "be clear" in { () =&gt;
- *       Future {
- *         val buf = new StringBuffer
- *         buf.append("ScalaTest code is ")
- *         buf.append("clear!")
- *         assert(buf.toString === "ScalaTest code is clear!")
- *       }
+ *     Future {
+ *       val buf = new StringBuffer
+ *       buf.append("ScalaTest code is ")
+ *       buf.append("clear!")
+ *       assert(buf.toString === "ScalaTest code is clear!")
  *     }
  *   }
  * }
