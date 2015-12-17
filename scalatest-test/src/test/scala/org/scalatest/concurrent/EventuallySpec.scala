@@ -19,6 +19,7 @@ import org.scalatest._
 import Eventually._
 import SharedHelpers.thisLineNumber
 import time.{Millisecond, Span, Millis}
+import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
@@ -196,6 +197,18 @@ class EventuallySpec extends FunSpec with Matchers with OptionValues with Severe
         eventually {
           count += 1
           pending
+        }
+      }
+      count should equal (1)
+    }
+    
+    it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
+
+      var count = 0
+      intercept[TestCanceledException] {
+        eventually {
+          count += 1
+          assume(1 + 1 == 3, "well that's odd")
         }
       }
       count should equal (1)
