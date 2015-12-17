@@ -198,37 +198,37 @@ package org.scalatest.fixture
  *     }
  *   }
  * }
-
-class ExampleSuite extends fixture.AsyncFunSuite with DbFixture {
-
-  override def populateDb(db: Db) { // setup the fixture
-    db.append("ScalaTest is ")
-  }
-
-  test("testing should be easy") { db =&gt;
-    Future {
-      db.append("easy!")
-      assert(db.toString === "ScalaTest is easy!")
-    }
-  }
-
-  test("testing should be fun") { db =&gt;
-    Future {
-      db.append("fun!")
-      assert(db.toString === "ScalaTest is fun!")
-    }
-  }
-
-  // This test doesn't need a Db
-  test("test code should be clear") { () =&gt;
-    Future {
-      val buf = new StringBuffer
-      buf.append("ScalaTest code is ")
-      buf.append("clear!")
-      assert(buf.toString === "ScalaTest code is clear!")
-    }
-  }
-}
+ *
+ * class ExampleSuite extends fixture.AsyncFunSuite with DbFixture {
+ *
+ *   override def populateDb(db: Db) { // setup the fixture
+ *     db.append("ScalaTest is ")
+ *   }
+ *
+ *   test("testing should be easy") { db =&gt;
+ *     Future {
+ *       db.append("easy!")
+ *       assert(db.toString === "ScalaTest is easy!")
+ *     }
+ *   }
+ *
+ *   test("testing should be fun") { db =&gt;
+ *     Future {
+ *       db.append("fun!")
+ *       assert(db.toString === "ScalaTest is fun!")
+ *     }
+ *   }
+ *
+ *   // This test doesn't need a Db
+ *   test("test code should be clear") { () =&gt;
+ *     Future {
+ *       val buf = new StringBuffer
+ *       buf.append("ScalaTest code is ")
+ *       buf.append("clear!")
+ *       assert(buf.toString === "ScalaTest code is clear!")
+ *     }
+ *   }
+ * }
  * </pre>
  *
  * <p>
