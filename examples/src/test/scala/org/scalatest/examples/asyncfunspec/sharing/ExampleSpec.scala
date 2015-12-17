@@ -19,7 +19,7 @@ object DbServer { // Simulating a database server
   }
 }
 
-trait DbFixture { this: fixture.AsyncSuite =&gt;
+trait DbFixture { this: fixture.AsyncSuite =>
 
   type FixtureParam = Db
 
@@ -46,14 +46,14 @@ class ExampleSpec extends fixture.AsyncFunSpec with DbFixture {
   }
 
   describe("testing") {
-    it("should be easy") { db =&gt;
+    it("should be easy") { db =>
       Future {
         db.append("easy!")
         assert(db.toString === "ScalaTest is easy!")
       }
     }
 
-    it("should be fun") { db =&gt;
+    it("should be fun") { db =>
       Future {
         db.append("fun!")
         assert(db.toString === "ScalaTest is fun!")
@@ -61,7 +61,7 @@ class ExampleSpec extends fixture.AsyncFunSpec with DbFixture {
     }
 
     // This test doesn't need a Db
-    it("code should be clear") { () =&gt;
+    it("code should be clear") { () =>
       Future {
         val buf = new StringBuffer
         buf.append("ScalaTest code is ")
