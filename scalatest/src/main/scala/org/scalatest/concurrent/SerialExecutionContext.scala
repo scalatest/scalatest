@@ -42,7 +42,7 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
     // If this is a thread different than the main test thread, we'll
     // notify the main test thread in case it is sitting in the wait
     // in runNow.
-    synchronized { notifyAll() }
+    // synchronized { notifyAll() }
   }
 
   def reportFailure(t: Throwable): Unit =
@@ -104,10 +104,7 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
    */
   def runNow(future: Future[Outcome]): Unit = {
     while (!future.isCompleted) {
-      while (queue.peek != null)
-        queue.poll().run() // What to do about exceptions here?
-      if (!future.isCompleted)
-        synchronized { wait() }
+      queue.take().run() // What to do about exceptions here?
     }
   }
 }
