@@ -103,8 +103,7 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
       And runNow will return, as this test has finished running.
    */
   def runNow(future: Future[Outcome]): Unit = {
-    while (!future.isCompleted) {
+    while (!future.isCompleted || queue.size > 0)
       queue.take().run() // What to do about exceptions here?
-    }
   }
 }

@@ -73,7 +73,6 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
-      //Thread.sleep(3000)
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
