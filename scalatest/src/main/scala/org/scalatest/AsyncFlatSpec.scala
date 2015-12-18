@@ -19,6 +19,14 @@ package org.scalatest
  * Enables testing of asynchronous code without blocking,
  * using a style consistent with traditional <code>FlatSpec</code> tests.
  *
+ * <table><tr><td class="usage">
+ * <strong>Recommended Usage</strong>:
+ * <code>AsyncFlatSpec</code> is intended to enable users of <a href="FlatSpec.html"><code>FlatSpec</code></a>
+ * to write non-blocking asynchronous tests that are consistent with their traditional <code>FlatSpec</code> tests. 
+ * <em>Note: <code>AsyncFlatSpec</code> is intended for use in special situations where non-blocking asynchronous
+ * testing is needed, with class <code>FlatSpec</code> used for general needs.</em>
+ * </td></tr></table>
+ * 
  * <p>
  * Given a <code>Future</code> returned by the code you are testing,
  * you need not block until the <code>Future</code> completes before
@@ -26,8 +34,11 @@ package org.scalatest
  * assertions onto the <code>Future</code> and return the resulting
  * <code>Future[Assertion]</code> to ScalaTest. The test will complete
  * asynchronously, when the <code>Future[Assertion]</code> completes.
+ * </p>
  *
+ * <p>
  * Here's an example <code>AsyncFlatSpec</code>:
+ * </p>
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.asyncflatspec
@@ -520,9 +531,9 @@ package org.scalatest
  * <a name="taggingTests"></a><h2>Tagging tests</h2>
  *
  * <p>
- * An <code>AsyncFunSuite</code>'s tests may be classified into groups by <em>tagging</em> them with string names.
- * As with any suite, when executing an <code>AsyncFunSuite</code>, groups of tests can
- * optionally be included and/or excluded. To tag an <code>AsyncFunSuite</code>'s tests,
+ * An <code>AsyncFlatSpec</code>'s tests may be classified into groups by <em>tagging</em> them with string names.
+ * As with any suite, when executing an <code>AsyncFlatSpec</code>, groups of tests can
+ * optionally be included and/or excluded. To tag an <code>AsyncFlatSpec</code>'s tests,
  * you pass objects that extend class <code>org.scalatest.Tag</code> to methods
  * that register tests. Class <code>Tag</code> takes one parameter, a string name.  If you have
  * created tag annotation interfaces as described in the <a href="Tag.html"><code>Tag</code> documentation</a>, then you
@@ -530,7 +541,7 @@ package org.scalatest
  * pass the fully qualified names of the tag interfaces to the <code>Tag</code> constructor. For example, if you've
  * defined a tag annotation interface with fully qualified name,
  * <code>com.mycompany.tags.DbTest</code>, then you could
- * create a matching tag for <code>AsyncFunSuite</code>s like this:
+ * create a matching tag for <code>AsyncFlatSpec</code>s like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -542,7 +553,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * Given these definitions, you could place <code>AsyncFunSuite</code> tests into groups like this:
+ * Given these definitions, you could place <code>AsyncFlatSpec</code> tests into groups like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -589,7 +600,7 @@ package org.scalatest
  *
  * <p>
  * It is recommended, though not required, that you create a corresponding tag annotation when you
- * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of an <code>AsyncFunSuite</code> in
+ * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of an <code>AsyncFlatSpec</code> in
  * one stroke by annotating the class. For more information and examples, see the
  * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
  * tag each test individually at the test site.
@@ -766,11 +777,11 @@ package org.scalatest
  * Although the get-fixture method approach takes care of setting up a fixture at the beginning of each
  * test, it doesn't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
  * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withAsyncFixture(NoArgAsyncTest)</code>, a
- * method defined in trait <a href="AsyncSuite.html"><code>AsyncSuite</code></a>, a supertrait of <code>AsyncFunSuite</code>.
+ * method defined in trait <a href="AsyncSuite.html"><code>AsyncSuite</code></a>, a supertrait of <code>AsyncFlatSpec</code>.
  * </p>
  *
  * <p>
- * Trait <code>AsyncFunSuite</code>'s <code>runTest</code> method passes a no-arg async test function to
+ * Trait <code>AsyncFlatSpec</code>'s <code>runTest</code> method passes a no-arg async test function to
  * <code>withAsyncFixture(NoArgAsyncTest)</code>. It is <code>withAsyncFixture</code>'s
  * responsibility to invoke that test function. The default implementation of <code>withAsyncFixture</code> simply
  * invokes the function and returns the result, like this:
@@ -1159,7 +1170,7 @@ package org.scalatest
  * In this example, the tests required one fixture object, a <code>StringActor</code>. If your tests need multiple fixture objects, you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects or, alternatively, a case class containing
  * the objects.  For more information on the <code>withAsyncFixture(OneArgAsyncTest)</code> technique, see
- * the <a href="fixture/AsyncFunSuite.html">documentation for <code>fixture.AsyncFunSuite</code></a>.
+ * the <a href="fixture/AsyncFlatSpec.html">documentation for <code>fixture.AsyncFlatSpec</code></a>.
  * </p>
  *
  * <a name="beforeAndAfter"></a>
@@ -1523,10 +1534,10 @@ package org.scalatest
  * <p>
  * Sometimes you may want to run the same test code on different fixture objects. In other words, you may want to write tests that are "shared"
  * by different fixture objects.
- * To accomplish this in an <code>AsyncFunSuite</code>, you first place shared tests in
+ * To accomplish this in an <code>AsyncFlatSpec</code>, you first place shared tests in
  * <em>behavior functions</em>. These behavior functions will be
- * invoked during the construction phase of any <code>AsyncFunSuite</code> that uses them, so that the tests they contain will
- * be registered as tests in that <code>AsyncFunSuite</code>.
+ * invoked during the construction phase of any <code>AsyncFlatSpec</code> that uses them, so that the tests they contain will
+ * be registered as tests in that <code>AsyncFlatSpec</code>.
  * For example, given this <code>StackActor</code> class:
  * </p>
  *
@@ -1595,14 +1606,14 @@ package org.scalatest
  * <em>etc</em>. You may find you have several tests that make sense any time the stack is non-empty. Thus you'd ideally want to run
  * those same tests for three stack fixture objects: a full stack, a stack with a one item, and a stack with one item less than
  * capacity. With shared tests, you can factor these tests out into a behavior function, into which you pass the
- * stack fixture to use when running the tests. So in your <code>AsyncFunSuite</code> for <code>StackActor</code>, you'd invoke the
+ * stack fixture to use when running the tests. So in your <code>AsyncFlatSpec</code> for <code>StackActor</code>, you'd invoke the
  * behavior function three times, passing in each of the three stack fixtures so that the shared tests are run for all three fixtures.
  * </p>
  *
  * <p>
- * You can define a behavior function that encapsulates these shared tests inside the <code>FunSuite</code> that uses them. If they are shared
- * between different <code>AsyncFunSuite</code>s, however, you could also define them in a separate trait that is mixed into
- * each <code>AsyncFunSuite</code> that uses them.
+ * You can define a behavior function that encapsulates these shared tests inside the <code>AsyncFlatSpec</code> that uses them. If they are shared
+ * between different <code>AsyncFlatSpec</code>s, however, you could also define them in a separate trait that is mixed into
+ * each <code>AsyncFlatSpec</code> that uses them.
  * <a name="StackBehaviors">For</a> example, here the <code>nonEmptyStackActor</code> behavior function (in this case, a
  * behavior <em>method</em>) is defined in a trait along with another
  * method containing shared tests for non-full stacks:
@@ -1678,7 +1689,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * Given these behavior functions, you could invoke them directly, but <code>AsyncFunSuite</code> offers a DSL for the purpose,
+ * Given these behavior functions, you could invoke them directly, but <code>AsyncFlatSpec</code> offers a DSL for the purpose,
  * which looks like this:
  * </p>
  *
@@ -1808,18 +1819,18 @@ package org.scalatest
  * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
- * In a <code>AsyncFunSuite</code> there is no nesting construct analogous to
+ * In a <code>AsyncFlatSpec</code> there is no nesting construct analogous to
  * <code>AsyncFlatSpec</code>'s <code>describe</code> clause.
  * Therefore, you need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in an
- * <code>AsyncFunSuite</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call
+ * <code>AsyncFlatSpec</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call
  * <code>toString</code> on the shared fixture object, or pass this string
  * the same way you pass any other data needed by the shared tests.
- * This is the approach taken by the previous <code>AsyncFunSuiteStackBehaviors</code> example.
+ * This is the approach taken by the previous <code>AsyncFlatSpecStackBehaviors</code> example.
  * </p>
  *
  * <p>
- * Given this <code>AsyncFunSuiteStackBehaviors</code> trait, calling it with the <code>stackWithOneItem</code> fixture, like this:
+ * Given this <code>AsyncFlatSpecStackBehaviors</code> trait, calling it with the <code>stackWithOneItem</code> fixture, like this:
  * </p>
  *
  * <pre class="stHighlight">

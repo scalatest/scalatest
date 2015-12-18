@@ -19,6 +19,14 @@ package org.scalatest
  * Enables testing of asynchronous code without blocking,
  * using a style consistent with traditional <code>FunSuite</code> tests.
  *
+ * <table><tr><td class="usage">
+ * <strong>Recommended Usage</strong>:
+ * <code>AsyncFunSuite</code> is intended to enable users of <a href="FunSuite.html"><code>FunSuite</code></a>
+ * to write non-blocking asynchronous tests that are consistent with their traditional <code>FunSuite</code> tests. 
+ * <em>Note: <code>AsyncFunSuite</code> is intended for use in special situations where non-blocking asynchronous
+ * testing is needed, with class <code>FunSuite</code> used for general needs.</em>
+ * </td></tr></table>
+ * 
  * <p>
  * Given a <code>Future</code> returned by the code you are testing,
  * you need not block until the <code>Future</code> completes before
@@ -26,8 +34,11 @@ package org.scalatest
  * assertions onto the <code>Future</code> and return the resulting
  * <code>Future[Assertion]</code> to ScalaTest. The test will complete
  * asynchronously, when the <code>Future[Assertion]</code> completes.
- *
+ * </p>
+ * 
+ * <p>
  * Here's an example <code>AsyncFunSuite</code>:
+ * </p>
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.asyncfunsuite
@@ -1593,7 +1604,7 @@ package org.scalatest
  * </p>
  *
  * <p>
- * You can define a behavior function that encapsulates these shared tests inside the <code>FunSuite</code> that uses them. If they are shared
+ * You can define a behavior function that encapsulates these shared tests inside the <code>AsyncFunSuite</code> that uses them. If they are shared
  * between different <code>AsyncFunSuite</code>s, however, you could also define them in a separate trait that is mixed into
  * each <code>AsyncFunSuite</code> that uses them.
  * <a name="StackBehaviors">For</a> example, here the <code>nonEmptyStackActor</code> behavior function (in this case, a
