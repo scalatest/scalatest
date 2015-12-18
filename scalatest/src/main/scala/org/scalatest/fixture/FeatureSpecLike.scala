@@ -162,8 +162,8 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+      //SCALATESTJS-ONLY val stackDepth = 5
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(Resources.scenario(specText), Transformer(testFun), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
     def apply(testFun: () => Any /* Assertion */): Unit = {
@@ -171,8 +171,8 @@ trait FeatureSpecLike extends Suite with TestRegistration with Informing with No
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+      //SCALATESTJS-ONLY val stackDepth = 5
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(Resources.scenario(specText), Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAScenario, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   }

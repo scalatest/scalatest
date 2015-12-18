@@ -163,8 +163,8 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+      //SCALATESTJS-ONLY val stackDepth = 5
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
 
@@ -173,8 +173,8 @@ trait FunSuiteLike extends Suite with TestRegistration with Informing with Notif
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 6
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+      //SCALATESTJS-ONLY val stackDepth = 5
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   }

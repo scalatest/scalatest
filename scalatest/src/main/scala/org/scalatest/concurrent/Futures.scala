@@ -303,7 +303,7 @@ trait Futures extends PatienceConfiguration {
       // SKIP-SCALATESTJS-START
       val stackDepthAdjustment = 3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 1
 
       try {
         futureValueImpl("isReadyWithin", stackDepthAdjustment)(PatienceConfig(timeout, config.interval))
@@ -489,7 +489,7 @@ trait Futures extends PatienceConfiguration {
       // SKIP-SCALATESTJS-START
       val stackDepthAdjustment = 3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 1
       futureValueImpl("futureValue", stackDepthAdjustment)(config)
     }
 
