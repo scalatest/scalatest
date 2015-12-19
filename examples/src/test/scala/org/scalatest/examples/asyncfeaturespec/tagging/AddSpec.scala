@@ -26,21 +26,21 @@ import scala.concurrent.Future
 class AddSpec extends AsyncFeatureSpec {
 
   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+  def addNow(addends: Int*): Int = addends.sum
 
-  feature("addSoon") {
-    scenario("when passed Ints will eventually compute a sum", Slow) {
+  feature("The add methods") {
+
+    scenario("addSoon will eventually compute a sum of passed Ints",
+        Slow) {
+
       val futureSum: Future[Int] = addSoon(1, 2)
       // You can map assertions onto a Future, then return
       // the resulting Future[Assertion] to ScalaTest:
       futureSum map { sum => assert(sum == 3) }
     }
-  }
 
-  def addNow(addends: Int*): Int = addends.sum
-
-  feature("addNow") {
-    scenario("when passed Ints will immediately compute a sum",
-      Slow, DbTest) {
+    scenario("addNow will immediately compute a sum of passed Ints",
+        Slow, DbTest) {
 
       val sum: Int = addNow(1, 2)
       // You can also write synchronous tests. The body

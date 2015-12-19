@@ -49,20 +49,18 @@ package org.scalatest
  * class AddSpec extends AsyncFeatureSpec {
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("addSoon") {
- *     scenario("when passed Ints will eventually compute the sum") {
+ *   feature("The add methods") {
+ *
+ *     scenario("addSoon will eventually compute a sum of passed Ints") {
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
  *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
- *   }
  *
- *   def addNow(addends: Int*): Int = addends.sum
- *
- *   feature("addNow") {
- *     scenario("when passed Ints will immediately compute the sum") {
+ *     scenario("addNow will immediately compute a sum of passed Ints") {
  *       val sum: Int = addNow(1, 2)
  *       // You can also write synchronous tests. The body
  *       // must have result type Assertion:
@@ -337,20 +335,18 @@ package org.scalatest
  * class AddSpec extends AsyncFeatureSpec {
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("addSoon") {
- *     ignore("when passed Ints will eventually compute a sum") {
+ *   feature("The add methods") {
+ *
+ *     ignore("addSoon will eventually compute a sum of passed Ints") {
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
  *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
- *   }
  *
- *   def addNow(addends: Int*): Int = addends.sum
- *
- *   feature("addNow") {
- *     scenario("when passed Ints will immediately compute a sum") {
+ *     scenario("addNow will immediately compute a sum of passed Ints") {
  *       val sum: Int = addNow(1, 2)
  *       // You can also write synchronous tests. The body
  *       // must have result type Assertion:
@@ -365,7 +361,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new AddSpec execute
+ * scala&gt; org.scalatest.run(new AddSpec)
  * </pre>
  *
  * <p>
@@ -374,10 +370,9 @@ package org.scalatest
  *
  * <pre class="stREPL">
  * <span class="stGreen">AddSpec:</span>
- * <span class="stGreen">Feature: addSoon</span>
- * <span class="stYellow">- Scenario: when passed Ints will eventually compute a sum !!! IGNORED !!!</span>
- * <span class="stGreen">Feature: addNow</span>
- * <span class="stGreen">- Scenario: when passed Ints will immediately compute a sum</span>
+ * <span class="stGreen">Feature: The add methods</span>
+ * <span class="stYellow">- Scenario: addSoon will eventually compute a sum of passed Ints !!! IGNORED !!!</span>
+ * <span class="stGreen">- Scenario: addNow will immediately compute a sum of passed Ints</span>
  *
  * </pre>
  *
@@ -396,20 +391,18 @@ package org.scalatest
  * class AddSpec extends AsyncFeatureSpec {
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("addSoon") {
- *     scenario("when passed Ints will eventually compute a sum") {
+ *   feature("The add methods") {
+ *
+ *     scenario("addSoon will eventually compute a sum of passed Ints") {
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
  *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
- *   }
  *
- *   def addNow(addends: Int*): Int = addends.sum
- *
- *   feature("addNow") {
- *     scenario("when passed Ints will immediately compute a sum") {
+ *     scenario("addNow will immediately compute a sum of passed Ints") {
  *       val sum: Int = addNow(1, 2)
  *       // You can also write synchronous tests. The body
  *       // must have result type Assertion:
@@ -427,10 +420,9 @@ package org.scalatest
  *
  * <pre class="stREPL">
  * <span class="stGreen">AddSpec:</span>
- * <span class="stGreen">Feature: addSoon</span>
- * <span class="stYellow">- Scenario: when passed Ints will eventually compute a sum !!! IGNORED !!!</span>
- * <span class="stGreen">Feature: addNow</span>
- * <span class="stYellow">- Scenario: when passed Ints will immediately compute a sum !!! IGNORED !!!</span>
+ * <span class="stGreen">Feature: The add methods</span>
+ * <span class="stYellow">- Scenario: addSoon will eventually compute a sum of passed Ints !!! IGNORED !!!</span>
+ * <span class="stYellow">- Scenario: addNow will immediately compute a sum of passed Ints !!! IGNORED !!!</span>
  * </pre>
  *
  * <p>
@@ -482,15 +474,13 @@ package org.scalatest
  * class AddSpec extends AsyncFeatureSpec {
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
- *
- *   feature("addSoon") {
- *     scenario("when passed Ints will eventually compute a sum")(pending)
- *   }
- *
  *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("addNow") {
- *     scenario("when passed Ints will immediately compute a sum") {
+ *   feature("The add methods") {
+ *
+ *     scenario("addSoon will eventually compute a sum of passed Ints") (pending)
+ *
+ *     scenario("addNow will immediately compute a sum of passed Ints") {
  *       val sum: Int = addNow(1, 2)
  *       // You can also write synchronous tests. The body
  *       // must have result type Assertion:
@@ -507,7 +497,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new AddSpec execute
+ * scala&gt; org.scalatest.run(new AddSpec)
  * </pre>
  *
  * <p>
@@ -516,10 +506,9 @@ package org.scalatest
  *
  * <pre class="stREPL">
  * <span class="stGreen">AddSpec:</span>
- * <span class="stGreen">Feature: addSoon</span>
- * <span class="stYellow">- Scenario: when passed Ints will eventually compute a sum (pending)</span>
- * <span class="stGreen">Feature: addNow</span>
- * <span class="stGreen">- Scenario: when passed Ints will immediately compute a sum</span>
+ * <span class="stGreen">Feature: The add methods</span>
+ * <span class="stYellow">- Scenario: addSoon will eventually compute a sum of passed Ints (pending)</span>
+ * <span class="stGreen">- Scenario: addNow will immediately compute a sum of passed Ints</span>
  * </pre>
  *
  * <p>
@@ -578,21 +567,21 @@ package org.scalatest
  * class AddSpec extends AsyncFeatureSpec {
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
+ *   def addNow(addends: Int*): Int = addends.sum
  *
- *   feature("addSoon") {
- *     scenario("when passed Ints will eventually compute a sum", Slow) {
+ *   feature("The add methods") {
+ *
+ *     scenario("addSoon will eventually compute a sum of passed Ints",
+ *          Slow) {
+ *
  *       val futureSum: Future[Int] = addSoon(1, 2)
  *       // You can map assertions onto a Future, then return
  *       // the resulting Future[Assertion] to ScalaTest:
  *       futureSum map { sum =&gt; assert(sum == 3) }
  *     }
- *   }
  *
- *   def addNow(addends: Int*): Int = addends.sum
- *
- *   feature("addNow") {
- *     scenario("when passed Ints will immediately compute a sum",
- *       Slow, DbTest) {
+ *     scenario("addNow will immediately compute a sum of passed Ints",
+ *         Slow, DbTest) {
  *
  *       val sum: Int = addNow(1, 2)
  *       // You can also write synchronous tests. The body

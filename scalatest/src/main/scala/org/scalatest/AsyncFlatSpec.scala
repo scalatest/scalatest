@@ -61,8 +61,7 @@ package org.scalatest
  *
  *   def addNow(addends: Int*): Int = addends.sum
  *
- *   behavior of "addNow"
- *   it should "immediately compute a sum of passed Ints" in {
+ *   "addNow" should "immediately compute a sum of passed Ints" in {
  *     val sum: Int = addNow(1, 2)
  *     // You can also write synchronous tests. The body
  *     // must have result type Assertion:
@@ -72,12 +71,12 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * &ldquo;<code>it</code>&rdquo; is a method, defined in <code>AsyncFlatSpec</code>, which will be invoked
- * by the primary constructor of <code>AddSpec</code>. You specify the name of the test as
- * a string between the parentheses, and the test code itself between curly braces.
- * The test code is a function passed as a by-name parameter to <code>it</code>, which registers
- * it for later execution. The result type of the by-name in an <code>AsyncFlatSpec</code> must
- * be <code>Future[Assertion]</code>.
+ * The initial test in this example demonstrates the use of an explicit <code>behavior of</code> clause, which establishes
+ * <code>addSoon</code> as the subject.  The second test demonstrates the alternate syntax of replacing the first <code>it</code>
+ * with the subject string, in this case, <code>"addNow"</code>.
+ * As with traditional <code>FlatSpec</code>s, you can use <code>must</code> or <code>can</code> as well as <code>should</code>.
+ * For example, instead of <code>it should "eventually</code>..., you could write
+ * <code>it must "eventually</code>... or <code>it can "eventually</code>....
  * </p>
  *
  * <p>
@@ -146,7 +145,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- *   it("addNow will immediately compute a sum of passed Ints") {
+ *   "addNow" should "immediately compute a sum of passed Ints" in {
  *     val sum: Int = addNow(1, 2)
  *     assert(sum == 3)
  *     println("hi") // println has result type Unit

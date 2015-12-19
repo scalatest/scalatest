@@ -21,15 +21,13 @@ import scala.concurrent.Future
 class AddSpec extends AsyncFeatureSpec {
 
   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
-
-  feature("addSoon") {
-    scenario("when passed Ints will eventually compute a sum")(pending)
-  }
-
   def addNow(addends: Int*): Int = addends.sum
 
-  feature("addNow") {
-    scenario("when passed Ints will immediately compute a sum") {
+  feature("The add methods") {
+
+    scenario("addSoon will eventually compute a sum of passed Ints") (pending)
+
+    scenario("addNow will immediately compute a sum of passed Ints") {
       val sum: Int = addNow(1, 2)
       // You can also write synchronous tests. The body
       // must have result type Assertion:

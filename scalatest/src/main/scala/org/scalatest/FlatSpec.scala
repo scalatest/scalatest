@@ -64,7 +64,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Note: you can use <code>must</code> or <code>can</code> as well as <code>should</code> in a <code>FlatSpec</code>. For example, instead of
- * <code>it should "pop</code>..., you could write <code>it must "pop</code>... or <code>it can "pop</code>....
+ * <code>it should "have</code>..., you could write <code>it must "have</code>... or <code>it can "have</code>....
  * </p>
  *
  * <p>

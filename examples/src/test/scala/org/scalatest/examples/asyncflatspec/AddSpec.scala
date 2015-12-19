@@ -33,8 +33,7 @@ class AddSpec extends AsyncFlatSpec {
 
   def addNow(addends: Int*): Int = addends.sum
 
-  behavior of "addNow"
-  it should "immediately compute a sum of passed Ints" in {
+  "addNow" should "immediately compute a sum of passed Ints" in {
     val sum: Int = addNow(1, 2)
     // You can also write synchronous tests. The body
     // must have result type Assertion:

@@ -147,7 +147,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- *   it("addNow will immediately compute a sum of passed Ints") {
+ *   "immediately compute a sum of passed Ints" in {
  *     val sum: Int = addNow(1, 2)
  *     assert(sum == 3)
  *     println("hi") // println has result type Unit

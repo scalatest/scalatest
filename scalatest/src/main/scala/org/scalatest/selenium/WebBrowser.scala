@@ -1011,7 +1011,7 @@ import org.scalatest.Resources
  * In case the test code fails, you'll see the screenshot location appended to the error message, for example:
  * </p>
  * 
- * <pre class="stHighlight">
+ * <pre>
  * Expected gold but got silver; screenshot capture in /tmp/AbCdEfGhIj.png
  * </pre>
  * 
