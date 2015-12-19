@@ -365,7 +365,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new AddSpec execute
+ * scala&gt; org.scalatest.run(new AddSpec)
  * </pre>
  *
  * <p>
@@ -506,7 +506,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new AddSpec execute
+ * scala&gt; org.scalatest.run(new AddSpec)
  * </pre>
  *
  * <p>
@@ -916,7 +916,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
+ * scala&gt; org.scalatest.run(new ExampleSpec)
  * <span class="stGreen">ExampleSpec:
  * This test
  * - should succeed</span>
@@ -1832,7 +1832,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new StackSpec execute
+ * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
  * A Stack
  *   (when empty)

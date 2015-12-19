@@ -907,7 +907,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
+ * scala&gt; org.scalatest.run(new ExampleSpec)
  * <span class="stGreen">ExampleSpec:
  * Feature: addSoon
  * - Scenario: succeed case</span>
@@ -1811,7 +1811,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new StackSpec execute
+ * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
  * Feature: A Stack is pushed and popped
  * - Scenario: empty is invoked on an empty stack

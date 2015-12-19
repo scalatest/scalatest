@@ -111,7 +111,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * </pre>
  *
  * <p>
@@ -156,7 +156,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * <span class="stGreen">SetSuite:</span>
  * <span class="stYellow">- An empty Set should have size 0 !!! IGNORED !!!
  * - Invoking head on an empty Set should produce NoSuchElementException !!! IGNORED !!!</span>
@@ -218,7 +218,7 @@ import Suite.autoTagClassAnnotations
  * If you run this <code>FunSuite</code> from the interpreter, you will see the following output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * <span class="stGreen">SetSuite:
  * - an element can be added to an empty mutable Set
  *   + Given an empty mutable Set 
@@ -348,7 +348,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSuite:
  *   + notes are sent immediately</span>
  *   <span class="stYellow">+ alerts are also sent immediately</span>
@@ -418,7 +418,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * </pre>
  *
  * <p>
@@ -853,7 +853,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * - this test should succeed</span>
  * <span class="stRed">- this test should fail *** FAILED ***
@@ -1480,7 +1480,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new StackFunSuite execute
+ * scala&gt; org.scalatest.run(new StackFunSuite)
  * <span class="stGreen">StackFunSuite:
  * - empty is invoked on an empty stack
  * - peek is invoked on an empty stack

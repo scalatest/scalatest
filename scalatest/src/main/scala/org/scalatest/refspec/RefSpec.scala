@@ -124,7 +124,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -144,7 +144,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute "size 0"
+ * scala&gt; org.scalatest.run(new SetSuite, "size 0")
  * <span class="stGreen">A Set</span>
  * <span class="stGreen">  when empty</span>
  * <span class="stGreen">  - should have size 0</span>
@@ -215,7 +215,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -264,7 +264,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A Set
  *   when empty</span>
@@ -328,7 +328,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * If you run this <code>RefSpec</code> from the interpreter, you will see the following output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
@@ -461,7 +461,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A mutable Set
  *   + notes are sent immediately</span>
@@ -536,7 +536,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -963,7 +963,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * This test</span>
  * <span class="stRed">- should fail *** FAILED ***

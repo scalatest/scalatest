@@ -113,7 +113,7 @@ import Suite.getMethodForTestName
  * included in the output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * <span class="stGreen">SetSuite:
  * - an element can be added to an empty mutable Set
  *   + Given an empty mutable Set
@@ -378,7 +378,7 @@ import Suite.getMethodForTestName
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ASCIISuite execute
+ * scala&gt; org.scalatest.run(new ASCIISuite)
  * </pre>
  *
  * <p>
@@ -608,7 +608,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute
+   * scala&gt; (new ExampleSuite).execute()
    * </pre>
    *
    * <p>
@@ -617,7 +617,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute ("my favorite test")
+   * scala&gt; (new ExampleSuite).execute("my favorite test")
    * </pre>
    *
    * <p>
@@ -625,7 +625,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (testName = "my favorite test")
+   * scala&gt; (new ExampleSuite).execute(testName = "my favorite test")
    * </pre>
    *
    * <p>
@@ -640,7 +640,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (configMap = Map("inputFileName" -> "in.txt")
+   * scala&gt; (new ExampleSuite).execute(configMap = Map("inputFileName" -&gt; "in.txt")
    * </pre>
    *
    * <p>
@@ -653,7 +653,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (color = false)
+   * scala&gt; (new ExampleSuite).execute(color = false)
    * </pre>
    *
    * <p>
@@ -667,7 +667,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (durations = true)
+   * scala&gt; (new ExampleSuite).execute(durations = true)
    * </pre>
    *
    * <p>
@@ -682,7 +682,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (shortstacks = true)
+   * scala&gt; (new ExampleSuite).execute(shortstacks = true)
    * </pre>
    *
    * <p>
@@ -690,7 +690,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (fullstacks = true)
+   * scala&gt; (new ExampleSuite).execute(fullstacks = true)
    * </pre>
    *
    * <p>
@@ -710,7 +710,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (stats = true)
+   * scala&gt; (new ExampleSuite).execute(stats = true)
    * </pre>
    *
    *
@@ -868,32 +868,35 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   }
 
   /**
-   * Executes this <code>Suite</code>, printing results to the standard output.
+   * <strong>The parameterless <code>execute</code> method has been deprecated and will be removed in a future version
+   * of ScalaTest. Please invoke <code>execute</code> with empty parens instead: <code>execute()</code>.</strong>
    *
    * <p>
-   * This method, which simply invokes the other overloaded form of <code>execute</code> with default parameter values,
-   * is intended for use only as a mini-DSL for the Scala interpreter. It allows you to execute a <code>Suite</code> in the
+   * The original purpose of this method, which simply invokes the other overloaded form of <code>execute</code> with default parameter values,
+   * was to serve as a mini-DSL for the Scala interpreter. It allowed you to execute a <code>Suite</code> in the
    * interpreter with a minimum of finger typing:
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new SetSpec execute
+   * scala&gt; org.scalatest.run(new SetSpec)
    * <span class="stGreen">An empty Set</span>
    * <span class="stGreen">- should have size 0</span>
    * <span class="stYellow">- should produce NoSuchElementException when head is invoked !!! IGNORED !!!</span>
    * </pre>
    *
    * <p>
-   * If you do ever want to invoke <code>execute</code> outside the Scala interpreter, it is best style to invoke it with
-   * empty parens to indicate it has a side effect, like this:
+   * However it uses postfix notation, which is now behind a language feature import. Thus better to use
+   * the other <code>execute</code> method or <code>org.scalatest.run</code>:
    * </p>
    *
    * <pre class="stREPL">
-   * // Use empty parens form in regular code (outside the Scala interpreter)
    * (new ExampleSuite).execute()
+   * // or
+   * org.scalatest.run(new ExampleSuite)
    * </pre>
    */
-  final def execute { execute() }
+    @deprecated("The parameterless execute method has been deprecated and will be removed in a future version of ScalaTest. Please invoke execute with empty parens instead: execute().")
+   final def execute { execute() }
 
   // SKIP-SCALATESTJS-END
 

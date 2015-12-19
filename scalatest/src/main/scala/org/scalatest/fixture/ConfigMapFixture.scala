@@ -50,7 +50,7 @@ import org.scalatest._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
+ * scala&gt; org.scalatest.run(new ExampleSpec)
  * <span class="stGreen">ExampleSpec:
  * The config map</span>
  * <span class="stRed">- should contain hello *** FAILED ***
@@ -65,7 +65,7 @@ import org.scalatest._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute (configMap = Map("hello" -&gt; "hi", "world" -&gt; "globe"))
+ * scala&gt; org.scalatest.run(new ExampleSpec, configMap = Map("hello" -&gt; "hi", "world" -&gt; "globe"))
  * <span class="stGreen">ExampleSpec:
  * The config map
  * - should contain hello

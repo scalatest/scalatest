@@ -204,7 +204,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -248,7 +248,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -292,7 +292,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * An empty Set</span>
  * <span class="stYellow">- should have size 0 !!! IGNORED !!!
@@ -358,7 +358,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A mutable Set
  * - should allow an element to be added
@@ -488,7 +488,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A mutable Set
  *   + notes are sent immediately</span>
@@ -553,7 +553,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -1004,7 +1004,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * This test
  * - should succeed</span>
@@ -1610,7 +1610,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SharedTestExampleSpec execute
+ * scala&gt; org.scalatest.run(new SharedTestExampleSpec)
  * <span class="stGreen">A Stack (when empty)
  * - should be empty
  * - should complain on peek

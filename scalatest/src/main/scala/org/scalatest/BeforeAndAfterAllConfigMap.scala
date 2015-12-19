@@ -113,7 +113,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
+ * scala&gt; org.scalatest.run(new ExampleSpec)
  * <span class="stGreen">ExampleSpec:</span>
  * <span class="stRed">Exception encountered when invoking run on a suite. *** ABORTED ***
  *   Exception encountered when invoking run on a suite. (<console>:30)
@@ -126,7 +126,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute (configMap = ConfigMap("tempFileName" -&gt; "tmp.txt"))
+ * scala&gt; (new ExampleSpec).execute(configMap = ConfigMap("tempFileName" -&gt; "tmp.txt"))
  * <span class="stGreen">ExampleSpec:
  * OneSpec:
  * The temp file

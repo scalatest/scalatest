@@ -68,7 +68,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -87,7 +87,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute "size 0"
+ * scala&gt; org.scalatest.run(new SetSpec, "size 0")
  * <span class="stGreen">SetSpec:
  * - an empty Set should have size 0</span>
  * </pre>
@@ -173,7 +173,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -246,7 +246,7 @@ import Suite.autoTagClassAnnotations
  * If you run this <code>PropSpec</code> from the interpreter, you will see the following output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * - an element can be added to an empty mutable Set
  *   + ---------------- 
@@ -412,7 +412,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  *   + notes are sent immediately</span>
  *   <span class="stYellow">+ alerts are also sent immediately</span>
@@ -489,7 +489,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * </pre>
  *
  * <p>

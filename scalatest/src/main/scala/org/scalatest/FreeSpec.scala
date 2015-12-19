@@ -130,7 +130,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  * 
  * <pre class="stREPL">
- * scala&gt; new StackSpec execute
+ * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
  * A Stack 
  *   whenever it is empty 
@@ -190,7 +190,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  * 
  * <pre class="stREPL">
- * scala&gt; new ComputerRoomRulesSpec execute
+ * scala&gt; org.scalatest.run(new ComputerRoomRulesSpec)
  * <span class="stGreen">ComputerRoomRulesSpec:
  * Achtung! 
  *   Alle touristen und non-technischen lookenpeepers! 
@@ -258,7 +258,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -308,7 +308,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A Set
  *   when empty</span>
@@ -378,7 +378,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
@@ -505,7 +505,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  *  A mutable Set
  *    + notes are sent immediately</span>
@@ -574,7 +574,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -1041,7 +1041,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * This test
  * - should succeed</span>
@@ -1676,7 +1676,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SharedTestExampleSpec execute
+ * scala&gt; org.scalatest.run(new SharedTestExampleSpec)
  * <span class="stGreen">SharedTestExampleSpec:
  * A Stack 
  *   when empty 

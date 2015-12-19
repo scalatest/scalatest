@@ -357,7 +357,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new AddSuite execute
+ * scala&gt; org.scalatest.run(new AddSuite)
  * </pre>
  *
  * <p>
@@ -411,7 +411,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new AddSuite execute
+ * scala&gt; org.scalatest.run(new AddSuite)
  * <span class="stGreen">AddSuite:</span>
  * <span class="stYellow">- addSoon will eventually compute a sum of passed Ints !!! IGNORED !!!
  * - addNow will immediately compute a sum of passed Ints !!! IGNORED !!!</span>
@@ -487,7 +487,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new AddSuite execute
+ * scala&gt; org.scalatest.run(new AddSuite)
  * </pre>
  *
  * <p>
@@ -889,7 +889,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * - this test should succeed</span>
  * Dir snapshot: hello.txt, world.txt
@@ -1779,7 +1779,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new StackSuite execute
+ * scala&gt; org.scalatest.run(new StackSuite)
  * <span class="stGreen">StackSuite:
  * StackSuite:
  * - an empty stack actor is empty

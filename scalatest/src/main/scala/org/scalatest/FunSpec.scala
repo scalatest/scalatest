@@ -107,7 +107,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -127,7 +127,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute "size 0"
+ * scala&gt; org.scalatest.run(new SetSuite, "size 0")
  * <span class="stGreen">A Set</span>
  * <span class="stGreen">  when empty</span>
  * <span class="stGreen">  - should have size 0</span>
@@ -186,7 +186,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -236,7 +236,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A Set
  *   when empty</span>
@@ -300,7 +300,7 @@ import Suite.autoTagClassAnnotations
  * If you run this <code>FunSpec</code> from the interpreter, you will see the following output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
@@ -433,7 +433,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A mutable Set
  *   + notes are sent immediately</span>
@@ -508,7 +508,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -932,7 +932,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * This test
  * - should succeed</span>
@@ -1570,7 +1570,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new StackSpec execute
+ * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">A Stack (when empty) 
  * - should be empty
  * - should complain on peek

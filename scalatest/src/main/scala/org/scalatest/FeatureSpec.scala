@@ -143,7 +143,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
@@ -173,7 +173,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute "TV is on"
+ * scala&gt; org.scalatest.run(new TVSetSpec, "TV is on")
  * <span class="stGreen">TVSetSpec:
  * As a TV set owner 
  * I want to be able to turn the TV on and off 
@@ -251,7 +251,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
@@ -409,7 +409,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * Feature: An element can be added to an empty mutable Set
  *   + notes are sent immediately</span>
@@ -489,7 +489,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * </pre>
  *
  * <p>
@@ -571,7 +571,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new TVSetSpec execute
+ * scala&gt; org.scalatest.run(new TVSetSpec)
  * <span class="stGreen">TVSetSpec:
  * As a TV set owner 
  * I want to be able to turn the TV on and off 
@@ -1006,7 +1006,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
+ * scala&gt; org.scalatest.run(new ExampleSpec)
  * <span class="stGreen">ExampleSpec:
  * Scenario: This scenario should succeed</span>
  * <span class="stRed">Scenario: This scenario should fail *** FAILED ***

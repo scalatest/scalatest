@@ -143,7 +143,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  * 
  * <pre class="stREPL">
- * scala&gt; new StackSpec execute
+ * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
  * A Stack
  *   when empty
@@ -216,7 +216,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  * 
  * <pre class="stREPL">
- * scala> new AndOrSpec execute
+ * scala&gt; org.scalatest.run(new AndOrSpec)
  * <span class="stGreen">AndOrSpec:
  * The ScalaTest Matchers DSL
  *   should provide an and operator, which
@@ -274,7 +274,7 @@ import Suite.autoTagClassAnnotations
  *  </p>
  * 
  * <pre class="stREPL">
- * scala&gt; new AndOrSpec execute
+ * scala&gt; org.scalatest.run(new AndOrSpec)
  * <span class="stGreen">AndOrSpec:
  * The ScalaTest Matchers DSL
  *   should provide
@@ -325,7 +325,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ScalaTestGUISpec execute
+ * scala&gt; org.scalatest.run(new ScalaTestGUISpec)
  * <span class="stGreen">ScalaTestGUISpec:
  * The ScalaTest GUI
  *   when the user clicks on an event report in the list box
@@ -409,7 +409,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -459,7 +459,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A Set
  *   when empty</span>
@@ -529,7 +529,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
@@ -662,7 +662,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A mutable Set
  *   + notes are sent immediately</span>
@@ -731,7 +731,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -1194,7 +1194,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * This test
  * - should succeed</span>
@@ -1820,7 +1820,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SharedTestExampleSpec execute
+ * scala&gt; org.scalatest.run(new SharedTestExampleSpec)
  * <span class="stGreen">SharedTestExampleSpec:
  * A Stack
  *   when empty
