@@ -18,7 +18,7 @@ object ScalatestBuild extends Build {
   // set scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation")
 
   // To temporarily switch sbt to a different Scala version:
-  // > ++ 2.10.5
+  // > ++ 2.10.6
   val buildScalaVersion = "2.11.7"
 
   val releaseVersion = "3.0.0-M14"
@@ -80,7 +80,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.5"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.10.6"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
