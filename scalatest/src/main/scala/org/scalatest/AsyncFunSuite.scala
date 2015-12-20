@@ -167,21 +167,104 @@ package org.scalatest
  * <code>TestRegistrationClosedException</code>.
  * </p>
  *
- * <a name="executionContext"></a><h2>The execution context and parallel execution</h2>
+ * <a name="asyncExecutionModel"></a><h2>Asynchronous execution model</h2>
  *
  * <p>
- * In an <code>AsyncFunSuite</code> you will need to define an implicit
- * <code>ExecutionContext</code> named <code>executionContext</code>. This
- * execution context will be used by <code>AsyncFunSuite</code> to 
- * transform the <code>Future[Assertion]</code>s returned by tests
+ * <code>AsyncFunSuite</code> extends <a href="AsyncSuite.html"><code>AsyncSuite</code></a>, which provides an
+ * implicit <code>scala.concurrent.ExecutionContext</code>
+ * named <code>executionContext</code>. This
+ * execution context is used by <code>AsyncFunSuite</code> to 
+ * transform the <code>Future[Assertion]</code>s returned by each test
  * into the <code>Future[Outcome]</code> returned by the test function
- * passed to <code>withAsyncFixture</code>.
- * It is also intended to be used in the tests when an <code>ExecutionContext</code>
- * is needed, including when you map assertions onto a future.
+ * for that test (which is passed to <code>withAsyncFixture</code>).
+ * This <code>ExecutionContext</code> is also intended to be used in the tests,
+ * including when you map assertions onto futures.
  * </p>
  * 
  * <p>
- * By default, tests in an <code>AsyncFunSuite</code> will be executed one after
+ * On both the JVM and Scala.js, the default execution context provided by ScalaTest's asynchronous
+ * testing styles, including <code>AsyncFunSuite</code>, confines execution to a single thread per test. On JavaScript, where single-threaded
+ * execution is required because only one thread exists, the default execution context is
+ * <code>scala.scalajs.concurrent.JSExecutionContext.Implicits.queue</code>. On the JVM, 
+ * the default execution context is a <em>serial execution context</em> provided by ScalaTest itself.
+ * </p>
+ * 
+ * <p>
+ * When the serial execution context is called upon to execute a task, that task is simply recorded
+ * in a queue for later execution. For example, one task that will be placed in this queue is the
+ * task that transforms the <code>Future[Assertion]</code> returned by an asynchronous test body
+ * to the <code>Future[Outcome]</code> returned from the test function passed to <code>withAsyncFixture</code>.
+ * Other tasks that will be queued are any transformations of, or callbacks registered on, <code>Future</code>s that occur
+ * in your test body, including any assertions you map onto <code>Future</code>s. Once the test body returns,
+ * the thread that executed it will execute the tasks in that queue one after another, in the order they
+ * were enqueued.
+ * </p>
+ *
+ * <p>
+ * The purpose of using this serial execution context by default on the JVM is twofold. First, most often
+ * running both tests and suites in parallel does not give a significant performance boost compared to
+ * just running suites in parallel. And, if multiple threads are operating in the same suite
+ * concurrently, you'll need to make sure access to any fixture objects by multiple threads is synchronized.
+ * Because execution of each test is confined to a single thread, you need not worry about synchronizing access
+ * to mutable state.
+ * </p>
+ *
+ * <p>
+ * Second, asynchronous-style tests need not be complete when the test body returns, because the test body returns
+ * a <code>Future[Assertion]</code> that will often represent a test that has not yet completed. Thus when using
+ * a more traditional execution context backed by a thread-pool, you could potentially end up with so many tests executing
+ * concurrently, all competing for threads from the same thread pool, that tests start intermitently failing due to timeouts.
+ * </p>
+ * 
+ * <p>
+ * By contrast, using the serial execution context will ensure the same thread that produced the <code>Future[Assertion]</code>
+ * returned from a test body is also used to execute any tasks given to the execution context while executing the test body--and
+ * that thread will not be allowed to do anything else until the test completes.
+ * If the serial execution context's task queue ever becomes empty while the <code>Future[Assertion]</code> returned by
+ * that test's body has not yet completed, the thread will <em>block</em> until another task for that test is enqueued. Although
+ * it may seem counter-intuitive, this blocking behavior means the total number of tests allowed to run concurrently to
+ * is equal to the total number of threads executing suites. And that in turn can be used to tune test runs so that maximum performance
+ * is reached while avoiding (or at least, reducing the likelihood of) tests that fail due to timeouts because of thread competition.
+ * </p>
+ *
+ * <p>
+ * This does mean, however, that if you are using the default execution context on the JVM, you
+ * must be sure to never block in the test body waiting for a task to be completed by the
+ * execution context, because your test will never complete. It will be obvious, because the test will
+ * always hang every time you run it. (If a test is hanging, and you're not sure which one it is, 
+ * enable <a href="Runner.scala#slowpokeNotifications">slowpoke notifications</a>.) If you really do 
+ * want to block in your tests (on the JVM, you can't block on Scala.js), you may wish to just use a
+ * traditional <a href="FunSuite.html"><code>FunSuite</code></a> with
+ * <a href="concurrent/ScalaFutures.html"><code>ScalaFutures</code></a> instead.
+ * </p>
+ *
+ * <p>
+ * To use a different execution context, just override <code>executionContext</code>. For example, if you prefer to use
+ * the <code>runNow</code> execution context on Scala.js instead of the default <code>queue</code>, you would write:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // on Scala.js
+ * implicit override def executionContext =
+ *     scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+ * </pre>
+ *
+ * <p>
+ * If you prefer on the JVM to use the global execution context, which is backed by a thread pool, instead of ScalaTest's default
+ * serial execution contex, which confines execution to a single thread, you would write:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * // on the JVM (and also compiles on Scala.js, giving
+ * // you the queue execution context)
+ * implicit override def executionContext =
+ *     scala.concurrent.ExecutionContext.Implicits.global
+ * </pre>
+ *
+ * <a name="serialAndParallel"></a><h2>Serial and parallel test execution</h2>
+ *
+ * <p>
+ * By default (unless you mix in <code>ParallelTestExecution</code>), tests in an <code>AsyncFunSuite</code> will be executed one after
  * another, <em>i.e.</em>, serially. This is true whether those tests are synchronous
  * or asynchronous, no matter what threads are involved. This default behavior allows
  * you to re-use a shared fixture, such as an external database that needs to be cleaned
@@ -191,16 +274,36 @@ package org.scalatest
  * <p>
  * If you want the tests of an <code>AsyncFunSuite</code> to be executed in parallel, you
  * must mix in <code>ParallelTestExecution</code>.
- * If <code>ParallelTestExecution</code> is mixed in but no distributor is passed, 
- * tests will be started sequentially, by the single thread that invoked <code>run</code>,
- * without waiting for tests to complete before the next test is started. Nevertheless,
- * asynchronous tests will be allowed to <em>complete</em> in parallel, using threads
- * from the <code>executionContext</code>. If <code>ParallelTestExecution</code> is mixed
- * in and a distributor is passed, tests will be started in parallel, using threads from
- * the distributor and allowed to complete in parallel, using threads from the
- * <code>executionContext</code>.
+ * The behavior differs depending on whether you are running on the JVM or Scala.js.
+ * On the JVM, if <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in and
+ * parallel execution of suites is enabled, tests will be started in parallel, using threads from
+ * the <a href="Distributor"><code>Distributor</code></a> and allowed to complete in parallel, using threads from the
+ * <code>executionContext</code>. If you are using the serial execution context, the JVM default, asynchronous tests will
+ * run in parallel very much like traditional tests run in parallel: because <code>ParallelTestExecution</code> extends
+ * <code>OneInstancePerTest</code>, each test will run in its own instance of the test class, eliminating the need to synchronize
+ * access to mutable instance state shared by tests in the same suite.
  * </p>
  * 
+ * <p>
+ * If <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in but
+ * parallel execution of suites is <em>not</em> enabled, tests will be started sequentially, by the single thread that invoked <code>run</code>,
+ * without waiting for one test to complete before the next test is started. Nevertheless,
+ * asynchronous tests will be allowed to <em>complete</em> in parallel, using threads
+ * from the <code>executionContext</code>. If you are using the serial execution context, the JVM default, you'll see
+ * the same behavior you see when parallel execution is disabled and a suite that mixes in <code>ParallelTestExecution</code>
+ * is executed: the tests will run essentially sequentially. If you use a traditional execution context backed by a thread-pool,
+ * however, even though tests are started by one thread, they will be allowed to run concurrently using threads from the
+ * execution context's thread pool.
+ * </p>
+ * 
+ * <p>
+ * The latter behavior is essentially what you'll see on Scala.js when you execute a suite that mixes in <code>ParallelTestExecution</code>.
+ * Because only one thread exists when running under JavaScript, you can't "enable parallel execution of suites." However, it may
+ * still be useful to run tests in parallel on Scala.js because tests can invoke API calls that are truly asynchronous, <em>i.e.</em>, which use
+ * non-JavaScript threads. Thus on Scala.js, <code>ParallelTestExecution</code> allows asynchronous tests to run in parallel, even though they must
+ * be started serially, which may give you better performance when you are using API calls in your Scala.js tests that are truly asynchronous.
+ * </p>
+ *
  * <a name="futuresAndExpectedExceptions"></a><h2>Futures and expected exceptions</h2>
  *
  * <p>
