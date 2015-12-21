@@ -1718,8 +1718,8 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariossFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
- * scenariossFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
+ * scenariosFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
+ * scenariosFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
  * </pre>
  *
  * <p>
@@ -1839,9 +1839,8 @@ package org.scalatest
  * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
- * In a <code>AsyncFeatureSpec</code> there is no nesting construct analogous to
- * <code>AsyncFeatureSpec</code>'s <code>describe</code> clause.
- * Therefore, you need to do a bit of
+ * Although in an <code>AsyncFeatureSpec</code>, the <code>feature</code> clause is a nesting construct analogous to
+ * <code>FunSpec</code>'s <code>describe</code> clause, you many sometimes need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in an
  * <code>AsyncFeatureSpec</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call
  * <code>toString</code> on the shared fixture object, or pass this string
@@ -1854,7 +1853,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariossFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
+ * scenariosFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
  * </pre>
  *
  * <p>
@@ -1872,7 +1871,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * scenariossFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ * scenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
  * </pre>
  *
  * <p>

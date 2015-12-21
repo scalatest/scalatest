@@ -1788,10 +1788,10 @@ import Suite.autoTagClassAnnotations
  * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
- * In a <code>FeatureSpec</code> there is no nesting construct analogous to <code>FunSpec</code>'s <code>describe</code> clause.
- * Therefore, you need to do a bit of
+ * Although in a <code>FeatureSpec</code>, the <code>feature</code> clause is a nesting construct analogous to
+ * <code>FunSpec</code>'s <code>describe</code> clause, you many sometimes need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in a
- * <code>FeatureSpec</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can pass this string
+ * <code>FeatureSpec</code>, you can pass in a prefix or suffix string to add to each test name. You can pass this string
  * the same way you pass any other data needed by the shared tests, or just call <code>toString</code> on the shared fixture object.
  * This is the approach taken by the previous <code>FeatureSpecStackBehaviors</code> example.
  * </p>
