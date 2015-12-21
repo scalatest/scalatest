@@ -1270,8 +1270,10 @@ package org.scalatest
  * </p>
  *
  * <p>
- * Note that on the JVM, you may need to worry about synchronizing access to shared mutable
- * fixture state, because the execution context may assign different threads to process
+ * Note that on the JVM, if you override ScalaTest's default
+ * <a href="#asyncExecutionModel"><em>serial execution context</em></a>, you will likely need to
+ * worry about synchronizing access to shared mutable fixture state, because the execution
+ * context may assign different threads to process
  * different <code>Future</code> transformations. Although access to mutable state along
  * the same linear chain of <code>Future</code> transformations need not be synchronized,
  * it can be difficult to spot cases where these constraints are violated. The best approach
@@ -1411,7 +1413,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Suite extends Suite with Buffer with Builder
+ * class Example2Spec extends AsyncFeatureSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1419,7 +1421,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Suite extends Suite with Builder
+ * class Example3Spec extends AsyncFeatureSpec with Builder
  * </pre>
  *
  * <p>

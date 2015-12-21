@@ -322,8 +322,8 @@ package org.scalatest
  *
  * <p>
  * To support the common use case of temporarily disabling a test, with the
- * good intention of resurrecting the test at a later time, <code>AsyncFlatSpec</code> provides registration
- * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example:
+ * good intention of resurrecting the test at a later time, <code>AsyncFlatSpec</code> provides two ways
+ * to <em>ignore</em> a test, both demonstrated in the following example:
  * </p>
  *
  * <pre class="stHighlight">
@@ -336,7 +336,9 @@ package org.scalatest
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
  *
- *   "addSoon" should "eventually compute a sum of passed Ints" ignore {
+ *   behavior of "addSoon"
+ *
+ *   ignore should "eventually compute a sum of passed Ints" in {
  *     val futureSum: Future[Int] = addSoon(1, 2)
  *     // You can map assertions onto a Future, then return
  *     // the resulting Future[Assertion] to ScalaTest:
@@ -345,7 +347,7 @@ package org.scalatest
  *
  *   def addNow(addends: Int*): Int = addends.sum
  *
- *   "addNow" should "immediately compute a sum of passed Ints" in {
+ *   "addNow" should "immediately compute a sum of passed Ints" ignore {
  *     val sum: Int = addNow(1, 2)
  *     // You can also write synchronous tests. The body
  *     // must have result type Assertion:
@@ -355,6 +357,9 @@ package org.scalatest
  * </pre>
  *
  * <p>
+ * In the first test, <code>ignore</code> is used instead of <code>it</code>.
+ * In the second test, which uses the shorthand notation, no <code>it</code> exists to change into <code>ignore</code>.
+ * To ignore such tests, you must instead change <code>in</code> to <code>ignore</code>, as shown in the above example.
  * If you run this version of <code>AddSpec</code> with:
  * </p>
  *
@@ -363,7 +368,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * It will run only the second test and report that the first test was ignored:
+ * It will report both tests as ignored:
  * </p>
  *
  * <pre class="stREPL">
@@ -371,7 +376,7 @@ package org.scalatest
  * <span class="stGreen">addSoon</span>
  * <span class="stYellow">- should eventually compute a sum of passed Ints !!! IGNORED !!!</span>
  * <span class="stGreen">addNow</span>
- * <span class="stGreen">- should immediately compute a sum of passed Ints</span>
+ * <span class="stYellow">- should immediately compute a sum of passed Ints !!! IGNORED !!!</span>
  * </pre>
  *
  * <p>
@@ -1252,8 +1257,10 @@ package org.scalatest
  * </p>
  *
  * <p>
- * Note that on the JVM, you may need to worry about synchronizing access to shared mutable
- * fixture state, because the execution context may assign different threads to process
+ * Note that on the JVM, if you override ScalaTest's default
+ * <a href="#asyncExecutionModel"><em>serial execution context</em></a>, you will likely need to
+ * worry about synchronizing access to shared mutable fixture state, because the execution
+ * context may assign different threads to process
  * different <code>Future</code> transformations. Although access to mutable state along
  * the same linear chain of <code>Future</code> transformations need not be synchronized,
  * it can be difficult to spot cases where these constraints are violated. The best approach
@@ -1391,7 +1398,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Suite extends Suite with Buffer with Builder
+ * class Example2Spec extends AsyncFlatSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1399,7 +1406,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Suite extends Suite with Builder
+ * class Example3Spec extends AsyncFlatSpec with Builder
  * </pre>
  *
  * <p>

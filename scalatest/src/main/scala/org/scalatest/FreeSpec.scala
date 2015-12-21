@@ -1367,7 +1367,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Suite extends Suite with Buffer with Builder
+ * class Example2Spec extends FreeSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1375,7 +1375,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Suite extends Suite with Builder
+ * class Example3Spec extends FreeSpec with Builder
  * </pre>
  *
  * <p>
