@@ -1718,8 +1718,8 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * testsFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
- * testsFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
+ * scenariossFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
+ * scenariossFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
  * </pre>
  *
  * <p>
@@ -1854,7 +1854,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * testsFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
+ * scenariossFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
  * </pre>
  *
  * <p>
@@ -1872,7 +1872,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * testsFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ * scenariossFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
  * </pre>
  *
  * <p>

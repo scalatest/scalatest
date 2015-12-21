@@ -1700,8 +1700,8 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * testsFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
- * testsFor(nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName))
+ * it should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
+ * it should behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
  * </pre>
  *
  * <p>
@@ -1840,7 +1840,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * testsFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
+ * it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
  * </pre>
  *
  * <p>
@@ -1858,7 +1858,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * testsFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ * it should behave like nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed)
  * </pre>
  *
  * <p>
