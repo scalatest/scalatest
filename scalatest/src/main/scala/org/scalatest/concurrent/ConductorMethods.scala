@@ -100,7 +100,13 @@ trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
    * all threads are up and ready to go.
    * @param f the function to be executed by the thread
    */
-  protected def thread(f: => Unit): Thread = conductor.get.thread{ f }
+  protected def thread(f: => Any): Thread = conductor.get.thread{ f }
+
+  /**
+   * <strong>The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.</strong>
+   */
+  @deprecated("The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.")
+  protected def thread(name: String)(f: => Any): Thread = conductor.get.thread(name){ f }
 
   /**
    * Create a new thread that will execute the given function.
@@ -111,8 +117,6 @@ trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
    * @param f the function to be executed by the thread
    */
   protected def threadNamed(name: String)(f: => Unit): Thread = conductor.get.threadNamed(name){ f }
-
-  // protected def thread(name: String)(f: => Unit): Thread = conductor.get.thread(name){ f }
 
   /*
    * Create a new thread that will execute the given Runnable
