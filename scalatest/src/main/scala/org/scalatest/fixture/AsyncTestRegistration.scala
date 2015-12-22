@@ -20,10 +20,14 @@ import org.scalatest.{AsyncOutcome, Tag}
 import scala.concurrent.Future
 import org.scalatest.Assertion
 
-trait AsyncTestRegistration { theSuite: Suite =>
+/**
+ * Trait declaring methods that can be used to register test functions that accept
+ * a fixture parameter and have result type <code>Future[Assertion]</code>.
+ */
+trait AsyncTestRegistration { theSuite: org.scalatest.fixture.AsyncSuite =>
 
   /**
-   * Register a test.
+   * Registers a test.
    *
    * @param testText the test text
    * @param testTags the test tags
@@ -32,8 +36,7 @@ trait AsyncTestRegistration { theSuite: Suite =>
   def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
 
   /**
-   * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
-   * event to be fired.
+   * Registers an ignored test.
    *
    * @param testText the test text
    * @param testTags the test tags

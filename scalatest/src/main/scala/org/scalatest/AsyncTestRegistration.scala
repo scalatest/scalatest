@@ -19,12 +19,13 @@ import org.scalatest.OutcomeOf._
 import scala.concurrent.Future
 
 /**
- * Trait for test registration support.
+ * Trait declaring methods that can be used to register by-name test functions that
+ * have result type <code>Future[Assertion]</code>.
  */
-trait AsyncTestRegistration { theSuite: Suite =>
+trait AsyncTestRegistration { theSuite: AsyncSuite =>
 
   /**
-   * Register a test.
+   * Registers a test.
    *
    * @param testText the test text
    * @param testTags the test tags
@@ -33,8 +34,7 @@ trait AsyncTestRegistration { theSuite: Suite =>
   def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion])
 
   /**
-   * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
-   * event to be fired.
+   * Registers an ignored test.
    *
    * @param testText the test text
    * @param testTags the test tags
