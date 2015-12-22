@@ -261,6 +261,9 @@ object GenScalaTestJS {
         "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
         "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
         "ConductorSuite.scala",   // skipped because Conductors not supported.
+        "ConductorFixtureDeprecatedSuite.scala",  // skipped because Conductors not supported.
+        "ConductorMethodsDeprecatedSuite.scala",   // skipped because Conductors not supported.
+        "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
         "EventuallySpec.scala",   // skipped because Eventually not supported.
         "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
         "JavaFuturesSpec.scala",      // skipped because depends on java futures
