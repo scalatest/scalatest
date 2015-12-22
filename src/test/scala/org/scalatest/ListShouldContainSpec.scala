@@ -23,17 +23,18 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 
-class ListShouldContainSpec extends Spec {
+class ListShouldContainSpec extends FunSpec {
 
-  object `a List` {
+  describe("a List") {
 
     val xs: List[String] = List("hi", "hi", "hi")
+    val xsWithNull: List[String] = List("hi", "hi", "hi", null)
     val nil: List[String] = List.empty[String]
     val caseLists: List[String] = List("tell", "them", "Hi")
 
-    object `when used with contain (value) syntax` {
+    describe("when used with contain (value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs should contain ("hi")
 
         val e1 = intercept[TestFailedException] {
@@ -51,7 +52,7 @@ class ListShouldContainSpec extends Spec {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs should contain ("hi")
         intercept[TestFailedException] {
           xs should contain ("ho")
@@ -64,7 +65,7 @@ class ListShouldContainSpec extends Spec {
           xs should contain ("hi")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
@@ -76,7 +77,7 @@ class ListShouldContainSpec extends Spec {
         }
         (xs should contain ("hi")) (decided by defaultEquality[String])
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         intercept[TestFailedException] {
           caseLists should contain ("HI")
         }
@@ -96,11 +97,22 @@ class ListShouldContainSpec extends Spec {
         caseLists should contain ("HI")
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS contains null value") {
+        xsWithNull should contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when LHS did not contain null value") {
+        val e = intercept[TestFailedException] {
+          xs should contain (null)
+        }
+        e.message.get should be (Resources("didNotContainNull", decorateToStringValue(xs)))
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
 
-    object `when used with not contain value syntax` {
+    describe("when used with not contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs should not contain "ho"
         nil should not contain "hi"
 
@@ -112,7 +124,7 @@ class ListShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs should not contain "ho"
         intercept[TestFailedException] {
           xs should not contain "hi"
@@ -125,7 +137,7 @@ class ListShouldContainSpec extends Spec {
           xs should not contain "ho"
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists should not contain "HI"
         caseLists should not contain "HI "
         (caseLists should not contain "HI ") (decided by defaultEquality afterBeing lowerCased)
@@ -137,7 +149,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists should not contain "HI ") (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should not contain "HI"
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -157,11 +169,22 @@ class ListShouldContainSpec extends Spec {
         }
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs should not contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull should not contain (null)
+        }
+        e.message.get should be (Resources("containedNull", decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
 
-    object `when used with not (contain (value)) syntax` {
+    describe("when used with not (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         xs should not (contain ("ho"))
         nil should not (contain ("hi"))
@@ -174,7 +197,7 @@ class ListShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs should not (contain ("ho"))
         intercept[TestFailedException] {
           xs should not (contain ("hi"))
@@ -187,7 +210,7 @@ class ListShouldContainSpec extends Spec {
           xs should not (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists should not (contain ("HI"))
         caseLists should not (contain ("HI "))
         (caseLists should not (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
@@ -202,7 +225,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists should not (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should not (contain ("HI"))
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -222,11 +245,22 @@ class ListShouldContainSpec extends Spec {
         }
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs should not (contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull should not (contain (null))
+        }
+        e.message.get should be (Resources("containedNull", decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
 
-    object `when used with (not contain value) syntax` {
+    describe("when used with (not contain value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs should (not contain "ho")
         nil should (not contain "hi")
 
@@ -238,7 +272,7 @@ class ListShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs should (not contain "ho")
         intercept[TestFailedException] {
           xs should (not contain "hi")
@@ -251,7 +285,7 @@ class ListShouldContainSpec extends Spec {
           xs should (not contain "ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists should (not contain "HI")
         caseLists should (not contain "HI ")
         (caseLists should (not contain "HI ")) (decided by defaultEquality afterBeing lowerCased)
@@ -266,7 +300,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists should (not contain "HI ")) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists should (not contain "HI")
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -286,11 +320,22 @@ class ListShouldContainSpec extends Spec {
         }
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs should (not contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull should (not contain (null))
+        }
+        e.message.get should be (Resources("containedNull", decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
     
-    object `when used with shouldNot contain value syntax` {
+    describe("when used with shouldNot contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
         xs shouldNot contain ("ho")
         nil shouldNot contain ("hi")
 
@@ -302,7 +347,7 @@ class ListShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs shouldNot contain ("ho")
         intercept[TestFailedException] {
           xs shouldNot contain ("hi")
@@ -315,7 +360,7 @@ class ListShouldContainSpec extends Spec {
           xs shouldNot contain ("ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists shouldNot contain ("HI")
         caseLists shouldNot contain ("HI ")
         (caseLists shouldNot contain ("HI ")) (decided by defaultEquality afterBeing lowerCased)
@@ -327,7 +372,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists shouldNot contain ("HI ")) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists shouldNot contain ("HI")
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -347,11 +392,22 @@ class ListShouldContainSpec extends Spec {
         }
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs shouldNot contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull shouldNot contain (null)
+        }
+        e.message.get should be (Resources("containedNull", decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
     
-    object `when used with shouldNot (contain (value)) syntax` {
+    describe("when used with shouldNot (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         xs shouldNot (contain ("ho"))
         nil shouldNot (contain ("hi"))
@@ -364,7 +420,7 @@ class ListShouldContainSpec extends Spec {
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
 
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         xs shouldNot (contain ("ho"))
         intercept[TestFailedException] {
           xs shouldNot (contain ("hi"))
@@ -377,7 +433,7 @@ class ListShouldContainSpec extends Spec {
           xs shouldNot (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         caseLists shouldNot (contain ("HI"))
         caseLists shouldNot (contain ("HI "))
         (caseLists shouldNot (contain ("HI "))) (decided by defaultEquality afterBeing lowerCased)
@@ -392,7 +448,7 @@ class ListShouldContainSpec extends Spec {
           (caseLists shouldNot (contain ("HI "))) (after being lowerCased and trimmed)
         }
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         caseLists shouldNot (contain ("HI"))
         var normalizedInvokedCount = 0
         implicit val e = new NormalizingEquality[String] {
@@ -412,20 +468,32 @@ class ListShouldContainSpec extends Spec {
         }
         normalizedInvokedCount should be (4)
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        xs shouldNot (contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          xsWithNull shouldNot (contain (null))
+        }
+        e.message.get should be (Resources("containedNull", decorateToStringValue(xsWithNull)))
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 4)
+      }
     }
   }
 
-  object `a collection of Lists` {
+  describe("a collection of Lists") {
 
     val list123s: List[List[Int]] = List(List(1, 2, 3), List(1, 2, 3), List(1, 2, 3))
     val lists: List[List[Int]] = List(List(1, 2, 3), List(1, 2, 3), List(4, 5, 6))
     val nils: List[List[Int]] = List(Nil, Nil, Nil)
     val mixed: List[List[Int]] = List(List(1, 2, 3), List(1, 2, 3), Nil)
     val hiLists: List[List[String]] = List(List("hi"), List("hi"), List("hi"))
+    val hiNullLists: List[List[String]] = List(List("hi", null), List("hi", null), List("hi", null))
 
-    object `when used with contain (value) syntax` {
+    describe("when used with contain (value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) should contain (1)
         atLeast (2, lists) should contain (1)
@@ -470,7 +538,7 @@ class ListShouldContainSpec extends Spec {
                                    "  at index 2, List(4, 5, 6) did not contain element 1 (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
                                    "in List(List(1, 2, 3), List(1, 2, 3), List(4, 5, 6))"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         intercept[TestFailedException] {
           all (hiLists) should contain ("ho")
         }
@@ -482,7 +550,7 @@ class ListShouldContainSpec extends Spec {
           all (hiLists) should contain ("hi")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         intercept[TestFailedException] {
           all (hiLists) should contain ("HI")
         }
@@ -492,7 +560,7 @@ class ListShouldContainSpec extends Spec {
         (all (hiLists) should contain ("HI")) (decided by defaultEquality afterBeing lowerCased)
         (all (hiLists) should contain ("HI ")) (after being trimmed and lowerCased)
       }
-      def `should minimize normalization if an implicit NormalizingEquality is in scope` {
+      it("should minimize normalization if an implicit NormalizingEquality is in scope") {
         val hiHeHoLists: List[List[String]] = List(List("hi", "he", "ho"), List("hi", "he", "ho"), List("hi", "he", "ho"))
         intercept[TestFailedException] {
           all (hiHeHoLists) should contain ("HO")
@@ -513,10 +581,23 @@ class ListShouldContainSpec extends Spec {
         all (hiHeHoLists) should contain ("HO")
         normalizedInvokedCount should be (12)
       }
+      it("should do nothing when used with null and LHS contains null value") {
+        all (hiNullLists) should contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when all elements of LHS did not contain null value") {
+        val e = intercept[TestFailedException] {
+          all (hiLists) should contain (null)
+        }
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiLists(0)) + " did not contain null (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiLists)))
+      }
     }
-    object `when used with not contain value syntax` {
+    describe("when used with not contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) should not contain 4
         atLeast (2, lists) should not contain 4
@@ -541,7 +622,7 @@ class ListShouldContainSpec extends Spec {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should not contain "ho"
         intercept[TestFailedException] {
           all (hiLists) should not contain "hi"
@@ -554,7 +635,7 @@ class ListShouldContainSpec extends Spec {
           all (hiLists) should not contain "ho"
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) should not contain "HI"
         all (hiLists) should not contain "HI "
         intercept[TestFailedException] {
@@ -564,10 +645,23 @@ class ListShouldContainSpec extends Spec {
           (all (hiLists) should not contain "HI ") (after being trimmed and lowerCased)
         }
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) should not contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) should not contain (null)
+        }
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
+      }
     }
-    object `when used with not (contain (value)) syntax` {
+    describe("when used with not (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) should not (contain (4))
         atLeast (2, lists) should not (contain (4))
@@ -592,7 +686,7 @@ class ListShouldContainSpec extends Spec {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should not (contain ("ho"))
         intercept[TestFailedException] {
           all (hiLists) should not (contain ("hi"))
@@ -605,7 +699,7 @@ class ListShouldContainSpec extends Spec {
           all (hiLists) should not (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) should not (contain ("HI"))
         all (hiLists) should not (contain ("HI "))
         intercept[TestFailedException] {
@@ -615,10 +709,23 @@ class ListShouldContainSpec extends Spec {
           (all (hiLists) should not (contain ("HI "))) (after being trimmed and lowerCased)
         }
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) should not (contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) should not (contain (null))
+        }
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
+      }
     }
-    object `when used with (not contain value) syntax` {
+    describe("when used with (not contain value) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) should (not contain 4)
         atLeast (2, lists) should (not contain 4)
@@ -643,7 +750,7 @@ class ListShouldContainSpec extends Spec {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) should (not contain "ho")
         intercept[TestFailedException] {
           all (hiLists) should (not contain "hi")
@@ -656,7 +763,7 @@ class ListShouldContainSpec extends Spec {
           all (hiLists) should (not contain "ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) should (not contain "HI")
         all (hiLists) should (not contain "HI ")
         intercept[TestFailedException] {
@@ -666,11 +773,24 @@ class ListShouldContainSpec extends Spec {
           (all (hiLists) should (not contain "HI ")) (after being trimmed and lowerCased)
         }
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) should (not contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) should (not contain (null))
+        }
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
+      }
     }
     
-    object `when used with shouldNot contain value syntax` {
+    describe("when used with shouldNot contain value syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) shouldNot contain (4)
         atLeast (2, lists) shouldNot contain (4)
@@ -695,7 +815,7 @@ class ListShouldContainSpec extends Spec {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) shouldNot contain ("ho")
         intercept[TestFailedException] {
           all (hiLists) shouldNot contain ("hi")
@@ -708,7 +828,7 @@ class ListShouldContainSpec extends Spec {
           all (hiLists) shouldNot contain ("ho")
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) shouldNot contain ("HI")
         all (hiLists) shouldNot contain ("HI ")
         intercept[TestFailedException] {
@@ -718,10 +838,23 @@ class ListShouldContainSpec extends Spec {
           (all (hiLists) shouldNot contain ("HI ")) (after being trimmed and lowerCased)
         }
       }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) shouldNot contain (null)
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) shouldNot contain (null)
+        }
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
+      }
     }
-    object `when used with shouldNot (contain (value)) syntax` {
+    describe("when used with shouldNot (contain (value)) syntax") {
 
-      def `should do nothing if valid, else throw a TFE with an appropriate error message` {
+      it("should do nothing if valid, else throw a TFE with an appropriate error message") {
 
         all (list123s) shouldNot (contain (4))
         atLeast (2, lists) shouldNot (contain (4))
@@ -746,7 +879,7 @@ class ListShouldContainSpec extends Spec {
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in List(List(), List(), List())"))
       }
-      def `should use the implicit Equality in scope` {
+      it("should use the implicit Equality in scope") {
         all (hiLists) shouldNot (contain ("ho"))
         intercept[TestFailedException] {
           all (hiLists) shouldNot (contain ("hi"))
@@ -759,7 +892,7 @@ class ListShouldContainSpec extends Spec {
           all (hiLists) shouldNot (contain ("ho"))
         }
       }
-      def `should use an explicitly provided Equality` {
+      it("should use an explicitly provided Equality") {
         all (hiLists) shouldNot (contain ("HI"))
         all (hiLists) shouldNot (contain ("HI "))
         intercept[TestFailedException] {
@@ -768,6 +901,19 @@ class ListShouldContainSpec extends Spec {
         intercept[TestFailedException] {
           (all (hiLists) shouldNot (contain ("HI "))) (after being trimmed and lowerCased)
         }
+      }
+      it("should do nothing when used with null and LHS did not contain null value") {
+        all (hiLists) shouldNot (contain (null))
+      }
+      it("should throw TFE with correct stack depth and error message when one of elements of LHS contained null value") {
+        val e = intercept[TestFailedException] {
+          all (hiNullLists) shouldNot (contain (null))
+        }
+        e.failedCodeFileName.get should be ("ListShouldContainSpec.scala")
+        e.failedCodeLineNumber.get should be (thisLineNumber - 3)
+        e.message should be (Some("'all' inspection failed, because: \n" +
+          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (ListShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(hiNullLists)))
       }
     }
   }
