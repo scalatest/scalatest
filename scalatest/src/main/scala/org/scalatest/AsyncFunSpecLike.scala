@@ -50,6 +50,48 @@ trait AsyncFunSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite
 
   import engine._
 
+  /**
+   * Returns an <code>Informer</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
+   * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
+   * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
+   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
+   * This method can be called safely by any thread.
+   */
+  protected def info: Informer = atomicInformer.get
+
+  /**
+   * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked while this
+   * <code>FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * the current reporter immediately. If invoked at any other time, it will
+   * print to the standard output. This method can be called safely by any thread.
+   */
+  protected def note: Notifier = atomicNotifier.get
+
+  /**
+   * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked while this
+   * <code>FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * the current reporter immediately. If invoked at any other time, it will
+   * print to the standard output. This method can be called safely by any thread.
+   */
+  protected def alert: Alerter = atomicAlerter.get
+
+  /**
+   * Returns a <code>Documenter</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
+   * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
+   * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
+   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
+   * This method can be called safely by any thread.
+   */
+  protected def markup: Documenter = atomicDocumenter.get
+
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
   private[scalatest] val sourceFileName = "FunSpecRegistering.scala"
 
