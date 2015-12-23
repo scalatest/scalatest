@@ -18,6 +18,7 @@ package org.scalatest
 import SharedHelpers.EventRecordingReporter
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
+import org.scalatest.events.{InfoProvided, MarkupProvided}
 
 import scala.util.Success
 
@@ -433,6 +434,414 @@ class AsyncFunSpecLikeSpec extends FunSpec {
       assert(rep.testSucceededEventsReceived(0).testName == "test 1")
       assert(rep.testSucceededEventsReceived(1).testName == "test 2")
       assert(rep.testSucceededEventsReceived(2).testName == "test 3")
+    }
+
+    it("should send an InfoProvided event for an info in main spec body") {
+      class MySuite extends AsyncFunSpecLike  {
+        info(
+          "hi there"
+        )
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val infoList = reporter.infoProvidedEventsReceived
+
+      assert(infoList.size == 1)
+      assert(infoList(0).message == "hi there")
+    }
+
+    it("should send an InfoProvided event for an info in scope body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          info(
+            "hi there"
+          )
+
+          it("test 1") { succeed }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val infoList = reporter.infoProvidedEventsReceived
+
+      assert(infoList.size == 1)
+      assert(infoList(0).message == "hi there")
+    }
+
+    it("should send an InfoProvided event for an info in test body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          it("test 1") {
+            info("hi there")
+            succeed
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val infoList = reporter.infoProvidedEventsReceived
+      assert(infoList.size == 0)
+
+      val testSucceededList = reporter.testSucceededEventsReceived
+      assert(testSucceededList.size == 1)
+      assert(testSucceededList(0).recordedEvents.size == 1)
+      val recordedEvent = testSucceededList(0).recordedEvents(0)
+      assert(recordedEvent.isInstanceOf[InfoProvided])
+      val infoProvided = recordedEvent.asInstanceOf[InfoProvided]
+      assert(infoProvided.message == "hi there")
+    }
+
+    it("should send an InfoProvided event for an info in Future returned by test body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          it("test 1") {
+            Future {
+              info("hi there")
+              succeed
+            }
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val infoList = reporter.infoProvidedEventsReceived
+      assert(infoList.size == 0)
+
+      val testSucceededList = reporter.testSucceededEventsReceived
+      assert(testSucceededList.size == 1)
+      assert(testSucceededList(0).recordedEvents.size == 1)
+      val recordedEvent = testSucceededList(0).recordedEvents(0)
+      assert(recordedEvent.isInstanceOf[InfoProvided])
+      val infoProvided = recordedEvent.asInstanceOf[InfoProvided]
+      assert(infoProvided.message == "hi there")
+    }
+
+    it("should send a NoteProvided event for a note in main spec body") {
+      class MySuite extends AsyncFunSpecLike  {
+        note(
+          "hi there"
+        )
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val noteList = reporter.noteProvidedEventsReceived
+
+      assert(noteList.size == 1)
+      assert(noteList(0).message == "hi there")
+    }
+
+    it("should send a NoteProvided event for a note in scope body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          note(
+            "hi there"
+          )
+
+          it("test 1") { succeed }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val noteList = reporter.noteProvidedEventsReceived
+
+      assert(noteList.size == 1)
+      assert(noteList(0).message == "hi there")
+    }
+
+    it("should send a NoteProvided event for a note in test body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          it("test 1") {
+            note("hi there")
+            succeed
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val noteList = reporter.noteProvidedEventsReceived
+      assert(noteList.size == 1)
+      assert(noteList(0).message == "hi there")
+    }
+
+    it("should send a NoteProvided event for a note in Future returned by test body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          it("test 1") {
+            Future {
+              note("hi there")
+              succeed
+            }
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val noteList = reporter.noteProvidedEventsReceived
+      assert(noteList.size == 1)
+      assert(noteList(0).message == "hi there")
+    }
+
+    it("should send an AlertProvided event for an alert in main spec body") {
+      class MySuite extends AsyncFunSpecLike  {
+        alert(
+          "hi there"
+        )
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val alertList = reporter.alertProvidedEventsReceived
+
+      assert(alertList.size == 1)
+      assert(alertList(0).message == "hi there")
+    }
+
+    it("should send an AlertProvided event for an alert in scope body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          alert(
+            "hi there"
+          )
+
+          it("test 1") { succeed }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val alertList = reporter.alertProvidedEventsReceived
+
+      assert(alertList.size == 1)
+      assert(alertList(0).message == "hi there")
+    }
+
+    it("should send an AlertProvided event for an alert in test body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          it("test 1") {
+            alert("hi there")
+            succeed
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val alertList = reporter.alertProvidedEventsReceived
+      assert(alertList.size == 1)
+      assert(alertList(0).message == "hi there")
+    }
+
+    it("should send an AlertProvided event for an alert in Future returned by test body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          it("test 1") {
+            Future {
+              alert("hi there")
+              succeed
+            }
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val alertList = reporter.alertProvidedEventsReceived
+      assert(alertList.size == 1)
+      assert(alertList(0).message == "hi there")
+    }
+
+    it("should send a MarkupProvided event for a markup in main spec body") {
+      class MySuite extends AsyncFunSpecLike  {
+        markup(
+          "hi there"
+        )
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val markupList = reporter.markupProvidedEventsReceived
+
+      assert(markupList.size == 1)
+      assert(markupList(0).text == "hi there")
+    }
+
+    it("should send a MarkupProvided event for a markup in scope body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          markup(
+            "hi there"
+          )
+
+          it("test 1") { succeed }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val markupList = reporter.markupProvidedEventsReceived
+
+      assert(markupList.size == 1)
+      assert(markupList(0).text == "hi there")
+    }
+
+    it("should send a MarkupProvided event for a markup in test body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          it("test 1") {
+            markup("hi there")
+            succeed
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val markupList = reporter.markupProvidedEventsReceived
+      assert(markupList.size == 0)
+
+      val testSucceededList = reporter.testSucceededEventsReceived
+      assert(testSucceededList.size == 1)
+      assert(testSucceededList(0).recordedEvents.size == 1)
+      val recordedEvent = testSucceededList(0).recordedEvents(0)
+      assert(recordedEvent.isInstanceOf[MarkupProvided])
+      val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
+      assert(markupProvided.text == "hi there")
+    }
+
+    it("should send a MarkupProvided event for a markup in Future returned by test body") {
+      class MySuite extends AsyncFunSpecLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        describe("test feature") {
+          it("test 1") {
+            Future {
+              markup("hi there")
+              succeed
+            }
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+
+      val markupList = reporter.markupProvidedEventsReceived
+      assert(markupList.size == 0)
+
+      val testSucceededList = reporter.testSucceededEventsReceived
+      assert(testSucceededList.size == 1)
+      assert(testSucceededList(0).recordedEvents.size == 1)
+      val recordedEvent = testSucceededList(0).recordedEvents(0)
+      assert(recordedEvent.isInstanceOf[MarkupProvided])
+      val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
+      assert(markupProvided.text == "hi there")
     }
 
   }
