@@ -457,6 +457,8 @@ class AsyncWordSpecSpec extends FunSpec {
     it("should send an InfoProvided event for an info in scope body") {
       class MySuite extends AsyncWordSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         "test feature" should {
           info(
             "hi there"
@@ -480,6 +482,8 @@ class AsyncWordSpecSpec extends FunSpec {
 
     it("should send an InfoProvided event for an info in test body") {
       class MySuite extends AsyncWordSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         "test feature" should {
           "test 1" in {
@@ -509,6 +513,8 @@ class AsyncWordSpecSpec extends FunSpec {
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
       class MySuite extends AsyncWordSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         "test feature" should {
           "test 1" in {
@@ -560,6 +566,8 @@ class AsyncWordSpecSpec extends FunSpec {
     it("should send a NoteProvided event for a note in scope body") {
       class MySuite extends AsyncWordSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         "test feature" should {
           note(
             "hi there"
@@ -584,6 +592,8 @@ class AsyncWordSpecSpec extends FunSpec {
     it("should send a NoteProvided event for a note in test body") {
       class MySuite extends AsyncWordSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         "test feature" should {
           "test 1" in {
             note("hi there")
@@ -605,6 +615,8 @@ class AsyncWordSpecSpec extends FunSpec {
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
       class MySuite extends AsyncWordSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         "test feature" should {
           "test 1" in {
@@ -649,6 +661,8 @@ class AsyncWordSpecSpec extends FunSpec {
     it("should send an AlertProvided event for an alert in scope body") {
       class MySuite extends AsyncWordSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         "test feature" should {
           alert(
             "hi there"
@@ -673,6 +687,8 @@ class AsyncWordSpecSpec extends FunSpec {
     it("should send an AlertProvided event for an alert in test body") {
       class MySuite extends AsyncWordSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         "test feature" should {
           "test 1" in {
             alert("hi there")
@@ -694,6 +710,8 @@ class AsyncWordSpecSpec extends FunSpec {
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
       class MySuite extends AsyncWordSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         "test feature" should {
           "test 1" in {
@@ -738,6 +756,8 @@ class AsyncWordSpecSpec extends FunSpec {
     it("should send a MarkupProvided event for a markup in scope body") {
       class MySuite extends AsyncWordSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         "test feature" should {
           markup(
             "hi there"
@@ -761,6 +781,8 @@ class AsyncWordSpecSpec extends FunSpec {
 
     it("should send a MarkupProvided event for a markup in test body") {
       class MySuite extends AsyncWordSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         "test feature" should {
           "test 1" in {
@@ -790,6 +812,8 @@ class AsyncWordSpecSpec extends FunSpec {
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
       class MySuite extends AsyncWordSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         "test feature" should {
           "test 1" in {
