@@ -456,6 +456,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
     it("should send an InfoProvided event for an info in feature body") {
       class MySuite extends AsyncFeatureSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         feature("test feature") {
           info(
             "hi there"
@@ -479,6 +481,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
     it("should send an InfoProvided event for an info in scenario body") {
       class MySuite extends AsyncFeatureSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         feature("test feature") {
           scenario("test 1") {
@@ -508,6 +512,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
     it("should send an InfoProvided event for an info in Future returned by scenario body") {
       class MySuite extends AsyncFeatureSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         feature("test feature") {
           scenario("test 1") {
@@ -559,6 +565,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
     it("should send a NoteProvided event for a note in feature body") {
       class MySuite extends AsyncFeatureSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         feature("test feature") {
           note(
             "hi there"
@@ -583,6 +591,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
     it("should send a NoteProvided event for a note in scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         feature("test feature") {
           scenario("test 1") {
             note("hi there")
@@ -604,6 +614,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
     it("should send a NoteProvided event for a note in Future returned by scenario body") {
       class MySuite extends AsyncFeatureSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         feature("test feature") {
           scenario("test 1") {
@@ -648,6 +660,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
     it("should send an AlertProvided event for an alert in feature body") {
       class MySuite extends AsyncFeatureSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         feature("test feature") {
           alert(
             "hi there"
@@ -672,6 +686,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
     it("should send an AlertProvided event for an alert in scenario body") {
       class MySuite extends AsyncFeatureSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         feature("test feature") {
           scenario("test 1") {
             alert("hi there")
@@ -693,6 +709,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
     it("should send an AlertProvided event for an alert in Future returned by scenario body") {
       class MySuite extends AsyncFeatureSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         feature("test feature") {
           scenario("test 1") {
@@ -737,6 +755,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
     it("should send a MarkupProvided event for a markup in feature body") {
       class MySuite extends AsyncFeatureSpec  {
 
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         feature("test feature") {
           markup(
             "hi there"
@@ -760,6 +780,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
     it("should send a MarkupProvided event for a markup in scenario body") {
       class MySuite extends AsyncFeatureSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         feature("test feature") {
           scenario("test 1") {
@@ -789,6 +811,8 @@ class AsyncFeatureSpecSpec extends FunSpec {
 
     it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
       class MySuite extends AsyncFeatureSpec  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         feature("test feature") {
           scenario("test 1") {

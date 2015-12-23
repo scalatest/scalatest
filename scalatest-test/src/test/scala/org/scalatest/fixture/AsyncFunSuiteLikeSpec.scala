@@ -475,6 +475,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send an InfoProvided event for an info in main spec body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -497,6 +500,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send an InfoProvided event for an info in test body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -526,6 +532,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send an InfoProvided event for an info in Future returned by test body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -557,6 +566,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send a NoteProvided event for a note in main spec body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -579,6 +591,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send a NoteProvided event for a note in test body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -601,6 +616,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send a NoteProvided event for a note in Future returned by test body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -625,6 +643,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send an AlertProvided event for an alert in main spec body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -647,6 +668,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send an AlertProvided event for an alert in test body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -669,6 +693,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send an AlertProvided event for an alert in Future returned by test body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -693,6 +720,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send a MarkupProvided event for a markup in main spec body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -715,6 +745,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send a MarkupProvided event for a markup in test body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
@@ -744,6 +777,9 @@ class AsyncFunSuiteLikeSpec extends org.scalatest.FunSpec {
 
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
       class MySuite extends AsyncFunSuiteLike  {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
           test("testing")
