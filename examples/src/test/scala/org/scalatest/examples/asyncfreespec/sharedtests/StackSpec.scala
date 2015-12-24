@@ -78,7 +78,7 @@ trait AsyncFreeSpecStackBehaviors { this: AsyncFreeSpec =>
   def nonEmptyStackActor(createNonEmptyStackActor: => StackActor[Int],
         lastItemAdded: Int, name: String): Unit = {
 
-    ("should return non-empty StackInfo when Size is fired at non-empty stack actor: " + name) in {
+    ("return non-empty StackInfo when Size is fired at non-empty stack actor: " + name) in {
       val stackActor = createNonEmptyStackActor
       val futureStackInfo = stackActor ? Size
       futureStackInfo map { stackInfo =>
@@ -86,7 +86,7 @@ trait AsyncFreeSpecStackBehaviors { this: AsyncFreeSpec =>
       }
     }
 
-    ("should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: " + name) in {
+    ("return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: " + name) in {
       val stackActor = createNonEmptyStackActor
       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
         for {
@@ -99,7 +99,7 @@ trait AsyncFreeSpecStackBehaviors { this: AsyncFreeSpec =>
       }
     }
 
-    ("should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: " + name) in {
+    ("return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: " + name) in {
       val stackActor = createNonEmptyStackActor
       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
         for {
@@ -115,7 +115,7 @@ trait AsyncFreeSpecStackBehaviors { this: AsyncFreeSpec =>
 
   def nonFullStackActor(createNonFullStackActor: => StackActor[Int], name: String): Unit = {
 
-    ("should return non-full StackInfo when Size is fired at non-full stack actor: " + name) in {
+    ("return non-full StackInfo when Size is fired at non-full stack actor: " + name) in {
       val stackActor = createNonFullStackActor
       val futureStackInfo = stackActor ? Size
       futureStackInfo map { stackInfo =>
@@ -123,7 +123,7 @@ trait AsyncFreeSpecStackBehaviors { this: AsyncFreeSpec =>
       }
     }
 
-    ("should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: " + name) in {
+    ("return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: " + name) in {
       val stackActor = createNonFullStackActor
       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
         for {
@@ -194,13 +194,17 @@ class StackSpec extends AsyncFreeSpec with AsyncFreeSpecStackBehaviors {
     }
 
     "(with one item)" - {
-      behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
-      behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
+      "should" - {
+        behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
+        behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
+      }
     }
 
     "(with one item less than capacity)" - {
-      behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
-      behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
+      "should" - {
+        behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
+        behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
+      }
     }
 
     "(full)" - {
@@ -213,7 +217,9 @@ class StackSpec extends AsyncFreeSpec with AsyncFreeSpecStackBehaviors {
         }
       }
 
-      behave like nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName)
+      "should" - {
+        behave like nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName)
+      }
 
       "should complain on a push" in {
         val stackActor = fullStackActor
