@@ -280,43 +280,56 @@ package org.scalatest
  *
  * <p>
  * By default (unless you mix in <code>ParallelTestExecution</code>), tests in an <code>AsyncFunSuite</code> will be executed one after
- * another, <em>i.e.</em>, serially. This is true whether those tests are synchronous
- * or asynchronous, no matter what threads are involved. This default behavior allows
+ * another, <em>i.e.</em>, serially. This is true whether those tests return <code>Assertion</code> or <code>Future[Assertion]</code>,
+ * no matter what threads are involved. This default behavior allows
  * you to re-use a shared fixture, such as an external database that needs to be cleaned
- * after each test, in multiple tests.
+ * after each test, in multiple tests in async-style suites. This is implemented by registering each test, other than the first test, to run
+ * as a <em>continuation</em> after the previous test completes.
  * </p>
  *
  * <p>
  * If you want the tests of an <code>AsyncFunSuite</code> to be executed in parallel, you
- * must mix in <code>ParallelTestExecution</code>.
- * The behavior differs depending on whether you are running on the JVM or Scala.js.
- * On the JVM, if <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in and
- * parallel execution of suites is enabled, tests will be started in parallel, using threads from
- * the <a href="Distributor"><code>Distributor</code></a> and allowed to complete in parallel, using threads from the
- * <code>executionContext</code>. If you are using the serial execution context, the JVM default, asynchronous tests will
- * run in parallel very much like traditional tests run in parallel: because <code>ParallelTestExecution</code> extends
- * <code>OneInstancePerTest</code>, each test will run in its own instance of the test class, eliminating the need to synchronize
- * access to mutable instance state shared by tests in the same suite.
+ * must mix in <code>ParallelTestExecution</code> and enable parallel execution of tests in your build.
+ * You enable parallel execution in <a href="tools/Runner$.html"><code>Runner</code></a> with the <code>-P</code> command line flag. 
+ * In the ScalaTest Maven Plugin, set <code>parallel</code> to <code>true</code>.
+ * In <code>sbt</code>, parallel execution is the default, but to be explicit you can write:
+ * 
+ * <pre>
+ * parallelExecution in Test := true // the default in sbt
+ * </pre>
+ * 
+ * On the JVM, if both <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in and 
+ * parallel execution is enabled in the build, tests in an async-style suite will be started in parallel, using threads from
+ * the <a href="Distributor"><code>Distributor</code></a>, and allowed to complete in parallel, using threads from the
+ * <code>executionContext</code>. If you are using ScalaTest's serial execution context, the JVM default, asynchronous tests will
+ * run in parallel very much like traditional (such as <a href="FunSuite.html"><code>FunSuite</code></a>) tests run in
+ * parallel: 1) Because <code>ParallelTestExecution</code> extends
+ * <code>OneInstancePerTest</code>, each test will run in its own instance of the test class, you need not worry about synchronizing
+ * access to mutable instance state shared by different tests in the same suite.
+ * 2) Because the serial execution context will confine the execution of each test to the single thread that executes the test body,
+ * you need not worry about synchronizing access to shared mutable state accessed by transformations and callbacks of <code>Future</code>s
+ * inside the test.
  * </p>
  * 
  * <p>
  * If <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> is mixed in but
- * parallel execution of suites is <em>not</em> enabled, tests will be started sequentially, by the single thread that invoked <code>run</code>,
- * without waiting for one test to complete before the next test is started. Nevertheless,
+ * parallel execution of suites is <em>not</em> enabled, asynchronous tests on the JVM will be started sequentially, by the single thread
+ * that invoked <code>run</code>, but without waiting for one test to complete before the next test is started. As a result,
  * asynchronous tests will be allowed to <em>complete</em> in parallel, using threads
- * from the <code>executionContext</code>. If you are using the serial execution context, the JVM default, you'll see
- * the same behavior you see when parallel execution is disabled and a suite that mixes in <code>ParallelTestExecution</code>
- * is executed: the tests will run essentially sequentially. If you use a traditional execution context backed by a thread-pool,
- * however, even though tests are started by one thread, they will be allowed to run concurrently using threads from the
+ * from the <code>executionContext</code>. If you are using the serial execution context, however, you'll see
+ * the same behavior you see when parallel execution is disabled and a traditional suite that mixes in <code>ParallelTestExecution</code>
+ * is executed: the tests will run sequentially. If you use an execution context backed by a thread-pool, such as <code>global</code>,
+ * however, even though tests will be started sequentially by one thread, they will be allowed to run concurrently using threads from the
  * execution context's thread pool.
  * </p>
  * 
  * <p>
  * The latter behavior is essentially what you'll see on Scala.js when you execute a suite that mixes in <code>ParallelTestExecution</code>.
  * Because only one thread exists when running under JavaScript, you can't "enable parallel execution of suites." However, it may
- * still be useful to run tests in parallel on Scala.js because tests can invoke API calls that are truly asynchronous, <em>i.e.</em>, which use
- * non-JavaScript threads. Thus on Scala.js, <code>ParallelTestExecution</code> allows asynchronous tests to run in parallel, even though they must
- * be started serially, which may give you better performance when you are using API calls in your Scala.js tests that are truly asynchronous.
+ * still be useful to run tests in parallel on Scala.js, because tests can invoke API calls that are truly asynchronous by calling into 
+ * external APIs that take advantage of non-JavaScript threads. Thus on Scala.js, <code>ParallelTestExecution</code> allows asynchronous
+ * tests to run in parallel, even though they must be started sequentially. This may give you better performance when you are using API
+ * calls in your Scala.js tests that are truly asynchronous.
  * </p>
  *
  * <a name="futuresAndExpectedExceptions"></a><h2>Futures and expected exceptions</h2>
