@@ -699,7 +699,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * Given these definitions, you could place <code>AsyncFreeSpec</code> tests into groups like this:
+ * Given these definitions, you could place <code>AsyncFreeSpec</code> tests into groups with tags like this:
  * </p>
  *
  * <pre class="stHighlight">

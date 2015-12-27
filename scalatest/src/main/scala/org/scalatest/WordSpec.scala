@@ -816,7 +816,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * Given these definitions, you could place <code>WordSpec</code> tests into groups like this:
+ * Given these definitions, you could place <code>WordSpec</code> tests into groups with tags like this:
  * </p>
  *
  * <pre class="stHighlight">
