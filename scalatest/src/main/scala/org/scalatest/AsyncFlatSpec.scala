@@ -37,6 +37,8 @@ package org.scalatest
  * </p>
  *
  * <p>
+ * Trait <code>AsyncFlatSpec</code> is so named because
+ * your specification text and tests line up flat against the left-side indentation level, with no nesting needed.
  * Here's an example <code>AsyncFlatSpec</code>:
  * </p>
  *
@@ -77,7 +79,19 @@ package org.scalatest
  * As with traditional <code>FlatSpec</code>s, you can use <code>must</code> or <code>can</code> as well as <code>should</code>.
  * For example, instead of <code>it should "eventually</code>..., you could write
  * <code>it must "eventually</code>... or <code>it can "eventually</code>....
+ * You can also write <code>they</code> instead of <code>it</code>. See the documentation for <a href="FlatSpec.html"><code>FlatSpec</code></a> for
+ * more detail.
  * </p>
+ *
+ * <p>
+ * Running the above <code>AddSpec</code> in the Scala interpreter would yield:
+ * </p>
+ * 
+ * <pre class="stREPL">
+ * <span class="stGreen">addSoon
+ * - should eventually compute a sum of passed Ints
+ * - should immediately compute a sum of passed Ints</span>
+ * </pre>
  *
  * <p>
  * Starting with version 3.0.0, ScalaTest assertions and matchers have result type <code>Assertion</code>.

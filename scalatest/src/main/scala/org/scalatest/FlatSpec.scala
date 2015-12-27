@@ -92,7 +92,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * Running either of the two previous three versions of <code>SetSpec</code> in the Scala interpreter would yield:
+ * Running either of the two previous versions of <code>SetSpec</code> in the Scala interpreter would yield:
  * </p>
  * 
  * <pre class="stREPL">
