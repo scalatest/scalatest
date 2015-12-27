@@ -223,6 +223,7 @@ import Suite.autoTagClassAnnotations
  *
  * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
+ * <p>
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>FreeSpec</code> adds a method
  * <code>ignore</code> to strings that can be used instead of <code>in</code> to register a test. For example, to temporarily

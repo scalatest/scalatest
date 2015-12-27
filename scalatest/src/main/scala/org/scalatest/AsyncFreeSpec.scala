@@ -455,8 +455,10 @@ package org.scalatest
  *
  * <p>
  * To support the common use case of temporarily disabling a test, with the
- * good intention of resurrecting the test at a later time, <code>AsyncFreeSpec</code> provides registration
- * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example:
+ * good intention of resurrecting the test at a later time, <code>AsyncFreeSpec</code> adds a method
+ * <code>ignore</code> to strings that can be used instead of <code>in</code> to register a test. For example, to temporarily
+ * disable the test with the name <code>"addSoon will eventually compute a sum of passed Ints"</code>, just
+ * change &ldquo;<code>in</code>&rdquo; into &#8220;<code>ignore</code>,&#8221; like this:
  * </p>
  *
  * <pre class="stHighlight">

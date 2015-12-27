@@ -93,7 +93,7 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * Note: for more information on the calls to <code>Given</code>, <code>When</code>, and <code>Then</code>, see the documentation 
- * for <a href="GivenWhenThen.html">trait <code>GivenWhenThen</code></a> and the <a href="#informers"><code>Informers</code> section</a> below.
+ * for trait <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> and the <a href="#informers"><code>Informers</code> section</a> below.
  * </p>
  *
  * <p>
@@ -101,11 +101,11 @@ import Suite.autoTagClassAnnotations
  * with <code>feature</code>, and a scenario with <code>scenario</code>. Both
  * <code>feature</code> and <code>scenario</code> are methods, defined in
  * <code>FeatureSpec</code>, which will be invoked
- * by the primary constructor of <code>StackFeatureSpec</code>. 
+ * by the primary constructor of <code>TVSetSpec</code>. 
  * A feature clause describes a feature of the <em>subject</em> (class or other entity) you are specifying
  * and testing. In the previous example, 
- * the subject under specification and test is a Set. The feature being specified and tested is 
- * the behavior of a Set when it is empty and head is invoked. With each scenario you provide a
+ * the subject under specification and test is a TV set. The feature being specified and tested is 
+ * the behavior of a TV set when its power button is pressed. With each scenario you provide a
  * string (the <em>spec text</em>) that specifies the behavior of the subject for
  * one scenario in which the feature may be used, and a block of code that tests that behavior.
  * You place the spec text between the parentheses, followed by the test code between curly
@@ -187,23 +187,10 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * You can also pass to <code>execute</code> a <a href="ConfigMap.html"><em>config map</em></a> of key-value
- * pairs, which will be passed down into suites and tests, as well as other parameters that configure the run itself.
- * For more information on running in the Scala interpreter, see the documentation for <code>execute</code> (below) and the
- * <a href="Shell.html">ScalaTest shell</a>.
- * </p>
- *
- * <p>
- * The <code>execute</code> method invokes a <code>run</code> method that takes two
- * parameters. This <code>run</code> method, which actually executes the suite, will usually be invoked by a test runner, such
- * as <a href="run$.html"><code>run</code></a>, <a href="tools/Runner$.html"><code>tools.Runner</code></a>, a build tool, or an IDE.
- * </p>
- *
- * <p>
  * <em>Note: Trait <code>FeatureSpec</code>'s syntax is in part inspired by <a href="http://cukes.info/" target="_blank">Cucumber</a>, a Ruby BDD framework.</em>
  *</p>
  *
- * <a name="ignoredTests"></a><h2>Ignored tests</h2></a>
+ * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
  * <p>
  * To support the common use case of temporarily disabling a test, with the
@@ -265,7 +252,7 @@ import Suite.autoTagClassAnnotations
  *   <span class="stGreen">Scenario: User presses power button when TV is on</span>
  * </pre>
  *
- * <a name="informers"></a><h2>Informers</h2></a>
+ * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>
  * One of the parameters to <code>FeatureSpec</code>'s <code>run</code> method is a <code>Reporter</code>, which
@@ -286,7 +273,7 @@ import Suite.autoTagClassAnnotations
  * to pass such information to the reporter. You can see this in action in the <a href="#initialExample">initial example</a> of this trait's documentation.
  * </p>
  *
- * <a name="documenters"></a><h2>Documenters</h2></a>
+ * <a name="documenters"></a><h2>Documenters</h2>
  *
  * <p>
  * <code>FeatureSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
@@ -361,7 +348,7 @@ import Suite.autoTagClassAnnotations
  *
  * <img class="stScreenShot" src="../../lib/featureSpec.gif">
  *
- * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2></a>
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
  *
  * <p>
  * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of
@@ -426,7 +413,7 @@ import Suite.autoTagClassAnnotations
  * <code>note</code> and <code>alert</code> text will not.)
  * </p>
  *
- * <a name="pendingTests"></a><h2>Pending tests</h2></a>
+ * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
  * A <em>pending test</em> is one that has been given a name but is not yet implemented. The purpose of

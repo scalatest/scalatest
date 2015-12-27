@@ -456,7 +456,9 @@ package org.scalatest
  * <p>
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>AsyncFunSpec</code> provides registration
- * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example:
+ * methods that start with <code>ignore</code> instead of <code>it</code> or <code>they</code>. For example, to temporarily
+ * disable the test with the text <code>"will eventually compute a sum of passed Ints"</code>, just
+ * change &ldquo;<code>it</code>&rdquo; into &#8220;<code>ignore</code>,&#8221; like this:
  * </p>
  *
  * <pre class="stHighlight">

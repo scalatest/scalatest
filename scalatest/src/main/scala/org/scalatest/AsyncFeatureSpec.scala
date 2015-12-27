@@ -37,99 +37,105 @@ package org.scalatest
  * </p>
  *
  * <p>
+ * Although not required, <code>FeatureSpec</code> is often used together with <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> to express acceptance requirements
+ * in more detail.
  * Here's an example <code>AsyncFeatureSpec</code>:
  * </p>
  *
  * <pre class="stHighlight">
  * package org.scalatest.examples.asyncfeaturespec
- *
- * import org.scalatest.AsyncFeatureSpec
+ * 
+ * import org.scalatest._
  * import scala.concurrent.Future
- *
- * class AddSpec extends AsyncFeatureSpec {
- *
- *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
- *   def addNow(addends: Int*): Int = addends.sum
- *
- *   feature("The add methods") {
- *
- *     scenario("addSoon will eventually compute a sum of passed Ints") {
- *       val futureSum: Future[Int] = addSoon(1, 2)
- *       // You can map assertions onto a Future, then return
- *       // the resulting Future[Assertion] to ScalaTest:
- *       futureSum map { sum =&gt; assert(sum == 3) }
+ * import scala.concurrent.ExecutionContext
+ * 
+ * // Defining actor messages
+ * case object IsOn
+ * case object PressPowerButton
+ * 
+ * class TVSetActor { // Simulating an actor
+ *   private var on: Boolean = false
+ *   def !(msg: PressPowerButton.type): Unit =
+ *     synchronized {
+ *       on = !on
  *     }
- *
- *     scenario("addNow will immediately compute a sum of passed Ints") {
- *       val sum: Int = addNow(1, 2)
- *       // You can also write synchronous tests. The body
- *       // must have result type Assertion:
- *       assert(sum == 3)
+ *   def ?(msg: IsOn.type)(implicit c: ExecutionContext): Future[Boolean] =
+ *     Future {
+ *       synchronized { on }
+ *     }
+ * }
+ * 
+ * class TVSetActorSpec extends AsyncFeatureSpec with GivenWhenThen {
+ * 
+ *   implicit override def executionContext =
+ *     scala.concurrent.ExecutionContext.Implicits.global
+ * 
+ *   info("As a TV set owner")
+ *   info("I want to be able to turn the TV on and off")
+ *   info("So I can watch TV when I want")
+ *   info("And save energy when I'm not watching TV")
+ * 
+ *   feature("TV power button") {
+ *     scenario("User presses power button when TV is off") {
+ * 
+ *       Given("a TV set that is switched off")
+ *       val tvSetActor = new TVSetActor
+ * 
+ *       When("the power button is pressed")
+ *       tvSetActor ! PressPowerButton
+ * 
+ *       Then("the TV should switch on")
+ *       val futureBoolean = tvSetActor ? IsOn
+ *       futureBoolean map { isOn =&gt; assert(isOn) }
+ *     }
+ * 
+ *     scenario("User presses power button when TV is on") {
+ * 
+ *       Given("a TV set that is switched on")
+ *       val tvSetActor = new TVSetActor
+ *       tvSetActor ! PressPowerButton
+ * 
+ *       When("the power button is pressed")
+ *       tvSetActor ! PressPowerButton
+ * 
+ *       Then("the TV should switch off")
+ *       val futureBoolean = tvSetActor ? IsOn
+ *       futureBoolean map { isOn =&gt; assert(!isOn) }
  *     }
  *   }
  * }
  * </pre>
  *
  * <p>
- * &ldquo;<code>it</code>&rdquo; is a method, defined in <code>AsyncFeatureSpec</code>, which will be invoked
- * by the primary constructor of <code>AddSpec</code>. You specify the name of the test as
- * a string between the parentheses, and the test code itself between curly braces.
- * The test code is a function passed as a by-name parameter to <code>it</code>, which registers
- * it for later execution. The result type of the by-name in an <code>AsyncFeatureSpec</code> must
+ * Note: for more information on the calls to <code>Given</code>, <code>When</code>, and <code>Then</code>, see the documentation 
+ * for trait <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> and the <a href="#informers"><code>Informers</code> section</a> below.
+ * </p>
+ *
+ * <p>
+ * An <code>AsyncFeatureSpec</code> contains <em>feature clauses</em> and <em>scenarios</em>. You define a feature clause
+ * with <code>feature</code>, and a scenario with <code>scenario</code>. Both
+ * <code>feature</code> and <code>scenario</code> are methods, defined in
+ * <code>AsyncFeatureSpec</code>, which will be invoked
+ * by the primary constructor of <code>TVSetActorSpec</code>. 
+ * A feature clause describes a feature of the <em>subject</em> (class or other entity) you are specifying
+ * and testing. In the previous example, 
+ * the subject under specification and test is a TV set. The feature being specified and tested is 
+ * the behavior of a TV set when its power button is pressed. With each scenario you provide a
+ * string (the <em>spec text</em>) that specifies the behavior of the subject for
+ * one scenario in which the feature may be used, and a block of code that tests that behavior.
+ * You place the spec text between the parentheses, followed by the test code between curly
+ * braces.  The test code will be wrapped up as a function passed as a by-name parameter to
+ * <code>scenario</code>, which will register the test for later execution.
+ * The result type of the by-name in an <code>AsyncFeatureSpec</code> must
  * be <code>Future[Assertion]</code>.
  * </p>
  *
  * <p>
  * Starting with version 3.0.0, ScalaTest assertions and matchers have result type <code>Assertion</code>.
  * The result type of the first test in the example above, therefore, is <code>Future[Assertion]</code>.
- * For clarity, here's the relevant code in a REPL session:
- * </p>
- *
- * <pre class="stREPL">
- * scala&gt; import org.scalatest._
- * import org.scalatest._
- *
- * scala&gt; import Assertions._
- * import Assertions._
- *
- * scala&gt; import scala.concurrent.Future
- * import scala.concurrent.Future
- *
- * scala&gt; import scala.concurrent.ExecutionContext
- * import scala.concurrent.ExecutionContext
- *
- * scala&gt; implicit val executionContext = ExecutionContext.Implicits.global
- * executionContext: scala.concurrent.ExecutionContextExecutor = scala.concurrent.impl.ExecutionContextImpl@26141c5b
- *
- * scala&gt; def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
- * addSoon: (addends: Int*)scala.concurrent.Future[Int]
- *
- * scala&gt; val futureSum: Future[Int] = addSoon(1, 2)
- * futureSum: scala.concurrent.Future[Int] = scala.concurrent.impl.Promise$DefaultPromise@721f47b2
- *
- * scala&gt; futureSum map { sum =&gt; assert(sum == 3) }
- * res0: scala.concurrent.Future[org.scalatest.Assertion] = scala.concurrent.impl.Promise$DefaultPromise@3955cfcb
- * </pre>
- *
- * <p>
- * The second test has result type <code>Assertion</code>:
- * </p>
- *
- * <pre class="stREPL">
- * scala&gt; def addNow(addends: Int*): Int = addends.sum
- * addNow: (addends: Int*)Int
- *
- * scala&gt; val sum: Int = addNow(1, 2)
- * sum: Int = 3
- *
- * scala&gt; assert(sum == 3)
- * res1: org.scalatest.Assertion = Succeeded
- * </pre>
- *
- * <p>
- * When <code>AddSpec</code> is constructed, the second test will be implicitly converted to
- * <code>Future[Assertion]</code> and registered. The implicit conversion is from <code>Assertion</code>
- * to <code>Future[Assertion]</code>, so you must end synchronous tests in some ScalaTest assertion
+ * When an <code>AsyncFeatureSpec</code> is constructed, any test that results in <code>Assertion</code> will
+ * be implicitly converted to <code>Future[Assertion]</code> and registered. The implicit conversion is from <code>Assertion</code>
+ * to <code>Future[Assertion]</code> only, so you must end synchronous tests in some ScalaTest assertion
  * or matcher expression. If a test would not otherwise end in type <code>Assertion</code>, you can
  * place <code>succeed</code> at the end of the test. <code>succeed</code>, a field in trait <code>Assertions</code>,
  * returns the <code>Succeeded</code> singleton:
@@ -141,17 +147,8 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * Thus placing <code>succeed</code> at the end of a test body will satisfy the type checker:
+ * Thus placing <code>succeed</code> at the end of a test body will satisfy the type checker.
  * </p>
- *
- * <pre class="stHighlight">
- *   scenario("addNow will immediately compute a sum of passed Ints") {
- *     val sum: Int = addNow(1, 2)
- *     assert(sum == 3)
- *     println("hi") // println has result type Unit
- *     succeed       // succeed has result type Assertion
- *   }
- * </pre>
  *
  * <p>
  * An <code>AsyncFeatureSpec</code>'s lifecycle has two phases: the <em>registration</em> phase and the
@@ -160,14 +157,72 @@ package org.scalatest
  * </p>
  *
  * <p>
- * Tests can only be registered with the <code>it</code> method while the <code>AsyncFeatureSpec</code> is
- * in its registration phase. Any attempt to register a test after the <code>AsyncFeatureSpec</code> has
+ * Scenarios can only be registered with the <code>scenario</code> method while the <code>AsyncFeatureSpec</code> is
+ * in its registration phase. Any attempt to register a scenario after the <code>AsyncFeatureSpec</code> has
  * entered its ready phase, <em>i.e.</em>, after <code>run</code> has been invoked on the <code>AsyncFeatureSpec</code>,
- * will be met with a thrown <code>TestRegistrationClosedException</code>. The recommended style
+ * will be met with a thrown <a href="exceptions/TestRegistrationClosedException.html"><code>TestRegistrationClosedException</code></a>. The
+ * recommended style
  * of using <code>AsyncFeatureSpec</code> is to register tests during object construction as is done in all
  * the examples shown here. If you keep to the recommended style, you should never see a
  * <code>TestRegistrationClosedException</code>.
  * </p>
+ *
+ * <p>
+ * Each scenario represents one test. The name of the test is the spec text passed to the <code>scenario</code> method.
+ * The feature name does not appear as part of the test name. In a <code>AsyncFeatureSpec</code>, therefore, you must take care
+ * to ensure that each test has a unique name (in other words, that each <code>scenario</code> has unique spec text).
+ * </p>
+ *
+ * <p>
+ * When you run a <code>AsyncFeatureSpec</code>, it will send <a href="events/Formatter.html"><code>Formatter</code></a>s in the events it sends to the
+ * <a href="Reporter.html"><code>Reporter</code></a>. ScalaTest's built-in reporters will report these events in such a way
+ * that the output is easy to read as an informal specification of the <em>subject</em> being tested.
+ * For example, were you to run <code>TVSetSpec</code> from within the Scala interpreter:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; org.scalatest.run(new TVSetActorSpec)
+ * </pre>
+ *
+ * <p>
+ * You would see:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * <span class="stGreen">TVSetActorSpec:
+ * As a TV set owner 
+ * I want to be able to turn the TV on and off 
+ * So I can watch TV when I want 
+ * And save energy when I'm not watching TV 
+ * Feature: TV power button
+ *   Scenario: User presses power button when TV is off
+ *     Given a TV set that is switched off 
+ *     When the power button is pressed 
+ *     Then the TV should switch on 
+ *   Scenario: User presses power button when TV is on
+ *     Given a TV set that is switched on 
+ *     When the power button is pressed 
+ *     Then the TV should switch off</span>
+ * </pre>
+ *
+ * <p>
+ * Or, to run just the &ldquo;<code>Feature: TV power button Scenario: User presses power button when TV is on</code>&rdquo; method, you could pass that test's name, or any unique substring of the
+ * name, such as <code>"TV is on"</code>. Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; org.scalatest.run(new TVSetActorSpec, "TV is on")
+ * <span class="stGreen">TVSetActorSpec:
+ * As a TV set owner 
+ * I want to be able to turn the TV on and off 
+ * So I can watch TV when I want 
+ * And save energy when I'm not watching TV 
+ * Feature: TV power button
+ *   Scenario: User presses power button when TV is on
+ *     Given a TV set that is switched on 
+ *     When the power button is pressed 
+ *     Then the TV should switch off</span>
+ * </pre>
  *
  * <a name="asyncExecutionModel"></a><h2>Asynchronous execution model</h2>
  *
@@ -454,7 +509,7 @@ package org.scalatest
  * <p>
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>AsyncFeatureSpec</code> provides registration
- * methods that start with <code>ignore</code> instead of <code>test</code>. Here's an example:
+ * methods that start with <code>ignore</code> instead of <code>scenario</code>. Here's an example:
  * </p>
  *
  * <pre class="stHighlight">
@@ -488,7 +543,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * If you run this version of <code>AddSpec</code> with:
+ * If you run class <code>AddSpec</code> with:
  * </p>
  *
  * <pre class="stREPL">
