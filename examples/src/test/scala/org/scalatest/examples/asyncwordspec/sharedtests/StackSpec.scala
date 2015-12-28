@@ -192,11 +192,9 @@ class StackSpec extends AsyncWordSpec with AsyncWordSpecStackBehaviors {
         }
       }
     }
-    "it contains one item" should {
+    "non-empty" should {
       behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
       behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
-    }
-    "it contains one item less than capacity" should {
       behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
       behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
     }
