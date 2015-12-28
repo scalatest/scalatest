@@ -1866,7 +1866,7 @@ package org.scalatest
  *   val fullStackActorName = "full stack actor"
  *   def fullStackActor = {
  *     val stackActor = new StackActor[Int](Max, fullStackActorName )
- *     for (i &lt;- 0 until Max)
+ *     for (i <- 0 until Max)
  *       stackActor ! Push(i)
  *     stackActor
  *   }
@@ -1881,50 +1881,50 @@ package org.scalatest
  *   val almostFullStackActorName = "almost full stack actor"
  *   def almostFullStackActor = {
  *     val stackActor = new StackActor[Int](Max, almostFullStackActorName)
- *     for (i &lt;- 1 to LastValuePushed)
+ *     for (i <- 1 to LastValuePushed)
  *       stackActor ! Push(i)
  *     stackActor
  *   }
  *
- *   "A Stack (when empty)" should "be empty" in {
+ *   "A Stack actor (when empty)" should "return empty StackInfo when Size is fired at it" in {
  *     val stackActor = emptyStackActor
  *     val futureStackInfo = stackActor ? Size
- *     futureStackInfo map { stackInfo =&gt;
+ *     futureStackInfo map { stackInfo =>
  *       assert(stackInfo.isEmpty)
  *     }
  *   }
  *
- *   it should "complain on peek" in {
+ *   it should "complain when Peek is fired at it" in {
  *     recoverToSucceededIf[IllegalStateException] {
  *       emptyStackActor ? Peek
  *     }
  *   }
  *
- *   it should "complain on pop" in {
+ *   it should "complain when Pop is fired at it" in {
  *     recoverToSucceededIf[IllegalStateException] {
  *       emptyStackActor ? Pop
  *     }
  *   }
  *
- *   "A Stack (with one item)" should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
+ *   "A Stack actor (when non-empty)" should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
  *
  *   it should behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
  *
- *   "A Stack (with one item less than capacity)" should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
+ *   it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
  *
  *   it should behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
  *
- *   "A Stack (full)" should "be full" in {
+ *   "A Stack actor (when full)" should "return full StackInfo when Size is fired at it" in {
  *     val stackActor = fullStackActor
  *     val futureStackInfo = stackActor ? Size
- *     futureStackInfo map { stackInfo =&gt;
+ *     futureStackInfo map { stackInfo =>
  *       assert(stackInfo.isFull)
  *     }
  *   }
  *
  *   it should behave like nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName)
  *
- *   it should "complain on a push" in {
+ *   it should "complain when Push is fired at it" in {
  *     val stackActor = fullStackActor
  *     assertThrows[IllegalStateException] {
  *       stackActor ! Push(10)
@@ -1941,29 +1941,27 @@ package org.scalatest
  * <pre class="stREPL">
  * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
- * A Stack (when empty)
- * - should be empty
- * - should complain on peek
- * - should complain on pop
- * A Stack (with one item)
+ * A Stack actor (when empty)
+ * - should return empty StackInfo when Size is fired at it
+ * - should complain when Peek is fired at it
+ * - should complain when Pop is fired at it
+ * A Stack actor (when non-empty)
  * - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor
  * - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor
  * - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor
  * - should return non-full StackInfo when Size is fired at non-full stack actor: almost empty stack actor
  * - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost empty stack actor
- * A Stack (with one item less than capacity)
  * - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor
  * - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor
  * - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor
  * - should return non-full StackInfo when Size is fired at non-full stack actor: almost full stack actor
  * - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost full stack actor
- * A Stack (full)
- * - should be full
+ * A Stack actor (when full)
+ * - should return full StackInfo when Size is fired at it
  * - should return non-empty StackInfo when Size is fired at non-empty stack actor: full stack actor
  * - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: full stack actor
  * - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: full stack actor
- * - should complain on a push
- * </span>
+ * - should complain when Push is fired at it</span>
  * </pre>
  *
  * <p>
@@ -1971,7 +1969,7 @@ package org.scalatest
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
  * In a <code>AsyncFlatSpec</code> there is no nesting construct analogous to
- * <code>AsyncFlatSpec</code>'s <code>describe</code> clause.
+ * <code>AsyncFunSpec</code>'s <code>describe</code> clause.
  * Therefore, you need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in an
  * <code>AsyncFlatSpec</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call
@@ -1981,11 +1979,11 @@ package org.scalatest
  * </p>
  *
  * <p>
- * Given this <code>AsyncFlatSpecStackBehaviors</code> trait, calling it with the <code>stackWithOneItem</code> fixture, like this:
+ * Given this <code>AsyncFlatSpecStackBehaviors</code> trait, calling it with the <code>almostEmptyStackActor</code> fixture, like this:
  * </p>
  *
  * <pre class="stHighlight">
- * it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
+ * "A Stack actor (when non-empty)" should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
  * </pre>
  *
  * <p>
@@ -1993,17 +1991,19 @@ package org.scalatest
  * </p>
  *
  * <ul>
- * <li><code>Size is fired at non-empty stack actor: almost empty stack actor</code></li>
- * <li><code>Peek is fired at non-empty stack actor: almost empty stack actor</code></li>
- * <li><code>Pop is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return non-full StackInfo when Size is fired at non-full stack actor: almost empty stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost empty stack actor</code></li>
  * </ul>
  *
  * <p>
- * Whereas calling it with the <code>stackWithOneItemLessThanCapacity</code> fixture, like this:
+ * Whereas calling it with the <code>almostFullStackActor</code> fixture, like this:
  * </p>
  *
  * <pre class="stHighlight">
- * it should behave like nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed)
+ * it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
  * </pre>
  *
  * <p>
@@ -2011,9 +2011,11 @@ package org.scalatest
  * </p>
  *
  * <ul>
- * <li><code>Size is fired at non-empty stack actor: almost full stack actor</code></li>
- * <li><code>Peek is fired at non-empty stack actor: almost full stack actor</code></li>
- * <li><code>Pop is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return non-full StackInfo when Size is fired at non-full stack actor: almost full stack actor</code></li>
+ * <li><code>A Stack actor (when non-empty) should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost full stack actor</code></li>
  * </ul>
  */
 abstract class AsyncFlatSpec extends AsyncFlatSpecLike {

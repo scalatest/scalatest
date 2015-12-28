@@ -170,7 +170,7 @@ class StackSpec extends AsyncFlatSpec with AsyncFlatSpecStackBehaviors {
     stackActor
   }
 
-  "A Stack (when empty)" should "be empty" in {
+  "A Stack actor (when empty)" should "return empty StackInfo when Size is fired at it" in {
     val stackActor = emptyStackActor
     val futureStackInfo = stackActor ? Size
     futureStackInfo map { stackInfo =>
@@ -178,27 +178,27 @@ class StackSpec extends AsyncFlatSpec with AsyncFlatSpecStackBehaviors {
     }
   }
 
-  it should "complain on peek" in {
+  it should "complain when Peek is fired at it" in {
     recoverToSucceededIf[IllegalStateException] {
       emptyStackActor ? Peek
     }
   }
 
-  it should "complain on pop" in {
+  it should "complain when Pop is fired at it" in {
     recoverToSucceededIf[IllegalStateException] {
       emptyStackActor ? Pop
     }
   }
 
-  "A Stack (with one item)" should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
+  "A Stack actor (when non-empty)" should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
   
   it should behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
 
-  "A Stack (with one item less than capacity)" should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
+  it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
 
   it should behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
 
-  "A Stack (full)" should "be full" in {
+  "A Stack actor (when full)" should "return full StackInfo when Size is fired at it" in {
     val stackActor = fullStackActor
     val futureStackInfo = stackActor ? Size
     futureStackInfo map { stackInfo =>
@@ -208,7 +208,7 @@ class StackSpec extends AsyncFlatSpec with AsyncFlatSpecStackBehaviors {
 
   it should behave like nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName)
 
-  it should "complain on a push" in {
+  it should "complain when Push is fired at it" in {
     val stackActor = fullStackActor
     assertThrows[IllegalStateException] {
       stackActor ! Push(10)
