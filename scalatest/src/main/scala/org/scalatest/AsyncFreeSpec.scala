@@ -1994,9 +1994,8 @@ package org.scalatest
  * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
- * In a <code>AsyncFreeSpec</code> there is no nesting construct analogous to
- * <code>AsyncFunSpec</code>'s <code>describe</code> clause.
- * Therefore, you need to do a bit of
+ * Although in an <code>AsyncFreeSpec</code>, the <code>-</code> clause is a nesting construct analogous to
+ * <code>AsyncFunSpec</code>'s <code>describe</code> clause, you many sometimes need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in an
  * <code>AsyncFreeSpec</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call
  * <code>toString</code> on the shared fixture object, or pass this string
@@ -2005,7 +2004,7 @@ package org.scalatest
  * </p>
  *
  * <p>
- * Given this <code>AsyncFreeSpecStackBehaviors</code> trait, calling it with the <code>stackWithOneItem</code> fixture, like this:
+ * Given this <code>AsyncFreeSpecStackBehaviors</code> trait, calling it with the <code>almostEmptyStackActor</code> fixture, like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -2020,8 +2019,6 @@ package org.scalatest
  * <li><code>A Stack (when non-empty) should return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor</code></li>
  * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor</code></li>
  * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor</code></li>
- * <li><code>A Stack (when non-empty) should return non-full StackInfo when Size is fired at non-full stack actor: almost empty stack actor</code></li>
- * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost empty stack actor</code></li>
  * </ul>
  *
  * <p>
@@ -2040,8 +2037,6 @@ package org.scalatest
  * <li><code>A Stack (when non-empty) should return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor</code></li>
  * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor</code></li>
  * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor</code></li>
- * <li><code>A Stack (when non-empty) should return non-full StackInfo when Size is fired at non-full stack actor: almost full stack actor</code></li>
- * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost full stack actor</code></li>
  * </ul>
  */
 abstract class AsyncFreeSpec extends AsyncFreeSpecLike {
