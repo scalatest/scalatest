@@ -78,7 +78,7 @@ trait AsyncFeatureSpecStackBehaviors { this: AsyncFeatureSpec =>
   def nonEmptyStackActor(createNonEmptyStackActor: => StackActor[Int],
         lastItemAdded: Int, name: String): Unit = {
 
-    scenario("empty is invoked on this non-empty stack: " + name) {
+    scenario("Size is fired at non-empty stack actor: " + name) {
       val stackActor = createNonEmptyStackActor
       val futureStackInfo = stackActor ? Size
       futureStackInfo map { stackInfo =>
@@ -86,7 +86,7 @@ trait AsyncFeatureSpecStackBehaviors { this: AsyncFeatureSpec =>
       }
     }
 
-    scenario("peek is invoked on this non-empty stack: " + name) {
+    scenario("Peek is fired at non-empty stack actor: " + name) {
       val stackActor = createNonEmptyStackActor
       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
         for {
@@ -99,7 +99,7 @@ trait AsyncFeatureSpecStackBehaviors { this: AsyncFeatureSpec =>
       }
     }
 
-    scenario("pop is invoked on this non-empty stack: " + name) {
+    scenario("Pop is fired at non-empty stack actor: " + name) {
       val stackActor = createNonEmptyStackActor
       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
         for {
@@ -115,7 +115,7 @@ trait AsyncFeatureSpecStackBehaviors { this: AsyncFeatureSpec =>
 
   def nonFullStackActor(createNonFullStackActor: => StackActor[Int], name: String): Unit = {
 
-    scenario("full is invoked on this non-full stack: " + name) {
+    scenario("Size is fired at non-full stack actor: " + name) {
       val stackActor = createNonFullStackActor
       val futureStackInfo = stackActor ? Size
       futureStackInfo map { stackInfo =>
@@ -123,7 +123,7 @@ trait AsyncFeatureSpecStackBehaviors { this: AsyncFeatureSpec =>
       }
     }
 
-    scenario("push is invoked on this non-full stack: " + name) {
+    scenario("Push is fired at non-full stack actor: " + name) {
       val stackActor = createNonFullStackActor
       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] = 
         for {
@@ -170,9 +170,9 @@ class StackSpec extends AsyncFeatureSpec with AsyncFeatureSpecStackBehaviors {
     stackActor
   }
 
-  feature("A Stack is pushed and popped") {
+  feature("A Stack actor") {
 
-    scenario("empty is invoked on an empty stack") {
+    scenario("Size is fired at empty stack actor") {
       val stackActor = emptyStackActor
       val futureStackInfo = stackActor ? Size
       futureStackInfo map { stackInfo =>
@@ -180,13 +180,13 @@ class StackSpec extends AsyncFeatureSpec with AsyncFeatureSpecStackBehaviors {
       }
     }
 
-    scenario("peek is invoked on an empty stack") {
+    scenario("Peek is fired at empty stack actor") {
       recoverToSucceededIf[IllegalStateException] {
         emptyStackActor ? Peek
       }
     }
 
-    scenario("pop is invoked on an empty stack") {
+    scenario("Pop is fired at empty stack actor") {
       recoverToSucceededIf[IllegalStateException] {
         emptyStackActor ? Pop
       }
@@ -198,7 +198,7 @@ class StackSpec extends AsyncFeatureSpec with AsyncFeatureSpecStackBehaviors {
     scenariosFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
     scenariosFor(nonFullStackActor(almostFullStackActor, almostFullStackActorName))
 
-    scenario("full is invoked on a full stack") {
+    scenario("Size is fired at full stack actor") {
       val stackActor = fullStackActor
       val futureStackInfo = stackActor ? Size
       futureStackInfo map { stackInfo =>
@@ -208,7 +208,7 @@ class StackSpec extends AsyncFeatureSpec with AsyncFeatureSpecStackBehaviors {
 
     scenariosFor(nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName))
 
-    scenario("push is invoked on a full stack") {
+    scenario("Push is fired at full stack actor") {
       val stackActor = fullStackActor
       assertThrows[IllegalStateException] {
         stackActor ! Push(10)

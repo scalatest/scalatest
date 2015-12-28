@@ -1821,7 +1821,7 @@ package org.scalatest
  * </p>
  *
  * <p>
- * You can define a behavior function that encapsulates these shared tests inside the <code>FeatureSpec</code> that uses them. If they are shared
+ * You can define a behavior function that encapsulates these shared tests inside the <code>AsyncFeatureSpec</code> that uses them. If they are shared
  * between different <code>AsyncFeatureSpec</code>s, however, you could also define them in a separate trait that is mixed into
  * each <code>AsyncFeatureSpec</code> that uses them.
  * <a name="StackBehaviors">For</a> example, here the <code>nonEmptyStackActor</code> behavior function (in this case, a
@@ -1837,7 +1837,7 @@ package org.scalatest
  *   def nonEmptyStackActor(createNonEmptyStackActor: =&gt; StackActor[Int],
  *         lastItemAdded: Int, name: String): Unit = {
  *
- *     scenario("empty is invoked on this non-empty stack: " + name) {
+ *     scenario("Size is fired at non-empty stack actor: " + name) {
  *       val stackActor = createNonEmptyStackActor
  *       val futureStackInfo = stackActor ? Size
  *       futureStackInfo map { stackInfo =&gt;
@@ -1845,7 +1845,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("peek is invoked on this non-empty stack: " + name) {
+ *     scenario("Peek is fired at non-empty stack actor: " + name) {
  *       val stackActor = createNonEmptyStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
@@ -1858,7 +1858,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("pop is invoked on this non-empty stack: " + name) {
+ *     scenario("Pop is fired at non-empty stack actor: " + name) {
  *       val stackActor = createNonEmptyStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
@@ -1874,7 +1874,7 @@ package org.scalatest
  *
  *   def nonFullStackActor(createNonFullStackActor: =&gt; StackActor[Int], name: String): Unit = {
  *
- *     scenario("full is invoked on this non-full stack: " + name) {
+ *     scenario("Size is fired at non-full stack actor: " + name) {
  *       val stackActor = createNonFullStackActor
  *       val futureStackInfo = stackActor ? Size
  *       futureStackInfo map { stackInfo =&gt;
@@ -1882,7 +1882,7 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("push is invoked on this non-full stack: " + name) {
+ *     scenario("Push is fired at non-full stack actor: " + name) {
  *       val stackActor = createNonFullStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
@@ -1947,7 +1947,7 @@ package org.scalatest
  *
  *   feature("A Stack is pushed and popped") {
  *
- *     scenario("empty is invoked on an empty stack") {
+ *     scenario("Size is fired at empty stack actor") {
  *       val stackActor = emptyStackActor
  *       val futureStackInfo = stackActor ? Size
  *       futureStackInfo map { stackInfo =&gt;
@@ -1955,13 +1955,13 @@ package org.scalatest
  *       }
  *     }
  *
- *     scenario("peek is invoked on an empty stack") {
+ *     scenario("Peek is fired at empty stack actor") {
  *       recoverToSucceededIf[IllegalStateException] {
  *         emptyStackActor ? Peek
  *       }
  *     }
  *
- *     scenario("pop is invoked on an empty stack") {
+ *     scenario("Pop is fired at empty stack actor") {
  *       recoverToSucceededIf[IllegalStateException] {
  *         emptyStackActor ? Pop
  *       }
@@ -2001,24 +2001,26 @@ package org.scalatest
  * <pre class="stREPL">
  * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
- * Feature: A Stack is pushed and popped
- * - Scenario: empty is invoked on an empty stack
- * - Scenario: peek is invoked on an empty stack
- * - Scenario: pop is invoked on an empty stack
- * - Scenario: empty is invoked on this non-empty stack: almost empty stack actor
- * - Scenario: peek is invoked on this non-empty stack: almost empty stack actor
- * - Scenario: pop is invoked on this non-empty stack: almost empty stack actor
- * - Scenario: full is invoked on this non-full stack: almost empty stack actor
- * - Scenario: push is invoked on this non-full stack: almost empty stack actor
- * - Scenario: empty is invoked on this non-empty stack: almost full stack actor
- * - Scenario: peek is invoked on this non-empty stack: almost full stack actor
- * - Scenario: pop is invoked on this non-empty stack: almost full stack actor
- * - Scenario: full is invoked on this non-full stack: almost full stack actor
- * - Scenario: push is invoked on this non-full stack: almost full stack actor
- * - Scenario: full is invoked on a full stack
- * - Scenario: empty is invoked on this non-empty stack: full stack actor
- * - Scenario: peek is invoked on this non-empty stack: full stack actor
- * - Scenario: pop is invoked on this non-empty stack: full stack actor</span>
+ * Feature: A Stack actor
+ * - Scenario: Size is fired at empty stack actor
+ * - Scenario: Peek is fired at empty stack actor
+ * - Scenario: Pop is fired at empty stack actor
+ * - Scenario: Size is fired at non-empty stack actor: almost empty stack actor
+ * - Scenario: Peek is fired at non-empty stack actor: almost empty stack actor
+ * - Scenario: Pop is fired at non-empty stack actor: almost empty stack actor
+ * - Scenario: Size is fired at non-full stack actor: almost empty stack actor
+ * - Scenario: Push is fired at non-full stack actor: almost empty stack actor
+ * - Scenario: Size is fired at non-empty stack actor: almost full stack actor
+ * - Scenario: Peek is fired at non-empty stack actor: almost full stack actor
+ * - Scenario: Pop is fired at non-empty stack actor: almost full stack actor
+ * - Scenario: Size is fired at non-full stack actor: almost full stack actor
+ * - Scenario: Push is fired at non-full stack actor: almost full stack actor
+ * - Scenario: Size is fired at full stack actor
+ * - Scenario: Size is fired at non-empty stack actor: full stack actor
+ * - Scenario: Peek is fired at non-empty stack actor: full stack actor
+ * - Scenario: Pop is fired at non-empty stack actor: full stack actor
+ * - Scenario: Push is fired at full stack actor
+</span>
  * </pre>
  *
  * <p>
@@ -2026,7 +2028,7 @@ package org.scalatest
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
  * Although in an <code>AsyncFeatureSpec</code>, the <code>feature</code> clause is a nesting construct analogous to
- * <code>FunSpec</code>'s <code>describe</code> clause, you many sometimes need to do a bit of
+ * <code>AsyncFunSpec</code>'s <code>describe</code> clause, you many sometimes need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in an
  * <code>AsyncFeatureSpec</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call
  * <code>toString</code> on the shared fixture object, or pass this string
@@ -2035,11 +2037,11 @@ package org.scalatest
  * </p>
  *
  * <p>
- * Given this <code>AsyncFeatureSpecStackBehaviors</code> trait, calling it with the <code>stackWithOneItem</code> fixture, like this:
+ * Given this <code>AsyncFeatureSpecStackBehaviors</code> trait, calling it with the <code>almostEmptyStackActor</code> fixture, like this:
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName))
+ * scenariosFor(nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName))
  * </pre>
  *
  * <p>
@@ -2053,11 +2055,11 @@ package org.scalatest
  * </ul>
  *
  * <p>
- * Whereas calling it with the <code>stackWithOneItemLessThanCapacity</code> fixture, like this:
+ * Whereas calling it with the <code>almostFullStackActor</code> fixture, like this:
  * </p>
  *
  * <pre class="stHighlight">
- * scenariosFor(nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed))
+ * scenariosFor(nonEmptyStack(almostFullStackActor, lastValuePushed, almostFullStackActorName))
  * </pre>
  *
  * <p>
