@@ -324,7 +324,6 @@ import Suite.autoTagClassAnnotations
  * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
  * </p>
  *
- *
  * <a name="informers"></a><h2>Informers</h2>
  *
  * <p>

@@ -581,6 +581,219 @@ package org.scalatest
  * on the JVM, it is a good approach for suites you want to run (but not be discoverable) on both Scala.js and the JVM.
  * </p>
  *
+ * <a name="informers"></a><h2>Informers</h2>
+ *
+ * <p>
+ * One of the parameters to <code>AsyncWordSpec</code>'s <code>run</code> method is a <a href="Reporter.html"><code>Reporter</code></a>, which
+ * will collect and report information about the running suite of tests.
+ * Information about suites and tests that were run, whether tests succeeded or failed, 
+ * and tests that were ignored will be passed to the <code>Reporter</code> as the suite runs.
+ * Most often the reporting done by default by <code>AsyncWordSpec</code>'s methods will be sufficient, but
+ * occasionally you may wish to provide custom information to the <code>Reporter</code> from a test.
+ * For this purpose, an <a href="Informer.html"><code>Informer</code></a> that will forward information to the current <code>Reporter</code>
+ * is provided via the <code>info</code> parameterless method.
+ * You can pass the extra information to the <code>Informer</code> via its <code>apply</code> method.
+ * The <code>Informer</code> will then pass the information to the <code>Reporter</code> via an <a href="events/InfoProvided.html"><code>InfoProvided</code></a> event.
+ * </p>
+ * 
+ * <p>
+ * One use case for the <code>Informer</code> is to pass more information about a specification to the reporter. For example,
+ * the <a href="GivenWhenThen.html"><code>GivenWhenThen</code></a> trait provides methods that use the implicit <code>info</code> provided by <code>AsyncWordSpec</code>
+ * to pass such information to the reporter. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncwordspec.info
+ * 
+ * import collection.mutable
+ * import org.scalatest._
+ * 
+ * class SetSpec extends AsyncWordSpec with GivenWhenThen {
+ *   
+ *   "A mutable Set" should {
+ *     "allow an element to be added" in {
+ *       Given("an empty mutable Set")
+ *       val set = mutable.Set.empty[String]
+ * 
+ *       When("an element is added")
+ *       set += "clarity"
+ * 
+ *       Then("the Set should have size 1")
+ *       assert(set.size === 1)
+ * 
+ *       And("the Set should contain the added element")
+ *       assert(set.contains("clarity"))
+ * 
+ *       info("That's all folks!")
+ *       succeed
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * If you run this <code>AsyncWordSpec</code> from the interpreter, you will see the following output:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; org.scalatest.run(new SetSpec)
+ * <span class="stGreen">A mutable Set
+ * - should allow an element to be added
+ *   + Given an empty mutable Set 
+ *   + When an element is added 
+ *   + Then the Set should have size 1 
+ *   + And the Set should contain the added element 
+ *   + That's all folks!</span>
+ * </pre>
+ *
+ * <a name="documenters"></a><h2>Documenters</h2>
+ *
+ * <p>
+ * <code>AsyncWordSpec</code> also provides a <code>markup</code> method that returns a <a href="Documenter.html"><code>Documenter</code></a>, which allows you to send
+ * to the <code>Reporter</code> text formatted in <a href="http://daringfireball.net/projects/markdown/" target="_blank">Markdown syntax</a>.
+ * You can pass the extra information to the <code>Documenter</code> via its <code>apply</code> method.
+ * The <code>Documenter</code> will then pass the information to the <code>Reporter</code> via an <a href="events/MarkupProvided.html"><code>MarkupProvided</code></a> event.
+ * </p>
+ *
+ * <p>
+ * Here's an example <code>AsyncWordSpec</code> that uses <code>markup</code>:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncwordspec.markup
+ *
+ * import collection.mutable
+ * import org.scalatest._
+ *
+ * class SetSpec extends AsyncWordSpec with GivenWhenThen {
+ *
+ *   markup { """
+ *
+ * Mutable Set
+ * -----------
+ *
+ * A set is a collection that contains no duplicate elements.
+ *
+ * To implement a concrete mutable set, you need to provide implementations
+ * of the following methods:
+ *
+ *     def contains(elem: A): Boolean
+ *     def iterator: Iterator[A]
+ *     def += (elem: A): this.type
+ *     def -= (elem: A): this.type
+ *
+ * If you wish that methods like `take`,
+ * `drop`, `filter` return the same kind of set,
+ * you should also override:
+ *
+ *     def empty: This
+ *
+ * It is also good idea to override methods `foreach` and
+ * `size` for efficiency.
+ *
+ *   """ }
+ *
+ *   "A mutable Set" should {
+ *     "allow an element to be added" in {
+ *       Given("an empty mutable Set")
+ *       val set = mutable.Set.empty[String]
+ *
+ *       When("an element is added")
+ *       set += "clarity"
+ *
+ *       Then("the Set should have size 1")
+ *       assert(set.size === 1)
+ *
+ *       And("the Set should contain the added element")
+ *       assert(set.contains("clarity"))
+ *
+ *       markup("This test finished with a **bold** statement!")
+ *       succeed
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Although all of ScalaTest's built-in reporters will display the markup text in some form,
+ * the HTML reporter will format the markup information into HTML. Thus, the main purpose of <code>markup</code> is to
+ * add nicely formatted text to HTML reports. Here's what the above <code>SetSpec</code> would look like in the HTML reporter:
+ * </p>
+ *
+ * <img class="stScreenShot" src="../../lib/wordSpec.gif">
+ *
+ * <a name="notifiersAlerters"></a><h2>Notifiers and alerters</h2>
+ *
+ * <p>
+ * ScalaTest records text passed to <code>info</code> and <code>markup</code> during tests, and sends the recorded text in the <code>recordedEvents</code> field of
+ * test completion events like <code>TestSucceeded</code> and <code>TestFailed</code>. This allows string reporters (like the standard out reporter) to show
+ * <code>info</code> and <code>markup</code> text <em>after</em> the test name in a color determined by the outcome of the test. For example, if the test fails, string
+ * reporters will show the <code>info</code> and <code>markup</code> text in red. If a test succeeds, string reporters will show the <code>info</code>
+ * and <code>markup</code> text in green. While this approach helps the readability of reports, it means that you can't use <code>info</code> to get status
+ * updates from long running tests.
+ * </p>
+ *
+ * <p>
+ * To get immediate (<em>i.e.</em>, non-recorded) notifications from tests, you can use <code>note</code> (a <a href="Notifier.html"><code>Notifier</code></a>) and <code>alert</code>
+ * (an <a href="Alerter.html"><code>Alerter</code></a>). Here's an example showing the differences:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * package org.scalatest.examples.asyncwordspec.note
+ *
+ * import collection.mutable
+ * import org.scalatest._
+ *
+ * class SetSpec extends AsyncWordSpec {
+ *
+ *   "A mutable Set" should {
+ *     "allow an element to be added" in {
+ *
+ *       info("info is recorded")
+ *       markup("markup is *also* recorded")
+ *       note("notes are sent immediately")
+ *       alert("alerts are also sent immediately")
+ *
+ *       val set = mutable.Set.empty[String]
+ *       set += "clarity"
+ *       assert(set.size === 1)
+ *       assert(set.contains("clarity"))
+ *     }
+ *   }
+ * }
+ * </pre>
+ *
+ * <p>
+ * Because <code>note</code> and <code>alert</code> information is sent immediately, it will appear <em>before</em> the test name in string reporters, and its color will
+ * be unrelated to the ultimate outcome of the test: <code>note</code> text will always appear in green, <code>alert</code> text will always appear in yellow.
+ * Here's an example:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; org.scalatest.run(new SetSpec)
+ * <span class="stGreen">SetSpec:
+ * A mutable Set
+ *   + notes are sent immediately</span>
+ *   <span class="stYellow">+ alerts are also sent immediately</span>
+ * <span class="stGreen">- should allow an element to be added
+ *   + info is recorded
+ *   + markup is *also* recorded</span>
+ * </pre>
+ *
+ * <p>
+ * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
+ * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
+ * longer than a specified amount of time.
+ * </p>
+ *
+ * <p>
+ * In summary, use <code>info</code> and <code>markup</code> for text that should form part of the specification output. Use
+ * <code>note</code> and <code>alert</code> to send status notifications. (Because the HTML reporter is intended to produce a
+ * readable, printable specification, <code>info</code> and <code>markup</code> text will appear in the HTML report, but
+ * <code>note</code> and <code>alert</code> text will not.)
+ * </p>
+ *
  * <a name="pendingTests"></a><h2>Pending tests</h2>
  *
  * <p>
