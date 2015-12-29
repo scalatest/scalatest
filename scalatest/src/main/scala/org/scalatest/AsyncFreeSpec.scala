@@ -1999,64 +1999,64 @@ package org.scalatest
  * <pre class="stHighlight">
  * import org.scalatest.AsyncFreeSpec
  *
- * trait AsyncFreeSpecStackBehaviors { this: AsyncFreeSpec =&gt;
+ * trait AsyncFreeSpecStackBehaviors { this: AsyncFreeSpec =>
  *
- *   def nonEmptyStackActor(createNonEmptyStackActor: =&gt; StackActor[Int],
+ *   def nonEmptyStackActor(createNonEmptyStackActor: => StackActor[Int],
  *         lastItemAdded: Int, name: String): Unit = {
  *
- *     ("should return non-empty StackInfo when Size is fired at non-empty stack actor: " + name) in {
+ *     ("return non-empty StackInfo when Size is fired at non-empty stack actor: " + name) in {
  *       val stackActor = createNonEmptyStackActor
  *       val futureStackInfo = stackActor ? Size
- *       futureStackInfo map { stackInfo =&gt;
+ *       futureStackInfo map { stackInfo =>
  *         assert(!stackInfo.isEmpty)
  *       }
  *     }
  *
- *     ("should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: " + name) in {
+ *     ("return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: " + name) in {
  *       val stackActor = createNonEmptyStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
- *           beforePeek &lt;- stackActor ? Size
- *           afterPeek &lt;- stackActor ? Peek
+ *           beforePeek <- stackActor ? Size
+ *           afterPeek <- stackActor ? Peek
  *         } yield (beforePeek, afterPeek)
- *       futurePair map { case (beforePeek, afterPeek) =&gt;
+ *       futurePair map { case (beforePeek, afterPeek) =>
  *         assert(afterPeek.top == Some(lastItemAdded))
  *         assert(afterPeek.size == beforePeek.size)
  *       }
  *     }
  *
- *     ("should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: " + name) in {
+ *     ("return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: " + name) in {
  *       val stackActor = createNonEmptyStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
- *           beforePop &lt;- stackActor ? Size
- *           afterPop &lt;- stackActor ? Pop
+ *           beforePop <- stackActor ? Size
+ *           afterPop <- stackActor ? Pop
  *         } yield (beforePop, afterPop)
- *       futurePair map { case (beforePop, afterPop) =&gt;
+ *       futurePair map { case (beforePop, afterPop) =>
  *         assert(afterPop.top == Some(lastItemAdded))
  *         assert(afterPop.size == beforePop.size - 1)
  *       }
  *     }
  *   }
  *
- *   def nonFullStackActor(createNonFullStackActor: =&gt; StackActor[Int], name: String): Unit = {
+ *   def nonFullStackActor(createNonFullStackActor: => StackActor[Int], name: String): Unit = {
  *
- *     ("should return non-full StackInfo when Size is fired at non-full stack actor: " + name) in {
+ *     ("return non-full StackInfo when Size is fired at non-full stack actor: " + name) in {
  *       val stackActor = createNonFullStackActor
  *       val futureStackInfo = stackActor ? Size
- *       futureStackInfo map { stackInfo =&gt;
+ *       futureStackInfo map { stackInfo =>
  *         assert(!stackInfo.isFull)
  *       }
  *     }
  *
- *     ("should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: " + name) in {
+ *     ("return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: " + name) in {
  *       val stackActor = createNonFullStackActor
  *       val futurePair: Future[(StackInfo[Int], StackInfo[Int])] =
  *         for {
- *           beforePush &lt;- stackActor ? Size
- *           afterPush &lt;- { stackActor ! Push(7); stackActor ? Peek }
+ *           beforePush <- stackActor ? Size
+ *           afterPush <- { stackActor ! Push(7); stackActor ? Peek }
  *         } yield (beforePush, afterPush)
- *       futurePair map { case (beforePush, afterPush) =&gt;
+ *       futurePair map { case (beforePush, afterPush) =>
  *         assert(afterPush.top == Some(7))
  *         assert(afterPush.size == beforePush.size + 1)
  *       }
@@ -2092,7 +2092,7 @@ package org.scalatest
  *   val fullStackActorName = "full stack actor"
  *   def fullStackActor = {
  *     val stackActor = new StackActor[Int](Max, fullStackActorName )
- *     for (i &lt;- 0 until Max)
+ *     for (i <- 0 until Max)
  *       stackActor ! Push(i)
  *     stackActor
  *   }
@@ -2107,7 +2107,7 @@ package org.scalatest
  *   val almostFullStackActorName = "almost full stack actor"
  *   def almostFullStackActor = {
  *     val stackActor = new StackActor[Int](Max, almostFullStackActorName)
- *     for (i &lt;- 1 to LastValuePushed)
+ *     for (i <- 1 to LastValuePushed)
  *       stackActor ! Push(i)
  *     stackActor
  *   }
@@ -2117,7 +2117,7 @@ package org.scalatest
  *       "should be empty" in {
  *         val stackActor = emptyStackActor
  *         val futureStackInfo = stackActor ? Size
- *         futureStackInfo map { stackInfo =&gt;
+ *         futureStackInfo map { stackInfo =>
  *           assert(stackInfo.isEmpty)
  *         }
  *       }
@@ -2136,13 +2136,17 @@ package org.scalatest
  *     }
  *
  *     "(with one item)" - {
- *       behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
- *       behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
+ *       "should" - {
+ *         behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
+ *         behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
+ *       }
  *     }
  *
  *     "(with one item less than capacity)" - {
- *       behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
- *       behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
+ *       "should" - {
+ *         behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
+ *         behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
+ *       }
  *     }
  *
  *     "(full)" - {
@@ -2150,12 +2154,14 @@ package org.scalatest
  *       "should be full" in {
  *         val stackActor = fullStackActor
  *         val futureStackInfo = stackActor ? Size
- *         futureStackInfo map { stackInfo =&gt;
+ *         futureStackInfo map { stackInfo =>
  *           assert(stackInfo.isFull)
  *         }
  *       }
  *
- *       behave like nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName)
+ *       "should" - {
+ *         behave like nonEmptyStackActor(fullStackActor, LastValuePushed, fullStackActorName)
+ *       }
  *
  *       "should complain on a push" in {
  *         val stackActor = fullStackActor
@@ -2182,22 +2188,25 @@ package org.scalatest
  *   - should complain on peek
  *   - should complain on pop
  *   (with one item)
- *   - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor
- *   - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor
- *   - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor
- *   - should return non-full StackInfo when Size is fired at non-full stack actor: almost empty stack actor
- *   - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost empty stack actor
+ *     should
+ *     - return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor
+ *     - return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor
+ *     - return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor
+ *     - return non-full StackInfo when Size is fired at non-full stack actor: almost empty stack actor
+ *     - return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost empty stack actor
  *   (with one item less than capacity)
- *   - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor
- *   - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor
- *   - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor
- *   - should return non-full StackInfo when Size is fired at non-full stack actor: almost full stack actor
- *   - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost full stack actor
+ *     should
+ *     - return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor
+ *     - return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor
+ *     - return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor
+ *     - return non-full StackInfo when Size is fired at non-full stack actor: almost full stack actor
+ *     - return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost full stack actor
  *   (full)
  *   - should be full
- *   - should return non-empty StackInfo when Size is fired at non-empty stack actor: full stack actor
- *   - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: full stack actor
- *   - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: full stack actor
+ *     should
+ *     - return non-empty StackInfo when Size is fired at non-empty stack actor: full stack actor
+ *     - return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: full stack actor
+ *     - return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: full stack actor
  *   - should complain on a push
  * </span>
  * </pre>
