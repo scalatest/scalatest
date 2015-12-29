@@ -444,6 +444,13 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
+ * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
+ * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
+ * longer than a specified amount of time.
+ * </p>
+ *
+ * <p>
  * In summary, use <code>info</code> and <code>markup</code> for text that should form part of the specification output. Use
  * <code>note</code> and <code>alert</code> to send status notifications. (Because the HTML reporter is intended to produce a
  * readable, printable specification, <code>info</code> and <code>markup</code> text will appear in the HTML report, but
