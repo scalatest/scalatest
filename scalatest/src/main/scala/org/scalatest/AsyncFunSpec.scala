@@ -73,13 +73,31 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * &ldquo;<code>it</code>&rdquo; is a method, defined in <code>AsyncFunSpec</code>, which will be invoked
- * by the primary constructor of <code>AddSpec</code>. You specify the name of the test as
- * a string between the parentheses, and the test code itself between curly braces.
- * The test code is a function passed as a by-name parameter to <code>it</code>, which registers
- * it for later execution. The result type of the by-name in an <code>AsyncFunSpec</code> must
- * be <code>Future[Assertion]</code>.
+ * An <code>AsyncFunSpec</code> contains <em>describe clauses</em> and tests. You define a describe clause
+ * with <code>describe</code>, and a test with either <code>it</code> or <code>they</code>. 
+ * <code>describe</code>,  <code>it</code>, and <code>they</code> are methods, defined in
+ * <code>AsyncFunSpec</code>, which will be invoked
+ * by the primary constructor of <code>AddSpec</code>. 
+ * A describe clause names, or gives more information about, the <em>subject</em> (class or other entity) you are specifying
+ * and testing. In the previous example, <code>"addSoon"</code> and <code>"addNow"</code> are
+ * the subjects under specification and test. With each test you provide a string (the <em>spec text</em>) that specifies
+ * one bit of behavior of the subject, and a block of code that tests that behavior.
+ * You place the spec text between the parentheses, followed by the test code between curly
+ * braces.  The test code will be wrapped up as a function passed as a by-name parameter to
+ * <code>it</code> (or <code>they</code>), which will register the test for later execution.
  * </p>
+ *
+ * <p>
+ * Note: the <code>they</code> method is intended for use when the subject is plural, for example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * describe("The combinators") {
+ *   they("should be easy to learn") { succeed }
+ *   they("should be efficient") { succeed }
+ *   they("should do something cool") { succeed }
+ * }
+ * </pre>
  *
  * <p>
  * Starting with version 3.0.0, ScalaTest assertions and matchers have result type <code>Assertion</code>.
