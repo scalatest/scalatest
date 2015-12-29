@@ -73,12 +73,30 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * &ldquo;<code>it</code>&rdquo; is a method, defined in <code>AsyncFreeSpec</code>, which will be invoked
- * by the primary constructor of <code>AddSpec</code>. You specify the name of the test as
- * a string between the parentheses, and the test code itself between curly braces.
- * The test code is a function passed as a by-name parameter to <code>it</code>, which registers
- * it for later execution. The result type of the by-name in an <code>AsyncFreeSpec</code> must
- * be <code>Future[Assertion]</code>.
+ * In an <code>AsyncFreeSpec</code> you write a test with a string followed by <code>in</code> and the body of the
+ * test in curly braces, like this:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * "will eventually compute a sum of passed Ints" in {
+ *   // ...
+ * }
+ * </pre>
+ * 
+ * <p>
+ * You can nest a test inside any number of description clauses, which you write with a string followed by a dash character
+ * and a block, like this:  
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * "addSoon" - {
+ *   // ...
+ * }
+ * </pre>
+ * 
+ * <p>
+ * You can nest description clauses as deeply as you want. Because the description clause is denoted with an operator, not
+ * a word like <code>should</code>, you are free to structure the text however you wish.
  * </p>
  *
  * <p>
