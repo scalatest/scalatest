@@ -97,6 +97,9 @@ package org.scalatest
  * <p>
  * You can nest description clauses as deeply as you want. Because the description clause is denoted with an operator, not
  * a word like <code>should</code>, you are free to structure the text however you wish.
+ * In short, you structure an <code>AsyncFreeSpec</code> exactly like a <code>FreeSpec</code>, but with
+ * tests having result type <code>Assertion</code> or <code>Future[Assertion]</code>. For more examples
+ * of structure, see the documentation for <a href="FreeSpec.html"><code>FreeSpec</code></a>.
  * </p>
  *
  * <p>

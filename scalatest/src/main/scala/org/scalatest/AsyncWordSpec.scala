@@ -82,6 +82,55 @@ package org.scalatest
  * </p>
  *
  * <p>
+ * In an <code>AsyncWordSpec</code> you write a one (or more) sentence specification for each bit of behavior you wish to
+ * specify and test. Each specification sentence has a
+ * "subject," which is sometimes called the <em>system under test</em> (or SUT). The 
+ * subject is entity being specified and tested and also serves as the subject of the sentences you write for each test. A subject
+ * can be followed by one of three verbs, <code>should</code>, <code>must</code>, or <code>can</code>, and a block. Here are some
+ * examples:
+ * </p>
+ * 
+ * <pre class="stHighlight">
+ * "A Stack" should {
+ *   // ...
+ * }
+ * "An Account" must {
+ *   // ...
+ * }
+ * "A ShippingManifest" can {
+ *   // ...
+ * }
+ * </pre>
+ * 
+ * <p>
+ * You can describe a subject in varying situations by using a <code>when</code> clause. A <code>when</code> clause
+ * follows the subject and precedes a block. In the block after the <code>when</code>, you place strings that describe a situation or a state
+ * the subject may be in using a string, each followed by a verb. Here's an example:
+ * </p>
+ *
+ * <pre class="stHighlight">
+ * "A Stack" when {
+ *   "empty" should {
+ *     // ...
+ *   }
+ *   "non-empty" should {
+ *     // ...
+ *   }
+ *   "full" should {
+ *     // ...
+ *   }
+ * }
+ * </pre>
+ * 
+ * <p>
+ * When you are ready to finish a sentence, you write a string followed by <code>in</code> and a block that
+ * contains the code of the test.
+ * In short, you structure an <code>AsyncWordSpec</code> exactly like a <code>WordSpec</code>, but with
+ * tests having result type <code>Assertion</code> or <code>Future[Assertion]</code>. For more examples
+ * of structure, see the documentation for <a href="WordSpec.html"><code>WordSpec</code></a>.
+ * </p>
+ *
+ * <p>
  * Starting with version 3.0.0, ScalaTest assertions and matchers have result type <code>Assertion</code>.
  * The result type of the first test in the example above, therefore, is <code>Future[Assertion]</code>.
  * For clarity, here's the relevant code in a REPL session:
