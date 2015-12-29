@@ -193,17 +193,14 @@ class StackSpec extends AsyncFunSpec with AsyncFunSpecStackBehaviors {
       }
     }
 
-    describe("(with one item)") {
+    describe("(when non-empty)") {
       it should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
       it should behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
-    }
-
-    describe("(with one item less than capacity)") {
       it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
       it should behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
     }
 
-    describe("(full)") {
+    describe("(when full)") {
 
       it("should be full") {
         val stackActor = fullStackActor

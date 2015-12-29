@@ -2136,17 +2136,14 @@ package org.scalatest
  *       }
  *     }
  *
- *     describe("(with one item)") {
+ *     describe("(when non-empty)") {
  *       it should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
  *       it should behave like nonFullStackActor(almostEmptyStackActor, almostEmptyStackActorName)
- *     }
- *
- *     describe("(with one item less than capacity)") {
  *       it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
  *       it should behave like nonFullStackActor(almostFullStackActor, almostFullStackActorName)
  *     }
  *
- *     describe("(full)") {
+ *     describe("(when full)") {
  *
  *       it("should be full") {
  *         val stackActor = fullStackActor
@@ -2177,29 +2174,28 @@ package org.scalatest
  * <pre class="stREPL">
  * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
-A Stack
-  (when empty)
-  - should be empty
-  - should complain on peek
-  - should complain on pop
-  (with one item)
-  - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor
-  - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor
-  - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor
-  - should return non-full StackInfo when Size is fired at non-full stack actor: almost empty stack actor
-  - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost empty stack actor
-  (with one item less than capacity)
-  - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor
-  - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor
-  - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor
-  - should return non-full StackInfo when Size is fired at non-full stack actor: almost full stack actor
-  - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost full stack actor
-  (full)
-  - should be full
-  - should return non-empty StackInfo when Size is fired at non-empty stack actor: full stack actor
-  - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: full stack actor
-  - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: full stack actor
-  - should complain on a push
+ * A Stack
+ *   (when empty)
+ *   - should be empty
+ *   - should complain on peek
+ *   - should complain on pop
+ *   (when non-empty)
+ *   - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor
+ *   - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor
+ *   - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor
+ *   - should return non-full StackInfo when Size is fired at non-full stack actor: almost empty stack actor
+ *   - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost empty stack actor
+ *   - should return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor
+ *   - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor
+ *   - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor
+ *   - should return non-full StackInfo when Size is fired at non-full stack actor: almost full stack actor
+ *   - should return before and after StackInfo that has existing size + 1 and new item as top when Push is fired at non-full stack actor: almost full stack actor
+ *   (when full)
+ *   - should be full
+ *   - should return non-empty StackInfo when Size is fired at non-empty stack actor: full stack actor
+ *   - should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: full stack actor
+ *   - should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: full stack actor
+ *   - should complain on a push
  * </span>
  * </pre>
  *
@@ -2207,8 +2203,6 @@ A Stack
  * One thing to keep in mind when using shared tests is that in ScalaTest, each test in a suite must have a unique name.
  * If you register the same tests repeatedly in the same suite, one problem you may encounter is an exception at runtime
  * complaining that multiple tests are being registered with the same test name.
- * In a <code>AsyncFunSpec</code> there is no nesting construct analogous to
- * <code>AsyncFunSpec</code>'s <code>describe</code> clause.
  * Therefore, you need to do a bit of
  * extra work to ensure that the test names are unique. If a duplicate test name problem shows up in an
  * <code>AsyncFunSpec</code>, you'll need to pass in a prefix or suffix string to add to each test name. You can call
@@ -2222,7 +2216,7 @@ A Stack
  * </p>
  *
  * <pre class="stHighlight">
- * it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
+ * it should behave like nonEmptyStackActor(almostEmptyStackActor, LastValuePushed, almostEmptyStackActorName)
  * </pre>
  *
  * <p>
@@ -2230,9 +2224,9 @@ A Stack
  * </p>
  *
  * <ul>
- * <li><code>Size is fired at non-empty stack actor: almost empty stack actor</code></li>
- * <li><code>Peek is fired at non-empty stack actor: almost empty stack actor</code></li>
- * <li><code>Pop is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>A Stack (when non-empty) should return non-empty StackInfo when Size is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost empty stack actor</code></li>
+ * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost empty stack actor</code></li>
  * </ul>
  *
  * <p>
@@ -2240,7 +2234,7 @@ A Stack
  * </p>
  *
  * <pre class="stHighlight">
- * it should behave like nonEmptyStack(stackWithOneItemLessThanCapacity, lastValuePushed)
+ * it should behave like nonEmptyStackActor(almostFullStackActor, LastValuePushed, almostFullStackActorName)
  * </pre>
  *
  * <p>
@@ -2248,9 +2242,9 @@ A Stack
  * </p>
  *
  * <ul>
- * <li><code>Size is fired at non-empty stack actor: almost full stack actor</code></li>
- * <li><code>Peek is fired at non-empty stack actor: almost full stack actor</code></li>
- * <li><code>Pop is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>A Stack (when non-empty) should return non-empty StackInfo when Size is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size and lastItemAdded as top when Peek is fired at non-empty stack actor: almost full stack actor</code></li>
+ * <li><code>A Stack (when non-empty) should return before and after StackInfo that has existing size - 1 and lastItemAdded as top when Pop is fired at non-empty stack actor: almost full stack actor</code></li>
  * </ul>
  */
 abstract class AsyncFunSpec extends AsyncFunSpecLike {

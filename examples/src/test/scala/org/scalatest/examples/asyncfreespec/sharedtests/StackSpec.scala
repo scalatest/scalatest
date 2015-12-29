@@ -207,7 +207,7 @@ class StackSpec extends AsyncFreeSpec with AsyncFreeSpecStackBehaviors {
       }
     }
 
-    "(full)" - {
+    "(when full)" - {
 
       "should be full" in {
         val stackActor = fullStackActor
