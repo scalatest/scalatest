@@ -781,9 +781,19 @@ private[scalatest] object StringReporter {
         val tff: Vector[Fragment] = fragmentsOnError(Resources.failedNote, Resources.testFailed _, message, throwable, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiRed)
 
+        // add machine-readable location reporting when in Emacs
+        // https://github.com/scalatest/scalatest/issues/630
+        val tff_loc = if (sys.env.contains("INSIDE_EMACS")) {
+          (tff, location) match {
+            case (head +: rest, Some(LineInFile(line, name))) =>
+              head.copy(text = s"${head.text} :$name:$line") +: rest
+            case _ => tff
+          }
+        } else tff
+
         val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
 
-        tff ++ ref
+        tff_loc ++ ref
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
