@@ -34,6 +34,7 @@ class WithCleanupSpec extends FunSpec {
 // SKIP-SCALATESTJS-START
         override def executionContext: ExecutionContext = ExecutionContext.Implicits.global
 // SKIP-SCALATESTJS-END
+//SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
       }
     describe("when an exception is immediately thrown") {
       it("should perform the side effect and rethrow the same exception") {
