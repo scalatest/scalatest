@@ -39,7 +39,7 @@ import scala.collection.immutable.NumericRange
  * compile time. Here's an example:
  * </p>
  * 
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import anyvals._
  * import anyvals._
  *
@@ -62,7 +62,7 @@ import scala.collection.immutable.NumericRange
  * <code>PosLong.from</code>, instead:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; val x = 1L
  * x: Long = 1
  *
@@ -81,7 +81,7 @@ import scala.collection.immutable.NumericRange
  * <code>None</code>.  Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; PosLong.from(x)
  * res3: Option[org.scalactic.anyvals.PosLong] = Some(PosLong(1))
  *
@@ -100,7 +100,7 @@ import scala.collection.immutable.NumericRange
  * <code>PosLong.apply</code> explicitly. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; def invert(pos: PosLong): Long = Long.MaxValue - pos
  * invert: (pos: org.scalactic.anyvals.PosLong)Long
  *

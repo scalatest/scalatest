@@ -27,7 +27,7 @@ import TripleEqualsSupport._
  * two <code>Set</code>s contained the same elements in the same order. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import scala.collection.immutable.TreeSet
  * import scala.collection.immutable.TreeSet
  *
@@ -43,7 +43,7 @@ import TripleEqualsSupport._
  * because <code>TreeSet</code> and <code>HashSet</code> are not in a subtype/supertype relationship, nor does an implicit conversion by default exist between them:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import org.scalactic._
  * import org.scalactic._
  *
@@ -64,7 +64,7 @@ import TripleEqualsSupport._
  * If you mix or import the implicit conversion provided by <code>SetEqualityConstraint</code>, however, the comparison will be allowed:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import SetEqualityConstraints._
  * import SetEqualityConstraints._
  *
@@ -81,7 +81,7 @@ import TripleEqualsSupport._
  * will exist between the element types <code>Int</code> and <code>Date</code>:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import java.util.Date
  * import java.util.Date
  *

@@ -40,9 +40,9 @@ import TripleEqualsSupport._
  * </pre>
  *
  * <p>
- * The first expression above is enabled by the implicit conversion <code>typeCheckedConstraint</code> in traits
- * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a> and
- * <a href="TypeCheckedLegacyTripleEquals.html"><code>TypeCheckedLegacyTripleEquals</code></a>. The second expression above is
+ * The first expression above is enabled by the implicit conversion <code>typeCheckedConstraint</code> in trait
+ * <a href="TypeCheckedTripleEquals.html"><code>TypeCheckedTripleEquals</code></a>.
+ * The second expression above is
  * enabled by the implicit conversion <code>lowPriorityTypeCheckedConstraint</code> in this trait.
  * </p>
  *

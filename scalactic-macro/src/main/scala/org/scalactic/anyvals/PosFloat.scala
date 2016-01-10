@@ -39,7 +39,7 @@ import scala.collection.immutable.NumericRange
  * compile time. Here's an example:
  * </p>
  * 
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import anyvals._
  * import anyvals._
  *
@@ -62,7 +62,7 @@ import scala.collection.immutable.NumericRange
  * <code>PosFloat.from</code>, instead:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; val x = 1.0F
  * x: Float = 1.0
  *
@@ -81,7 +81,7 @@ import scala.collection.immutable.NumericRange
  * <code>None</code>.  Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; PosFloat.from(x)
  * res3: Option[org.scalactic.anyvals.PosFloat] = Some(PosFloat(1.0))
  *
@@ -100,7 +100,7 @@ import scala.collection.immutable.NumericRange
  * <code>PosFloat.apply</code> explicitly. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; def invert(pos: PosFloat): Float = Float.MaxValue - pos
  * invert: (pos: org.scalactic.anyvals.PosFloat)Float
  *
