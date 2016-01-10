@@ -30,7 +30,7 @@ import scala.concurrent.Future
  * method assumes synchronous testing. Here is its signature:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * def withFixture(test: OneArgTest): Outcome
  * </pre>
  *
@@ -39,7 +39,7 @@ import scala.concurrent.Future
  * that takes a <code>FixtureParam</code> and returns <a href="Outcome.html"><code>Outcome</code></a>:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * // In trait OneArgTest:
  * def apply(fixture: FixtureParam): Outcome
  * </pre>
@@ -58,7 +58,7 @@ import scala.concurrent.Future
  * signature and implementation:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
  *   test()
  * }
@@ -70,7 +70,7 @@ import scala.concurrent.Future
  * <code>OneArgAsyncTest</code>, returns <code>Future[Outcome]</code>:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * // In trait OneArgAsyncTest:
  * def apply(fixture: FixtureParam): Future[Outcome]
  * </pre>
@@ -98,7 +98,7 @@ import scala.concurrent.Future
  * invoking the test function to the <code>withAsyncFixture(NoArgAsyncTest)</code> method of the same instance by writing:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * withAsyncFixture(test.toNoArgAsyncTest(theFixture))
  * </pre>
  *

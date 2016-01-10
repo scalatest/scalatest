@@ -244,7 +244,7 @@ object Outcome {
  * enables patterns that match a test that either failed or canceled, as in:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * outcome match {
  *   case Exceptional(ex) =&gt; // handle failed or canceled case
  *   case _ =&gt; // handle succeeded, pending, or omitted case
@@ -292,7 +292,7 @@ object Exceptional {
    * like this:
    * </p>
    * 
-   * <pre>
+   * <pre class="stHighlight">
    * abstract override def withFixture(test: NoArgTest): Outcome = {
    *   super.withFixture(test) match {
    *     case Exceptional(e: StackDepth) =&gt; Exceptional(e.severedAtStackDepth)
@@ -319,7 +319,7 @@ object Exceptional {
    * like this:
    * </p>
    * 
-   * <pre>
+   * <pre class="stHighlight">
    * abstract override def withFixture(test: NoArgTest): Outcome = {
    *   super.withFixture(test) match {
    *     case Exceptional(e: StackDepth) =&gt; Exceptional(e.severedAtStackDepth)
@@ -506,7 +506,7 @@ object Canceled {
    * be the case if a test failed previously while running the suite:
    * </p>
    *
-   * <pre>
+   * <pre class="stHighlight">
    * abstract override def withFixture(test: NoArgTest): Outcome = {
    *   if (cancelRemaining) 
    *     Canceled("Canceled by CancelOnFailure because a test failed previously")

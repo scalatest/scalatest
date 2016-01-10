@@ -28,7 +28,7 @@ package org.scalatest.enablers
  * can't be used with ScalaTest's <code>have size</code> syntax.
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import java.awt.image.DataBufferByte
  * import java.awt.image.DataBufferByte
  * 

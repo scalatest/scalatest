@@ -28,7 +28,7 @@ package org.scalatest.enablers
  * can't be used with ScalaTest's <code>have length</code> syntax. 
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import java.net.DatagramPacket
  * import java.net.DatagramPacket
  * 

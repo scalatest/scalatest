@@ -34,7 +34,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * method assumes synchronous testing. Here is its signature:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * def withFixture(test: NoArgTest): Outcome
  * </pre>
  *
@@ -43,7 +43,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * that also returns <a href="Outcome.html"><code>Outcome</code></a>:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * // In trait NoArgTest:
  * def apply(): Outcome
  * </pre>
@@ -62,7 +62,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * signature and implementation:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
  *   test()
  * }
@@ -74,7 +74,7 @@ import scala.language.implicitConversions // To convert Assertion to Future[Asse
  * <code>NoArgAsyncTest</code>, returns <code>Future[Outcome]</code>:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * // In trait NoArgAsyncTest:
  * def apply(): Future[Outcome]
  * </pre>

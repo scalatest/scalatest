@@ -56,7 +56,7 @@ import java.lang.annotation.*;
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">An empty Set</span>
  * <span class="stYellow">- should have size 0 !!! IGNORED !!!
  * - should produce NoSuchElementException when head is invoked !!! IGNORED !!!</span>
@@ -99,7 +99,7 @@ import java.lang.annotation.*;
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * <span class="stYellow">- an empty Set should have size 0 !!! IGNORED !!!</span>
  * <span class="stGreen">- invoking head on an empty Set should produce NoSuchElementException</span>
