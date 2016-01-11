@@ -80,7 +80,7 @@ trait OutcomeOf {
    * @param f a block of code to execute
    * @return an <code>Outcome</code> representing the outcome of executing the block of code
    */
-  def outcomeOf(f: => Unit): Outcome = {
+  def outcomeOf(f: => Any): Outcome = {
     try {                                         
       f                                           
       Succeeded
