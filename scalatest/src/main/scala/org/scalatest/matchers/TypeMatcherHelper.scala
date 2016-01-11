@@ -23,6 +23,11 @@ import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
 
 /**
  * <code>TypeMatcherHelper</code> is called by <code>TypeMatcherMacro</code> to support <code>a [Type]</code> and <code>an [Type]</code> syntax.
+ *
+ * <p>
+ * This object needs to be public so that the macro-generated code can be compiled. It is expected that ScalaTest
+ * users would ever need to use <code>TypeMatcherHelper</code> directly.
+ * </p>
  */
 object TypeMatcherHelper {
 
