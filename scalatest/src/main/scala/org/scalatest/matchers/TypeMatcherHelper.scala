@@ -245,7 +245,7 @@ object TypeMatcherHelper {
     } else org.scalatest.Succeeded
   }
 
-  /**
+  /*
    * Based on <code>shouldBeTrue</code> value, check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfAnTypeInvocation</code>.
    * If <code>shouldBeTrue</code> is true, a <code>Fact.No</code> will be returned if <code>left</code> is not an instance of the type given by <code>ResultOfAnTypeInvocation</code>.
    * If <code>shouldBeTrue</code> is false, a <code>Fact.No</code> will be returned if <code>left</code> is an instance of the type given by <code>ResultOfAnTypeInvocation</code>.
