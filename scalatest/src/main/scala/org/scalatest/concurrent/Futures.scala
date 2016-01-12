@@ -48,6 +48,9 @@ import PatienceConfiguration._
  * 
  * <pre class="stHighlight">
  * assert(result.futureValue === 7)
+ *
+ * // Or, if you expect the future to fail:
+ * assert(result.failed.futureValue.isInstanceOf[ArithmeticException])
  * </pre>
  * 
  * <p>
