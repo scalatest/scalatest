@@ -42,7 +42,7 @@ import org.scalactic.Requirements._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-trait RefSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait RefSpecLike extends SyncSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "RefSpecLike")
   import engine._

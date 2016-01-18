@@ -49,7 +49,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
 @deprecated("fixture.SpecLike has been deprecated and will be removed in a future version of ScalaTest. Please use org.scalatest.fixture.FunSpecLike instead.")
-trait SpecLike extends Suite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
+trait SpecLike extends SyncSuite with Informing with Notifying with Alerting with Documenting  { thisSuite => 
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentSpecMod, "Spec")
   import engine._
