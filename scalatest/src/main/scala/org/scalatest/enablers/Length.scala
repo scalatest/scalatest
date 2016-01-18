@@ -23,39 +23,66 @@ package org.scalatest.enablers
  * Objects of type T for which an implicit <code>Length[T]</code> is available can be used
  * with the <code>should have length</code> syntax.
  * In other words, this trait enables you to use the length checking
- * syntax with arbitrary objects. As an example, consider
- * <code>java.net.DatagramPacket</code>, which has a <code>getLength</code> method. By default, this
- * can't be used with ScalaTest's <code>have length</code> syntax. 
+ * syntax with arbitrary objects. As an example, the following <code>Bridge</code> class:
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; import java.net.DatagramPacket
- * import java.net.DatagramPacket
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
+ *
+ * scala&gt; import enablers.Length
+ * import enablers.Length
+ *
+ * scala&gt; import Matchers._
+ * import Matchers._
+ *
+ * scala&gt; case class Bridge(span: Int)
+ * defined class Bridge
+ * </pre>
+ *
+ * <p>
+ * Out of the box you can't use the <code>should have length</code> syntax with <code>Bridge</code>,
+ * because ScalaTest doesn't know that a bridge's span means its length:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; val bridge = new Bridge(2000)
+ * bridge: Bridge = Bridge(2000)
+ *
+ * scala&gt; bridge should have length 2000
+ * &lt;console&gt;:34: error: could not find implicit value for
+ *     parameter len: org.scalatest.enablers.Length[Bridge]
+ *       bridge should have length 2000
+ *                          ^
+ * </pre>
+ *
+ * <p>
+ * You can teach this to ScalaTest, however, by defining an implicit <code>Length[Bridge]</code>.
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; implicit val lengthOfBridge: Length[Bridge] =
+ *      |   new Length[Bridge] {
+ *      |     def lengthOf(b: Bridge): Long = b.span
+ *      |   }
+ * lengthOfBridge: org.scalatest.enablers.Length[Bridge] = $anon$1@3fa27a4a
+ * </pre>
+ *
+ * <p>
+ * With the implicit <code>Length[Bridge]</code> in scope, you can now use ScalaTest's <code>should have length</code>
+ * syntax with <code>Bridge</code> instances:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; bridge should have length 2000
+ * res4: org.scalatest.Assertion = Succeeded
  * 
- * scala&gt; import org.scalatest.Matchers._
- * import org.scalatest.Matchers._
- *
- * scala&gt; val dp = new DatagramPacket(Array(0x0, 0x1, 0x2, 0x3), 4)
- * dp: java.net.DatagramPacket = java.net.DatagramPacket@54906181
- * 
- * scala&gt; dp.getLength
- * res0: Int = 4
- *
- * scala&gt; dp should have length 4
- * <console>:13: error: could not find implicit value for parameter ev: org.scalatest.matchers.ShouldMatchers.Extent[java.net.DatagramPacket]
- *          dp should have length 4
- *             ^
- *
- * scala&gt; implicit val lengthOfDatagramPacket =
- *     |   new Length[DatagramPacket] {
- *     |     def lengthOf(dp: DatagramPacket): Long = dp.getLength
- *     |   }
- * lengthOfDatagramPacket: java.lang.Object with org.scalatest.matchers.ShouldMatchers.Length[java.net.DatagramPacket] = $anon$1@550c6b37
- *
- * scala&gt; dp should have length 4
- *
- * scala&gt; dp should have length 3
- * org.scalatest.exceptions.TestFailedException:  java.net.DatagramPacket@54906181 had length 4, not length 3
+ * scala&gt; bridge should have length 2001
+ * org.scalatest.exceptions.TestFailedException: Bridge(2000) had length 2000 instead of expected length 2001
+ *   at org.scalatest.MatchersHelper$.newTestFailedException(MatchersHelper.scala:148)
+ *   at org.scalatest.MatchersHelper$.indicateFailure(MatchersHelper.scala:366)
+ *   at org.scalatest.Matchers$ResultOfHaveWordForExtent.length(Matchers.scala:2720)
+ *   ... 43 elided
  * </pre>
  *
  * @author Bill Venners

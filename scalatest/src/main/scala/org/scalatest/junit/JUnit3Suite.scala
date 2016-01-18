@@ -54,19 +54,19 @@ import Suite.wrapReporterIfNecessary
  *   var sb: StringBuilder = _
  *   var lb: ListBuffer[String] = _
  *
- *   override def setUp() {
+ *   override def setUp(): Unit = {
  *     sb = new StringBuilder("ScalaTest is ")
  *     lb = new ListBuffer[String]
  *   }
  *
- *   def testEasy() { // Uses JUnit-style assertions
+ *   def testEasy(): Unit = { // Uses JUnit-style assertions
  *     sb.append("easy!")
  *     assertEquals("ScalaTest is easy!", sb.toString)
  *     assertTrue(lb.isEmpty)
  *     lb += "sweet"
  *   }
  *
- *   def testFun() { // Uses ScalaTest assertions
+ *   def testFun(): Unit = { // Uses ScalaTest assertions
  *     sb.append("fun!")
  *     assert(sb.toString === "ScalaTest is fun!")
  *     assert(lb.isEmpty)
@@ -76,53 +76,15 @@ import Suite.wrapReporterIfNecessary
  * 
  * <p>
  * You can use either JUnit's assertions, inherited from <code>TestCase</code>, or ScalaTest's, inherited from <code>AssertionsForJUnit</code>.
- * You can also mix in <code>ShouldMatchersForJUnit</code> or <code>MustMatchersForJUnit</code> if you want to use ScalaTests's matchers DSL.
- * Here's an example:
- * </p>
- *
- * <pre class="stHighlight">
- * import org.scalatest.junit.JUnit3Suite
- * import org.scalatest.junit.MustMatchersForJUnit
- * import scala.collection.mutable.ListBuffer
- *
- * class BlastFromThePastSuite extends JUnit3Suite with MustMatchersForJUnit {
- *
- *   var stringBuilder: StringBuilder = _
- *   var listBuffer: ListBuffer[String] = _
- *
- *   override def setUp() {
- *     stringBuilder = new StringBuilder("ScalaTest is ")
- *     listBuffer = new ListBuffer[String]
- *   }
- *
- *   def testEasy() {
- *     stringBuilder.append("easy!")
- *     stringBuilder.toString must be ("ScalaTest is easy!")
- *     listBuffer must be ('empty)
- *     listBuffer += "sweet"
- *   }
- *
- *   def testFun() {
- *     stringBuilder.append("fun!")
- *     stringBuilder.toString must be ("ScalaTest is fun!")
- *     listBuffer must be ('empty)
- *   }
- * }
- * </pre>
- * 
- * <p>
- * The reason you would ordinarily want to mix in <code>MustMatchersForJUnit</code> or <code>ShouldMatchersForJUnit</code> rather than <code>MustMatchers</code>
- * or <code>ShouldMatchers</code> is that <code>MustMatchersForJUnit</code> and <code>ShouldMatchersForJUnit</code> throw
- * <code>junit.framework.AssertionFailedError</code>s, which JUnit 3 will report as failures, not errors.
  * </p>
  *
  * <p>
  * When writing JUnit 3 tests in Scala, you should keep in mind that JUnit 3 will not run tests that have a return type other than
- * <code>Unit</code>. Thus it is best to leave off the equals sign before the curly braces of the body of the test, like this:
+ * <code>Unit</code>. Thus it is best to explicitly state the <code>Unit</code> result type, like this:
  * </p>
  * 
  * <pre class="stHighlight">
- * def testGoodIdea() { // result type will be Unit
+ * def testGoodIdea(): Unit = { // result type will be Unit
  *   // ...
  * }
  * </pre>

@@ -453,8 +453,8 @@ trait Eventually extends PatienceConfiguration {
  * scala&gt; import org.scalatest._
  * import org.scalatest._
  *
- * scala&gt; import matchers.ShouldMatchers._
- * import matchers.ShouldMatchers._
+ * scala&gt; import Matchers._
+ * import Matchers._
  *
  * scala&gt; import concurrent.Eventually._
  * import concurrent.Eventually._

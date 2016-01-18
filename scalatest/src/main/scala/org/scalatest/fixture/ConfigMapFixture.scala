@@ -26,12 +26,12 @@ import org.scalatest._
  * are defined keys in the config map:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * package org.scalatest.examples.fixture.configmapfixture
  * 
  * import org.scalatest._
  * 
- * class ExampleSpec extends fixture.FlatSpec with fixture.ConfigMapFixture with ShouldMatchers {
+ * class ExampleSpec extends fixture.FlatSpec with fixture.ConfigMapFixture with Matchers {
  * 
  *   "The config map" should "contain hello" in { configMap =&gt;
  *     // Use the configMap passed to runTest in the test

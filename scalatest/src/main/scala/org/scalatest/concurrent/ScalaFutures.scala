@@ -86,7 +86,7 @@ import scala.util.Failure
  *
  * <pre class="stHighlight">
  * import org.scalatest._
- * import matchers.ShouldMatchers._
+ * import Matchers._
  * import concurrent.Futures._
  * import java.util.concurrent._
  * 

@@ -64,11 +64,11 @@ import PatienceConfiguration._
  *
  * <pre class="stHighlight">
  * import org.scalatest.fixture.FunSuite
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import java.util.concurrent.ArrayBlockingQueue
  * import org.scalatest.concurrent.Conductors
  *
- * class ArrayBlockingQueueSuite extends FunSuite with ShouldMatchers with Conductors {
+ * class ArrayBlockingQueueSuite extends FunSuite with Matchers with Conductors {
  *
  *   test("calling put on a full queue blocks the producer thread") {
  *
@@ -294,11 +294,11 @@ trait Conductors extends PatienceConfiguration {
    *
    * <pre class="stHighlight">
    * import org.scalatest.fixture.FunSuite
-   * import org.scalatest.matchers.ShouldMatchers
+   * import org.scalatest.matchers.Matchers
    * import java.util.concurrent.ArrayBlockingQueue
    * import org.scalatest.concurrent.Conductors
    *
-   * class ArrayBlockingQueueSuite extends FunSuite with ShouldMatchers with Conductors {
+   * class ArrayBlockingQueueSuite extends FunSuite with Matchers with Conductors {
    *
    *   test("calling put on a full queue blocks the producer thread") {
    *

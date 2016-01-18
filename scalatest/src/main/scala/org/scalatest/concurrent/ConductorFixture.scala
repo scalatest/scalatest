@@ -30,12 +30,12 @@ import org.scalatest.OutcomeOf.outcomeOf
  * <pre class="stHighlight">
  * import org.scalatest.fixture
  * import org.scalatest.concurrent.ConductorFixture
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import java.util.concurrent.ArrayBlockingQueue
  *
- * class ArrayBlockingQueueSuite extends fixture.FunSuite with ConductorFixture with ShouldMatchers {
+ * class ArrayBlockingQueueSuite extends fixture.FunSuite with ConductorFixture with Matchers {
  * 
- *   test("calling put on a full queue blocks the producer thread") { conductor => import conductor._
+ *   test("calling put on a full queue blocks the producer thread") { conductor =&gt; import conductor._
  *
  *     val buf = new ArrayBlockingQueue[Int](1)
  * 
@@ -56,7 +56,7 @@ import org.scalatest.OutcomeOf.outcomeOf
  *     }
  *   }
  *
- *   test("calling take on an empty queue blocks the consumer thread") { conductor => import conductor._
+ *   test("calling take on an empty queue blocks the consumer thread") { conductor =&gt; import conductor._
  *
  *     val buf = new ArrayBlockingQueue[Int](1)
  *

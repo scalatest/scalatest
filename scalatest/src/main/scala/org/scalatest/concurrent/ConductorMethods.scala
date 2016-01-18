@@ -33,10 +33,10 @@ import org.scalatest.OutcomeOf.outcomeOf
  * <pre class="stHighlight">
  * import org.scalatest.FunSuite
  * import org.scalatest.concurrent.ConductorMethods
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import java.util.concurrent.ArrayBlockingQueue
  *
- * class ArrayBlockingQueueSuite extends FunSuite with ConductorMethods with ShouldMatchers {
+ * class ArrayBlockingQueueSuite extends FunSuite with ConductorMethods with Matchers {
  * 
  *   test("calling put on a full queue blocks the producer thread") {
  *

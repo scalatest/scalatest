@@ -68,7 +68,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * import prop.PropertyChecks
  * import java.io._
  * 
- * class ExampleSpec extends fixture.PropSpec with PropertyChecks with ShouldMatchers {
+ * class ExampleSpec extends fixture.PropSpec with PropertyChecks with Matchers {
  * 
  *   // 1. define type FixtureParam
  *   type FixtureParam = FileReader
@@ -200,7 +200,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * import prop.PropertyChecks
  * import scala.collection.mutable.ListBuffer
  * 
- * class ExampleSpec extends fixture.PropSpec with PropertyChecks with ShouldMatchers {
+ * class ExampleSpec extends fixture.PropSpec with PropertyChecks with Matchers {
  * 
  *   case class FixtureParam(builder: StringBuilder, buffer: ListBuffer[String])
  * 
