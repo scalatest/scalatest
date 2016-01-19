@@ -22,7 +22,7 @@ import scala.concurrent.Future
  * and can be overridden in stackable modification traits.
  *
  * <p>
- * The main use case for this trait is to override <code>withAsyncFixture</code> in a mixin trait.
+ * The main use case for this trait is to override <code>withFixture</code> in a mixin trait.
  * Here's an example:
  * </p>
  *
@@ -31,10 +31,10 @@ import scala.concurrent.Future
  * 
  *   final val builder = new ThreadSafeStringBuilder
  * 
- *   abstract override def withAsyncFixture(test: NoArgAsyncTest) = {
+ *   abstract override def withFixture(test: NoArgAsyncTest) = {
  *     builder.append("ScalaTest is ")
  *     withCleanup {
- *       super.withAsyncFixture(test) // To be stackable, must call super.withAsyncFixture
+ *       super.withFixture(test) // To be stackable, must call super.withFixture
  *     } {
  *       builder.clear()
  *     }
@@ -60,6 +60,6 @@ trait AsyncSuiteMixin extends SuiteMixin { this: AsyncSuite =>
    *
    * @param test the no-arg async test function to run with a fixture
    */
-  protected def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome]
+  protected def withFixture(test: NoArgAsyncTest): Future[Outcome]
 }
 

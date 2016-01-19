@@ -1098,7 +1098,7 @@ one error found
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       FutureOutcome(
-        withAsyncFixture(
+        withFixture(
           new NoArgAsyncTest {
             val name = testData.name
             def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
