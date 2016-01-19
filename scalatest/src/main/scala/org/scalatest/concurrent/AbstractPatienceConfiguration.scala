@@ -24,7 +24,7 @@ import org.scalatest.time.{Span, Millis}
  *
  * <p>
  * The main purpose of <code>AbstractPatienceConfiguration</code> is to differentiate core <code>PatienceConfiguration</code>
- * traits, such as <a href="Eventually.html"><code>Eventually</code></a> and <a href="AsyncAssertions.html"><code>AsyncAssertions</code></a>, from stackable
+ * traits, such as <a href="Eventually.html"><code>Eventually</code></a> and <a href="Waiters.html"><code>Waiters</code></a>, from stackable
  * modification traits for <code>PatienceConfiguration</code>s such as <code>IntegrationPatience</code>.
  * Because these stackable traits extend <code>AbstractPatienceConfiguration</code> 
  * instead of <a href="../Suite.html"><code>Suite</code></a>, you can't simply mix in a stackable trait:
@@ -55,7 +55,7 @@ trait AbstractPatienceConfiguration extends ScaledTimeSpans {
 
   /**
    * Configuration object for asynchronous constructs, such as those provided by traits <a href="Eventually.html"><code>Eventually</code></a> and
-   * <a href="AsyncAssertions.html"><code>AsyncAssertions</code></a>.
+   * <a href="Waiters.html"><code>Waiters</code></a>.
    *
    * <p>
    * The default values for the parameters are:
