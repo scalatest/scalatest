@@ -545,7 +545,6 @@ import Suite.getMethodForTestName
  *
  * @author Bill Venners
  */
-@Finders(Array("org.scalatest.finders.MethodFinder"))
 trait Suite extends Assertions with Serializable { thisSuite =>
 
   import Suite.TestMethodPrefix, Suite.InformerInParens, Suite.IgnoreAnnotation
