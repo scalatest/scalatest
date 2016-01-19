@@ -239,13 +239,6 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
   protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
       thisAsyncSuite.isInstanceOf[org.scalatest.RandomTestOrder]
 
-  /**
-   * Throws <code>NotAllowedException</code>, because its signature assumes synchronous testing. Use <code>withAsyncFixture</code> instead.
-   */
-  final override def withFixture(test: NoArgTest): Outcome = {
-    throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncSuite.scala", "withFixture"))
-  }
-
   // TODO: Document how exceptions are treated. I.e., that TestConceledException becomes Success(Canceled), 
   // TestPendingException becomes Success(Pending), non-test-fatal exceptions become Success(Failed), and
   // test-fatal exceptions become Failure(ex)

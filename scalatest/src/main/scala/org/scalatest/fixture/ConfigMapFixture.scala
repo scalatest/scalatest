@@ -74,7 +74,7 @@ import org.scalatest._
  * 
  * @author Bill Venners
  */
-trait ConfigMapFixture { this: fixture.Suite =>
+trait ConfigMapFixture { this: fixture.SyncSuite =>
 
   /**
    * The type of the <code>configMap</code>, which is <code>ConfigMap</code>.

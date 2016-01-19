@@ -15,8 +15,8 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.SuiteMixin
-import org.scalatest.Suite
+import org.scalatest.SyncSuiteMixin
+import org.scalatest.SyncSuite
 import Timeouts._
 import org.scalatest.exceptions.ModifiableMessage
 import org.scalatest.Resources
@@ -122,7 +122,7 @@ import org.scalatest.Exceptional
  * to run.
  * </p>
  */
-trait TimeLimitedTests extends SuiteMixin { this: Suite =>
+trait TimeLimitedTests extends SyncSuiteMixin { this: SyncSuite =>
 
   /**
    * A stackable implementation of <code>withFixture</code> that wraps a call to <code>super.withFixture</code> in a 

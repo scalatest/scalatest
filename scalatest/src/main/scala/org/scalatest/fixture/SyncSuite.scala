@@ -16,8 +16,9 @@
 package org.scalatest.fixture
 
 import org.scalatest._
+import OutcomeOf.outcomeOf
 
-trait SyncSuite extends org.scalatest.fixture.Suite { thisSyncSuite =>
+trait SyncSuite extends org.scalatest.fixture.Suite with org.scalatest.SyncSuite { thisSyncSuite =>
 
   /**
    * A test function taking a fixture parameter and returning an <code>Outcome</code>.
@@ -27,7 +28,7 @@ trait SyncSuite extends org.scalatest.fixture.Suite { thisSyncSuite =>
    * <a href="FlatSpec.html">documentation for trait <code>fixture.FlatSpec</code></a>.
    * </p>
    */
-  protected trait OneArgTest2 extends (FixtureParam => Outcome) with TestData { thisOneArgTest =>
+  protected trait OneArgTest extends (FixtureParam => Outcome) with TestData { thisOneArgTest =>
 
     /**
      * Runs the test, using the passed <code>FixtureParam</code>.
@@ -86,7 +87,7 @@ trait SyncSuite extends org.scalatest.fixture.Suite { thisSyncSuite =>
    * Companion object for <code>OneArgTest</code> that provides factory method to create new <code>OneArgTest</code>
    * instance by passing in a <code>OneArgTest</code> and a <code>FixtureParam</code> => <code>Outcome</code> function.
    */
-  object OneArgTest2 {
+  object OneArgTest {
     /**
      * Create new <code>OneArgTest</code> instance.
      *
@@ -119,6 +120,31 @@ trait SyncSuite extends org.scalatest.fixture.Suite { thisSyncSuite =>
    * @param test the <code>OneArgTest</code> to invoke, passing in a fixture
    * @return an instance of <code>Outcome</code>
    */
-  protected def withFixture2(test: OneArgTest): Outcome
+  protected def withFixture(test: OneArgTest): Outcome
+
+  private[fixture] class TestFunAndConfigMap(val name: String, test: FixtureParam => Any, val configMap: ConfigMap)
+    extends OneArgTest {
+
+    def apply(fixture: FixtureParam): Outcome = {
+      outcomeOf { test(fixture) }
+    }
+    private val testData = testDataFor(name, configMap)
+    val scopes = testData.scopes
+    val text = testData.text
+    val tags = testData.tags
+  }
+
+  private[fixture] class FixturelessTestFunAndConfigMap(override val name: String, test: () => Any, override val configMap: ConfigMap)
+    extends NoArgTest {
+
+    def apply(): Outcome = {
+      outcomeOf { test() }
+    }
+    private val testData = testDataFor(name, configMap)
+    val scopes = testData.scopes
+    val text = testData.text
+    val tags = testData.tags
+  }
+
 }
 

@@ -46,7 +46,7 @@ class FilterProp extends SuiteProp {
   def suite = new Suite {
     override def nestedSuites = Vector(new Suite {})
   }
-  def fixtureSuite = new fixture.Suite with StringFixture {
+  def fixtureSuite = new fixture.SyncSuite with StringFixture {
     override def nestedSuites = Vector(new Suite {})
   }
   def junit3Suite = new JUnit3Suite {

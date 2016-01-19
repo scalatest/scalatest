@@ -28,7 +28,7 @@ import java.io.File
  * To change this, override <code>screenshotDir</code>.
  * </p>
  */
-private[scalatest] trait ScreenshotOnFailure extends SuiteMixin { this: Suite with ScreenshotCapturer => 
+private[scalatest] trait ScreenshotOnFailure extends SyncSuiteMixin { this: SyncSuite with ScreenshotCapturer => 
   
   /**
    * The name of the directory into which screenshots will be captured.

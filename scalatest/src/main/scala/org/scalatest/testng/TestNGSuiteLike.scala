@@ -377,25 +377,6 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
 
   /**
    * Throws <code>UnsupportedOperationException</code>, because this method is unused by this
-   * class, given this class's <code>run</code> method delegates to JUnit to run
-   * its tests.
-   *
-   * <p>
-   * The main purpose of this method implementation is to render a compiler error an attempt
-   * to mix in a trait that overrides <code>withFixture</code>. Because this
-   * trait does not actually use <code>withFixture</code>, the attempt to mix
-   * in behavior would very likely not work.
-   * </p>
-   *
-   *
-   * @param test the no-arg test function to run with a fixture
-   */
-  override final protected def withFixture(test: NoArgTest): Outcome = {
-     throw new UnsupportedOperationException
-  }
-
-  /**
-   * Throws <code>UnsupportedOperationException</code>, because this method is unused by this
    * trait, given this trait's <code>run</code> method delegates to TestNG to run
    * its tests.
    *

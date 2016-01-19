@@ -20,7 +20,7 @@ import SharedHelpers._
 import refspec.RefSpec
 
 class LocationMethodSuiteProp extends MethodSuiteProp {
-  
+
   test("Method suites should have correct TopOfMethod location in test events.") {
     forAll(examples) { suite =>
       val reporter = new EventRecordingReporter
@@ -32,7 +32,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   }
   
   type FixtureServices = TestLocationMethodServices
-  
+
   def suite = new TestLocationSuite
   class TestLocationSuite extends Suite with FixtureServices {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationSuite"
@@ -62,7 +62,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   }
   
   def fixtureSuite = new TestLocationFixtureSuite
-  class TestLocationFixtureSuite extends fixture.Suite with FixtureServices with StringFixture {
+  class TestLocationFixtureSuite extends fixture.SyncSuite with FixtureServices with StringFixture {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite"
     val expectedStartingList = List(TestStartingPair("testSucceed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testSucceed()"), 
                                 TestStartingPair("testPending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testPending()"), 

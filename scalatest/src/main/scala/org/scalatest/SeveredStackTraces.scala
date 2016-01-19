@@ -26,7 +26,7 @@ import org.scalatest.exceptions.StackDepth
  *
  * @author Bill Venners
  */
-trait SeveredStackTraces extends SuiteMixin { this: Suite =>
+trait SeveredStackTraces extends SyncSuiteMixin { this: SyncSuite =>
 
   /**
    * Invokes <code>super.withFixture(test)</code> and transforms a thrown <code>StackDepth</code> exception by severing

@@ -217,13 +217,6 @@ trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSui
     }
 
   /**
-   * Throws <code>NotAllowedException</code>, because its signature assumes synchronous testing. Use <code>withAsyncFixture</code> instead.
-   */
-  final override def withFixture(test: OneArgTest): Outcome = {
-    throw new exceptions.NotAllowedException(FailureMessages.withFixtureNotAllowedInAsyncFixtures, getStackDepthFun("AsyncFixtures.scala", "withFixture"))
-  }
-
-  /**
    * A test function taking no arguments and returning an <code>Future[Outcome]</code>.
    *
    * <p>

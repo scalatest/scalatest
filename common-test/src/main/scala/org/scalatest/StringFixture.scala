@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-trait StringFixture { this: fixture.Suite =>
+trait StringFixture { this: fixture.SyncSuite =>
   type FixtureParam = String
   def withFixture(test: OneArgTest): Outcome = {
     test("hi")

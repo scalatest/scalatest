@@ -25,7 +25,7 @@ trait SyncSuite extends Suite { thisSyncSuite =>
    * <a href="FlatSpec.html#withFixtureNoArgTest">documentation for trait <code>fixture.FlatSpec</code></a>.
    * </p>
    */
-  protected trait NoArgTest2 extends (() => Outcome) with TestData {
+  protected trait NoArgTest extends (() => Outcome) with TestData {
 
     /**
      * Runs the body of the test, returning an <code>Outcome</code>.
@@ -34,7 +34,7 @@ trait SyncSuite extends Suite { thisSyncSuite =>
   }
 
   // Keep this out of the public until there's a use case demonstrating its need
-  private[scalatest] object NoArgTest2 {
+  private[scalatest] object NoArgTest {
     def apply(test: NoArgTest)(f: => Outcome): NoArgTest = {
       new NoArgTest {
         def apply(): Outcome = { f }
@@ -71,7 +71,7 @@ trait SyncSuite extends Suite { thisSyncSuite =>
    *
    * @param test the no-arg test function to run with a fixture
    */
-  protected def withFixture2(test: NoArgTest): Outcome = {
+  protected def withFixture(test: NoArgTest): Outcome = {
     test()
   }
 }

@@ -78,7 +78,7 @@ class ExampleClassTaggingSuite extends Suite with ClassTaggingFixtureServices {
 
 @DoNotDiscover
 @Ignore
-class ExampleClassTaggingFixtureSuite extends fixture.Suite with ClassTaggingFixtureServices with StringFixture {
+class ExampleClassTaggingFixtureSuite extends fixture.SyncSuite with ClassTaggingFixtureServices with StringFixture {
   def testMethod1() {}
   def testMethod2() {}
   def testMethod3() {}

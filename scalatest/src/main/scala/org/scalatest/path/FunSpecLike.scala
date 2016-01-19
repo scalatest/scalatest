@@ -409,19 +409,6 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
   protected val behave = new BehaveWord
 
   /**
-   * This lifecycle method is unused by this trait, and will complete abruptly with
-   * <code>UnsupportedOperationException</code> if invoked.
-   *
-   * <p>
-   * This trait's implementation of this method is  marked as final. For insight onto why, see the
-   * <a href="#sharedFixtures">Shared fixtures</a> section in the main documentation for this trait.
-   * </p>
-   */
-  final override def withFixture(test: NoArgTest): Outcome = {
-    throw new UnsupportedOperationException
-  }
-
-  /**
    * An immutable <code>Set</code> of test names. If this <code>FunSpec</code> contains no tests, this method returns an
    * empty <code>Set</code>.
    *
