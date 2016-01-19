@@ -548,7 +548,7 @@ import Suite.getMethodForTestName
 @Finders(Array("org.scalatest.finders.MethodFinder"))
 trait Suite extends Assertions with Serializable { thisSuite =>
 
-  import Suite.TestMethodPrefix, Suite.InformerInParens, Suite.IgnoreAnnotation
+  import Suite.InformerInParens, Suite.IgnoreAnnotation
 
   /**
   * An immutable <code>IndexedSeq</code> of this <code>Suite</code> object's nested <code>Suite</code>s. If this <code>Suite</code> contains no nested <code>Suite</code>s,
@@ -1443,7 +1443,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 
 private[scalatest] object Suite {
 
-  val TestMethodPrefix = "test"
   val InformerInParens = "(Informer)"
   val IgnoreAnnotation = "org.scalatest.Ignore"
 
