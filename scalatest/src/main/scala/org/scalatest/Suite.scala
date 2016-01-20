@@ -548,7 +548,7 @@ import Suite.getMethodForTestName
 @Finders(Array("org.scalatest.finders.MethodFinder"))
 trait Suite extends Assertions with Serializable { thisSuite =>
 
-  import Suite.InformerInParens, Suite.IgnoreAnnotation
+  import Suite.InformerInParens
 
   /**
   * An immutable <code>IndexedSeq</code> of this <code>Suite</code> object's nested <code>Suite</code>s. If this <code>Suite</code> contains no nested <code>Suite</code>s,
@@ -1402,7 +1402,14 @@ trait Suite extends Assertions with Serializable { thisSuite =>
 private[scalatest] object Suite {
 
   val InformerInParens = "(Informer)"
-  val IgnoreAnnotation = "org.scalatest.Ignore"
+  val FixtureAndInformerInParens = "(FixtureParam, Informer)"
+  val FixtureInParens = "(FixtureParam)"
+  val IgnoreTagName = "org.scalatest.Ignore"
+
+  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
+  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
+
+  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 
   def getSimpleNameOfAnObjectsClass(o: AnyRef) = stripDollars(parseSimpleName(o.getClass.getName))
 
@@ -2140,9 +2147,6 @@ used for test events like succeeded/failed, etc.
     case _ => theSuite.createCatchReporter(reporter)
   }
 
-  val FixtureAndInformerInParens = "(FixtureParam, Informer)"
-  val FixtureInParens = "(FixtureParam)"
-
   def testMethodTakesAFixtureAndInformer(testName: String) = testName.endsWith(FixtureAndInformerInParens)
   def testMethodTakesAFixture(testName: String) = testName.endsWith(FixtureInParens)
 
@@ -2205,17 +2209,10 @@ used for test events like succeeded/failed, etc.
    else simpleName + theSuite.nestedSuites.mkString("(", ", ", ")")
   }
 
-  val IgnoreTagName = "org.scalatest.Ignore"
-
   private[scalatest] def mergeMap[A, B](ms: List[Map[A, B]])(f: (B, B) => B): Map[A, B] =
     (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
       a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
     }
-
-  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
-  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
-
-  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 }
 
 

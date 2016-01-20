@@ -16,7 +16,7 @@
 package org.scalatest.fixture
 
 import scala.collection.immutable.ListSet
-import org.scalatest.Suite.{IgnoreAnnotation, autoTagClassAnnotations}
+import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest._
 import Spec._
 import Suite._

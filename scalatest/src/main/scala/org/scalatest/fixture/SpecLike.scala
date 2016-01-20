@@ -16,7 +16,7 @@
 package org.scalatest.fixture
 
 import scala.collection.immutable.ListSet
-import org.scalatest.Suite.{IgnoreAnnotation, autoTagClassAnnotations}
+import org.scalatest.Suite.{IgnoreTagName, autoTagClassAnnotations}
 import org.scalatest._
 import Spec._
 import Suite._
@@ -159,8 +159,8 @@ trait SpecLike extends SyncSuite with Informing with Notifying with Alerting wit
           
               val testLocation = TopOfMethod(getScopeClassName(o), m.toGenericString)
               val isIgnore = testTags.get(methodName) match {
-                case Some(tagSet) => tagSet.contains(IgnoreAnnotation) || methodTags.contains(IgnoreAnnotation)
-                case None => methodTags.contains(IgnoreAnnotation)
+                case Some(tagSet) => tagSet.contains(IgnoreTagName) || methodTags.contains(IgnoreTagName)
+                case None => methodTags.contains(IgnoreTagName)
               }
               if (isIgnore)
                 registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
