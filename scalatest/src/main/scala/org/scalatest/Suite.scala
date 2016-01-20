@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import java.lang.annotation._
-import java.lang.reflect.{InvocationTargetException, Method, Modifier}
+import java.lang.annotation.AnnotationFormatError
+import java.lang.reflect.{Method, Modifier}
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
@@ -24,33 +24,20 @@ import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
 import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
-import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.getSimpleNameOfAnObjectsClass
 import Suite.takesInformer
-import Suite.handleFailedTest
 import Suite.isTestMethodGoodies
-import Suite.testMethodTakesAnInformer
 import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import Suite.getEscapedIndentedTextForTest
-import Suite.autoTagClassAnnotations
 import org.scalatest.events._
-import Suite.getMessageForException
-import Suite.reportTestStarting
 import Suite.reportTestIgnored
-import Suite.reportTestSucceeded
-import Suite.reportTestPending
-import Suite.reportTestCanceled
-import Suite.createInfoProvided
-import Suite.createMarkupProvided
 import Suite.wrapReporterIfNecessary
-import scala.reflect.NameTransformer
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions._
+import StackDepthExceptionHelper.getStackDepthFun
 import collection.mutable.ListBuffer
 import collection.GenTraversable
 import annotation.tailrec
-import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
 import scala.util.control.NonFatal
 import Suite.getTopOfMethod
@@ -60,8 +47,6 @@ import org.scalactic.Requirements._
 import tools.SuiteDiscoveryHelper
 import org.scalatest.tools.StandardOutReporter
 import Suite.getTopOfClass
-import Suite.getSuiteRunTestGoodies
-import Suite.getMethodForTestName
 // SKIP-SCALATESTJS-END
 
 /*

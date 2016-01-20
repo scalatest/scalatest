@@ -15,15 +15,7 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest._
-import collection.immutable.TreeSet
-// import Suite._
-import java.lang.reflect.{InvocationTargetException, Method, Modifier}
-import org.scalatest.events._
-import org.scalatest.Suite._
-import exceptions.{TestCanceledException, TestPendingException}
-import OutcomeOf.outcomeOf
-import scala.reflect.NameTransformer.decode
+import org.scalatest.Finders
 
 /**
  * Base trait for a family of style traits that can pass a fixture object into tests.
