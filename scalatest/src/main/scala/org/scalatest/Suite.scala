@@ -896,25 +896,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   def tags: Map[String, Set[String]] = Map.empty
 
-  // SKIP-SCALATESTJS-START
-  private[scalatest] def yeOldeTags: Map[String, Set[String]] = {
-    val testNameSet = testNames
-      
-    val testTags = Map() ++ 
-      (for (testName <- testNameSet; if !getTags(testName).isEmpty)
-        yield testName -> (Set() ++ getTags(testName)))
-
-    autoTagClassAnnotations(testTags, this)
-  }
-
-  private def getTags(testName: String) =
-    for {
-      a <- getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
-  // SKIP-SCALATESTJS-END
-
   /**
    * A <code>Set</code> of test names. If this <code>Suite</code> contains no tests, this method returns an empty <code>Set</code>.
    *
@@ -1416,29 +1397,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val tags = Set.empty[String]
     }
   }
-  // SKIP-SCALATESTJS-START
-  private[scalatest] def yeOldeTestDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
-    val suiteTags = for { 
-      a <- this.getClass.getAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
-    val testTags: Set[String] = 
-      try {
-        getTags(testName).toSet
-      }
-      catch {
-        case e: IllegalArgumentException => Set.empty[String]
-      }
-    new TestData {
-      val configMap = theConfigMap 
-      val name = testName
-      val scopes = Vector.empty
-      val text = testName
-      val tags = Set.empty ++ suiteTags ++ testTags
-    }
-  }
-  // SKIP-SCALATESTJS-END
 }
 
 private[scalatest] object Suite {
@@ -2107,21 +2065,21 @@ used for test events like succeeded/failed, etc.
         leading.mkString(", ") + ", " + Resources.leftCommaAndRight(trailing(0), trailing(1))
     }
   }
-  
+
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
     // SKIP-SCALATESTJS-START
-    val suiteTags = for { 
+    val suiteTags = for {
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
-    
-    val autoTestTags = 
+
+    val autoTestTags =
       if (suiteTags.size > 0)
         Map() ++ theSuite.testNames.map(tn => (tn, suiteTags.toSet))
       else
         Map.empty[String, Set[String]]
-    
+
     mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY tags
