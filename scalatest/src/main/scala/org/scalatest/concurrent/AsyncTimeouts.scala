@@ -25,12 +25,11 @@ import org.scalatest.exceptions.StackDepthExceptionHelper._
 
 trait AsyncTimeouts[T] {
 
-  class TimeoutTask(promise: Promise[T], span: Span) extends TimerTask {
+  class TimeoutTask(promise: Promise[T], span: Span, interruptor: Interruptor) extends TimerTask {
 
     def run(): Unit = {
       if (!promise.isCompleted) {
         promise.complete(Success(failure(new TestFailedDueToTimeoutException(sde => Some(Resources.testTimeLimitExceeded(span.prettyString)), None, getStackDepthFun("TimeLimiting.scala", "run"), None, span))))
-        //promise.complete(Success(Exceptional(new TestFailedDueToTimeoutException(sde => Some(Resources.testTimeLimitExceeded(span.prettyString)), None, getStackDepthFun("TimeLimiting.scala", "run"), None, span))))
       }
     }
 
@@ -48,7 +47,7 @@ trait AsyncTimeouts[T] {
         }(interruptor)
 
       val promise = Promise[T]
-      val task = new TimeoutTask(promise, timeLimit)
+      val task = new TimeoutTask(promise, timeLimit, interruptor)
       val delay = limit - (scala.compat.Platform.currentTime - startTime)
       val timer = new Timer
 
@@ -70,7 +69,6 @@ trait AsyncTimeouts[T] {
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField =>
-        //Future.successful(Exceptional(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString)))))
         Future.successful(failure(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString)))))
 
       case t: Throwable =>
