@@ -104,7 +104,6 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
             val timeLimit = Span(10L, Millis)
-            override val defaultTestInterruptor = DoNotInterrupt
             test("time out failure") {
               Thread.sleep(50)
               throw new RuntimeException("oops!")
@@ -131,7 +130,6 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
             val timeLimit = Span(10L, Millis)
-            override val defaultTestInterruptor = DoNotInterrupt
             test("time out failure") {
               Future {
                 Thread.sleep(50)

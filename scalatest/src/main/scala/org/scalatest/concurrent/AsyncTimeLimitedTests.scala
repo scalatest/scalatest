@@ -15,12 +15,8 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.concurrent.Timeouts._
-import org.scalatest.exceptions.TimeoutField
 import org.scalatest.time.Span
 import org.scalatest._
-import org.scalatest.exceptions.StackDepthExceptionHelper._
-import org.scalatest.exceptions.TestFailedDueToTimeoutException
 
 import scala.concurrent.{Future, Promise}
 import scala.util.{Failure, Success}
@@ -29,7 +25,7 @@ trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts[Outcome] 
 
   abstract override def withFixture(test: NoArgAsyncTest): Future[Outcome] = {
 
-    failingAfter(timeLimit, defaultTestInterruptor) {
+    failingAfter(timeLimit) {
       super.withFixture(test)
     }
 
@@ -42,17 +38,5 @@ trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts[Outcome] 
    * <code>TimeLimitedTests</code> must complete.
    */
   def timeLimit: Span
-
-  /**
-   * The default <a href="Interruptor.html"><code>Interruptor</code></a> strategy used to interrupt tests that exceed their time limit.
-   *
-   * <p>
-   * This trait's implementation of this method returns <a href="ThreadInterruptor$.html"><code>ThreadInterruptor</code></a>, which invokes <code>interrupt</code>
-   * on the main test thread. Override this method to change the test interruption strategy.
-   * </p>
-   *
-   * @return a <code>ThreadInterruptor</code>
-   */
-  val defaultTestInterruptor: Interruptor = ThreadInterruptor
 
 }
