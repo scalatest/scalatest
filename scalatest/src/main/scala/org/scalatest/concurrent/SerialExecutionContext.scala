@@ -15,6 +15,7 @@
  */
 package org.scalatest.concurrent
 
+import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -42,7 +43,7 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
     // If this is a thread different than the main test thread, we'll
     // notify the main test thread in case it is sitting in the wait
     // in runNow.
-    synchronized { notifyAll() }
+    // synchronized { notifyAll() }
   }
 
   def reportFailure(t: Throwable): Unit =
@@ -102,12 +103,20 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
  
       And runNow will return, as this test has finished running.
    */
-  def runNow(future: Future[Outcome]): Unit = {
-    while (!future.isCompleted) {
-      while (queue.peek != null)
-        queue.poll().run() // What to do about exceptions here?
-      if (!future.isCompleted)
-        synchronized { wait() }
+  /*def runNow(future: Future[Outcome]): Unit = {
+    while (!future.isCompleted || queue.size > 0)
+      queue.take().run() // What to do about exceptions here?
+  }*/
+
+
+  def runNow(future: Future[Outcome]): Unit = recRunNow(future)
+
+  @tailrec
+  private def recRunNow(future: Future[Outcome]): Unit = // Could take a scala.concurrent.duration.Deadline to be used for poll(timeout, timeUnit)
+    if (future.isCompleted && queue.size == 0) ()
+    else {
+      val task = queue.take() // Note that this will block if queue is empty, alternatively we can use poll(timeout, timeUnit) to deal with deadlines
+      task.run()  // TODO: this should abort the suite, let's write a test for that
+      recRunNow(future)
     }
-  }
 }
