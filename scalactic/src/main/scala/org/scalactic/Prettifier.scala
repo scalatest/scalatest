@@ -128,6 +128,11 @@ trait Prettifier extends (Any => String)
  */
 object Prettifier {
 
+  def apply(f: Any => String): Prettifier =
+    new Prettifier {
+      def apply(o: Any): String = f(o)
+    }
+
   /**
    * A default <code>Prettifier</code>. 
    *

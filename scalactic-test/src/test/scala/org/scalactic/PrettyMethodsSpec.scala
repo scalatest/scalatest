@@ -41,6 +41,24 @@ class PrettyMethodsSpec extends FunSpec with Matchers {
         List("1", "2", "3").pretty should be ("List(\"1\", \"2\", \"3\")")
       }
     }
+    it("should allow .pretty output to be customized by overriding prettifier") {
+      object MyPrettyMethods extends PrettyMethods {
+        override def prettifier =
+          Prettifier {
+            case s: String => "!!! " + s + " !!!"
+            case other => super.prettifier(other)
+          }
+      }
+      import MyPrettyMethods._
+      'c'.pretty shouldBe "'c'"
+      "hello".pretty shouldBe "!!! hello !!!"
+    }
+    it("should allow .pretty output to be customized by defining a typeclass") {
+      import PrettyMethods._
+      'c'.pretty shouldBe "'c'"
+      implicit val prettyString: Pretty[String] = Pretty((s: String) => "!!! " + s + " !!!")
+      "hello".pretty shouldBe "!!! hello !!!"
+    }
 /* This proved that I got rid of the Any => String conversion, but by not compiling. 
     it("should not simply convert Any to String") {
       new ConversionCheckedTripleEquals {
