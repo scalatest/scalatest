@@ -19,7 +19,9 @@ package org.scalactic
  * Provides an implicit conversion that enables <code>pretty</code> to be invoked on any
  * object, to transform that object into a <code>String</code> representation.
  */
-trait PrettyMethods {
+trait PrettyMethods extends DefaultPrettifier {
+
+  override def prettifier: Prettifier = super.prettifier
 
   /**
    * Wraps a <code>Prettifier</code>.
@@ -42,7 +44,27 @@ trait PrettyMethods {
    * use a different <code>Prettifier</code>.
    * </p>
    */
-  implicit val prettifierConfig = PrettifierConfig(Prettifier.default)
+  // implicit val prettifierConfig = PrettifierConfig(Prettifier.default)
+
+/*
+  implicit def defaultPretty[T]: Pretty[T] =
+    new Pretty[T] {
+      def apply(o: T): String = prettifier(o)
+    }
+
+  implicit def prettyUgly[E, C[_]]: Pretty[C[E]] =
+    new Pretty[C[E]] {
+      def apply(o: C[E]): String = prettifier(o)
+    }
+*/
+  /* Interesting. Can't use just one implicit here because it doesn't
+     work on higher kinds. Any is all-kinded, but T is not. 
+     So there's my first use case for an implicit with a default.
+  */
+  def defaultPretty[T]: Pretty[T] =
+    new Pretty[T] {
+      def apply(o: T): String = prettifier(o)
+    }
 
   /**
    * Implicit class that adds a <code>pretty</code> method to any object.
@@ -57,12 +79,12 @@ trait PrettyMethods {
    * @param prettifierConfig an implicit <code>PrettifierConfig</code> whose <code>Prettifier</code> will be used
    *     to prettify the passed object <code>o</code>
    */
-  implicit class Prettyizer(o: Any)(implicit prettifierConfig: PrettifierConfig) {
+  implicit class Prettyizer[T](o: T)(implicit prettyOfT: Pretty[T] = defaultPretty[T]) {
 
     /**
      * Returns a pretty <code>String</code> representation of the object <code>o</code>
      */
-    def pretty: String = prettifierConfig.prettifier(o)
+    def pretty: String = prettyOfT(o)
   }
 }
 
