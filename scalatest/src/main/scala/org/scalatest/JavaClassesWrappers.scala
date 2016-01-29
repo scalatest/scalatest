@@ -34,6 +34,17 @@ private[scalatest] class ConcurrentLinkedQueue[T] extends Serializable {
   def asScala: GenTraversable[T] = queue.asScala
 }
 
+private[scalatest] class LinkedBlockingQueue[T] extends Serializable {
+
+  private final val queue = new java.util.concurrent.LinkedBlockingQueue[T]
+
+  def put(ele: T): Unit = queue.put(ele)
+
+  def take(): T = queue.take
+
+  def size: Int = queue.size
+}
+
 private[scalatest] class CountDownLatch(count: Int) {
 
   @transient private final val latch = new java.util.concurrent.CountDownLatch(count)

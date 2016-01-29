@@ -19,7 +19,6 @@ import scala.annotation.tailrec
 import scala.concurrent.{ExecutionContext, Future}
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.LinkedBlockingQueue
 import org.scalatest.Outcome
 
 /*
@@ -36,7 +35,7 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
   A LinkedBlockingQueue is thread-safe, so don't need to synchronize
   its access.
   */
-  private final val queue = new LinkedBlockingQueue[Runnable]
+  private final val queue = new org.scalatest.LinkedBlockingQueue[Runnable]
 
   def execute(runnable: Runnable): Unit = {
     queue.put(runnable)

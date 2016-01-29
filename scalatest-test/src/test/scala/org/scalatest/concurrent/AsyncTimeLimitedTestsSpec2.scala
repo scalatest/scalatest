@@ -95,7 +95,7 @@ class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
           new AsyncFunSuite with AsyncTimeLimitedTests {
             //implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
             val timeLimit = Span(100L, Millis)
-            test("time out failure") { Thread.sleep(500); succeed }
+            test("time out failure") { SleepHelper.sleep(500); succeed }
           }
         val rep = new EventRecordingReporter
         val status = a.run(None, Args(rep))

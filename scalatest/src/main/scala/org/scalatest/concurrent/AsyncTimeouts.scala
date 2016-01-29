@@ -58,13 +58,25 @@ trait AsyncTimeouts[T] {
           t match {
             case Success(r) =>
               task.cancel()
-              if (!promise.isCompleted)
-                promise.success(r)
+              if (!promise.isCompleted) {
+                val endTime = scala.compat.Platform.currentTime
+                val duration = endTime - startTime
+                if (duration > limit)
+                  promise.complete(Success(failure(new TestFailedDueToTimeoutException(sde => Some(Resources.testTimeLimitExceeded(timeLimit.prettyString)), None, getStackDepthFun("AsyncTimeouts.scala", "failingAfter"), None, timeLimit))))
+                else
+                  promise.success(r)
+              }
 
             case Failure(e) =>
               task.cancel()
-              if (!promise.isCompleted)
-                promise.failure(e)
+              if (!promise.isCompleted) {
+                val endTime = scala.compat.Platform.currentTime
+                val duration = endTime - startTime
+                if (duration > limit)
+                  promise.complete(Success(failure(new TestFailedDueToTimeoutException(sde => Some(Resources.testTimeLimitExceeded(timeLimit.prettyString)), Some(e), getStackDepthFun("AsyncTimeouts.scala", "failingAfter"), None, timeLimit))))
+                else
+                  promise.failure(e)
+              }
           }
         }
         timer.schedule(task, delay)
