@@ -18,8 +18,7 @@ package org.scalatest.concurrent
 import org.scalatest.time.Span
 import org.scalatest._
 
-import scala.concurrent.{Future, Promise}
-import scala.util.{Failure, Success}
+import scala.concurrent.Future
 
 trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts[Outcome] { this: AsyncSuite =>
 
