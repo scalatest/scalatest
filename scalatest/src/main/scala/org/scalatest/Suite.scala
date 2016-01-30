@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import java.lang.annotation._
-import java.lang.reflect.{InvocationTargetException, Method, Modifier}
+import java.lang.annotation.AnnotationFormatError
+import java.lang.reflect.{Method, Modifier}
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
@@ -24,33 +24,20 @@ import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
 import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
-import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.getSimpleNameOfAnObjectsClass
 import Suite.takesInformer
-import Suite.handleFailedTest
 import Suite.isTestMethodGoodies
-import Suite.testMethodTakesAnInformer
 import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import Suite.getEscapedIndentedTextForTest
-import Suite.autoTagClassAnnotations
 import org.scalatest.events._
-import Suite.getMessageForException
-import Suite.reportTestStarting
 import Suite.reportTestIgnored
-import Suite.reportTestSucceeded
-import Suite.reportTestPending
-import Suite.reportTestCanceled
-import Suite.createInfoProvided
-import Suite.createMarkupProvided
 import Suite.wrapReporterIfNecessary
-import scala.reflect.NameTransformer
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions._
+import StackDepthExceptionHelper.getStackDepthFun
 import collection.mutable.ListBuffer
 import collection.GenTraversable
 import annotation.tailrec
-import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
 import scala.util.control.NonFatal
 import Suite.getTopOfMethod
@@ -60,8 +47,6 @@ import org.scalactic.Requirements._
 import tools.SuiteDiscoveryHelper
 import org.scalatest.tools.StandardOutReporter
 import Suite.getTopOfClass
-import Suite.getSuiteRunTestGoodies
-import Suite.getMethodForTestName
 // SKIP-SCALATESTJS-END
 
 /*
@@ -547,7 +532,7 @@ import Suite.getMethodForTestName
  */
 trait Suite extends Assertions with Serializable { thisSuite =>
 
-  import Suite.TestMethodPrefix, Suite.InformerInParens, Suite.IgnoreAnnotation
+  import Suite.InformerInParens
 
   /**
   * An immutable <code>IndexedSeq</code> of this <code>Suite</code> object's nested <code>Suite</code>s. If this <code>Suite</code> contains no nested <code>Suite</code>s,
@@ -894,25 +879,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    */
   def tags: Map[String, Set[String]] = Map.empty
-
-  // SKIP-SCALATESTJS-START
-  private[scalatest] def yeOldeTags: Map[String, Set[String]] = {
-    val testNameSet = testNames
-      
-    val testTags = Map() ++ 
-      (for (testName <- testNameSet; if !getTags(testName).isEmpty)
-        yield testName -> (Set() ++ getTags(testName)))
-
-    autoTagClassAnnotations(testTags, this)
-  }
-
-  private def getTags(testName: String) =
-    for {
-      a <- getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
-  // SKIP-SCALATESTJS-END
 
   /**
    * A <code>Set</code> of test names. If this <code>Suite</code> contains no tests, this method returns an empty <code>Set</code>.
@@ -1415,36 +1381,19 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val tags = Set.empty[String]
     }
   }
-  // SKIP-SCALATESTJS-START
-  private[scalatest] def yeOldeTestDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
-    val suiteTags = for { 
-      a <- this.getClass.getAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
-    val testTags: Set[String] = 
-      try {
-        getTags(testName).toSet
-      }
-      catch {
-        case e: IllegalArgumentException => Set.empty[String]
-      }
-    new TestData {
-      val configMap = theConfigMap 
-      val name = testName
-      val scopes = Vector.empty
-      val text = testName
-      val tags = Set.empty ++ suiteTags ++ testTags
-    }
-  }
-  // SKIP-SCALATESTJS-END
 }
 
 private[scalatest] object Suite {
 
-  val TestMethodPrefix = "test"
   val InformerInParens = "(Informer)"
-  val IgnoreAnnotation = "org.scalatest.Ignore"
+  val FixtureAndInformerInParens = "(FixtureParam, Informer)"
+  val FixtureInParens = "(FixtureParam)"
+  val IgnoreTagName = "org.scalatest.Ignore"
+
+  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
+  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
+
+  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 
   def getSimpleNameOfAnObjectsClass(o: AnyRef) = stripDollars(parseSimpleName(o.getClass.getName))
 
@@ -2107,21 +2056,21 @@ used for test events like succeeded/failed, etc.
         leading.mkString(", ") + ", " + Resources.leftCommaAndRight(trailing(0), trailing(1))
     }
   }
-  
+
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
     // SKIP-SCALATESTJS-START
-    val suiteTags = for { 
+    val suiteTags = for {
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
-    
-    val autoTestTags = 
+
+    val autoTestTags =
       if (suiteTags.size > 0)
         Map() ++ theSuite.testNames.map(tn => (tn, suiteTags.toSet))
       else
         Map.empty[String, Set[String]]
-    
+
     mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY tags
@@ -2181,9 +2130,6 @@ used for test events like succeeded/failed, etc.
     case cr: CatchReporter => cr
     case _ => theSuite.createCatchReporter(reporter)
   }
-
-  val FixtureAndInformerInParens = "(FixtureParam, Informer)"
-  val FixtureInParens = "(FixtureParam)"
 
   def testMethodTakesAFixtureAndInformer(testName: String) = testName.endsWith(FixtureAndInformerInParens)
   def testMethodTakesAFixture(testName: String) = testName.endsWith(FixtureInParens)
@@ -2247,17 +2193,10 @@ used for test events like succeeded/failed, etc.
    else simpleName + theSuite.nestedSuites.mkString("(", ", ", ")")
   }
 
-  val IgnoreTagName = "org.scalatest.Ignore"
-
   private[scalatest] def mergeMap[A, B](ms: List[Map[A, B]])(f: (B, B) => B): Map[A, B] =
     (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
       a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
     }
-
-  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
-  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
-
-  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 }
 
 
