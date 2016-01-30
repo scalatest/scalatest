@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2015 Artima, Inc.
+ * Copyright 2001-2016 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,20 +15,27 @@
  */
 package org.scalatest.concurrent
 
-private[scalatest] object SleepHelper {
+import org.scalatest.time.Span
+import org.scalatest._
 
-  def sleep(millis: Long, nanos: Int): Unit = {
-    sleep(millis)
-  }
+import scala.concurrent.Future
 
-  def sleep(millis: Long): Unit = {
-    val startTime = scala.compat.Platform.currentTime
-    val buffer = new StringBuilder
-    while ((scala.compat.Platform.currentTime - startTime) < millis) {
-      buffer.clear()
-      for (i <- 1 to 100)
-        buffer.append(i.toString)
+trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts[Outcome] { this: AsyncSuite =>
+
+  abstract override def withFixture(test: NoArgAsyncTest): Future[Outcome] = {
+
+    failingAfter(timeLimit) {
+      super.withFixture(test)
     }
+
   }
+
+  protected def failure(e: Throwable): Outcome = Exceptional(e)
+
+  /**
+   * The time limit, in milliseconds, in which each test in a <code>Suite</code> that mixes in
+   * <code>TimeLimitedTests</code> must complete.
+   */
+  def timeLimit: Span
 
 }

@@ -189,11 +189,8 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    * returned by tests into <code>Future[Outcome]</code> values, and can be used within the async tests themselves,
    * for example, when mapping assertions onto futures.
    */
-  // SKIP-SCALATESTJS-START
   private final val serialExecutionContext: ExecutionContext = new concurrent.SerialExecutionContext
   implicit def executionContext: ExecutionContext = serialExecutionContext
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit def executionContext: ExecutionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
   private def anAsyncExceptionThatShouldCauseAnAbort(ex: Throwable): Boolean =
     ex match {
