@@ -610,6 +610,12 @@ class Framework extends SbtFramework {
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
       }
     }
+
+    protected def printPossiblyInColorImmediately(fragment: Fragment) {
+      loggers.foreach { logger =>
+        println(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
+      }
+    }
     
     override def apply(event: Event) {
       event match {
@@ -619,18 +625,33 @@ class Framework extends SbtFramework {
           }
         case _ =>
       }
-      fragmentsForEvent(
-        event,
-        presentUnformatted,
-        presentAllDurations,
-        presentShortStackTraces,
-        presentFullStackTraces,
-        presentReminder,
-        presentReminderWithShortStackTraces,
-        presentReminderWithFullStackTraces,
-        presentReminderWithoutCanceledTests,
-        reminderEventsBuf
-      ) foreach printPossiblyInColor
+
+      if (event.isInstanceOf[NotificationEvent])
+        fragmentsForEvent(
+          event,
+          presentUnformatted,
+          presentAllDurations,
+          presentShortStackTraces,
+          presentFullStackTraces,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests,
+          reminderEventsBuf
+        ) foreach printPossiblyInColorImmediately
+      else
+        fragmentsForEvent(
+          event,
+          presentUnformatted,
+          presentAllDurations,
+          presentShortStackTraces,
+          presentFullStackTraces,
+          presentReminder,
+          presentReminderWithShortStackTraces,
+          presentReminderWithFullStackTraces,
+          presentReminderWithoutCanceledTests,
+          reminderEventsBuf
+        ) foreach printPossiblyInColor
     }
 
     def dispose() = ()
