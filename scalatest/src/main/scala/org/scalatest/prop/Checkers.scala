@@ -244,7 +244,7 @@ trait Checkers extends Configuration {
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
     val params = getParams(configParams, config)
-    asserting.check(Prop.forAll(f)(p, a1, s1, pp1), params, "Checkers.scala", "check")
+    asserting.check(Prop.forAll(f)(p, a1, s1, pp1), params)
   }
 
   /**
@@ -262,7 +262,7 @@ trait Checkers extends Configuration {
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
     val params = getParams(configParams, config)
-    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), params, "Checkers.scala", "check")
+    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), params)
   }
 
   /**
@@ -281,7 +281,7 @@ trait Checkers extends Configuration {
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
     val params = getParams(configParams, config)
-    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), params, "Checkers.scala", "check")
+    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), params)
   }
 
   /**
@@ -301,7 +301,7 @@ trait Checkers extends Configuration {
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
     val params = getParams(configParams, config)
-    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), params, "Checkers.scala", "check")
+    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), params)
   }
 
   /**
@@ -322,7 +322,7 @@ trait Checkers extends Configuration {
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
     val params = getParams(configParams, config)
-    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), params, "Checkers.scala", "check")
+    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), params)
   }
 
   /**
@@ -344,7 +344,7 @@ trait Checkers extends Configuration {
       asserting: CheckerAsserting[ASSERTION]
     ): asserting.Result = {
     val params = getParams(configParams, config)
-    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), params, "Checkers.scala", "check")
+    asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), params)
   }
 
   /**
@@ -355,7 +355,7 @@ trait Checkers extends Configuration {
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
   def check[ASSERTION](p: Prop, prms: Test.Parameters)(implicit asserting: CheckerAsserting[ASSERTION]): asserting.Result = {
-    asserting.check(p, prms, "Checkers.scala", "check")
+    asserting.check(p, prms)
   }
 
   /**
@@ -366,7 +366,7 @@ trait Checkers extends Configuration {
    */
   def check[ASSERTION](p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable, asserting: CheckerAsserting[ASSERTION]): asserting.Result = {
     val params = getParams(configParams, config)
-    asserting.check(p, params, "Checkers.scala", "check")
+    asserting.check(p, params)
   }
 }
 
