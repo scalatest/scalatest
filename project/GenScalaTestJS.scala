@@ -257,7 +257,8 @@ object GenScalaTestJS {
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
-        "WaitersSpec.scala",    // skipped because AsyncAssertions not supported.
+        "WaitersSpec.scala",    // skipped because Waiters not supported.
+        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
         "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
         "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
         "ConductorSuite.scala",   // skipped because Conductors not supported.

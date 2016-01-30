@@ -26,6 +26,7 @@ import org.scalatest.tagobjects.Retryable
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
 
+// This is the test that makes sure the deprecated name still works during the deprecation period.
 
 class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFixture with
 OptionValues with AsyncAssertions {

@@ -20,6 +20,7 @@ package org.scalatest
  */
 package object concurrent {
 
+  // SKIP-SCALATESTJS-START
   /**
    * <strong>The name <code>org.scalatest.concurrent.AsyncAssertions</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
    * its new name, <code>org.scalatest.concurrent.Waiters</code>, instead.</strong>
@@ -43,5 +44,5 @@ package object concurrent {
    */
   @deprecated("Please use org.scalatest.concurrent.Waiters instead")
   val AsyncAssertions = Waiters
-
+  // SKIP-SCALATESTJS-END
 }
