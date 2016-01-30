@@ -27,8 +27,8 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits._
 
 
-class AsyncAssertionsSpec extends fixture.FunSpec with Matchers with ConductorFixture with
-    OptionValues with AsyncAssertions {
+class WaitersSpec extends fixture.FunSpec with Matchers with ConductorFixture with
+    OptionValues with Waiters {
 
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))
