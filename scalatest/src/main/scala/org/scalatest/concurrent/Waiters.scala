@@ -27,7 +27,7 @@ import PatienceConfiguration._
  * that are invoked asynchronously.
  *
  * <p>
- * Trait <code>AsyncAssertions</code> provides a <code>Waiter</code> class that you can use to orchestrate the inter-thread
+ * Trait <code>Waiters</code> provides a <code>Waiter</code> class that you can use to orchestrate the inter-thread
  * communication required to perform assertions outside the main test thread, and a means to configure it.
  * </p>
  *
@@ -70,7 +70,7 @@ import PatienceConfiguration._
  * <p>
  * <code>Waiter</code> contains four overloaded forms of <code>await</code>, two of which take an implicit
  * <code>PatienceConfig</code> parameter. To change the default timeout configuration, override or hide
- * (if you imported the members of <code>AsyncAssertions</code> companion object instead of mixing in the
+ * (if you imported the members of <code>Waiters</code> companion object instead of mixing in the
  * trait) <code>patienceConfig</code> with a new one that returns your desired configuration.
  * </p>
  *
@@ -111,10 +111,10 @@ import PatienceConfiguration._
  *
  * <pre class="stHighlight">
  * import org.scalatest._
- * import concurrent.AsyncAssertions
+ * import concurrent.Waiters
  * import scala.actors.Actor
  *
- * class ExampleSuite extends FunSuite with Matchers with AsyncAssertions {
+ * class ExampleSuite extends FunSuite with Matchers with Waiters {
  *
  *   case class Message(text: String)
  *
@@ -159,7 +159,7 @@ import PatienceConfiguration._
  *
  * @author Bill Venners
  */
-trait AsyncAssertions extends PatienceConfiguration {
+trait Waiters extends PatienceConfiguration {
 
   /**
    * A configuration parameter that specifies the number of dismissals to wait for before returning normally
@@ -222,7 +222,7 @@ trait AsyncAssertions extends PatienceConfiguration {
    * <p>
    * <code>Waiter</code> contains four overloaded forms of <code>await</code>, two of which take an implicit
    * <code>PatienceConfig</code> parameter. To change the default timeout configuration, override or hide
-   * (if you imported the members of <code>AsyncAssertions</code> companion object instead of mixing in the
+   * (if you imported the members of <code>Waiters</code> companion object instead of mixing in the
    * trait) <code>patienceConfig</code> with a new one that returns your desired configuration.
    * </p>
    *
@@ -256,10 +256,10 @@ trait AsyncAssertions extends PatienceConfiguration {
    *
    * <pre class="stHighlight">
    * import org.scalatest._
-   * import concurrent.AsyncAssertions
+   * import concurrent.Waiters
    * import scala.actors.Actor
    *
-   * class ExampleSuite extends FunSuite with Matchers with AsyncAssertions {
+   * class ExampleSuite extends FunSuite with Matchers with Waiters {
    *
    *   case class Message(text: String)
    *
@@ -560,9 +560,9 @@ trait AsyncAssertions extends PatienceConfiguration {
 }
 
 /**
- * Companion object that facilitates the importing of <code>AsyncAssertions</code> members as
- * an alternative to mixing in the trait. One use case is to import <code>AsyncAssertions</code>'s members so you can use
+ * Companion object that facilitates the importing of <code>Waiters</code> members as
+ * an alternative to mixing in the trait. One use case is to import <code>Waiters</code>'s members so you can use
  * them in the Scala interpreter.
  */
-object AsyncAssertions extends AsyncAssertions
+object Waiters extends Waiters
 

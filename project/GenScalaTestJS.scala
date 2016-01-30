@@ -189,7 +189,7 @@ object GenScalaTestJS {
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
-        "AsyncAssertions.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
+        "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
         "Conductors.scala",             // skipped because depends on PimpedReadWriteLock
         "ConductorFixture.scala",       // skipped because depends on Conductors
         "ConductorMethods.scala",       // skipped because depends on Conductors
@@ -257,7 +257,7 @@ object GenScalaTestJS {
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
-        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions not supported.
+        "WaitersSpec.scala",    // skipped because AsyncAssertions not supported.
         "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
         "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
         "ConductorSuite.scala",   // skipped because Conductors not supported.
