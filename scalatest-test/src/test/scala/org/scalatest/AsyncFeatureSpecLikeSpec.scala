@@ -74,7 +74,6 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
-      //Thread.sleep(3000)
       assert(rep.testStartingEventsReceived.length == 4)
       assert(rep.testSucceededEventsReceived.length == 1)
       assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
@@ -599,7 +598,7 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
     }
 
     it("should send a NoteProvided event for a note in feature body") {
-      class MySuite extends AsyncFeatureSpecLike  {
+      class MySuite extends AsyncFeatureSpecLike {
 
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
@@ -608,12 +607,15 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
             "hi there"
           )
 
-          scenario("test 1") { succeed }
+          scenario("test 1") {
+            succeed
+          }
         }
       }
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
@@ -622,6 +624,41 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       assert(noteList.size == 1)
       assert(noteList(0).message == "hi there")
+    }
+
+    it("should report as failed test when non-fatal exception is thrown from scenario body") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        scenario("test 1") {
+          succeed
+        }
+
+        scenario("test 2") {
+          throw new IllegalStateException("oops!")
+        }
+
+        scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+      assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+      assert(rep.testSucceededEventsReceived.length == 2)
+      assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 3")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "Scenario: test 2")
     }
 
     it("should send a NoteProvided event for a note in scenario body") {
@@ -709,6 +746,7 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       val suite = new MySuite
       val reporter = new EventRecordingReporter
       val status = suite.run(None, Args(reporter))
+
       // SKIP-SCALATESTJS-START
       status.waitUntilCompleted()
       // SKIP-SCALATESTJS-END
@@ -717,6 +755,43 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
 
       assert(alertList.size == 1)
       assert(alertList(0).message == "hi there")
+    }
+
+    it("should report as failed test when non-fatal exception is thrown from Future returned by scenario body") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        scenario("test 1") {
+          succeed
+        }
+
+        scenario("test 2") {
+          Future {
+            throw new IllegalStateException("oops!")
+          }
+        }
+
+        scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      assert(rep.testStartingEventsReceived.length == 3)
+      assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+      assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+      assert(rep.testSucceededEventsReceived.length == 2)
+      assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+      assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 3")
+      assert(rep.testFailedEventsReceived.length == 1)
+      assert(rep.testFailedEventsReceived(0).testName == "Scenario: test 2")
     }
 
     it("should send an AlertProvided event for an alert in scenario body") {
@@ -877,6 +952,64 @@ class AsyncFeatureSpecLikeSpec extends FunSpec {
       val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
       assert(markupProvided.text == "hi there")
     }
+
+    // SKIP-SCALATESTJS-START
+    it("should propagate fatal exception when thrown from scenario body") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        scenario("test 1") {
+          succeed
+        }
+
+        scenario("test 2") {
+          throw new VirtualMachineError("oops!") {}
+        }
+
+        scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      assertThrows[VirtualMachineError] {
+        val suite = new ExampleSpec
+        suite.run(None, Args(reporter = rep))
+      }
+    }
+
+    it("should propagate fatal exception when thrown from Future returned by scenario body") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+
+        scenario("test 1") {
+          succeed
+        }
+
+        scenario("test 2") {
+          Future {
+            throw new VirtualMachineError("oops!") {}
+          }
+        }
+
+        scenario("test 3") {
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      assertThrows[VirtualMachineError] {
+        val suite = new ExampleSpec
+        suite.run(None, Args(reporter = rep))
+      }
+    }
+    // SKIP-SCALATESTJS-END
 
   }
 

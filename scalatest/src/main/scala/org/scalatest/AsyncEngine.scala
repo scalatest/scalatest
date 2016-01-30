@@ -359,6 +359,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
           sorter.completedTest(testName)
       }
 
+      // SKIP-SCALATESTJS-START
       val shouldBeInformerForThisTest = atomicInformer.getAndSet(oldInformer)
       if (shouldBeInformerForThisTest ne informerForThisTest)
         throw new ConcurrentModificationException(Resources.concurrentInformerMod(theSuite.getClass.getName))
@@ -374,14 +375,14 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       val shouldBeDocumenterForThisTest = atomicDocumenter.getAndSet(oldDocumenter)
       if (shouldBeDocumenterForThisTest ne documenterForThisTest)
         throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
+      // SKIP-SCALATESTJS-END
     }
 
-    // SKIP-SCALATESTJS-START
     executionContext match {
-      case dec: concurrent.SerialExecutionContext => dec.runNow(asyncOutcome.toFutureOutcome)
+      case dec: concurrent.SerialExecutionContext =>
+        dec.runNow(asyncOutcome.toFutureOutcome)
       case _ =>
     }
-    // SKIP-SCALATESTJS-END
 
     asyncOutcome.toStatus
   }
@@ -591,6 +592,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     val status = superRun(testName, args.copy(reporter = report))
 
+    // SKIP-SCALATESTJS-START
     status.whenCompleted { r =>
       val shouldBeInformerForThisSuite = atomicInformer.getAndSet(zombieInformer)
       if (shouldBeInformerForThisSuite ne informerForThisSuite)
@@ -608,6 +610,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       if (shouldBeDocumenterForThisSuite ne documenterForThisSuite)
         throw new ConcurrentModificationException(Resources.concurrentDocumenterMod(theSuite.getClass.getName))
     }
+    // SKIP-SCALATESTJS-END
 
     status
   }
