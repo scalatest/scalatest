@@ -385,8 +385,8 @@ trait FunSpecLike extends SyncSuite with TestRegistration with Informing with No
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 8
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -9
+      //SCALATESTJS-ONLY val stackDepth = 5
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
     def apply(testFun: () => Any /* Assertion */): Unit = {
@@ -394,8 +394,8 @@ trait FunSpecLike extends SyncSuite with TestRegistration with Informing with No
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 8
-      //SCALATESTJS-ONLY val stackDepthAdjustment = -9
+      //SCALATESTJS-ONLY val stackDepth = 5
+      //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
   }

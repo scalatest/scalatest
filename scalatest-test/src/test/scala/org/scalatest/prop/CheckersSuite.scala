@@ -218,7 +218,11 @@ class CheckersSpec extends FunSpec with Checkers {
     expectFileNameLineNumber(ex5, "CheckersSuite.scala", thisLineNumber - 1)
     val ex6 = intercept[GeneratorDrivenPropertyCheckFailedException] { check((a: List[Int], b: List[Int], c: List[Int], d: List[Int], e: List[Int], f: List[Int]) => a.size + b.size + c.size == (a ::: b ::: c ::: d ::: e ::: f).size + 1) }
     expectFileNameLineNumber(ex6, "CheckersSuite.scala", thisLineNumber - 1)
-    
+    val ex7 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1)) }
+    expectFileNameLineNumber(ex7, "CheckersSuite.scala", thisLineNumber - 1)
+    val ex8 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1), new Test.Parameters.Default { override val minSuccessfulTests = 5 }) }
+    expectFileNameLineNumber(ex8, "CheckersSuite.scala", thisLineNumber - 1)
+
     try {
       check((a: List[Int], b: List[Int]) => a.size + b.size == (a ::: b).size + 1)
     }
@@ -226,11 +230,6 @@ class CheckersSpec extends FunSpec with Checkers {
       case ex: GeneratorDrivenPropertyCheckFailedException =>
         expectFileNameLineNumber(ex, "CheckersSuite.scala", thisLineNumber - 4)
     }
-    
-    val ex7 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1)) }
-    expectFileNameLineNumber(ex7, "CheckersSuite.scala", thisLineNumber - 1)
-    val ex8 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1), new Test.Parameters.Default { override val minSuccessfulTests = 5 }) }
-    expectFileNameLineNumber(ex8, "CheckersSuite.scala", thisLineNumber - 1)
   }
 
   //
