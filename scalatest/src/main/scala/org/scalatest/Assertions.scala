@@ -26,6 +26,7 @@ import Assertions.NormalResult
 import org.scalactic.{Prettifier, Bool}
 import exceptions.TestFailedException
 import org.scalactic.Requirements._
+import org.scalactic.DefaultPrettifier
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.
@@ -414,7 +415,7 @@ import org.scalactic.Requirements._
  *
  * @author Bill Venners
  */
-trait Assertions extends TripleEquals {
+trait Assertions extends TripleEquals with DefaultPrettifier {
 
   import language.experimental.macros
 
@@ -1367,6 +1368,9 @@ trait Assertions extends TripleEquals {
    * </p>
    */
   final val succeed: Assertion = Succeeded
+
+  // TODO: Scaladoc
+  override def prettifier: Prettifier = super.prettifier
 }
 
 /**
