@@ -4448,7 +4448,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * the matchers DSL.
    *
    * @author Bill Venners
-   * @author Chee Sengdef allElementsOf
+   * @author Chee Seng
    */
   final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean) {
 
