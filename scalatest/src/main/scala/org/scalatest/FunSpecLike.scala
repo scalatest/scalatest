@@ -386,7 +386,8 @@ trait FunSpecLike extends SyncSuite with TestRegistration with Informing with No
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
       case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => errorStackDepth)
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => stackDepth - 2)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => stackDepth)
       case other: Throwable => throw other
     }
   }

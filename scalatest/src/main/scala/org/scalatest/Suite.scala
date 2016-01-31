@@ -1467,8 +1467,14 @@ private[scalatest] object Suite {
   def formatterForSuiteCompleted(suite: Suite): Option[Formatter] =
       Some(MotionToSuppress)
 
-  def formatterForSuiteAborted(suite: Suite, message: String): Option[Formatter] =
-      Some(IndentedText(message, message, 0))
+  def formatterForSuiteAborted(suite: Suite, message: String): Option[Formatter] = {
+    val actualSuiteName =
+      suite match {
+        case DeferredAbortedSuite(suiteClassName, deferredThrowable) => suiteClassName
+        case _ => suite.getClass.getName
+      }
+    Some(IndentedText(actualSuiteName, message, 0))
+  }
 
 /*
   def simpleNameForTest(testName: String) =

@@ -1625,7 +1625,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]

@@ -388,7 +388,7 @@ trait AsyncFunSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
       case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => errorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => errorStackDepth)
       case other: Throwable => throw other
     }
   }
