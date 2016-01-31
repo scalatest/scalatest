@@ -58,7 +58,7 @@ trait AsyncTimeouts[T] {
           t match {
             case Success(r) =>
               task.cancel()
-              if (!promise.isCompleted) {
+              if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
                 val endTime = scala.compat.Platform.currentTime
                 val duration = endTime - startTime
                 if (duration > limit)
@@ -69,13 +69,13 @@ trait AsyncTimeouts[T] {
 
             case Failure(e) =>
               task.cancel()
-              if (!promise.isCompleted) {
+              if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
                 val endTime = scala.compat.Platform.currentTime
                 val duration = endTime - startTime
                 if (duration > limit)
                   promise.complete(Success(failure(new TestFailedDueToTimeoutException(sde => Some(Resources.testTimeLimitExceeded(timeLimit.prettyString)), Some(e), getStackDepthFun("AsyncTimeouts.scala", "failingAfter"), None, timeLimit))))
                 else
-                  promise.failure(e)
+                  promise.failure(e) // Chee Seng: I wonder if in this case should we use this exception instead of the other one? Not sure.
               }
           }
         }
@@ -84,7 +84,7 @@ trait AsyncTimeouts[T] {
       }
     }
     catch {
-      case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField =>
+      case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => // Chee Seng: how can this happen? Oh, is it when producing the Future?
         Future.successful(failure(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString)))))
 
       case t: Throwable =>
@@ -97,5 +97,4 @@ trait AsyncTimeouts[T] {
           Future.successful(failure(t))
     }
   }
-
 }
