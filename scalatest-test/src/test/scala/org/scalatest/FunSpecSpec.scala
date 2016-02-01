@@ -1455,8 +1455,8 @@ class FunSpecSpec extends FreeSpec with GivenWhenThen {
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))))
 
-      assert(causeThrowable.isInstanceOf[RuntimeException])
-      val cause = causeThrowable.asInstanceOf[RuntimeException]
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
       assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))
     }
 
