@@ -1047,6 +1047,29 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       assert(cause.getMessage == "on purpose")
     }
 
+    "should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope" in {
+      class TestSpec extends PathFunSpec {
+        override def newInstance = new TestSpec
+        describe("a feature") {
+          it("test 1") {}
+          it("test 1") {}
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        val s = new TestSpec
+        s.run(None, Args(SilentReporter))
+      }
+      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 10)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))))
+
+      assert(causeThrowable.isInstanceOf[RuntimeException])
+      val cause = causeThrowable.asInstanceOf[RuntimeException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))
+    }
+
     // SKIP-SCALATESTJS-START
     "should propagate AnnotationFormatError when it is thrown inside scope" in {
       class TestSpec extends FunSpec {
