@@ -91,5 +91,5 @@ trait Informer {
    *
    * @throws NullArgumentException if <code>message</code> or <code>payload</code> reference is <code>null</code>
    */
-  def apply(message: String, payload: Option[Any] = None): Unit
+  def apply(message: String, payload: Option[Any] = None): Provided
 }

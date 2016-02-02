@@ -123,44 +123,48 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   class RegistrationInformer extends Informer {
 
-    def apply(message: String, payload: Option[Any] = None) {
+    def apply(message: String, payload: Option[Any] = None): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
       currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
+      Recorded
     }
   }
 
   class RegistrationNotifier extends Notifier {
 
-    def apply(message: String, payload: Option[Any] = None) {
+    def apply(message: String, payload: Option[Any] = None): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
       currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
+      Recorded
     }
   }
 
   class RegistrationAlerter extends Alerter {
 
-    def apply(message: String, payload: Option[Any] = None) {
+    def apply(message: String, payload: Option[Any] = None): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
       currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
+      Recorded
     }
   }
 
   class RegistrationDocumenter extends Documenter {
-    def apply(message: String) {
+    def apply(message: String): Provided = {
       requireNonNull(message)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
       currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, getLineInFile(Thread.currentThread().getStackTrace, 2))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
+      Recorded
     }
   }
 
@@ -177,45 +181,49 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   final val zombieInformer =
     new Informer {
-      def apply(message: String, payload: Option[Any] = None) {
+      def apply(message: String, payload: Option[Any] = None): Provided = {
         requireNonNull(message, payload)
         println(Resources.infoProvided(message))
         payload match {
           case Some(p) => println(Resources.payloadToString(payload.get.toString))
           case _ => 
         }
+        Reported
       }
     }
 
   final val zombieNotifier =
     new Notifier {
-      def apply(message: String, payload: Option[Any] = None) {
+      def apply(message: String, payload: Option[Any] = None): Provided = {
         requireNonNull(message, payload)
         println(Resources.noteProvided(message))
         payload match {
           case Some(p) => println(Resources.payloadToString(payload.get.toString))
           case _ => 
         }
+        Reported
       }
     }
 
   final val zombieAlerter =
     new Alerter {
-      def apply(message: String, payload: Option[Any] = None) {
+      def apply(message: String, payload: Option[Any] = None): Provided = {
         requireNonNull(message, payload)
         println(Resources.alertProvided(message))
         payload match {
           case Some(p) => println(Resources.payloadToString(payload.get.toString))
           case _ => 
         }
+        Reported
       }
     }
 
   final val zombieDocumenter =
     new Documenter {
-      def apply(message: String) {
+      def apply(message: String): Provided = {
         requireNonNull(message)
         println(Resources.markupProvided(message))
+        Reported
       }
     }
 
@@ -261,6 +269,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       ConcurrentNotifier(
         (message, payload, isConstructingThread, location) => {
           reportNoteProvided(theSuite, report, tracker, Some(testName), message, payload, 1, location, isConstructingThread)
+          Reported
         }
       )
       
@@ -268,6 +277,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       ConcurrentAlerter(
         (message, payload, isConstructingThread, location) => {
           reportAlertProvided(theSuite, report, tracker, Some(testName), message, payload, 1, location, isConstructingThread)
+          Reported
         }
       )
 
@@ -483,6 +493,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       ConcurrentInformer(
         (message, payload, isConstructingThread, location) => {
           reportInfoProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          Reported
         }
       )
 
@@ -492,6 +503,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       ConcurrentNotifier(
         (message, payload, isConstructingThread, location) => {
           reportNoteProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          Reported
         }
       )
 
@@ -501,6 +513,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       ConcurrentAlerter(
         (message, payload, isConstructingThread, location) => {
           reportAlertProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          Reported
         }
       )
 
@@ -510,6 +523,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       ConcurrentDocumenter(
         (message, payload, isConstructingThread, location) => {
           reportMarkupProvided(theSuite, report, tracker, None, message, 1, location, isConstructingThread)
+          Reported
         }
       )
 
@@ -1049,32 +1063,40 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
 
     val informerForThisSuite =
       ConcurrentInformer(
-        (message, payload, isConstructingThread, location) =>
+        (message, payload, isConstructingThread, location) => {
           reportInfoProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          Reported
+        }
       )
 
     atomicInformer.set(informerForThisSuite)
 
     val updaterForThisSuite =
       ConcurrentNotifier(
-        (message, payload, isConstructingThread, location) =>
+        (message, payload, isConstructingThread, location) => {
           reportNoteProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          Reported
+        }
       )
 
     atomicNotifier.set(updaterForThisSuite)
 
     val alerterForThisSuite =
       ConcurrentAlerter(
-        (message, payload, isConstructingThread, location) =>
+        (message, payload, isConstructingThread, location) => {
           reportAlertProvided(theSuite, report, tracker, None, message, payload, 1, location, isConstructingThread)
+          Reported
+        }
       )
 
     atomicAlerter.set(alerterForThisSuite)
 
     val documenterForThisSuite =
       ConcurrentDocumenter(
-        (message, payload, isConstructingThread, location) =>
+        (message, payload, isConstructingThread, location) => {
           reportMarkupProvided(theSuite, report, tracker, None, message, 1, location, isConstructingThread)
+          Reported
+        }
       )
 
     atomicDocumenter.set(documenterForThisSuite)

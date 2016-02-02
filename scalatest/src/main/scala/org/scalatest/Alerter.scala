@@ -39,5 +39,5 @@ trait Alerter {
   /**
    * Send an alert message via an <code>AlertProvided</code> event to the reporter.
    */
-  def apply(message: String, payload: Option[Any] = None): Unit
+  def apply(message: String, payload: Option[Any] = None): Provided
 }
