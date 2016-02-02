@@ -22,7 +22,7 @@ sealed trait Provided
 
 object Provided {
   import scala.language.implicitConversions
-  // implicit def convertProvidedToAssertion(provided: Provided): Assertion = Succeeded
+  implicit def convertProvidedToAssertion(provided: Provided): Assertion = Succeeded
   implicit def convertProvidedToFutureAssertion(provided: Provided): Future[Assertion] = Future.successful(Succeeded)
 }
 
