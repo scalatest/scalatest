@@ -725,7 +725,7 @@ class AsyncFlatSpecSpec extends FunSpec {
       assert(markupProvided.text == "hi there")
     }
 
-    it("should generate a DuplicateTestNameException is thrown inside scope") {
+    it("should generate a DuplicateTestNameException is detected") {
       class TestSpec extends AsyncFlatSpec {
         behavior of "a feature"
         it should "test 1" in { succeed }

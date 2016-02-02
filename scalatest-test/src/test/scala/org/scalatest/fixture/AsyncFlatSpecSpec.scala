@@ -813,7 +813,7 @@ class AsyncFlatSpecSpec extends org.scalatest.FunSpec {
       assert(markupProvided.text == "hi there")
     }
 
-    it("should generate a DuplicateTestNameException is thrown inside scope") {
+    it("should generate a DuplicateTestNameException when duplicate test name is detected") {
       class TestSpec extends AsyncFlatSpec {
         type FixtureParam = String
         def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = test("testing")

@@ -1610,7 +1610,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
 
-    it("should generate a DuplicateTestNameException is thrown inside scope") {
+    it("should generate a DuplicateTestNameException when duplicate test name is detected") {
       class TestSpec extends FlatSpec {
         behavior of "a feature"
         it should "test 1" in {}

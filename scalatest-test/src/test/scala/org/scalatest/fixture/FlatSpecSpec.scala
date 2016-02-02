@@ -1928,7 +1928,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
 
-    it("should generate a DuplicateTestNameException is thrown inside scope") {
+    it("should generate a DuplicateTestNameException is detected") {
       class TestSpec extends FlatSpec {
         type FixtureParam = String
         def withFixture(test: OneArgTest): Outcome = { test("hi") }

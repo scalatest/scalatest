@@ -1482,6 +1482,32 @@ class FunSuiteSpec extends FunSpec {
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("An ignore clause may not appear inside a test clause."))
     }
+
+    it("should generate a DuplicateTestNameException when duplicate test name is detected") {
+      class TestSpec extends FunSuite {
+        test("test 1") {}
+        test("test 1") {}
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("FunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
+
+    it("should generate a DuplicateTestNameException when duplicate test name is detected using ignore") {
+      class TestSpec extends FunSuite {
+        test("test 1") {}
+        ignore("test 1") {}
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("FunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
   }
 }
 

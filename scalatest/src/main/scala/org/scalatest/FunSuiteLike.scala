@@ -92,7 +92,7 @@ trait FunSuiteLike extends SyncSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */) {
@@ -100,7 +100,7 @@ trait FunSuiteLike extends SyncSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FunSuiteLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -123,8 +123,8 @@ trait FunSuiteLike extends SyncSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(testName, Transformer(testFun _), Resources.testCannotAppearInsideAnotherTest, "FunSuite.scala", "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+    engine.registerTest(testName, Transformer(testFun _), Resources.testCannotAppearInsideAnotherTest, "FunSuiteLike.scala", "test", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
   /**
@@ -148,8 +148,8 @@ trait FunSuiteLike extends SyncSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideATest, "FunSuite.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -7
+    engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideATest, "FunSuiteLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
