@@ -2704,6 +2704,27 @@ class WordSpecSpec extends FunSpec with GivenWhenThen {
           assert(trce.getMessage === "A they clause must only appear after a top level subject clause.")
         }
 
+        it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
+          class TestSpec extends WordSpec {
+            "a feature" when {
+              "test 1" in {}
+              "test 1" in {}
+            }
+          }
+          val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+          assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
+          assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+          assert(e.cause.isDefined)
+          val causeThrowable = e.cause.get
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))))
+
+          assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+          val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+          assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))
+        }
+
         /*it("should generate NotAllowedException wrapping a TestFailedException when assert fails in should scope") {
           class TestSpec extends WordSpec {
             "a feature" should {

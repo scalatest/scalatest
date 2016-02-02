@@ -176,6 +176,8 @@ trait WordSpecLike extends SyncSuite with TestRegistration with ShouldVerb with 
         //SCALATESTJS-ONLY case other => 11
       }
 
+    val duplicateErrorStackDepth = 2
+
     def registrationClosedMessageFun: String =
       verb match {
         case "should" => Resources.shouldCannotAppearInsideAnIn
@@ -186,14 +188,14 @@ trait WordSpecLike extends SyncSuite with TestRegistration with ShouldVerb with 
         case "can" => Resources.canCannotAppearInsideAnIn
       }
 
-    def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String): String =
+    def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String, errorMessage: String): String =
       verb match {
-        case "when" => FailureMessages.exceptionWasThrownInWhenClause(className, description)
-        case "which" => FailureMessages.exceptionWasThrownInWhichClause(className, description)
-        case "that" => FailureMessages.exceptionWasThrownInThatClause(className, description)
-        case "should" => FailureMessages.exceptionWasThrownInShouldClause(className, description)
-        case "must" => FailureMessages.exceptionWasThrownInMustClause(className, description)
-        case "can" => FailureMessages.exceptionWasThrownInCanClause(className, description)
+        case "when" => FailureMessages.exceptionWasThrownInWhenClause(className, description, errorMessage)
+        case "which" => FailureMessages.exceptionWasThrownInWhichClause(className, description, errorMessage)
+        case "that" => FailureMessages.exceptionWasThrownInThatClause(className, description, errorMessage)
+        case "should" => FailureMessages.exceptionWasThrownInShouldClause(className, description, errorMessage)
+        case "must" => FailureMessages.exceptionWasThrownInMustClause(className, description, errorMessage)
+        case "can" => FailureMessages.exceptionWasThrownInCanClause(className, description, errorMessage)
       }
 
     try {
@@ -204,7 +206,8 @@ trait WordSpecLike extends SyncSuite with TestRegistration with ShouldVerb with 
       case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description), Some(other), e => getStackDepth)
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage), Some(other), e => getStackDepth)
       case other: Throwable => throw other
     }
   }
