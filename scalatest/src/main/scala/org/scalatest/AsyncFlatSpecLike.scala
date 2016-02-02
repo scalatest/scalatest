@@ -158,7 +158,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement) {
@@ -168,7 +168,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, "FlatSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**

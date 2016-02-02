@@ -19,8 +19,10 @@ import SharedHelpers._
 import org.scalatest.events._
 import Matchers._
 import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.exceptions.NotAllowedException
 import org.scalactic.exceptions.NullArgumentException
 
 class FlatSpecSpec extends FunSpec with GivenWhenThen {
@@ -1606,6 +1608,20 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       assert("FlatSpecSpec.scala" === trce.failedCodeFileName.get)
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("Test cannot be nested inside another test."))
+    }
+
+    it("should generate a DuplicateTestNameException is thrown inside scope") {
+      class TestSpec extends FlatSpec {
+        behavior of "a feature"
+        it should "test 1" in {}
+        it should "test 1" in {}
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("FlatSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
     }
   }
 }

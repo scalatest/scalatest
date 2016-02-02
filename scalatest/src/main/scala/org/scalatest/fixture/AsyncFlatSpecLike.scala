@@ -55,7 +55,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
 
   import engine._
 
-  private[scalatest] val sourceFileName = "FlatSpecRegistering.scala"
+  private[scalatest] val sourceFileName = "AsyncFlatSpecLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its
