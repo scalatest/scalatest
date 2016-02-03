@@ -15,10 +15,11 @@
  */
 package org.scalatest
 
-import SharedHelpers.EventRecordingReporter
+import SharedHelpers.{EventRecordingReporter, thisLineNumber}
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
+import org.scalatest.exceptions.{NotAllowedException, DuplicateTestNameException}
 
 import scala.util.Success
 
@@ -841,6 +842,220 @@ class AsyncWordSpecSpec extends FunSpec {
       assert(recordedEvent.isInstanceOf[MarkupProvided])
       val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
       assert(markupProvided.text == "hi there")
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside when") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" when {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand when") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" when {}
+        it when {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside should") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" should {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature should test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature should test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand should") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" should {}
+        it should {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature should test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature should test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside must") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" must {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature must test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature must test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand must") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" must {}
+        it must {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature must test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature must test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside that") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" that {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInThatClause(UnquotedString(causeThrowable.getClass.getName), "a feature that", FailureMessages.duplicateTestName(UnquotedString("a feature that test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature that test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside which") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" which {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhichClause(UnquotedString(causeThrowable.getClass.getName), "a feature which", FailureMessages.duplicateTestName(UnquotedString("a feature which test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature which test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside can") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" can {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature can test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature can test 1")))
+    }
+
+    it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand can") {
+      class TestSpec extends AsyncWordSpec {
+        "a feature" can {}
+        it can {
+          "test 1" in { succeed }
+          "test 1" in { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+            new TestSpec
+          }
+      assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature can test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature can test 1")))
     }
 
   }

@@ -379,12 +379,12 @@ class Framework extends SbtFramework {
         // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
         // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
         // from the resource file so we can later localize.
-        val rawString = "Exception encountered when attempting to run a suite with class name: " + suiteClass.getName
+        val rawString = e.getMessage//e.getClass.getName + " encountered when attempting to run a suite with class name " + actualSuiteName + ": " + e.getMessage
         val formatter = formatterForSuiteAborted(suite, rawString)
 
         val duration = System.currentTimeMillis - suiteStartTime
         // Do fire SuiteAborted even if a DistributedTestRunnerSuite, consistent with SuiteRunner behavior
-        report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suiteClass.getName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
+        report(SuiteAborted(tracker.nextOrdinal(), rawString, suite.suiteName, suite.suiteId, Some(suite.suiteName), Some(e), Some(duration), formatter, Some(SeeStackDepthException)))
 
         statefulStatus match {
           case Some(s) => s.setFailed()
@@ -481,7 +481,7 @@ class Framework extends SbtFramework {
               constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
             }
           } catch {
-            case t: Throwable => new DeferredAbortedSuite(t)
+            case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
           }
         
         val taskReporter =

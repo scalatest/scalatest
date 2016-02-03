@@ -15,10 +15,11 @@
  */
 package org.scalatest
 
-import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.SharedHelpers.{EventRecordingReporter, thisLineNumber}
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
+import org.scalatest.exceptions.DuplicateTestNameException
 
 import scala.util.Success
 
@@ -723,6 +724,32 @@ class AsyncFunSuiteSpec extends FunSpec {
       assert(recordedEvent.isInstanceOf[MarkupProvided])
       val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
       assert(markupProvided.text == "hi there")
+    }
+
+    it("should generate a DuplicateTestNameException when duplicate test name is detected") {
+      class TestSpec extends AsyncFunSuite {
+        test("test 1") { succeed }
+        test("test 1") { succeed }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("AsyncFunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
+
+    it("should generate a DuplicateTestNameException when duplicate test name is detected using ignore") {
+      class TestSpec extends AsyncFunSuite {
+        test("test 1") { succeed }
+        ignore("test 1") { succeed }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("AsyncFunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
     }
 
   }
