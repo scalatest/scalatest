@@ -49,7 +49,7 @@ trait AsyncFunSuiteLike extends AsyncSuite with AsyncTestRegistration with Infor
 
   import engine._
 
-  private[scalatest] val sourceFileName = "FunSuiteRegistering.scala"
+  private[scalatest] val sourceFileName = "AsyncFunSuiteLike.scala"
 
   /**
    * Returns an <code>Informer</code> that during test execution will forward strings passed to its

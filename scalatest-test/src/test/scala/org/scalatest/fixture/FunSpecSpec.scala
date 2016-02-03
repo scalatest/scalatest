@@ -1625,11 +1625,34 @@ class FunSpecSpec extends org.scalatest.FreeSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]
       assert(cause.getMessage == "on purpose")
+    }
+
+    "should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope" in {
+      class TestSpec extends FunSpec {
+        type FixtureParam = String
+        override def withFixture(test: OneArgTest): Outcome = test("test")
+        describe("a feature") {
+          it("test 1") { fixture => }
+          it("test 1") { fixture => }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))
     }
 
     // SKIP-SCALATESTJS-START

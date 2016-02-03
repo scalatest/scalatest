@@ -15,10 +15,11 @@
  */
 package org.scalatest
 
-import org.scalatest.SharedHelpers.EventRecordingReporter
+import org.scalatest.SharedHelpers.{EventRecordingReporter, thisLineNumber}
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
+import org.scalatest.exceptions.DuplicateTestNameException
 
 import scala.util.Success
 
@@ -722,6 +723,20 @@ class AsyncFlatSpecSpec extends FunSpec {
       assert(recordedEvent.isInstanceOf[MarkupProvided])
       val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
       assert(markupProvided.text == "hi there")
+    }
+
+    it("should generate a DuplicateTestNameException is detected") {
+      class TestSpec extends AsyncFlatSpec {
+        behavior of "a feature"
+        it should "test 1" in { succeed }
+        it should "test 1" in { succeed }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("AsyncFlatSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
     }
 
   }

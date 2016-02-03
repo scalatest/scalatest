@@ -15,10 +15,11 @@
  */
 package org.scalatest
 
-import SharedHelpers.EventRecordingReporter
+import SharedHelpers.{EventRecordingReporter, thisLineNumber}
 import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
+import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException}
 
 import scala.util.Success
 
@@ -877,6 +878,27 @@ class AsyncFunSpecSpec extends FunSpec {
       assert(recordedEvent.isInstanceOf[MarkupProvided])
       val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
       assert(markupProvided.text == "hi there")
+    }
+
+    it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
+      class TestSpec extends AsyncFunSpec {
+        describe("a feature") {
+          it("test 1") { succeed }
+          it("test 1") { succeed }
+        }
+      }
+      val e = intercept[NotAllowedException] {
+        new TestSpec
+      }
+      assert("AsyncFunSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.cause.isDefined)
+      val causeThrowable = e.cause.get
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))))
+
+      assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+      val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))
     }
 
   }

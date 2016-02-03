@@ -1420,11 +1420,32 @@ class FeatureSpecSpec extends FunSpec {
         assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
         assert(e.cause.isDefined)
         val causeThrowable = e.cause.get
-        assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+        assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
 
         assert(causeThrowable.isInstanceOf[RuntimeException])
         val cause = causeThrowable.asInstanceOf[RuntimeException]
         assert(cause.getMessage == "on purpose")
+      }
+
+      it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
+        class TestSpec extends FeatureSpec {
+          feature("a feature") {
+            scenario("test 1") {}
+            scenario("test 1") {}
+          }
+        }
+        val e = intercept[NotAllowedException] {
+          new TestSpec
+        }
+        assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
+        assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+        assert(e.cause.isDefined)
+        val causeThrowable = e.cause.get
+        assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("Feature: a feature Scenario: test 1")))))
+
+        assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
+        val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
+        assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("Feature: a feature Scenario: test 1")))
       }
 
       // SKIP-SCALATESTJS-START

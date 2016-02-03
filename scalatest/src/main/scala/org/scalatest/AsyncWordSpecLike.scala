@@ -190,15 +190,25 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
     engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecRegistering.scala", methodName, 4, -3, None, testTags: _*)
   }
 
+  private def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String, errorMessage: String): String =
+    verb match {
+      case "when" => FailureMessages.exceptionWasThrownInWhenClause(className, description, errorMessage)
+      case "which" => FailureMessages.exceptionWasThrownInWhichClause(className, description, errorMessage)
+      case "that" => FailureMessages.exceptionWasThrownInThatClause(className, description, errorMessage)
+      case "should" => FailureMessages.exceptionWasThrownInShouldClause(className, description, errorMessage)
+      case "must" => FailureMessages.exceptionWasThrownInMustClause(className, description, errorMessage)
+      case "can" => FailureMessages.exceptionWasThrownInCanClause(className, description, errorMessage)
+    }
+
   private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
-    def getStackDepth: Int =
+    val (getStackDepth, duplicateErrorStackDepth) =
       verb match {
         // SKIP-SCALATESTJS-START
-        case "should" | "must" | "can" => 5
-        case other => 4
+        case "should" | "must" | "can" => (5, 4)
+        case other => (4, 2)
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY case "should" | "must" | "can" => 13
-        //SCALATESTJS-ONLY case other => 11
+        //SCALATESTJS-ONLY case "should" | "must" | "can" => (13, 12)
+        //SCALATESTJS-ONLY case other => (11, 10)
       }
 
     def registrationClosedMessageFun: String =
@@ -211,25 +221,16 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
         case "can" => Resources.canCannotAppearInsideAnIn
       }
 
-    def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String): String =
-      verb match {
-        case "when" => FailureMessages.exceptionWasThrownInWhenClause(className, description)
-        case "which" => FailureMessages.exceptionWasThrownInWhichClause(className, description)
-        case "that" => FailureMessages.exceptionWasThrownInThatClause(className, description)
-        case "should" => FailureMessages.exceptionWasThrownInShouldClause(className, description)
-        case "must" => FailureMessages.exceptionWasThrownInMustClause(className, description)
-        case "can" => FailureMessages.exceptionWasThrownInCanClause(className, description)
-      }
-
     try {
-      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistering.scala", methodName, stackDepth, adjustment, None)
+      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "AsyncWordSpecLike.scala", methodName, stackDepth, adjustment, None)
     }
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
       case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description), Some(other), e => getStackDepth)
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage), Some(other), e => getStackDepth)
       case other: Throwable => throw other
     }
   }
@@ -249,6 +250,17 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
         case Some(last) =>
           last match {
             case DescriptionBranch(_, descriptionText, _, _) =>
+
+              val (getStackDepth, duplicateErrorStackDepth) =
+                methodName match {
+                  // SKIP-SCALATESTJS-START
+                  case "should" | "must" | "can" => (5, 2)
+                  case other => (4, 2)
+                  // SKIP-SCALATESTJS-END
+                  //SCALATESTJS-ONLY case "should" | "must" | "can" => (13, 10)
+                  //SCALATESTJS-ONLY case other => (11, 10)
+                }
+
               def registrationClosedMessageFun: String =
                 methodName match {
                   case "when" => Resources.whenCannotAppearInsideAnIn
@@ -258,7 +270,19 @@ trait AsyncWordSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
                   case "must" => Resources.mustCannotAppearInsideAnIn
                   case "can" => Resources.canCannotAppearInsideAnIn
                 }
-              registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecRegistering.scala", methodName, stackDepth, adjustment, None)
+              try {
+                registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "AsyncWordSpecLike.scala", methodName, stackDepth, adjustment, None)
+              }
+              catch {
+                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+                case nae: exceptions.NotAllowedException => throw nae
+                case trce: TestRegistrationClosedException => throw trce
+                case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(other.getClass.getName), if (descriptionText.endsWith(" " + methodName)) descriptionText.substring(0, descriptionText.length - (" " + methodName).length) else descriptionText, other.getMessage), Some(other), e => getStackDepth)
+                case other: Throwable => throw other
+              }
+
             case _ =>
               throw new exceptions.NotAllowedException(notAllowMessage, notAllowStackDepth)
           }

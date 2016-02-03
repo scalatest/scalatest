@@ -265,9 +265,11 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val errorStackDepth = 3
+      val duplicateErrorStackDepth = 1
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val errorStackDepth = 10
+      //SCALATESTJS-ONLY val duplicateErrorStackDepth = 9
 
       try {
         handleNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None)
@@ -276,7 +278,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
         case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
         case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(other.getClass.getName), string), Some(other), e => errorStackDepth)
+        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), e => errorStackDepth)
         case other: Throwable => throw other
       }
     }

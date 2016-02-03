@@ -212,10 +212,12 @@ trait FeatureSpecLike extends SyncSuite with TestRegistration with Informing wit
     val stackDepth = 4
     val stackDepthAdjustment = -2
     val scopeErrorStackDepth = 4
+    val duplicateErrorStackDepth = 2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
     //SCALATESTJS-ONLY val scopeErrorStackDepth = 11
+    //SCALATESTJS-ONLY val duplicateErrorStackDepth = 10
 
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun(sourceFileName, "feature"))
@@ -227,7 +229,8 @@ trait FeatureSpecLike extends SyncSuite with TestRegistration with Informing wit
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)
       case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(other.getClass.getName), description), Some(other), e => scopeErrorStackDepth)
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => scopeErrorStackDepth)
       case other: Throwable => throw other
     }
   }
