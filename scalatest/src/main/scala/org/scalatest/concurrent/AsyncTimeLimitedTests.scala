@@ -30,7 +30,7 @@ trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts[Outcome] 
 
   }
 
-  protected def failure(e: Throwable): Outcome = Exceptional(e)
+  //protected def reportTimeout(e: Throwable): Outcome = Exceptional(e)
 
   /**
    * The time limit, in milliseconds, in which each test in a <code>Suite</code> that mixes in
