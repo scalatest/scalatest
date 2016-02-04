@@ -50,6 +50,10 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     this
   }
 
+  def onPendingThen(f: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+    this
+  }
+
   def isCompleted: Boolean = underlying.isCompleted
 
   def value: Option[Outcome Or Throwable] =

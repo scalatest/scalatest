@@ -46,9 +46,10 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
       "execute functions passed to its onCompletedThen method" in {
         val promise = Promise[Outcome]
         var paramPassedToOnCompletedThen: Option[Outcome Or Throwable] = None
-        var onSucceedThenFunctionWasInvoked = false
+        var onSucceededThenFunctionWasInvoked = false
         var paramPassedToOnFailedThen: Option[Throwable] = None
         var paramPassedToOnCanceledThen: Option[TestCanceledException] = None
+        var onPendingThenFunctionWasInvoked = false
         val fo = FutureOutcome(promise.future)
         assert(!fo.isCompleted)
         assert(fo.value == None)
@@ -56,26 +57,30 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
           fo onCompletedThen { outcomeOrThrowable =>
             paramPassedToOnCompletedThen = Some(outcomeOrThrowable)
           } onSucceededThen {
-            onSucceedThenFunctionWasInvoked = true
+            onSucceededThenFunctionWasInvoked = true
           } onFailedThen { ex =>
             paramPassedToOnFailedThen = Some(ex)
           } onCanceledThen { ex =>
             paramPassedToOnCanceledThen = Some(ex)
+          } onPendingThen {
+            onPendingThenFunctionWasInvoked = true
           }
         assert(!fo2.isCompleted)
         assert(fo2.value == None)
         assert(paramPassedToOnCompletedThen == None)
-        assert(onSucceedThenFunctionWasInvoked == false)
+        assert(onSucceededThenFunctionWasInvoked == false)
         assert(paramPassedToOnFailedThen == None)
         assert(paramPassedToOnCanceledThen == None)
+        assert(onPendingThenFunctionWasInvoked == false)
         promise.success(Succeeded)
         fo2.underlying map { _ =>
           assert(fo2.isCompleted)
           assert(fo2.value == Some(Good(Succeeded)))
           assert(paramPassedToOnCompletedThen == Some(Good(Succeeded)))
-          assert(onSucceedThenFunctionWasInvoked == true)
+          assert(onSucceededThenFunctionWasInvoked == true)
           assert(paramPassedToOnFailedThen == None)
-        assert(paramPassedToOnCanceledThen == None)
+          assert(paramPassedToOnCanceledThen == None)
+          assert(onPendingThenFunctionWasInvoked == false)
         }
       }
       "execute functions passed to its onSucceededThen method" in {
