@@ -195,7 +195,60 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
     }
     "representing a future outcome that completes with Canceled" should {
       "execute functions passed to its onCompletedThen method" in {
-        pending
+        val promise = Promise[Outcome]
+        var paramPassedToOnCompletedThen: Option[Outcome Or Throwable] = None
+        var onSucceededThenFunctionWasInvoked = false
+        var paramPassedToOnFailedThen: Option[Throwable] = None
+        var paramPassedToOnCanceledThen: Option[TestCanceledException] = None
+        var onPendingThenFunctionWasInvoked = false
+        var paramPassedToOnOutcomeThen: Option[Outcome] = None
+        var paramPassedToOnAbortedThen: Option[Throwable] = None
+        var paramPassedToMap: Option[Outcome] = None
+        val fo = FutureOutcome(promise.future)
+        assert(!fo.isCompleted)
+        assert(fo.value == None)
+        val fo2 = 
+          fo onCompletedThen { outcomeOrThrowable =>
+            paramPassedToOnCompletedThen = Some(outcomeOrThrowable)
+          } onSucceededThen {
+            onSucceededThenFunctionWasInvoked = true
+          } onFailedThen { ex =>
+            paramPassedToOnFailedThen = Some(ex)
+          } onCanceledThen { ex =>
+            paramPassedToOnCanceledThen = Some(ex)
+          } onPendingThen {
+            onPendingThenFunctionWasInvoked = true
+          } onOutcomeThen { outcome =>
+            paramPassedToOnOutcomeThen = Some(outcome)
+          } onAbortedThen { ex =>
+            paramPassedToOnAbortedThen = Some(ex)
+          } map { outcome =>
+            paramPassedToMap = Some(outcome)
+            outcome
+          }
+        assert(!fo2.isCompleted)
+        assert(fo2.value == None)
+        assert(paramPassedToOnCompletedThen == None)
+        assert(onSucceededThenFunctionWasInvoked == false)
+        assert(paramPassedToOnFailedThen == None)
+        assert(paramPassedToOnCanceledThen == None)
+        assert(onPendingThenFunctionWasInvoked == false)
+        assert(paramPassedToOnAbortedThen == None)
+        assert(paramPassedToMap == None)
+        case object MyException extends TestCanceledException(0)
+        promise.success(Canceled(MyException))
+        fo2.underlying map { _ =>
+          assert(fo2.isCompleted)
+          assert(fo2.value == Some(Good(Canceled(MyException))))
+          assert(paramPassedToOnCompletedThen == Some(Good(Canceled(MyException))))
+          assert(onSucceededThenFunctionWasInvoked == false)
+          assert(paramPassedToOnFailedThen == None)
+          assert(paramPassedToOnCanceledThen == Some(MyException))
+          assert(onPendingThenFunctionWasInvoked == false)
+          assert(paramPassedToOnOutcomeThen == Some(Canceled(MyException)))
+          assert(paramPassedToOnAbortedThen == None)
+          assert(paramPassedToMap == Some(Canceled(MyException)))
+        }
       }
       "execute functions passed to its onSucceededThen method" in {
         pending
