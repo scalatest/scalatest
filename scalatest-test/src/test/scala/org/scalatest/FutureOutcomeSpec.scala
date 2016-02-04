@@ -50,6 +50,7 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
         var paramPassedToOnFailedThen: Option[Throwable] = None
         var paramPassedToOnCanceledThen: Option[TestCanceledException] = None
         var onPendingThenFunctionWasInvoked = false
+        var paramPassedToOnOutcomeThen: Option[Outcome] = None
         val fo = FutureOutcome(promise.future)
         assert(!fo.isCompleted)
         assert(fo.value == None)
@@ -64,6 +65,8 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
             paramPassedToOnCanceledThen = Some(ex)
           } onPendingThen {
             onPendingThenFunctionWasInvoked = true
+          } onOutcomeThen { outcome =>
+            paramPassedToOnOutcomeThen = Some(outcome)
           }
         assert(!fo2.isCompleted)
         assert(fo2.value == None)
@@ -81,6 +84,7 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
           assert(paramPassedToOnFailedThen == None)
           assert(paramPassedToOnCanceledThen == None)
           assert(onPendingThenFunctionWasInvoked == false)
+          assert(paramPassedToOnOutcomeThen == Some(Succeeded))
         }
       }
       "execute functions passed to its onSucceededThen method" in {

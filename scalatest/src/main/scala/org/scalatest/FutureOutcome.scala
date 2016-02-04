@@ -54,6 +54,15 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     this
   }
 
+  def onOutcomeThen(f: Outcome => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+    FutureOutcome {
+      underlying map { outcome =>
+        f(outcome) // TODO: Deal with exceptions thrown by f
+        outcome
+      }
+    }
+  }
+
   def isCompleted: Boolean = underlying.isCompleted
 
   def value: Option[Outcome Or Throwable] =
