@@ -67,7 +67,12 @@ class FutureOutcome(val underlying: Future[Outcome]) {
   }
 
   def onPendingThen(f: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
-    this
+    FutureOutcome {
+      underlying map { outcome =>
+        if (outcome.isPending) f // TODO: Deal with exceptions thrown by f
+        outcome
+      }
+    }
   }
 
   def map(f: Outcome => Outcome)(implicit executionContext: ExecutionContext): FutureOutcome = {
