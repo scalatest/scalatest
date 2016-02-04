@@ -97,6 +97,6 @@ trait AsyncTimeouts[T] {
   }
 
   def failingAfter(timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimitFailing[T]): Future[T] = {
-    timingOutAfter(timeLimit, failing.report)(block)
+    timingOutAfter(timeLimit, failing.fail)(block)
   }
 }

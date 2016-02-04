@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2013 Artima, Inc.
+ * Copyright 2001-2015 Artima, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 trait TimeLimitFailing[T] {
 
-  def report(t: Throwable): T
+  def fail(t: Throwable): T
 
 }
 
@@ -25,7 +25,7 @@ object TimeLimitFailing {
 
   implicit def timeLimitFailingBehaviorOfOutcome: TimeLimitFailing[org.scalatest.Outcome] =
     new TimeLimitFailing[org.scalatest.Outcome] {
-      def report(t: Throwable): org.scalatest.Outcome = org.scalatest.Exceptional(t)
+      def fail(t: Throwable): org.scalatest.Outcome = org.scalatest.Exceptional(t)
     }
 
 }
