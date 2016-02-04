@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalactic.{Or, Good, Bad}
 import scala.util.{Try, Success, Failure}
 import scala.concurrent.Future
+import scala.concurrent.Promise
 
 /*
 class SuiteAbortingException(underlying: Throwable) {
@@ -41,16 +42,31 @@ class FutureOutcome(val toFuture: Future[Outcome]) extends AnyVal {
 class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
   "A FutureOutcome" when {
     "representing a future outcome that completes with Succeeded" should {
-      "execute functions passed to its onCompletedThen method in order" in {
-        var paramPassed: Option[Outcome Or Throwable] = None
-        val po = FutureOutcome(Future.successful(Succeeded))
-        val po2 = 
-          po onCompletedThen { outcomeOrThrowable =>
-            paramPassed = Some(outcomeOrThrowable)
+      "execute functions passed to its onCompletedThen method" in {
+        val promise = Promise[Outcome]
+        var paramPassedToOnCompleted: Option[Outcome Or Throwable] = None
+        var onSucceedThenFunctionWasInvoked = false
+        val fo = FutureOutcome(promise.future)
+        assert(!fo.isCompleted)
+        assert(fo.value == None)
+        val fo2 = 
+          fo onCompletedThen { outcomeOrThrowable =>
+            paramPassedToOnCompleted = Some(outcomeOrThrowable)
+          } onSucceededThen {
+            onSucceedThenFunctionWasInvoked = true
           }
-        po2.underlying map { _ => assert(paramPassed == Some(Good(Succeeded))) }
+        assert(!fo2.isCompleted)
+        assert(fo2.value == None)
+        assert(paramPassedToOnCompleted == None)
+        promise.success(Succeeded)
+        fo2.underlying map { _ =>
+          assert(fo2.isCompleted)
+          assert(fo2.value == Some(Good(Succeeded)))
+          assert(paramPassedToOnCompleted == Some(Good(Succeeded)))
+          assert(onSucceedThenFunctionWasInvoked == true)
+        }
       }
-      "execute functions passed to its onSucceededThen method in order" in {
+      "execute functions passed to its onSucceededThen method" in {
         pending
       }
       "not execute functions passed to its onFailedThen method" in {
@@ -65,15 +81,15 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
       "not execute functions passed to its onAbortedThen method" in {
         pending
       }
-      "execute functions passed to its map method in order" in {
+      "execute functions passed to its map method" in {
         pending
       }
     }
     "representing a future outcome that completes with Failed" should {
-      "execute functions passed to its onCompletedThen method in order" in {
+      "execute functions passed to its onCompletedThen method" in {
         pending
       }
-      "execute functions passed to its onSucceededThen method in order" in {
+      "execute functions passed to its onSucceededThen method" in {
         pending
       }
       "not execute functions passed to its onFailedThen method" in {
@@ -88,15 +104,15 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
       "not execute functions passed to its onAbortedThen method" in {
         pending
       }
-      "execute functions passed to its map method in order" in {
+      "execute functions passed to its map method" in {
         pending
       }
     }
     "representing a future outcome that completes with Canceled" should {
-      "execute functions passed to its onCompletedThen method in order" in {
+      "execute functions passed to its onCompletedThen method" in {
         pending
       }
-      "execute functions passed to its onSucceededThen method in order" in {
+      "execute functions passed to its onSucceededThen method" in {
         pending
       }
       "not execute functions passed to its onFailedThen method" in {
@@ -111,15 +127,15 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
       "not execute functions passed to its onAbortedThen method" in {
         pending
       }
-      "execute functions passed to its map method in order" in {
+      "execute functions passed to its map method" in {
         pending
       }
     }
     "representing a future outcome that completes with Pending" should {
-      "execute functions passed to its onCompletedThen method in order" in {
+      "execute functions passed to its onCompletedThen method" in {
         pending
       }
-      "execute functions passed to its onSucceededThen method in order" in {
+      "execute functions passed to its onSucceededThen method" in {
         pending
       }
       "not execute functions passed to its onFailedThen method" in {
@@ -134,15 +150,15 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
       "not execute functions passed to its onAbortedThen method" in {
         pending
       }
-      "execute functions passed to its map method in order" in {
+      "execute functions passed to its map method" in {
         pending
       }
     }
     "representing a future outcome that completes with Aborted" should {
-      "execute functions passed to its onCompletedThen method in order" in {
+      "execute functions passed to its onCompletedThen method" in {
         pending
       }
-      "execute functions passed to its onSucceededThen method in order" in {
+      "execute functions passed to its onSucceededThen method" in {
         pending
       }
       "not execute functions passed to its onFailedThen method" in {
@@ -157,7 +173,7 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
       "not execute functions passed to its onAbortedThen method" in {
         pending
       }
-      "execute functions passed to its map method in order" in {
+      "execute functions passed to its map method" in {
         pending
       }
     }

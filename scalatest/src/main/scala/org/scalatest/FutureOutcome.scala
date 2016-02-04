@@ -18,6 +18,7 @@ package org.scalatest
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import org.scalactic.{Or, Good, Bad}
+import scala.util.{Try, Success, Failure}
 
 class FutureOutcome(val underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
@@ -27,9 +28,27 @@ class FutureOutcome(val underlying: Future[Outcome]) {
       underlying map { outcome =>
         f(Good(outcome))
         outcome
+      } // TODO: Don't forget the Failure case
+    }
+  }
+
+  def onSucceededThen(f: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+    FutureOutcome {
+      underlying map { outcome =>
+        if (outcome.isSucceeded) f // TODO: Deal with exceptions thrown by f
+        outcome
       }
     }
   }
+
+  def isCompleted: Boolean = underlying.isCompleted
+
+  def value: Option[Outcome Or Throwable] =
+    underlying.value match {
+      case None => None
+      case Some(Success(outcome)) => Some(Good(outcome))
+      case Some(Failure(ex)) => Some(Bad(ex))
+    }
 }
 
 object FutureOutcome {
