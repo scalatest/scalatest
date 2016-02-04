@@ -19,6 +19,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import org.scalactic.{Or, Good, Bad}
 import scala.util.{Try, Success, Failure}
+import exceptions.TestCanceledException
 
 class FutureOutcome(val underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
@@ -39,6 +40,14 @@ class FutureOutcome(val underlying: Future[Outcome]) {
         outcome
       }
     }
+  }
+
+  def onFailedThen(f: Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+    this
+  }
+
+  def onCanceledThen(f: TestCanceledException => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+    this
   }
 
   def isCompleted: Boolean = underlying.isCompleted
