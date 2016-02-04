@@ -54,6 +54,10 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     this
   }
 
+  def onAbortedThen(f: Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+    this
+  }
+
   def onOutcomeThen(f: Outcome => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying map { outcome =>
