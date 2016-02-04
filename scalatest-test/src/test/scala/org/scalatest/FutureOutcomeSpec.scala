@@ -48,7 +48,7 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
           po onCompletedThen { outcomeOrThrowable =>
             paramPassed = Some(outcomeOrThrowable)
           }
-        po2.toFuture map { _ => assert(paramPassed == Some(Good(Succeeded))) }
+        po2.underlying map { _ => assert(paramPassed == Some(Good(Succeeded))) }
       }
       "execute functions passed to its onSucceededThen method in order" in {
         pending

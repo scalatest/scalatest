@@ -19,7 +19,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import org.scalactic.{Or, Good, Bad}
 
-class FutureOutcome(underlying: Future[Outcome]) {
+class FutureOutcome(val underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
 
   def onCompletedThen(f: Outcome Or Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
@@ -30,8 +30,6 @@ class FutureOutcome(underlying: Future[Outcome]) {
       }
     }
   }
-
-  def toFuture: Future[Outcome] = underlying
 }
 
 object FutureOutcome {
