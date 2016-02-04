@@ -15,17 +15,24 @@
  */
 package org.scalatest.concurrent
 
+import org.scalatest.exceptions.TimeoutField
 import org.scalatest.time.Span
 import org.scalatest._
 
 import scala.concurrent.Future
 
-trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts[Outcome] { this: AsyncSuite =>
+trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts { this: AsyncSuite =>
 
   abstract override def withFixture(test: NoArgAsyncTest): Future[Outcome] = {
 
     failingAfter(timeLimit) {
       super.withFixture(test)
+    } map { outcome =>
+      outcome match {
+        case Exceptional(e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField) =>
+          Exceptional(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString))))
+        case other => other
+      }
     }
 
   }
