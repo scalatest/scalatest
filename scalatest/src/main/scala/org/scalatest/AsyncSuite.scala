@@ -209,7 +209,7 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
   private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
     () => {
       val futureSucceeded: Future[Succeeded.type] = testFun.map(_ => Succeeded)
-      FutureOutcome(
+      InternalFutureOutcome(
         futureSucceeded.recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending

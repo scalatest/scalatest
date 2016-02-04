@@ -1713,11 +1713,11 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
     def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      FutureOutcome(
+      InternalFutureOutcome(
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name
-            def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
+            def apply(): Future[Outcome] = { theTest.testFun().toInternalFutureOutcome }
             val configMap = testData.configMap
             val scopes = testData.scopes
             val text = testData.text

@@ -172,13 +172,13 @@ trait AsyncPropSpecLike extends AsyncSuite with AsyncTestRegistration with Infor
     def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      FutureOutcome(
+      InternalFutureOutcome(
         withAsyncFixture(
           new OneArgAsyncTest {
             val name = testData.name
 
             def apply(fixture: FixtureParam): Future[Outcome] =
-              theTest.testFun(fixture).toFutureOutcome
+              theTest.testFun(fixture).toInternalFutureOutcome
 
             val configMap = testData.configMap
             val scopes = testData.scopes

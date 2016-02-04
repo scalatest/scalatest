@@ -19,23 +19,30 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent.Future
 
 /*
-final case class Possibility(future: Future[Outcome]) {
-  def onCompletedThen(f: Try[Outcome] => Unit)(implicit executionContext: ExecutionContext): Possibility
-  def onSucceededThen(f: => Unit)(implicit executionContext: ExecutionContext): Possibility
-  def onPendingThen(f: => Unit)(implicit executionContext: ExecutionContext): Possibility
-  def onFailedThen(f: Throwble => Unit)(implicit executionContext: ExecutionContext): Possibility
-  def onCanceledThen(f: TestCanceledException => Unit)(implicit executionContext: ExecutionContext): Possibility
-  def onAbortedThen(f: Throwable => Unit)(implicit executionContext: ExecutionContext): Possibility
-  def map(f: Outcome => Outcome)(implicit executionContext: ExecutionContext): Possibility
+class SuiteAbortingException(underlying: Throwable) {
+  require(isAnExceptionThatShouldCauseASuiteToAbort)
+}
+
+class FutureOutcome(val toFuture: Future[Outcome]) extends AnyVal {
+  def value: Option[Outcome Or SuiteAbortingException]
+  def isCompleted: Boolean
+  def onCompletedThen(f: Outcome Or SuiteAbortingException => Unit): Futuristic
+  def onOutcomeThen(f: Outcome => Unit): Futuristic
+  def onSucceededThen(f: => Unit): Futuristic
+  def onPendingThen(f: => Unit): Futuristic
+  def onFailedThen(f: Throwble => Unit): Futuristic
+  def onCanceledThen(f: TestCanceledException => Unit): Futuristic
+  def onAbortedThen(SuiteAbortingException => Unit): Futuristic
+  def map(f: Outcome => Outcome): Futuristic
 }
 */
 
-class PossibleOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
-  "A PossibleOutcome" when {
+class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
+  "A FutureOutcome" when {
     "representing a future outcome that completes with Succeeded" should {
       "execute functions passed to its onCompletedThen method in order" in {
         var paramPassed: Option[Try[Outcome]] = None
-        val po = PossibleOutcome(Future.successful(Succeeded))
+        val po = FutureOutcome(Future.successful(Succeeded))
         val po2 = 
           po onCompletedThen { tryOutcome =>
             paramPassed = Some(tryOutcome)

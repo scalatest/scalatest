@@ -19,13 +19,13 @@ import org.scalatest.Outcome
 import org.scalatest.PendingStatement
 import org.scalatest.OutcomeOf.outcomeOf
 import org.scalatest.AsyncOutcome
-import org.scalatest.FutureOutcome
+import org.scalatest.InternalFutureOutcome
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 private[scalatest] case class AsyncPendingTransformer[FixtureParam](exceptionalTestFun: FixtureParam => PendingStatement)(implicit ctx: ExecutionContext) extends (FixtureParam => AsyncOutcome) {
   def apply(fixture: FixtureParam): AsyncOutcome = {
-    FutureOutcome {
+    InternalFutureOutcome {
       Future { outcomeOf { exceptionalTestFun(fixture) } }
     }
   }

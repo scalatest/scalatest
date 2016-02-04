@@ -206,7 +206,7 @@ trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSui
   private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
       val futureUnit = testFun(fixture)
-      FutureOutcome(
+      InternalFutureOutcome(
         futureUnit.map(u => Succeeded).recover {
           case ex: exceptions.TestCanceledException => Canceled(ex)
           case _: exceptions.TestPendingException => Pending

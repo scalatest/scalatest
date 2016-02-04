@@ -19,11 +19,11 @@ import scala.concurrent.Future
 import scala.util.{Try, Success, Failure}
 import scala.concurrent.ExecutionContext
 
-class PossibleOutcome(underlying: Future[Outcome]) {
+class FutureOutcome(underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
 
-  def onCompletedThen(f: Try[Outcome] => Unit)(implicit executionContext: ExecutionContext): PossibleOutcome = {
-    PossibleOutcome {
+  def onCompletedThen(f: Try[Outcome] => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+    FutureOutcome {
       underlying map { outcome =>
         f(Success(outcome))
         outcome
@@ -34,8 +34,8 @@ class PossibleOutcome(underlying: Future[Outcome]) {
   def toFuture: Future[Outcome] = underlying
 }
 
-object PossibleOutcome {
-  def apply(underlying: Future[Outcome]): PossibleOutcome = new PossibleOutcome(underlying)
+object FutureOutcome {
+  def apply(underlying: Future[Outcome]): FutureOutcome = new FutureOutcome(underlying)
 }
 
 
