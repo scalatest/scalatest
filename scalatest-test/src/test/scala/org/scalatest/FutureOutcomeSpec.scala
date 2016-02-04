@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalactic.{Or, Good, Bad}
 import scala.util.{Try, Success, Failure}
 import scala.concurrent.Future
 
@@ -41,13 +42,13 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
   "A FutureOutcome" when {
     "representing a future outcome that completes with Succeeded" should {
       "execute functions passed to its onCompletedThen method in order" in {
-        var paramPassed: Option[Try[Outcome]] = None
+        var paramPassed: Option[Outcome Or Throwable] = None
         val po = FutureOutcome(Future.successful(Succeeded))
         val po2 = 
-          po onCompletedThen { tryOutcome =>
-            paramPassed = Some(tryOutcome)
+          po onCompletedThen { outcomeOrThrowable =>
+            paramPassed = Some(outcomeOrThrowable)
           }
-        po2.toFuture map { _ => assert(paramPassed == Some(Success(Succeeded))) }
+        po2.toFuture map { _ => assert(paramPassed == Some(Good(Succeeded))) }
       }
       "execute functions passed to its onSucceededThen method in order" in {
         pending
@@ -167,4 +168,3 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
     }
   }
 }
-

@@ -16,16 +16,16 @@
 package org.scalatest
 
 import scala.concurrent.Future
-import scala.util.{Try, Success, Failure}
 import scala.concurrent.ExecutionContext
+import org.scalactic.{Or, Good, Bad}
 
 class FutureOutcome(underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
 
-  def onCompletedThen(f: Try[Outcome] => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  def onCompletedThen(f: Outcome Or Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying map { outcome =>
-        f(Success(outcome))
+        f(Good(outcome))
         outcome
       }
     }
