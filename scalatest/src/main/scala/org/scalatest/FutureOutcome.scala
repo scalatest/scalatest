@@ -43,7 +43,15 @@ class FutureOutcome(val underlying: Future[Outcome]) {
   }
 
   def onFailedThen(f: Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
-    this
+    FutureOutcome {
+      underlying map { outcome =>
+        outcome match {
+          case Failed(ex) => f(ex) // TODO: Deal with exceptions thrown by f
+          case _ =>
+        }
+        outcome
+      }
+    }
   }
 
   def onCanceledThen(f: TestCanceledException => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
