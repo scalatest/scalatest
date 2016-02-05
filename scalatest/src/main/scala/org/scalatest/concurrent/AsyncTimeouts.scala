@@ -15,7 +15,7 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.enablers.TimeLimitFailing
+import org.scalatest.enablers.TimeLimiting
 import org.scalatest.time.Span
 import scala.concurrent.{Future, Promise, ExecutionContext}
 import org.scalatest.{Exceptional, Timer, TimerTask, Resources}
@@ -93,18 +93,17 @@ trait AsyncTimeouts {
         val endTime = scala.compat.Platform.currentTime
         val produceFutureDuration = endTime - startTime
 
-        if (produceFutureDuration > limit)
+        if (produceFutureDuration > limit)  // if the test block blows up after the time limit, we'll still fail with timeout, setting the the thrown exception as cause.
           Future.successful(exceptionFun(Some(t), timeLimit, stackDepthFun))
         else
           throw t
-          //Future.successful(reportFun(t))
     }
   }
 
-  def failingAfter[T](timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimitFailing[T]): Future[T] =
+  def failingAfter[T](timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimiting[T]): Future[T] =
     timingOutAfter(timeLimit, "failingAfter", failing.fail)(block)
 
-  def cancelingAfter[T](timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimitFailing[T]): Future[T] =
+  def cancelingAfter[T](timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimiting[T]): Future[T] =
     timingOutAfter(timeLimit, "cancelingAfter", failing.cancel)(block)
 }
 

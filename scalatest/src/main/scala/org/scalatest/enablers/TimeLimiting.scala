@@ -19,9 +19,9 @@ import org.scalatest.Resources
 import org.scalatest.exceptions.StackDepthExceptionHelper._
 import org.scalatest.exceptions.{StackDepthException, TestCanceledException, TestFailedDueToTimeoutException}
 import org.scalatest.time.Span
-import org.scalatest.{Exceptional, Canceled}
+import org.scalatest.{Failed, Canceled}
 
-trait TimeLimitFailing[T] {
+trait TimeLimiting[T] {
 
   def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): T
 
@@ -29,12 +29,12 @@ trait TimeLimitFailing[T] {
 
 }
 
-object TimeLimitFailing {
+object TimeLimiting {
 
-  implicit def timeLimitFailingBehaviorOfOutcome[OUTCOME <: org.scalatest.Outcome]: TimeLimitFailing[OUTCOME] =
-    new TimeLimitFailing[OUTCOME] {
+  implicit def timeLimitFailingBehaviorOfOutcome[OUTCOME <: org.scalatest.Outcome]: TimeLimiting[OUTCOME] =
+    new TimeLimiting[OUTCOME] {
       def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): OUTCOME =
-        Exceptional(new TestFailedDueToTimeoutException(sde => Some(Resources.timeoutFailingAfter(timeLimit.prettyString)), cause, stackDepthFun, None, timeLimit)).asInstanceOf[OUTCOME]
+        Failed(new TestFailedDueToTimeoutException(sde => Some(Resources.timeoutFailingAfter(timeLimit.prettyString)), cause, stackDepthFun, None, timeLimit)).asInstanceOf[OUTCOME]
 
       def cancel(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): OUTCOME =
         Canceled(new TestCanceledException(sde => Some(Resources.timeoutCancelingAfter(timeLimit.prettyString)), cause, stackDepthFun, None)).asInstanceOf[OUTCOME]
@@ -49,8 +49,8 @@ object TimeLimitFailing {
         throw new TestCanceledException(sde => Some(Resources.timeoutCancelingAfter(timeLimit.prettyString)), cause, stackDepthFun, None)
     }*/
 
-  implicit def timeLimitFailingBehaviorOfAssertion: TimeLimitFailing[org.scalatest.Assertion] =
-    new TimeLimitFailing[org.scalatest.Assertion] {
+  implicit def timeLimitFailingBehaviorOfAssertion: TimeLimiting[org.scalatest.Assertion] =
+    new TimeLimiting[org.scalatest.Assertion] {
       def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): org.scalatest.Assertion =
         throw new TestFailedDueToTimeoutException(sde => Some(Resources.timeoutFailingAfter(timeLimit.prettyString)), cause, stackDepthFun, None, timeLimit)
 
