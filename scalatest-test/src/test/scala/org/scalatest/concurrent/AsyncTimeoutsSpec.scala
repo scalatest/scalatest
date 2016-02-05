@@ -46,57 +46,80 @@ class AsyncTimeoutsSpec extends AsyncFunSpec with Matchers {
       super.withFixture(test)
   }*/
 
-  describe("The failAfter construct") {
+  describe("The failingAfter construct") {
 
-    it("should fail with TestFailedException when it times out", Retryable) {
-      val future: Future[Outcome] =
-        failingAfter(Span(100, Millis)) {
-          SleepHelper.sleep(200)
-          Future.successful(Succeeded)
-        }
-      future.map { outcome =>
-        outcome match {
-          case Failed(tfe: TestFailedException) =>
-            tfe.message.value should be (Resources.timeoutFailingAfter("100 milliseconds"))
-            tfe.failedCodeLineNumber.value should equal (thisLineNumber - 8)
-            tfe.failedCodeFileName.value should be ("AsyncTimeoutsSpec.scala")
-
-          case other => fail("Expect Failed as the result, but got: " + other)
-        }
-      }
-    }
-
-    it("should pass normally when the timeout is not reached") {
-      failingAfter(Span(200, Millis)) {
-        SleepHelper.sleep(100)
-        Future.successful(Succeeded)
-      }
-    }
-
-    it("should not catch exception thrown from the test") {
+    /*it("should not catch exception thrown from the test") {
       assertThrows[InterruptedException] {
         failingAfter(Span(100, Millis)) {
           throw new InterruptedException
         }
       }
-    }
+    }*/
 
-    it("should set the exception thrown from the test after timeout as cause of TestFailedException") {
-      val future: Future[Outcome] =
-        failingAfter(Span(100, Millis)) {
-          for (i <- 1 to 10) {
-            SleepHelper.sleep(50)
+    describe(" when used with Outcome") {
+
+      it("should fail with TestFailedException when it times out", Retryable) {
+        val future: Future[Outcome] =
+          failingAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
             Future.successful(Succeeded)
           }
-          throw new IllegalArgumentException("Something went wrong!")
-        }
-      future.map { outcome =>
-        outcome match {
-          case Failed(tfe: TestFailedException) =>
-            assert(tfe.getCause().getClass == classOf[IllegalArgumentException])
+        future.map { outcome =>
+          outcome match {
+            case Failed(tfe: TestFailedException) =>
+              tfe.message.value should be(Resources.timeoutFailingAfter("100 milliseconds"))
+              tfe.failedCodeLineNumber.value should equal(thisLineNumber - 8)
+              tfe.failedCodeFileName.value should be("AsyncTimeoutsSpec.scala")
 
-          case other => fail("Expect Failed as the result, but got: " + other)
+            case other => fail("Expect Failed as the result, but got: " + other)
+          }
         }
+      }
+
+      it("should pass normally when the timeout is not reached") {
+        failingAfter(Span(200, Millis)) {
+          SleepHelper.sleep(100)
+          Future.successful(Succeeded)
+        }
+      }
+    }
+
+    describe(" when used with Assertion") {
+
+      it("should fail with TestFailedException when it times out", Retryable) {
+        val tfe =
+          intercept[TestFailedException] {
+            failingAfter(Span(100, Millis)) {
+              SleepHelper.sleep(200)
+              assert(1 == 1)
+            }
+          }
+
+        tfe.message.value should be(Resources.timeoutFailingAfter("100 milliseconds"))
+        tfe.failedCodeLineNumber.value should equal(thisLineNumber - 7)
+        tfe.failedCodeFileName.value should be("AsyncTimeoutsSpec.scala")
+      }
+
+      it("should pass normally when the timeout is not reached") {
+        failingAfter(Span(200, Millis)) {
+          SleepHelper.sleep(100)
+          assert(1 == 1)
+        }
+      }
+
+      it("should set the exception thrown from the test after timeout as cause of TestFailedException") {
+        val tfe =
+          intercept[TestFailedException] {
+            failingAfter(Span(100, Millis)) {
+              for (i <- 1 to 10) {
+                SleepHelper.sleep(50)
+                assert(1 == 1)
+              }
+              throw new IllegalArgumentException("Something went wrong!")
+              succeed
+            }
+          }
+        assert(tfe.getCause().getClass == classOf[IllegalArgumentException])
       }
     }
   }
@@ -135,23 +158,7 @@ class AsyncTimeoutsSpec extends AsyncFunSpec with Matchers {
       assertThrows[InterruptedException] {
         cancelingAfter(Span(1000, Millis)) {
           throw new InterruptedException
-        }
-      }
-    }
-
-    it("should set exception thrown from the test after timeout as cause of TestCanceledException") {
-      val future: Future[Outcome] =
-        cancelingAfter(Span(1000, Millis)) {
-          for (i <- 1 to 10) {
-            SleepHelper.sleep(500)
-          }
-          throw new IllegalArgumentException("Something goes wrong!")
-        }
-
-      future.map { outcome =>
-        outcome match {
-          case Canceled(tce) => assert(tce.getCause.getClass == classOf[IllegalArgumentException])
-          case other => fail("Expect Canceled as the result, but got: " + other)
+          succeed
         }
       }
     }

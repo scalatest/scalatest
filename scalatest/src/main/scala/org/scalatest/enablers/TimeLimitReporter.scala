@@ -35,11 +35,27 @@ object TimeLimitFailing {
     new TimeLimitFailing[OUTCOME] {
       def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): OUTCOME =
         Exceptional(new TestFailedDueToTimeoutException(sde => Some(Resources.timeoutFailingAfter(timeLimit.prettyString)), cause, stackDepthFun, None, timeLimit)).asInstanceOf[OUTCOME]
-      //org.scalatest.Exceptional(t).asInstanceOf[OUTCOME]
 
       def cancel(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): OUTCOME =
         Canceled(new TestCanceledException(sde => Some(Resources.timeoutCancelingAfter(timeLimit.prettyString)), cause, stackDepthFun, None)).asInstanceOf[OUTCOME]
-        //org.scalatest.Canceled(t).asInstanceOf[OUTCOME]
+    }
+
+  /*implicit def timeLimitFailingBehaviorOfAssertion[ASSERTION <: org.scalatest.Assertion]: TimeLimitFailing[ASSERTION] =
+    new TimeLimitFailing[ASSERTION] {
+      def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): ASSERTION =
+        throw new TestFailedDueToTimeoutException(sde => Some(Resources.timeoutFailingAfter(timeLimit.prettyString)), cause, stackDepthFun, None, timeLimit)
+
+      def cancel(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): ASSERTION =
+        throw new TestCanceledException(sde => Some(Resources.timeoutCancelingAfter(timeLimit.prettyString)), cause, stackDepthFun, None)
+    }*/
+
+  implicit def timeLimitFailingBehaviorOfAssertion: TimeLimitFailing[org.scalatest.Assertion] =
+    new TimeLimitFailing[org.scalatest.Assertion] {
+      def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): org.scalatest.Assertion =
+        throw new TestFailedDueToTimeoutException(sde => Some(Resources.timeoutFailingAfter(timeLimit.prettyString)), cause, stackDepthFun, None, timeLimit)
+
+      def cancel(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): org.scalatest.Assertion =
+        throw new TestCanceledException(sde => Some(Resources.timeoutCancelingAfter(timeLimit.prettyString)), cause, stackDepthFun, None)
     }
 
 }
