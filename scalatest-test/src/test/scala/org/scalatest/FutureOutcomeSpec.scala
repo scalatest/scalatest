@@ -20,6 +20,7 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import exceptions.TestCanceledException
+import java.util.concurrent.ExecutionException
 
 /*
 class SuiteAbortingException(underlying: Throwable) {
@@ -346,7 +347,65 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
     }
     "representing a future outcome that completes with Aborted" should {
       "execute functions passed to its onCompletedThen method" in {
-        pending
+        val promise = Promise[Outcome]
+        var paramPassedToOnCompletedThen: Option[Outcome Or Throwable] = None
+        var onSucceededThenFunctionWasInvoked = false
+        var paramPassedToOnFailedThen: Option[Throwable] = None
+        var paramPassedToOnCanceledThen: Option[TestCanceledException] = None
+        var onPendingThenFunctionWasInvoked = false
+        var paramPassedToOnOutcomeThen: Option[Outcome] = None
+        var paramPassedToOnAbortedThen: Option[Throwable] = None
+        var paramPassedToMap: Option[Outcome] = None
+        val fo = FutureOutcome(promise.future)
+        assert(!fo.isCompleted)
+        assert(fo.value == None)
+        val fo2 = 
+          fo onCompletedThen { outcomeOrThrowable =>
+            paramPassedToOnCompletedThen = Some(outcomeOrThrowable)
+          } onSucceededThen {
+            onSucceededThenFunctionWasInvoked = true
+          } onFailedThen { ex =>
+            paramPassedToOnFailedThen = Some(ex)
+          } onCanceledThen { ex =>
+            paramPassedToOnCanceledThen = Some(ex)
+          } onPendingThen {
+            onPendingThenFunctionWasInvoked = true
+          } onOutcomeThen { outcome =>
+            paramPassedToOnOutcomeThen = Some(outcome)
+          } onAbortedThen { ex =>
+            paramPassedToOnAbortedThen = Some(ex)
+          } map { outcome =>
+            paramPassedToMap = Some(outcome)
+            outcome
+          }
+        assert(!fo2.isCompleted)
+        assert(fo2.value == None)
+        assert(paramPassedToOnCompletedThen == None)
+        assert(onSucceededThenFunctionWasInvoked == false)
+        assert(paramPassedToOnFailedThen == None)
+        assert(paramPassedToOnCanceledThen == None)
+        assert(onPendingThenFunctionWasInvoked == false)
+        assert(paramPassedToOnAbortedThen == None)
+        assert(paramPassedToMap == None)
+        case object MyError extends ExecutionException(new VirtualMachineError {})
+        promise.failure(MyError)
+        val execEx =
+          recoverToExceptionIf[ExecutionException] {
+            fo2.underlying
+          }
+        execEx map { ex =>
+          assert(ex.getCause.isInstanceOf[VirtualMachineError])
+          assert(fo2.isCompleted)
+          assert(fo2.value == Some(Bad(MyError)))
+          assert(paramPassedToOnCompletedThen == Some(Bad(MyError)))
+          assert(onSucceededThenFunctionWasInvoked == false)
+          assert(paramPassedToOnFailedThen == None)
+          assert(paramPassedToOnCanceledThen == None)
+          assert(onPendingThenFunctionWasInvoked == false)
+          assert(paramPassedToOnOutcomeThen == None)
+          assert(paramPassedToOnAbortedThen == Some(MyError))
+          assert(paramPassedToMap == None)
+        }
       }
       "execute functions passed to its onSucceededThen method" in {
         pending
