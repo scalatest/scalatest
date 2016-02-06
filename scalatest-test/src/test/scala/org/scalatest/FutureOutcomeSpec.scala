@@ -60,7 +60,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             paramPassedToOnOutcomeThen = Some(outcome)
           } onAbortedThen { ex =>
             paramPassedToOnAbortedThen = Some(ex)
-          } map { outcome =>
+          } change { outcome =>
             paramPassedToMap = Some(outcome)
             outcome
           }
@@ -117,7 +117,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             paramPassedToOnOutcomeThen = Some(outcome)
           } onAbortedThen { ex =>
             paramPassedToOnAbortedThen = Some(ex)
-          } map { outcome =>
+          } change { outcome =>
             paramPassedToMap = Some(outcome)
             outcome
           }
@@ -175,7 +175,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             paramPassedToOnOutcomeThen = Some(outcome)
           } onAbortedThen { ex =>
             paramPassedToOnAbortedThen = Some(ex)
-          } map { outcome =>
+          } change { outcome =>
             paramPassedToMap = Some(outcome)
             outcome
           }
@@ -233,7 +233,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             paramPassedToOnOutcomeThen = Some(outcome)
           } onAbortedThen { ex =>
             paramPassedToOnAbortedThen = Some(ex)
-          } map { outcome =>
+          } change { outcome =>
             paramPassedToMap = Some(outcome)
             outcome
           }
@@ -290,7 +290,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             paramPassedToOnOutcomeThen = Some(outcome)
           } onAbortedThen { ex =>
             paramPassedToOnAbortedThen = Some(ex)
-          } map { outcome =>
+          } change { outcome =>
             paramPassedToMap = Some(outcome)
             outcome
           }

@@ -122,7 +122,7 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     }
   }
 
-  def map(f: Outcome => Outcome)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  def change(f: Outcome => Outcome)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying.map(f) // TODO: Deal with exceptions thrown by f
     }
