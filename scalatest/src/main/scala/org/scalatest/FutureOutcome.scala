@@ -21,6 +21,8 @@ import org.scalactic.{Or, Good, Bad}
 import scala.util.{Try, Success, Failure}
 import exceptions.TestCanceledException
 import exceptions.TestPendingException
+import Suite.anExceptionThatShouldCauseAnAbort
+import scala.concurrent.ExecutionException
 
 class FutureOutcome(val underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
@@ -40,18 +42,19 @@ class FutureOutcome(val underlying: Future[Outcome]) {
 
   def onSucceededThen(f: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
-      underlying map { outcome =>
+      underlying flatMap { outcome =>
         if (outcome.isSucceeded) {
           try {
             f // TODO: Deal with exceptions thrown by f
-            outcome
+            Future.successful(outcome)
           }
           catch {
-            case ex: TestPendingException => Pending
-            case ex: TestCanceledException => Canceled(ex)
-            case ex: Throwable => Failed(ex)
+            case ex: TestPendingException => Future.successful(Pending)
+            case ex: TestCanceledException => Future.successful(Canceled(ex))
+            case ex: Throwable if !anExceptionThatShouldCauseAnAbort(ex) => Future.successful(Failed(ex))
+            case ex: Throwable => Future.failed(new ExecutionException(ex))
           }
-        } else outcome
+        } else Future.successful(outcome)
       }
     }
   }
