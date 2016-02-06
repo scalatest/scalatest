@@ -46,6 +46,7 @@ class FutureOutcome(val underlying: Future[Outcome]) {
             outcome
           }
           catch {
+            case ex: TestCanceledException => Canceled(ex)
             case ex: Throwable => Failed(ex)
           }
         } else outcome
