@@ -542,7 +542,27 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
       }
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
-          pending
+          class MyError extends VirtualMachineError("I meant to do that!")
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onFailedThen { ex =>
+              throw new MyError
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.success(Failed(new IllegalArgumentException("the original one")))
+          fo2.underlying.failed map { ex =>
+            assert(fo2.isCompleted)
+            ex match {
+              case ee: ExecutionException => 
+                assert(ex.getCause.isInstanceOf[MyError])
+                assert(ex.getCause.getMessage == "I meant to do that!")
+              case ex => fail("Was not an ExecutionException: " + ex)
+            }
+          }
         }
       }
     }

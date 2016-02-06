@@ -72,7 +72,7 @@ class FutureOutcome(val underlying: Future[Outcome]) {
               case _: TestPendingException => Future.successful(Pending)
               case ex: TestCanceledException => Future.successful(Canceled(ex))
               case ex: Throwable if !anExceptionThatShouldCauseAnAbort(ex) => Future.successful(Failed(ex))
-              // case ex: Throwable => Future.failed(new ExecutionException(ex))
+              case ex: Throwable => Future.failed(new ExecutionException(ex))
             }
           case _ =>
             Future.successful(outcome)
