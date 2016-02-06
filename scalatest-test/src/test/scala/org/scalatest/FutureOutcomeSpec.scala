@@ -569,7 +569,26 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
     "when a function passed to its onCanceledThen method" - {
       "completes abruptly with a TestFailedException" - {
         "should result in a Failed wrapping that exception" in {
-          pending
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onCanceledThen { ex =>
+              fail("I meant to do that!")
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.success(Canceled(new TestCanceledException("the original one", 0)))
+          fo2.underlying map { outcome =>
+            assert(fo2.isCompleted)
+            outcome match {
+              case Failed(ex) =>
+                assert(ex.isInstanceOf[TestFailedException])
+                assert(ex.getMessage == "I meant to do that!")
+              case _ => fail("Outcome was not a Failed")
+            }
+          }
         }
       }
       "completes abruptly some other test-failing exception" - {
