@@ -20,31 +20,19 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import exceptions.TestCanceledException
+import exceptions.TestFailedException
 import java.util.concurrent.ExecutionException
 
 /*
 class SuiteAbortingException(underlying: Throwable) {
   require(isAnExceptionThatShouldCauseASuiteToAbort)
 }
-
-class FutureOutcome(val toFuture: Future[Outcome]) extends AnyVal {
-  def value: Option[Outcome Or SuiteAbortingException]
-  def isCompleted: Boolean
-  def onCompletedThen(f: Outcome Or SuiteAbortingException => Unit): Futuristic
-  def onOutcomeThen(f: Outcome => Unit): Futuristic
-  def onSucceededThen(f: => Unit): Futuristic
-  def onPendingThen(f: => Unit): Futuristic
-  def onFailedThen(f: Throwble => Unit): Futuristic
-  def onCanceledThen(f: TestCanceledException => Unit): Futuristic
-  def onAbortedThen(SuiteAbortingException => Unit): Futuristic
-  def map(f: Outcome => Outcome): Futuristic
-}
 */
 
-class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
-  "A FutureOutcome" when {
-    "representing a future outcome that completes with Succeeded" should {
-      "execute functions passed to its onCompletedThen method" in {
+class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
+  "A FutureOutcome" - {
+    "when representing a future outcome that completes with Succeeded" - {
+      "should execute appropriate callbacks" in {
         val promise = Promise[Outcome]
         var paramPassedToOnCompletedThen: Option[Outcome Or Throwable] = None
         var onSucceededThenFunctionWasInvoked = false
@@ -99,27 +87,9 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
           assert(paramPassedToMap == Some(Succeeded))
         }
       }
-      "execute functions passed to its onSucceededThen method" in {
-        pending
-      }
-      "not execute functions passed to its onFailedThen method" in {
-        pending
-      }
-      "not execute functions passed to its onCanceledThen method" in {
-        pending
-      }
-      "not execute functions passed to its onPendingThen method" in {
-        pending
-      }
-      "not execute functions passed to its onAbortedThen method" in {
-        pending
-      }
-      "execute functions passed to its map method" in {
-        pending
-      }
     }
-    "representing a future outcome that completes with Failed" should {
-      "execute functions passed to its onCompletedThen method" in {
+    "representing a future outcome that completes with Failed" - {
+      "should execute appropriate callbacks" in {
         val promise = Promise[Outcome]
         var paramPassedToOnCompletedThen: Option[Outcome Or Throwable] = None
         var onSucceededThenFunctionWasInvoked = false
@@ -175,27 +145,9 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
           assert(paramPassedToMap == Some(Failed(MyException)))
         }
       }
-      "execute functions passed to its onSucceededThen method" in {
-        pending
-      }
-      "not execute functions passed to its onFailedThen method" in {
-        pending
-      }
-      "not execute functions passed to its onCanceledThen method" in {
-        pending
-      }
-      "not execute functions passed to its onPendingThen method" in {
-        pending
-      }
-      "not execute functions passed to its onAbortedThen method" in {
-        pending
-      }
-      "execute functions passed to its map method" in {
-        pending
-      }
     }
-    "representing a future outcome that completes with Canceled" should {
-      "execute functions passed to its onCompletedThen method" in {
+    "representing a future outcome that completes with Canceled" - {
+      "should execute appropriate callbacks" in {
         val promise = Promise[Outcome]
         var paramPassedToOnCompletedThen: Option[Outcome Or Throwable] = None
         var onSucceededThenFunctionWasInvoked = false
@@ -251,27 +203,9 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
           assert(paramPassedToMap == Some(Canceled(MyException)))
         }
       }
-      "execute functions passed to its onSucceededThen method" in {
-        pending
-      }
-      "not execute functions passed to its onFailedThen method" in {
-        pending
-      }
-      "not execute functions passed to its onCanceledThen method" in {
-        pending
-      }
-      "not execute functions passed to its onPendingThen method" in {
-        pending
-      }
-      "not execute functions passed to its onAbortedThen method" in {
-        pending
-      }
-      "execute functions passed to its map method" in {
-        pending
-      }
     }
-    "representing a future outcome that completes with Pending" should {
-      "execute functions passed to its onCompletedThen method" in {
+    "representing a future outcome that completes with Pending" - {
+      "should execute appropriate callbacks" in {
         val promise = Promise[Outcome]
         var paramPassedToOnCompletedThen: Option[Outcome Or Throwable] = None
         var onSucceededThenFunctionWasInvoked = false
@@ -326,27 +260,9 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
           assert(paramPassedToMap == Some(Pending))
         }
       }
-      "execute functions passed to its onSucceededThen method" in {
-        pending
-      }
-      "not execute functions passed to its onFailedThen method" in {
-        pending
-      }
-      "not execute functions passed to its onCanceledThen method" in {
-        pending
-      }
-      "not execute functions passed to its onPendingThen method" in {
-        pending
-      }
-      "not execute functions passed to its onAbortedThen method" in {
-        pending
-      }
-      "execute functions passed to its map method" in {
-        pending
-      }
     }
-    "representing a future outcome that completes with Aborted" should {
-      "execute functions passed to its onCompletedThen method" in {
+    "representing a future outcome that completes with Aborted" - {
+      "should execute appropriate callbacks" in {
         val promise = Promise[Outcome]
         var paramPassedToOnCompletedThen: Option[Outcome Or Throwable] = None
         var onSucceededThenFunctionWasInvoked = false
@@ -407,27 +323,242 @@ class FutureOutcomeSpec extends AsyncWordSpec with DiagrammedAssertions {
           assert(paramPassedToMap == None)
         }
       }
-      "execute functions passed to its onSucceededThen method" in {
-        pending
+    }
+    "when a function passed to its onSucceededThen method" - {
+      "completes abruptly with a TestFailedException" - {
+        "should result in a Failed wrapping that exception" in {
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onSucceededThen {
+              fail("I meant to do that!")
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.success(Succeeded)
+          fo2.underlying map { outcome =>
+            assert(fo2.isCompleted)
+            outcome match {
+              case Failed(ex) =>
+                assert(ex.isInstanceOf[TestFailedException])
+                assert(ex.getMessage == "I meant to do that!")
+              case _ => fail("Outcome was not a Failed")
+            }
+          }
+        }
       }
-      "not execute functions passed to its onFailedThen method" in {
-        pending
+      "completes abruptly some other test-failing exception" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
       }
-      "not execute functions passed to its onCanceledThen method" in {
-        pending
+      "completes abruptly with a TestCanceledException" - {
+        "should result in a Canceled wrapping that exception" in {
+          pending
+        }
       }
-      "not execute functions passed to its onPendingThen method" in {
-        pending
+      "completes abruptly with a TestPendingException" - {
+        "should result in a Pending wrapping that exception" in {
+          pending
+        }
       }
-      "not execute functions passed to its onAbortedThen method" in {
-        pending
-      }
-      "execute functions passed to its map method" in {
-        pending
+      "completes abruptly with a suite-aborting exception" - {
+        "should result in a Failed future wrapping that exception" in {
+          pending
+        }
       }
     }
-  }
-  it should {
+    "when a function passed to its onFailedThen method" - {
+      "completes abruptly with a TestFailedException" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly some other test-failing exception" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestCanceledException" - {
+        "should result in a Canceled wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestPendingException" - {
+        "should result in a Pending wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a suite-aborting exception" - {
+        "should result in a Failed future wrapping that exception" in {
+          pending
+        }
+      }
+    }
+    "when a function passed to its onCanceledThen method" - {
+      "completes abruptly with a TestFailedException" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly some other test-failing exception" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestCanceledException" - {
+        "should result in a Canceled wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestPendingException" - {
+        "should result in a Pending wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a suite-aborting exception" - {
+        "should result in a Failed future wrapping that exception" in {
+          pending
+        }
+      }
+    }
+    "when a function passed to its onPendingThen method" - {
+      "completes abruptly with a TestFailedException" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly some other test-failing exception" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestCanceledException" - {
+        "should result in a Canceled wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestPendingException" - {
+        "should result in a Pending wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a suite-aborting exception" - {
+        "should result in a Failed future wrapping that exception" in {
+          pending
+        }
+      }
+    }
+    "when a function passed to its onAbortedThen method" - {
+      "completes abruptly with a TestFailedException" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly some other test-failing exception" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestCanceledException" - {
+        "should result in a Canceled wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestPendingException" - {
+        "should result in a Pending wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a suite-aborting exception" - {
+        "should result in a Failed future wrapping that exception" in {
+          pending
+        }
+      }
+    }
+    "when a function passed to its onOutcomeThen method" - {
+      "completes abruptly with a TestFailedException" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly some other test-failing exception" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestCanceledException" - {
+        "should result in a Canceled wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestPendingException" - {
+        "should result in a Pending wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a suite-aborting exception" - {
+        "should result in a Failed future wrapping that exception" in {
+          pending
+        }
+      }
+    }
+    "when a function passed to its map method" - {
+      "completes abruptly with a TestFailedException" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly some other test-failing exception" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestCanceledException" - {
+        "should result in a Canceled wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestPendingException" - {
+        "should result in a Pending wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a suite-aborting exception" - {
+        "should result in a Failed future wrapping that exception" in {
+          pending
+        }
+      }
+    }
+    "when a function passed to its onCompletedThen method" - {
+      "completes abruptly with a TestFailedException" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly some other test-failing exception" - {
+        "should result in a Failed wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestCanceledException" - {
+        "should result in a Canceled wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a TestPendingException" - {
+        "should result in a Pending wrapping that exception" in {
+          pending
+        }
+      }
+      "completes abruptly with a suite-aborting exception" - {
+        "should result in a Failed future wrapping that exception" in {
+          pending
+        }
+      }
+    }
     "offer a factory apply method in its companion that takes a Future[Outcome]" in {
       pending
     }

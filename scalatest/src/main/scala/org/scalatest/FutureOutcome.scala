@@ -40,8 +40,15 @@ class FutureOutcome(val underlying: Future[Outcome]) {
   def onSucceededThen(f: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying map { outcome =>
-        if (outcome.isSucceeded) f // TODO: Deal with exceptions thrown by f
-        outcome
+        if (outcome.isSucceeded) {
+          try {
+            f // TODO: Deal with exceptions thrown by f
+            outcome
+          }
+          catch {
+            case ex: Throwable => Failed(ex)
+          }
+        } else outcome
       }
     }
   }
@@ -118,4 +125,7 @@ object FutureOutcome {
   def apply(underlying: Future[Outcome]): FutureOutcome = new FutureOutcome(underlying)
 }
 
+/*
+ FutureOutcome.fromOutcome(Canceled("..."))
+*/
 
