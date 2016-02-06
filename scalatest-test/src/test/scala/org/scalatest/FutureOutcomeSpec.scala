@@ -399,7 +399,24 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
       }
       "completes abruptly with a TestPendingException" - {
         "should result in a Pending wrapping that exception" in {
-          pending
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onSucceededThen {
+              pending
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.success(Succeeded)
+          fo2.underlying map { outcome =>
+            assert(fo2.isCompleted)
+            outcome match {
+              case Pending => succeed
+              case _ => fail("Outcome was not a Pending")
+            }
+          }
         }
       }
       "completes abruptly with a suite-aborting exception" - {

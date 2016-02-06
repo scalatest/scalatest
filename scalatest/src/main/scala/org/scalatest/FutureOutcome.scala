@@ -20,6 +20,7 @@ import scala.concurrent.ExecutionContext
 import org.scalactic.{Or, Good, Bad}
 import scala.util.{Try, Success, Failure}
 import exceptions.TestCanceledException
+import exceptions.TestPendingException
 
 class FutureOutcome(val underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
@@ -46,6 +47,7 @@ class FutureOutcome(val underlying: Future[Outcome]) {
             outcome
           }
           catch {
+            case ex: TestPendingException => Pending
             case ex: TestCanceledException => Canceled(ex)
             case ex: Throwable => Failed(ex)
           }
