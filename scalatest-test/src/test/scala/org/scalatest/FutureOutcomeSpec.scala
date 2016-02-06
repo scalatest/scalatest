@@ -1350,27 +1350,231 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
     "when a function passed to its onCompletedThen method" - {
       "completes abruptly with a TestFailedException" - {
         "should result in a Failed wrapping that exception" in {
-          pending
+          class MyError(msg: String) extends VirtualMachineError(msg)
+          val outcomes =
+            Table(
+              "optional outcome",
+              Some(Succeeded),
+              Some(Failed(new IllegalArgumentException("the original one"))),
+              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Pending),
+              None
+            )
+          val futures: Seq[Future[Assertion]] =
+            outcomes map { optOutcome =>
+              val promise = Promise[Outcome]
+              val fo = FutureOutcome(promise.future)
+              assert(!fo.isCompleted)
+              assert(fo.value == None)
+              val fo2 = 
+                fo onCompletedThen { or =>
+                  fail("I meant to do that!")
+                }
+              assert(!fo2.isCompleted)
+              assert(fo2.value == None)
+              optOutcome match {
+                case Some(outcome) => promise.success(outcome)
+                case None => promise.failure(new MyError("the original one"))
+              }
+              fo2.underlying map { outcome =>
+                assert(fo2.isCompleted)
+                outcome match {
+                  case Failed(ex) =>
+                    assert(ex.isInstanceOf[TestFailedException])
+                    assert(ex.getMessage == "I meant to do that!")
+                  case _ => fail("Outcome was not a Failed")
+                }
+              }
+            }
+          val failedProjections: Seq[Future[Throwable]] = futures.map(_.failed)
+          val futOpt: Future[Option[Throwable]] = Future.find(failedProjections) { ex => true }
+          futOpt flatMap {
+            case None => Future.successful(Succeeded)
+            case Some(ex) => Future.failed(ex)
+          }
         }
       }
       "completes abruptly some other test-failing exception" - {
         "should result in a Failed wrapping that exception" in {
-          pending
+          class MyError(msg: String) extends VirtualMachineError(msg)
+          val outcomes =
+            Table(
+              "optional outcome",
+              Some(Succeeded),
+              Some(Failed(new IllegalArgumentException("the original one"))),
+              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Pending),
+              None
+            )
+          val futures: Seq[Future[Assertion]] =
+            outcomes map { optOutcome =>
+              val promise = Promise[Outcome]
+              val fo = FutureOutcome(promise.future)
+              assert(!fo.isCompleted)
+              assert(fo.value == None)
+              val fo2 = 
+                fo onCompletedThen { or =>
+                  throw new IllegalArgumentException("I meant to do that!")
+                }
+              assert(!fo2.isCompleted)
+              assert(fo2.value == None)
+              optOutcome match {
+                case Some(outcome) => promise.success(outcome)
+                case None => promise.failure(new MyError("the original one"))
+              }
+              fo2.underlying map { outcome =>
+                assert(fo2.isCompleted)
+                outcome match {
+                  case Failed(ex) =>
+                    assert(ex.isInstanceOf[IllegalArgumentException])
+                    assert(ex.getMessage == "I meant to do that!")
+                  case _ => fail("Outcome was not a Failed")
+                }
+              }
+            }
+          val failedProjections: Seq[Future[Throwable]] = futures.map(_.failed)
+          val futOpt: Future[Option[Throwable]] = Future.find(failedProjections) { ex => true }
+          futOpt flatMap {
+            case None => Future.successful(Succeeded)
+            case Some(ex) => Future.failed(ex)
+          }
         }
       }
       "completes abruptly with a TestCanceledException" - {
         "should result in a Canceled wrapping that exception" in {
-          pending
+          class MyError(msg: String) extends VirtualMachineError(msg)
+          val outcomes =
+            Table(
+              "optional outcome",
+              Some(Succeeded),
+              Some(Failed(new IllegalArgumentException("the original one"))),
+              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Pending),
+              None
+            )
+          val futures: Seq[Future[Assertion]] =
+            outcomes map { optOutcome =>
+              val promise = Promise[Outcome]
+              val fo = FutureOutcome(promise.future)
+              assert(!fo.isCompleted)
+              assert(fo.value == None)
+              val fo2 = 
+                fo onCompletedThen { or =>
+                  cancel("I meant to do that!")
+                }
+              assert(!fo2.isCompleted)
+              assert(fo2.value == None)
+              optOutcome match {
+                case Some(outcome) => promise.success(outcome)
+                case None => promise.failure(new MyError("the original one"))
+              }
+              fo2.underlying map { outcome =>
+                assert(fo2.isCompleted)
+                outcome match {
+                  case Canceled(ex) =>
+                    assert(ex.isInstanceOf[TestCanceledException])
+                    assert(ex.getMessage == "I meant to do that!")
+                  case _ => fail("Outcome was not a Canceled")
+                }
+              }
+            }
+          val failedProjections: Seq[Future[Throwable]] = futures.map(_.failed)
+          val futOpt: Future[Option[Throwable]] = Future.find(failedProjections) { ex => true }
+          futOpt flatMap {
+            case None => Future.successful(Succeeded)
+            case Some(ex) => Future.failed(ex)
+          }
         }
       }
       "completes abruptly with a TestPendingException" - {
         "should result in a Pending wrapping that exception" in {
-          pending
+          class MyError(msg: String) extends VirtualMachineError(msg)
+          val outcomes =
+            Table(
+              "optional outcome",
+              Some(Succeeded),
+              Some(Failed(new IllegalArgumentException("the original one"))),
+              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Pending),
+              None
+            )
+          val futures: Seq[Future[Assertion]] =
+            outcomes map { optOutcome =>
+              val promise = Promise[Outcome]
+              val fo = FutureOutcome(promise.future)
+              assert(!fo.isCompleted)
+              assert(fo.value == None)
+              val fo2 = 
+                fo onCompletedThen { or =>
+                  pending
+                  Succeeded // Won't get here, but pending isn't type Nothing
+                }
+              assert(!fo2.isCompleted)
+              assert(fo2.value == None)
+              optOutcome match {
+                case Some(outcome) => promise.success(outcome)
+                case None => promise.failure(new MyError("the original one"))
+              }
+              fo2.underlying map { outcome =>
+                assert(fo2.isCompleted)
+                outcome match {
+                  case Pending => succeed
+                  case _ => fail("Outcome was not a Canceled")
+                }
+              }
+            }
+          val failedProjections: Seq[Future[Throwable]] = futures.map(_.failed)
+          val futOpt: Future[Option[Throwable]] = Future.find(failedProjections) { ex => true }
+          futOpt flatMap {
+            case None => Future.successful(Succeeded)
+            case Some(ex) => Future.failed(ex)
+          }
         }
       }
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
-          pending
+          class MyError(msg: String) extends VirtualMachineError(msg)
+          val outcomes =
+            Table(
+              "optional outcome",
+              Some(Succeeded),
+              Some(Failed(new IllegalArgumentException("the original one"))),
+              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Pending),
+              None
+            )
+          val futures: Seq[Future[Assertion]] =
+            outcomes map { optOutcome =>
+              val promise = Promise[Outcome]
+              val fo = FutureOutcome(promise.future)
+              assert(!fo.isCompleted)
+              assert(fo.value == None)
+              val fo2 = 
+                fo onCompletedThen { or =>
+                  throw new MyError("I meant to do that!")
+                }
+              assert(!fo2.isCompleted)
+              assert(fo2.value == None)
+              optOutcome match {
+                case Some(outcome) => promise.success(outcome)
+                case None => promise.failure(new MyError("the original one"))
+              }
+              fo2.underlying.failed map { ex =>
+                assert(fo2.isCompleted)
+                ex match {
+                  case ee: ExecutionException => 
+                    assert(ex.getCause.isInstanceOf[MyError])
+                    assert(ex.getCause.getMessage == "I meant to do that!")
+                  case ex => fail("Was not an ExecutionException: " + ex)
+                }
+              }
+            }
+          val failedProjections: Seq[Future[Throwable]] = futures.map(_.failed)
+          val futOpt: Future[Option[Throwable]] = Future.find(failedProjections) { ex => true }
+          futOpt flatMap {
+            case None => Future.successful(Succeeded)
+            case Some(ex) => Future.failed(ex)
+          }
         }
       }
     }

@@ -29,13 +29,40 @@ class FutureOutcome(val underlying: Future[Outcome]) {
 
   def onCompletedThen(f: Outcome Or Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
+/*
       underlying recoverWith {
         case ex =>
           f(Bad(ex))
           Future.failed(ex)
-      } map { outcome =>
+      } flatMap { outcome =>
         f(Good(outcome))
         outcome
+      }
+
+*/
+      underlying recoverWith {
+        case ex =>
+          try {
+            f(Bad(ex))
+            Future.failed(ex)
+          }
+          catch {
+            case _: TestPendingException => Future.successful(Pending)
+            case ex: TestCanceledException => Future.successful(Canceled(ex))
+            case ex: Throwable if !anExceptionThatShouldCauseAnAbort(ex) => Future.successful(Failed(ex))
+            case ex: Throwable => Future.failed(new ExecutionException(ex))
+          }
+      } flatMap { outcome =>
+        try {
+          f(Good(outcome))
+          Future.successful(outcome)
+        }
+        catch {
+          case _: TestPendingException => Future.successful(Pending)
+          case ex: TestCanceledException => Future.successful(Canceled(ex))
+          case ex: Throwable if !anExceptionThatShouldCauseAnAbort(ex) => Future.successful(Failed(ex))
+          case ex: Throwable => Future.failed(new ExecutionException(ex))
+        }
       }
     }
   }
