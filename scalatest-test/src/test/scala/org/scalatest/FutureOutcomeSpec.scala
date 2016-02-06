@@ -811,27 +811,125 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
     "when a function passed to its onAbortedThen method" - {
       "completes abruptly with a TestFailedException" - {
         "should result in a Failed wrapping that exception" in {
-          pending
+          class MyError extends VirtualMachineError("I meant to do that!")
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onAbortedThen { ex =>
+              fail("I meant to do that!")
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.failure(new MyError)
+          fo2.underlying map { outcome =>
+            assert(fo2.isCompleted)
+            outcome match {
+              case Failed(ex) =>
+                assert(ex.isInstanceOf[TestFailedException])
+                assert(ex.getMessage == "I meant to do that!")
+              case _ => fail("Outcome was not a Failed")
+            }
+          }
         }
       }
       "completes abruptly some other test-failing exception" - {
         "should result in a Failed wrapping that exception" in {
-          pending
+          class MyError extends VirtualMachineError("I meant to do that!")
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onAbortedThen { ex =>
+              throw new IllegalArgumentException("I meant to do that!")
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.failure(new MyError)
+          fo2.underlying map { outcome =>
+            assert(fo2.isCompleted)
+            outcome match {
+              case Failed(ex) =>
+                assert(ex.isInstanceOf[IllegalArgumentException])
+                assert(ex.getMessage == "I meant to do that!")
+              case _ => fail("Outcome was not a Failed")
+            }
+          }
         }
       }
       "completes abruptly with a TestCanceledException" - {
         "should result in a Canceled wrapping that exception" in {
-          pending
+          class MyError extends VirtualMachineError("I meant to do that!")
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onAbortedThen { ex =>
+              cancel("I meant to do that!")
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.failure(new MyError)
+          fo2.underlying map { outcome =>
+            assert(fo2.isCompleted)
+            outcome match {
+              case Canceled(ex) =>
+                assert(ex.isInstanceOf[TestCanceledException])
+                assert(ex.getMessage == "I meant to do that!")
+              case _ => fail("Outcome was not a Canceled")
+            }
+          }
         }
       }
       "completes abruptly with a TestPendingException" - {
         "should result in a Pending wrapping that exception" in {
-          pending
+          class MyError extends VirtualMachineError("I meant to do that!")
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onAbortedThen { ex =>
+              pending
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.failure(new MyError)
+          fo2.underlying map { outcome =>
+            assert(fo2.isCompleted)
+            outcome match {
+              case Pending => succeed
+              case _ => fail("Outcome was not a Pending")
+            }
+          }
         }
       }
       "completes abruptly with a suite-aborting exception" - {
-        "should result in a Failed future wrapping that exception" in {
-          pending
+        "should result in a Failed future wrapping that exception XXX" in {
+          class MyError(msg: String) extends VirtualMachineError(msg)
+          val promise = Promise[Outcome]
+          val fo = FutureOutcome(promise.future)
+          assert(!fo.isCompleted)
+          assert(fo.value == None)
+          val fo2 = 
+            fo onAbortedThen { ex =>
+              throw new MyError("I meant to do that!")
+            }
+          assert(!fo2.isCompleted)
+          assert(fo2.value == None)
+          promise.failure(new MyError("the original one"))
+          fo2.underlying.failed map { ex =>
+            assert(fo2.isCompleted)
+            ex match {
+              case ee: ExecutionException => 
+                assert(ex.getCause.isInstanceOf[MyError])
+                assert(ex.getCause.getMessage == "I meant to do that!")
+              case ex => fail("Was not an ExecutionException: " + ex)
+            }
+          }
         }
       }
     }
