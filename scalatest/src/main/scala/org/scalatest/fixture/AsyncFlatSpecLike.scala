@@ -2125,7 +2125,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       InternalFutureOutcome(
-        withAsyncFixture(
+        withFixture(
           new OneArgAsyncTest {
             val name = testData.name
 

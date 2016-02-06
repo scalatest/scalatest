@@ -540,7 +540,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration with Infor
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       InternalFutureOutcome(
-        withAsyncFixture(
+        withFixture(
           new OneArgAsyncTest {
             val name = testData.name
 

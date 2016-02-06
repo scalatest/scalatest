@@ -35,7 +35,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -99,7 +99,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -155,7 +155,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -205,7 +205,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -251,7 +251,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncFreeSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -295,7 +295,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncFreeSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -359,7 +359,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
@@ -389,7 +389,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -438,7 +438,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -477,7 +477,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
     it("should send an InfoProvided event for an info in main spec body") {
       class MySuite extends AsyncFreeSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         info(
           "hi there"
@@ -502,7 +502,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           info(
@@ -531,7 +531,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           "test 1" in { fixture =>
@@ -565,7 +565,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           "test 1" in { fixture =>
@@ -601,7 +601,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         note(
           "hi there"
@@ -626,7 +626,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           note(
@@ -655,7 +655,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           "test 1" in { fixture =>
@@ -682,7 +682,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           "test 1" in { fixture =>
@@ -711,7 +711,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         alert(
           "hi there"
@@ -736,7 +736,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           alert(
@@ -765,7 +765,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           "test 1" in { fixture =>
@@ -792,7 +792,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           "test 1" in { fixture =>
@@ -821,7 +821,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         markup(
           "hi there"
@@ -846,7 +846,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           markup(
@@ -875,7 +875,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           "test 1" in { fixture =>
@@ -909,7 +909,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" - {
           "test 1" in { fixture =>
@@ -942,7 +942,7 @@ class AsyncFreeSpecLikeSpec extends org.scalatest.FunSpec {
     it("should generate NotAllowedException wrapping a DuplicateTestNameException is thrown inside scope") {
       class TestSpec extends AsyncFreeSpecLike {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = test("testing")
+        def withFixture(test: OneArgAsyncTest): FutureOutcome = test("testing")
         "a feature" - {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }

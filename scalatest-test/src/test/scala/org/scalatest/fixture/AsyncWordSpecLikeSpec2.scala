@@ -32,7 +32,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -95,7 +95,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncWordSpecLike with ParallelTestExecution {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -150,7 +150,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -197,7 +197,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -242,7 +242,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -289,7 +289,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -356,7 +356,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
@@ -388,7 +388,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -436,7 +436,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncWordSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -476,7 +476,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an InfoProvided event for an info in main spec body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         info(
           "hi there"
@@ -499,7 +499,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an InfoProvided event for an info in scope body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           info(
@@ -526,7 +526,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an InfoProvided event for an info in test body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -558,7 +558,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an InfoProvided event for an info in Future returned by test body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -592,7 +592,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a NoteProvided event for a note in main spec body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         note(
           "hi there"
@@ -615,7 +615,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a NoteProvided event for a note in scope body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           note(
@@ -642,7 +642,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a NoteProvided event for a note in test body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -667,7 +667,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a NoteProvided event for a note in Future returned by test body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -694,7 +694,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an AlertProvided event for an alert in main spec body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         alert(
           "hi there"
@@ -717,7 +717,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an AlertProvided event for an alert in scope body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           alert(
@@ -744,7 +744,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an AlertProvided event for an alert in test body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -769,7 +769,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an AlertProvided event for an alert in Future returned by test body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -796,7 +796,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in main spec body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         markup(
           "hi there"
@@ -819,7 +819,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in scope body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           markup(
@@ -846,7 +846,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in test body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -878,7 +878,7 @@ class AsyncWordSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
       class MySuite extends AsyncWordSpecLike  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
