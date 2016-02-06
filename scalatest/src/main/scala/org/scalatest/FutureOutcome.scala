@@ -105,9 +105,19 @@ class FutureOutcome(val underlying: Future[Outcome]) {
 
   def onPendingThen(f: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
-      underlying map { outcome =>
-        if (outcome.isPending) f // TODO: Deal with exceptions thrown by f
-        outcome
+      underlying flatMap { outcome =>
+        if (outcome.isPending) {
+          try {
+            f
+            Future.successful(outcome)
+          }
+          catch {
+            case _: TestPendingException => Future.successful(Pending)
+            case ex: TestCanceledException => Future.successful(Canceled(ex))
+            case ex: Throwable if !anExceptionThatShouldCauseAnAbort(ex) => Future.successful(Failed(ex))
+            case ex: Throwable => Future.failed(new ExecutionException(ex))
+          }
+        } else Future.successful(outcome)
       }
     }
   }
