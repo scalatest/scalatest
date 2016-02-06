@@ -21,6 +21,7 @@ import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import scala.concurrent.{Promise, Future}
 
+/*
 class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
   describe("A time-limited test") {
     describe("when it does not timeout ") {
@@ -187,3 +188,4 @@ class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
     }
   }
 }
+*/

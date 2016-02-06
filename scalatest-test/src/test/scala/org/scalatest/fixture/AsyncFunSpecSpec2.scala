@@ -32,7 +32,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFunSpec with ParallelTestExecution {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -95,7 +95,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFunSpec with ParallelTestExecution {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -150,7 +150,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFunSpec {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         it("test 1") { fixture =>
@@ -197,7 +197,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFunSpec {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         it("test 1") { fixture =>
@@ -242,7 +242,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFunSpec {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         it("test 1") { fixture =>
@@ -289,7 +289,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFunSpec {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         it("test 1") { fixture =>
@@ -356,7 +356,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
@@ -388,7 +388,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFunSpec {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         it("test 1") { fixture =>
@@ -436,7 +436,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFunSpec {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         it("test 1") { fixture =>
@@ -476,7 +476,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an InfoProvided event for an info in main spec body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         info(
           "hi there"
@@ -499,7 +499,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an InfoProvided event for an info in scope body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           info(
@@ -526,7 +526,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an InfoProvided event for an info in test body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           it("test 1") { fixture =>
@@ -558,7 +558,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an InfoProvided event for an info in Future returned by test body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           it("test 1") { fixture =>
@@ -592,7 +592,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a NoteProvided event for a note in main spec body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         note(
           "hi there"
@@ -615,7 +615,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a NoteProvided event for a note in scope body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           note(
@@ -642,7 +642,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a NoteProvided event for a note in test body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           it("test 1") { fixture =>
@@ -667,7 +667,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a NoteProvided event for a note in Future returned by test body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           it("test 1") { fixture =>
@@ -694,7 +694,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an AlertProvided event for an alert in main spec body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         alert(
           "hi there"
@@ -717,7 +717,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an AlertProvided event for an alert in scope body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           alert(
@@ -744,7 +744,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an AlertProvided event for an alert in test body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           it("test 1") { fixture =>
@@ -769,7 +769,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send an AlertProvided event for an alert in Future returned by test body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           it("test 1") { fixture =>
@@ -796,7 +796,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in main spec body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         markup(
           "hi there"
@@ -819,7 +819,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in scope body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           markup(
@@ -846,7 +846,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in test body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           it("test 1") { fixture =>
@@ -878,7 +878,7 @@ class AsyncFunSpecSpec2 extends org.scalatest.AsyncFunSpec {
     it("should send a MarkupProvided event for a markup in Future returned by test body") {
       class MySuite extends AsyncFunSpec  {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         describe("test feature") {
           it("test 1") { fixture =>

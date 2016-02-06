@@ -21,6 +21,7 @@ import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import scala.concurrent.Future
 
+/*
 class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces {
   describe("A time-limited test") {
     describe("when it does not timeout ") {
@@ -162,3 +163,4 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
     }
   }
 }
+*/

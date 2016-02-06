@@ -182,13 +182,13 @@ trait AsyncFunSuiteLike extends AsyncSuite with AsyncTestRegistration with Infor
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name
-            def apply(): Future[Outcome] = { theTest.testFun().toInternalFutureOutcome }
+            def apply(): FutureOutcome = { theTest.testFun().toInternalFutureOutcome }
             val configMap = testData.configMap
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
           }
-        ) /* fills in executionContext here */
+        ).underlying /* fills in executionContext here */
       )
     }
 

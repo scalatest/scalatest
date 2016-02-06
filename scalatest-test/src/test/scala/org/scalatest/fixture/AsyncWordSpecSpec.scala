@@ -35,7 +35,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -99,7 +99,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -155,7 +155,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -205,7 +205,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -251,7 +251,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncWordSpec {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -295,7 +295,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
       class ExampleSpec extends AsyncWordSpec {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -359,7 +359,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
@@ -389,7 +389,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -438,7 +438,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         "test 1" in { fixture =>
@@ -480,7 +480,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         info(
           "hi there"
@@ -505,7 +505,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           info(
@@ -534,7 +534,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -568,7 +568,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -604,7 +604,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         note(
           "hi there"
@@ -629,7 +629,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           note(
@@ -658,7 +658,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -685,7 +685,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -714,7 +714,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         alert(
           "hi there"
@@ -739,7 +739,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           alert(
@@ -768,7 +768,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -795,7 +795,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -824,7 +824,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         markup(
           "hi there"
@@ -849,7 +849,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           markup(
@@ -878,7 +878,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -912,7 +912,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
         "test feature" should {
           "test 1" in { fixture =>
@@ -945,7 +945,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside when") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" when {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -968,7 +968,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand when") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" when {}
         it when {
           "test 1" in { fixture => succeed }
@@ -992,7 +992,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside should") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" should {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -1015,7 +1015,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand should") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" should {}
         it should {
           "test 1" in { fixture => succeed }
@@ -1039,7 +1039,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside must") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" must {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -1062,7 +1062,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand must") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" must {}
         it must {
           "test 1" in { fixture => succeed }
@@ -1086,7 +1086,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside that") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" that {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -1109,7 +1109,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside which") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" which {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -1132,7 +1132,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside can") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" can {
           "test 1" in { fixture => succeed }
           "test 1" in { fixture => succeed }
@@ -1155,7 +1155,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand can") {
       class TestSpec extends AsyncWordSpec {
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = { test("hi") }
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome = { test("hi") }
         "a feature" can {}
         it can {
           "test 1" in { fixture => succeed }

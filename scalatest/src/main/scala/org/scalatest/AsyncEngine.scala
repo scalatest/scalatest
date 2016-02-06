@@ -390,7 +390,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     executionContext match {
       case dec: concurrent.SerialExecutionContext =>
-        dec.runNow(asyncOutcome.toInternalFutureOutcome)
+        dec.runNow(asyncOutcome.toInternalFutureOutcome.underlying)
       case _ =>
     }
 

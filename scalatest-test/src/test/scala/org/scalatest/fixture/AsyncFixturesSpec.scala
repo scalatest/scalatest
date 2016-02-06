@@ -29,7 +29,7 @@ class AsyncFixturesSpec extends org.scalatest.FunSpec {
       val spec = new FunSpec with AsyncFixtures {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         it("a test") { fixture => }
@@ -46,7 +46,7 @@ class AsyncFixturesSpec extends org.scalatest.FunSpec {
       val spec = new FunSpecLike with AsyncFixtures {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         it("a test") { fixture => }
@@ -63,7 +63,7 @@ class AsyncFixturesSpec extends org.scalatest.FunSpec {
       val suite = new FunSuite with AsyncFixtures {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         test("a test") { fixture => }
@@ -80,7 +80,7 @@ class AsyncFixturesSpec extends org.scalatest.FunSpec {
       val suite = new FunSuiteLike with AsyncFixtures {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         test("a test") { fixture => }

@@ -247,11 +247,11 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    * <a href="AsyncFlatSpec.html#withFixtureNoArgTest">documentation for trait <code>AsyncFlatSpec</code></a>.
    * </p>
    */
-  trait NoArgAsyncTest extends (() => Future[Outcome]) with TestData {
+  trait NoArgAsyncTest extends (() => FutureOutcome) with TestData {
     /**
-     * Runs the body of the test, returning a <code>Future[Outcome]</code>.
+     * Runs the body of the test, returning a <code>FutureOutcome</code>.
      */
-    def apply(): Future[Outcome]
+    def apply(): FutureOutcome
   }
 
   /**
@@ -280,7 +280,7 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    *
    * @param test the no-arg async test function to run with a fixture
    */
-  def withFixture(test: NoArgAsyncTest): Future[Outcome] = {
+  def withFixture(test: NoArgAsyncTest): FutureOutcome = {
     test()
   }
 

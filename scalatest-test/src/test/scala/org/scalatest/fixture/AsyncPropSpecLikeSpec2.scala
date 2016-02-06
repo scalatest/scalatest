@@ -31,7 +31,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -94,7 +94,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncPropSpecLike with ParallelTestExecution {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -149,7 +149,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         property("test 1") { fixture =>
@@ -196,7 +196,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         property("test 1") { fixture =>
@@ -241,7 +241,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         property("test 1") { fixture =>
@@ -288,7 +288,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         property("test 1") { fixture =>
@@ -355,7 +355,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
@@ -387,7 +387,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         property("test 1") { fixture =>
@@ -438,7 +438,7 @@ class AsyncPropSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncPropSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         property("test 1") { fixture =>

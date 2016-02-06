@@ -224,7 +224,7 @@ trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSui
    * <a href="AsyncFlatSpec.html#withAsyncFixtureNoArgAsyncTest">documentation for trait <code>fixture.AsyncFlatSpec</code></a>.
    * </p>
    */
-  trait OneArgAsyncTest extends (FixtureParam => Future[Outcome]) with TestData { thisOneArgAsyncTest =>
+  trait OneArgAsyncTest extends (FixtureParam => FutureOutcome) with TestData { thisOneArgAsyncTest =>
 
     /**
      * Using the passed <code>FixtureParam</code>, produces a <code>Future[Outcome]</code> representing
@@ -233,7 +233,7 @@ trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSui
      * @param fixture the <code>FixtureParam</code>
      * @return an instance of <code>Future[Outcome]</code>
      */
-    def apply(fixture: FixtureParam): Future[Outcome]
+    def apply(fixture: FixtureParam): FutureOutcome
 
     /**
      * Convert this <code>OneArgAsyncTest</code> to a <code>NoArgAsyncTest</code> whose
@@ -268,7 +268,7 @@ trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSui
       new NoArgAsyncTest {
         val name = thisOneArgAsyncTest.name
         val configMap = thisOneArgAsyncTest.configMap
-        def apply(): Future[Outcome] = { thisOneArgAsyncTest(fixture) }
+        def apply(): FutureOutcome = { thisOneArgAsyncTest(fixture) }
         val scopes = thisOneArgAsyncTest.scopes
         val text = thisOneArgAsyncTest.text
         val tags = thisOneArgAsyncTest.tags
@@ -290,5 +290,5 @@ trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSui
    * @param test the <code>OneArgAsyncTest</code> to invoke, passing in a fixture
    * @return an instance of <code>Future[Outcome]</code>
    */
-  def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome]
+  def withAsyncFixture(test: OneArgAsyncTest): FutureOutcome
 }

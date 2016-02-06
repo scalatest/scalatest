@@ -270,7 +270,7 @@ trait AsyncFeatureSpecLike extends AsyncSuite with AsyncTestRegistration with In
           new OneArgAsyncTest {
             val name = testData.name
 
-            def apply(fixture: FixtureParam): Future[Outcome] =
+            def apply(fixture: FixtureParam): FutureOutcome =
               theTest.testFun(fixture).toInternalFutureOutcome
 
             val configMap = testData.configMap
@@ -278,7 +278,7 @@ trait AsyncFeatureSpecLike extends AsyncSuite with AsyncTestRegistration with In
             val text = testData.text
             val tags = testData.tags
           }
-        )
+        ).underlying
       )
     }
 
