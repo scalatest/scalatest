@@ -124,7 +124,15 @@ class FutureOutcome(val underlying: Future[Outcome]) {
 
   def change(f: Outcome => Outcome)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
-      underlying.map(f) // TODO: Deal with exceptions thrown by f
+      underlying flatMap { outcome =>
+        try Future.successful(f(outcome))
+        catch {
+          case _: TestPendingException => Future.successful(Pending)
+          case ex: TestCanceledException => Future.successful(Canceled(ex))
+          case ex: Throwable if !anExceptionThatShouldCauseAnAbort(ex) => Future.successful(Failed(ex))
+          case ex: Throwable => Future.failed(new ExecutionException(ex))
+        }
+      }
     }
   }
 
