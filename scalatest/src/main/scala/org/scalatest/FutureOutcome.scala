@@ -45,11 +45,11 @@ class FutureOutcome(val underlying: Future[Outcome]) {
       underlying flatMap { outcome =>
         if (outcome.isSucceeded) {
           try {
-            f // TODO: Deal with exceptions thrown by f
+            f
             Future.successful(outcome)
           }
           catch {
-            case ex: TestPendingException => Future.successful(Pending)
+            case _: TestPendingException => Future.successful(Pending)
             case ex: TestCanceledException => Future.successful(Canceled(ex))
             case ex: Throwable if !anExceptionThatShouldCauseAnAbort(ex) => Future.successful(Failed(ex))
             case ex: Throwable => Future.failed(new ExecutionException(ex))
@@ -61,12 +61,22 @@ class FutureOutcome(val underlying: Future[Outcome]) {
 
   def onFailedThen(f: Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
-      underlying map { outcome =>
+      underlying flatMap { outcome =>
         outcome match {
-          case Failed(ex) => f(ex) // TODO: Deal with exceptions thrown by f
+          case Failed(originalEx) =>
+            try {
+              f(originalEx)
+              Future.successful(outcome)
+            }
+            catch {
+              case _: TestPendingException => Future.successful(Pending)
+              case ex: TestCanceledException => Future.successful(Canceled(ex))
+              case ex: Throwable if !anExceptionThatShouldCauseAnAbort(ex) => Future.successful(Failed(ex))
+              // case ex: Throwable => Future.failed(new ExecutionException(ex))
+            }
           case _ =>
+            Future.successful(outcome)
         }
-        outcome
       }
     }
   }
