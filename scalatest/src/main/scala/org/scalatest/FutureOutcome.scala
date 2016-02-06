@@ -29,17 +29,6 @@ class FutureOutcome(val underlying: Future[Outcome]) {
 
   def onCompletedThen(f: Outcome Or Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
-/*
-      underlying recoverWith {
-        case ex =>
-          f(Bad(ex))
-          Future.failed(ex)
-      } flatMap { outcome =>
-        f(Good(outcome))
-        outcome
-      }
-
-*/
       underlying recoverWith {
         case ex =>
           try {
@@ -209,7 +198,10 @@ class FutureOutcome(val underlying: Future[Outcome]) {
 }
 
 object FutureOutcome {
-  def apply(underlying: Future[Outcome]): FutureOutcome = new FutureOutcome(underlying)
+  // Make this private so only ScalaTest can make one, so we can "promise" that
+  // you'll never need to look for things like a TestCanceledException being passed
+  // to onAbortedThen.
+  private[scalatest] def apply(underlying: Future[Outcome]): FutureOutcome = new FutureOutcome(underlying)
 }
 
 /*
