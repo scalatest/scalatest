@@ -1125,13 +1125,13 @@ one error found
         withFixture(
           new NoArgAsyncTest {
             val name = testData.name
-            def apply(): Future[Outcome] = { theTest.testFun().toInternalFutureOutcome }
+            def apply(): FutureOutcome = { theTest.testFun().toFutureOutcome }
             val configMap = testData.configMap
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
           }
-        )
+        ).underlying
       )
     }
 

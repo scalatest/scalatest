@@ -32,7 +32,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -95,7 +95,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -150,7 +150,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFeatureSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         scenario("test 1") { fixture =>
@@ -197,7 +197,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFeatureSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         scenario("test 1") { fixture =>
@@ -242,7 +242,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFeatureSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         scenario("test 1") { fixture =>
@@ -289,7 +289,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFeatureSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         scenario("test 1") { fixture =>
@@ -356,7 +356,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
         // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         def sum(xs: List[Int]): Future[Int] =
@@ -388,7 +388,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFeatureSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         scenario("test 1") { fixture =>
@@ -436,7 +436,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class ExampleSpec extends AsyncFeatureSpecLike {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         scenario("test 1") { fixture =>
@@ -477,7 +477,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         info(
@@ -502,7 +502,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -531,7 +531,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -565,7 +565,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -601,7 +601,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         note(
@@ -626,7 +626,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -655,7 +655,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -682,7 +682,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -711,7 +711,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         alert(
@@ -736,7 +736,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -765,7 +765,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -791,7 +791,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -820,7 +820,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         markup(
@@ -845,7 +845,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -873,7 +873,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {
@@ -907,7 +907,7 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       class MySuite extends AsyncFeatureSpecLike  {
 
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         feature("test feature") {

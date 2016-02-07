@@ -2125,19 +2125,19 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
       InternalFutureOutcome(
-        withAsyncFixture(
+        withFixture(
           new OneArgAsyncTest {
             val name = testData.name
 
-            def apply(fixture: FixtureParam): Future[Outcome] =
-              theTest.testFun(fixture).toInternalFutureOutcome
+            def apply(fixture: FixtureParam): FutureOutcome =
+              theTest.testFun(fixture).toFutureOutcome
 
             val configMap = testData.configMap
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
           }
-        )
+        ).underlying
       )
     }
 

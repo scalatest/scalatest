@@ -247,11 +247,11 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    * <a href="AsyncFlatSpec.html#withFixtureNoArgTest">documentation for trait <code>AsyncFlatSpec</code></a>.
    * </p>
    */
-  trait NoArgAsyncTest extends (() => Future[Outcome]) with TestData {
+  trait NoArgAsyncTest extends (() => FutureOutcome) with TestData {
     /**
      * Runs the body of the test, returning a <code>Future[Outcome]</code>.
      */
-    def apply(): Future[Outcome]
+    def apply(): FutureOutcome
   }
 
   /**
@@ -280,7 +280,7 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    *
    * @param test the no-arg async test function to run with a fixture
    */
-  def withFixture(test: NoArgAsyncTest): Future[Outcome] = {
+  def withFixture(test: NoArgAsyncTest): FutureOutcome = {
     test()
   }
 
@@ -301,14 +301,16 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    * @return the future produced by the first by-name parameter, with an invocation of the second
    *            by-name parameter registered to execute when the future completes.
    */
-  def withCleanup[T](future: => Future[T])(cleanup: => Unit): Future[T] = {
-    val result: Future[T] =
-      try future // evaluate the by-name once
+  def withCleanup(futureOutcome: => FutureOutcome)(cleanup: => Unit): FutureOutcome = {
+    val result: FutureOutcome =
+      try futureOutcome // evaluate the by-name once
       catch {
         case ex: Throwable =>
           cleanup  // execute the clean up
           throw ex // rethrow the same exception
       }
+    result onCompletedThen { _ => cleanup }
+/*
     // First deal with Failure, and mimic finally semantics
     // but in future-space. The recoverWith will only execute
     // if this is a Failure, and will only return a Failure,
@@ -328,6 +330,7 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
       cleanup
       v
     }
+*/
   }
 
   /**

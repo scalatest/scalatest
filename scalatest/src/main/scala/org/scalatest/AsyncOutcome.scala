@@ -13,6 +13,7 @@ private[scalatest] trait AsyncOutcome {
   def toOutcome: Outcome // may block
   // SKIP-SCALATESTJS-END
   def toInternalFutureOutcome: Future[Outcome]
+  def toFutureOutcome: FutureOutcome
 }
 
 private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
@@ -29,6 +30,7 @@ private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
   def toOutcome: Outcome = past
   // SKIP-SCALATESTJS-END
   def toInternalFutureOutcome: Future[Outcome] = Future.successful(past)
+  def toFutureOutcome: FutureOutcome = FutureOutcome { Future.successful(past) }
 }
 
 private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
@@ -69,4 +71,5 @@ private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(imp
   def toOutcome: Outcome = Await.result(future, Duration.Inf)
   // SKIP-SCALATESTJS-END
   def toInternalFutureOutcome: Future[Outcome] = future
+  def toFutureOutcome: FutureOutcome = FutureOutcome { future }
 }
