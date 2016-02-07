@@ -28,9 +28,10 @@ import org.scalatest.concurrent.Eventually._
 import org.scalatest.OutcomeOf.outcomeOf
 import org.scalatest.concurrent.ScalaFutures._
 
-class WithCleanupSpec extends FunSpec {
+class WithCleanupSpec extends AsyncFunSpec {
 
   describe("AsyncSuite's withCleanup method") {
+/*
     val asyncSuite =
       new AsyncSuite {
 // SKIP-SCALATESTJS-START
@@ -38,14 +39,15 @@ class WithCleanupSpec extends FunSpec {
 // SKIP-SCALATESTJS-END
 //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
       }
+*/
     describe("when an exception is immediately thrown") {
       it("should perform the side effect and rethrow the same exception") {
         var sideEffectWasExecuted = false
         val ex = new RuntimeException("oops")
         val thrown = 
           intercept[RuntimeException] {
-            asyncSuite.withCleanup {
-              throw ex
+            withCleanup {
+              (throw ex): FutureOutcome
             } {
               sideEffectWasExecuted = true
             }
@@ -60,8 +62,8 @@ class WithCleanupSpec extends FunSpec {
           val secondEx = new RuntimeException("second")
           val thrown = 
             intercept[RuntimeException] {
-              asyncSuite.withCleanup {
-                throw firstEx
+              withCleanup {
+                (throw firstEx): FutureOutcome
               } {
                 sideEffectWasExecuted = true
                 throw secondEx
@@ -78,17 +80,17 @@ class WithCleanupSpec extends FunSpec {
           var sideEffectWasExecuted = false
           val promise = Promise[Outcome]()
           val fut: FutureOutcome = 
-            asyncSuite.withCleanup {
+            withCleanup {
               FutureOutcome { promise.future }
             } {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
           promise.success(Succeeded)
-          // SKIP-SCALATESTJS-START
-          eventually { assert(sideEffectWasExecuted) }
-          // SKIP-SCALATESTJS-END
-          assert(fut.value == Some(Good(Succeeded))) // TODO: This is a race condition, and therefore a flicker. Fix it.
+          fut.underlying.map { res =>
+            assert(sideEffectWasExecuted)
+            assert(res == Succeeded)
+          }
         }
       }
       describe("that completes with a Success(Pending)") {
@@ -96,17 +98,17 @@ class WithCleanupSpec extends FunSpec {
           var sideEffectWasExecuted = false
           val promise = Promise[Outcome]()
           val fut: FutureOutcome = 
-            asyncSuite.withCleanup {
+            withCleanup {
               FutureOutcome { promise.future }
             } {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
           promise.success(Pending)
-          // SKIP-SCALATESTJS-START
-          eventually { assert(sideEffectWasExecuted) }
-          // SKIP-SCALATESTJS-END
-          assert(fut.value == Some(Good(Pending)))
+          fut.underlying.map { res => 
+            assert(sideEffectWasExecuted)
+            assert(res == Pending)
+          }
         }
       }
       describe("that completes with a Success(Canceled)") {
@@ -115,17 +117,17 @@ class WithCleanupSpec extends FunSpec {
           val promise = Promise[Outcome]()
           val canceled = outcomeOf { cancel("nevermind") }
           val fut: FutureOutcome = 
-            asyncSuite.withCleanup {
+            withCleanup {
               FutureOutcome { promise.future }
             } {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
           promise.success(canceled)
-          // SKIP-SCALATESTJS-START
-          eventually { assert(sideEffectWasExecuted) }
-          // SKIP-SCALATESTJS-END
-          assert(fut.value == Some(Good(canceled)))
+          fut.underlying.map { res => 
+            assert(sideEffectWasExecuted)
+            assert(res == canceled)
+          }
         }
       }
       describe("that completes with a Success(Failed)") {
@@ -134,17 +136,17 @@ class WithCleanupSpec extends FunSpec {
           val promise = Promise[Outcome]()
           val failed = outcomeOf { fail("oops") }
           val fut: FutureOutcome = 
-            asyncSuite.withCleanup {
+            withCleanup {
               FutureOutcome { promise.future }
             } {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
           promise.success(failed)
-          // SKIP-SCALATESTJS-START
-          eventually { assert(sideEffectWasExecuted) }
-          // SKIP-SCALATESTJS-END
-          assert(fut.value == Some(Good(failed)))
+          fut.underlying.map { res => 
+            assert(sideEffectWasExecuted)
+            assert(res == failed)
+          }
         }
       }
       describe("that completes with a Failure(ex)") {
@@ -153,17 +155,17 @@ class WithCleanupSpec extends FunSpec {
           val promise = Promise[Outcome]()
           val ex = new RuntimeException("I meant to do that!")
           val fut: FutureOutcome = 
-            asyncSuite.withCleanup {
+            withCleanup {
               FutureOutcome { promise.future }
             } {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
           promise.failure(ex)
-          // SKIP-SCALATESTJS-START
-          eventually { assert(sideEffectWasExecuted) }
-          // SKIP-SCALATESTJS-END
-          assert(fut.underlying.failed.futureValue eq ex)
+          fut.underlying.failed.map { actualEx => 
+            assert(sideEffectWasExecuted)
+            assert(actualEx eq ex)
+          }
         }
         describe("but a second exception is thrown by the cleanup clause") {
           it("should perform the side effect and fail with the second exception") {
@@ -172,7 +174,7 @@ class WithCleanupSpec extends FunSpec {
             val firstEx = new RuntimeException("first")
             val secondEx = new RuntimeException("second")
             val fut: FutureOutcome = 
-              asyncSuite.withCleanup {
+              withCleanup {
                 FutureOutcome { promise.future }
               } {
                 sideEffectWasExecuted = true
@@ -180,10 +182,10 @@ class WithCleanupSpec extends FunSpec {
               }
             assert(!sideEffectWasExecuted)
             promise.failure(firstEx)
-            // SKIP-SCALATESTJS-START
-            eventually { assert(sideEffectWasExecuted) }
-            // SKIP-SCALATESTJS-END
-            assert(fut.value == Some(Good(Failed(secondEx))))
+            fut.underlying.map { res => 
+              assert(sideEffectWasExecuted)
+              assert(res == Failed(secondEx))
+            }
           }
         }
       }

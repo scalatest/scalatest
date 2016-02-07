@@ -19,6 +19,7 @@ import scala.concurrent.Future
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.concurrent.ExecutionContext
 import scala.language.implicitConversions // To convert Assertion to Future[Assertion]
+import enablers.Futuristic
 
 /*
  * TODO: Fill in here and also add a lifecycle-methods to Suite, which is linked to
@@ -301,15 +302,15 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    * @return the future produced by the first by-name parameter, with an invocation of the second
    *            by-name parameter registered to execute when the future completes.
    */
-  def withCleanup(futureOutcome: => FutureOutcome)(cleanup: => Unit): FutureOutcome = {
-    val result: FutureOutcome =
-      try futureOutcome // evaluate the by-name once
+  def withCleanup[T](trial: => T)(cleanup: => Unit)(implicit futuristic: Futuristic[T]): T = {
+    val result: T =
+      try trial // evaluate the by-name once
       catch {
         case ex: Throwable =>
           cleanup  // execute the clean up
           throw ex // rethrow the same exception
       }
-    result onCompletedThen { _ => cleanup }
+    futuristic.withCleanup(result) { cleanup }
 /*
     // First deal with Failure, and mimic finally semantics
     // but in future-space. The recoverWith will only execute

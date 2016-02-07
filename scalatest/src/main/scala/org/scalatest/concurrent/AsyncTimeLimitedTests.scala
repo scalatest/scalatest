@@ -20,9 +20,10 @@ import org.scalatest._
 
 import scala.concurrent.Future
 
+/*
 trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts[Outcome] { this: AsyncSuite =>
 
-  abstract override def withFixture(test: NoArgAsyncTest): Future[Outcome] = {
+  abstract override def withFixture(test: NoArgAsyncTest): FutureOutcome = {
 
     failingAfter(timeLimit) {
       super.withFixture(test)
@@ -39,3 +40,4 @@ trait AsyncTimeLimitedTests extends AsyncSuiteMixin with AsyncTimeouts[Outcome] 
   def timeLimit: Span
 
 }
+*/

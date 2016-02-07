@@ -60,6 +60,6 @@ trait AsyncSuiteMixin extends SuiteMixin { this: AsyncSuite =>
    *
    * @param test the no-arg async test function to run with a fixture
    */
-  protected def withFixture(test: NoArgAsyncTest): Future[Outcome]
+  protected def withFixture(test: NoArgAsyncTest): FutureOutcome
 }
 
