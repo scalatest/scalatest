@@ -56,7 +56,7 @@ protected[scalatest] class MandarinOrangePropSpec(ns: Suite*) extends PropSpec {
 // Named these with a MandarinOrange prefix so they wouldn't confict
 // with anything else in the test suite. These need to be top level
 // else they end up with dollar signs in the names.
-trait MandarinOrangeFixture { this: fixture.SyncSuite =>
+trait MandarinOrangeFixture { this: fixture.TestSuite =>
   type FixtureParam = String
   def withFixture(test: OneArgTest): Outcome = { test("hi") }
 }

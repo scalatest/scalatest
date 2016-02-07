@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-trait SyncSuiteMixin extends SuiteMixin { this: SyncSuite =>
+trait TestSuiteMixin extends SuiteMixin { this: TestSuite =>
 
   /**
    * Runs the passed test function with a fixture established by this method.

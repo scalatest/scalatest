@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-trait SyncSuite extends Suite { thisSyncSuite =>
+trait TestSuite extends Suite { thisTestSuite =>
 
   /**
    * A test function taking no arguments and returning an <code>Outcome</code>.

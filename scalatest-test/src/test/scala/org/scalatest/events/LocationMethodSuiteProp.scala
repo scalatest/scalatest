@@ -62,7 +62,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
   }
   
   def fixtureSuite = new TestLocationFixtureSuite
-  class TestLocationFixtureSuite extends fixture.SyncSuite with FixtureServices with StringFixture {
+  class TestLocationFixtureSuite extends fixture.TestSuite with FixtureServices with StringFixture {
     val suiteTypeName = "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite"
     val expectedStartingList = List(TestStartingPair("testSucceed", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testSucceed()"), 
                                 TestStartingPair("testPending", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSuite", "testPending()"), 

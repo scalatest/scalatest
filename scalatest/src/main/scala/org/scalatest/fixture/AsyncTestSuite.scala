@@ -83,7 +83,7 @@ import scala.concurrent.Future
  * <p>
  * The recommended way to ensure cleanup is performed after a test body finishes execution is
  * to use the <code>withCleanup</code> helper method, defined in supertrait
- * <a href="../AsyncSuite.html"><code>org.scalatest.AsyncSuite</code></a>, which will ensure that
+ * <a href="../AsyncTestSuite.html"><code>org.scalatest.AsyncTestSuite</code></a>, which will ensure that
  * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
  * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
  * to execute asynchronously when the future completes.
@@ -195,7 +195,7 @@ import scala.concurrent.Future
  * unchanged. The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
  * </p>
  */
-trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSuite {
+trait AsyncTestSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncTestSuite {
 
   /**
    * Transform the test outcome, `Registration` type to `AsyncOutcome`.
@@ -245,7 +245,7 @@ trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSui
      * <p>
      * This method makes it easier to invoke the <code>withAsyncFixture</code> method
      * that takes a <code>NoArgAsyncTest</code>.
-     * Here's how that might look in a <code>fixture.AsyncSuite</code>
+     * Here's how that might look in a <code>fixture.AsyncTestSuite</code>
      * whose <code>FixtureParam</code> is <code>StringBuilder</code>:
      * </p>
      *
@@ -284,7 +284,7 @@ trait AsyncSuite extends org.scalatest.fixture.Suite with org.scalatest.AsyncSui
    * and if needed, register any clean up needed after the test completes as
    * a callback on the <code>Future[Outcome]</code> returned by the test function.
    * For more detail and examples, see the
-   * <a href="AsyncSuite.html">main documentation for this trait</a>.
+   * <a href="AsyncTestSuite.html">main documentation for this trait</a>.
    * </p>
    *
    * @param test the <code>OneArgAsyncTest</code> to invoke, passing in a fixture

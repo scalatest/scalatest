@@ -170,7 +170,7 @@ package org.scalatest
  * <a name="asyncExecutionModel"></a><h2>Asynchronous execution model</h2>
  *
  * <p>
- * <code>AsyncFunSuite</code> extends <a href="AsyncSuite.html"><code>AsyncSuite</code></a>, which provides an
+ * <code>AsyncFunSuite</code> extends <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, which provides an
  * implicit <code>scala.concurrent.ExecutionContext</code>
  * named <code>executionContext</code>. This
  * execution context is used by <code>AsyncFunSuite</code> to 
@@ -338,7 +338,7 @@ package org.scalatest
  * If you need to test for expected exceptions in the context of futures, you can use the
  * <code>recoverToSucceededIf</code> and <code>recoverToExceptionIf</code> methods of trait
  * <a href="RecoverMethods.html"><code>RecoverMethods</code></a>. Because this trait is mixed into
- * supertrait <code>AsyncSuite</code>, both of these methods are
+ * supertrait <code>AsyncTestSuite</code>, both of these methods are
  * available by default in an <code>AsyncFunSuite</code>.
  * </p>
  *
@@ -1107,7 +1107,7 @@ package org.scalatest
  * Although the get-fixture method approach takes care of setting up a fixture at the beginning of each
  * test, it doesn't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
  * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withAsyncFixture(NoArgAsyncTest)</code>, a
- * method defined in trait <a href="AsyncSuite.html"><code>AsyncSuite</code></a>, a supertrait of <code>AsyncFunSuite</code>.
+ * method defined in trait <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, a supertrait of <code>AsyncFunSuite</code>.
  * </p>
  *
  * <p>
@@ -1118,7 +1118,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stHighlight">
- * // Default implementation in trait AsyncSuite
+ * // Default implementation in trait AsyncTestSuite
  * protected def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
  *   test()
  * }
@@ -1127,7 +1127,7 @@ package org.scalatest
  * <p>
  * You can, therefore, override <code>withAsyncFixture</code> to perform setup before invoking the test function,
  * and/or perform cleanup after the test completes. The recommended way to ensure cleanup is performed after a test completes is
- * to use the <code>withCleanup</code> helper method, defined in supertrait <a href="AsyncSuite.html"><code>AsyncSuite</code></a>.
+ * to use the <code>withCleanup</code> helper method, defined in supertrait <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>.
  * The <code>withCleanup</code> method will ensure that
  * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
  * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
@@ -1410,8 +1410,8 @@ package org.scalatest
  *
  * <p>
  * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a
- * <code>fixture.AsyncSuite</code> and overriding <code>withAsyncFixture(OneArgAsyncTest)</code>.
- * Each test in a <code>fixture.AsyncSuite</code> takes a fixture as a parameter, allowing you to pass the fixture into
+ * <code>fixture.AsyncTestSuite</code> and overriding <code>withAsyncFixture(OneArgAsyncTest)</code>.
+ * Each test in a <code>fixture.AsyncTestSuite</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
  * <code>withAsyncFixture</code> method that takes a <code>OneArgAsyncTest</code>. This <code>withAsyncFixture</code> method is responsible for
  * invoking the one-arg async test function, so you can perform fixture set up before invoking and passing
@@ -1661,7 +1661,7 @@ package org.scalatest
  *     }
  * }
  * 
- * trait Builder extends AsyncSuiteMixin { this: AsyncSuite =&gt;
+ * trait Builder extends AsyncTestSuiteMixin { this: AsyncTestSuite =&gt;
  * 
  *   final val builderActor = new StringBuilderActor
  * 
@@ -1675,7 +1675,7 @@ package org.scalatest
  *   }
  * }
  * 
- * trait Buffer extends AsyncSuiteMixin { this: AsyncSuite =&gt;
+ * trait Buffer extends AsyncTestSuiteMixin { this: AsyncTestSuite =&gt;
  * 
  *   final val bufferActor = new StringBufferActor
  * 

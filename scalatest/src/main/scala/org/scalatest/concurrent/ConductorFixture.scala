@@ -85,7 +85,7 @@ import org.scalatest.OutcomeOf.outcomeOf
  *
  * @author Bill Venners
  */
-trait ConductorFixture extends SyncSuiteMixin with Conductors { this: fixture.SyncSuite =>
+trait ConductorFixture extends TestSuiteMixin with Conductors { this: fixture.TestSuite =>
 
   /**
    * Defines type <code>Fixture</code> to be <code>Conductor</code>.

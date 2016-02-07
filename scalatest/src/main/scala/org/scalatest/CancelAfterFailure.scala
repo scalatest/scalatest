@@ -35,7 +35,7 @@ package org.scalatest
  * including by mixing in <a href="ParallelTestExecution.html"><code>ParallelTestExecution</code></a> or a <a href="path/package.html">path traits</a>.
  * </p>
  */
-trait CancelAfterFailure extends SyncSuiteMixin { this: SyncSuite =>
+trait CancelAfterFailure extends TestSuiteMixin { this: TestSuite =>
 
   @volatile private var cancelRemaining = false
 

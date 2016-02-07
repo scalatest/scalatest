@@ -54,7 +54,7 @@ private[scalatest] class SerialExecutionContext extends ExecutionContext {
      do before the Future completes, it enters the wait set.
      Adding another job to the queue will notify it. We don't
      notify when the future completes, because the last thing an
-     AsyncSuite currently does is that it transforms a completed
+     AsyncTestSuite currently does is that it transforms a completed
      Future[Assertion] returned from the test into a Future[Outcome].
      That transformation is done using the executionContext, which
      in this case is a SerialExecutionContext. This is always the

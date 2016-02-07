@@ -314,7 +314,7 @@ class ConductorDeprecatedSuite extends FunSuite with Matchers with Conductors wi
 
   test("ConductorMethods is a stackable trait that delegates test function execution to withFixture(NoArgTest)") {
     var calledSuperWithFixtureNoArgTest = false
-    trait SuperTrait extends SyncSuiteMixin { this: SyncSuite =>
+    trait SuperTrait extends TestSuiteMixin { this: TestSuite =>
       abstract override def withFixture(test: NoArgTest): Outcome = {
         calledSuperWithFixtureNoArgTest = true
         super.withFixture(test)

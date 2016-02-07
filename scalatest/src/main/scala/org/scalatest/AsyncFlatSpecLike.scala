@@ -48,7 +48,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
     () => {

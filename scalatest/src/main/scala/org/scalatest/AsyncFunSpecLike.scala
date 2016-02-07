@@ -44,7 +44,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-trait AsyncFunSpecLike extends AsyncSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentSpecMod, "FunSpec")
 

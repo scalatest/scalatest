@@ -128,7 +128,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
   describe("A fixture.Suite") {
     it("should pass in the fixture to every test method") {
-      val a = new SyncSuite { // TODO: This should no longer work. Why does it not fail?
+      val a = new TestSuite { // TODO: This should no longer work. Why does it not fail?
         type FixtureParam = String
         val hello = "Hello, world!"
         def withFixture(test: OneArgTest): Outcome = {
@@ -147,7 +147,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     }
     
     it("should not pass a NoArgTest to withFixture for test methods that take a Fixture") {
-      class MySuite extends SyncSuite { // Also should no longer work. Why is it not failing?
+      class MySuite extends TestSuite { // Also should no longer work. Why is it not failing?
         type FixtureParam = String
         var aNoArgTestWasPassed = false
         def withFixture(test: OneArgTest): Outcome = {

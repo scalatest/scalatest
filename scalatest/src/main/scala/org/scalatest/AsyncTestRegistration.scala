@@ -22,7 +22,7 @@ import scala.concurrent.Future
  * Trait declaring methods that can be used to register by-name test functions that
  * have result type <code>Future[Assertion]</code>.
  */
-trait AsyncTestRegistration { theSuite: AsyncSuite =>
+trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
 
   /**
    * Registers a test.

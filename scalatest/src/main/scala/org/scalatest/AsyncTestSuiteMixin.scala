@@ -18,7 +18,7 @@ package org.scalatest
 import scala.concurrent.Future
 
 /**
- * Trait defining abstract "lifecycle" methods that are implemented in <a href="AsyncSuite.html#lifecycle-methods"><code>AsyncSuite</code></a>
+ * Trait defining abstract "lifecycle" methods that are implemented in <a href="AsyncTestSuite.html#lifecycle-methods"><code>AsyncTestSuite</code></a>
  * and can be overridden in stackable modification traits.
  *
  * <p>
@@ -27,7 +27,7 @@ import scala.concurrent.Future
  * </p>
  *
  * <pre class="stHighlight">
- * trait Builder extends AsyncSuiteMixin { this: AsyncSuite =&gt;
+ * trait Builder extends AsyncTestSuiteMixin { this: AsyncTestSuite =&gt;
  * 
  *   final val builder = new ThreadSafeStringBuilder
  * 
@@ -42,7 +42,7 @@ import scala.concurrent.Future
  * }
  * </pre>
  */
-trait AsyncSuiteMixin extends SuiteMixin { this: AsyncSuite =>
+trait AsyncTestSuiteMixin extends SuiteMixin { this: AsyncTestSuite =>
 
   /**
    * Run the passed test function in the context of a fixture established by this method.
@@ -55,7 +55,7 @@ trait AsyncSuiteMixin extends SuiteMixin { this: AsyncSuite =>
    * passed to this method takes no parameters, preparing the fixture will require
    * side effects, such as reassigning instance <code>var</code>s in this <code>Suite</code> or initializing
    * a globally accessible external database. If you want to avoid reassigning instance <code>var</code>s
-   * you can use <a href="fixture/AsyncSuite.html">fixture.AsyncSuite</a>.
+   * you can use <a href="fixture/AsyncTestSuite.html">fixture.AsyncTestSuite</a>.
    * </p>
    *
    * @param test the no-arg async test function to run with a fixture

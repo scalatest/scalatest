@@ -89,7 +89,7 @@ import org.scalatest.OutcomeOf.outcomeOf
  * @author Josh Cough
  * @author Bill Venners
  */
-trait ConductorMethods extends SyncSuiteMixin with Conductors { this: SyncSuite =>
+trait ConductorMethods extends TestSuiteMixin with Conductors { this: TestSuite =>
 
   private val conductor = new AtomicReference[Conductor]()
 

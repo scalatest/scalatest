@@ -24,7 +24,7 @@ import org.scalatest.Assertion
  * Trait declaring methods that can be used to register test functions that accept
  * a fixture parameter and have result type <code>Future[Assertion]</code>.
  */
-trait AsyncTestRegistration { theSuite: org.scalatest.fixture.AsyncSuite =>
+trait AsyncTestRegistration { theSuite: org.scalatest.fixture.AsyncTestSuite =>
 
   /**
    * Registers a test.

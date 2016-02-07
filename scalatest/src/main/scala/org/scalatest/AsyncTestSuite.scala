@@ -183,7 +183,7 @@ import enablers.Futuristic
  * unchanged.  The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
  * </p>
  */
-trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
+trait AsyncTestSuite extends Suite with RecoverMethods { thisAsyncTestSuite =>
 
   /**
    * An implicit execution context used by async styles to transform <code>Future[Assertion]</code> values
@@ -225,7 +225,7 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    *
    * <p>
    * This implicit conversion is used to allow synchronous tests to be included along with
-   * asynchronous tests in an <code>AsyncSuite</code>. It will be 
+   * asynchronous tests in an <code>AsyncTestSuite</code>. It will be 
    * </p>
    *
    * @param assertion the <code>Assertion</code> to convert
@@ -234,8 +234,8 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    */
   implicit def convertAssertionToFutureAssertion(assertion: Assertion): Future[Assertion] = Future.successful(assertion)
 
-  protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
-      thisAsyncSuite.isInstanceOf[org.scalatest.RandomTestOrder]
+  protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncTestSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
+      thisAsyncTestSuite.isInstanceOf[org.scalatest.RandomTestOrder]
 
   // TODO: Document how exceptions are treated. I.e., that TestConceledException becomes Success(Canceled), 
   // TestPendingException becomes Success(Pending), non-test-fatal exceptions become Success(Failed), and
@@ -266,7 +266,7 @@ trait AsyncSuite extends Suite with RecoverMethods { thisAsyncSuite =>
    * passed to this method takes no parameters, preparing the fixture will require
    * side effects, such as reassigning instance <code>var</code>s in this <code>Suite</code> or initializing
    * a globally accessible external database. If you want to avoid reassigning instance <code>var</code>s
-   * you can use <a href="fixture/AsyncSuite.html">fixture.AsyncSuite</a>.
+   * you can use <a href="fixture/AsyncTestSuite.html">fixture.AsyncTestSuite</a>.
    * </p>
    *
    * <p>

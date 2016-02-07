@@ -18,7 +18,7 @@ package org.scalatest.fixture
 import org.scalatest._
 import OutcomeOf.outcomeOf
 
-trait SyncSuite extends org.scalatest.fixture.Suite with org.scalatest.SyncSuite { thisSyncSuite =>
+trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite { thisTestSuite =>
 
   /**
    * A test function taking a fixture parameter and returning an <code>Outcome</code>.

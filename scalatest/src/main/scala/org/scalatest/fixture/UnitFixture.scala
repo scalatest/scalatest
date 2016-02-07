@@ -29,7 +29,7 @@ import org.scalatest._
  * For an example, see the main documentation for trait <a href="NoArg.html"><code>NoArg</code></a>.
  * </p>
 */
-trait UnitFixture { this: fixture.SyncSuite =>
+trait UnitFixture { this: fixture.TestSuite =>
 
   /**
    * The type of the fixture, which is <code>Unit</code>.

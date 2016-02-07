@@ -48,7 +48,7 @@ import org.scalatest.exceptions.NotAllowedException
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait FeatureSpecLike extends SyncSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait FeatureSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new FixtureEngine[FixtureParam](Resources.concurrentFeatureSpecMod, "FixtureFeatureSpec")
 

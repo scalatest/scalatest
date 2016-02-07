@@ -48,7 +48,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-trait AsyncFeatureSpecLike extends AsyncSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new AsyncEngine(Resources.concurrentFeatureSpecMod, "FeatureSpec")
 

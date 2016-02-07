@@ -26,7 +26,7 @@ import scala.reflect.ClassTag
  * <p>
  * This trait offers two methods for testing for expected exceptions in the context of
  * futures: <code>recoverToSucceededIf</code> and <code>recoverToExceptionIf</code>.
- * Because this trait is mixed into trait <code>AsyncSuite</code>, both of its methods are
+ * Because this trait is mixed into trait <code>AsyncTestSuite</code>, both of its methods are
  * available by default in any async-style suite.
  * </p>
  *
