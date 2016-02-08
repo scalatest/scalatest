@@ -19,7 +19,7 @@ object DbServer { // Simulating a database server
   }
 }
 
-trait DbFixture { this: fixture.AsyncSuite =>
+trait DbFixture { this: fixture.AsyncTestSuite =>
 
   type FixtureParam = Db
 
@@ -27,12 +27,12 @@ trait DbFixture { this: fixture.AsyncSuite =>
   // it is created
   def populateDb(db: Db) {}
 
-  def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
+  def withFixture(test: OneArgAsyncTest): FutureOutcome = {
     val dbName = randomUUID.toString
     val db = createDb(dbName) // create the fixture
     withCleanup {
       populateDb(db) // setup the fixture
-      withAsyncFixture(test.toNoArgAsyncTest(db)) // "loan" the fixture to the test
+      withFixture(test.toNoArgAsyncTest(db)) // "loan" the fixture to the test
     } {
       removeDb(dbName) // ensure the fixture will be cleaned up
     }

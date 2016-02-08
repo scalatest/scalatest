@@ -45,12 +45,12 @@ class ExampleSuite extends fixture.AsyncFunSuite {
 
   type FixtureParam = StringActor
 
-  def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
+  def withFixture(test: OneArgAsyncTest): FutureOutcome = {
 
     val actor = new StringActor
     withCleanup {
       actor ! Append("ScalaTest is ") // set up the fixture
-      withAsyncFixture(test.toNoArgAsyncTest(actor))
+      withFixture(test.toNoArgAsyncTest(actor))
     } {
       actor ! Clear // ensure the fixture will be cleaned up
     }

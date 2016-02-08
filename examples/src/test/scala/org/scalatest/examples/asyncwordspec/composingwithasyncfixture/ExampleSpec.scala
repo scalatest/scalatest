@@ -57,27 +57,26 @@ class StringBufferActor {
     }
 }
 
-trait Builder extends AsyncSuiteMixin { this: AsyncSuite =>
+trait Builder extends AsyncTestSuiteMixin { this: AsyncTestSuite =>
 
   final val builderActor = new StringBuilderActor
 
-  abstract override def withAsyncFixture(test: NoArgAsyncTest) = {
+  abstract override def withFixture(test: NoArgAsyncTest) = {
     builderActor ! Append("ScalaTest is ")
-    withCleanup {
-      super.withAsyncFixture(test) // To be stackable, must call super.withAsyncFixture
-    } {
+    // To be stackable, must call super.withFixture
+    withCleanup(super.withFixture(test)) {
       builderActor ! Clear
     }
   }
 }
 
-trait Buffer extends AsyncSuiteMixin { this: AsyncSuite =>
+trait Buffer extends AsyncTestSuiteMixin { this: AsyncTestSuite =>
 
   final val bufferActor = new StringBufferActor
 
-  abstract override def withAsyncFixture(test: NoArgAsyncTest) = {
+  abstract override def withFixture(test: NoArgAsyncTest) = {
     withCleanup {
-      super.withAsyncFixture(test) // To be stackable, must call super.withAsyncFixture
+      super.withFixture(test) // To be stackable, must call super.withFixture
     } {
       bufferActor ! Clear
     }

@@ -21,18 +21,13 @@ import scala.concurrent.Future
 
 class ExampleSpec extends AsyncFlatSpec {
 
-  override def withAsyncFixture(test: NoArgAsyncTest) = {
+  override def withFixture(test: NoArgAsyncTest) = {
 
-    val futureOutcome = super.withAsyncFixture(test)
-
-    futureOutcome onSuccess {
-      case _: Failed =>
-        val currDir = new File(".")
-        val fileNames = currDir.list()
-        println("Dir snapshot: " + fileNames.mkString(", "))
+    super.withFixture(test) onFailedThen { _ =>
+      val currDir = new File(".")
+      val fileNames = currDir.list()
+      info("Dir snapshot: " + fileNames.mkString(", "))
     }
-
-    futureOutcome
   }
 
   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
@@ -44,6 +39,5 @@ class ExampleSpec extends AsyncFlatSpec {
   it should "fail" in {
     addSoon(1, 1) map { sum => assert(sum == 3) }
   }
-  
 }
 

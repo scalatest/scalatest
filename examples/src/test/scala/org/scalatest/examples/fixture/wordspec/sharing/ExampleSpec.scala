@@ -33,7 +33,7 @@ object DbServer { // Simulating a database server
   }
 }
 
-trait DbFixture { this: fixture.Suite =>
+trait DbFixture { this: fixture.TestSuite =>
 
   type FixtureParam = Db
 

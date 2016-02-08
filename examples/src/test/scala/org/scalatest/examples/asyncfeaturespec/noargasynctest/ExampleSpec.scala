@@ -21,18 +21,12 @@ import scala.concurrent.Future
 
 class ExampleSpec extends AsyncFeatureSpec {
 
-  override def withAsyncFixture(test: NoArgAsyncTest) = {
-
-    val futureOutcome = super.withAsyncFixture(test)
-
-    futureOutcome onSuccess {
-      case _: Failed =>
-        val currDir = new File(".")
-        val fileNames = currDir.list()
-        println("Dir snapshot: " + fileNames.mkString(", "))
+  override def withFixture(test: NoArgAsyncTest) = {
+    super.withFixture(test) onFailedThen { _ =>
+      val currDir = new File(".")
+      val fileNames = currDir.list()
+      info("Dir snapshot: " + fileNames.mkString(", "))
     }
-
-    futureOutcome
   }
 
   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }

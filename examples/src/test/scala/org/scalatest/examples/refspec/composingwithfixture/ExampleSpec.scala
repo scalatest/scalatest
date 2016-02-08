@@ -19,7 +19,7 @@ import org.scalatest._
 import refspec.RefSpec
 import collection.mutable.ListBuffer
  
-trait Builder extends SuiteMixin { this: Suite =>
+trait Builder extends TestSuiteMixin { this: TestSuite =>
  
   val builder = new StringBuilder
  
@@ -30,7 +30,7 @@ trait Builder extends SuiteMixin { this: Suite =>
   }
 }
  
-trait Buffer extends SuiteMixin { this: Suite =>
+trait Buffer extends TestSuiteMixin { this: TestSuite =>
  
   val buffer = new ListBuffer[String]
  
