@@ -33,9 +33,9 @@ import scala.concurrent.Future
  * 
  *   abstract override def withFixture(test: NoArgAsyncTest) = {
  *     builder.append("ScalaTest is ")
- *     withCleanup {
+ *     complete {
  *       super.withFixture(test) // To be stackable, must call super.withFixture
- *     } {
+ *     } lastly {
  *       builder.clear()
  *     }
  *   }
@@ -50,8 +50,8 @@ trait AsyncTestSuiteMixin extends SuiteMixin { this: AsyncTestSuite =>
    * <p>
    * This method should set up the fixture needed by the tests of the
    * current suite, invoke the test function, and if needed, register a callback
-   * on the resulting <code>Future[Outcome]</code> to perform any clean
-   * up needed after the test completes. Because the <code>NoArgTest</code> function
+   * on the resulting <code>FutureOutcome</code> to perform any clean
+   * up needed after the test completes. Because the <code>NoArgAsyncTest</code> function
    * passed to this method takes no parameters, preparing the fixture will require
    * side effects, such as reassigning instance <code>var</code>s in this <code>Suite</code> or initializing
    * a globally accessible external database. If you want to avoid reassigning instance <code>var</code>s

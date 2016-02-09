@@ -23,19 +23,19 @@ package org.scalatest.fixture
  * Use class <code>fixture.AsyncFlatSpec</code> in situations for which <a href="../AsyncFlatSpec.html"><code>AsyncFlatSpec</code></a>
  * would be a good choice, when all or most tests need the same fixture objects
  * that must be cleaned up afterwards. <em>Note: <code>fixture.AsyncFlatSpec</code> is intended for use in special situations, with class <code>AsyncFlatSpec</code> used for general needs. For
- * more insight into where <code>fixture.AsyncFlatSpec</code> fits in the big picture, see the <a href="../AsyncFlatSpec.html#withAsyncFixtureOneArgAsyncTest"><code>withAsyncFixture(OneArgAsyncTest)</code></a> subsection of the <a href="../AsyncFlatSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AsyncFlatSpec</code>.</em>
+ * more insight into where <code>fixture.AsyncFlatSpec</code> fits in the big picture, see the <a href="../AsyncFlatSpec.html#withFixtureOneArgAsyncTest"><code>withFixture(OneArgAsyncTest)</code></a> subsection of the <a href="../AsyncFlatSpec.html#sharedFixtures">Shared fixtures</a> section in the documentation for class <code>AsyncFlatSpec</code>.</em>
  * </td></tr></table>
  *
  * <p>
  * Class <code>fixture.AsyncFlatSpec</code> behaves similarly to class <code>org.scalatest.AsyncFlatSpec</code>, except that tests may have a
  * fixture parameter. The type of the
  * fixture parameter is defined by the abstract <code>FixtureParam</code> type, which is a member of this class.
- * This class also contains an abstract <code>withAsyncFixture</code> method. This <code>withAsyncFixture</code> method
+ * This class also contains an abstract <code>withFixture</code> method. This <code>withFixture</code> method
  * takes a <code>OneArgAsyncTest</code>, which is a nested trait defined as a member of this class.
  * <code>OneArgAsyncTest</code> has an <code>apply</code> method that takes a <code>FixtureParam</code>.
  * This <code>apply</code> method is responsible for running a test.
- * This class's <code>runTest</code> method delegates the actual running of each test to <code>withAsyncFixture(OneArgAsyncTest)</code>, passing
- * in the test code to run via the <code>OneArgAsyncTest</code> argument. The <code>withAsyncFixture(OneArgAsyncTest)</code> method (abstract in this class) is responsible
+ * This class's <code>runTest</code> method delegates the actual running of each test to <code>withFixture(OneArgAsyncTest)</code>, passing
+ * in the test code to run via the <code>OneArgAsyncTest</code> argument. The <code>withFixture(OneArgAsyncTest)</code> method (abstract in this class) is responsible
  * for creating the fixture argument and passing it to the test function.
  * </p>
  *
@@ -45,7 +45,7 @@ package org.scalatest.fixture
  *
  * <ol>
  * <li>define the type of the fixture parameter by specifying type <code>FixtureParam</code></li>
- * <li>define the <code>withAsyncFixture(OneArgAsyncTest)</code> method</li>
+ * <li>define the <code>withFixture(OneArgAsyncTest)</code> method</li>
  * <li>write tests that take a fixture parameter</li>
  * <li>(You can also define tests that don't take a fixture parameter.)</li>
  * </ol>
@@ -61,16 +61,16 @@ package org.scalatest.fixture
  * </pre>
  *
  * <p>
- * To enable the stacking of traits that define <code>withAsyncFixture(NoArgAsyncTest)</code>, it is a good idea to let
- * <code>withAsyncFixture(NoArgAsyncTest)</code> invoke the test function instead of invoking the test
+ * To enable the stacking of traits that define <code>withFixture(NoArgAsyncTest)</code>, it is a good idea to let
+ * <code>withFixture(NoArgAsyncTest)</code> invoke the test function instead of invoking the test
  * function directly. To do so, you'll need to convert the <code>OneArgAsyncTest</code> to a <code>NoArgAsyncTest</code>. You can do that by passing
  * the fixture object to the <code>toNoArgAsyncTest</code> method of <code>OneArgAsyncTest</code>. In other words, instead of
  * writing &ldquo;<code>test(theFixture)</code>&rdquo;, you'd delegate responsibility for
- * invoking the test function to the <code>withAsyncFixture(NoArgAsyncTest)</code> method of the same instance by writing:
+ * invoking the test function to the <code>withFixture(NoArgAsyncTest)</code> method of the same instance by writing:
  * </p>
  *
  * <pre>
- * withAsyncFixture(test.toNoArgAsyncTest(theFixture))
+ * withFixture(test.toNoArgAsyncTest(theFixture))
  * </pre>
  *
  * <p>
@@ -109,13 +109,13 @@ package org.scalatest.fixture
  *
  *   type FixtureParam = StringActor
  *
- *   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
+ *   def withFixture(test: OneArgAsyncTest): FutureOutcome = {
  *
  *     val actor = new StringActor
- *     withCleanup {
+ *     complete {
  *       actor ! Append("ScalaTest is ") // set up the fixture
- *       withAsyncFixture(test.toNoArgAsyncTest(actor))
- *     } {
+ *       withFixture(test.toNoArgAsyncTest(actor))
+ *     } lastly {
  *       actor ! Clear // ensure the fixture will be cleaned up
  *     }
  *   }
@@ -151,7 +151,7 @@ package org.scalatest.fixture
  * <a name="sharingFixturesAcrossClasses"></a><h2>Sharing fixtures across classes</h2>
  *
  * <p>
- * If multiple test classes need the same fixture, you can define the <code>FixtureParam</code> and <code>withAsyncFixture(OneArgAsyncTest)</code>
+ * If multiple test classes need the same fixture, you can define the <code>FixtureParam</code> and <code>withFixture(OneArgAsyncTest)</code>
  * implementations in a trait, then mix that trait into the test classes that need it. For example, if your application requires a database and your
  * integration tests use that database, you will likely have many test classes that need a database fixture. You can create a "database fixture" trait
  * that creates a database with a unique name, passes the connector into the test, then removes the database once the test completes. This is shown in
@@ -188,13 +188,13 @@ package org.scalatest.fixture
  *   // it is created
  *   def populateDb(db: Db) {}
  *
- *   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
+ *   def withFixture(test: OneArgAsyncTest): FutureOutcome = {
  *     val dbName = randomUUID.toString
  *     val db = createDb(dbName) // create the fixture
- *     withCleanup {
+ *     complete {
  *       populateDb(db) // setup the fixture
- *       withAsyncFixture(test.toNoArgAsyncTest(db)) // "loan" the fixture to the test
- *     } {
+ *       withFixture(test.toNoArgAsyncTest(db)) // "loan" the fixture to the test
+ *     } lastly {
  *       removeDb(dbName) // ensure the fixture will be cleaned up
  *     }
  *   }
@@ -243,7 +243,7 @@ package org.scalatest.fixture
  * If a test doesn't need the fixture, you can indicate that by providing a no-arg instead of a one-arg function, as is done in the
  * third test in the previous example, &ldquo;<code>test code should be clear</code>&rdquo;. In other words, instead of starting your function literal
  * with something like &ldquo;<code>db =&gt;</code>&rdquo;, you'd start it with &ldquo;<code>() =&gt;</code>&rdquo;. For such tests, <code>runTest</code>
- * will not invoke <code>withAsyncFixture(OneArgAsyncTest)</code>. It will instead directly invoke <code>withAsyncFixture(NoArgAsyncTest)</code>.
+ * will not invoke <code>withFixture(OneArgAsyncTest)</code>. It will instead directly invoke <code>withFixture(NoArgAsyncTest)</code>.
  * </p>
  *
  *

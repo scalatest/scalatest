@@ -200,8 +200,8 @@ package org.scalatest
  * named <code>executionContext</code>. This
  * execution context is used by <code>AsyncFreeSpec</code> to 
  * transform the <code>Future[Assertion]</code>s returned by each test
- * into the <code>Future[Outcome]</code> returned by the <code>test</code> function
- * passed to <code>withAsyncFixture</code>.
+ * into the <code>FutureOutcome</code> returned by the <code>test</code> function
+ * passed to <code>withFixture</code>.
  * This <code>ExecutionContext</code> is also intended to be used in the tests,
  * including when you map assertions onto futures.
  * </p>
@@ -218,7 +218,7 @@ package org.scalatest
  * When ScalaTest's serial execution context is called upon to execute a task, that task is recorded
  * in a queue for later execution. For example, one task that will be placed in this queue is the
  * task that transforms the <code>Future[Assertion]</code> returned by an asynchronous test body
- * to the <code>Future[Outcome]</code> returned from the <code>test</code> function.
+ * to the <code>FutureOutcome</code> returned from the <code>test</code> function.
  * Other tasks that will be queued are any transformations of, or callbacks registered on, <code>Future</code>s that occur
  * in your test body, including any assertions you map onto <code>Future</code>s. Once the test body returns,
  * the thread that executed the test body will execute the tasks in that queue one after another, in the order they
@@ -1002,7 +1002,7 @@ package org.scalatest
  *
  * <ul>
  * <li>Refactor using Scala</li>
- * <li>Override <code>withAsyncFixture</code></li>
+ * <li>Override <code>withFixture</code></li>
  * <li>Mix in a <em>before-and-after</em> trait</li>
  * </ul>
  *
@@ -1045,14 +1045,14 @@ package org.scalatest
  *
  * <tr>
  *   <td colspan="2" style="background-color: #CCCCCC; border-width: 1px; padding: 3px; padding-top: 7px; border: 1px solid black; text-align: left">
- *     <strong>Override <code>withAsyncFixture</code> when most or all tests need the same fixture.</strong>
+ *     <strong>Override <code>withFixture</code> when most or all tests need the same fixture.</strong>
  *   </td>
  * </tr>
  *
  * <tr>
  *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
- *     <a href="#withAsyncFixtureNoArgAsyncTest">
- *       <code>withAsyncFixture(NoArgAsyncTest)</code></a>
+ *     <a href="#withFixtureNoArgAsyncTest">
+ *       <code>withFixture(NoArgAsyncTest)</code></a>
  *     </td>
  *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
  *     <p>
@@ -1064,15 +1064,15 @@ package org.scalatest
  *  <dl>
  *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">Different tests need different fixtures (refactor using Scala instead)</dd>
  *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</dd>
- *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">You have objects to pass into tests (override <code>withAsyncFixture(<em>One</em>ArgAsyncTest)</code> instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgAsyncTest)</code> instead)</dd>
  *  </dl>
  *  </td>
  * </tr>
  *
  * <tr>
  *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: right">
- *     <a href="#withAsyncFixtureOneArgAsyncTest">
- *       <code>withAsyncFixture(OneArgAsyncTest)</code>
+ *     <a href="#withFixtureOneArgAsyncTest">
+ *       <code>withFixture(OneArgAsyncTest)</code>
  *     </a>
  *   </td>
  *   <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
@@ -1151,32 +1151,32 @@ package org.scalatest
  * For example, you could pass in an initial value for a fixture object as a parameter to the get-fixture method.
  * </p>
  *
- * <a name="withAsyncFixtureNoArgAsyncTest"></a>
- * <h4>Overriding <code>withAsyncFixture(NoArgAsyncTest)</code></h4>
+ * <a name="withFixtureNoArgAsyncTest"></a>
+ * <h4>Overriding <code>withFixture(NoArgAsyncTest)</code></h4>
  *
  * <p>
  * Although the get-fixture method approach takes care of setting up a fixture at the beginning of each
  * test, it doesn't address the problem of cleaning up a fixture at the end of the test. If you just need to perform a side-effect at the beginning or end of
- * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withAsyncFixture(NoArgAsyncTest)</code>, a
+ * a test, and don't need to actually pass any fixture objects into the test, you can override <code>withFixture(NoArgAsyncTest)</code>, a
  * method defined in trait <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>, a supertrait of <code>AsyncFreeSpec</code>.
  * </p>
  *
  * <p>
  * Trait <code>AsyncFreeSpec</code>'s <code>runTest</code> method passes a no-arg async test function to
- * <code>withAsyncFixture(NoArgAsyncTest)</code>. It is <code>withAsyncFixture</code>'s
- * responsibility to invoke that test function. The default implementation of <code>withAsyncFixture</code> simply
+ * <code>withFixture(NoArgAsyncTest)</code>. It is <code>withFixture</code>'s
+ * responsibility to invoke that test function. The default implementation of <code>withFixture</code> simply
  * invokes the function and returns the result, like this:
  * </p>
  *
  * <pre class="stHighlight">
  * // Default implementation in trait AsyncTestSuite
- * protected def withAsyncFixture(test: NoArgAsyncTest): Future[Outcome] = {
+ * protected def withFixture(test: NoArgAsyncTest): FutureOutcome = {
  *   test()
  * }
  * </pre>
  *
  * <p>
- * You can, therefore, override <code>withAsyncFixture</code> to perform setup before invoking the test function,
+ * You can, therefore, override <code>withFixture</code> to perform setup before invoking the test function,
  * and/or perform cleanup after the test completes. The recommended way to ensure cleanup is performed after a test completes is
  * to use the <code>withCleanup</code> helper method, defined in supertrait <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>.
  * The <code>withCleanup</code> method will ensure that
@@ -1186,36 +1186,36 @@ package org.scalatest
  * </p>
  *
  * <p>
- * The <code>withAsyncFixture</code> method is designed to be stacked, and to enable this, you should always call the <code>super</code> implementation
- * of <code>withAsyncFixture</code>, and let it invoke the test function rather than invoking the test function directly. In other words, instead of writing
- * &ldquo;<code>test()</code>&rdquo;, you should write &ldquo;<code>super.withAsyncFixture(test)</code>&rdquo;, like this:
+ * The <code>withFixture</code> method is designed to be stacked, and to enable this, you should always call the <code>super</code> implementation
+ * of <code>withFixture</code>, and let it invoke the test function rather than invoking the test function directly. In other words, instead of writing
+ * &ldquo;<code>test()</code>&rdquo;, you should write &ldquo;<code>super.withFixture(test)</code>&rdquo;, like this:
  * </p>
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: NoArgTest) = {
+ * override def withFixture(test: NoArgAsyncTest) = {
  *
  *   // Perform setup here
  *
- *   withCleanup {
- *     super.withAsyncFixture(test) // Invoke the test function
- *   } {
+ *   complete {
+ *     super.withFixture(test) // Invoke the test function
+ *   } lastly {
  *     // Perform cleanup here
  *   }
  * }
  * </pre>
  *
  * <p>
- * If you have no cleanup to perform, you can write <code>withAsyncFixture</code> like this instead:
+ * If you have no cleanup to perform, you can write <code>withFixture</code> like this instead:
  * </p>
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: NoArgTest) = {
+ * override def withFixture(test: NoArgAsyncTest) = {
  *
  *   // Perform setup here
  *
- *   super.withAsyncFixture(test) // Invoke the test function
+ *   super.withFixture(test) // Invoke the test function
  * }
  * </pre>
  *
@@ -1229,7 +1229,7 @@ package org.scalatest
  * </p>
  *
  * <p>
- * Here's an example in which <code>withAsyncFixture(NoArgAsyncTest)</code> is used to take a
+ * Here's an example in which <code>withFixture(NoArgAsyncTest)</code> is used to take a
  * snapshot of the working directory if a test fails, and
  * send that information to the standard output stream:
  * </p>
@@ -1243,18 +1243,13 @@ package org.scalatest
  *
  * class ExampleSpec extends AsyncFreeSpec {
  *
- *   override def withAsyncFixture(test: NoArgAsyncTest) = {
+ *   override def withFixture(test: NoArgAsyncTest) = {
  *
- *     val futureOutcome = super.withAsyncFixture(test)
- *
- *     futureOutcome onSuccess {
- *       case _: Failed =&gt;
- *         val currDir = new File(".")
- *         val fileNames = currDir.list()
- *         println("Dir snapshot: " + fileNames.mkString(", "))
+ *     super.withFixture(test) onFailedThen { _ =&gt;
+ *       val currDir = new File(".")
+ *       val fileNames = currDir.list()
+ *       info("Dir snapshot: " + fileNames.mkString(", "))
  *     }
- *
- *     futureOutcome
  *   }
  *
  *   def addSoon(addends: Int*): Future[Int] = Future { addends.sum }
@@ -1286,26 +1281,26 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * Note that the <a href="Suite$NoArgTest.html"><code>NoArgAsyncTest</code></a> passed to <code>withAsyncFixture</code>, in addition to
+ * Note that the <a href="Suite$NoArgTest.html"><code>NoArgAsyncTest</code></a> passed to <code>withFixture</code>, in addition to
  * an <code>apply</code> method that executes the test, also includes the test name and the <a href="ConfigMap.html">config
- * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withAsyncFixture</code>
+ * map</a> passed to <code>runTest</code>. Thus you can also use the test name and configuration objects in your <code>withFixture</code>
  * implementation.
  * </p>
  *
  * <p>
- * Lastly, if you want to transform the outcome in some way in <code>withAsyncFixture</code>, you'll need to use either the
+ * Lastly, if you want to transform the outcome in some way in <code>withFixture</code>, you'll need to use either the
  * <code>map</code> or <code>transform</code> methods of <code>Future</code>, like this:
  * </p>
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: NoArgTest) = {
+ * override def withFixture(test: NoArgAsyncTest) = {
  *
  *   // Perform setup here
  *
- *   val futureOutcome = super.withAsyncFixture(test) // Invoke the test function
+ *   val futureOutcome = super.withFixture(test) // Invoke the test function
  *
- *   futureOutcome map { outcome =&gt;
+ *   futureOutcome change { outcome =&gt;
  *     // transform the outcome into a new outcome here
  *   }
  * }
@@ -1386,23 +1381,23 @@ package org.scalatest
  *   def withDatabase(testCode: Future[Db] =&gt; Future[Assertion]) = {
  *     val dbName = randomUUID.toString // generate a unique db name
  *     val futureDb = Future { createDb(dbName) } // create the fixture
- *     withCleanup {
+ *     complete {
  *       val futurePopulatedDb =
  *         futureDb map { db =&gt;
  *           db.append("ScalaTest is ") // perform setup
  *         }
  *       testCode(futurePopulatedDb) // "loan" the fixture to the test code
- *     } {
+ *     } lastly {
  *       removeDb(dbName) // ensure the fixture will be cleaned up
  *     }
  *   }
  *
  *   def withActor(testCode: StringActor =&gt; Future[Assertion]) = {
  *     val actor = new StringActor
- *     withCleanup {
+ *     complete {
  *       actor ! Append("ScalaTest is ") // set up the fixture
  *       testCode(actor) // "loan" the fixture to the test code
- *     } {
+ *     } lastly {
  *       actor ! Clear // ensure the fixture will be cleaned up
  *     }
  *   }
@@ -1462,30 +1457,30 @@ package org.scalatest
  * done in this example. This keeps tests completely isolated, allowing you to run them in parallel if desired.
  * </p>
  *
- * <a name="withAsyncFixtureOneArgAsyncTest"></a>
- * <h4>Overriding <code>withAsyncFixture(OneArgTest)</code></h4>
+ * <a name="withFixtureOneArgAsyncTest"></a>
+ * <h4>Overriding <code>withFixture(OneArgTest)</code></h4>
  *
  * <p>
  * If all or most tests need the same fixture, you can avoid some of the boilerplate of the loan-fixture method approach by using a
- * <code>fixture.AsyncTestSuite</code> and overriding <code>withAsyncFixture(OneArgAsyncTest)</code>.
+ * <code>fixture.AsyncTestSuite</code> and overriding <code>withFixture(OneArgAsyncTest)</code>.
  * Each test in a <code>fixture.AsyncTestSuite</code> takes a fixture as a parameter, allowing you to pass the fixture into
  * the test. You must indicate the type of the fixture parameter by specifying <code>FixtureParam</code>, and implement a
- * <code>withAsyncFixture</code> method that takes a <code>OneArgAsyncTest</code>. This <code>withAsyncFixture</code> method is responsible for
+ * <code>withFixture</code> method that takes a <code>OneArgAsyncTest</code>. This <code>withFixture</code> method is responsible for
  * invoking the one-arg async test function, so you can perform fixture set up before invoking and passing
  * the fixture into the test function, and ensure clean up is performed after the test completes.
  * </p>
  *
  * <p>
- * To enable the stacking of traits that define <code>withAsyncFixture(NoArgAsyncTest)</code>, it is a good idea to let
- * <code>withAsyncFixture(NoArgAsyncTest)</code> invoke the test function instead of invoking the test
+ * To enable the stacking of traits that define <code>withFixture(NoArgAsyncTest)</code>, it is a good idea to let
+ * <code>withFixture(NoArgAsyncTest)</code> invoke the test function instead of invoking the test
  * function directly. To do so, you'll need to convert the <code>OneArgAsyncTest</code> to a <code>NoArgAsyncTest</code>. You can do that by passing
  * the fixture object to the <code>toNoArgAsyncTest</code> method of <code>OneArgAsyncTest</code>. In other words, instead of
  * writing &ldquo;<code>test(theFixture)</code>&rdquo;, you'd delegate responsibility for
- * invoking the test function to the <code>withAsyncFixture(NoArgAsyncTest)</code> method of the same instance by writing:
+ * invoking the test function to the <code>withFixture(NoArgAsyncTest)</code> method of the same instance by writing:
  * </p>
  *
  * <pre>
- * withAsyncFixture(test.toNoArgAsyncTest(theFixture))
+ * withFixture(test.toNoArgAsyncTest(theFixture))
  * </pre>
  *
  * <p>
@@ -1524,13 +1519,13 @@ package org.scalatest
  *
  *   type FixtureParam = StringActor
  *
- *   def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
+ *   def withFixture(test: OneArgAsyncTest): FutureOutcome = {
  *
  *     val actor = new StringActor
- *     withCleanup {
+ *     complete {
  *       actor ! Append("ScalaTest is ") // set up the fixture
- *       withAsyncFixture(test.toNoArgAsyncTest(actor))
- *     } {
+ *       withFixture(test.toNoArgAsyncTest(actor))
+ *     } lastly {
  *       actor ! Clear // ensure the fixture will be cleaned up
  *     }
  *   }
@@ -1558,7 +1553,7 @@ package org.scalatest
  * <p>
  * In this example, the tests required one fixture object, a <code>StringActor</code>. If your tests need multiple fixture objects, you can
  * simply define the <code>FixtureParam</code> type to be a tuple containing the objects or, alternatively, a case class containing
- * the objects.  For more information on the <code>withAsyncFixture(OneArgAsyncTest)</code> technique, see
+ * the objects.  For more information on the <code>withFixture(OneArgAsyncTest)</code> technique, see
  * the <a href="fixture/AsyncFreeSpec.html">documentation for <code>fixture.AsyncFreeSpec</code></a>.
  * </p>
  *
@@ -1670,7 +1665,7 @@ package org.scalatest
  * In larger projects, teams often end up with several different fixtures that test classes need in different combinations,
  * and possibly initialized (and cleaned up) in different orders. A good way to accomplish this in ScalaTest is to factor the individual
  * fixtures into traits that can be composed using the <em>stackable trait</em> pattern. This can be done, for example, by placing
- * <code>withAsyncFixture</code> methods in several traits, each of which call <code>super.withAsyncFixture</code>. Here's an example in
+ * <code>withFixture</code> methods in several traits, each of which call <code>super.withFixture</code>. Here's an example in
  * which the <code>StringBuilderActor</code> and <code>StringBufferActor</code> fixtures used in the previous examples have been
  * factored out into two <em>stackable fixture traits</em> named <code>Builder</code> and <code>Buffer</code>:
  * </p>
@@ -1724,11 +1719,11 @@ package org.scalatest
  *
  *   final val builderActor = new StringBuilderActor
  *
- *   abstract override def withAsyncFixture(test: NoArgAsyncTest) = {
+ *   abstract override def withFixture(test: NoArgAsyncTest) = {
  *     builderActor ! Append("ScalaTest is ")
- *     withCleanup {
- *       super.withAsyncFixture(test) // To be stackable, must call super.withAsyncFixture
- *     } {
+ *     complete {
+ *       super.withFixture(test) // To be stackable, must call super.withFixture
+ *     } lastly {
  *       builderActor ! Clear
  *     }
  *   }
@@ -1738,10 +1733,10 @@ package org.scalatest
  *
  *   final val bufferActor = new StringBufferActor
  *
- *   abstract override def withAsyncFixture(test: NoArgAsyncTest) = {
- *     withCleanup {
- *       super.withAsyncFixture(test) // To be stackable, must call super.withAsyncFixture
- *     } {
+ *   abstract override def withFixture(test: NoArgAsyncTest) = {
+ *     complete {
+ *       super.withFixture(test) // To be stackable, must call super.withFixture
+ *     } lastly {
  *       bufferActor ! Clear
  *     }
  *   }
@@ -1805,7 +1800,7 @@ package org.scalatest
  * and an <code>afterEach</code> method that will be run after (like JUnit's <code>tearDown</code>).
  * Similarly, <code>BeforeAndAfterAll</code> has a <code>beforeAll</code> method that will be run before all tests,
  * and an <code>afterAll</code> method that will be run after all tests. Here's what the previously shown example would look like if it
- * were rewritten to use the <code>BeforeAndAfterEach</code> methods instead of <code>withAsyncFixture</code>:
+ * were rewritten to use the <code>BeforeAndAfterEach</code> methods instead of <code>withFixture</code>:
  * </p>
  *
  * <pre class="stHighlight">
@@ -1912,7 +1907,7 @@ package org.scalatest
  * </pre>
  *
  * <p>
- * To get the same ordering as <code>withAsyncFixture</code>, place your <code>super.beforeEach</code> call at the end of each
+ * To get the same ordering as <code>withFixture</code>, place your <code>super.beforeEach</code> call at the end of each
  * <code>beforeEach</code> method, and the <code>super.afterEach</code> call at the beginning of each <code>afterEach</code>
  * method, as shown in the previous example. It is a good idea to invoke <code>super.afterEach</code> in a <code>try</code>
  * block and perform cleanup in a <code>finally</code> clause, as shown in the previous example, because this ensures the
@@ -1920,9 +1915,9 @@ package org.scalatest
  * </p>
  *
  * <p>
- * The difference between stacking traits that extend <code>BeforeAndAfterEach</code> versus traits that implement <code>withAsyncFixture</code> is
+ * The difference between stacking traits that extend <code>BeforeAndAfterEach</code> versus traits that implement <code>withFixture</code> is
  * that setup and cleanup code happens before and after the test in <code>BeforeAndAfterEach</code>, but at the beginning and
- * end of the test in <code>withAsyncFixture</code>. Thus if a <code>withAsyncFixture</code> method completes abruptly with an exception, it is
+ * end of the test in <code>withFixture</code>. Thus if a <code>withFixture</code> method completes abruptly with an exception, it is
  * considered a failed test. By contrast, if any of the <code>beforeEach</code> or <code>afterEach</code> methods of <code>BeforeAndAfterEach</code>
  * complete abruptly, it is considered an aborted suite, which will result in a <a href="events/SuiteAborted.html"><code>SuiteAborted</code></a> event.
  * </p>

@@ -64,20 +64,20 @@ import enablers.Futuristic
  * </p>
  *
  * <pre class="stHighlight">
- * def withFixture(test: NoArgAsyncTest): Future[Outcome] = {
+ * def withFixture(test: NoArgAsyncTest): FutureOutcome = {
  *   test()
  * }
  * </pre>
  *
  * <p>
  * Instead of returning <code>Outcome</code> like <code>withFixture</code>, the <code>withFixture</code> method
- * returns a <code>Future[Outcome]</code>. Similarly, the <code>apply</code> method of test function interface,
- * <code>NoArgAsyncTest</code>, returns <code>Future[Outcome]</code>:
+ * returns a <code>FutureOutcome</code>. Similarly, the <code>apply</code> method of test function interface,
+ * <code>NoArgAsyncTest</code>, returns <code>FutureOutcome</code>:
  * </p>
  *
  * <pre class="stHighlight">
  * // In trait NoArgAsyncTest:
- * def apply(): Future[Outcome]
+ * def apply(): FutureOutcome
  * </pre>
  *
  * <p>
@@ -106,9 +106,9 @@ import enablers.Futuristic
  *
  *   // Perform setup here
  *
- *   withCleanup {
+ *   complete {
  *     super.withFixture(test) // Invoke the test function
- *   } {
+ *   } lastly {
  *     // Perform cleanup here
  *   }
  * }
@@ -146,13 +146,10 @@ import enablers.Futuristic
  *
  *   val futureOutcome = super.withFixture(test) // Invoke the test function
  *
- *   futureOutcome onSuccess {
- *     case _: Failed =&gt;
- *       // perform action that you want to occur
- *       // only if a test fails here
+ *   futureOutcome onFailedThen { _ =&gt;
+ *     // perform action that you want to occur
+ *     // only if a test fails here
  *   }
- *
- *   futureOutcome
  * }
  * </pre>
  *
@@ -169,7 +166,7 @@ import enablers.Futuristic
  *
  *   val futureOutcome = super.withFixture(test) // Invoke the test function
  *
- *   futureOutcome map { outcome =&gt;
+ *   futureOutcome change { outcome =&gt;
  *     // transform the outcome into a new outcome here
  *   }
  * }
@@ -187,7 +184,7 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
 
   /**
    * An implicit execution context used by async styles to transform <code>Future[Assertion]</code> values
-   * returned by tests into <code>Future[Outcome]</code> values, and can be used within the async tests themselves,
+   * returned by tests into <code>FutureOutcome</code> values, and can be used within the async tests themselves,
    * for example, when mapping assertions onto futures.
    */
   private final val serialExecutionContext: ExecutionContext = new concurrent.SerialExecutionContext
@@ -241,7 +238,7 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
   // TestPendingException becomes Success(Pending), non-test-fatal exceptions become Success(Failed), and
   // test-fatal exceptions become Failure(ex)
   /**
-   * A test function taking no arguments and returning a <code>Future[Outcome]</code>.
+   * A test function taking no arguments and returning a <code>FutureOutcome</code>.
    *
    * <p>
    * For more detail and examples, see the relevant section in the
@@ -250,7 +247,7 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    */
   trait NoArgAsyncTest extends (() => FutureOutcome) with TestData {
     /**
-     * Runs the body of the test, returning a <code>Future[Outcome]</code>.
+     * Runs the body of the test, returning a <code>FutureOutcome</code>.
      */
     def apply(): FutureOutcome
   }
@@ -261,8 +258,8 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    * <p>
    * This method should set up the fixture needed by the tests of the
    * current suite, invoke the test function, and if needed, register a callback
-   * on the resulting <code>Future[Outcome]</code> to perform any clean
-   * up needed after the test completes. Because the <code>NoArgTest</code> function
+   * on the resulting <code>FutureOutcome</code> to perform any clean
+   * up needed after the test completes. Because the <code>NoArgAsyncTest</code> function
    * passed to this method takes no parameters, preparing the fixture will require
    * side effects, such as reassigning instance <code>var</code>s in this <code>Suite</code> or initializing
    * a globally accessible external database. If you want to avoid reassigning instance <code>var</code>s

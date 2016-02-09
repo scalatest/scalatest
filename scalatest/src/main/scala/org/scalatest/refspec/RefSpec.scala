@@ -1183,7 +1183,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  * import org.scalatest._
  * import collection.mutable.ListBuffer
  * 
- * trait Builder extends SuiteMixin { this: Suite =&gt;
+ * trait Builder extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val builder = new StringBuilder
  * 
@@ -1194,7 +1194,7 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
  *   }
  * }
  * 
- * trait Buffer extends SuiteMixin { this: Suite =&gt;
+ * trait Buffer extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val buffer = new ListBuffer[String]
  * 

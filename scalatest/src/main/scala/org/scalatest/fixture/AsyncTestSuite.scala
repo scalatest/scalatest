@@ -53,30 +53,30 @@ import scala.concurrent.Future
  *
  * <p>
  * This trait overrides and makes abstract the <code>runTest</code> method. Subtraits must 
- * must implement this method to call <code>withAsyncFixture(OneArgAsyncTest)</code> instead of <code>withFixture(OneArgTest)</code>,
- * where <code>withAsyncFixture(OneArgAsyncTest)</code> is a new method declared in this trait with the following
+ * must implement this method to call <code>withFixture(OneArgAsyncTest)</code> instead of <code>withFixture(OneArgTest)</code>,
+ * where <code>withFixture(OneArgAsyncTest)</code> is a new method declared in this trait with the following
  * signature and implementation:
  * </p>
  *
  * <pre class="stHighlight">
- * def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] = {
+ * def withFixture(test: OneArgAsyncTest): FutureOutcome = {
  *   test()
  * }
  * </pre>
  *
  * <p>
- * Instead of returning <code>Outcome</code> like <code>withFixture</code>, the <code>withAsyncFixture</code> method
- * returns a <code>Future[Outcome]</code>. Similarly, the <code>apply</code> method of test function interface,
- * <code>OneArgAsyncTest</code>, returns <code>Future[Outcome]</code>:
+ * Instead of returning <code>Outcome</code> like <code>withFixture</code>, the <code>withFixture</code> method
+ * returns a <code>FutureOutcome</code>. Similarly, the <code>apply</code> method of test function interface,
+ * <code>OneArgAsyncTest</code>, returns <code>FutureOutcome</code>:
  * </p>
  *
  * <pre class="stHighlight">
  * // In trait OneArgAsyncTest:
- * def apply(fixture: FixtureParam): Future[Outcome]
+ * def apply(fixture: FixtureParam): FutureOutcome
  * </pre>
  *
  * <p>
- * The <code>withAsyncFixture</code> method supports async testing, because when the test function returns,
+ * The <code>withFixture</code> method supports async testing, because when the test function returns,
  * the test body has not necessarily finished execution.
  * </p>
  *
@@ -90,49 +90,49 @@ import scala.concurrent.Future
  * </p>
  *
  * <p>
- * To enable the stacking of traits that define <code>withAsyncFixture(NoArgAsyncTest)</code>, it is a good idea to let
- * <code>withAsyncFixture(NoArgAsyncTest)</code> invoke the test function instead of invoking the test
+ * To enable the stacking of traits that define <code>withFixture(NoArgAsyncTest)</code>, it is a good idea to let
+ * <code>withFixture(NoArgAsyncTest)</code> invoke the test function instead of invoking the test
  * function directly. To do so, you'll need to convert the <code>OneArgAsyncTest</code> to a <code>NoArgAsyncTest</code>. You can do that by passing
  * the fixture object to the <code>toNoArgAsyncTest</code> method of <code>OneArgAsyncTest</code>. In other words, instead of
  * writing &ldquo;<code>test(theFixture)</code>&rdquo;, you'd delegate responsibility for
- * invoking the test function to the <code>withAsyncFixture(NoArgAsyncTest)</code> method of the same instance by writing:
+ * invoking the test function to the <code>withFixture(NoArgAsyncTest)</code> method of the same instance by writing:
  * </p>
  *
  * <pre class="stHighlight">
- * withAsyncFixture(test.toNoArgAsyncTest(theFixture))
+ * withFixture(test.toNoArgAsyncTest(theFixture))
  * </pre>
  *
  * <p>
- * Thus, the recommended structure of a <code>withAsyncFixture</code> implementation that performs cleanup looks like this:
+ * Thus, the recommended structure of a <code>withFixture</code> implementation that performs cleanup looks like this:
  * </p>
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: OneArgAsyncTest) = {
+ * override def withFixture(test: OneArgAsyncTest) = {
  *
  *   // Perform setup here
  *   val theFixture = ...
  *
- *   withCleanup {
- *     withAsyncFixture(test.toNoArgAsyncTest(theFixture)) // Invoke the test function
- *   } {
+ *   complete {
+ *     withFixture(test.toNoArgAsyncTest(theFixture)) // Invoke the test function
+ *   } lastly {
  *     // Perform cleanup here
  *   }
  * }
  * </pre>
  *
  * <p>
- * If you have no cleanup to perform, you can write <code>withAsyncFixture</code> like this instead:
+ * If you have no cleanup to perform, you can write <code>withFixture</code> like this instead:
  * </p>
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: OneArgAsyncTest) = {
+ * override def withFixture(test: OneArgAsyncTest) = {
  *
  *   // Perform setup here
  *   val theFixture = ...
  *
- *   withAsyncFixture(test.toNoArgAsyncTest(theFixture)) // Invoke the test function
+ *   withFixture(test.toNoArgAsyncTest(theFixture)) // Invoke the test function
  * }
  * </pre>
  *
@@ -148,40 +148,37 @@ import scala.concurrent.Future
  *
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: OneArgAsyncTest) = {
+ * override def withFixture(test: OneArgAsyncTest) = {
  *
  *   // Perform setup here
  *   val theFixture = ...
  *
  *   val futureOutcome =
- *       withAsyncFixture(test.toNoArgAsyncTest(theFixture)) // Invoke the test function
+ *       withFixture(test.toNoArgAsyncTest(theFixture)) // Invoke the test function
  *
- *   futureOutcome onSuccess {
- *     case _: Failed =&gt;
- *       // perform action that you want to occur
- *       // only if a test fails here
+ *   futureOutcome onFailedThen { _ =&gt;
+ *     // perform action that you want to occur
+ *     // only if a test fails here
  *   }
- *
- *   futureOutcome
  * }
  * </pre>
  *
  * <p>
- * Lastly, if you want to transform the outcome in some way in <code>withAsyncFixture</code>, you'll need to use either the
+ * Lastly, if you want to transform the outcome in some way in <code>withFixture</code>, you'll need to use either the
  * <code>map</code> or <code>transform</code> methods of <code>Future</code>, like this:
  * </p>
  * 
  * <pre class="stHighlight">
  * // Your implementation
- * override def withAsyncFixture(test: OneArgAsyncTest) = {
+ * override def withFixture(test: OneArgAsyncTest) = {
  *
  *   // Perform setup here
  *   val theFixture = ...
  *
  *   val futureOutcome =
- *       withAsyncFixture(test.toNoArgAsyncTest(theFixture)) // Invoke the test function
+ *       withFixture(test.toNoArgAsyncTest(theFixture)) // Invoke the test function
  *
- *   futureOutcome map { outcome =&gt;
+ *   futureOutcome change { outcome =&gt;
  *     // transform the outcome into a new outcome here
  *   }
  * }
@@ -217,21 +214,21 @@ trait AsyncTestSuite extends org.scalatest.fixture.Suite with org.scalatest.Asyn
     }
 
   /**
-   * A test function taking no arguments and returning an <code>Future[Outcome]</code>.
+   * A test function taking no arguments and returning an <code>FutureOutcome</code>.
    *
    * <p>
    * For more detail and examples, see the relevant section in the
-   * <a href="AsyncFlatSpec.html#withAsyncFixtureNoArgAsyncTest">documentation for trait <code>fixture.AsyncFlatSpec</code></a>.
+   * <a href="AsyncFlatSpec.html#withFixtureNoArgAsyncTest">documentation for trait <code>fixture.AsyncFlatSpec</code></a>.
    * </p>
    */
   trait OneArgAsyncTest extends (FixtureParam => FutureOutcome) with TestData { thisOneArgAsyncTest =>
 
     /**
-     * Using the passed <code>FixtureParam</code>, produces a <code>Future[Outcome]</code> representing
+     * Using the passed <code>FixtureParam</code>, produces a <code>FutureOutcome</code> representing
      * the future outcome of this asynchronous test.
      *
      * @param fixture the <code>FixtureParam</code>
-     * @return an instance of <code>Future[Outcome]</code>
+     * @return an instance of <code>FutureOutcome</code>
      */
     def apply(fixture: FixtureParam): FutureOutcome
 
@@ -243,15 +240,15 @@ trait AsyncTestSuite extends org.scalatest.fixture.Suite with org.scalatest.Asyn
      * passing in the given <code>fixture</code>.
      *
      * <p>
-     * This method makes it easier to invoke the <code>withAsyncFixture</code> method
+     * This method makes it easier to invoke the <code>withFixture</code> method
      * that takes a <code>NoArgAsyncTest</code>.
      * Here's how that might look in a <code>fixture.AsyncTestSuite</code>
      * whose <code>FixtureParam</code> is <code>StringBuilder</code>:
      * </p>
      *
      * <pre class="stHighlight">
-     * def withAsyncFixture(test: OneArgAsyncTest) = {
-     *   withAsyncFixture(test.toNoArgAsyncTest(new StringBuilder))
+     * def withFixture(test: OneArgAsyncTest) = {
+     *   withFixture(test.toNoArgAsyncTest(new StringBuilder))
      * }
      * </pre>
      *
@@ -282,13 +279,13 @@ trait AsyncTestSuite extends org.scalatest.fixture.Suite with org.scalatest.Asyn
    * This method should create the fixture object needed by the tests of the
    * current suite, invoke the test function (passing in the fixture object),
    * and if needed, register any clean up needed after the test completes as
-   * a callback on the <code>Future[Outcome]</code> returned by the test function.
+   * a callback on the <code>FutureOutcome</code> returned by the test function.
    * For more detail and examples, see the
    * <a href="AsyncTestSuite.html">main documentation for this trait</a>.
    * </p>
    *
    * @param test the <code>OneArgAsyncTest</code> to invoke, passing in a fixture
-   * @return an instance of <code>Future[Outcome]</code>
+   * @return an instance of <code>FutureOutcome</code>
    */
   def withFixture(test: OneArgAsyncTest): FutureOutcome
 }

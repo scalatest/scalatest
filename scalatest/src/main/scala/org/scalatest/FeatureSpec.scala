@@ -1278,7 +1278,7 @@ import Suite.autoTagClassAnnotations
  * import org.scalatest._
  * import collection.mutable.ListBuffer
  * 
- * trait Builder extends SuiteMixin { this: Suite =&gt;
+ * trait Builder extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val builder = new StringBuilder
  * 
@@ -1289,7 +1289,7 @@ import Suite.autoTagClassAnnotations
  *   }
  * }
  * 
- * trait Buffer extends SuiteMixin { this: Suite =&gt;
+ * trait Buffer extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val buffer = new ListBuffer[String]
  * 
