@@ -28,9 +28,9 @@ import org.scalatest.concurrent.Eventually._
 import org.scalatest.OutcomeOf.outcomeOf
 import org.scalatest.concurrent.ScalaFutures._
 
-class WithCleanupSpec extends AsyncFunSpec {
+class CompleteLastlySpec extends AsyncFunSpec {
 
-  describe("AsyncSuite's withCleanup method") {
+  describe("AsyncTestSuite's complete-lastly syntax") {
 /*
     val asyncSuite =
       new AsyncSuite {
@@ -46,9 +46,9 @@ class WithCleanupSpec extends AsyncFunSpec {
         val ex = new RuntimeException("oops")
         val thrown = 
           intercept[RuntimeException] {
-            withCleanup {
+            complete {
               (throw ex): FutureOutcome
-            } {
+            } lastly {
               sideEffectWasExecuted = true
             }
           }
@@ -62,9 +62,9 @@ class WithCleanupSpec extends AsyncFunSpec {
           val secondEx = new RuntimeException("second")
           val thrown = 
             intercept[RuntimeException] {
-              withCleanup {
+              complete {
                 (throw firstEx): FutureOutcome
-              } {
+              } lastly {
                 sideEffectWasExecuted = true
                 throw secondEx
               }
@@ -80,9 +80,9 @@ class WithCleanupSpec extends AsyncFunSpec {
           var sideEffectWasExecuted = false
           val promise = Promise[Outcome]()
           val fut: FutureOutcome = 
-            withCleanup {
+            complete {
               FutureOutcome { promise.future }
-            } {
+            } lastly {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
@@ -98,9 +98,9 @@ class WithCleanupSpec extends AsyncFunSpec {
           var sideEffectWasExecuted = false
           val promise = Promise[Outcome]()
           val fut: FutureOutcome = 
-            withCleanup {
+            complete {
               FutureOutcome { promise.future }
-            } {
+            } lastly {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
@@ -117,9 +117,9 @@ class WithCleanupSpec extends AsyncFunSpec {
           val promise = Promise[Outcome]()
           val canceled = outcomeOf { cancel("nevermind") }
           val fut: FutureOutcome = 
-            withCleanup {
+            complete {
               FutureOutcome { promise.future }
-            } {
+            } lastly {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
@@ -136,9 +136,9 @@ class WithCleanupSpec extends AsyncFunSpec {
           val promise = Promise[Outcome]()
           val failed = outcomeOf { fail("oops") }
           val fut: FutureOutcome = 
-            withCleanup {
+            complete {
               FutureOutcome { promise.future }
-            } {
+            } lastly {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
@@ -155,9 +155,9 @@ class WithCleanupSpec extends AsyncFunSpec {
           val promise = Promise[Outcome]()
           val ex = new RuntimeException("I meant to do that!")
           val fut: FutureOutcome = 
-            withCleanup {
+            complete {
               FutureOutcome { promise.future }
-            } {
+            } lastly {
               sideEffectWasExecuted = true
             }
           assert(!sideEffectWasExecuted)
@@ -174,9 +174,9 @@ class WithCleanupSpec extends AsyncFunSpec {
             val firstEx = new RuntimeException("first")
             val secondEx = new RuntimeException("second")
             val fut: FutureOutcome = 
-              withCleanup {
+              complete {
                 FutureOutcome { promise.future }
-              } {
+              } lastly {
                 sideEffectWasExecuted = true
                 throw secondEx
               }

@@ -183,7 +183,7 @@ import enablers.Futuristic
  * unchanged.  The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
  * </p>
  */
-trait AsyncTestSuite extends Suite with RecoverMethods { thisAsyncTestSuite =>
+trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thisAsyncTestSuite =>
 
   /**
    * An implicit execution context used by async styles to transform <code>Future[Assertion]</code> values
@@ -302,6 +302,7 @@ trait AsyncTestSuite extends Suite with RecoverMethods { thisAsyncTestSuite =>
    * @return the future produced by the first by-name parameter, with an invocation of the second
    *            by-name parameter registered to execute when the future completes.
    */
+/*
   def withCleanup[T](trial: => T)(cleanup: => Unit)(implicit futuristic: Futuristic[T]): T = {
     val result: T =
       try trial // evaluate the by-name once
@@ -333,6 +334,7 @@ trait AsyncTestSuite extends Suite with RecoverMethods { thisAsyncTestSuite =>
     }
 */
   }
+*/
 
   /**
    * Run an async test.
