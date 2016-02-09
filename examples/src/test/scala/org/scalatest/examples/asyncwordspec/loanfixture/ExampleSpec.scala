@@ -63,23 +63,23 @@ class ExampleSpec extends AsyncWordSpec {
   def withDatabase(testCode: Future[Db] => Future[Assertion]) = {
     val dbName = randomUUID.toString // generate a unique db name
     val futureDb = Future { createDb(dbName) } // create the fixture
-    withCleanup {
+    complete {
       val futurePopulatedDb =
         futureDb map { db =>
           db.append("ScalaTest is ") // perform setup 
         }
       testCode(futurePopulatedDb) // "loan" the fixture to the test code
-    } {
+    } lastly {
       removeDb(dbName) // ensure the fixture will be cleaned up
     }
   }
 
   def withActor(testCode: StringActor => Future[Assertion]) = {
     val actor = new StringActor
-    withCleanup {
+    complete {
       actor ! Append("ScalaTest is ") // set up the fixture
       testCode(actor) // "loan" the fixture to the test code
-    } {
+    } lastly {
       actor ! Clear // ensure the fixture will be cleaned up
     }
   }

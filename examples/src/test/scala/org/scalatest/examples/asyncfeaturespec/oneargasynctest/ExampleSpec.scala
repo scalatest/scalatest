@@ -47,10 +47,10 @@ class ExampleSpec extends fixture.AsyncFeatureSpec {
   def withFixture(test: OneArgAsyncTest): FutureOutcome = {
 
     val actor = new StringActor
-    withCleanup {
+    complete {
       actor ! Append("ScalaTest is designed to ") // set up the fixture
       withFixture(test.toNoArgAsyncTest(actor))
-    } {
+    } lastly {
       actor ! Clear // ensure the fixture will be cleaned up
     }
   }

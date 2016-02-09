@@ -64,7 +64,9 @@ trait Builder extends AsyncTestSuiteMixin { this: AsyncTestSuite =>
   abstract override def withFixture(test: NoArgAsyncTest) = {
     builderActor ! Append("ScalaTest is ")
     // To be stackable, must call super.withFixture
-    withCleanup(super.withFixture(test)) {
+    complete {
+      super.withFixture(test)
+    } lastly {
       builderActor ! Clear
     }
   }
@@ -76,7 +78,9 @@ trait Buffer extends AsyncTestSuiteMixin { this: AsyncTestSuite =>
 
   abstract override def withFixture(test: NoArgAsyncTest) = {
     // To be stackable, must call super.withFixture
-    withCleanup(super.withFixture(test)) {
+    complete {
+      super.withFixture(test)
+    } lastly {
       bufferActor ! Clear
     }
   }

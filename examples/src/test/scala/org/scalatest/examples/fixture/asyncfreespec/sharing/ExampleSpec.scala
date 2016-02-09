@@ -30,10 +30,10 @@ trait DbFixture { this: fixture.AsyncTestSuite =>
   def withFixture(test: OneArgAsyncTest): FutureOutcome = {
     val dbName = randomUUID.toString
     val db = createDb(dbName) // create the fixture
-    withCleanup {
+    complete {
       populateDb(db) // setup the fixture
       withFixture(test.toNoArgAsyncTest(db)) // "loan" the fixture to the test
-    } {
+    } lastly {
       removeDb(dbName) // ensure the fixture will be cleaned up
     }
   }
