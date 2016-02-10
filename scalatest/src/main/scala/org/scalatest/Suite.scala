@@ -942,7 +942,8 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * Run a test.
    *
    * <p>
-   * This trait's implementation returns the <code>Succeeded</code> singleton.
+   * This trait's implementation of this method simply returns <code>SucceededStatus</code> 
+   * and has no other effect.
    * </p>
    *
    * @param testName the name of one test to run.

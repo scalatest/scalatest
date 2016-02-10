@@ -314,7 +314,9 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
     test()
   }
 
-  /**
+  /*
+   * OLD SCALADOC FOR WITHCLEANUP
+   *
    * Ensures a cleanup function is executed whether a future-producing function that produces a
    * valid future or completes abruptly with an exception. 
    *
@@ -331,54 +333,27 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    * @return the future produced by the first by-name parameter, with an invocation of the second
    *            by-name parameter registered to execute when the future completes.
    */
-/*
-  def withCleanup[T](trial: => T)(cleanup: => Unit)(implicit futuristic: Futuristic[T]): T = {
-    val result: T =
-      try trial // evaluate the by-name once
-      catch {
-        case ex: Throwable =>
-          cleanup  // execute the clean up
-          throw ex // rethrow the same exception
-      }
-    futuristic.withCleanup(result) { cleanup }
-/*
-    // First deal with Failure, and mimic finally semantics
-    // but in future-space. The recoverWith will only execute
-    // if this is a Failure, and will only return a Failure,
-    // so the subsequent map will only happen if this recoverWith
-    // does not happen.
-    result recoverWith {
-      case firstEx: Throwable => 
-        try {
-          cleanup
-          Future.failed(firstEx)
-        }
-        catch {
-          case secondEx: Throwable =>
-            Future.failed(secondEx)
-        }
-    } map { v => // Ensure cleanup happens for the Success case
-      cleanup
-      v
-    }
-*/
-  }
-*/
 
   /**
    * Run an async test.
    *
    * <p>
-   * This method is declared abstract in this trait. Subclasses must implement this method to call <code>withFixture</code>
-   * instead of <code>withFixture</code>.
+   * This method is redefine in this trait solely to narrow its contract. Subclasses must implement
+   * this method to call the <code>withFixture(NoArgAsyncTest)</code> method, which is defined in
+   * this trait.
+   * </p>
+   *
+   * <p>
+   * This trait's implementation of this method simply returns <code>SucceededStatus</code> 
+   * and has no other effect.
    * </p>
    *
    * @param testName the name of one async test to execute.
    * @param args the <code>Args</code> for this run
    * @return a <code>Status</code> object that indicates when the test started by this method has completed, and whether or not it failed.
    *
-   * @throws NullArgumentException if any of <code>testName</code>, <code>reporter</code>, <code>stopper</code>, or <code>configMap</code>
+   * @throws NullArgumentException if either <code>testName</code> or <code>args</code>
    *     is <code>null</code>.
    */
-  protected override def runTest(testName: String, args: Args): Status
+  protected override def runTest(testName: String, args: Args): Status = SucceededStatus
 }

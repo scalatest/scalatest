@@ -192,5 +192,28 @@ trait TestSuite extends Suite { thisTestSuite =>
   protected def withFixture(test: NoArgTest): Outcome = {
     test()
   }
+
+  /**
+   * Run an async test.
+   *
+   * <p>
+   * This method is redefine in this trait solely to narrow its contract. Subclasses must implement
+   * this method to call the <code>withFixture(NoArgTest)</code> method, which is defined in this trait.
+   * </p>
+   *
+   * <p>
+   * This trait's implementation of this method simply returns <code>SucceededStatus</code> 
+   * and has no other effect.
+   * </p>
+   *
+   * @param testName the name of one async test to execute.
+   * @param args the <code>Args</code> for this run
+   * @return a <code>Status</code> object that indicates when the test started by this method
+   *     has completed, and whether or not it failed.
+   *
+   * @throws NullArgumentException if either <code>testName</code> or <code>args</code>
+   *     is <code>null</code>.
+   */
+  protected override def runTest(testName: String, args: Args): Status = SucceededStatus
 }
 
