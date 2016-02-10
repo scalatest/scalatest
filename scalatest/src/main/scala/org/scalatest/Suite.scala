@@ -428,7 +428,7 @@ import Suite.getTopOfClass
  * </p>
  *
  * <a name="errorHandling"></a>
- * <h2>"Test-fatal" exceptions</h2>
+ * <h2>"Run-aborting" exceptions</h2>
  *
  * <p>
  * The Javadoc documentation for <code>java.lang.Error</code> states:
@@ -446,7 +446,7 @@ import Suite.getTopOfClass
  * that serious problems have arisen that should cause the run to abort. For example, if a test completes abruptly with an
  * <code>OutOfMemoryError</code>, it will not be reported as a test failure, but will instead cause the run to abort. Because not
  * everyone uses <code>Error</code>s only to represent serious
- * problems, however, ScalaTest only behaves this way for the following <em>test-fatal</em> exception types (and their subclasses):
+ * problems, however, ScalaTest only behaves this way for the following <em>run-aborting</em> exception types (and their subclasses):
  * </p>
  *
  * <ul>
