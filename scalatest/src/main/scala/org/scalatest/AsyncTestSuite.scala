@@ -24,10 +24,6 @@ import enablers.Futuristic
 /*
  * TODO: Fill in here and also add a lifecycle-methods to Suite, which is linked to
  * from SuiteMixin.
- */
-/**
- * The base trait of ScalaTest's async testing styles, which enables testing of
- * asynchronous code without blocking.
  *
  * <p>
  * This trait provides a final override of <code>withFixture(NoArgTest)</code>, declared in
@@ -56,11 +52,16 @@ import enablers.Futuristic
  * the test has by definition already finished execution.
  * </p>
  *
+ */
+
+/**
+ * The base trait of ScalaTest's <em>asynchronous testing styles</em>, which defines a 
+ * <code>withFixture</code> lifecycle method that accepts as its parameter a test function
+ * that returns a <a href="FutureOutcome.html"><code>FutureOutcome</code></a>.
+ *
  * <p>
- * This trait overrides and makes abstract the <code>runTest</code> method. Subtraits must 
- * must implement this method to call <code>withFixture(NoArgAsyncTest)</code> instead of <code>withFixture(NoArgTest)</code>,
- * where <code>withFixture(NoArgAsyncTest)</code> is a new method declared in this trait with the following
- * signature and implementation:
+ * The <code>withFixture</code> method add by this trait has the 
+ * following signature and implementation:
  * </p>
  *
  * <pre class="stHighlight">
@@ -70,8 +71,10 @@ import enablers.Futuristic
  * </pre>
  *
  * <p>
- * Instead of returning <code>Outcome</code> like <code>withFixture</code>, the <code>withFixture</code> method
- * returns a <code>FutureOutcome</code>. Similarly, the <code>apply</code> method of test function interface,
+ * This trait enables testing of asynchronous code without blocking.  Instead of returning
+ * <code>Outcome</code> like <a href="TestSuite.html"><code>TestSuite</code></a>'s 
+ * <code>withFixture</code>, this trait's <code>withFixture</code> method returns a
+ * <code>FutureOutcome</code>. Similarly, the <code>apply</code> method of test function interface,
  * <code>NoArgAsyncTest</code>, returns <code>FutureOutcome</code>:
  * </p>
  *
@@ -87,10 +90,13 @@ import enablers.Futuristic
  *
  * <p>
  * The recommended way to ensure cleanup is performed after a test body finishes execution is
- * to use the <code>withCleanup</code> helper method, also defined in this trait, which will ensure that
- * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
- * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
- * to execute asynchronously when the future completes.
+ * to use a <code>complete</code>-<code>lastly</code> clause, syntax that is defined in trait
+ * <a href="CompleteLastly.html"><code>CompleteLastly</code></a>, which this trait extends.
+ * Using <code>cleanup</code>-<code>lastly</code> will ensure that cleanup will occur whether
+ * <code>FutureOutcome</code>-producing code completes abruptly by throwing an exception, or returns
+ * normally yielding a <code>FutureOutcome</code>. In the latter case,
+ * <code>complete</code>-<code>lastly</code> will
+ * register the cleanup code to execute asynchronously when the <code>FutureOutcome</code> completes.
  * </p>
  *
  * <p>
@@ -103,9 +109,7 @@ import enablers.Futuristic
  * <pre class="stHighlight">
  * // Your implementation
  * override def withFixture(test: NoArgAsyncTest) = {
- *
  *   // Perform setup here
- *
  *   complete {
  *     super.withFixture(test) // Invoke the test function
  *   } lastly {
@@ -121,21 +125,46 @@ import enablers.Futuristic
  * <pre class="stHighlight">
  * // Your implementation
  * override def withFixture(test: NoArgAsyncTest) = {
- *
  *   // Perform setup here
- *
  *   super.withFixture(test) // Invoke the test function
  * }
  * </pre>
  *
  * <p>
+ * The test function and <code>withFixture</code> method returns a
+ * <a href="FutureOutcome.html"><code>FutureOutcome</code></a>,
+ * a ScalaTest class that wraps a Scala <code>Future[Outcome]</code> and offers methods
+ * more specific to asynchronous test outcomes. In a Scala <code>Future</code>, any exception
+ * results in a <code>scala.util.Failure</code>. In a <code>FutureOutcome</code>, a
+ * thrown <code>TestPendingException</code> always results in a <code>Pending</code>,
+ * a thrown <code>TestCanceledException</code> always results in a <code>Canceled</code>,
+ * and any other exception, so long as it isn't suite-aborting, results in a
+ * <code>Failed</code>. This is true of the asynchronous test code itself that's represented by
+ * the <code>FutureOutcome</code> and any transformation or callback registered on the
+ * <code>FutureOutcome</code> in <code>withFixture</code>.
+ * </p>
+ * 
+ * <p>
  * If you want to perform an action only for certain outcomes, you'll need to 
- * register code performing that action as a callback on the <code>Future</code> using
- * one of <code>Future</code> registration methods: <code>onComplete</code>, <code>onSuccess</code>,
- * or <code>onFailure</code>. Note that if a test fails, that will be treated as a
- * <code>scala.util.Success(org.scalatest.Failure)</code>. So if you want to perform an 
- * action if a test fails, for example, you'd register the callaback using <code>onSuccess</code>,
- * like this:
+ * register code performing that action on the <code>FutureOutcome</code> using
+ * one of <code>FutureOutcome</code>'s callback registration methods:
+ * </p>
+ *
+ * <ul>
+ * <li><code>onSucceededThen</code> - executed if the <code>Outcome</code> is a <code>Succeeded</code>.
+ * <li><code>onFailedThen</code> - executed if the <code>Outcome</code> is a <code>Failed</code>.
+ * <li><code>onCanceledThen</code> - executed if the <code>Outcome</code> is a <code>Canceled</code>.
+ * <li><code>onPendingThen</code> - executed if the <code>Outcome</code> is a <code>Pending</code>.
+ * <li><code>onOutcomeThen</code> - executed on any <code>Outcome</code> (<em>i.e.</em>, no
+ *        suite-aborting exception is thrown).
+ * <li><code>onAbortedThen</code> - executed if a suite-aborting exception is thrown.
+ * <li><code>onCompletedThen</code> - executed whether the result is an <code>Outcome</code>
+ *        or a thrown suite-aborting exception.
+ * </ul>
+ *
+ * <p>
+ * For example, if you want to perform an action if a test fails, you'd register the
+ * callback using <code>onFailedThen</code>, like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -146,7 +175,7 @@ import enablers.Futuristic
  *
  *   val futureOutcome = super.withFixture(test) // Invoke the test function
  *
- *   futureOutcome onFailedThen { _ =&gt;
+ *   futureOutcome onFailedThen { ex =&gt;
  *     // perform action that you want to occur
  *     // only if a test fails here
  *   }
@@ -154,8 +183,19 @@ import enablers.Futuristic
  * </pre>
  *
  * <p>
- * Lastly, if you want to transform the outcome in some way in <code>withFixture</code>, you'll need to use either the
- * <code>map</code> or <code>transform</code> methods of <code>Future</code>, like this:
+ * Note that all callback registration methods, such as <code>onFailedThen</code> used in the
+ * previous example, return a new <code>FutureOutcome</code> that won't complete until the
+ * the original <code>FutureOutcome</code> <em>and the callback</em> has completed. If the callback
+ * throws an exception, the resulting <code>FutureOutcome</code> will represent that exception.
+ * For example, if a <code>FutureOutcome</code> results in <code>Failed</code>, but a callback
+ * registered on that <code>FutureOutcome</code> with <code>onFailedThen</code> throws <code>TestPendingException</code>, the
+ * result of the <code>FutureOutcome</code> returned by <code>onFailedThen</code> will
+ * be <code>Pending</code>.
+ * </p>
+ *
+ * <p>
+ * Lastly, if you want to change the outcome in some way in <code>withFixture</code>, you'll need to use
+ * the <code>change</code> method of <code>FutureOutcome</code>, like this:
  * </p>
  * 
  * <pre class="stHighlight">
@@ -171,14 +211,6 @@ import enablers.Futuristic
  *   }
  * }
  * </pre>
- * 
- * <p>
- * Note that a <code>NoArgAsyncTest</code>'s <code>apply</code> method will only return a <code>Failure</code> if
- * the test completes abruptly with an exception (such as <code>OutOfMemoryError</code>) that should
- * cause the suite to abort rather than the test to fail. Thus usually you would use <code>map</code>
- * to transform future outcomes, not <code>transform</code>, so that such suite-aborting exceptions pass through
- * unchanged.  The suite will abort asynchronously with any exception returned in a <code>Failure</code>.
- * </p>
  */
 trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thisAsyncTestSuite =>
 
