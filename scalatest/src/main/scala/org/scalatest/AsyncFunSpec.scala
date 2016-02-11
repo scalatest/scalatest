@@ -197,7 +197,7 @@ package org.scalatest
  * named <code>executionContext</code>. This
  * execution context is used by <code>AsyncFunSpec</code> to 
  * transform the <code>Future[Assertion]</code>s returned by each test
- * into the <code>FutureOutcome</code> returned by the <code>test</code> function
+ * into the <a href="FutureOutcome.html"><code>FutureOutcome</code></a> returned by the <code>test</code> function
  * passed to <code>withFixture</code>.
  * This <code>ExecutionContext</code> is also intended to be used in the tests,
  * including when you map assertions onto futures.
