@@ -24,6 +24,7 @@ import org.scalatest.time.Span
 import org.scalatest.exceptions.TimeoutField
 import org.scalatest.Outcome
 import org.scalatest.Exceptional
+import org.scalatest.enablers.Interruptable
 
 /**
  * Trait that when mixed into a suite class establishes a time limit for its tests.
@@ -134,7 +135,7 @@ trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
     try {
       failAfter(timeLimit) {
         super.withFixture(test)
-      } (defaultTestInterruptor)
+      } (implicitly[Interruptable[Outcome]], defaultTestInterruptor)
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => 
