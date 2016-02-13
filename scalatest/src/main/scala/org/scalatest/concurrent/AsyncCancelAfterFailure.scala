@@ -13,36 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
 package org.scalatest.concurrent
 
-import org.scalatest.exceptions.TimeoutField
 import org.scalatest.time.Span
 import org.scalatest._
 
 import scala.concurrent.Future
 
-trait AsyncTimeLimitedTests extends AsyncTestSuiteMixin with AsyncTimeouts { this: AsyncTestSuite =>
+trait AsyncCancelAfterFailure extends AsyncTestSuiteMixin { this: AsyncTestSuite =>
+
+  @volatile private var cancelRemaining = false
 
   abstract override def withFixture(test: NoArgAsyncTest): FutureOutcome = {
 
-    failingAfter(timeLimit) {
-      super.withFixture(test)
-    } map { outcome =>
-      outcome match {
-        case Exceptional(e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField) =>
-          Exceptional(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString))))
-        case other => other
+    if (cancelRemaining)
+      FutureOutcome.canceled("Canceled by CancelOnFailure because a test failed previously")
+    else
+      super.withFixture(test) onFailedThen { _ =>
+        cancelRemaining = true
       }
-    }
   }
-
-  //protected def reportTimeout(e: Throwable): Outcome = Exceptional(e)
-
-  /**
-   * The time limit, in milliseconds, in which each test in a <code>Suite</code> that mixes in
-   * <code>TimeLimitedTests</code> must complete.
-   */
-  def timeLimit: Span
 }
-*/

@@ -283,6 +283,10 @@ object FutureOutcome {
   // you'll never need to look for things like a TestCanceledException being passed
   // to onAbortedThen.
   private[scalatest] def apply(underlying: Future[Outcome]): FutureOutcome = new FutureOutcome(underlying)
+
+  // TODO: Test and four (or five?) others, succeeded, failed, pending, aborted?
+  def canceled(msg: String): FutureOutcome =
+    FutureOutcome { Future.successful(Canceled(msg)) }
 }
 
 /*
