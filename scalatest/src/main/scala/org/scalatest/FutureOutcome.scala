@@ -24,15 +24,22 @@ import exceptions.TestPendingException
 import Suite.anExceptionThatShouldCauseAnAbort
 import scala.concurrent.ExecutionException
 
-class FutureOutcome(val underlying: Future[Outcome]) {
+class FutureOutcome(private[scalatest] val underlying: Future[Outcome]) {
   // TODO: add tests for pretty toString
 
-  def onCompletedThen(f: Outcome Or Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  /**
+   * Registers a callback function to be executed after this future completes, returning
+   * a new future that completes only after the callback has finished execution.
+   *
+   * @return a new <code>FutureOutcome</code> that will complete only after this <code>FutureOutcome</code>
+   *    and, subsequently, the passed callback function have completed execution.
+   */
+  def onCompletedThen(callback: Outcome Or Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying recoverWith {
         case ex =>
           try {
-            f(Bad(ex))
+            callback(Bad(ex))
             Future.failed(ex)
           }
           catch {
@@ -43,7 +50,7 @@ class FutureOutcome(val underlying: Future[Outcome]) {
           }
       } flatMap { outcome =>
         try {
-          f(Good(outcome))
+          callback(Good(outcome))
           Future.successful(outcome)
         }
         catch {
@@ -56,12 +63,21 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     }
   }
 
-  def onSucceededThen(f: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  /**
+   * Registers a callback function to be executed if this future completes with
+   * <code>Succeeded</code>, returning a new future that completes only after the
+   * callback has finished execution.
+   *
+   * @return a new <code>FutureOutcome</code> that will complete only after this <code>FutureOutcome</code>
+   *    has completed and, if this <code>FutureOutcome</code> completes with <code>Succeeded</code>, the
+   *    passed callback function has completed execution.
+   */
+  def onSucceededThen(callback: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying flatMap { outcome =>
         if (outcome.isSucceeded) {
           try {
-            f
+            callback
             Future.successful(outcome)
           }
           catch {
@@ -75,13 +91,22 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     }
   }
 
-  def onFailedThen(f: Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  /**
+   * Registers a callback function to be executed if this future completes with
+   * <code>Failed</code>, returning a new future that completes only after the
+   * callback has finished execution.
+   *
+   * @return a new <code>FutureOutcome</code> that will complete only after this <code>FutureOutcome</code>
+   *    has completed and, if this <code>FutureOutcome</code> completes with <code>Failed</code>, the
+   *    passed callback function has completed execution.
+   */
+  def onFailedThen(callback: Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying flatMap { outcome =>
         outcome match {
           case Failed(originalEx) =>
             try {
-              f(originalEx)
+              callback(originalEx)
               Future.successful(outcome)
             }
             catch {
@@ -97,13 +122,22 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     }
   }
 
-  def onCanceledThen(f: TestCanceledException => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  /**
+   * Registers a callback function to be executed if this future completes with
+   * <code>Canceled</code>, returning a new future that completes only after the
+   * callback has finished execution.
+   *
+   * @return a new <code>FutureOutcome</code> that will complete only after this <code>FutureOutcome</code>
+   *    has completed and, if this <code>FutureOutcome</code> completes with <code>Canceled</code>, the
+   *    passed callback function has completed execution.
+   */
+  def onCanceledThen(callback: TestCanceledException => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying flatMap { outcome =>
         outcome match {
           case Canceled(originalEx) =>
             try {
-              f(originalEx)
+              callback(originalEx)
               Future.successful(outcome)
             }
             catch {
@@ -119,12 +153,21 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     }
   }
 
-  def onPendingThen(f: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  /**
+   * Registers a callback function to be executed if this future completes with
+   * <code>Pending</code>, returning a new future that completes only after the
+   * callback has finished execution.
+   *
+   * @return a new <code>FutureOutcome</code> that will complete only after this <code>FutureOutcome</code>
+   *    has completed and, if this <code>FutureOutcome</code> completes with <code>Pending</code>, the
+   *    passed callback function has completed execution.
+   */
+  def onPendingThen(callback: => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying flatMap { outcome =>
         if (outcome.isPending) {
           try {
-            f
+            callback
             Future.successful(outcome)
           }
           catch {
@@ -152,12 +195,21 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     }
   }
 
-  def onAbortedThen(f: Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  /**
+   * Registers a callback function to be executed if this future completes because
+   * a suite-aborting exception was thrown, returning a new future that completes only after the
+   * callback has finished execution.
+   *
+   * @return a new <code>FutureOutcome</code> that will complete only after this <code>FutureOutcome</code>
+   *    has completed and, if this <code>FutureOutcome</code> completes abnormally with
+   *    a suite-aborting exception, the passed callback function has completed execution.
+   */
+  def onAbortedThen(callback: Throwable => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying recoverWith {
         case originalEx =>
           try {
-            f(originalEx)
+            callback(originalEx)
             Future.failed(originalEx)
           }
           catch {
@@ -170,11 +222,20 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     }
   }
 
-  def onOutcomeThen(f: Outcome => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
+  /**
+   * Registers a callback function to be executed if this future completes with any
+   * <code>Outcome</code> (<em>i.e.</em>, no suite-aborting exception is thrown), returning
+   * a new future that completes only after the callback has finished execution.
+   *
+   * @return a new <code>FutureOutcome</code> that will complete only after this <code>FutureOutcome</code>
+   *    has completed and, if this <code>FutureOutcome</code> completes with a valid
+   *    <code>Outcome</code>, the passed callback function has completed execution.
+   */
+  def onOutcomeThen(callback: Outcome => Unit)(implicit executionContext: ExecutionContext): FutureOutcome = {
     FutureOutcome {
       underlying flatMap { outcome =>
         try {
-          f(outcome)
+          callback(outcome)
           Future.successful(outcome)
         }
         catch {
@@ -187,8 +248,28 @@ class FutureOutcome(val underlying: Future[Outcome]) {
     }
   }
 
+  /**
+   * Indicates whether this <code>FutureOutcome</code> has completed.
+   *
+   * @return <code>true</code> if this <code>FutureOutcome</code> has completed; <code>false</code> otherwise.
+   */
   def isCompleted: Boolean = underlying.isCompleted
 
+  /**
+   * Returns a value that indicates whether this <code>FutureOutcome</code> has completed,
+   * and if so, indicates its result.
+   *
+   * <p>
+   * If this <code>FutureOutcome</code> has not yet completed, this method will return
+   * <code>None</code>. Otherwise, this method will return a <code>Some</code> that contains
+   * either a <code>Good[Outcome]</code>, if this <code>FutureOutcome</code> completed with
+   * a valid <code>Outcome</code> result, or if it completed with a thrown suite-aborting
+   * exception, a <code>Bad[Throwable]</code>.
+   * </p>
+   *
+   * @return a <code>Some</code> containing an <code>Or</code> value that indicates the result of this
+   *    <code>FutureOutcome</code> if it has completed; <code>None</code> otherwise.
+   */
   def value: Option[Outcome Or Throwable] =
     underlying.value match {
       case None => None
