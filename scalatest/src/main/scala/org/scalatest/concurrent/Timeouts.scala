@@ -15,6 +15,8 @@
  */
 package org.scalatest.concurrent
 
+import java.util.TimerTask
+import java.util.Timer
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.Resources
 import org.scalatest.exceptions.StackDepthException
@@ -25,7 +27,6 @@ import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.enablers.Interruptable
 
 /**
  * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
@@ -240,17 +241,13 @@ trait Timeouts {
    * @param fun the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptable: Interruptable[T], interruptor: Interruptor): T = {
-    interruptable.timeoutAfter(
+  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Interruptor): T = {
+    timeoutAfter(
       timeout,
       fun,
       interruptor,
       t => new TestFailedDueToTimeoutException(
-        sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)),
-        t,
-        getStackDepthFun("Timeouts.scala", "failAfter"),
-        None,
-        timeout
+        sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "failAfter"), None, timeout
       )
     )
   }
@@ -290,18 +287,8 @@ trait Timeouts {
    * @param f the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptable: Interruptable[T], interruptor: Interruptor): T = {
-    interruptable.timeoutAfter(
-      timeout,
-      fun,
-      interruptor,
-      t => new TestCanceledException(
-        sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)),
-        t,
-        getStackDepthFun("Timeouts.scala", "cancelAfter"),
-        None
-      )
-    )
+  def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor): T = {
+    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)), t, getStackDepthFun("Timeouts.scala", "cancelAfter"), None))
   }
 
   /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {
@@ -331,6 +318,36 @@ trait Timeouts {
     }
   }*/
   
+  private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {
+    val timer = new Timer
+    val task = new TimeoutTask(Thread.currentThread(), interruptor)
+    timer.schedule(task, timeout.totalNanos / 1000 / 1000) // TODO: Probably use a sleep so I can use nanos
+    try {
+      val result = f
+      timer.cancel()
+      result match {
+        case Exceptional(ex) => throw ex  // If the result is Exceptional, the exception is already wrapped, just re-throw it to get the old behavior.
+        case _ => 
+          if (task.timedOut) { 
+            if (task.needToResetInterruptedStatus)
+              Thread.interrupted() // To reset the flag probably. He only does this if it was not set before and was set after, I think.
+            throw exceptionFun(None)
+          }
+      }
+      result
+    }
+    catch {
+      case t: Throwable => 
+        timer.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
+        if(task.timedOut) {
+          if (task.needToResetInterruptedStatus)
+            Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
+          throw exceptionFun(Some(t))
+        }
+        else
+          throw t
+    }
+  }
 }
 
 /**

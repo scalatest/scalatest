@@ -46,8 +46,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
 
   describe("The failAfter construct") {
 
-    // TODO: Fix stack depth
-    ignore("should blow up with TestFailedException when it times out", Retryable) {
+    it("should blow up with TestFailedException when it times out", Retryable) {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           Thread.sleep(200)
@@ -131,7 +130,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           inputStream.read()
-        } (implicitly, SocketInterruptor(clientSocket))
+        } (SocketInterruptor(clientSocket))
       }
       clientSocket.close()
       drag = false
@@ -162,7 +161,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           inputStream.read()
-        } (implicitly, Interruptor { t => clientSocket.close() })
+        } (Interruptor { t => clientSocket.close() })
       }
       clientSocket.close()
       drag = false
@@ -174,7 +173,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
         failAfter(Span(100, Millis)) {
           Thread.sleep(200)
           x = 1
-        } (implicitly, DoNotInterrupt)
+        } (DoNotInterrupt)
       }
       x should be (1)
     }
@@ -219,7 +218,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           clientSelector.select()
-        } (implicitly, SelectorInterruptor(clientSelector))
+        } (SelectorInterruptor(clientSelector))
       }
       clientSelector.close()
       drag = false
@@ -228,8 +227,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
 
   describe("The cancelAfter construct") {
 
-    // TODO: Fix stack depth
-    ignore("should blow up with TestCanceledException when it times out") {
+    it("should blow up with TestCanceledException when it times out") {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           Thread.sleep(2000)
@@ -313,7 +311,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           inputStream.read()
-        } (implicitly, SocketInterruptor(clientSocket))
+        } (SocketInterruptor(clientSocket))
       }
       clientSocket.close()
       drag = false
@@ -344,7 +342,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           inputStream.read()
-        } (implicitly, Interruptor { t => clientSocket.close() } )
+        } ( Interruptor { t => clientSocket.close() } )
       }
       clientSocket.close()
       drag = false
@@ -356,7 +354,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
         cancelAfter(Span(1000, Millis)) {
           Thread.sleep(2000)
           x = 1
-        } (implicitly, DoNotInterrupt)
+        } (DoNotInterrupt)
       }
       x should be (1)
     }
@@ -401,7 +399,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           clientSelector.select()
-        } (implicitly, SelectorInterruptor(clientSelector))
+        } (SelectorInterruptor(clientSelector))
       }
       clientSelector.close()
       drag = false
