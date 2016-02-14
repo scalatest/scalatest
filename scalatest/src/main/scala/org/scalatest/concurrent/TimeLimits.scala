@@ -240,8 +240,8 @@ trait TimeLimits {
    * @param fun the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptable: Timed[T], interruptor: Interruptor): T = {
-    interruptable.timeoutAfter(
+  def failAfter[T](timeout: Span)(fun: => T)(implicit timed: Timed[T], interruptor: Interruptor): T = {
+    timed.timeoutAfter(
       timeout,
       fun,
       interruptor,
@@ -290,8 +290,8 @@ trait TimeLimits {
    * @param f the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptable: Timed[T], interruptor: Interruptor): T = {
-    interruptable.timeoutAfter(
+  def cancelAfter[T](timeout: Span)(fun: => T)(implicit timed: Timed[T], interruptor: Interruptor): T = {
+    timed.timeoutAfter(
       timeout,
       fun,
       interruptor,
