@@ -131,7 +131,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           inputStream.read()
-        } (implicitly, SocketInterruptor(clientSocket))
+        } (SocketInterruptor(clientSocket))
       }
       clientSocket.close()
       drag = false
@@ -162,7 +162,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           inputStream.read()
-        } (implicitly, Interruptor { t => clientSocket.close() })
+        } (Interruptor { t => clientSocket.close() })
       }
       clientSocket.close()
       drag = false
@@ -174,7 +174,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
         failAfter(Span(100, Millis)) {
           Thread.sleep(200)
           x = 1
-        } (implicitly, DoNotInterrupt)
+        } (DoNotInterrupt)
       }
       x should be (1)
     }
@@ -219,7 +219,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           clientSelector.select()
-        } (implicitly, SelectorInterruptor(clientSelector))
+        } (SelectorInterruptor(clientSelector))
       }
       clientSelector.close()
       drag = false
@@ -313,7 +313,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           inputStream.read()
-        } (implicitly, SocketInterruptor(clientSocket))
+        } (SocketInterruptor(clientSocket))
       }
       clientSocket.close()
       drag = false
@@ -344,7 +344,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           inputStream.read()
-        } (implicitly, Interruptor { t => clientSocket.close() } )
+        } (Interruptor { t => clientSocket.close() } )
       }
       clientSocket.close()
       drag = false
@@ -356,7 +356,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
         cancelAfter(Span(1000, Millis)) {
           Thread.sleep(2000)
           x = 1
-        } (implicitly, DoNotInterrupt)
+        } (DoNotInterrupt)
       }
       x should be (1)
     }
@@ -401,7 +401,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           clientSelector.select()
-        } (implicitly, SelectorInterruptor(clientSelector))
+        } (SelectorInterruptor(clientSelector))
       }
       clientSelector.close()
       drag = false
