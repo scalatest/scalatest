@@ -49,7 +49,7 @@ class AsyncTimeoutsSpec extends AsyncFunSpec with Matchers {
 
   describe("The failingAfter construct") {
 
-    describe(" when used with Outcome") {
+    describe("when used with Future[Outcome]") {
 
       it("should not catch exception thrown from the test") {
         assertThrows[InterruptedException] {
@@ -86,7 +86,7 @@ class AsyncTimeoutsSpec extends AsyncFunSpec with Matchers {
       }
     }
 
-    describe(" when used with Assertion") {
+    describe("when used with Assertion") {
 
       it("should not catch exception thrown from the test") {
         assertThrows[InterruptedException] {

@@ -196,15 +196,13 @@ import org.scalatest.enablers.Timed
  */
 trait TimeLimits {
 
-  /**
-   * Implicit <code>Interruptor</code> value defining a default interruption strategy for the <code>failAfter</code> and <code>cancelAfter</code> method.
-   *
+   /*
    * <p>
-   * To change the default <code>Interruptor</code> configuration, override or hide this <code>val</code> with another implicit
-   * <code>Interruptor</code>.
+   * To change the default <code>Interruptor</code> configuration, define an implicit
+   * <code>Interruptor</code> in scope.
    * </p>
    */
-  implicit val defaultInterruptor: Interruptor = ThreadInterruptor
+  // implicit val defaultInterruptor: Interruptor = ThreadInterruptor
 
   /**
    * Executes the passed function, enforcing the passed time limit by attempting to interrupt the function if the
