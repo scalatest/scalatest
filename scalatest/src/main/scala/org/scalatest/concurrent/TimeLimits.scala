@@ -33,7 +33,7 @@ import org.scalatest.enablers.Timed
  *
  * <p>
  * The time limit is passed as the first parameter, as a <a href="../time/Span.html"><code>Span</code></a>. The operation is
- * passed as the second parameter. And an <a href="Interruptor.html"><code>Interruptor</code></a>, a strategy for interrupting the operation, is
+ * passed as the second parameter. And an <a href="Ender.html"><code>Ender</code></a>, a strategy for interrupting the operation, is
  * passed as an implicit third parameter.  Here's a simple example of its use:
  * </p>
  *
@@ -95,15 +95,15 @@ import org.scalatest.enablers.Timed
  * The <code>failAfter</code> or <code>cancelAfter</code> method will create a timer that runs on a different thread than the thread that
  * invoked <code>failAfter</code> or <code>cancelAfter</code>, so that it can detect when the timeout has expired and attempt to <em>interrupt</em>
  * the main thread. Because different operations can require different interruption strategies, the <code>failAfter</code> or <code>cancelAfter</code>
- * method accepts an implicit third parameter of type <code>Interruptor</code> that is responsible for interrupting
+ * method accepts an implicit third parameter of type <code>Ender</code> that is responsible for interrupting
  * the main thread.
  * </p>
  *
- * <a name="interruptorConfig"></a><h2>Configuring <code>failAfter</code> or <code>cancelAfter</code> with an <code>Interruptor</code></h2>
+ * <a name="interruptorConfig"></a><h2>Configuring <code>failAfter</code> or <code>cancelAfter</code> with an <code>Ender</code></h2>
  *
  * <p>
- * This trait declares an implicit <code>val</code> named <code>defaultInterruptor</code>,
- * initialized with a <a href="ThreadInterruptor$.html"><code>ThreadInterruptor</code></a>, which attempts to interrupt the main thread by invoking
+ * This trait declares an implicit <code>val</code> named <code>defaultEnder</code>,
+ * initialized with a <a href="ThreadEnder$.html"><code>ThreadEnder</code></a>, which attempts to interrupt the main thread by invoking
  * <code>Thread.interrupt</code>. If you wish to use a different strategy, you can override this <code>val</code> (or hide
  * it, for example if you imported the members of <code>Timeouts</code> rather than mixing it in). Here's an example
  * in which the default interruption method is changed to <a href="DoNotInterrupt$.html"><code>DoNotInterrupt</code></a>, which does not attempt to
@@ -111,14 +111,14 @@ import org.scalatest.enablers.Timed
  * </p>
  *
  * <pre class="stHighlight">
- * override val defaultInterruptor = DoNotInterrupt
+ * override val defaultEnder = DoNotInterrupt
  * failAfter(100 millis) {
  *   Thread.sleep(500)
  * }
  * </pre>
  *
  * <p>
- * As with the default <code>Interruptor</code>, the above code will eventually produce a 
+ * As with the default <code>Ender</code>, the above code will eventually produce a 
  * <code>TestFailedDueToTimeoutException</code> with a message that indicates a timeout expired. However, instead
  * of throwing the exception after approximately 100 milliseconds, it will throw it after approximately 500 milliseconds.
  * </p>
@@ -131,13 +131,13 @@ import org.scalatest.enablers.Timed
  * </p>
  * 
  * <p>
- * ScalaTest provides the following <code>Interruptor</code> implementations:
+ * ScalaTest provides the following <code>Ender</code> implementations:
  * </p>
  *
  * <table style="border-collapse: collapse; border: 1px solid black">
  * <tr>
  * <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black">
- * <strong><code>Interruptor</code> implementation</strong>
+ * <strong><code>Ender</code> implementation</strong>
  * </th>
  * <th style="background-color: #CCCCCC; border-width: 1px; padding: 3px; text-align: center; border: 1px solid black">
  * <strong>Usage</strong>
@@ -145,7 +145,7 @@ import org.scalatest.enablers.Timed
  * </tr>
  * <tr>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
- * <a href="ThreadInterruptor$.html">ThreadInterruptor</a>
+ * <a href="ThreadEnder$.html">ThreadEnder</a>
  * </td>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
  * The default interruptor, invokes <code>interrupt</code> on the main test thread. This will
@@ -164,7 +164,7 @@ import org.scalatest.enablers.Timed
  * </tr>
  * <tr>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
- * <a href="SelectorInterruptor.html">SelectorInterruptor</a>
+ * <a href="SelectorEnder.html">SelectorEnder</a>
  * </td>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
  * Invokes <code>wakeup</code> on the passed <code>java.nio.channels.Selector</code>, which
@@ -174,7 +174,7 @@ import org.scalatest.enablers.Timed
  * </tr>
  * <tr>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
- * <a href="SocketInterruptor.html">SocketInterruptor</a>
+ * <a href="SocketEnder.html">SocketEnder</a>
  * </td>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
  * Invokes <code>close</code> on the <code>java.io.Socket</code>, which
@@ -186,8 +186,8 @@ import org.scalatest.enablers.Timed
  * </table>
  *
  * <p>
- * You may wish to create your own <code>Interruptor</code> in some situations. For example, if your operation is performing
- * a loop and can check a volatile flag each pass through the loop. You could in that case write an <code>Interruptor</code> that
+ * You may wish to create your own <code>Ender</code> in some situations. For example, if your operation is performing
+ * a loop and can check a volatile flag each pass through the loop. You could in that case write an <code>Ender</code> that
  * sets that flag so that the next time around, the loop would exit.
  * </p>
  * 
@@ -198,11 +198,11 @@ trait TimeLimits {
 
    /*
    * <p>
-   * To change the default <code>Interruptor</code> configuration, define an implicit
-   * <code>Interruptor</code> in scope.
+   * To change the default <code>Ender</code> configuration, define an implicit
+   * <code>Ender</code> in scope.
    * </p>
    */
-  // implicit val defaultInterruptor: Interruptor = ThreadInterruptor
+  // implicit val defaultEnder: Ender = ThreadEnder
 
   /**
    * Executes the passed function, enforcing the passed time limit by attempting to interrupt the function if the
@@ -231,14 +231,14 @@ trait TimeLimits {
    * If the interrupted status of the main test thread (the thread that invoked <code>failAfter</code>) was not invoked
    * when <code>failAfter</code> was invoked, but is set after the operation times out, it is reset by this method before
    * it completes abruptly with a <code>TestFailedDueToTimeoutException</code>. The interrupted status will be set by
-   * <code>ThreadInterruptor</code>, the default <code>Interruptor</code> implementation.
+   * <code>ThreadEnder</code>, the default <code>Ender</code> implementation.
    * </p>
    *
    * @param timeout the maximimum amount of time allowed for the passed operation
    * @param fun the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Interruptor, timed: Timed[T] = implicitly[Timed[T]]): T = {
+  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Ender, timed: Timed[T] = implicitly[Timed[T]]): T = {
     timed.timeoutAfter(
       timeout,
       fun,
@@ -281,14 +281,14 @@ trait TimeLimits {
    * If the interrupted status of the main test thread (the thread that invoked <code>cancelAfter</code>) was not invoked
    * when <code>cancelAfter</code> was invoked, but is set after the operation times out, it is reset by this method before
    * it completes abruptly with a <code>TestCanceledException</code>. The interrupted status will be set by
-   * <code>ThreadInterruptor</code>, the default <code>Interruptor</code> implementation.
+   * <code>ThreadEnder</code>, the default <code>Ender</code> implementation.
    * </p>
    *
    * @param timeout the maximimum amount of time allowed for the passed operation
    * @param f the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Interruptor, timed: Timed[T] = implicitly[Timed[T]]): T = {
+  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Ender, timed: Timed[T] = implicitly[Timed[T]]): T = {
     timed.timeoutAfter(
       timeout,
       fun,
@@ -302,7 +302,7 @@ trait TimeLimits {
     )
   }
 
-  /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {
+  /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Ender, exceptionFun: Option[Throwable] => StackDepthException): T = {
     val timer = new Timer()
     val task = new TimeoutTask(Thread.currentThread(), interruptor)
     timer.schedule(task, timeout.totalNanos / 1000 / 1000)

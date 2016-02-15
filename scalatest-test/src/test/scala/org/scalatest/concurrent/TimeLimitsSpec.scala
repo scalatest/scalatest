@@ -106,7 +106,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       assert(caught.getCause().getClass === classOf[IllegalArgumentException])
     }
  
-    it("should close a Socket connection via SocketInterruptor when the timeout is reached") {
+    it("should close a Socket connection via SocketEnder when the timeout is reached") {
       val serverSocket = new ServerSocket(0)
       @volatile
       var drag = true
@@ -131,13 +131,13 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           inputStream.read()
-        } (SocketInterruptor(clientSocket))
+        } (SocketEnder(clientSocket))
       }
       clientSocket.close()
       drag = false
     }
     
-    it("should close a Socket connection via FunInterruptor when the timeout is reached") {
+    it("should close a Socket connection via FunEnder when the timeout is reached") {
       val serverSocket = new ServerSocket(0)
       @volatile
       var drag = true
@@ -162,24 +162,24 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           inputStream.read()
-        } (Interruptor { t => clientSocket.close() })
+        } (Ender { t => clientSocket.close() })
       }
       clientSocket.close()
       drag = false
     }
     
-    it("should wait for the test to finish when DoNotInterrupt is used.") {
+    it("should wait for the test to finish when DoNotEnd is used.") {
       var x = 0
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           Thread.sleep(200)
           x = 1
-        } (DoNotInterrupt)
+        } (DoNotEnd)
       }
       x should be (1)
     }
     
-    it("should close a Selector connection via SelectorInterruptor when the timeout is reached") {
+    it("should close a Selector connection via SelectorEnder when the timeout is reached") {
       val selector = Selector.open()
       val ssChannel = ServerSocketChannel.open()
       ssChannel.configureBlocking(false)
@@ -219,7 +219,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           clientSelector.select()
-        } (SelectorInterruptor(clientSelector))
+        } (SelectorEnder(clientSelector))
       }
       clientSelector.close()
       drag = false
@@ -288,7 +288,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       assert(caught.getCause().getClass === classOf[IllegalArgumentException])
     }
     
-    it("should close Socket connection via SocketInterruptor when timeout reached") {
+    it("should close Socket connection via SocketEnder when timeout reached") {
       val serverSocket = new ServerSocket(0)
       @volatile
       var drag = true
@@ -313,13 +313,13 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           inputStream.read()
-        } (SocketInterruptor(clientSocket))
+        } (SocketEnder(clientSocket))
       }
       clientSocket.close()
       drag = false
     }
     
-    it("should close Socket connection via FunInterruptor when timeout reached") {
+    it("should close Socket connection via FunEnder when timeout reached") {
       val serverSocket = new ServerSocket(0)
       @volatile
       var drag = true
@@ -344,24 +344,24 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           inputStream.read()
-        } (Interruptor { t => clientSocket.close() } )
+        } (Ender { t => clientSocket.close() } )
       }
       clientSocket.close()
       drag = false
     }
     
-    it("should wait for the test to finish when DoNotInterrupt is used.") {
+    it("should wait for the test to finish when DoNotEnd is used.") {
       var x = 0
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           Thread.sleep(2000)
           x = 1
-        } (DoNotInterrupt)
+        } (DoNotEnd)
       }
       x should be (1)
     }
     
-    it("should close Selector connection via SelectorInterruptor when timeout reached") {
+    it("should close Selector connection via SelectorEnder when timeout reached") {
       val selector = Selector.open()
       val ssChannel = ServerSocketChannel.open()
       ssChannel.configureBlocking(false)
@@ -401,7 +401,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           clientSelector.select()
-        } (SelectorInterruptor(clientSelector))
+        } (SelectorEnder(clientSelector))
       }
       clientSelector.close()
       drag = false
