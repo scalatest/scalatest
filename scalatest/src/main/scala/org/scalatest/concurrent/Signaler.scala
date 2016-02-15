@@ -23,7 +23,7 @@ package org.scalatest.concurrent
  * <a href="Timeouts.html"><code>Timeouts</code></a> and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * </p>
  */
-trait Ender {
+trait Signaler {
 
   /**
    * Interrupts an operation.
@@ -42,7 +42,7 @@ trait Ender {
  * Companion object that provides a factory method for an <code>Interruptor</code> defined
  * in terms of a function from a function of type <code>Thread</code> to </code>Unit</code>.
  */
-object Ender {
+object Signaler {
 
   /**
    * Factory method for an <code>Interruptor</code> defined in terms of a function from a function of
@@ -54,13 +54,13 @@ object Ender {
    * @param fun the function representing the interruption strategy
    */
   def apply(fun: Thread => Unit) =
-    new Ender {
+    new Signaler {
       def apply(testThread: Thread) { fun(testThread) }
     }
 
   /**
    * Implicit <code>Interruptor</code> value defining a default interruption strategy for the <code>failAfter</code> and <code>cancelAfter</code> method.
    */
-  implicit def default: Ender = DoNotEnd
+  implicit def default: Signaler = DoNotSignal
 }
 

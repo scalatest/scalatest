@@ -25,7 +25,7 @@ import java.nio.channels.Selector
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */
-class SelectorEnder(selector: Selector) extends Ender {
+class SelectorSignaler(selector: Selector) extends Signaler {
   
   /**
    * Invokes <code>wakeup</code> on the <code>java.nio.channels.Selector</code> passed to this class's constructor.
@@ -38,15 +38,15 @@ class SelectorEnder(selector: Selector) extends Ender {
 }
 
 /**
- * Companion object that provides a factory method for a <code>SelectorEnder</code>.
+ * Companion object that provides a factory method for a <code>SelectorSignaler</code>.
  */
-object SelectorEnder {
+object SelectorSignaler {
 
   /**
-   * Factory method for a <code>SelectorEnder</code>.
+   * Factory method for a <code>SelectorSignaler</code>.
    *
-   * @param selector the <code>java.nio.channels.Selector</code> to pass to the <code>SelectorEnder</code> constructor
+   * @param selector the <code>java.nio.channels.Selector</code> to pass to the <code>SelectorSignaler</code> constructor
    */
-  def apply(selector: Selector) = new SelectorEnder(selector)
+  def apply(selector: Selector) = new SelectorSignaler(selector)
 }
 

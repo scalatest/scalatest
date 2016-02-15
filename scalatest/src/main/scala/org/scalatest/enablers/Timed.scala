@@ -16,18 +16,18 @@
 package org.scalatest.enablers
 
 import org.scalatest.Exceptional
-import org.scalatest.concurrent.Ender
+import org.scalatest.concurrent.Signaler
 import org.scalatest.exceptions.StackDepthException
 import java.util.TimerTask
 import java.util.Timer
 import org.scalatest.time.Span
-import org.scalatest.concurrent.EnderTimeoutTask
+import org.scalatest.concurrent.SignalerTimeoutTask
 
 trait Timed[T] {
   def timeoutAfter(
     timeout: Span,
     f: => T,
-    interruptor: Ender,
+    interruptor: Signaler,
     exceptionFun: Option[Throwable] => StackDepthException
   ): T
 }
@@ -38,11 +38,11 @@ object Timed {
       def timeoutAfter(
         timeout: Span,
          f: => T,
-         interruptor: Ender,
+         interruptor: Signaler,
          exceptionFun: Option[Throwable] => StackDepthException
       ): T = {
         val timer = new Timer
-        val task = new EnderTimeoutTask(Thread.currentThread(), interruptor)
+        val task = new SignalerTimeoutTask(Thread.currentThread(), interruptor)
         timer.schedule(task, timeout.totalNanos / 1000 / 1000) // TODO: Probably use a sleep so I can use nanos
         try {
           val result = f

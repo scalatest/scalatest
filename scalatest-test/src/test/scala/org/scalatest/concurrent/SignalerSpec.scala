@@ -17,10 +17,10 @@ package org.scalatest.concurrent
 
 import org.scalatest.FunSpec
 
-class EnderSpec extends FunSpec {
-  describe("Ender") {
-    it("should offer a default implicit DoNotEnd") {
-      assert(implicitly[Ender] eq DoNotEnd)
+class SignalerSpec extends FunSpec {
+  describe("Signaler") {
+    it("should offer a default implicit DoNotSignal") {
+      assert(implicitly[Signaler] eq DoNotSignal)
     }
   }
 }

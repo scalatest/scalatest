@@ -24,7 +24,7 @@ package org.scalatest.concurrent
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */
-object ThreadEnder extends Ender {
+object ThreadSignaler extends Signaler {
 
   /**
    * Invokes <code>interrupt</code> on the passed <code>Thread</code>.

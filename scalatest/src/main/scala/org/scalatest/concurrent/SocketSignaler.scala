@@ -26,7 +26,7 @@ import java.net.Socket
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */
-class SocketEnder(socket: Socket) extends Ender {
+class SocketSignaler(socket: Socket) extends Signaler {
 
   /**
    * Invokes <code>close</code> on the <code>java.net.Socket</code> passed to this class's constructor.
@@ -39,14 +39,14 @@ class SocketEnder(socket: Socket) extends Ender {
 }
 
 /**
- * Companion object that provides a factory method for a <code>SocketEnder</code>.
+ * Companion object that provides a factory method for a <code>SocketSignaler</code>.
  */
-object SocketEnder {
+object SocketSignaler {
 
   /**
-   * Factory method for a <code>SocketEnder</code>.
+   * Factory method for a <code>SocketSignaler</code>.
    *
-   * @param socket the <code>java.net.Socket</code> to pass to the <code>SocketEnder</code> constructor
+   * @param socket the <code>java.net.Socket</code> to pass to the <code>SocketSignaler</code> constructor
    */
-  def apply(socket: Socket) = new SocketEnder(socket)
+  def apply(socket: Socket) = new SocketSignaler(socket)
 }

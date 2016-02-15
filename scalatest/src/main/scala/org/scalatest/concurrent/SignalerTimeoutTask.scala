@@ -27,7 +27,7 @@ import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 
-private[scalatest] class EnderTimeoutTask(testThread: Thread, interrupt: Ender) extends TimerTask {
+private[scalatest] class SignalerTimeoutTask(testThread: Thread, interrupt: Signaler) extends TimerTask {
   @volatile var timedOut = false
   @volatile var needToResetInterruptedStatus = false
   override def run() {
