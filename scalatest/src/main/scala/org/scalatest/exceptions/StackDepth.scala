@@ -60,7 +60,11 @@ trait StackDepth { this: Throwable =>
       fileName + ":" + lineNum
   }
 
-  private def stackTraceElement = getStackTrace()(failedCodeStackDepth)
+  private def stackTraceElement: Option[StackTraceElement] = {
+    val stackTrace = getStackTrace()
+    if (stackTrace.length <= failedCodeStackDepth) None
+    else Some(stackTrace(failedCodeStackDepth))
+  }
 
   /**
    * A string that provides the filename of the line of code that failed, suitable
@@ -74,7 +78,11 @@ trait StackDepth { this: Throwable =>
    *
    * @return a string containing the filename that caused the failed test
    */
-  def failedCodeFileName: Option[String] = StackDepthExceptionHelper.getFailedCodeFileName(stackTraceElement)
+  def failedCodeFileName: Option[String] = {
+    stackTraceElement flatMap { ele =>
+      StackDepthExceptionHelper.getFailedCodeFileName(ele)
+    }
+  }
 
   /**
    * A string that provides the line number of the line of code that failed, suitable
@@ -89,11 +97,10 @@ trait StackDepth { this: Throwable =>
    * @return a string containing the line number that caused the failed test
    */
   def failedCodeLineNumber: Option[Int] = {
-    val lineNum = stackTraceElement.getLineNumber
-    if (lineNum > 0) {
-      Some(lineNum)
+    stackTraceElement flatMap { ele =>
+      val lineNum = ele.getLineNumber
+      if (lineNum > 0) Some(lineNum) else None
     }
-    else None
   }
 
   /**
