@@ -64,10 +64,5 @@ object Interruptor {
     new Interruptor {
       def apply(testThread: Thread) { fun(testThread) }
     }
-
-  /**
-   * Implicit <code>Interruptor</code> value defining a default interruption strategy for the <code>failAfter</code> and <code>cancelAfter</code> method.
-   */
-  implicit def default: Interruptor = DoNotInterrupt
 }
 
