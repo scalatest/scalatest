@@ -28,21 +28,29 @@ import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
 import java.nio.channels.SocketChannel
 import org.scalatest.time._
-import org.scalatest.{SeveredStackTraces, FunSpec, Resources}
+import org.scalatest.{SeveredStackTraces, AsyncFunSpec, Resources}
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
 import org.scalatest.Matchers
+import scala.concurrent.Future
+import org.scalatest.Succeeded
+import org.scalatest.Failed
+import org.scalatest.Canceled
+import org.scalatest.Pending
+import org.scalatest.Outcome
 
-class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
+class TimeLimitsSpec extends AsyncFunSpec with Matchers {
 
+/*
   override def withFixture(test: NoArgTest) = {
     if (isRetryable(test))
       withRetry { super.withFixture(test) }
     else
       super.withFixture(test)
   }
+*/
 
   describe("The failAfter construct") {
 
@@ -62,10 +70,11 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       failAfter(Span(200, Millis)) {
         Thread.sleep(100)
       }
+      succeed
     }
 
     it("should blow up with TestFailedException when the task does not response interrupt request and pass after the timeout") {
-      val caught = the [TestFailedException] thrownBy {
+      a [TestFailedException] should be thrownBy {
         failAfter(timeout = Span(100, Millis)) {
           for (i <- 1 to 10) {
             try {
@@ -81,7 +90,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
     }
 
     it("should not catch exception thrown from the test") {
-      val caught = the [InterruptedException] thrownBy {
+      an [InterruptedException] should be thrownBy {
         failAfter(Span(100, Millis)) {
           throw new InterruptedException
         }
@@ -128,13 +137,14 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val clientSocket = new Socket("localhost", serverSocket.getLocalPort())
       val inputStream = clientSocket.getInputStream()
       
-      val caught = the [TestFailedException] thrownBy {
+      a [TestFailedException] should be thrownBy {
         failAfter(Span(100, Millis)) {
           inputStream.read()
         } (SocketSignaler(clientSocket))
       }
       clientSocket.close()
       drag = false
+      succeed
     }
     
     it("should close a Socket connection via FunSignaler when the timeout is reached") {
@@ -159,13 +169,14 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val clientSocket = new Socket("localhost", serverSocket.getLocalPort())
       val inputStream = clientSocket.getInputStream()
       
-      val caught = the [TestFailedException] thrownBy {
+      a [TestFailedException] should be thrownBy {
         failAfter(Span(100, Millis)) {
           inputStream.read()
         } (Signaler { t => clientSocket.close() })
       }
       clientSocket.close()
       drag = false
+      succeed
     }
     
     it("should wait for the test to finish when DoNotSignal.") {
@@ -216,13 +227,41 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       sChannel.connect(new InetSocketAddress("localhost", ssChannel.socket().getLocalPort()));
       sChannel.register(selector, sChannel.validOps());
     
-      val caught = the [TestFailedException] thrownBy {
+      a [TestFailedException] should be thrownBy {
         failAfter(Span(100, Millis)) {
           clientSelector.select()
         } (SelectorSignaler(clientSelector))
       }
       clientSelector.close()
       drag = false
+      succeed
+    }
+    describe("when used with Future[Outcome]") {
+      it("should not catch an exception thrown from the body") {
+        assertThrows[InterruptedException] {
+          failAfter(Span(100, Millis)) {
+            throw new InterruptedException
+            Future.successful(Succeeded)
+          }
+        }
+      }
+      ignore("should be a Failed containing TestFailedException when it times out", Retryable) {
+        val future: Future[Outcome] =
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            Future.successful(Succeeded)
+          }
+        future.map { outcome =>
+          outcome match {
+            case Failed(tfe: TestFailedException) =>
+              tfe.message.value should be(Resources.timeoutFailingAfter("100 milliseconds"))
+              tfe.failedCodeLineNumber.value should equal(thisLineNumber - 8)
+              tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+
+            case other => fail("Expect Failed as the result, but got: " + other)
+          }
+        }
+      }
     }
   }
 
@@ -244,10 +283,11 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       cancelAfter(Span(2000, Millis)) {
         Thread.sleep(1000)
       }
+      succeed
     }
     
     it("should blow up with TestCanceledException when the task does not response interrupt request and pass after the timeout") {
-      val caught = the [TestCanceledException] thrownBy {
+      a [TestCanceledException] should be thrownBy {
         cancelAfter(timeout = Span(1000, Millis)) {
           for (i <- 1 to 10) {
             try {
@@ -263,7 +303,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
     }
     
     it("should not catch exception thrown from the test") {
-      val caught = the [InterruptedException] thrownBy {
+      an [InterruptedException] should be thrownBy {
         cancelAfter(Span(1000, Millis)) {
           throw new InterruptedException
         }
@@ -317,6 +357,7 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       }
       clientSocket.close()
       drag = false
+      succeed // TODO: Chee Seng, why is caught captured? It isn't used.
     }
     
     it("should close Socket connection via FunSignaler when timeout reached") {
@@ -341,13 +382,14 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       val clientSocket = new Socket("localhost", serverSocket.getLocalPort())
       val inputStream = clientSocket.getInputStream()
       
-      val caught = the [TestCanceledException] thrownBy {
+      a [TestCanceledException] should be thrownBy {
         cancelAfter(Span(1000, Millis)) {
           inputStream.read()
         } (Signaler { t => clientSocket.close() } )
       }
       clientSocket.close()
       drag = false
+      succeed
     }
     
     it("should wait for the test to finish when DoNotSignal is used.") {
@@ -398,13 +440,14 @@ class TimeLimitsSpec extends FunSpec with Matchers with SeveredStackTraces {
       sChannel.connect(new InetSocketAddress("localhost", ssChannel.socket().getLocalPort()));
       sChannel.register(selector, sChannel.validOps());
     
-      val caught = the [TestCanceledException] thrownBy {
+      a [TestCanceledException] should be thrownBy {
         cancelAfter(Span(1000, Millis)) {
           clientSelector.select()
         } (SelectorSignaler(clientSelector))
       }
       clientSelector.close()
       drag = false
+      succeed
     }
   }
 }
