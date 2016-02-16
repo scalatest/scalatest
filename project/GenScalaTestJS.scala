@@ -205,6 +205,7 @@ object GenScalaTestJS {
         "TestThreadsStartingCounter.scala",    // skipped because doesn't really make sense under js's single-threaded environment.
         "ThreadInterruptor.scala",          // skipped because no interrupt in js.
         "TimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
+        "DeprecatedTimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "TimeoutTask.scala"/*,            // skipped because timeout is not supported.,
         "SerialExecutionContext.scala"*/  // skipped because we can't block in js, should use QueueExecutionContext provided by scala-js itself.
@@ -270,6 +271,7 @@ object GenScalaTestJS {
         "JavaFuturesSpec.scala",      // skipped because depends on java futures
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
         "TimeLimitedTestsSpec.scala",   // skipped because TimeLimitedTests not supported.
+        "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
         "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
