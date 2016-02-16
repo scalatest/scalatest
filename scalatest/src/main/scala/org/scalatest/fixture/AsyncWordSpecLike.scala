@@ -101,7 +101,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -109,7 +109,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -136,7 +136,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[Assertion]) {
+  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -169,7 +169,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[Assertion]) {
+  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
@@ -318,7 +318,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[Assertion]) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion]) {
       registerAsyncTestToRun(specText, tags, "in", testFun)
     }
 
@@ -340,7 +340,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[Assertion]) {
+    def in(testFun: () => Future[compatible.Assertion]) {
       registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
     }
 
@@ -384,7 +384,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[Assertion]) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion]) {
       registerAsyncTestToIgnore(specText, tags, "ignore", testFun)
     }
 
@@ -406,7 +406,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[Assertion]) {
+    def ignore(testFun: () => Future[compatible.Assertion]) {
       registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
     }
   }
@@ -448,7 +448,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[Assertion]) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion]) {
       registerAsyncTestToRun(string, List(), "in", testFun)
     }
 
@@ -470,7 +470,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[Assertion]) {
+    def in(testFun: () => Future[compatible.Assertion]) {
       registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
     }
 
@@ -514,7 +514,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[Assertion]) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion]) {
       registerAsyncTestToIgnore(string, List(), "ignore", testFun)
     }
 
@@ -536,7 +536,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[Assertion]) {
+    def ignore(testFun: () => Future[compatible.Assertion]) {
       registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
 
     }

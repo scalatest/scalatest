@@ -200,7 +200,7 @@ trait AsyncTestSuite extends org.scalatest.fixture.Suite with org.scalatest.Asyn
    * @param testFun test function
    * @return function that returns `AsyncOutcome`
    */
-  private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome =
+  private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[compatible.Assertion]): FixtureParam => AsyncOutcome =
     (fixture: FixtureParam) => {
       val futureUnit = testFun(fixture)
       InternalFutureOutcome(

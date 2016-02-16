@@ -40,12 +40,12 @@ object TimeLimiting {
         Canceled(new TestCanceledException(sde => Some(Resources.timeoutCancelingAfter(timeLimit.prettyString)), cause, stackDepthFun, None)).asInstanceOf[OUTCOME]
     }
 
-  implicit def timeLimitFailingBehaviorOfAssertion: TimeLimiting[org.scalatest.Assertion] =
-    new TimeLimiting[org.scalatest.Assertion] {
-      def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): org.scalatest.Assertion =
+  implicit def timeLimitFailingBehaviorOfAssertion: TimeLimiting[org.scalatest.compatible.Assertion] =
+    new TimeLimiting[org.scalatest.compatible.Assertion] {
+      def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): org.scalatest.compatible.Assertion =
         throw new TestFailedDueToTimeoutException(sde => Some(Resources.timeoutFailingAfter(timeLimit.prettyString)), cause, stackDepthFun, None, timeLimit)
 
-      def cancel(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): org.scalatest.Assertion =
+      def cancel(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): org.scalatest.compatible.Assertion =
         throw new TestCanceledException(sde => Some(Resources.timeoutCancelingAfter(timeLimit.prettyString)), cause, stackDepthFun, None)
     }
 

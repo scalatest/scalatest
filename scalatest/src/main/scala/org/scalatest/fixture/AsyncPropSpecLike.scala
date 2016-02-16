@@ -51,7 +51,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
 
   private[scalatest] val sourceFileName = "PropSpecRegistering.scala"
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -59,7 +59,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -68,7 +68,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
   }
 
   class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[Assertion]) {
+    def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -77,7 +77,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
-    def apply(testFun: () => Future[Assertion]) {
+    def apply(testFun: () => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -106,7 +106,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
     new ResultOfPropertyInvocation(testName, testTags: _*)
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[Assertion]) {
+    def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -115,7 +115,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
       engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
-    def apply(testFun: () => Future[Assertion]) {
+    def apply(testFun: () => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -295,7 +295,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Assertion) = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => compatible.Assertion) = {
     fixture => { f; Succeeded }
   }
 
@@ -308,7 +308,7 @@ trait AsyncPropSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @return a function of <code>FixtureParam => Any</code>
    */
 /*
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Assertion): (FixtureParam => Assertion) =
+  protected implicit def convertNoArgToFixtureFunction(fun: () => compatible.Assertion): (FixtureParam => compatible.Assertion) =
     new NoArgTestWrapper(fun)
 */
 

@@ -111,7 +111,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -119,7 +119,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerTest", 5, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -146,14 +146,14 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion]) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Future[Assertion] = testFun()
+    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
     engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
@@ -180,14 +180,14 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion]) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Future[Assertion] = testFun()
+    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
@@ -229,7 +229,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToRun(specText, tags, "in", testFun _)
     }
 
@@ -269,7 +269,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[Assertion]) {
+    def ignore(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(specText, tags, "ignore", testFun _)
     }
   }
@@ -329,7 +329,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(f: => Future[Assertion]) {
+    def in(f: => Future[compatible.Assertion]) {
       registerTestToRun(string, List(), "in", f _)
     }
 
@@ -349,7 +349,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(f: => Future[Assertion]) {
+    def ignore(f: => Future[compatible.Assertion]) {
       registerTestToIgnore(string, List(), "ignore", f _)
     }
 

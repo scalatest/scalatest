@@ -236,7 +236,7 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    * @param testFun test function
    * @return function that returns `AsyncOutcome`
    */
-  private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
+  private[scalatest] def transformToOutcome(testFun: => Future[compatible.Assertion]): () => AsyncOutcome =
     () => {
       val futureSucceeded: Future[Succeeded.type] = testFun.map(_ => Succeeded)
       InternalFutureOutcome(
@@ -261,7 +261,7 @@ trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thi
    * @return a <code>Future[Assertion]</code> that has already completed successfully
    *     (containing the <code>Succeeded</code> singleton).
    */
-  implicit def convertAssertionToFutureAssertion(assertion: Assertion): Future[Assertion] = Future.successful(assertion)
+  implicit def convertAssertionToFutureAssertion(assertion: compatible.Assertion): Future[compatible.Assertion] = Future.successful(assertion)
 
   protected[scalatest] def parallelAsyncTestExecution: Boolean = thisAsyncTestSuite.isInstanceOf[org.scalatest.ParallelTestExecution] ||
       thisAsyncTestSuite.isInstanceOf[org.scalatest.RandomTestOrder]

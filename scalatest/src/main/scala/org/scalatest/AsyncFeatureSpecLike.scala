@@ -96,7 +96,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -104,7 +104,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     engine.registerAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -130,7 +130,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -158,7 +158,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(specText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  protected def ignore(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2

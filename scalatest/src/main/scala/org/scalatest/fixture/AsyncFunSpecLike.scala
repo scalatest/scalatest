@@ -100,7 +100,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -108,7 +108,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 5, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = 0
     // SKIP-SCALATESTJS-END
@@ -142,7 +142,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
     class ResultOfItWordApplication(specText: String, testTags: Tag*) {
 
-      def apply(testFun: FixtureParam => Future[Assertion]) {
+      def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
@@ -152,7 +152,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
         engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
       }
 
-      def apply(testFun: () => Future[Assertion]) {
+      def apply(testFun: () => Future[compatible.Assertion]) {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
@@ -276,14 +276,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   protected final class TheyWord {
 
     class ResultOfTheyWordApplication(specText: String, testTags: Tag*) {
-      def apply(testFun: FixtureParam => Future[Assertion]): Unit = {
+      def apply(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepthAdjustment = -3
         engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, testTags: _*)
       }
-      def apply(testFun: () => Future[Assertion]): Unit = {
+      def apply(testFun: () => Future[compatible.Assertion]): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
@@ -381,14 +381,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   protected val they = new TheyWord
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[Assertion]): Unit = {
+    def apply(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 8
       engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, -3, None, testTags: _*)
     }
-    def apply(testFun: () => Future[Assertion]): Unit = {
+    def apply(testFun: () => Future[compatible.Assertion]): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       // SKIP-SCALATESTJS-END
@@ -436,7 +436,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
 /*
-  protected def ignore(specText: String)(testFun: FixtureParam => Future[Assertion]) {
+  protected def ignore(specText: String)(testFun: FixtureParam => Future[compatible.Assertion]) {
     if (atomic.get.registrationClosed)
       throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideAnItOrAThey, getStackDepthFun(sourceFileName, "ignore"))
     ignore(specText, Array[Tag](): _*)(testFun)
@@ -624,7 +624,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => Assertion = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): FixtureParam => compatible.Assertion = {
     fixture => { f; Succeeded }
   }
 
@@ -637,7 +637,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * @return a function of <code>FixtureParam => Any</code>
    */
 /*
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Assertion): (FixtureParam => Assertion) =
+  protected implicit def convertNoArgToFixtureFunction(fun: () => compatible.Assertion): (FixtureParam => compatible.Assertion) =
     new NoArgTestWrapper(fun)
 */
 

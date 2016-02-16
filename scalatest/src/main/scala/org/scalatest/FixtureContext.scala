@@ -16,5 +16,5 @@
 package org.scalatest
 
 // TODO: Scaladoc
-trait FixtureContext extends Assertion
+trait FixtureContext extends compatible.Assertion
 

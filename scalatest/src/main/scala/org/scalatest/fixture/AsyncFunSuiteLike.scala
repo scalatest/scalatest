@@ -93,7 +93,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -101,7 +101,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerAsyncTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
@@ -110,7 +110,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
   }
 
   class ResultOfTestInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[Assertion]) {
+    def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -120,7 +120,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
       engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
     }
 
-    def apply(testFun: () => Future[Assertion]) {
+    def apply(testFun: () => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -147,7 +147,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    */
   protected def test(testName: String, testTags: Tag*): ResultOfTestInvocation = new ResultOfTestInvocation(testName, testTags: _*)
 /*
-  protected def test(testName: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  protected def test(testName: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -159,7 +159,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
 */
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[Assertion]) {
+    def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -169,7 +169,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
       engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
     }
 
-    def apply(testFun: () => Future[Assertion]) {
+    def apply(testFun: () => Future[compatible.Assertion]) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -197,7 +197,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    */
   protected def ignore(testName: String, testTags: Tag*): ResultOfIgnoreInvocation = new ResultOfIgnoreInvocation(testName, testTags: _*)
 /*
-  protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion]) {
+  protected def ignore(testName: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -357,7 +357,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @param f a function
    * @return a function of <code>FixtureParam => Any</code>
    */
-  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => Assertion) = {
+  protected implicit def convertPendingToFixtureFunction(f: => PendingStatement): (FixtureParam => compatible.Assertion) = {
     fixture => { f; Succeeded }
   }
 
@@ -370,7 +370,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @return a function of <code>FixtureParam => Any</code>
    */
 /*
-  protected implicit def convertNoArgToFixtureFunction(fun: () => Assertion): (FixtureParam => Assertion) =
+  protected implicit def convertNoArgToFixtureFunction(fun: () => compatible.Assertion): (FixtureParam => compatible.Assertion) =
     new NoArgTestWrapper(fun)
 */
 

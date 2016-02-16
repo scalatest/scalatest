@@ -352,7 +352,7 @@ object Exceptional {
  * about something larger: multiple tests or an entire suite.
  * </p>
  */
-case object Succeeded extends Outcome with Assertion {
+case object Succeeded extends Outcome with compatible.Assertion {
 
   /**
    * Indicates that this <code>Outcome</code> represents a test that succeeded.
