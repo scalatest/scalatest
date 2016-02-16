@@ -22,27 +22,33 @@ import java.util.TimerTask
 import java.util.Timer
 import org.scalatest.time.Span
 import org.scalatest.concurrent.SignalerTimeoutTask
+import org.scalatest.Outcome
+import scala.concurrent.Future
+import org.scalatest.FutureOutcome
 
 trait Timed[T] {
   def timeoutAfter(
     timeout: Span,
     f: => T,
-    interruptor: Signaler,
+    signaler: Signaler,
     exceptionFun: Option[Throwable] => StackDepthException
   ): T
 }
 
 object Timed {
-  implicit def interruptableNatureOf[T]: Timed[T] =
+  // Chee Seng: First step will be to get this working on Scala.js. I think there we
+  // since we can't interrupt or signal, the default of DoNotSignal makes sense and
+  // we'll just time it, and after it is finished, if it took too long, we fail it.
+  implicit def timed[T]: Timed[T] =
     new Timed[T] {
       def timeoutAfter(
         timeout: Span,
-         f: => T,
-         interruptor: Signaler,
-         exceptionFun: Option[Throwable] => StackDepthException
+        f: => T,
+        signaler: Signaler,
+        exceptionFun: Option[Throwable] => StackDepthException
       ): T = {
         val timer = new Timer
-        val task = new SignalerTimeoutTask(Thread.currentThread(), interruptor)
+        val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
         timer.schedule(task, timeout.totalNanos / 1000 / 1000) // TODO: Probably use a sleep so I can use nanos
         try {
           val result = f
@@ -71,4 +77,31 @@ object Timed {
         }
       }
     }
+
+  /*
+  Chee Seng: This one should catch TestCanceledException and change it into
+  a Canceled. It should catch TestPendingException and change it into
+  a Pending. It should catch any other non-suite-aborting exception and
+  turn it into a Failed. A timeout should become a Failed(TestFailedDueToTimeoutException).
+  I believe this is what you did in AsyncTimeouts.
+  */
+  implicit def timedFutureOfOutcome: Timed[Future[Outcome]] = ???
+
+  /*
+  Chee Seng: This one should allow any exception to just do the usual
+  thing of go to scala.util.Failure. This is likely what you did with
+  Future[Assertion] in AsyncTimeouts. But we should do it for any Future (except
+  Future[Outcome] will be treated specially because it goes to the
+  more specific implicit above.
+  */
+  implicit def timedFutureOf[T]: Timed[Future[T]] = ???
+
+  /*
+  Chee Seng: This one should catch TestCanceledException and change it into
+  a Canceled. It should catch TestPendingException and change it into
+  a Pending. It should catch any other non-suite-aborting exception and
+  turn it into a Failed. A timeout should become a Failed(TestFailedDueToTimeoutException).
+  I believe this is what you did in AsyncTimeouts.
+  */
+  implicit def timedFutureOutcome: Timed[FutureOutcome] = ???
 }

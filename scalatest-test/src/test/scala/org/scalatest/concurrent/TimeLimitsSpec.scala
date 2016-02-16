@@ -93,6 +93,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       an [InterruptedException] should be thrownBy {
         failAfter(Span(100, Millis)) {
           throw new InterruptedException
+          succeed
         }
       }
     }
@@ -110,6 +111,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
             }
           }
           throw new IllegalArgumentException("Something went wrong!")
+          succeed
         }
       }
       assert(caught.getCause().getClass === classOf[IllegalArgumentException])
@@ -236,33 +238,6 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       drag = false
       succeed
     }
-    describe("when used with Future[Outcome]") {
-      it("should not catch an exception thrown from the body") {
-        assertThrows[InterruptedException] {
-          failAfter(Span(100, Millis)) {
-            throw new InterruptedException
-            Future.successful(Succeeded)
-          }
-        }
-      }
-      ignore("should be a Failed containing TestFailedException when it times out", Retryable) {
-        val future: Future[Outcome] =
-          failAfter(Span(100, Millis)) {
-            SleepHelper.sleep(200)
-            Future.successful(Succeeded)
-          }
-        future.map { outcome =>
-          outcome match {
-            case Failed(tfe: TestFailedException) =>
-              tfe.message.value should be(Resources.timeoutFailingAfter("100 milliseconds"))
-              tfe.failedCodeLineNumber.value should equal(thisLineNumber - 8)
-              tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-
-            case other => fail("Expect Failed as the result, but got: " + other)
-          }
-        }
-      }
-    }
   }
 
   describe("The cancelAfter construct") {
@@ -306,6 +281,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       an [InterruptedException] should be thrownBy {
         cancelAfter(Span(1000, Millis)) {
           throw new InterruptedException
+          succeed
         }
       }
     }
@@ -323,6 +299,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
             }
           }
           throw new IllegalArgumentException("Something goes wrong!")
+          succeed
         }
       }
       assert(caught.getCause().getClass === classOf[IllegalArgumentException])

@@ -25,7 +25,10 @@ import org.scalatest.exceptions.StackDepthExceptionHelper._
 
 trait AsyncTimeouts {
 
-  private def timingOutAfter[T](timeLimit: Span, methodName: String, exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T)(block: => Future[T])(implicit executionContext: ExecutionContext): Future[T] = {
+  private def timingOutAfter[T](
+    timeLimit: Span,
+    methodName: String,
+    exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T)(block: => Future[T])(implicit executionContext: ExecutionContext): Future[T] = {
 
     class TimeoutTask[T](promise: Promise[T], span: Span, exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T) extends TimerTask {
 
