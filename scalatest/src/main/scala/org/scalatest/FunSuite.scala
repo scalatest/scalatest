@@ -1559,7 +1559,7 @@ import Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSuiteFinder"))
-class FunSuite extends FunSuiteLike {
+class AnyFunSuite extends AnyFunSuiteLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

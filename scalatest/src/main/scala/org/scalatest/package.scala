@@ -115,4 +115,46 @@ package object scalatest {
   @deprecated("Please use org.scalatest.refspec.RefSpec instead")
   type Spec = refspec.RefSpec
   // SKIP-SCALATESTJS-END
-}
+
+  @deprecated("FeatureSpec has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFeatureSpec instead.")
+  type FeatureSpec = org.scalatest.AnyFeatureSpec
+  
+  @deprecated("FeatureSpecLike has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFeatureSpecLike instead.")
+  type FeatureSpecLike = org.scalatest.AnyFeatureSpecLike 
+  
+  @deprecated("FlatSpec has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFlatSpec instead.")
+  type FlatSpec = org.scalatest.AnyFlatSpec 
+  
+  @deprecated("FlatSpecLike has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFlatSpecLike instead.")
+  type FlatSpecLike = org.scalatest.AnyFlatSpecLike 
+  
+  @deprecated("FreeSpec has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFreeSpec instead.")
+  type FreeSpec = org.scalatest.AnyFreeSpec  
+  
+  @deprecated("FreeSpecLike has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFreeSpecLike instead.")
+  type FreeSpecLike = org.scalatest.AnyFreeSpecLike 
+  
+  @deprecated("FunSpec has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFunSpec instead.")
+  type FunSpec = org.scalatest.AnyFunSpec 
+  
+  @deprecated("FunSpecLike has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFunSpecLike instead.")
+  type FunSpecLike = org.scalatest.AnyFunSpecLike 
+  
+  @deprecated("FunSuite has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFunSuite instead.")
+  type FunSuite = org.scalatest.AnyFunSuite 
+  
+  @deprecated("FunSuiteLike has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyFunSuiteLike instead.")
+  type FunSuiteLike = org.scalatest.AnyFunSuiteLike 
+  
+  @deprecated("PropSpec has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyPropSpec instead.")
+  type PropSpec = org.scalatest.AnyPropSpec 
+  
+  @deprecated("PropSpecLike has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyPropSpecLike instead.")
+  type PropSpecLike = org.scalatest.AnyPropSpecLike 
+  
+  @deprecated("WordSpec has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyWordSpec instead.")
+  type WordSpec = org.scalatest.AnyWordSpec 
+  
+  @deprecated("WordSpecLike has been deprecated and will be changed to require type Assertion in a future version of ScalaTest. Please use AnyWordSpecLike instead.")
+  type WordSpecLike = org.scalatest.AnyWordSpecLike 
+  }

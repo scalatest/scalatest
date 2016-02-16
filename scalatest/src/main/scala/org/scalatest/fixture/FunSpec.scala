@@ -238,7 +238,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FunSpecFinder"))
-abstract class FunSpec extends FunSpecLike {
+abstract class AnyFunSpec extends AnyFunSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

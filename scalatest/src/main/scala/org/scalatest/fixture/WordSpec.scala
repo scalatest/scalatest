@@ -238,7 +238,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.WordSpecFinder"))
-abstract class WordSpec extends WordSpecLike {
+abstract class AnyWordSpec extends AnyWordSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

@@ -238,7 +238,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-abstract class FreeSpec extends FreeSpecLike {
+abstract class AnyFreeSpec extends AnyFreeSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the

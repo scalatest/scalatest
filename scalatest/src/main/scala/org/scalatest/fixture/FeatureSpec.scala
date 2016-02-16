@@ -235,7 +235,7 @@ import org.scalatest.exceptions.NotAllowedException
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.FeatureSpecFinder"))
-abstract class FeatureSpec extends FeatureSpecLike {
+abstract class AnyFeatureSpec extends AnyFeatureSpecLike {
 
   /**
    * Returns a user friendly string for this suite, composed of the
