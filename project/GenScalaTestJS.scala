@@ -207,8 +207,7 @@ object GenScalaTestJS {
         "TimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "DeprecatedTimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
-        "TimeoutTask.scala"/*,            // skipped because timeout is not supported.,
-        "SerialExecutionContext.scala"*/  // skipped because we can't block in js, should use QueueExecutionContext provided by scala-js itself.
+        "TimeoutTask.scala"            // skipped because timeout is not supported.,
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
@@ -272,7 +271,8 @@ object GenScalaTestJS {
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
         "TimeLimitedTestsSpec.scala",   // skipped because TimeLimitedTests not supported.
         "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
-        "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
+        "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
+        "TimeLimitsSpec.scala"  // TODO next: try rebuild
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
