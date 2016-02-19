@@ -58,7 +58,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
     ignore("should blow up with TestFailedException when it times out", Retryable) {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
-          Thread.sleep(200)
+          SleepHelper.sleep(200)
         }
       }
       caught.message.value should be (Resources.timeoutFailedAfter("100 milliseconds"))
@@ -68,17 +68,18 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
  
     it("should pass normally when the timeout is not reached") {
       failAfter(Span(200, Millis)) {
-        Thread.sleep(100)
+        SleepHelper.sleep(100)
       }
       succeed
     }
 
+    // SKIP-SCALATESTJS-START
     it("should blow up with TestFailedException when the task does not response interrupt request and pass after the timeout") {
       a [TestFailedException] should be thrownBy {
         failAfter(timeout = Span(100, Millis)) {
           for (i <- 1 to 10) {
             try {
-              Thread.sleep(50)
+              SleepHelper.sleep(50)
             }
             catch {
               case _: InterruptedException =>
@@ -88,6 +89,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
     }
+    // SKIP-SCALATESTJS-END
 
     it("should not catch exception thrown from the test") {
       an [InterruptedException] should be thrownBy {
@@ -98,12 +100,13 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
     }
 
+    // SKIP-SCALATESTJS-START
     it("should set the exception thrown from the test after timeout as cause of TestFailedException") {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           for (i <- 1 to 10) {
             try {
-              Thread.sleep(50)
+              SleepHelper.sleep(50)
             }
             catch {
               case _: InterruptedException =>
@@ -126,7 +129,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
-              Thread.sleep(100)
+              SleepHelper.sleep(100)
             }
             catch {
               case _: InterruptedException => Thread.interrupted()
@@ -148,7 +151,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       drag = false
       succeed
     }
-    
+
     it("should close a Socket connection via FunSignaler when the timeout is reached") {
       val serverSocket = new ServerSocket(0)
       @volatile
@@ -158,7 +161,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
-              Thread.sleep(100)
+              SleepHelper.sleep(100)
             }
             catch {
               case _: InterruptedException => Thread.interrupted()
@@ -180,18 +183,20 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       drag = false
       succeed
     }
+    // SKIP-SCALATESTJS-END
     
     it("should wait for the test to finish when DoNotSignal.") {
       var x = 0
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
-          Thread.sleep(200)
+          SleepHelper.sleep(200)
           x = 1
         } (DoNotSignal)
       }
       x should be (1)
     }
-    
+
+    // SKIP-SCALATESTJS-START
     it("should close a Selector connection via SelectorSignaler when the timeout is reached") {
       val selector = Selector.open()
       val ssChannel = ServerSocketChannel.open()
@@ -211,7 +216,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
               val ssChannel = selKey.channel().asInstanceOf[ServerSocketChannel]
               while(drag) {
                 try {
-                  Thread.sleep(100)
+                  SleepHelper.sleep(100)
                 }
                 catch {
                   case _: InterruptedException => Thread.interrupted()
@@ -238,6 +243,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       drag = false
       succeed
     }
+    // SKIP-SCALATESTJS-END
   }
 
   describe("The cancelAfter construct") {
@@ -246,7 +252,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
     ignore("should blow up with TestCanceledException when it times out") {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
-          Thread.sleep(2000)
+          SleepHelper.sleep(2000)
         }
       }
       caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
@@ -256,7 +262,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
     
     it("should pass normally when timeout is not reached") {
       cancelAfter(Span(2000, Millis)) {
-        Thread.sleep(1000)
+        SleepHelper.sleep(1000)
       }
       succeed
     }
@@ -266,7 +272,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         cancelAfter(timeout = Span(1000, Millis)) {
           for (i <- 1 to 10) {
             try {
-              Thread.sleep(500)
+              SleepHelper.sleep(500)
             }
             catch {
               case _: InterruptedException =>
@@ -291,7 +297,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         cancelAfter(Span(1000, Millis)) {
           for (i <- 1 to 10) {
             try {
-              Thread.sleep(500)
+              SleepHelper.sleep(500)
             }
             catch {
               case _: InterruptedException =>
@@ -304,7 +310,8 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
       assert(caught.getCause().getClass === classOf[IllegalArgumentException])
     }
-    
+
+    // SKIP-SCALATESTJS-START
     it("should close Socket connection via SocketSignaler when timeout reached") {
       val serverSocket = new ServerSocket(0)
       @volatile
@@ -314,7 +321,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
-              Thread.sleep(1000)
+              SleepHelper.sleep(1000)
             }
             catch {
               case _: InterruptedException => Thread.interrupted()
@@ -346,7 +353,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
-              Thread.sleep(1000)
+              SleepHelper.sleep(1000)
             }
             catch {
               case _: InterruptedException => Thread.interrupted()
@@ -368,18 +375,20 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       drag = false
       succeed
     }
+    // SKIP-SCALATESTJS-END
     
     it("should wait for the test to finish when DoNotSignal is used.") {
       var x = 0
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
-          Thread.sleep(2000)
+          SleepHelper.sleep(2000)
           x = 1
         } (DoNotSignal)
       }
       x should be (1)
     }
-    
+
+    // SKIP-SCALATESTJS-START
     it("should close Selector connection via SelectorSignaler when timeout reached") {
       val selector = Selector.open()
       val ssChannel = ServerSocketChannel.open()
@@ -399,7 +408,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
               val ssChannel = selKey.channel().asInstanceOf[ServerSocketChannel]
               while(drag) {
                 try {
-                  Thread.sleep(1000)
+                  SleepHelper.sleep(1000)
                 }
                 catch {
                   case _: InterruptedException => Thread.interrupted()
@@ -426,5 +435,6 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       drag = false
       succeed
     }
+    // SKIP-SCALATESTJS-END
   }
 }

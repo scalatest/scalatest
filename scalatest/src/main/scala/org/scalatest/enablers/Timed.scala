@@ -18,8 +18,10 @@ package org.scalatest.enablers
 import org.scalatest.Exceptional
 import org.scalatest.concurrent.Signaler
 import org.scalatest.exceptions.StackDepthException
-import java.util.TimerTask
-import java.util.Timer
+//import java.util.TimerTask
+//import java.util.Timer
+import org.scalatest.TimerTask
+import org.scalatest.Timer
 import org.scalatest.time.Span
 import org.scalatest.concurrent.SignalerTimeoutTask
 import org.scalatest.Outcome
@@ -49,14 +51,17 @@ object Timed {
       ): T = {
         val timer = new Timer
         val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
-        timer.schedule(task, timeout.totalNanos / 1000 / 1000) // TODO: Probably use a sleep so I can use nanos
+        val maxDuration = timeout.totalNanos / 1000 / 1000
+        timer.schedule(task, maxDuration) // TODO: Probably use a sleep so I can use nanos
+        val startTime = scala.compat.Platform.currentTime
         try {
           val result = f
-          timer.cancel()
+          val endTime = scala.compat.Platform.currentTime
+          task.cancel()
           result match {
             case Exceptional(ex) => throw ex  // If the result is Exceptional, the exception is already wrapped, just re-throw it to get the old behavior.
             case _ => 
-              if (task.timedOut) { 
+              if (task.timedOut || (endTime - startTime) > maxDuration) {
                 if (task.needToResetInterruptedStatus)
                   Thread.interrupted() // To reset the flag probably. He only does this if it was not set before and was set after, I think.
                 throw exceptionFun(None)
@@ -65,9 +70,10 @@ object Timed {
           result
         }
         catch {
-          case t: Throwable => 
-            timer.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
-            if(task.timedOut) {
+          case t: Throwable =>
+            val endTime = scala.compat.Platform.currentTime
+            task.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
+            if(task.timedOut || (endTime - startTime) > maxDuration) {
               if (task.needToResetInterruptedStatus)
                 Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
               throw exceptionFun(Some(t))

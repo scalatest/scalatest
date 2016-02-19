@@ -271,8 +271,7 @@ object GenScalaTestJS {
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
         "TimeLimitedTestsSpec.scala",   // skipped because TimeLimitedTests not supported.
         "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
-        "TimeoutsSpec.scala",            // skipped because Timeouts not supported.
-        "TimeLimitsSpec.scala"  // TODO next: try rebuild
+        "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/events/examples", "org/scalatest/events/examples", targetDir, List.empty) ++
