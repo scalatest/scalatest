@@ -54,16 +54,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
 
   describe("The failAfter construct") {
 
-    // TODO: Fix stack depth
-    ignore("should blow up with TestFailedException when it times out", Retryable) {
+    it("should blow up with TestFailedException when it times out", Retryable) {
       val caught = the [TestFailedException] thrownBy {
         failAfter(Span(100, Millis)) {
           SleepHelper.sleep(200)
         }
       }
       caught.message.value should be (Resources.timeoutFailedAfter("100 milliseconds"))
-      caught.failedCodeLineNumber.value should equal (thisLineNumber - 5)
       caught.failedCodeFileName.value should be ("TimeLimitsSpec.scala")
+      caught.failedCodeLineNumber.value should equal (thisLineNumber - 6)
     }
  
     it("should pass normally when the timeout is not reached") {
@@ -248,8 +247,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
 
   describe("The cancelAfter construct") {
 
-    // TODO: Fix stack depth
-    ignore("should blow up with TestCanceledException when it times out") {
+    it("should blow up with TestCanceledException when it times out") {
       val caught = the [TestCanceledException] thrownBy {
         cancelAfter(Span(1000, Millis)) {
           SleepHelper.sleep(2000)

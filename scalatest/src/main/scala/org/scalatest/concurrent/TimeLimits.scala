@@ -239,6 +239,10 @@ trait TimeLimits {
    * @param interruptor a strategy for interrupting the passed operation
    */
   def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, timed: Timed[T] = implicitly[Timed[T]]): T = {
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = 3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = 0
     timed.timeoutAfter(
       timeout,
       fun,
@@ -246,7 +250,7 @@ trait TimeLimits {
       t => new TestFailedDueToTimeoutException(
         sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)),
         t,
-        getStackDepthFun("Timeouts.scala", "failAfter"),
+        getStackDepthFun("TimeLimits.scala", "failAfter", stackDepthAdjustment),
         None,
         timeout
       )
@@ -289,6 +293,10 @@ trait TimeLimits {
    * @param interruptor a strategy for interrupting the passed operation
    */
   def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, timed: Timed[T] = implicitly[Timed[T]]): T = {
+    // SKIP-SCALATESTJS-START
+    val stackDepthAdjustment = 3
+    // SKIP-SCALATESTJS-END
+    //SCALATESTJS-ONLY val stackDepthAdjustment = 0
     timed.timeoutAfter(
       timeout,
       fun,
@@ -296,7 +304,7 @@ trait TimeLimits {
       t => new TestCanceledException(
         sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)),
         t,
-        getStackDepthFun("Timeouts.scala", "cancelAfter"),
+        getStackDepthFun("TimeLimits.scala", "cancelAfter", stackDepthAdjustment),
         None
       )
     )
