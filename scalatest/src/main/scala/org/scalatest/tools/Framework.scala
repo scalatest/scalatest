@@ -379,7 +379,11 @@ class Framework extends SbtFramework {
         // java.util.MissingResourceException: Can't find bundle for base name org.scalatest.ScalaTestBundle, locale en_US
         // TODO Chee Seng, I wonder why we couldn't access resources, and if that's still true. I'd rather get this stuff
         // from the resource file so we can later localize.
-        val rawString = e.getMessage//e.getClass.getName + " encountered when attempting to run a suite with class name " + actualSuiteName + ": " + e.getMessage
+        val rawString =
+          if (e.getMessage == null)
+            e.getClass.getName + " encountered when attempting to run suite " + suite.suiteId
+          else
+            e.getMessage
         val formatter = formatterForSuiteAborted(suite, rawString)
 
         val duration = System.currentTimeMillis - suiteStartTime

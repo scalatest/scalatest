@@ -41,6 +41,8 @@ import org.scalatest.Canceled
 import org.scalatest.Pending
 import org.scalatest.Outcome
 
+import scala.util.{Try, Success, Failure}
+
 class TimeLimitsSpec extends AsyncFunSpec with Matchers {
 
 /*
@@ -54,195 +56,290 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
 
   describe("The failAfter construct") {
 
-    it("should blow up with TestFailedException when it times out", Retryable) {
-      val caught = the [TestFailedException] thrownBy {
-        failAfter(Span(100, Millis)) {
-          SleepHelper.sleep(200)
-        }
-      }
-      caught.message.value should be (Resources.timeoutFailedAfter("100 milliseconds"))
-      caught.failedCodeFileName.value should be ("TimeLimitsSpec.scala")
-      caught.failedCodeLineNumber.value should equal (thisLineNumber - 6)
-    }
- 
-    it("should pass normally when the timeout is not reached") {
-      failAfter(Span(200, Millis)) {
-        SleepHelper.sleep(100)
-      }
-      succeed
-    }
+    describe("when work with T") {
 
-    // SKIP-SCALATESTJS-START
-    it("should blow up with TestFailedException when the task does not response interrupt request and pass after the timeout") {
-      a [TestFailedException] should be thrownBy {
-        failAfter(timeout = Span(100, Millis)) {
-          for (i <- 1 to 10) {
-            try {
-              SleepHelper.sleep(50)
-            }
-            catch {
-              case _: InterruptedException =>
-                Thread.interrupted() // Swallow the interrupt
-            }
+      it("should blow up with TestFailedException when it times out", Retryable) {
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
           }
         }
+        caught.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
+        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+        caught.failedCodeLineNumber.value should equal(thisLineNumber - 6)
       }
-    }
-    // SKIP-SCALATESTJS-END
 
-    it("should not catch exception thrown from the test") {
-      an [InterruptedException] should be thrownBy {
-        failAfter(Span(100, Millis)) {
-          throw new InterruptedException
-          succeed
+      it("should pass normally when the timeout is not reached") {
+        failAfter(Span(200, Millis)) {
+          SleepHelper.sleep(100)
         }
+        succeed
       }
-    }
 
-    // SKIP-SCALATESTJS-START
-    it("should set the exception thrown from the test after timeout as cause of TestFailedException") {
-      val caught = the [TestFailedException] thrownBy {
-        failAfter(Span(100, Millis)) {
-          for (i <- 1 to 10) {
-            try {
-              SleepHelper.sleep(50)
-            }
-            catch {
-              case _: InterruptedException =>
-                Thread.interrupted() // Swallow the interrupt
-            }
-          }
-          throw new IllegalArgumentException("Something went wrong!")
-          succeed
-        }
-      }
-      assert(caught.getCause().getClass === classOf[IllegalArgumentException])
-    }
- 
-    it("should close a Socket connection via SocketSignaler when the timeout is reached") {
-      val serverSocket = new ServerSocket(0)
-      @volatile
-      var drag = true
-      val serverThread = new Thread() {
-        override def run() {
-          val clientSocket = serverSocket.accept()
-          while(drag) {
-            try {
-              SleepHelper.sleep(100)
-            }
-            catch {
-              case _: InterruptedException => Thread.interrupted()
-            }
-          }
-          serverSocket.close()
-        }
-      }
-      serverThread.start()
-      val clientSocket = new Socket("localhost", serverSocket.getLocalPort())
-      val inputStream = clientSocket.getInputStream()
-      
-      a [TestFailedException] should be thrownBy {
-        failAfter(Span(100, Millis)) {
-          inputStream.read()
-        } (SocketSignaler(clientSocket))
-      }
-      clientSocket.close()
-      drag = false
-      succeed
-    }
 
-    it("should close a Socket connection via FunSignaler when the timeout is reached") {
-      val serverSocket = new ServerSocket(0)
-      @volatile
-      var drag = true
-      val serverThread = new Thread() {
-        override def run() {
-          val clientSocket = serverSocket.accept()
-          while(drag) {
-            try {
-              SleepHelper.sleep(100)
-            }
-            catch {
-              case _: InterruptedException => Thread.interrupted()
-            }
-          }
-          serverSocket.close()
-        }
-      }
-      serverThread.start()
-      val clientSocket = new Socket("localhost", serverSocket.getLocalPort())
-      val inputStream = clientSocket.getInputStream()
-      
-      a [TestFailedException] should be thrownBy {
-        failAfter(Span(100, Millis)) {
-          inputStream.read()
-        } (Signaler { t => clientSocket.close() })
-      }
-      clientSocket.close()
-      drag = false
-      succeed
-    }
-    // SKIP-SCALATESTJS-END
-    
-    it("should wait for the test to finish when DoNotSignal.") {
-      var x = 0
-      val caught = the [TestFailedException] thrownBy {
-        failAfter(Span(100, Millis)) {
-          SleepHelper.sleep(200)
-          x = 1
-        } (DoNotSignal)
-      }
-      x should be (1)
-    }
-
-    // SKIP-SCALATESTJS-START
-    it("should close a Selector connection via SelectorSignaler when the timeout is reached") {
-      val selector = Selector.open()
-      val ssChannel = ServerSocketChannel.open()
-      ssChannel.configureBlocking(false)
-      ssChannel.socket().bind(new InetSocketAddress(0))
-      ssChannel.register(selector, SelectionKey.OP_ACCEPT)
-      @volatile
-      var drag = true
-      val serverThread = new Thread() {
-        override def run() {
-          selector.select()
-          val it = selector.selectedKeys.iterator
-          while (it.hasNext) {
-            val selKey = it.next().asInstanceOf[SelectionKey]
-            it.remove()
-            if (selKey.isAcceptable()) {
-              val ssChannel = selKey.channel().asInstanceOf[ServerSocketChannel]
-              while(drag) {
-                try {
-                  SleepHelper.sleep(100)
-                }
-                catch {
-                  case _: InterruptedException => Thread.interrupted()
-                }
+      // SKIP-SCALATESTJS-START
+      it("should blow up with TestFailedException when the task does not response interrupt request and pass after the timeout") {
+        a[TestFailedException] should be thrownBy {
+          failAfter(timeout = Span(100, Millis)) {
+            for (i <- 1 to 10) {
+              try {
+                SleepHelper.sleep(50)
+              }
+              catch {
+                case _: InterruptedException =>
+                  Thread.interrupted() // Swallow the interrupt
               }
             }
           }
-          ssChannel.close()
         }
       }
-    
-      val clientSelector = Selector.open();
-      val sChannel = SocketChannel.open()
-      sChannel.configureBlocking(false);
-      sChannel.connect(new InetSocketAddress("localhost", ssChannel.socket().getLocalPort()));
-      sChannel.register(selector, sChannel.validOps());
-    
-      a [TestFailedException] should be thrownBy {
-        failAfter(Span(100, Millis)) {
-          clientSelector.select()
-        } (SelectorSignaler(clientSelector))
+      // SKIP-SCALATESTJS-END
+
+      it("should not catch exception thrown from the test") {
+        an[InterruptedException] should be thrownBy {
+          failAfter(Span(100, Millis)) {
+            throw new InterruptedException
+            succeed
+          }
+        }
       }
-      clientSelector.close()
-      drag = false
-      succeed
+
+      // SKIP-SCALATESTJS-START
+      it("should set the exception thrown from the test after timeout as cause of TestFailedException") {
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            for (i <- 1 to 10) {
+              try {
+                SleepHelper.sleep(50)
+              }
+              catch {
+                case _: InterruptedException =>
+                  Thread.interrupted() // Swallow the interrupt
+              }
+            }
+            throw new IllegalArgumentException("Something went wrong!")
+            succeed
+          }
+        }
+        assert(caught.getCause().getClass === classOf[IllegalArgumentException])
+      }
+
+      it("should close a Socket connection via SocketSignaler when the timeout is reached") {
+        val serverSocket = new ServerSocket(0)
+        @volatile
+        var drag = true
+        val serverThread = new Thread() {
+          override def run() {
+            val clientSocket = serverSocket.accept()
+            while (drag) {
+              try {
+                SleepHelper.sleep(100)
+              }
+              catch {
+                case _: InterruptedException => Thread.interrupted()
+              }
+            }
+            serverSocket.close()
+          }
+        }
+        serverThread.start()
+        val clientSocket = new Socket("localhost", serverSocket.getLocalPort())
+        val inputStream = clientSocket.getInputStream()
+
+        a[TestFailedException] should be thrownBy {
+          failAfter(Span(100, Millis)) {
+            inputStream.read()
+          }(SocketSignaler(clientSocket))
+        }
+        clientSocket.close()
+        drag = false
+        succeed
+      }
+
+      it("should close a Socket connection via FunSignaler when the timeout is reached") {
+        val serverSocket = new ServerSocket(0)
+        @volatile
+        var drag = true
+        val serverThread = new Thread() {
+          override def run() {
+            val clientSocket = serverSocket.accept()
+            while (drag) {
+              try {
+                SleepHelper.sleep(100)
+              }
+              catch {
+                case _: InterruptedException => Thread.interrupted()
+              }
+            }
+            serverSocket.close()
+          }
+        }
+        serverThread.start()
+        val clientSocket = new Socket("localhost", serverSocket.getLocalPort())
+        val inputStream = clientSocket.getInputStream()
+
+        a[TestFailedException] should be thrownBy {
+          failAfter(Span(100, Millis)) {
+            inputStream.read()
+          }(Signaler { t => clientSocket.close() })
+        }
+        clientSocket.close()
+        drag = false
+        succeed
+      }
+      // SKIP-SCALATESTJS-END
+
+      it("should wait for the test to finish when DoNotSignal.") {
+        var x = 0
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            x = 1
+          }(DoNotSignal)
+        }
+        x should be(1)
+      }
+
+      // SKIP-SCALATESTJS-START
+      it("should close a Selector connection via SelectorSignaler when the timeout is reached") {
+        val selector = Selector.open()
+        val ssChannel = ServerSocketChannel.open()
+        ssChannel.configureBlocking(false)
+        ssChannel.socket().bind(new InetSocketAddress(0))
+        ssChannel.register(selector, SelectionKey.OP_ACCEPT)
+        @volatile
+        var drag = true
+        val serverThread = new Thread() {
+          override def run() {
+            selector.select()
+            val it = selector.selectedKeys.iterator
+            while (it.hasNext) {
+              val selKey = it.next().asInstanceOf[SelectionKey]
+              it.remove()
+              if (selKey.isAcceptable()) {
+                val ssChannel = selKey.channel().asInstanceOf[ServerSocketChannel]
+                while (drag) {
+                  try {
+                    SleepHelper.sleep(100)
+                  }
+                  catch {
+                    case _: InterruptedException => Thread.interrupted()
+                  }
+                }
+              }
+            }
+            ssChannel.close()
+          }
+        }
+
+        val clientSelector = Selector.open();
+        val sChannel = SocketChannel.open()
+        sChannel.configureBlocking(false);
+        sChannel.connect(new InetSocketAddress("localhost", ssChannel.socket().getLocalPort()));
+        sChannel.register(selector, sChannel.validOps());
+
+        a[TestFailedException] should be thrownBy {
+          failAfter(Span(100, Millis)) {
+            clientSelector.select()
+          }(SelectorSignaler(clientSelector))
+        }
+        clientSelector.close()
+        drag = false
+        succeed
+      }
+      // SKIP-SCALATESTJS-END
     }
-    // SKIP-SCALATESTJS-END
+
+    describe("when work with Future[T]") {
+
+      it("should blow up with TestFailedException when it times out in main block that create the Future", Retryable) {
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            Future.successful(Success("test"))
+          }
+        }
+        caught.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
+        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+        caught.failedCodeLineNumber.value should equal(thisLineNumber - 7)
+      }
+
+      it("should blow up with TestFailedException when it times out in the Future that gets returned", Retryable) {
+        val futureException =
+          recoverToExceptionIf[TestFailedException](
+            failAfter(Span(100, Millis)) {
+              Future {
+                SleepHelper.sleep(200)
+                Success("test")
+              }
+            }
+          )
+        futureException map { caught =>
+          caught.message.value should be (Resources.timeoutFailedAfter("100 milliseconds"))
+          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+        }
+      }
+
+      it("should pass normally when the timeout is not reached in main block that create the future") {
+        failAfter(Span(200, Millis)) {
+          SleepHelper.sleep(100)
+          Future.successful(Success("test"))
+        }
+        succeed
+      }
+
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+        failAfter(Span(200, Millis)) {
+          Future {
+            SleepHelper.sleep(100)
+            Success("test")
+          }
+        }
+        succeed
+      }
+
+      it("should not catch exception thrown from the main block that create the future") {
+        an[InterruptedException] should be thrownBy {
+          failAfter(Span(100, Millis)) {
+            throw new InterruptedException
+            Future.successful(Success("test"))
+          }
+        }
+        succeed
+      }
+
+      /*it("should not catch exception thrown from the future block") {
+        implicit val globalExecContext = scala.concurrent.ExecutionContext.Implicits.global
+        //val futureOfException: Future[InterruptedException] = recoverToExceptionIf[InterruptedException] {
+          failAfter(Span(100, Millis)) {
+            Future {
+              throw new InterruptedException
+              Success("test")
+            }
+          }
+        //}
+        //println("###here: " + futureOfException)
+        /*futureOfException.map { caught =>
+          succeed
+        }*/
+        //futureOfException.map { caught =>
+          succeed
+        //}
+      }*/
+
+      it("should wait for the test to finish when DoNotSignal.") {
+        var x = 0
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            x = 1
+            Success("test")
+          }(DoNotSignal)
+        }
+        x should be (1)
+      }
+    }
   }
 
   describe("The cancelAfter construct") {

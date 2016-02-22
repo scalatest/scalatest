@@ -18,6 +18,10 @@ package org.scalatest.enablers
 import org.scalatest.Exceptional
 import org.scalatest.concurrent.Signaler
 import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthExceptionHelper._
+
+import scala.util.{Failure, Success}
+
 //import java.util.TimerTask
 //import java.util.Timer
 import org.scalatest.TimerTask
@@ -25,7 +29,7 @@ import org.scalatest.Timer
 import org.scalatest.time.Span
 import org.scalatest.concurrent.SignalerTimeoutTask
 import org.scalatest.Outcome
-import scala.concurrent.Future
+import scala.concurrent.{Promise, Future, ExecutionContext}
 import org.scalatest.FutureOutcome
 
 trait Timed[T] {
@@ -33,7 +37,7 @@ trait Timed[T] {
     timeout: Span,
     f: => T,
     signaler: Signaler,
-    exceptionFun: Option[Throwable] => StackDepthException
+    exceptionFun: (Option[Throwable], Int) => StackDepthException
   ): T
 }
 
@@ -47,8 +51,15 @@ object Timed {
         timeout: Span,
         f: => T,
         signaler: Signaler,
-        exceptionFun: Option[Throwable] => StackDepthException
+        exceptionFun: (Option[Throwable], Int) => StackDepthException
       ): T = {
+
+        // SKIP-SCALATESTJS-START
+        def stackDepthFun(sde: StackDepthException): Int =
+          getStackDepth(sde.getStackTrace, "Timed.scala", "timeoutAfter") + 2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY def stackDepthFun(sde: StackDepthException): Int = 15
+
         val timer = new Timer
         val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
         val maxDuration = timeout.totalNanos / 1000 / 1000
@@ -64,7 +75,7 @@ object Timed {
               if (task.timedOut || (endTime - startTime) > maxDuration) {
                 if (task.needToResetInterruptedStatus)
                   Thread.interrupted() // To reset the flag probably. He only does this if it was not set before and was set after, I think.
-                throw exceptionFun(None)
+                throw exceptionFun(None, 4)
               }
           }
           result
@@ -76,7 +87,7 @@ object Timed {
             if(task.timedOut || (endTime - startTime) > maxDuration) {
               if (task.needToResetInterruptedStatus)
                 Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
-              throw exceptionFun(Some(t))
+              throw exceptionFun(Some(t), 4)
             }
             else
               throw t
@@ -100,7 +111,70 @@ object Timed {
   Future[Outcome] will be treated specially because it goes to the
   more specific implicit above.
   */
-  implicit def timedFutureOf[T]: Timed[Future[T]] = ???
+  implicit def timedFutureOf[T](implicit executionContext: ExecutionContext): Timed[Future[T]] =
+    new Timed[Future[T]] {
+      def timeoutAfter(
+                        timeout: Span,
+                        f: => Future[T],
+                        signaler: Signaler,
+                        exceptionFun: (Option[Throwable], Int) => StackDepthException
+                        ): Future[T] = {
+        val timer = new Timer
+        val maxDuration = timeout.totalNanos / 1000 / 1000
+        val startTime = scala.compat.Platform.currentTime
+        try {
+          val result = f
+          val endTime = scala.compat.Platform.currentTime
+
+          if ((endTime - startTime) > maxDuration) {
+            throw exceptionFun(None, 2)
+          }
+
+          val promise = Promise[T]
+          val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
+          val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
+          val timer = new Timer
+
+          result.onComplete { t =>
+            t match {
+              case Success(r) =>
+                task.cancel()
+                if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
+                val endTime = scala.compat.Platform.currentTime
+                  val duration = endTime - startTime
+                  if (duration > maxDuration)
+                    promise.complete(Failure(exceptionFun(None, 2)))
+                  else
+                    promise.success(r)
+                }
+
+              case Failure(e) =>
+                task.cancel()
+                if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
+                val endTime = scala.compat.Platform.currentTime
+                  val duration = endTime - startTime
+                  if (duration > maxDuration)
+                    promise.complete(Failure(exceptionFun(Some(e), 2)))
+                  else
+                    promise.failure(e) // Chee Seng: I wonder if in this case should we use this exception instead of the other one? Not sure.
+                }
+            }
+          }
+
+          timer.schedule(task, delay)
+          promise.future
+        }
+        catch {
+          case t: Throwable =>
+            val endTime = scala.compat.Platform.currentTime
+            if((endTime - startTime) > maxDuration) {
+              throw exceptionFun(Some(t), 2)
+            }
+            else
+              throw t
+        }
+      }
+    }
 
   /*
   Chee Seng: This one should catch TestCanceledException and change it into
