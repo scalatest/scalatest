@@ -301,7 +301,13 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     val asyncOutcome: AsyncOutcome =
       try {
-        invokeWithFixture(theTest)
+        val outcome = invokeWithFixture(theTest)
+        executionContext match {
+          case dec: concurrent.SerialExecutionContext =>
+            dec.runNow(outcome.toInternalFutureOutcome)
+          case _ =>
+        }
+        outcome
       }
       catch {
         case ex: exceptions.TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
@@ -349,7 +355,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         // please try and die gracefully, not fire a scalatest and continue. More like want to have fatalException and
         // unreportedException. unreportedException is for when before or after code blows up, or a constructor blows up.
         // fatalException is for anExceptionThatShouldCauseASuiteToAbort no matter when it happens. And maybe once that
-        // happens, everything just blows up with that exception. 
+        // happens, everything just blows up with that exception.
 /*
   suiteAbortingException: Option[Throwable] // These would be 2 different things.
   threadKillingException: Option[Throwable]
@@ -361,7 +367,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
    I like unreportedException and isFatal
 */
-        case Failure(ex) => 
+        case Failure(ex) =>
       }
 
       if (!parallelAsyncTestExecution) {
@@ -388,13 +394,24 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       // SKIP-SCALATESTJS-END
     }
 
-    executionContext match {
-      case dec: concurrent.SerialExecutionContext =>
-        dec.runNow(asyncOutcome.toInternalFutureOutcome)
-      case _ =>
-    }
-
     asyncOutcome.toStatus
+
+    /*val resultOutcome =
+      executionContext match {
+        case dec: concurrent.SerialExecutionContext =>
+          try {
+            dec.runNow(asyncOutcome.toInternalFutureOutcome)
+            asyncOutcome
+          }
+          catch {
+            case ex: exceptions.TestCanceledException => PastOutcome(Canceled(ex)) // Probably don't need these anymore.
+            case _: exceptions.TestPendingException => PastOutcome(Pending)
+            case tfe: exceptions.TestFailedException => PastOutcome(Failed(tfe))
+            case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => PastOutcome(Failed(ex))
+          }
+        case _ => asyncOutcome
+      }
+    resultOutcome.toStatus*/
   }
 
   private def runTestsInBranch(
