@@ -265,17 +265,16 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestFailedException when it times out in the Future that gets returned", Retryable) {
-        val futureException =
-          recoverToExceptionIf[TestFailedException](
-            failAfter(Span(100, Millis)) {
+        val future: Future[TestFailedException] =
+          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
               Future {
-                SleepHelper.sleep(200)
-                Success("test")
+                SleepHelper.sleep(2000)
+                Succeeded
               }
             }
-          )
-        futureException map { caught =>
-          caught.message.value should be (Resources.timeoutFailedAfter("100 milliseconds"))
+          }
+        future map { caught =>
+          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
           caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
           caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
         }
@@ -529,6 +528,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         succeed
       }
       // SKIP-SCALATESTJS-END
+
     }
 
     describe("when work with Future[T]") {
@@ -545,17 +545,16 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestCanceledException when it times out in the Future that gets returned", Retryable) {
-        val futureException =
-          recoverToExceptionIf[TestCanceledException](
-            cancelAfter(Span(100, Millis)) {
+        val future: Future[TestCanceledException] =
+          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
               Future {
-                SleepHelper.sleep(200)
-                Success("test")
+                SleepHelper.sleep(2000)
+                Succeeded
               }
             }
-          )
-        futureException map { caught =>
-          caught.message.value should be (Resources.timeoutCanceledAfter("100 milliseconds"))
+          }
+        future map { caught =>
+          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
           caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
           caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
         }
