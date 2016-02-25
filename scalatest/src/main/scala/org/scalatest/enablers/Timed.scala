@@ -15,22 +15,21 @@
  */
 package org.scalatest.enablers
 
-import org.scalatest.Exceptional
+import org.scalatest._
 import org.scalatest.concurrent.Signaler
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthExceptionHelper._
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestPendingException
 
 import scala.util.{Failure, Success}
 
 //import java.util.TimerTask
 //import java.util.Timer
-import org.scalatest.TimerTask
-import org.scalatest.Timer
 import org.scalatest.time.Span
 import org.scalatest.concurrent.SignalerTimeoutTask
-import org.scalatest.Outcome
 import scala.concurrent.{Promise, Future, ExecutionContext}
-import org.scalatest.FutureOutcome
 
 trait Timed[T] {
   def timeoutAfter(
@@ -100,7 +99,97 @@ object Timed {
   turn it into a Failed. A timeout should become a Failed(TestFailedDueToTimeoutException).
   I believe this is what you did in AsyncTimeouts.
   */
-  implicit def timedFutureOfOutcome: Timed[Future[Outcome]] = ???
+  implicit def timedFutureOfOutcome[OUTCOME <: Outcome](implicit executionContext: ExecutionContext): Timed[Future[OUTCOME]] =
+    new Timed[Future[OUTCOME]] {
+      def timeoutAfter(
+                        timeout: Span,
+                        f: => Future[OUTCOME],
+                        signaler: Signaler,
+                        exceptionFun: (Option[Throwable], Int) => StackDepthException
+                        ): Future[OUTCOME] = {
+        // SKIP-SCALATESTJS-START
+        val stackDepthAdjustment = 2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+
+        val timer = new Timer
+        val maxDuration = timeout.totalNanos / 1000 / 1000
+        val startTime = scala.compat.Platform.currentTime
+        try {
+          val result = f
+          val endTime = scala.compat.Platform.currentTime
+
+          if ((endTime - startTime) > maxDuration)
+            throw exceptionFun(None, stackDepthAdjustment)
+
+          val promise = Promise[OUTCOME]
+          val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
+          val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
+          val timer = new Timer
+
+          result.onComplete { t =>
+            t match {
+              case Success(r) =>
+                task.cancel()
+                if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
+                val endTime = scala.compat.Platform.currentTime
+                  val duration = endTime - startTime
+                  if (duration > maxDuration)
+                    promise.complete(Failure(exceptionFun(None, stackDepthAdjustment)))
+                    //promise.complete(Success(Failed.here(exceptionFun(None, stackDepthAdjustment)).asInstanceOf[OUTCOME]))
+                  else
+                    promise.success(r)
+                }
+
+              case Failure(e) =>
+                task.cancel()
+                if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
+                  val endTime = scala.compat.Platform.currentTime
+                  val duration = endTime - startTime
+                  if (duration > maxDuration)
+                    promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
+                    //promise.complete(Success(Failed.here(exceptionFun(Some(e), stackDepthAdjustment)).asInstanceOf[OUTCOME]))
+                  else {
+                    e match {
+                      case tce: TestCanceledException => promise.success(Canceled(e).asInstanceOf[OUTCOME])
+                      case tce: TestPendingException => promise.success(Pending.asInstanceOf[OUTCOME])
+                      case _ => promise.failure(e)
+                    }
+                  }
+                }
+            }
+          }
+
+          timer.schedule(task, delay)
+          promise.future
+        }
+        catch {
+          case tce: TestCanceledException =>
+            val endTime = scala.compat.Platform.currentTime
+            if((endTime - startTime) > maxDuration) {
+              throw exceptionFun(Some(tce), stackDepthAdjustment)
+            }
+            else
+              Future.successful(Canceled(tce).asInstanceOf[OUTCOME])
+
+          case tpe: TestPendingException =>
+            val endTime = scala.compat.Platform.currentTime
+            if((endTime - startTime) > maxDuration) {
+              throw exceptionFun(Some(tpe), stackDepthAdjustment)
+            }
+            else
+              Future.successful(Pending.asInstanceOf[OUTCOME])
+
+          case t: Throwable =>
+            val endTime = scala.compat.Platform.currentTime
+            if((endTime - startTime) > maxDuration) {
+              throw exceptionFun(Some(t), stackDepthAdjustment)
+            }
+            else
+              throw t
+        }
+      }
+    }
 
   /*
   Chee Seng: This one should allow any exception to just do the usual
