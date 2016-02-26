@@ -22,6 +22,7 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthExceptionHelper._
 import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestPendingException
 
 import scala.util.{Failure, Success}
@@ -79,6 +80,76 @@ object Timed {
           result
         }
         catch {
+          case t: Throwable =>
+            val endTime = scala.compat.Platform.currentTime
+            task.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
+            if(task.timedOut || (endTime - startTime) > maxDuration) {
+              if (task.needToResetInterruptedStatus)
+                Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
+              throw exceptionFun(Some(t), stackDepthAdjustment)
+            }
+            else
+              throw t
+        }
+      }
+    }
+
+  implicit def timedOutcome[OUTCOME <: Outcome]: Timed[OUTCOME] =
+    new Timed[OUTCOME] {
+      def timeoutAfter(
+                        timeout: Span,
+                        f: => OUTCOME,
+                        signaler: Signaler,
+                        exceptionFun: (Option[Throwable], Int) => StackDepthException
+                        ): OUTCOME = {
+        // SKIP-SCALATESTJS-START
+        val stackDepthAdjustment = 2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepthAdjustment = 2
+
+        val timer = new Timer
+        val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
+        val maxDuration = timeout.totalNanos / 1000 / 1000
+        timer.schedule(task, maxDuration) // TODO: Probably use a sleep so I can use nanos
+        val startTime = scala.compat.Platform.currentTime
+        try {
+          val result = f
+          val endTime = scala.compat.Platform.currentTime
+          task.cancel()
+          result match {
+            case Exceptional(ex) => throw ex  // If the result is Exceptional, the exception is already wrapped, just re-throw it to get the old behavior.
+            case _ =>
+              if (task.timedOut || (endTime - startTime) > maxDuration) {
+                if (task.needToResetInterruptedStatus)
+                  Thread.interrupted() // To reset the flag probably. He only does this if it was not set before and was set after, I think.
+                throw exceptionFun(None, stackDepthAdjustment)
+              }
+          }
+          result
+        }
+        catch {
+          case tce: TestCanceledException =>
+            val endTime = scala.compat.Platform.currentTime
+            task.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
+            if(task.timedOut || (endTime - startTime) > maxDuration) {
+              if (task.needToResetInterruptedStatus)
+                Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
+              throw exceptionFun(Some(tce), stackDepthAdjustment)
+            }
+            else
+              Canceled(tce).asInstanceOf[OUTCOME]
+
+          case tce: TestPendingException =>
+            val endTime = scala.compat.Platform.currentTime
+            task.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
+            if(task.timedOut || (endTime - startTime) > maxDuration) {
+              if (task.needToResetInterruptedStatus)
+                Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
+              throw exceptionFun(Some(tce), stackDepthAdjustment)
+            }
+            else
+              Pending.asInstanceOf[OUTCOME]
+
           case t: Throwable =>
             val endTime = scala.compat.Platform.currentTime
             task.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
