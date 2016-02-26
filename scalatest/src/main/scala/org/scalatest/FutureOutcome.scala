@@ -276,6 +276,8 @@ class FutureOutcome(private[scalatest] val underlying: Future[Outcome]) {
       case Some(Success(outcome)) => Some(Good(outcome))
       case Some(Failure(ex)) => Some(Bad(ex))
     }
+
+  def toFuture: Future[Outcome] = underlying
 }
 
 object FutureOutcome {

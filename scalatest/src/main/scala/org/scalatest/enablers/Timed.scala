@@ -15,6 +15,7 @@
  */
 package org.scalatest.enablers
 
+import org.scalactic.{Bad, Good}
 import org.scalatest._
 import org.scalatest.concurrent.Signaler
 import org.scalatest.exceptions.StackDepthException
@@ -275,5 +276,93 @@ object Timed {
   turn it into a Failed. A timeout should become a Failed(TestFailedDueToTimeoutException).
   I believe this is what you did in AsyncTimeouts.
   */
-  implicit def timedFutureOutcome: Timed[FutureOutcome] = ???
+  implicit def timedFutureOutcome(implicit executionContext: ExecutionContext): Timed[FutureOutcome] =
+    new Timed[FutureOutcome] {
+      def timeoutAfter(
+                        timeout: Span,
+                        f: => FutureOutcome,
+                        signaler: Signaler,
+                        exceptionFun: (Option[Throwable], Int) => StackDepthException
+                        ): FutureOutcome = {
+        // SKIP-SCALATESTJS-START
+        val stackDepthAdjustment = 2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+
+        val timer = new Timer
+        val maxDuration = timeout.totalNanos / 1000 / 1000
+        val startTime = scala.compat.Platform.currentTime
+        try {
+          val result = f
+          val endTime = scala.compat.Platform.currentTime
+
+          if ((endTime - startTime) > maxDuration)
+            throw exceptionFun(None, stackDepthAdjustment)
+
+          val promise = Promise[Outcome]
+          val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
+          val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
+          val timer = new Timer
+
+          result.onCompletedThen { t =>
+            t match {
+              case Good(r) =>
+                task.cancel()
+                if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
+                val endTime = scala.compat.Platform.currentTime
+                  val duration = endTime - startTime
+                  if (duration > maxDuration)
+                    promise.complete(Failure(exceptionFun(None, stackDepthAdjustment)))
+                  else
+                    promise.success(r)
+                }
+
+              case Bad(e) =>
+                task.cancel()
+                if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
+                val endTime = scala.compat.Platform.currentTime
+                  val duration = endTime - startTime
+                  if (duration > maxDuration)
+                    promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
+                  else {
+                    e match {
+                      case tce: TestCanceledException => promise.success(Canceled(e))
+                      case tce: TestPendingException => promise.success(Pending)
+                      case _ => promise.failure(e)
+                    }
+                  }
+                }
+            }
+          }
+
+          timer.schedule(task, delay)
+          new FutureOutcome(promise.future)
+        }
+        catch {
+          case tce: TestCanceledException =>
+            val endTime = scala.compat.Platform.currentTime
+            if((endTime - startTime) > maxDuration) {
+              throw exceptionFun(Some(tce), stackDepthAdjustment)
+            }
+            else
+              FutureOutcome(Future.successful(Canceled(tce)))
+
+          case tpe: TestPendingException =>
+            val endTime = scala.compat.Platform.currentTime
+            if((endTime - startTime) > maxDuration) {
+              throw exceptionFun(Some(tpe), stackDepthAdjustment)
+            }
+            else
+              FutureOutcome(Future.successful(Pending))
+
+          case t: Throwable =>
+            val endTime = scala.compat.Platform.currentTime
+            if((endTime - startTime) > maxDuration) {
+              throw exceptionFun(Some(t), stackDepthAdjustment)
+            }
+            else
+              throw t
+        }
+      }
+    }
 }

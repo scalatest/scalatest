@@ -28,17 +28,11 @@ import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
 import java.nio.channels.SocketChannel
 import org.scalatest.time._
-import org.scalatest.{SeveredStackTraces, AsyncFunSpec, Resources}
+import org.scalatest._
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TestCanceledException}
 import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
-import org.scalatest.Matchers
 import scala.concurrent.Future
-import org.scalatest.Succeeded
-import org.scalatest.Failed
-import org.scalatest.Canceled
-import org.scalatest.Pending
-import org.scalatest.Outcome
 
 import scala.util.{Try, Success, Failure}
 
@@ -563,6 +557,240 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         x should be (1)
       }
     }
+
+    describe("when work with FutureOutcome") {
+
+      it("should blow up with TestFailedException when it times out in main block that create the Future", Retryable) {
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            FutureOutcome(Future.successful(Succeeded))
+          }
+        }
+        caught.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
+        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+        caught.failedCodeLineNumber.value should equal(thisLineNumber - 7)
+      }
+
+      it("should return Canceled when it blows up with TestCanceledException before times out in main block that create the Future", Retryable) {
+        try {
+          val futureOutcome =
+            failAfter(Span(100, Millis)) {
+              cancel("cancel message")
+              SleepHelper.sleep(200)
+              FutureOutcome(Future.successful(Succeeded))
+            }
+          futureOutcome.toFuture.map { outcome =>
+            outcome shouldBe a[Canceled]
+            val canceled = outcome.asInstanceOf[Canceled]
+            val caught = canceled.exception
+            caught.message.value should be ("cancel message")
+            caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+            caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+          }
+        }
+        catch {
+          case tce: TestCanceledException => fail("TestCanceledException should not be thrown, it should be translated to Canceled instead.")
+        }
+      }
+
+      it("should blow up with TestFailedException when it blows up with TestCanceledException after times out in main block that create the Future", Retryable) {
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            cancel("cancel message")
+            FutureOutcome(Future.successful(Succeeded))
+          }
+        }
+        caught.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
+        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+        caught.failedCodeLineNumber.value should equal(thisLineNumber - 8)
+      }
+
+      it("should return Pending when it blows up with TestPendingException before times out in main block that create the Future", Retryable) {
+        try {
+          val futureOutcome =
+            failAfter(Span(100, Millis)) {
+              pending
+              SleepHelper.sleep(200)
+              FutureOutcome(Future.successful(Succeeded))
+            }
+          futureOutcome.toFuture.map { outcome =>
+            outcome shouldBe Pending
+          }
+        }
+        catch {
+          case tce: TestPendingException => fail("TestPendingException should not be thrown, it should be translated to Pending instead.")
+        }
+      }
+
+      it("should blow up with TestFailedException when it blows up with TestPendingException after times out in main block that create the Future", Retryable) {
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            pending
+            FutureOutcome(Future.successful(Succeeded))
+          }
+        }
+        caught.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
+        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+        caught.failedCodeLineNumber.value should equal(thisLineNumber - 8)
+      }
+
+      it("should blow up with TestFailedException when it times out in the Future that gets returned", Retryable) {
+        val future: Future[TestFailedException] =
+          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                SleepHelper.sleep(2000)
+                Succeeded
+              })
+            }.toFuture
+          }
+        future map { caught =>
+          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+        }
+      }
+
+      it("should return Future[Canceled] when it blows up with TestCanceledException before times out in the Future that gets returned", Retryable) {
+        try {
+          val future: FutureOutcome =
+            failAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                cancel("cancel message")
+                SleepHelper.sleep(2000)
+                Succeeded
+              })
+            }
+          future.toFuture map { outcome =>
+            outcome shouldBe a[Canceled]
+            val tce = outcome.asInstanceOf[Canceled].exception
+            tce.message.value should be ("cancel message")
+            tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+            tce.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+          } recover {
+            case tce: TestCanceledException => fail("Not suppose to get a TestCanceledException here, it should be translated to Canceled")
+          }
+        }
+        catch {
+          case tce: TestCanceledException => fail("Not suppose to get a TestCanceledException here, it should be translated to Canceled")
+        }
+      }
+
+      it("should blow up with TestFailedException when TestCanceledException is thrown after times out in the Future that gets returned", Retryable) {
+        val future: Future[TestFailedException] =
+          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                SleepHelper.sleep(2000)
+                cancel("cancel message")
+                Succeeded
+              })
+            }.toFuture
+          }
+        future map { caught =>
+          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        }
+      }
+
+      it("should return Future[Pending] when it blows up with TestPendingException before times out in the Future that gets returned", Retryable) {
+        try {
+          val future: FutureOutcome =
+            failAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                pending
+                SleepHelper.sleep(2000)
+                Succeeded
+              })
+            }
+          future.toFuture map { outcome =>
+            outcome shouldBe Pending
+          } recover {
+            case tce: TestPendingException => fail("Not suppose to get a TestPendingException here, it should be translated to Pending")
+          }
+        }
+        catch {
+          case tce: TestPendingException => fail("Not suppose to get a TestPendingException here, it should be translated to Pending")
+        }
+      }
+
+      it("should blow up with TestFailedException when TestPendingException is thrown after times out in the Future that gets returned", Retryable) {
+        val future: Future[TestFailedException] =
+          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                SleepHelper.sleep(2000)
+                pending
+                Succeeded
+              })
+            }.toFuture
+          }
+        future map { caught =>
+          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        }
+      }
+
+      it("should pass normally when the timeout is not reached in main block that create the future") {
+        val futureOutcome = failAfter(Span(200, Millis)) {
+          SleepHelper.sleep(100)
+          FutureOutcome(Future.successful(Succeeded))
+        }
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe Succeeded
+        }
+      }
+
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+        val futureOutcome = failAfter(Span(200, Millis)) {
+          FutureOutcome(Future {
+            SleepHelper.sleep(100)
+            Succeeded
+          })
+        }
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe Succeeded
+        }
+      }
+
+      it("should not catch exception thrown from the main block that create the future") {
+        an[InterruptedException] should be thrownBy {
+          failAfter(Span(100, Millis)) {
+            throw new InterruptedException
+            FutureOutcome(Future.successful(Succeeded))
+          }
+        }
+      }
+
+      it("should not catch exception thrown from the future block") {
+        implicit val execContext = new SerialExecutionContext
+        val future: FutureOutcome =
+          failAfter(Span(100, Millis)) {
+            FutureOutcome(Future {
+              throw new InterruptedException
+              Succeeded
+            })
+          }
+
+        assertThrows[InterruptedException] {
+          execContext.runNow(future.toFuture)
+        }
+      }
+
+      it("should wait for the test to finish when DoNotSignal.") {
+        var x = 0
+        val caught = the[TestFailedException] thrownBy {
+          failAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            x = 1
+            FutureOutcome(Future.successful(Succeeded))
+          }(DoNotSignal)
+        }
+        x should be (1)
+      }
+    }
   }
 
   describe("The cancelAfter construct") {
@@ -1067,6 +1295,240 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
             SleepHelper.sleep(200)
             x = 1
             Succeeded
+          }(DoNotSignal)
+        }
+        x should be (1)
+      }
+    }
+
+    describe("when work with FutureOutcome") {
+
+      it("should blow up with TestCanceledException when it times out in main block that create the Future", Retryable) {
+        val caught = the[TestCanceledException] thrownBy {
+          cancelAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            FutureOutcome(Future.successful(Succeeded))
+          }
+        }
+        caught.message.value should be(Resources.timeoutCanceledAfter("100 milliseconds"))
+        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+        caught.failedCodeLineNumber.value should equal(thisLineNumber - 7)
+      }
+
+      it("should return Canceled when it blows up with TestCanceledException before times out in main block that create the Future", Retryable) {
+        try {
+          val futureOutcome =
+            cancelAfter(Span(100, Millis)) {
+              cancel("cancel message")
+              SleepHelper.sleep(200)
+              FutureOutcome(Future.successful(Succeeded))
+            }
+          futureOutcome.toFuture.map { outcome =>
+            outcome shouldBe a[Canceled]
+            val canceled = outcome.asInstanceOf[Canceled]
+            val caught = canceled.exception
+            caught.message.value should be ("cancel message")
+            caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+            caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+          }
+        }
+        catch {
+          case tce: TestCanceledException => fail("TestCanceledException should not be thrown, it should be translated to Canceled instead.")
+        }
+      }
+
+      it("should blow up with TestCanceledException when it blows up with TestCanceledException after times out in main block that create the Future", Retryable) {
+        val caught = the[TestCanceledException] thrownBy {
+          cancelAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            cancel("cancel message")
+            FutureOutcome(Future.successful(Succeeded))
+          }
+        }
+        caught.message.value should be(Resources.timeoutCanceledAfter("100 milliseconds"))
+        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+        caught.failedCodeLineNumber.value should equal(thisLineNumber - 8)
+      }
+
+      it("should return Pending when it blows up with TestPendingException before times out in main block that create the Future", Retryable) {
+        try {
+          val futureOutcome =
+            cancelAfter(Span(100, Millis)) {
+              pending
+              SleepHelper.sleep(200)
+              FutureOutcome(Future.successful(Succeeded))
+            }
+          futureOutcome.toFuture.map { outcome =>
+            outcome shouldBe Pending
+          }
+        }
+        catch {
+          case tce: TestPendingException => fail("TestPendingException should not be thrown, it should be translated to Pending instead.")
+        }
+      }
+
+      it("should blow up with TestFailedException when it blows up with TestPendingException after times out in main block that create the Future", Retryable) {
+        val caught = the[TestCanceledException] thrownBy {
+          cancelAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            pending
+            FutureOutcome(Future.successful(Succeeded))
+          }
+        }
+        caught.message.value should be(Resources.timeoutCanceledAfter("100 milliseconds"))
+        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+        caught.failedCodeLineNumber.value should equal(thisLineNumber - 8)
+      }
+
+      it("should blow up with TestCanceledException when it times out in the Future that gets returned", Retryable) {
+        val future: Future[TestCanceledException] =
+          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                SleepHelper.sleep(2000)
+                Succeeded
+              })
+            }.toFuture
+          }
+        future map { caught =>
+          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+        }
+      }
+
+      it("should return Future[Canceled] when it blows up with TestCanceledException before times out in the Future that gets returned", Retryable) {
+        try {
+          val future: FutureOutcome =
+            cancelAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                cancel("cancel message")
+                SleepHelper.sleep(2000)
+                Succeeded
+              })
+            }
+          future.toFuture map { outcome =>
+            outcome shouldBe a[Canceled]
+            val tce = outcome.asInstanceOf[Canceled].exception
+            tce.message.value should be ("cancel message")
+            tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+            tce.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+          } recover {
+            case tce: TestCanceledException => fail("Not suppose to get a TestCanceledException here, it should be translated to Canceled")
+          }
+        }
+        catch {
+          case tce: TestCanceledException => fail("Not suppose to get a TestCanceledException here, it should be translated to Canceled")
+        }
+      }
+
+      it("should blow up with TestCanceledException when TestCanceledException is thrown after times out in the Future that gets returned", Retryable) {
+        val future: Future[TestCanceledException] =
+          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                SleepHelper.sleep(2000)
+                cancel("cancel message")
+                Succeeded
+              })
+            }.toFuture
+          }
+        future map { caught =>
+          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        }
+      }
+
+      it("should return Future[Pending] when it blows up with TestPendingException before times out in the Future that gets returned", Retryable) {
+        try {
+          val future: FutureOutcome =
+            cancelAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                pending
+                SleepHelper.sleep(2000)
+                Succeeded
+              })
+            }
+          future.toFuture map { outcome =>
+            outcome shouldBe Pending
+          } recover {
+            case tce: TestPendingException => fail("Not suppose to get a TestPendingException here, it should be translated to Pending")
+          }
+        }
+        catch {
+          case tce: TestPendingException => fail("Not suppose to get a TestPendingException here, it should be translated to Pending")
+        }
+      }
+
+      it("should blow up with TestCanceledException when TestPendingException is thrown after times out in the Future that gets returned", Retryable) {
+        val future: Future[TestCanceledException] =
+          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
+              FutureOutcome(Future {
+                SleepHelper.sleep(2000)
+                pending
+                Succeeded
+              })
+            }.toFuture
+          }
+        future map { caught =>
+          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        }
+      }
+
+      it("should pass normally when the timeout is not reached in main block that create the future") {
+        val futureOutcome = cancelAfter(Span(200, Millis)) {
+          SleepHelper.sleep(100)
+          FutureOutcome(Future.successful(Succeeded))
+        }
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe Succeeded
+        }
+      }
+
+      it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
+        val futureOutcome = cancelAfter(Span(200, Millis)) {
+          FutureOutcome(Future {
+            SleepHelper.sleep(100)
+            Succeeded
+          })
+        }
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe Succeeded
+        }
+      }
+
+      it("should not catch exception thrown from the main block that create the future") {
+        an[InterruptedException] should be thrownBy {
+          cancelAfter(Span(100, Millis)) {
+            throw new InterruptedException
+            FutureOutcome(Future.successful(Succeeded))
+          }
+        }
+      }
+
+      it("should not catch exception thrown from the future block") {
+        implicit val execContext = new SerialExecutionContext
+        val future: FutureOutcome =
+          cancelAfter(Span(100, Millis)) {
+            FutureOutcome(Future {
+              throw new InterruptedException
+              Succeeded
+            })
+          }
+
+        assertThrows[InterruptedException] {
+          execContext.runNow(future.toFuture)
+        }
+      }
+
+      it("should wait for the test to finish when DoNotSignal.") {
+        var x = 0
+        val caught = the[TestCanceledException] thrownBy {
+          cancelAfter(Span(100, Millis)) {
+            SleepHelper.sleep(200)
+            x = 1
+            FutureOutcome(Future.successful(Succeeded))
           }(DoNotSignal)
         }
         x should be (1)
