@@ -105,7 +105,7 @@ object Timed {
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = 2
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepthAdjustment = 2
+        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
 
         val timer = new Timer
         val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
