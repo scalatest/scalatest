@@ -1579,7 +1579,11 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
       }
     }
     "offer a factory apply method in its companion that takes a Future[Outcome]" in {
-      pending
+      val futureOfOutcome = Future(Succeeded)
+      val futureOutcome = FutureOutcome.apply(futureOfOutcome)
+      futureOutcome.toFuture map { outcome =>
+        assert(outcome == Succeeded)
+      }
     }
     "offer a factory canceled method in its companion that creates a FutureOutcome that returns Canceled with passed in message" in {
       val futureOutcome = FutureOutcome.canceled("test cancel")
