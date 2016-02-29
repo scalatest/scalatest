@@ -289,6 +289,15 @@ object FutureOutcome {
   // TODO: Test and four (or five?) others, succeeded, failed, pending, aborted?
   def canceled(msg: String): FutureOutcome =
     FutureOutcome { Future.successful(Canceled(msg)) }
+
+  def succeeded: FutureOutcome =
+    FutureOutcome { Future.successful( Succeeded ) }
+
+  def failed(msg: String): FutureOutcome =
+    FutureOutcome { Future.successful(Failed(msg)) }
+
+  def pending: FutureOutcome =
+    FutureOutcome { Future.successful( Pending ) }
 }
 
 /*
