@@ -17,8 +17,7 @@ package org.scalatest.concurrent
 
 import org.scalatest.TestSuiteMixin
 import org.scalatest.TestSuite
-import Timeouts._
-import org.scalatest.exceptions.ModifiableMessage
+import TimeLimits._
 import org.scalatest.Resources
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TimeoutField
@@ -134,7 +133,7 @@ trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
     try {
       failAfter(timeLimit) {
         super.withFixture(test)
-      } (defaultTestInterruptor)
+      } (defaultTestSignaler)
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => 
@@ -160,7 +159,8 @@ trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
    * 
    * @return a <code>ThreadInterruptor</code>
    */
-  val defaultTestInterruptor: Interruptor = ThreadInterruptor
+  //val defaultTestInterruptor: Interruptor = ThreadInterruptor
+  val defaultTestSignaler: Signaler = ThreadSignaler
 }
 
 /*
