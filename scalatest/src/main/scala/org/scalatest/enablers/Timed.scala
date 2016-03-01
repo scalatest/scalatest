@@ -255,10 +255,10 @@ object Timed {
           case t: Throwable =>
             val endTime = scala.compat.Platform.currentTime
             if((endTime - startTime) > maxDuration) {
-              throw exceptionFun(Some(t), stackDepthAdjustment)
+              Future.successful(Failed(exceptionFun(Some(t), stackDepthAdjustment)).asInstanceOf[OUTCOME])
             }
             else
-              throw t
+              Future.successful(Failed(t).asInstanceOf[OUTCOME])
         }
       }
     }
@@ -380,10 +380,11 @@ object Timed {
               case Good(r) =>
                 task.cancel()
                 if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
-                val endTime = scala.compat.Platform.currentTime
+                  val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
                   if (duration > maxDuration)
                     promise.complete(Failure(exceptionFun(None, stackDepthAdjustment)))
+                    //promise.complete(Success(Failed(exceptionFun(None, stackDepthAdjustment))))
                   else
                     promise.success(r)
                 }
@@ -395,6 +396,7 @@ object Timed {
                   val duration = endTime - startTime
                   if (duration > maxDuration)
                     promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
+                    //promise.complete(Success(Failed(exceptionFun(Some(e), stackDepthAdjustment))))
                   else {
                     e match {
                       case tce: TestCanceledException => promise.success(Canceled(e))
@@ -412,27 +414,24 @@ object Timed {
         catch {
           case tce: TestCanceledException =>
             val endTime = scala.compat.Platform.currentTime
-            if((endTime - startTime) > maxDuration) {
+            if((endTime - startTime) > maxDuration)
               throw exceptionFun(Some(tce), stackDepthAdjustment)
-            }
             else
               FutureOutcome(Future.successful(Canceled(tce)))
 
           case tpe: TestPendingException =>
             val endTime = scala.compat.Platform.currentTime
-            if((endTime - startTime) > maxDuration) {
+            if((endTime - startTime) > maxDuration)
               throw exceptionFun(Some(tpe), stackDepthAdjustment)
-            }
             else
               FutureOutcome(Future.successful(Pending))
 
           case t: Throwable =>
             val endTime = scala.compat.Platform.currentTime
-            if((endTime - startTime) > maxDuration) {
-              throw exceptionFun(Some(t), stackDepthAdjustment)
-            }
+            if((endTime - startTime) > maxDuration)
+              FutureOutcome(Future.successful(Failed(exceptionFun(Some(t), stackDepthAdjustment))))
             else
-              throw t
+              FutureOutcome(Future.successful(Failed(t)))
         }
       }
     }

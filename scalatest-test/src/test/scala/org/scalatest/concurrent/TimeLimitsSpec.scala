@@ -27,7 +27,7 @@ import java.nio.channels.Selector
 import java.nio.channels.ServerSocketChannel
 import java.net.InetSocketAddress
 import java.nio.channels.SocketChannel
-import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.{TestFailedException, TestCanceledException}
 import org.scalatest.time._
 import org.scalatest._
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TestCanceledException}
@@ -598,15 +598,20 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
     describe("when work with Future[Outcome]") {
 
       it("should blow up with TestFailedException when it times out in main block that create the Future", Retryable) {
-        val caught = the[TestFailedException] thrownBy {
+        val futureOutcome: Future[Outcome] =
           failAfter(Span(100, Millis)) {
             SleepHelper.sleep(200)
             Future.successful(Succeeded)
           }
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 11)
         }
-        caught.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
-        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-        caught.failedCodeLineNumber.value should equal(thisLineNumber - 7)
       }
 
       it("should return Canceled when it blows up with TestCanceledException before times out in main block that create the Future", Retryable) {
@@ -787,11 +792,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should not catch exception thrown from the main block that create the future") {
-        an[InterruptedException] should be thrownBy {
+        val futureOutcome: Future[Outcome] =
           failAfter(Span(100, Millis)) {
             throw new InterruptedException
             Future.successful(Succeeded)
           }
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe an [InterruptedException]
         }
       }
 
@@ -826,15 +835,20 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
     describe("when work with FutureOutcome") {
 
       it("should blow up with TestFailedException when it times out in main block that create the Future", Retryable) {
-        val caught = the[TestFailedException] thrownBy {
+        val futureOutcome =
           failAfter(Span(100, Millis)) {
             SleepHelper.sleep(200)
             FutureOutcome(Future.successful(Succeeded))
           }
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 11)
         }
-        caught.message.value should be(Resources.timeoutFailedAfter("100 milliseconds"))
-        caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-        caught.failedCodeLineNumber.value should equal(thisLineNumber - 7)
       }
 
       it("should return Canceled when it blows up with TestCanceledException before times out in main block that create the Future", Retryable) {
@@ -1021,11 +1035,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should not catch exception thrown from the main block that create the future") {
-        an[InterruptedException] should be thrownBy {
+        val futureOutcome =
           failAfter(Span(100, Millis)) {
             throw new InterruptedException
             FutureOutcome(Future.successful(Succeeded))
           }
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [InterruptedException]
         }
       }
 
@@ -1530,11 +1548,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should not catch exception thrown from the main block that create the future") {
-        an[InterruptedException] should be thrownBy {
+        val futureOutcome: Future[Outcome] =
           cancelAfter(Span(100, Millis)) {
             throw new InterruptedException
             Future.successful(Succeeded)
           }
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe an [InterruptedException]
         }
       }
 
@@ -1764,11 +1786,15 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should not catch exception thrown from the main block that create the future") {
-        an[InterruptedException] should be thrownBy {
+        val futureOutcome =
           cancelAfter(Span(100, Millis)) {
             throw new InterruptedException
             FutureOutcome(Future.successful(Succeeded))
           }
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe an [InterruptedException]
         }
       }
 
