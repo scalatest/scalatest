@@ -207,7 +207,11 @@ object Timed {
                 val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
                   if (duration > maxDuration)
-                    promise.complete(Failure(exceptionFun(None, stackDepthAdjustment)))
+                    exceptionFun(None, stackDepthAdjustment) match {
+                      case tce: TestCanceledException => promise.success(Canceled(tce).asInstanceOf[OUTCOME])
+                      case other => promise.success(Failed(other).asInstanceOf[OUTCOME])
+                    }
+                  //promise.complete(Failure(exceptionFun(None, stackDepthAdjustment)))
                     //promise.complete(Success(Failed.here(exceptionFun(None, stackDepthAdjustment)).asInstanceOf[OUTCOME]))
                   else
                     promise.success(r)
@@ -219,7 +223,11 @@ object Timed {
                   val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
                   if (duration > maxDuration)
-                    promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
+                    exceptionFun(None, stackDepthAdjustment) match {
+                      case tce: TestCanceledException => promise.success(Canceled(tce).asInstanceOf[OUTCOME])
+                      case other => promise.success(Failed(other).asInstanceOf[OUTCOME])
+                    }
+                    //promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
                     //promise.complete(Success(Failed.here(exceptionFun(Some(e), stackDepthAdjustment)).asInstanceOf[OUTCOME]))
                   else {
                     e match {
@@ -382,11 +390,21 @@ object Timed {
                 if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
                   val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
-                  if (duration > maxDuration)
-                    promise.complete(Failure(exceptionFun(None, stackDepthAdjustment)))
-                    //promise.complete(Success(Failed(exceptionFun(None, stackDepthAdjustment))))
-                  else
-                    promise.success(r)
+                  try {
+                    if (duration > maxDuration) {
+                      exceptionFun(None, stackDepthAdjustment) match {
+                        case tce: TestCanceledException => promise.success(Canceled(tce))
+                        case other => promise.success(Failed(other))
+                      }
+                    }
+                    else
+                      promise.success(r)
+                  }
+                  catch {
+                    case t: Throwable =>
+                      t.printStackTrace()
+                      throw t
+                  }
                 }
 
               case Bad(e) =>
@@ -395,12 +413,16 @@ object Timed {
                 val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
                   if (duration > maxDuration)
-                    promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
+                    exceptionFun(None, stackDepthAdjustment) match {
+                      case tce: TestCanceledException => promise.success(Canceled(tce))
+                      case other => promise.success(Failed(other))
+                    }
+                  //promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
                     //promise.complete(Success(Failed(exceptionFun(Some(e), stackDepthAdjustment))))
                   else {
                     e match {
                       case tce: TestCanceledException => promise.success(Canceled(e))
-                      case tce: TestPendingException => promise.success(Pending)
+                      case tpe: TestPendingException => promise.success(Pending)
                       case _ => promise.failure(e)
                     }
                   }

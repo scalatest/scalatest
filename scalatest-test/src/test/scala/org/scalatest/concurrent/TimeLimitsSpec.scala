@@ -242,6 +242,7 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         succeed
       }
       // SKIP-SCALATESTJS-END
+
     }
 
     describe("when work with Outcome") {
@@ -523,18 +524,21 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestFailedException when it times out in the Future that gets returned", Retryable) {
-        val future: Future[TestFailedException] =
-          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
-              Future {
-                SleepHelper.sleep(2000)
-                Succeeded
-              }
+        val futureOutcome: Future[Outcome] =
+          failAfter(Span(1000, Millis)) {
+            Future {
+              SleepHelper.sleep(2000)
+              Succeeded
             }
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 13)
         }
       }
 
@@ -680,18 +684,21 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestFailedException when it times out in the Future that gets returned", Retryable) {
-        val future: Future[TestFailedException] =
-          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
-              Future {
-                SleepHelper.sleep(2000)
-                Succeeded
-              }
+        val futureOutcome: Future[Outcome] =
+          failAfter(Span(1000, Millis)) {
+            Future {
+              SleepHelper.sleep(2000)
+              Succeeded
             }
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 13)
         }
       }
 
@@ -721,19 +728,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestFailedException when TestCanceledException is thrown after times out in the Future that gets returned", Retryable) {
-        val future: Future[TestFailedException] =
-          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
-              Future {
-                SleepHelper.sleep(2000)
-                cancel("cancel message")
-                Succeeded
-              }
+        val futureOutcome: Future[Outcome] =
+          failAfter(Span(1000, Millis)) {
+            Future {
+              SleepHelper.sleep(2000)
+              cancel("cancel message")
+              Succeeded
             }
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -759,19 +769,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestFailedException when TestPendingException is thrown after times out in the Future that gets returned", Retryable) {
-        val future: Future[TestFailedException] =
-          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
-              Future {
-                SleepHelper.sleep(2000)
-                pending
-                Succeeded
-              }
+        val futureOutcome: Future[Outcome] =
+          failAfter(Span(1000, Millis)) {
+            Future {
+              SleepHelper.sleep(2000)
+              pending
+              Succeeded
             }
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -917,18 +930,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestFailedException when it times out in the Future that gets returned", Retryable) {
-        val future: Future[TestFailedException] =
-          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
-              FutureOutcome(Future {
-                SleepHelper.sleep(2000)
-                Succeeded
-              })
-            }.toFuture
+        val futureOutcome =
+          failAfter(Span(1000, Millis)) {
+            FutureOutcome(Future {
+              SleepHelper.sleep(2000)
+              Succeeded
+            })
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -958,19 +975,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestFailedException when TestCanceledException is thrown after times out in the Future that gets returned", Retryable) {
-        val future: Future[TestFailedException] =
-          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
-              FutureOutcome(Future {
-                SleepHelper.sleep(2000)
-                cancel("cancel message")
-                Succeeded
-              })
-            }.toFuture
+        val futureOutcome =
+          failAfter(Span(1000, Millis)) {
+            FutureOutcome(Future {
+              SleepHelper.sleep(2000)
+              cancel("cancel message")
+              Succeeded
+            })
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -996,19 +1016,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestFailedException when TestPendingException is thrown after times out in the Future that gets returned", Retryable) {
-        val future: Future[TestFailedException] =
-          recoverToExceptionIf[TestFailedException] { failAfter(Span(1000, Millis)) {
-              FutureOutcome(Future {
-                SleepHelper.sleep(2000)
-                pending
-                Succeeded
-              })
-            }.toFuture
+        val futureOutcome =
+          failAfter(Span(1000, Millis)) {
+            FutureOutcome(Future {
+              SleepHelper.sleep(2000)
+              pending
+              Succeeded
+            })
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [TestFailedException]
+          val tfe = failed.exception.asInstanceOf[TestFailedException]
+          tfe.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
+          tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tfe.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -1284,18 +1307,21 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestCanceledException when it times out in the Future that gets returned", Retryable) {
-        val future: Future[TestCanceledException] =
-          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
-              Future {
-                SleepHelper.sleep(2000)
-                Succeeded
-              }
+        val futureOutcome: Future[Outcome] =
+          cancelAfter(Span(1000, Millis)) {
+            Future {
+              SleepHelper.sleep(2000)
+              Succeeded
             }
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Canceled]
+          val canceled = outcome.asInstanceOf[Canceled]
+          canceled.exception shouldBe a [TestCanceledException]
+          val tce = canceled.exception.asInstanceOf[TestCanceledException]
+          tce.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tce.failedCodeLineNumber.value should equal(thisLineNumber - 13)
         }
       }
 
@@ -1436,18 +1462,21 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestCanceledException when it times out in the Future that gets returned", Retryable) {
-        val future: Future[TestCanceledException] =
-          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
-              Future {
-                SleepHelper.sleep(2000)
-                Succeeded
-              }
+        val futureOutcome: Future[Outcome] =
+          cancelAfter(Span(1000, Millis)) {
+            Future {
+              SleepHelper.sleep(2000)
+              Succeeded
             }
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Canceled]
+          val canceled = outcome.asInstanceOf[Canceled]
+          canceled.exception shouldBe a [TestCanceledException]
+          val tce = canceled.exception.asInstanceOf[TestCanceledException]
+          tce.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tce.failedCodeLineNumber.value should equal(thisLineNumber - 13)
         }
       }
 
@@ -1477,19 +1506,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestCanceledException when TestCanceledException is thrown after times out in the Future that gets returned", Retryable) {
-        val future: Future[TestCanceledException] =
-          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
-              Future {
-                SleepHelper.sleep(2000)
-                cancel("cancel message")
-                Succeeded
-              }
+        val futureOutcome: Future[Outcome] =
+          cancelAfter(Span(1000, Millis)) {
+            Future {
+              SleepHelper.sleep(2000)
+              cancel("cancel message")
+              Succeeded
             }
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Canceled]
+          val canceled = outcome.asInstanceOf[Canceled]
+          canceled.exception shouldBe a [TestCanceledException]
+          val tce = canceled.exception.asInstanceOf[TestCanceledException]
+          tce.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tce.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -1515,19 +1547,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestCanceledException when TestPendingException is thrown after times out in the Future that gets returned", Retryable) {
-        val future: Future[TestCanceledException] =
-          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
-              Future {
-                SleepHelper.sleep(2000)
-                pending
-                Succeeded
-              }
+        val futureOutcome: Future[Outcome] =
+          cancelAfter(Span(1000, Millis)) {
+            Future {
+              SleepHelper.sleep(2000)
+              pending
+              Succeeded
             }
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Canceled]
+          val canceled = outcome.asInstanceOf[Canceled]
+          canceled.exception shouldBe a [TestCanceledException]
+          val tce = canceled.exception.asInstanceOf[TestCanceledException]
+          tce.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tce.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -1668,18 +1703,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestCanceledException when it times out in the Future that gets returned", Retryable) {
-        val future: Future[TestCanceledException] =
-          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
-              FutureOutcome(Future {
-                SleepHelper.sleep(2000)
-                Succeeded
-              })
-            }.toFuture
+        val futureOutcome =
+          cancelAfter(Span(1000, Millis)) {
+            FutureOutcome(Future {
+              SleepHelper.sleep(2000)
+              Succeeded
+            })
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 10)
+
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Canceled]
+          val canceled = outcome.asInstanceOf[Canceled]
+          canceled.exception shouldBe a [TestCanceledException]
+          val tce = canceled.exception.asInstanceOf[TestCanceledException]
+          tce.message.value should be(Resources.timeoutCanceledAfter("1000 milliseconds"))
+          tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tce.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -1709,19 +1748,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestCanceledException when TestCanceledException is thrown after times out in the Future that gets returned", Retryable) {
-        val future: Future[TestCanceledException] =
-          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
-              FutureOutcome(Future {
-                SleepHelper.sleep(2000)
-                cancel("cancel message")
-                Succeeded
-              })
-            }.toFuture
+        val futureOutcome =
+          cancelAfter(Span(1000, Millis)) {
+            FutureOutcome(Future {
+              SleepHelper.sleep(2000)
+              cancel("cancel message")
+              Succeeded
+            })
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Canceled]
+          val canceled = outcome.asInstanceOf[Canceled]
+          canceled.exception shouldBe a [TestCanceledException]
+          val tce = canceled.exception.asInstanceOf[TestCanceledException]
+          tce.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tce.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -1747,19 +1789,22 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should blow up with TestCanceledException when TestPendingException is thrown after times out in the Future that gets returned", Retryable) {
-        val future: Future[TestCanceledException] =
-          recoverToExceptionIf[TestCanceledException] { cancelAfter(Span(1000, Millis)) {
-              FutureOutcome(Future {
-                SleepHelper.sleep(2000)
-                pending
-                Succeeded
-              })
-            }.toFuture
+        val futureOutcome =
+          cancelAfter(Span(1000, Millis)) {
+            FutureOutcome(Future {
+              SleepHelper.sleep(2000)
+              pending
+              Succeeded
+            })
           }
-        future map { caught =>
-          caught.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
-          caught.failedCodeFileName.value should be("TimeLimitsSpec.scala")
-          caught.failedCodeLineNumber.value should equal(thisLineNumber - 11)
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Canceled]
+          val canceled = outcome.asInstanceOf[Canceled]
+          canceled.exception shouldBe a [TestCanceledException]
+          val tce = canceled.exception.asInstanceOf[TestCanceledException]
+          tce.message.value should be (Resources.timeoutCanceledAfter("1000 milliseconds"))
+          tce.failedCodeFileName.value should be("TimeLimitsSpec.scala")
+          tce.failedCodeLineNumber.value should equal(thisLineNumber - 14)
         }
       }
 
@@ -1774,9 +1819,9 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
       }
 
       it("should pass normally when the timeout is not reached in main block that create the future and in the future itself") {
-        val futureOutcome = cancelAfter(Span(200, Millis)) {
+        val futureOutcome = cancelAfter(Span(2000, Millis)) {
           FutureOutcome(Future {
-            SleepHelper.sleep(100)
+            SleepHelper.sleep(1000)
             Succeeded
           })
         }
