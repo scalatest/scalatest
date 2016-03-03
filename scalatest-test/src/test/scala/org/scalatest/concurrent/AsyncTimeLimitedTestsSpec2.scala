@@ -93,7 +93,6 @@ class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
       it("should fail with a timeout exception with the proper error message test when timeout from main code") {
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
-            //implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
             val timeLimit = Span(100L, Millis)
             test("time out failure") { SleepHelper.sleep(500); succeed }
           }
