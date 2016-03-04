@@ -87,12 +87,12 @@ trait AsyncConfigMapFixture { this: fixture.AsyncTestSuite =>
     * obtained by invoking <code>configMap</code> on the passed <code>OneArgTest</code>.
     *
     * <p>
-    * To enable stacking of traits that define <code>withFixture(NoArgTest)</code>, this method does not
+    * To enable stacking of traits that define <code>withFixture(OneArgAsyncTest)</code>, this method does not
     * invoke the test function directly. Instead, it delegates responsibility for invoking the test function
-    * to <code>withFixture(NoArgTest)</code>.
+    * to <code>withFixture(OneArgAsyncTest)</code>.
     * </p>
     *
-    * @param test the <code>OneArgTest</code> to invoke, passing in the
+    * @param test the <code>OneArgAsyncTest</code> to invoke, passing in the
     *   <code>configMap</code> fixture
     */
   def withFixture(test: OneArgAsyncTest): FutureOutcome = {
