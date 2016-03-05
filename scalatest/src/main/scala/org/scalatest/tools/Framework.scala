@@ -33,6 +33,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import ArgsParser._
 import org.scalactic.Requirements._
+import org.scalatest.time.{Span, Millis}
 
 /**
  * <p>
@@ -222,7 +223,7 @@ class Framework extends SbtFramework {
       })
   
   private def createTaskDispatchReporter(
-    reporter: Reporter,
+    suiteSortingReporter: SuiteSortingReporter,
     loggers: Array[Logger],
     loader: ClassLoader,
     useSbtLogInfoReporter: Boolean,
@@ -238,6 +239,7 @@ class Framework extends SbtFramework {
     configSet: Set[ReporterConfigParam],
     summaryCounter: SummaryCounter
   ) = {
+    //println("***reporter: " + reporter.getClass.getName)
     val reporters = 
       if (useSbtLogInfoReporter) {
         val sbtLogInfoReporter =
@@ -257,10 +259,10 @@ class Framework extends SbtFramework {
             ),
           configSet
           )
-        Vector(reporter, sbtLogInfoReporter)
+        Vector(suiteSortingReporter, sbtLogInfoReporter)
       }
       else 
-        Vector(reporter)
+        Vector(suiteSortingReporter)
     new SbtDispatchReporter(reporters)
   }
       
@@ -412,7 +414,7 @@ class Framework extends SbtFramework {
   private class ScalaTestTask(
     taskDefinition: TaskDef, 
     loader: ClassLoader,
-    reporter: Reporter,
+    suiteSortingReporter: SuiteSortingReporter,
     tracker: Tracker,
     tagsToInclude: Set[String], 
     tagsToExclude: Set[String],
@@ -487,10 +489,10 @@ class Framework extends SbtFramework {
           } catch {
             case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
           }
-        
-        val taskReporter =
+
+        /*val taskReporter =
           createTaskDispatchReporter(
-            reporter,
+            suiteSortingReporter,
             loggers,
             loader,
             useSbtLogInfoReporter,
@@ -505,14 +507,35 @@ class Framework extends SbtFramework {
             presentReminderWithoutCanceledTests,
             configSet,
             summaryCounter
-          )
+          )*/
+
+        if (useSbtLogInfoReporter) {
+          val sbtLogInfoReporter =
+            new FilterReporter(
+              new SbtLogInfoReporter(
+                loggers,
+                presentAllDurations,
+                presentInColor,
+                presentShortStackTraces,
+                presentFullStackTraces, // If they say both S and F, F overrules
+                presentUnformatted,
+                presentReminder,
+                presentReminderWithShortStackTraces,
+                presentReminderWithFullStackTraces,
+                presentReminderWithoutCanceledTests,
+                summaryCounter
+              ),
+              configSet
+            )
+          suiteSortingReporter.registerReporter(suite.suiteId, sbtLogInfoReporter)
+        }
 
         runSuite(
           taskDefinition,
           suite.suiteId,
           suite,
           loader,
-          taskReporter,
+          suiteSortingReporter,
           tracker,
           eventHandler,
           tagsToInclude,
@@ -672,7 +695,13 @@ class Framework extends SbtFramework {
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
     
-    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod) 
+    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
+
+    val suiteSortingReporter =
+      new SuiteSortingReporter(
+        dispatchReporter,
+        Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis),
+        System.err)
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
 
@@ -696,7 +725,7 @@ class Framework extends SbtFramework {
       new ScalaTestTask(
           td, 
           loader,
-          dispatchReporter,
+          suiteSortingReporter,
           tracker,
           tagsToInclude,
           tagsToExclude,
