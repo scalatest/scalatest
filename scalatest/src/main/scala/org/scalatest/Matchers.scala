@@ -36,7 +36,6 @@ import org.scalactic.Prettifier
 import org.scalactic.Every
 import org.scalatest.words._
 // SKIP-SCALATESTJS-START
-import MatchersHelper.matchSymbolToPredicateMethod
 import MatchersHelper.accessProperty
 // SKIP-SCALATESTJS-END
 import MatchersHelper.newTestFailedException
@@ -1801,6 +1800,11 @@ import exceptions.TestFailedException
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
+  // SKIP-SCALATESTJS-START
+  private implicit val symbolHelper = new SymbolHelper(FailureMessages)
+  import symbolHelper.matchSymbolToPredicateMethod
+  // SKIP-SCALATESTJS-END
+
   import scala.language.implicitConversions
 
   // SKIP-SCALATESTJS-START
@@ -3135,7 +3139,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   
   private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, methodName: String, stackDepth: Int)(fun: T => Assertion): Assertion = {
 
-    val asserting = InspectorAsserting.assertingNatureOfAssertion
+    val asserting = InspectorAsserting.assertingNatureOfAssertion(prettifier)
 
     collected match {
       case AllCollected =>

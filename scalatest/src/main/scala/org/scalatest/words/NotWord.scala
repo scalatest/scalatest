@@ -24,9 +24,6 @@ import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest._
 import org.scalactic.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
-// SKIP-SCALATESTJS-START
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-// SKIP-SCALATESTJS-END
 import scala.annotation.tailrec
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
@@ -47,7 +44,11 @@ import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
  *
  * @author Bill Venners
  */
-final class NotWord {
+final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
+
+  // SKIP-SCALATESTJS-START
+  import symbolHelper.matchSymbolToPredicateMethod
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax, where <code>tempFile</code>, for example, refers to a <code>java.io.File</code>

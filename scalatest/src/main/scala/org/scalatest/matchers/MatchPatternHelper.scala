@@ -75,13 +75,13 @@ object MatchPatternHelper {
    *                   ^
    * </pre>
    */
-  def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
+  def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _])(implicit failureMessages: FailureMessages) {
     if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
       throw newTestFailedException(
         if (resultOfNoWordForAny.shouldBeTrue)
-          FailureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
+          failureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
         else
-          FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left)
+          failureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left)
       )
   }
 

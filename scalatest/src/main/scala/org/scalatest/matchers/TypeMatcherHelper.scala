@@ -29,7 +29,7 @@ import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
  * users would ever need to use <code>TypeMatcherHelper</code> directly.
  * </p>
  */
-object TypeMatcherHelper {
+class TypeMatcherHelper(failureMessages: FailureMessages) {
 
   /**
    * Create a type matcher for the given <code>ResultOfATypeInvocation</code>.
@@ -126,7 +126,7 @@ object TypeMatcherHelper {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+      throw newTestFailedException(failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
     org.scalatest.Succeeded
   }
@@ -142,9 +142,9 @@ object TypeMatcherHelper {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+      org.scalatest.Fact.No(failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
-    else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))
+    else org.scalatest.Fact.Yes(failureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))
   }
 
   /**
@@ -158,7 +158,7 @@ object TypeMatcherHelper {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+      throw newTestFailedException(failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
     org.scalatest.Succeeded
   }
@@ -174,8 +174,8 @@ object TypeMatcherHelper {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
-    } else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))
+      org.scalatest.Fact.No(failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+    } else org.scalatest.Fact.Yes(failureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))
   }
 
   /**
@@ -191,9 +191,9 @@ object TypeMatcherHelper {
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
+          failureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
       )
     } else org.scalatest.Succeeded
   }
@@ -238,9 +238,9 @@ object TypeMatcherHelper {
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
+          failureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
       )
     } else org.scalatest.Succeeded
   }

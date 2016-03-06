@@ -16,6 +16,7 @@
 package org.scalatest
 
 import enablers.Collecting
+import org.scalactic.DefaultPrettifier
 
 /**
  * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which
@@ -73,7 +74,9 @@ import enablers.Collecting
  *
  * @author Bill Venners
  */
-trait LoneElement {
+trait LoneElement extends DefaultPrettifier {
+
+  private[scalatest] val FailureMessages = new FailureMessages(prettifier)
 
   import scala.language.higherKinds
 

@@ -15,12 +15,14 @@
  */
 package org.scalatest.enablers
 
+import org.scalactic.Prettifier
 import org.scalatest._
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import Suite.indentLines
-import org.scalatest.FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
 
 trait InspectorAsserting[T] {
@@ -36,7 +38,10 @@ trait InspectorAsserting[T] {
 
 abstract class UnitInspectorAsserting {
 
-  abstract class InspectorAssertingImpl[T] extends InspectorAsserting[T] {
+  abstract class InspectorAssertingImpl[T](prettifier: Prettifier) extends InspectorAsserting[T] {
+
+    private val FailureMessages = new FailureMessages(prettifier)
+    import FailureMessages.decorateToStringValue
 
     import InspectorAsserting._
 
@@ -259,13 +264,13 @@ abstract class UnitInspectorAsserting {
     private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
   }
 
-  implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } =
-    new InspectorAssertingImpl[T] {
+  implicit def assertingNatureOfT[T](implicit prettifier: Prettifier): InspectorAsserting[T] { type Result = Unit } =
+    new InspectorAssertingImpl[T](prettifier) {
       type Result = Unit
       def indicateSuccess(message: => String): Unit = ()
       def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
         throw new exceptions.TestFailedException(
-          sde => Some(message),
+          (sde: StackDepthException) => Some(message),
           optionalCause,
           stackDepthFun
         )
@@ -275,8 +280,8 @@ abstract class UnitInspectorAsserting {
 
 abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  private[scalatest] implicit def assertingNatureOfExpectation: InspectorAsserting[Expectation] { type Result = Expectation } = {
-    new InspectorAssertingImpl[Expectation] {
+  private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
+    new InspectorAssertingImpl[Expectation](prettifier) {
       type Result = Expectation
       def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
       def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Expectation = Fact.No(message)
@@ -286,13 +291,13 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
 object InspectorAsserting extends ExpectationInspectorAsserting {
 
-  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } =
-    new InspectorAssertingImpl[Assertion] {
+  implicit def assertingNatureOfAssertion(implicit prettifier: Prettifier): InspectorAsserting[Assertion] { type Result = Assertion } =
+    new InspectorAssertingImpl[Assertion](prettifier) {
       type Result = Assertion
       def indicateSuccess(message: => String): Assertion = Succeeded
       def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {
         throw new exceptions.TestFailedException(
-          sde => Some(message),
+          (sde: StackDepthException) => Some(message),
           optionalCause,
           stackDepthFun
         )

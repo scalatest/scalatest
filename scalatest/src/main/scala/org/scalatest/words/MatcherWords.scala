@@ -17,8 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import org.scalactic.{Equality, Prettifier}
-import org.scalatest.Resources
-import org.scalatest.Suite
+import org.scalatest.{FailureMessages, Resources, Suite, SymbolHelper}
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 
 /**
@@ -28,6 +27,10 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
  * @author Bill Venners
  */
 trait MatcherWords {
+
+  val symbolHelper: SymbolHelper
+
+  val failureMessages: FailureMessages
 
   /**
    * This field enables syntax such as the following:
@@ -107,7 +110,7 @@ trait MatcherWords {
    *             ^
    * </pre>
    */
-  val be = new BeWord
+  val be = new BeWord(symbolHelper, failureMessages)
 
   /**
    * This field enables syntax such as the following:
@@ -127,7 +130,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val not = new NotWord
+  val not = new NotWord(symbolHelper)
   
   /**
    * This field enables the following syntax: 

@@ -16,6 +16,7 @@
 package org.scalatest.enablers
 
 import org.scalactic.{Equality, Every}
+import org.scalatest.FailureMessages
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
@@ -336,19 +337,19 @@ object Sequencing {
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Sequencing[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
    */
-  implicit def sequencingNatureOfArray[E](implicit equality: Equality[E]): Sequencing[Array[E]] = 
+  implicit def sequencingNatureOfArray[E](implicit equality: Equality[E], failureMessages: FailureMessages): Sequencing[Array[E]] =
     new Sequencing[Array[E]] {
 
       def containsInOrder(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrder(new ArrayWrapper(array), elements, equality)
+        checkInOrder(new ArrayWrapper(array, failureMessages), elements, equality)
       }
 
       def containsInOrderOnly(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkInOrderOnly(new ArrayWrapper(array), elements, equality)
+        checkInOrderOnly(new ArrayWrapper(array, failureMessages), elements, equality)
       }
 
       def containsTheSameElementsInOrderAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsInOrderAs[E](new ArrayWrapper(array), elements, equality)
+        checkTheSameElementsInOrderAs[E](new ArrayWrapper(array, failureMessages), elements, equality)
       }
     }
 

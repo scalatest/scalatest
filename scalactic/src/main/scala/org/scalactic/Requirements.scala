@@ -122,7 +122,9 @@ import exceptions.NullArgumentException
  * When this is not possible or practical, however, trait <code>Requirements</code> is helpful.
  * </p>
  */
-trait Requirements {
+trait Requirements extends DefaultPrettifier {
+
+  private val FailureMessages = new FailureMessages(prettifier)
 
   import language.experimental.macros
 

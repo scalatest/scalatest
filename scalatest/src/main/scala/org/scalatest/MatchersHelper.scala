@@ -187,56 +187,6 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  // SKIP-SCALATESTJS-START
-  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0): MatchResult = {
-
-    // If 'empty passed, rightNoTick would be "empty"
-    val propertyName = right.name
-
-    accessProperty(left, right, true) match {
-
-      case None =>
-
-        // if propertyName is '>, mangledPropertyName would be "$greater"
-        val mangledPropertyName = transformOperatorChars(propertyName)
-
-        // methodNameToInvoke would also be "empty"
-        val methodNameToInvoke = mangledPropertyName
-
-        // methodNameToInvokeWithIs would be "isEmpty"
-        val methodNameToInvokeWithIs = "is"+ mangledPropertyName(0).toUpper + mangledPropertyName.substring(1)
-
-        val firstChar = propertyName(0).toLower
-        val methodNameStartsWithVowel = firstChar == 'a' || firstChar == 'e' || firstChar == 'i' ||
-          firstChar == 'o' || firstChar == 'u'
-
-        throw newTestFailedException(
-          if (methodNameStartsWithVowel)
-            FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
-          else
-            FailureMessages.hasNeitherAOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
-          None, 
-          stackDepth
-        )
-
-      case Some(result) =>
-
-        val (wasNot, was) =
-          if (hasArticle) {
-            if (articleIsA) (Resources.rawWasNotA, Resources.rawWasA) else (Resources.rawWasNotAn, Resources.rawWasAn)
-          }
-          else (Resources.rawWasNot, Resources.rawWas)
-
-        MatchResult(
-          result == true, // Right now I just leave the return value of accessProperty as Any
-          wasNot,
-          was,
-          Vector(left, UnquotedString(propertyName))
-        )
-    }
-  }
-  // SKIP-SCALATESTJS-END
-
   def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
                                  didNotMatchMessage: => String, matchMessage: => String, notGroupAtIndexMessage:  => String, notGroupMessage: => String,
                                  andGroupMessage: => String): MatchResult = {

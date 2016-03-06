@@ -15,12 +15,12 @@
  */
 package org.scalatest.enablers
 
+import org.scalactic.Prettifier
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
 import org.scalatest.Resources
 import org.scalatest.UnquotedString
 import org.scalatest.FailureMessages
-import FailureMessages.decorateToStringValue
 import org.scalacheck.util.Pretty
 import org.scalacheck.Prop.Arg
 import org.scalacheck.Prop
@@ -37,7 +37,11 @@ trait CheckerAsserting[T] {
 
 abstract class UnitCheckerAsserting {
 
-  abstract class CheckerAssertingImpl[T] extends CheckerAsserting[T] {
+  abstract class CheckerAssertingImpl[T](prettifier: Prettifier) extends CheckerAsserting[T] {
+
+    private val FailureMessages = new FailureMessages(prettifier)
+
+    import FailureMessages.decorateToStringValue
 
     import CheckerAsserting._
 
@@ -85,7 +89,7 @@ abstract class UnitCheckerAsserting {
                 }
                 ) +
               "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs), FailureMessages) + "\n" +
               "  )" +
               getLabelDisplay(scalaCheckLabels),
               FailureMessages.propertyFailed(result.succeeded),
@@ -108,7 +112,7 @@ abstract class UnitCheckerAsserting {
                 }
               ) +
               "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs), FailureMessages) + "\n" +
               "  )" +
               getLabelDisplay(scalaCheckLabels),
               FailureMessages.propertyException(UnquotedString(e.getClass.getName)),
@@ -126,8 +130,8 @@ abstract class UnitCheckerAsserting {
     private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
   }
 
-  implicit def assertingNatureOfT[T]: CheckerAsserting[T] { type Result = Unit } =
-    new CheckerAssertingImpl[T] {
+  implicit def assertingNatureOfT[T](implicit prettifier: Prettifier): CheckerAsserting[T] { type Result = Unit } =
+    new CheckerAssertingImpl[T](prettifier) {
       type Result = Unit
       private[scalatest] def indicateSuccess(message: => String): Unit = ()
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
@@ -157,8 +161,8 @@ abstract class ExpectationCheckerAsserting extends UnitCheckerAsserting {
 
 object CheckerAsserting extends ExpectationCheckerAsserting {
 
-  implicit def assertingNatureOfAssertion: CheckerAsserting[Assertion] { type Result = Assertion } = {
-    new CheckerAssertingImpl[Assertion] {
+  implicit def assertingNatureOfAssertion(implicit prettifier: Prettifier): CheckerAsserting[Assertion] { type Result = Assertion } = {
+    new CheckerAssertingImpl[Assertion](prettifier) {
       type Result = Assertion
       private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {
@@ -211,23 +215,23 @@ object CheckerAsserting extends ExpectationCheckerAsserting {
   }
 
   // TODO: Internationalize these, and make them consistent with FailureMessages stuff (only strings get quotes around them, etc.)
-  private[enablers] def prettyTestStats(result: Test.Result) = result.status match {
+  private[enablers] def prettyTestStats(result: Test.Result, FailureMessages: FailureMessages) = result.status match {
 
     case Test.Proved(args) =>
-      "OK, proved property:                   \n" + prettyArgs(args)
+      "OK, proved property:                   \n" + prettyArgs(args, FailureMessages)
 
     case Test.Passed =>
       "OK, passed " + result.succeeded + " tests."
 
     case Test.Failed(args, labels) =>
-      "Falsified after " + result.succeeded + " passed tests:\n" + prettyLabels(labels) + prettyArgs(args)
+      "Falsified after " + result.succeeded + " passed tests:\n" + prettyLabels(labels) + prettyArgs(args, FailureMessages)
 
     case Test.Exhausted =>
       "Gave up after only " + result.succeeded + " passed tests. " +
         result.discarded + " tests were discarded."
 
     case Test.PropException(args, e, labels) =>
-      FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args)
+      FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args, FailureMessages)
   }
 
   private[enablers] def prettyLabels(labels: Set[String]) = {
@@ -244,21 +248,21 @@ object CheckerAsserting extends ExpectationCheckerAsserting {
   //
   // Passes 0 as verbosity value to prettyArg function.
   //
-  private[enablers] def decorateArgToStringValue(arg: Arg[_]): String =
+  private[enablers] def decorateArgToStringValue(arg: Arg[_], FailureMessages: FailureMessages): String =
     arg.arg match {
-      case null         => decorateToStringValue(arg.arg)
-      case _: Unit      => decorateToStringValue(arg.arg)
-      case _: String    => decorateToStringValue(arg.arg)
-      case _: Char      => decorateToStringValue(arg.arg)
-      case _: Array[_]  => decorateToStringValue(arg.arg)
+      case null         => FailureMessages.decorateToStringValue(arg.arg)
+      case _: Unit      => FailureMessages.decorateToStringValue(arg.arg)
+      case _: String    => FailureMessages.decorateToStringValue(arg.arg)
+      case _: Char      => FailureMessages.decorateToStringValue(arg.arg)
+      case _: Array[_]  => FailureMessages.decorateToStringValue(arg.arg)
       case _            => arg.prettyArg(new Pretty.Params(0))
     }
 
-  private[enablers] def prettyArgs(args: List[Arg[_]]) = {
+  private[enablers] def prettyArgs(args: List[Arg[_]], FailureMessages: FailureMessages) = {
     val strs = for((a, i) <- args.zipWithIndex) yield (
       "    " +
         (if (a.label == "") "arg" + i else a.label) +
-        " = " + decorateArgToStringValue(a) + (if (i < args.length - 1) "," else "") +
+        " = " + decorateArgToStringValue(a, FailureMessages) + (if (i < args.length - 1) "," else "") +
         (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
       )
     strs.mkString("\n")

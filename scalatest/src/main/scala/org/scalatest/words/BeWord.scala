@@ -23,9 +23,6 @@ import org.scalatest.Resources
 import org.scalatest.UnquotedString
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
-// SKIP-SCALATESTJS-START
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-// SKIP-SCALATESTJS-END
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.Sortable
 import org.scalatest.enablers.Readability
@@ -63,8 +60,11 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  * 
  * @author Bill Venners
  */
-final class BeWord {
+final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: FailureMessages) {
 
+  // SKIP-SCALATESTJS-START
+  import symbolHelper.matchSymbolToPredicateMethod
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax: 
@@ -236,7 +236,7 @@ final class BeWord {
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def ===(right: Any): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
+    throw new NotAllowedException(failureMessages.beTripleEqualsNotAllowed,
                                   getStackDepthFun("BeWord.scala", "$eq$eq$eq"))
   }
 
