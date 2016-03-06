@@ -221,50 +221,6 @@ class Framework extends SbtFramework {
         def annotationName = "org.scalatest.WrapWith"
         def isModule = false
       })
-  
-  private def createTaskDispatchReporter(
-    suiteSortingReporter: SuiteSortingReporter,
-    loggers: Array[Logger],
-    loader: ClassLoader,
-    useSbtLogInfoReporter: Boolean,
-    presentAllDurations: Boolean,
-    presentInColor: Boolean, 
-    presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean,
-    presentReminder: Boolean,
-    presentReminderWithShortStackTraces: Boolean,
-    presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean,
-    configSet: Set[ReporterConfigParam],
-    summaryCounter: SummaryCounter
-  ) = {
-    //println("***reporter: " + reporter.getClass.getName)
-    val reporters = 
-      if (useSbtLogInfoReporter) {
-        val sbtLogInfoReporter =
-          new FilterReporter(
-            new SbtLogInfoReporter(
-              loggers,
-              presentAllDurations,
-              presentInColor,
-              presentShortStackTraces,
-              presentFullStackTraces, // If they say both S and F, F overrules
-              presentUnformatted,
-              presentReminder,
-              presentReminderWithShortStackTraces,
-              presentReminderWithFullStackTraces,
-              presentReminderWithoutCanceledTests,
-              summaryCounter
-            ),
-          configSet
-          )
-        Vector(suiteSortingReporter, sbtLogInfoReporter)
-      }
-      else 
-        Vector(suiteSortingReporter)
-    new SbtDispatchReporter(reporters)
-  }
       
   private def runSuite(
     taskDefinition: TaskDef,
@@ -489,25 +445,6 @@ class Framework extends SbtFramework {
           } catch {
             case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
           }
-
-        /*val taskReporter =
-          createTaskDispatchReporter(
-            suiteSortingReporter,
-            loggers,
-            loader,
-            useSbtLogInfoReporter,
-            presentAllDurations,
-            presentInColor,
-            presentShortStackTraces, 
-            presentFullStackTraces,
-            presentUnformatted,
-            presentReminder,
-            presentReminderWithShortStackTraces,
-            presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests,
-            configSet,
-            summaryCounter
-          )*/
 
         if (useSbtLogInfoReporter) {
           val sbtLogInfoReporter =
