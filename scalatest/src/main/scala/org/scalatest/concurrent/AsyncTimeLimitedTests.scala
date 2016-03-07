@@ -23,14 +23,21 @@ trait AsyncTimeLimitedTests extends AsyncTestSuiteMixin with TimeLimits { this: 
 
   abstract override def withFixture(test: NoArgAsyncTest): FutureOutcome = {
 
-    failAfter(timeLimit) {
-      super.withFixture(test)
-    } change { outcome =>
-      outcome match {
-        case Exceptional(e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField) =>
-          Exceptional(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString))))
-        case other => other
+    try {
+      failAfter(timeLimit) {
+        super.withFixture(test)
+      } change { outcome =>
+        outcome match {
+          case Exceptional(e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField) =>
+            Exceptional(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString))))
+          case other => other
+        }
       }
+    }
+    catch {
+      case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField =>
+        throw e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString)))
+      case other => throw other
     }
   }
 

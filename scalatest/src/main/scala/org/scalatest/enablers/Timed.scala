@@ -368,89 +368,65 @@ object Timed {
         val timer = new Timer
         val maxDuration = timeout.totalNanos / 1000 / 1000
         val startTime = scala.compat.Platform.currentTime
-        try {
-          val result = f
-          val endTime = scala.compat.Platform.currentTime
 
-          if ((endTime - startTime) > maxDuration)
-            throw exceptionFun(None, stackDepthAdjustment)
+        val result = f
+        val endTime = scala.compat.Platform.currentTime
 
-          val promise = Promise[Outcome]
-          val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
-          val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
-          val timer = new Timer
+        if ((endTime - startTime) > maxDuration)
+          throw exceptionFun(None, stackDepthAdjustment)
 
-          result.onCompletedThen { t =>
-            t match {
-              case Good(r) =>
-                task.cancel()
-                if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
-                  val endTime = scala.compat.Platform.currentTime
-                  val duration = endTime - startTime
-                  try {
-                    if (duration > maxDuration) {
-                      exceptionFun(None, stackDepthAdjustment) match {
-                        case tce: TestCanceledException => promise.success(Canceled(tce))
-                        case other => promise.success(Failed(other))
-                      }
-                    }
-                    else
-                      promise.success(r)
-                  }
-                  catch {
-                    case t: Throwable =>
-                      t.printStackTrace()
-                      throw t
-                  }
-                }
+        val promise = Promise[Outcome]
+        val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
+        val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
 
-              case Bad(e) =>
-                task.cancel()
-                if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
+        result.onCompletedThen { t =>
+          t match {
+            case Good(r) =>
+              task.cancel()
+              if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
                 val endTime = scala.compat.Platform.currentTime
-                  val duration = endTime - startTime
-                  if (duration > maxDuration)
+                val duration = endTime - startTime
+                try {
+                  if (duration > maxDuration) {
                     exceptionFun(None, stackDepthAdjustment) match {
                       case tce: TestCanceledException => promise.success(Canceled(tce))
                       case other => promise.success(Failed(other))
                     }
-                  else {
-                    e match {
-                      case tce: TestCanceledException => promise.success(Canceled(e))
-                      case tpe: TestPendingException => promise.success(Pending)
-                      case ex if !Suite.anExceptionThatShouldCauseAnAbort(ex) => promise.success(Failed(e))
-                      case _ => promise.failure(e)
-                    }
+                  }
+                  else
+                    promise.success(r)
+                }
+                catch {
+                  case t: Throwable =>
+                    t.printStackTrace()
+                    throw t
+                }
+              }
+
+            case Bad(e) =>
+              task.cancel()
+              if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
+              val endTime = scala.compat.Platform.currentTime
+                val duration = endTime - startTime
+                if (duration > maxDuration)
+                  exceptionFun(None, stackDepthAdjustment) match {
+                    case tce: TestCanceledException => promise.success(Canceled(tce))
+                    case other => promise.success(Failed(other))
+                  }
+                else {
+                  e match {
+                    case tce: TestCanceledException => promise.success(Canceled(e))
+                    case tpe: TestPendingException => promise.success(Pending)
+                    case ex if !Suite.anExceptionThatShouldCauseAnAbort(ex) => promise.success(Failed(e))
+                    case _ => promise.failure(e)
                   }
                 }
-            }
+              }
           }
-
-          timer.schedule(task, delay)
-          new FutureOutcome(promise.future)
         }
-        catch {
-          case tce: TestCanceledException =>
-            val endTime = scala.compat.Platform.currentTime
-            if((endTime - startTime) > maxDuration)
-              throw exceptionFun(Some(tce), stackDepthAdjustment)
-            else
-              FutureOutcome(Future.successful(Canceled(tce)))
 
-          case tpe: TestPendingException =>
-            val endTime = scala.compat.Platform.currentTime
-            if((endTime - startTime) > maxDuration)
-              throw exceptionFun(Some(tpe), stackDepthAdjustment)
-            else
-              FutureOutcome(Future.successful(Pending))
-
-          case t: Throwable =>
-            val endTime = scala.compat.Platform.currentTime
-            if((endTime - startTime) > maxDuration)
-              FutureOutcome(Future.successful(Failed(exceptionFun(Some(t), stackDepthAdjustment))))
-            else
-              FutureOutcome(Future.successful(Failed(t)))
-        }
+        timer.schedule(task, delay)
+        new FutureOutcome(promise.future)
       }
     }
 }
