@@ -702,6 +702,37 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
         }
       }
 
+      it("should return Failed with exception it throws from Future block before times out in the Future that gets returned", Retryable) {
+        val futureOutcome: Future[Outcome] =
+          failAfter(Span(1000, Millis)) {
+            Future {
+              throw new RuntimeException("oops")
+              Succeeded
+            }
+          }
+
+        futureOutcome map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [RuntimeException]
+        }
+      }
+
+      it("should blows up with VirtualMachineError it throws from Future block before times out in the Future that gets returned", Retryable) {
+        implicit val execContext = new SerialExecutionContext
+        val future =
+          failAfter(Span(100, Millis)) {
+            Future {
+              throw new VirtualMachineError {}
+              Succeeded
+            }
+          }
+
+        assertThrows[VirtualMachineError] {
+          execContext.runNow(future)
+        }
+      }
+
       it("should return Future[Canceled] when it blows up with TestCanceledException before times out in the Future that gets returned", Retryable) {
         try {
           val future: Future[Outcome] =
@@ -946,6 +977,37 @@ class TimeLimitsSpec extends AsyncFunSpec with Matchers {
           tfe.message.value should be (Resources.timeoutFailedAfter("1000 milliseconds"))
           tfe.failedCodeFileName.value should be("TimeLimitsSpec.scala")
           tfe.failedCodeLineNumber.value should equal(thisLineNumber - 14)
+        }
+      }
+
+      it("should return Failed with exception it throws from Future block before times out in the Future that gets returned", Retryable) {
+        val futureOutcome =
+          failAfter(Span(1000, Millis)) {
+            FutureOutcome(Future {
+              throw new RuntimeException("oops")
+              Succeeded
+            })
+          }
+
+        futureOutcome.toFuture map { outcome =>
+          outcome shouldBe a [Failed]
+          val failed = outcome.asInstanceOf[Failed]
+          failed.exception shouldBe a [RuntimeException]
+        }
+      }
+
+      it("should blows up with VirtualMachineError it throws from Future block before times out in the Future that gets returned", Retryable) {
+        implicit val execContext = new SerialExecutionContext
+        val future: FutureOutcome =
+          failAfter(Span(100, Millis)) {
+            FutureOutcome(Future {
+              throw new VirtualMachineError {}
+              Succeeded
+            })
+          }
+
+        assertThrows[VirtualMachineError] {
+          execContext.runNow(future.toFuture)
         }
       }
 

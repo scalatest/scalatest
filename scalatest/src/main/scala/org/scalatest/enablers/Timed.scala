@@ -211,8 +211,6 @@ object Timed {
                       case tce: TestCanceledException => promise.success(Canceled(tce).asInstanceOf[OUTCOME])
                       case other => promise.success(Failed(other).asInstanceOf[OUTCOME])
                     }
-                  //promise.complete(Failure(exceptionFun(None, stackDepthAdjustment)))
-                    //promise.complete(Success(Failed.here(exceptionFun(None, stackDepthAdjustment)).asInstanceOf[OUTCOME]))
                   else
                     promise.success(r)
                 }
@@ -227,12 +225,11 @@ object Timed {
                       case tce: TestCanceledException => promise.success(Canceled(tce).asInstanceOf[OUTCOME])
                       case other => promise.success(Failed(other).asInstanceOf[OUTCOME])
                     }
-                    //promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
-                    //promise.complete(Success(Failed.here(exceptionFun(Some(e), stackDepthAdjustment)).asInstanceOf[OUTCOME]))
                   else {
                     e match {
                       case tce: TestCanceledException => promise.success(Canceled(e).asInstanceOf[OUTCOME])
                       case tce: TestPendingException => promise.success(Pending.asInstanceOf[OUTCOME])
+                      case ex if !Suite.anExceptionThatShouldCauseAnAbort(ex) => promise.success(Failed(e).asInstanceOf[OUTCOME])
                       case _ => promise.failure(e)
                     }
                   }
@@ -417,12 +414,11 @@ object Timed {
                       case tce: TestCanceledException => promise.success(Canceled(tce))
                       case other => promise.success(Failed(other))
                     }
-                  //promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
-                    //promise.complete(Success(Failed(exceptionFun(Some(e), stackDepthAdjustment))))
                   else {
                     e match {
                       case tce: TestCanceledException => promise.success(Canceled(e))
                       case tpe: TestPendingException => promise.success(Pending)
+                      case ex if !Suite.anExceptionThatShouldCauseAnAbort(ex) => promise.success(Failed(e))
                       case _ => promise.failure(e)
                     }
                   }
