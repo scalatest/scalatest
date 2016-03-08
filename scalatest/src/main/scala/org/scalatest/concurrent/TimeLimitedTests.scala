@@ -150,17 +150,16 @@ trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
   def timeLimit: Span
   
   /**
-   * The default <a href="Interruptor.html"><code>Interruptor</code></a> strategy used to interrupt tests that exceed their time limit.
+   * The default <a href="Signaler.html"><code>Signaler</code></a> strategy used to interrupt tests that exceed their time limit.
    * 
    * <p>
-   * This trait's implementation of this method returns <a href="ThreadInterruptor$.html"><code>ThreadInterruptor</code></a>, which invokes <code>interrupt</code>
-   * on the main test thread. Override this method to change the test interruption strategy.
+   * This trait's implementation of this method returns <a href="DoNotSignal$.html"><code>DoNotSignal</code></a>, which does not signal/interrupt
+   * the main test and future thread. Override this method to change the test signaling strategy.
    * </p>
    * 
    * @return a <code>ThreadInterruptor</code>
    */
-  //val defaultTestInterruptor: Interruptor = ThreadInterruptor
-  val defaultTestSignaler: Signaler = ThreadSignaler
+  val defaultTestSignaler: Signaler = DoNotSignal
 }
 
 /*
