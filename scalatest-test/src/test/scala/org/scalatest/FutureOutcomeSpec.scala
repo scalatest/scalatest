@@ -1585,12 +1585,44 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
         assert(outcome == Succeeded)
       }
     }
-    "offer a factory canceled method in its companion that creates a FutureOutcome that returns Canceled with passed in message" in {
+    "offer a factory canceled method that takes nothing in its companion" in {
+      val futureOutcome = FutureOutcome.canceled()
+      futureOutcome.toFuture map { outcome =>
+        assert(outcome.isInstanceOf[Canceled])
+        val canceled = outcome.asInstanceOf[Canceled]
+        assert(canceled.exception.isInstanceOf[TestCanceledException])
+        assert(canceled.exception.getMessage == null)
+      }
+    }
+    "offer a factory canceled method that takes a message and a cause in its companion" in {
+      val futureOutcome = FutureOutcome.canceled("test cancel", new RuntimeException("oops!"))
+      futureOutcome.toFuture map { outcome =>
+        assert(outcome.isInstanceOf[Canceled])
+        val canceled = outcome.asInstanceOf[Canceled]
+        assert(canceled.exception.isInstanceOf[TestCanceledException])
+        val tce = canceled.exception.asInstanceOf[TestCanceledException]
+        assert(tce.message == Some("test cancel"))
+        assert(tce.cause.isDefined)
+        val cause = tce.cause.get
+        assert(cause.isInstanceOf[RuntimeException])
+        assert(cause.getMessage == "oops!")
+      }
+    }
+    "offer a factory canceled method that takes a message in its companion" in {
       val futureOutcome = FutureOutcome.canceled("test cancel")
       futureOutcome.toFuture map { outcome =>
         assert(outcome.isInstanceOf[Canceled])
         val canceled = outcome.asInstanceOf[Canceled]
         assert(canceled.exception.getMessage == "test cancel")
+      }
+    }
+    "offer a factory canceled method that takes a Throwable in its companion" in {
+      val futureOutcome = FutureOutcome.canceled(new RuntimeException("oops!"))
+      futureOutcome.toFuture map { outcome =>
+        assert(outcome.isInstanceOf[Canceled])
+        val canceled = outcome.asInstanceOf[Canceled]
+        assert(canceled.exception.isInstanceOf[RuntimeException])
+        assert(canceled.exception.getMessage == "oops!")
       }
     }
     "offer a factory succeeded method in its companion that creates a FutureOutcome that returns Succeeded" in {
@@ -1599,12 +1631,44 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
         assert(outcome == Succeeded)
       }
     }
-    "offer a factory failed method in its companion that creates a FutureOutcome that returns Failed with passed in message" in {
-      val futureOutcome = FutureOutcome.failed("test fail")
+    "offer a factory failed method that takes nothing in its companion" in {
+      val futureOutcome = FutureOutcome.failed()
       futureOutcome.toFuture map { outcome =>
         assert(outcome.isInstanceOf[Failed])
         val failed = outcome.asInstanceOf[Failed]
-        assert(failed.exception.getMessage == "test fail")
+        assert(failed.exception.isInstanceOf[TestFailedException])
+        assert(failed.exception.getMessage == null)
+      }
+    }
+    "offer a factory failed method that takes a message and a cause in its companion" in {
+      val futureOutcome = FutureOutcome.failed("test failed", new RuntimeException("oops!"))
+      futureOutcome.toFuture map { outcome =>
+        assert(outcome.isInstanceOf[Failed])
+        val failed = outcome.asInstanceOf[Failed]
+        assert(failed.exception.isInstanceOf[TestFailedException])
+        val tfe = failed.exception.asInstanceOf[TestFailedException]
+        assert(tfe.message == Some("test failed"))
+        assert(tfe.cause.isDefined)
+        val cause = tfe.cause.get
+        assert(cause.isInstanceOf[RuntimeException])
+        assert(cause.getMessage == "oops!")
+      }
+    }
+    "offer a factory failed method that takes a message in its companion" in {
+      val futureOutcome = FutureOutcome.failed("test failed")
+      futureOutcome.toFuture map { outcome =>
+        assert(outcome.isInstanceOf[Failed])
+        val failed = outcome.asInstanceOf[Failed]
+        assert(failed.exception.getMessage == "test failed")
+      }
+    }
+    "offer a factory failled method that takes a Throwable in its companion" in {
+      val futureOutcome = FutureOutcome.failed(new RuntimeException("oops!"))
+      futureOutcome.toFuture map { outcome =>
+        assert(outcome.isInstanceOf[Failed])
+        val failed = outcome.asInstanceOf[Failed]
+        assert(failed.exception.isInstanceOf[RuntimeException])
+        assert(failed.exception.getMessage == "oops!")
       }
     }
     "offer a factory pending method in its companion that creates a FutureOutcome that returns Pending" in {

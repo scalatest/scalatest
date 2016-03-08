@@ -286,15 +286,32 @@ object FutureOutcome {
   // to onAbortedThen.
   private[scalatest] def apply(underlying: Future[Outcome]): FutureOutcome = new FutureOutcome(underlying)
 
-  // TODO: Test and four (or five?) others, succeeded, failed, pending, aborted?
+  def canceled(): FutureOutcome =
+    FutureOutcome { Future.successful(Canceled()) }
+
   def canceled(msg: String): FutureOutcome =
     FutureOutcome { Future.successful(Canceled(msg)) }
+
+  def canceled(t: Throwable): FutureOutcome =
+    FutureOutcome { Future.successful(Canceled(t)) }
+
+  def canceled(message: String, cause: Throwable) =
+    FutureOutcome { Future.successful(Canceled(message, cause)) }
 
   def succeeded: FutureOutcome =
     FutureOutcome { Future.successful( Succeeded ) }
 
+  def failed(): FutureOutcome =
+    FutureOutcome { Future.successful(Failed()) }
+
   def failed(msg: String): FutureOutcome =
     FutureOutcome { Future.successful(Failed(msg)) }
+
+  def failed(message: String, cause: Throwable) =
+    FutureOutcome { Future.successful(Failed(message, cause)) }
+
+  def failed(t: Throwable): FutureOutcome =
+    FutureOutcome { Future.successful(Failed(t)) }
 
   def pending: FutureOutcome =
     FutureOutcome { Future.successful( Pending ) }
