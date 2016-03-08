@@ -416,18 +416,45 @@ case class Failed(exception: Throwable) extends Exceptional(exception) {
 object Failed {
 
   // SKIP-SCALATESTJS-START
-  val stackDepth = 1
+  protected[scalatest]  val stackDepth = 1
   // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY val stackDepth = 10
+  //SCALATESTJS-ONLY protected[scalatest]  val stackDepth = 10
 
+  /**
+    * Creates a <code>Failed</code> instance, with a <code>TestFailedException</code> set as its <code>exception</code> field.
+    *
+    * @return An instance of <code>Failed</code> with a <code>TestFailedException</code> set as its <code>exception</code> field.
+    */
   def apply(): Failed = new Failed(new exceptions.TestFailedException(stackDepth))
+
+  /**
+    * Creates a <code>Failed</code> instance with the passed in message.
+    *
+    * @param message the message for the <code>TestFailedException</code> set as its <code>exception</code> field
+    * @return An instance of <code>Failed</code> with a <code>TestFailedException</code> created from passed in <code>message</code> set as its <code>exception</code> field.
+    */
   def apply(message: String): Failed = new Failed(new exceptions.TestFailedException(message, stackDepth))
-  // I always wrap this in a TFE because I need to do that to get the message in there.
+
+  /**
+    * Creates a <code>Failed</code> instance with the passed in message and cause.
+    *
+    * @param message the message for the <code>TestFailedException</code> set as its <code>exception</code> field
+    * @param cause the cause for the <code>TestFailedException</code> set as its <code>exception</code> field
+    * @return An instance of <code>Failed</code> with a <code>TestFailedException</code> created from passed in <code>message</code> and <code>cause</code> set as its <code>exception</code> field.
+    */
   def apply(message: String, cause: Throwable): Failed = {
+    // I always wrap this in a TFE because I need to do that to get the message in there.
     require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to a factory method in object Failed")
     require(!cause.isInstanceOf[exceptions.TestPendingException], "a TestPendingException was passed to a factory method in object Failed")
     new Failed(new exceptions.TestFailedException(message, cause, stackDepth))
   }
+
+  /**
+    * Creates a <code>Failed</code> with the passed in cause.
+    *
+    * @param cause the passed in cause
+    * @return A <code>Failed</code> with <code>exception</code> field set to a newly created <code>TestFailedException</code> using the passed in <code>cause</code>.
+    */
   def here(cause: Throwable): Failed = {
     require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to the \"here\" factory method in object Failed")
     require(!cause.isInstanceOf[exceptions.TestPendingException], "a TestPendingException was passed to the \"here\" factory method in object Failed")
@@ -481,9 +508,30 @@ object Canceled {
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY protected[scalatest] val stackDepth = 10
 
+  /**
+    * Creates a <code>Canceled</code> instance, with a <code>TestCanceledException</code> set as its <code>exception</code> field.
+    *
+    * @return An instance of <code>Canceled</code> with a <code>TestCanceledException</code> set as its <code>exception</code> field.
+    */
   def apply(): Canceled = new Canceled(new exceptions.TestCanceledException(stackDepth))
+
+  /**
+    * Creates a <code>Canceled</code> instance with the passed in message and cause.
+    *
+    * @param message the message for the <code>TestCanceledException</code> set as its <code>exception</code> field
+    * @param cause the cause for the <code>TestCanceledException</code> set as its <code>exception</code> field
+    * @return An instance of <code>Canceled</code> with a <code>TestCanceledException</code> created from passed in <code>message</code> and <code>cause</code> set as its <code>exception</code> field.
+    */
   def apply(message: String, cause: Throwable): Canceled = // TODO write tests for NPEs
     new Canceled(new exceptions.TestCanceledException(message, cause, stackDepth))
+
+  /**
+    * Creates a <code>Canceled</code> instance with the passed in <code>Throwable</code>.  If the passed in <code>Throwable</code> is a <code>TestCanceledException</code>,
+    * it will be set as <code>exception</code> field, in other case a new <code>TestCanceledException</code> will be created using <code>ex</code> as its <code>cause</code>
+    *
+    * @param ex the passed in <code>Throwable</code>
+    * @return An instance of <code>Canceled</code> with <code>ex</code> set as its <code>exception</code> field if <code>ex</code> is a <code>TestCanceledException</code>, or a newly created <code>TestCanceledException</code> with <code>ex</code> set as its <code>cause</code> if <code>ex</code> is not a <code>TestCanceledException</code>.
+    */
   def apply(ex: Throwable): Canceled = { // TODO write tests for NPEs
     ex match {
       case tce: exceptions.TestCanceledException => 
@@ -527,6 +575,12 @@ object Canceled {
     Canceled(e)
   }
 
+  /**
+    * Creates a <code>Canceled</code> with the passed in cause.
+    *
+    * @param cause the passed in cause
+    * @return A <code>Canceled</code> with <code>exception</code> field set to a newly created <code>TestCanceledException</code> using the passed in <code>cause</code>.
+    */
   def here(cause: Throwable): Canceled = {
     new Canceled(
       if (cause.getMessage != null)
