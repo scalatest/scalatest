@@ -58,7 +58,7 @@ import scala.collection.mutable.Builder
  * <code>Option[String]</code>: <code>None</code> if the string is empty or blank, else the
  * trimmed string wrapped in a <code>Some</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * def parseName(input: String): Option[String] = {
  *   val trimmed = input.trim
@@ -71,10 +71,10 @@ import scala.collection.mutable.Builder
  * <code>Option[Int]</code>: <code>None</code> if either the string is not a valid integer or
  * it is a negative integer, else the string converted to an integer wrapped in a <code>Some</code>:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * def parseAge(input: String): Option[Int] = {
- *   try { 
+ *   try {
  *     val age = input.trim.toInt
  *     if (age &gt;= 0) Some(age) else None
  *   }
@@ -158,12 +158,12 @@ import scala.collection.mutable.Builder
  *     age &lt;- parseAge(inputAge).right
  *   } yield Person(name, age)
  * </pre>
- * 
+ *
  * <p>
  * Note that <code>Either</code> requires you to add <code>.right</code>
  * at the end of each generator in the <code>for</code> expression. Although the convention is to place the
  * valid result on the right, you must explicitly (and repetitively) indicate that you've done so by transforming
- * the <code>Either</code> to a <code>RightProjection</code> by invoking <code>.right</code> at each step. 
+ * the <code>Either</code> to a <code>RightProjection</code> by invoking <code>.right</code> at each step.
  * Given this implementation, the <code>parsePerson</code> method will now short-circuit at the first sign
  * of trouble (as it did when we used an <code>Option</code>), but you now get the first error message returned
  * in a <code>Left</code>. Here are some examples:
@@ -310,7 +310,7 @@ import scala.collection.mutable.Builder
  * </pre>
  *
  * <p>
- * Because <code>parseName</code> will either return a valid name <code>String</code> wrapped in a 
+ * Because <code>parseName</code> will either return a valid name <code>String</code> wrapped in a
  * <code>Good</code>, or <em>one</em> error message, wrapped in a <code>Bad</code>, you would write the
  * <code>Bad</code> type as <code>One[ErrorMessage]</code>. The same is true for <code>parseAge</code>:
  * </p>
@@ -336,7 +336,7 @@ import scala.collection.mutable.Builder
  *
  * <pre class="stHighlight">
  * import Accumulation._
- * 
+ *
  * def parsePerson(inputName: String, inputAge: String): Person Or Every[ErrorMessage] = {
  *   val name = parseName(inputName)
  *   val age = parseAge(inputAge)
@@ -429,7 +429,7 @@ import scala.collection.mutable.Builder
  * <h3>Using <code>zip</code></h3>
  *
  * <p>
- * You can also zip two accumulating <code>Or</code>s together. If both are <code>Good</code>, you'll get a 
+ * You can also zip two accumulating <code>Or</code>s together. If both are <code>Good</code>, you'll get a
  * <code>Good</code> tuple containing both original <code>Good</code> values. Otherwise, you'll get a <code>Bad</code>
  * containing every error message. Here are some examples:
  * </p>
@@ -462,12 +462,12 @@ import scala.collection.mutable.Builder
  * def isDivBy3(i: Int): Validation[ErrorMessage] =
  *   if (i % 3 == 0) Pass else Fail(i + " was not divisible by 3")
  * </pre>
- * 
+ *
  * <p>
  * If the <code>Or</code> on which you call <code>when</code> is already <code>Bad</code>, you get the same (<code>Bad</code>) <code>Or</code> back, because
  * no <code>Good</code> value exists to pass to the validation functions:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * parseAge("-30").when(isRound, isDivBy3)
  * // Result: Bad(One("-30" is not a valid age))
@@ -477,7 +477,7 @@ import scala.collection.mutable.Builder
  * If the <code>Or</code> on which you call <code>when</code> is <code>Good</code>, and also passes all the validation functions (<em>i.e.</em>, the
  * all return <code>None</code>), you again get the same <code>Or</code> back, but this time, a <code>Good</code> one:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * parseAge("30").when(isRound, isDivBy3)
  * // Result: Good(30)
@@ -486,7 +486,7 @@ import scala.collection.mutable.Builder
  * <p>
  * If one or more of the validation functions fails, however, you'll get a <code>Bad</code> back contining every error. Here are some examples:
  * </p>
- * 
+ *
  * <pre class="stHighlight">
  * parseAge("33").when(isRound, isDivBy3)
  * // Result: Bad(One(33 was not a round number))
@@ -660,7 +660,7 @@ sealed abstract class Or[+G,+B] {
 
   /**
    * Returns this <code>Or</code> if either 1) it is a <code>Bad</code> or 2) it is a <code>Good</code> and applying the validation function <code>f</code> to this
-   * <code>Good</code>'s value returns <code>Pass</code>; otherwise, 
+   * <code>Good</code>'s value returns <code>Pass</code>; otherwise,
    * returns a new <code>Bad</code> containing the error value contained in the <code>Fail</code> resulting from applying the validation
    * function <code>f</code> to this <code>Good</code>'s value.
    *
@@ -708,7 +708,7 @@ sealed abstract class Or[+G,+B] {
   def forall(f: G => Boolean): Boolean
 
   /**
-   * Returns, if this <code>Or</code> is <code>Good</code>, this <code>Good</code>'s value; otherwise returns the result of evaluating <code>default</code>. 
+   * Returns, if this <code>Or</code> is <code>Good</code>, this <code>Good</code>'s value; otherwise returns the result of evaluating <code>default</code>.
    *
    * @param default the default expression to evaluate if this <code>Or</code> is a <code>Bad</code>
    * @return the contained value, if this <code>Or</code> is a <code>Good</code>, else the result of evaluating the given <code>default</code>
@@ -786,14 +786,7 @@ sealed abstract class Or[+G,+B] {
    * of <code>Throwable</code> (or <code>Throwable</code> itself).
    * </p>
    *
-   * <p>
-   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Or</code> to an <code>Either</code>. If the type of the
-   * <code>Or</code> on which you invoke <code>toEither</code> is <code>Or[Int, ErrorMessage]</code> for example, the result will be an
-   * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
-   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
-   * </p>
-   *
-   * @return this <code>Good</code> value, wrapped in a <code>Right</code>, or this <code>Bad</code> value, wrapped in a <code>Left</code>.
+   * @return this <code>Good</code> value, wrapped in a <code>Success</code>, or this <code>Bad</code> value, wrapped in a <code>Failure</code>.
    */
   def toTry(implicit ev: B <:< Throwable): Try[G]
 
@@ -865,7 +858,7 @@ object Or {
    * </p>
    *
    * <p>
-   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>Context</code> and a 
+   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>Context</code> and a
    * type named <code>A</code>:
    * </p>
    *
@@ -923,7 +916,7 @@ object Or {
    * scala&gt; example[Or.B[String]#G, Int](Good(3))
    * res2: org.scalactic.Or[Int,String] = Good(3)
    * </pre>
-   * 
+   *
    * <p>
    * You can read <code>Or.B[String]#G</code> as: an <code>Or</code> with its "bad" type, <code>B</code>,
    * fixed to <code>String</code> and its "good" type, <code>G</code>, left unspecified. The type constructors
@@ -955,7 +948,7 @@ object Or {
    * </p>
    *
    * <p>
-   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>Context</code> and a 
+   * For example, consider this method that takes two type parameters, a <em>type constructor</em> named <code>Context</code> and a
    * type named <code>A</code>:
    * </p>
    *
@@ -1013,7 +1006,7 @@ object Or {
    * scala&gt; example[Or.G[Int]#B, String](Good(3))
    * res15: org.scalactic.Or[Int,String] = Good(3)
    * </pre>
-   * 
+   *
    * <p>
    * You can read <code>Or.G[Int]#B</code> as: an <code>Or</code> with its "good" type, <code>G</code>,
    * fixed to <code>Int</code> and its "bad" type, <code>B</code>, left unspecified. The type constructors
@@ -1054,7 +1047,7 @@ object Or {
    * <code>Either</code> which you pass to <code>Or.from</code> is <code>Either[ErrorMessage, Int]</code> for example, the result will be an
    * <code>Or[Int, ErrorMessage]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
    * values and <code>Right</code> is used for &ldquo;good&rdquo; ones. If you with to keep the types on the same side, invoke <code>swap</code> on the
-   * <code>Either</code> before passing it to <code>from</code>. 
+   * <code>Either</code> before passing it to <code>from</code>.
    * </p>
    *
    * @param either the <code>Either</code> to convert to an <code>Or</code>
@@ -1214,7 +1207,7 @@ final case class Good[+G](g: G) extends Or[G,Nothing] {
 
 /**
  * Companion object for <code>Good</code> that offers, in addition to the standard factory method
- * for <code>Good</code> that takes single &ldquo;good&rdquo; type, an parameterless <a code>apply</code> 
+ * for <code>Good</code> that takes single &ldquo;good&rdquo; type, an parameterless <a code>apply</code>
  * used to narrow the <code>Good</code> type when creating a <code>Bad</code>.
  */
 object Good {
