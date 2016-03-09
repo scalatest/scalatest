@@ -37,7 +37,7 @@ trait AsyncTimeLimitedTests extends AsyncTestSuiteMixin with TimeLimits { this: 
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField =>
         throw e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString)))
-      case other => throw other
+      case other: Throwable => throw other
     }
   }
 
