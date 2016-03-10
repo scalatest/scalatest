@@ -22,10 +22,11 @@ import Prop._
 import Integer.MIN_VALUE
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.Size
-import FailureMessages._
 import Matchers._
 
 class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+
+  import FailureMessages._
 
   // Checking for a specific size
   describe("The 'have size (Int)' syntax") {

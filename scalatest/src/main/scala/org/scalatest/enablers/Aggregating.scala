@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalactic.{Equality, Every}
+import org.scalactic.{Prettifier, Equality, Every}
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
@@ -314,7 +314,7 @@ object Aggregating {
    * @tparam E type of elements in the <code>Array</code>
    * @return <code>Aggregating</code> of type <code>Array[E]</code>
    */
-  implicit def convertEqualityToArrayAggregating[E](equality: Equality[E], failureMessages: FailureMessages): Aggregating[Array[E]] =
+  implicit def convertEqualityToArrayAggregating[E](equality: Equality[E])(implicit failureMessages: FailureMessages): Aggregating[Array[E]] =
     aggregatingNatureOfArray(equality, failureMessages)
 
   /**

@@ -65,7 +65,7 @@ private[scalatest] object MatchPatternMacro {
      * org.scalatest.matchers.MatchPatternHelper.matchPatternHelper(partialFunction)
      */
     val callHelper =
-      Apply(
+      /*Apply(
         Select(
           Select(
             Select(
@@ -77,6 +77,13 @@ private[scalatest] object MatchPatternMacro {
             ),
             newTermName("MatchPatternHelper")
           ),
+          newTermName("matchPatternMatcher")
+        ),
+        List(tree)
+      )*/
+      Apply(
+        Select(
+          Ident(newTermName("matchPatternHelper")),
           newTermName("matchPatternMatcher")
         ),
         List(tree)
@@ -99,7 +106,7 @@ private[scalatest] object MatchPatternMacro {
      *
      * org.scalatest.matchers.MatchPatternHelper.notMatchPatternMatcher(partialFunction)
      */
-    Apply(
+    /*Apply(
       Select(
         Select(
           Select(
@@ -111,6 +118,13 @@ private[scalatest] object MatchPatternMacro {
           ),
           newTermName("MatchPatternHelper")
         ),
+        newTermName("notMatchPatternMatcher")
+      ),
+      List(tree)
+    )*/
+    Apply(
+      Select(
+        Ident(newTermName("matchPatternHelper")),
         newTermName("notMatchPatternMatcher")
       ),
       List(tree)
@@ -207,7 +221,7 @@ private[scalatest] object MatchPatternMacro {
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
-          Apply(
+          /*Apply(
             Select(
               Select(
                 Select(
@@ -219,6 +233,13 @@ private[scalatest] object MatchPatternMacro {
                 ),
                 newTermName("MatchPatternHelper")
               ),
+              newTermName("checkMatchPattern")
+            ),
+            List(qualifier, tree)
+          )*/
+          Apply(
+            Select(
+              Ident(newTermName("matchPatternHelper")),
               newTermName("checkMatchPattern")
             ),
             List(qualifier, tree)

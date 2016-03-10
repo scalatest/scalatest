@@ -17,12 +17,13 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import enablers.Sortable
-import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
 class ShouldBeSortedSpec extends FunSpec {
-  
+
+  import FailureMessages.decorateToStringValue
+
   //ADDITIONAL//
   
   def wasNotSorted(left: Any): String = 

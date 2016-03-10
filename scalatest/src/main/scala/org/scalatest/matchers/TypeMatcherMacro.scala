@@ -69,7 +69,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * org.scalatest.matchers.TypeMatcherHelper.aTypeMatcher(aType)
      */
-    context.Expr(
+    /*context.Expr(
       Apply(
         Select(
           Select(
@@ -82,6 +82,15 @@ private[scalatest] object TypeMatcherMacro {
             ),
             newTermName("TypeMatcherHelper")
           ),
+          newTermName("aTypeMatcher")
+        ),
+        List(tree)
+      )
+    )*/
+    context.Expr(
+      Apply(
+        Select(
+          Ident(newTermName("typeMatcherHelper")),
           newTermName("aTypeMatcher")
         ),
         List(tree)
@@ -105,7 +114,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * org.scalatest.matchers.TypeMatcherHelper.anTypeMatcher(anType)
      */
-    context.Expr(
+    /*context.Expr(
       Apply(
         Select(
           Select(
@@ -118,6 +127,16 @@ private[scalatest] object TypeMatcherMacro {
             ),
             newTermName("TypeMatcherHelper")
           ),
+          newTermName("anTypeMatcher")
+        ),
+        List(tree)
+      )
+    )*/
+
+    context.Expr(
+      Apply(
+        Select(
+          Ident(newTermName("typeMatcherHelper")),
           newTermName("anTypeMatcher")
         ),
         List(tree)
@@ -140,7 +159,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * org.scalatest.matchers.TypeMatcherHelper.notATypeMatcher(aType)
      */
-    context.Expr(
+    /*context.Expr(
       Apply(
         Select(
           Select(
@@ -153,6 +172,15 @@ private[scalatest] object TypeMatcherMacro {
             ),
             newTermName("TypeMatcherHelper")
           ),
+          newTermName("notATypeMatcher")
+        ),
+        List(tree)
+      )
+    )*/
+    context.Expr(
+      Apply(
+        Select(
+          Ident(newTermName("typeMatcherHelper")),
           newTermName("notATypeMatcher")
         ),
         List(tree)
@@ -174,7 +202,7 @@ private[scalatest] object TypeMatcherMacro {
      *
      * org.scalatest.matchers.TypeMatcherHelper.notAnTypeMatcher(anType)
      */
-    context.Expr(
+    /*context.Expr(
       Apply(
         Select(
           Select(
@@ -187,6 +215,15 @@ private[scalatest] object TypeMatcherMacro {
             ),
             newTermName("TypeMatcherHelper")
           ),
+          newTermName("notAnTypeMatcher")
+        ),
+        List(tree)
+      )
+    )*/
+    context.Expr(
+      Apply(
+        Select(
+          Ident(newTermName("typeMatcherHelper")),
           newTermName("notAnTypeMatcher")
         ),
         List(tree)
@@ -337,7 +374,7 @@ private[scalatest] object TypeMatcherMacro {
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
-          Apply(
+          /*Apply(
             Select(
               Select(
                 Select(
@@ -349,6 +386,13 @@ private[scalatest] object TypeMatcherMacro {
                 ),
                 newTermName("TypeMatcherHelper")
               ),
+              newTermName(assertMethodName)
+            ),
+            List(Select(qualifier, newTermName("leftSideValue")), tree)
+          )*/
+          Apply(
+            Select(
+              Ident(newTermName("typeMatcherHelper")),
               newTermName(assertMethodName)
             ),
             List(Select(qualifier, newTermName("leftSideValue")), tree)
@@ -433,7 +477,7 @@ private[scalatest] object TypeMatcherMacro {
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
-          Apply(
+          /*Apply(
             Select(
               Select(
                 Select(
@@ -445,6 +489,13 @@ private[scalatest] object TypeMatcherMacro {
                 ),
                 newTermName("TypeMatcherHelper")
               ),
+              newTermName(assertMethodName)
+            ),
+            List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")))
+          )*/
+          Apply(
+            Select(
+              Ident(newTermName("typeMatcherHelper")),
               newTermName(assertMethodName)
             ),
             List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")))

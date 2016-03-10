@@ -28,9 +28,9 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
  */
 trait MatcherWords {
 
-  protected[scalatest] val symbolHelper: SymbolHelper
-
   protected[scalatest] val failureMessages: FailureMessages
+
+  protected[scalatest] val symbolHelper: SymbolHelper
 
   /**
    * This field enables syntax such as the following:

@@ -23,7 +23,7 @@ import org.scalatest.words.ResultOfNotWordForAny
 /**
  * <code>MatchPatternHelper</code> is called by <code>MatchPatternMacro</code> to support <code>matchPattern</code> syntax.
  */
-object MatchPatternHelper {
+class MatchPatternHelper(failureMessages: FailureMessages) {
 
   /**
    * <code>MatchPatternHelper</code> that is called by <code>MatchPatternMacro</code> to support the following syntax:
@@ -75,7 +75,7 @@ object MatchPatternHelper {
    *                   ^
    * </pre>
    */
-  def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _])(implicit failureMessages: FailureMessages) {
+  def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
     if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
       throw newTestFailedException(
         if (resultOfNoWordForAny.shouldBeTrue)

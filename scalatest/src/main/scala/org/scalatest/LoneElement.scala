@@ -76,7 +76,7 @@ import org.scalactic.DefaultPrettifier
  */
 trait LoneElement extends DefaultPrettifier {
 
-  private[scalatest] val FailureMessages = new FailureMessages(prettifier)
+  private val FailureMessages = new FailureMessages(prettifier)
 
   import scala.language.higherKinds
 

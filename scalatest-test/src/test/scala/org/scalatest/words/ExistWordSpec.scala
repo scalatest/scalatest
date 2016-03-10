@@ -19,12 +19,16 @@ import org.scalatest._
 import SharedHelpers.createTempDirectory
 
 import org.scalatest.enablers.Existence
+import org.scalactic.Prettifier
 
 class ExistWordSpec extends FunSpec with Matchers with FileMocks {
   
   describe("ExistWord ") {
     
-    val existWord = new ExistWord
+    val existWord = new ExistWord(new MatcherWords {
+      protected[scalatest] val failureMessages: FailureMessages = new FailureMessages(Prettifier.default)
+      protected[scalatest] val symbolHelper: SymbolHelper = new SymbolHelper(failureMessages)
+    })
     
     describe("matcherFactory produces Matcher that") {
 

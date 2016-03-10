@@ -23,10 +23,11 @@ import scala.collection.GenTraversable
 import scala.collection.GenMap
 import scala.collection.SortedSet
 import scala.collection.SortedMap
-import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.StackDepthException
 
 object SharedHelpers extends Assertions with LineNumberHelper {
+
+  import FailureMessages.decorateToStringValue
 
   object SilentReporter extends Reporter {
     def apply(event: Event) = ()

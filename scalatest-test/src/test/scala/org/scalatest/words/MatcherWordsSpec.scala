@@ -17,8 +17,13 @@ package org.scalatest.words
 
 import org.scalatest._
 import Matchers._
+import org.scalactic.Prettifier
 
 class MatcherWordsSpec extends FunSpec with MatcherWords {
+
+  protected[scalatest] val failureMessages: FailureMessages = new FailureMessages(Prettifier.default)
+
+  protected[scalatest] val symbolHelper: SymbolHelper = new SymbolHelper(failureMessages)
   
   describe("MatcherWords ") {
     

@@ -7056,7 +7056,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         indicateFailure(FailureMessages.wasNotSorted(leftSideValue))
       else indicateSuccess(FailureMessages.wasSorted(leftSideValue))
     }
-    
+
     /**
      * This method enables syntax such as the following:
      *
