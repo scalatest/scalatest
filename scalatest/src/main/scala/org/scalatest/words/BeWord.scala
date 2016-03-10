@@ -60,7 +60,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  * 
  * @author Bill Venners
  */
-final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: FailureMessages) {
+final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: FailureMessages, matcherWords: MatcherWords) {
 
   // SKIP-SCALATESTJS-START
   import symbolHelper.matchSymbolToPredicateMethod
@@ -544,7 +544,7 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
    * </pre>
    */
   def apply(right: SortedWord): MatcherFactory1[Any, Sortable] = 
-    new MatcherFactory1[Any, Sortable] {
+    new MatcherFactory1[Any, Sortable](matcherWords) {
       def matcher[T <: Any : Sortable]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -642,7 +642,7 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
    * </pre>
    */
   def apply(readable: ReadableWord): MatcherFactory1[Any, Readability] = 
-    new MatcherFactory1[Any, Readability] {
+    new MatcherFactory1[Any, Readability](matcherWords) {
       def matcher[T <: Any : Readability]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -668,7 +668,7 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
    * </pre>
    */
   def apply(writable: WritableWord): MatcherFactory1[Any, Writability] = 
-    new MatcherFactory1[Any, Writability] {
+    new MatcherFactory1[Any, Writability](matcherWords) {
       def matcher[T <: Any : Writability]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -694,7 +694,7 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
    * </pre>
    */
   def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] = 
-    new MatcherFactory1[Any, Emptiness] {
+    new MatcherFactory1[Any, Emptiness](matcherWords) {
       def matcher[T <: Any : Emptiness]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -720,7 +720,7 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
    * </pre>
    */
   def apply(defined: DefinedWord): MatcherFactory1[Any, Definition] = 
-    new MatcherFactory1[Any, Definition] {
+    new MatcherFactory1[Any, Definition](matcherWords) {
       def matcher[T <: Any : Definition]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {

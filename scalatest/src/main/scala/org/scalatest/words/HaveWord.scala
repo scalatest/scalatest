@@ -30,7 +30,7 @@ import scala.collection.GenSeq
  *
  * @author Bill Venners
  */
-final class HaveWord {
+final class HaveWord(matcherWords: MatcherWords) {
 
   /**
    * This method enables the following syntax:
@@ -41,7 +41,7 @@ final class HaveWord {
    * </pre>
    */
   def length(expectedLength: Long): MatcherFactory1[Any, Length] =
-    new MatcherFactory1[Any, Length] {
+    new MatcherFactory1[Any, Length](matcherWords) {
       def matcher[T <: Any : Length]: Matcher[T] = {
         val length = implicitly[Length[T]]
         new Matcher[T] {
@@ -77,7 +77,7 @@ final class HaveWord {
    * </p>
    */
   def size(expectedSize: Long): MatcherFactory1[Any, Size] =
-    new MatcherFactory1[Any, Size] {
+    new MatcherFactory1[Any, Size](matcherWords) {
       def matcher[T <: Any : Size]: Matcher[T] = {
         val size = implicitly[Size[T]]
         new Matcher[T] {
@@ -106,7 +106,7 @@ final class HaveWord {
    * </pre>
    */
   def message(expectedMessage: String): MatcherFactory1[Any, Messaging] =
-    new MatcherFactory1[Any, Messaging] {
+    new MatcherFactory1[Any, Messaging](matcherWords) {
       def matcher[T <: Any : Messaging]: Matcher[T] = {
         val messaging = implicitly[Messaging[T]]
         new Matcher[T] {

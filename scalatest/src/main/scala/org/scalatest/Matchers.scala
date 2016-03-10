@@ -1800,8 +1800,10 @@ import exceptions.TestFailedException
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
+  protected[scalatest] val symbolHelper = new SymbolHelper(FailureMessages)
+  protected[scalatest] val failureMessages: FailureMessages = FailureMessages
+
   // SKIP-SCALATESTJS-START
-  private implicit val symbolHelper = new SymbolHelper(FailureMessages)
   import symbolHelper.matchSymbolToPredicateMethod
   // SKIP-SCALATESTJS-END
 
@@ -6854,7 +6856,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](leftSideValue, false)
+    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](leftSideValue, symbolHelper, FailureMessages, false)
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -7346,7 +7348,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
-      new ResultOfContainWord(leftSideValue, true)
+      new ResultOfContainWord(leftSideValue, FailureMessages, true)
     }
     
     /**
@@ -7358,7 +7360,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(contain: ContainWord): ResultOfContainWord[T] = 
-      new ResultOfContainWord(leftSideValue, false)
+      new ResultOfContainWord(leftSideValue, FailureMessages, false)
     
     /**
      * This method enables syntax such as the following:

@@ -44,7 +44,7 @@ import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
  *
  * @author Bill Venners
  */
-final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
+final class NotWord(symbolHelper: org.scalatest.SymbolHelper, FailureMessages: FailureMessages, MatcherWords: MatcherWords) {
 
   // SKIP-SCALATESTJS-START
   import symbolHelper.matchSymbolToPredicateMethod
@@ -76,7 +76,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def apply[S, TYPECLASS[_]](matcherGen1: MatcherFactory1[S, TYPECLASS]): MatcherFactory1[S, TYPECLASS] = {
-    new MatcherFactory1[S, TYPECLASS] {
+    new MatcherFactory1[S, TYPECLASS](MatcherWords) {
       def matcher[V <: S : TYPECLASS]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen1.matcher
         new Matcher[V] {
@@ -89,7 +89,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
   }
 
   def apply[S, TYPECLASS1[_], TYPECLASS2[_]](matcherGen2: MatcherFactory2[S, TYPECLASS1, TYPECLASS2]): MatcherFactory2[S, TYPECLASS1, TYPECLASS2] = {
-    new MatcherFactory2[S, TYPECLASS1, TYPECLASS2] {
+    new MatcherFactory2[S, TYPECLASS1, TYPECLASS2](MatcherWords) {
       def matcher[V <: S : TYPECLASS1 : TYPECLASS2]: Matcher[V] = {
         val innerMatcher: Matcher[V] = matcherGen2.matcher
         new Matcher[V] {
@@ -151,7 +151,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    *                                    ^
    */ 
   private[scalatest] val exist: MatcherFactory1[Any, Existence] = 
-    new MatcherFactory1[Any, Existence] {
+    new MatcherFactory1[Any, Existence](MatcherWords) {
       def matcher[T : Existence]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -983,7 +983,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain(nullValue: Null): MatcherFactory1[Any, Containing] = {
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](MatcherWords) {
       def matcher[U : Containing]: Matcher[U] =
         new Matcher[U] {
           def apply(left: U): MatchResult = {
@@ -1010,7 +1010,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](expectedElement: T): MatcherFactory1[Any, Containing] = {
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](MatcherWords) {
       def matcher[U : Containing]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
@@ -1037,7 +1037,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](oneOf: ResultOfOneOfApplication): MatcherFactory1[Any, Containing] = {
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](MatcherWords) {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1067,7 +1067,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](oneElementOf: ResultOfOneElementOfApplication): MatcherFactory1[Any, Containing] = {
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](MatcherWords) {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1097,7 +1097,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](MatcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1127,7 +1127,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](atLeastOneElementOf: ResultOfAtLeastOneElementOfApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](MatcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1157,7 +1157,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](noneOf: ResultOfNoneOfApplication): MatcherFactory1[Any, Containing] = {
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](MatcherWords) {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1187,7 +1187,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](noElementsOf: ResultOfNoElementsOfApplication): MatcherFactory1[Any, Containing] = {
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](MatcherWords) {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1217,7 +1217,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](theSameElementAs: ResultOfTheSameElementsAsApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](MatcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1247,7 +1247,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](theSameElementInOrderAs: ResultOfTheSameElementsInOrderAsApplication): MatcherFactory1[Any, Sequencing] = {
-    new MatcherFactory1[Any, Sequencing] {
+    new MatcherFactory1[Any, Sequencing](MatcherWords) {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1277,7 +1277,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](only: ResultOfOnlyApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](MatcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1309,7 +1309,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](inOrderOnly: ResultOfInOrderOnlyApplication): MatcherFactory1[Any, Sequencing] = {
-    new MatcherFactory1[Any, Sequencing] {
+    new MatcherFactory1[Any, Sequencing](MatcherWords) {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1339,7 +1339,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](allOf: ResultOfAllOfApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](MatcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1369,7 +1369,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain(allElementsOf: ResultOfAllElementsOfApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](MatcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1399,7 +1399,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](inOrder: ResultOfInOrderApplication): MatcherFactory1[Any, Sequencing] = {
-    new MatcherFactory1[Any, Sequencing] {
+    new MatcherFactory1[Any, Sequencing](MatcherWords) {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1429,7 +1429,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain(inOrderElementsOf: ResultOfInOrderElementsOfApplication): MatcherFactory1[Any, Sequencing] = {
-    new MatcherFactory1[Any, Sequencing] {
+    new MatcherFactory1[Any, Sequencing](MatcherWords) {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1459,7 +1459,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain[T](atMostOneOf: ResultOfAtMostOneOfApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](MatcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1489,7 +1489,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain(atMostOneElementOf: ResultOfAtMostOneElementOfApplication): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](MatcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1519,7 +1519,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication): MatcherFactory1[Any, KeyMapping] = {
-    new MatcherFactory1[Any, KeyMapping] {
+    new MatcherFactory1[Any, KeyMapping](MatcherWords) {
       def matcher[T](implicit keyMapping: KeyMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -1547,7 +1547,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper) {
    * </pre>
    */
   def contain(resultOfValueWordApplication: ResultOfValueWordApplication): MatcherFactory1[Any, ValueMapping] = {
-    new MatcherFactory1[Any, ValueMapping] {
+    new MatcherFactory1[Any, ValueMapping](MatcherWords) {
       def matcher[T](implicit valueMapping: ValueMapping[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {

@@ -36,7 +36,7 @@ import org.scalatest.MatchersHelper.indicateFailure
  *
  * @author Bill Venners
  */
-class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean = true) {
+class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBeTrue: Boolean = true) {
 
   /**
    * This method enables the following syntax: 

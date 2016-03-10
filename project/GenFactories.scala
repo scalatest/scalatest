@@ -105,7 +105,7 @@ import scala.language.higherKinds
  * @author Bill Venners
  */
 // Add a TYPECLASSN for each N
-abstract class MatcherFactory$arity$[-SC, $typeConstructors$] { thisMatcherFactory =>
+abstract class MatcherFactory$arity$[-SC, $typeConstructors$](MatcherWords: MatcherWords) { thisMatcherFactory =>
 
   /**
    * Factory method that will produce a <code>Matcher[T]</code>, where <code>T</code> is a subtype of (or the same type
@@ -135,7 +135,7 @@ $endif$
    * Ands this matcher factory with the passed matcher.
    */
   def and[U <: SC](rightMatcher: Matcher[U]): MatcherFactory$arity$[U, $commaSeparatedTCNs$] =
-    new MatcherFactory$arity$[U, $commaSeparatedTCNs$] {
+    new MatcherFactory$arity$[U, $commaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $colonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
@@ -152,7 +152,7 @@ $endif$
    * Ors this matcher factory with the passed matcher.
    */
   def or[U <: SC](rightMatcher: Matcher[U]): MatcherFactory$arity$[U, $commaSeparatedTCNs$] =
-    new MatcherFactory$arity$[U, $commaSeparatedTCNs$] {
+    new MatcherFactory$arity$[U, $commaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $colonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
@@ -169,7 +169,7 @@ $endif$
    * Ands this matcher factory with the passed <code>MatcherFactory1</code> that has the same final typeclass as this one.
    */
   def and[U <: SC](rightMatcherFactory: MatcherFactory1[U, TC$arity$]): MatcherFactory$arity$[U, $commaSeparatedTCNs$] =
-    new MatcherFactory$arity$[U, $commaSeparatedTCNs$] {
+    new MatcherFactory$arity$[U, $commaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $colonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
@@ -187,7 +187,7 @@ $endif$
    * Ors this matcher factory with the passed <code>MatcherFactory1</code> that has the same final typeclass as this one.
    */
   def or[U <: SC](rightMatcherFactory: MatcherFactory1[U, TC$arity$]): MatcherFactory$arity$[U, $commaSeparatedTCNs$] =
-    new MatcherFactory$arity$[U, $commaSeparatedTCNs$] {
+    new MatcherFactory$arity$[U, $commaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $colonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
@@ -225,7 +225,7 @@ $endif$
    * Ands this matcher factory with the passed matcher factory.
    */
   def and[U <: SC, $passedTypeConstructors$](rightMatcherFactory: MatcherFactory$passedArity$[U, $passedCommaSeparatedTCNs$]): MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$] =
-    new MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$] {
+    new MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $resultColonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
@@ -241,7 +241,7 @@ $endif$
    * Ors this matcher factory with the passed matcher factory.
    */
   def or[U <: SC, $passedTypeConstructors$](rightMatcherFactory: MatcherFactory$passedArity$[U, $passedCommaSeparatedTCNs$]): MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$] =
-    new MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$] {
+    new MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $resultColonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {

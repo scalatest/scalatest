@@ -369,8 +369,8 @@ object Sequencing {
    * @tparam E type of elements in the <code>Array</code>
    * @return <code>Sequencing</code> of type <code>Array[E]</code>
    */
-  implicit def convertEqualityToArraySequencing[E](equality: Equality[E]): Sequencing[Array[E]] = 
-    sequencingNatureOfArray(equality)
+  implicit def convertEqualityToArraySequencing[E](equality: Equality[E])(implicit failureMessages: FailureMessages): Sequencing[Array[E]] =
+    sequencingNatureOfArray(equality, failureMessages)
 
   /**
    * Implicit to support <code>Sequencing</code> nature of <code>java.util.List</code>.

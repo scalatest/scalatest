@@ -36,10 +36,7 @@ import scala.annotation.tailrec
 import org.scalactic.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
-// SKIP-SCALATESTJS-START
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-// SKIP-SCALATESTJS-END
-import org.scalatest.{FailureMessages, UnquotedString}
+import org.scalatest._
 import org.scalatest.MatchersHelper.newTestFailedException
 import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
 import org.scalatest.MatchersHelper.startWithRegexWithGroups
@@ -51,8 +48,6 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.Prettifier
 import org.scalactic.Every
-import org.scalatest.Assertion
-import org.scalatest.Succeeded
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -60,7 +55,11 @@ import org.scalatest.Succeeded
  *
  * @author Bill Venners
  */
-sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
+sealed class ResultOfNotWordForAny[T](val left: T, symbolHelper: SymbolHelper, FailureMessages: FailureMessages, val shouldBeTrue: Boolean) {
+
+  // SKIP-SCALATESTJS-START
+  import symbolHelper.matchSymbolToPredicateMethod
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax:

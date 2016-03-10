@@ -34,7 +34,6 @@ import scala.annotation.tailrec
 import org.scalactic.Equality
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 
 private[scalatest] class JavaCollectionWrapper[T](underlying: java.util.Collection[T]) extends Traversable[T] {
   def foreach[U](f: (T) => U) {

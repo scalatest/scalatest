@@ -28,9 +28,9 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
  */
 trait MatcherWords {
 
-  val symbolHelper: SymbolHelper
+  protected[scalatest] val symbolHelper: SymbolHelper
 
-  val failureMessages: FailureMessages
+  protected[scalatest] val failureMessages: FailureMessages
 
   /**
    * This field enables syntax such as the following:
@@ -100,7 +100,7 @@ trait MatcherWords {
    *              ^
    * </pre>
    */
-  val have = new HaveWord
+  val have = new HaveWord(this)
 
   /**
    * This field enables syntax such as the following:
@@ -110,7 +110,7 @@ trait MatcherWords {
    *             ^
    * </pre>
    */
-  val be = new BeWord(symbolHelper, failureMessages)
+  val be = new BeWord(symbolHelper, failureMessages, this)
 
   /**
    * This field enables syntax such as the following:
@@ -120,7 +120,7 @@ trait MatcherWords {
    *              ^
    * </pre>
    */
-  val contain = new ContainWord
+  val contain = new ContainWord(failureMessages, this)
 
   /**
    * This field enables syntax like the following: 
@@ -130,7 +130,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val not = new NotWord(symbolHelper)
+  val not = new NotWord(symbolHelper, failureMessages, this)
   
   /**
    * This field enables the following syntax: 
@@ -190,7 +190,7 @@ trait MatcherWords {
    *             ^
    * </pre>
    */
-  val exist = new ExistWord
+  val exist = new ExistWord(this)
 
   /**
    * This field enables the following syntax: 
@@ -292,7 +292,7 @@ trait MatcherWords {
    *
    */
   def equal(right: Any): MatcherFactory1[Any, Equality] =
-    new MatcherFactory1[Any, Equality] {
+    new MatcherFactory1[Any, Equality](this) {
       def matcher[T <: Any : Equality]: Matcher[T] = {
         val equality = implicitly[Equality[T]]
         new Matcher[T] {
@@ -313,4 +313,4 @@ trait MatcherWords {
     }
 }
 
-object MatcherWords extends MatcherWords
+//object MatcherWords extends MatcherWords
