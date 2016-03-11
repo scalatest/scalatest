@@ -865,7 +865,7 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
     e.failedCodeLineNumber should be (Some(thisLineNumber - 3))
   }
 
-  // Java collections and maps 
+  // Java collections and maps
 
   test("javaCollection should be ('empty)") {
     val e = intercept[exceptions.TestFailedException] {

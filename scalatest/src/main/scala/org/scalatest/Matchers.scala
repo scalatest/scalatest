@@ -1800,8 +1800,8 @@ import exceptions.TestFailedException
  */
 trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
-  protected[scalatest] val symbolHelper = new SymbolHelper(FailureMessages)
-  protected[scalatest] val failureMessages: FailureMessages = FailureMessages
+  override protected[scalatest] val failureMessages: FailureMessages = FailureMessages
+  override protected[scalatest] val symbolHelper = new SymbolHelper(FailureMessages)
 
   // SKIP-SCALATESTJS-START
   import symbolHelper.matchSymbolToPredicateMethod

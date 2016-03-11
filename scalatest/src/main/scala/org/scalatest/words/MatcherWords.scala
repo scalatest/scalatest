@@ -110,7 +110,7 @@ trait MatcherWords {
    *             ^
    * </pre>
    */
-  val be = new BeWord(symbolHelper, failureMessages, this)
+  lazy val be = new BeWord(symbolHelper, failureMessages, this)
 
   /**
    * This field enables syntax such as the following:
@@ -120,7 +120,7 @@ trait MatcherWords {
    *              ^
    * </pre>
    */
-  val contain = new ContainWord(failureMessages, this)
+  lazy val contain = new ContainWord(failureMessages, this)
 
   /**
    * This field enables syntax like the following: 
@@ -130,7 +130,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val not = new NotWord(symbolHelper, failureMessages, this)
+  lazy val not = new NotWord(symbolHelper, failureMessages, this)
   
   /**
    * This field enables the following syntax: 
