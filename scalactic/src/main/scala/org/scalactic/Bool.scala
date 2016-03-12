@@ -29,8 +29,10 @@ package org.scalactic
  */
 trait Bool {
 
+  val prettifier: Prettifier
+
   private def makeString(raw: String, args: Array[Any]): String =
-    Resources.formatString(raw, args.map(Prettifier.default))
+    Resources.formatString(raw, args.map(prettifier))
 
   /**
    * Construct and return failure message, by applying arguments returned from <code>failureMessageArgs</code> to
@@ -113,7 +115,7 @@ trait Bool {
    */
   def &&(bool: Bool): Bool =
     if (value)
-      new AndBool(this, bool)
+      new AndBool(this, bool, prettifier)
     else
       this
 
@@ -131,7 +133,7 @@ trait Bool {
    * @param bool another <code>Bool</code>
    * @return a <code>Bool</code> that represents the result of logical <code>or</code>
    */
-  def ||(bool: => Bool): Bool = new OrBool(this, bool)
+  def ||(bool: => Bool): Bool = new OrBool(this, bool, prettifier)
 
   /**
    * Logical <code>or</code> this <code>Bool</code> with another <code>Bool</code>
@@ -146,7 +148,7 @@ trait Bool {
    *
    * @return a <code>Bool</code> that represents the result of negating the original <code>Bool</code>
    */
-  def unary_! : Bool = new NotBool(this)
+  def unary_! : Bool = new NotBool(this, prettifier)
 }
 
 /**
@@ -163,7 +165,7 @@ object Bool {
    * @param bool the given <code>Bool</code>
    * @return a negated version of the given <code>Bool</code>
    */
-  def notBool(bool: Bool): Bool = new NotBool(bool)
+  def notBool(bool: Bool, prettifier: Prettifier): Bool = new NotBool(bool, prettifier)
 
   /**
    * Create simple macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap an unrecognized <code>Boolean</code> expression.
@@ -172,7 +174,7 @@ object Bool {
    * @param expressionText the original expression text (source code)
    * @return a simple macro <code>Bool</code>
    */
-  def simpleMacroBool(expression: Boolean, expressionText: String): Bool = new SimpleMacroBool(expression, expressionText)
+  def simpleMacroBool(expression: Boolean, expressionText: String, prettifier: Prettifier): Bool = new SimpleMacroBool(expression, expressionText, prettifier)
 
   /**
    * Create binary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression, which includes <code>Boolean</code> expression that
@@ -185,7 +187,7 @@ object Bool {
    * @param expression the <code>Boolean</code> expression
    * @return a binary macro <code>Bool</code>
    */
-  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean): Bool = new BinaryMacroBool(left, operator, right, expression)
+  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, expression, prettifier)
 
   /**
    * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new binary macro <code>Bool</code>.
@@ -196,7 +198,7 @@ object Bool {
    * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
    * @return a binary macro <code>Bool</code>
    */
-  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool): Bool = new BinaryMacroBool(left, operator, right, bool)
+  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, bool, prettifier)
 
   /**
    * Create unary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression represented by a unary method call,
@@ -207,8 +209,8 @@ object Bool {
    * @param expression the <code>Boolean</code> expression
    * @return a unary macro <code>Bool</code>
    */
-  def unaryMacroBool(left: Any, operator: String, expression: Boolean): Bool =
-    new UnaryMacroBool(left, operator, expression)
+  def unaryMacroBool(left: Any, operator: String, expression: Boolean, prettifier: Prettifier): Bool =
+    new UnaryMacroBool(left, operator, expression, prettifier)
 
   /**
    * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new unary macro <code>Bool</code>.
@@ -218,8 +220,8 @@ object Bool {
    * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
    * @return a binary macro <code>Bool</code>
    */
-  def unaryMacroBool(left: Any, operator: String, bool: Bool): Bool =
-    new UnaryMacroBool(left, operator, bool.value)
+  def unaryMacroBool(left: Any, operator: String, bool: Bool, prettifier: Prettifier): Bool =
+    new UnaryMacroBool(left, operator, bool.value, prettifier)
 
   /**
    * Create macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
@@ -231,8 +233,8 @@ object Bool {
    * @param expression the <code>Boolean</code> expression
    * @return a <code>Bool</code> instance that represents a <code>isInstanceOf</code> method call
    */
-  def isInstanceOfMacroBool(left: Any, operator: String, className: String, expression: Boolean): Bool =
-    new IsInstanceOfMacroBool(left, operator, className, expression)
+  def isInstanceOfMacroBool(left: Any, operator: String, className: String, expression: Boolean, prettifier: Prettifier): Bool =
+    new IsInstanceOfMacroBool(left, operator, className, expression, prettifier)
 
   /**
    * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new <code>isInstanceOf</code>
@@ -244,8 +246,8 @@ object Bool {
    * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
    * @return a <code>Bool</code> instance that represents a <code>isInstanceOf</code> method call
    */
-  def isInstanceOfMacroBool(left: Any, operator: String, className: String, bool: Bool): Bool =
-    new IsInstanceOfMacroBool(left, operator, className, bool.value)
+  def isInstanceOfMacroBool(left: Any, operator: String, className: String, bool: Bool, prettifier: Prettifier): Bool =
+    new IsInstanceOfMacroBool(left, operator, className, bool.value, prettifier)
 
   /**
    * Create macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
@@ -257,8 +259,8 @@ object Bool {
    * @param expected the expected value returned from <code>length</code> or <code>size</code> method call
    * @return a <code>Bool</code> instance that represents a <code>length</code> or <code>size</code> method call
    */
-  def lengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any): Bool =
-    new LengthSizeMacroBool(left, operator, actual, expected)
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any, prettifier: Prettifier): Bool =
+    new LengthSizeMacroBool(left, operator, actual, expected, prettifier)
 
   /**
    * Create exists macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression
@@ -269,8 +271,8 @@ object Bool {
    * @param expression the <code>Boolean</code> expression
    * @return a exists macro <code>Bool</code>
    */
-  def existsMacroBool(left: Any, right: Any, expression: Boolean): Bool =
-    new ExistsMacroBool(left, right, expression)
+  def existsMacroBool(left: Any, right: Any, expression: Boolean, prettifier: Prettifier): Bool =
+    new ExistsMacroBool(left, right, expression, prettifier)
 
   /**
    * A helper method to check is the given <code>Bool</code> is a simple macro <code>Bool</code> and contains empty expression text.
@@ -285,7 +287,9 @@ object Bool {
     }
 }
 
-private[scalactic] class SimpleBool(expression: Boolean) extends Bool {
+private[scalactic] class SimpleBool(expression: Boolean, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>
@@ -355,7 +359,9 @@ private[scalactic] class SimpleBool(expression: Boolean) extends Bool {
  * @param bool1 the first <code>Bool</code>
  * @param bool2 the second <code>Bool</code>
  */
-private[scalactic] class AndBool(bool1: Bool, bool2: Bool) extends Bool {
+private[scalactic] class AndBool(bool1: Bool, bool2: Bool, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * the result of <code>bool1.value</code> logical <code>AND</code> <code>bool2.value</code>
@@ -425,7 +431,9 @@ private[scalactic] class AndBool(bool1: Bool, bool2: Bool) extends Bool {
  * @param bool1 the first <code>Bool</code>
  * @param bool2 the second <code>Bool</code>
  */
-private[scalactic] class OrBool(bool1: Bool, bool2: Bool) extends Bool {
+private[scalactic] class OrBool(bool1: Bool, bool2: Bool, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * the result of <code>bool1.value</code> logical <code>OR</code> <code>bool2.value</code>
@@ -489,7 +497,9 @@ private[scalactic] class OrBool(bool1: Bool, bool2: Bool) extends Bool {
   def midSentenceNegatedFailureMessageArgs = Vector(bool1.midSentenceFailureMessage, bool2.midSentenceNegatedFailureMessage)
 }
 
-private[scalactic] class NotBool(bool: Bool) extends Bool {
+private[scalactic] class NotBool(bool: Bool, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   val value: Boolean = !bool.value
 
@@ -557,7 +567,9 @@ private[scalactic] class NotBool(bool: Bool) extends Bool {
  * @param expression the <code>Boolean</code> expression
  * @param expressionText the original expression text (source code)
  */
-private[scalactic] class SimpleMacroBool(expression: Boolean, val expressionText: String) extends Bool {
+private[scalactic] class SimpleMacroBool(expression: Boolean, val expressionText: String, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>, holding the passed in expression value.
@@ -632,7 +644,9 @@ private[scalactic] class SimpleMacroBool(expression: Boolean, val expressionText
  * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
  * @param expression the <code>Boolean</code> expression
  */
-private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean) extends Bool {
+private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * Overloaded constructor that takes a <code>Bool</code> in place of <code>Boolean</code> expression.
@@ -642,8 +656,8 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
    * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
    * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
    */
-  def this(left: Any, operator: String, right: Any, bool: Bool) =
-    this(left, operator, right, bool.value)
+  def this(left: Any, operator: String, right: Any, bool: Bool, p: Prettifier) =
+    this(left, operator, right, bool.value, p)
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.
@@ -862,7 +876,9 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
  * @param operator the operator (method name) of the <code>Boolean</code> expression
  * @param expression the <code>Boolean</code> expression
  */
-private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression: Boolean) extends Bool {
+private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression: Boolean, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.
@@ -962,7 +978,9 @@ private[scalactic] class UnaryMacroBool(left: Any, operator: String, expression:
  * @param className the class name passed to <code>isInstanceOf</code> method call
  * @param expression the <code>Boolean</code> expression
  */
-private[scalactic] class IsInstanceOfMacroBool(left: Any, operator: String, className: String, expression: Boolean) extends Bool {
+private[scalactic] class IsInstanceOfMacroBool(left: Any, operator: String, className: String, expression: Boolean, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.
@@ -1060,7 +1078,9 @@ private[scalactic] class IsInstanceOfMacroBool(left: Any, operator: String, clas
  * @param actual the actual length or size of <code>left</code>
  * @param expected the expected length or size of <code>left</code>
  */
-private[scalactic] class LengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any) extends Bool {
+private[scalactic] class LengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.
@@ -1159,7 +1179,9 @@ private[scalactic] class LengthSizeMacroBool(left: Any, operator: String, actual
  * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
  * @param expression the <code>Boolean</code> expression
  */
-private[scalactic] class ExistsMacroBool(left: Any, right: Any, expression: Boolean) extends Bool {
+private[scalactic] class ExistsMacroBool(left: Any, right: Any, expression: Boolean, p: Prettifier) extends Bool {
+
+  val prettifier: Prettifier = p
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.

@@ -143,7 +143,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
             select.name
           ),
           List(Ident(newTermName("$org_scalatest_assert_macro_right")))
-        )
+        ),
+        Ident(newTermName("prettifier"))
       )
     )
 
@@ -180,7 +181,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
             List(Ident("$org_scalatest_assert_macro_right"))
           ),
           List(secondArg)
-        )
+        ),
+        Ident(newTermName("prettifier"))
       )
     )
 
@@ -217,7 +219,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
             typeArgs
           ),
           List(Ident(newTermName("$org_scalatest_assert_macro_right")))
-        )
+        ),
+        Ident(newTermName("prettifier"))
       )
     )
 
@@ -243,7 +246,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
       ),
       List(
         expression,
-        context.literal(expressionText).tree
+        context.literal(expressionText).tree,
+        Ident(newTermName("prettifier"))
       )
     )
 
@@ -268,7 +272,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
         newTermName("notBool")
       ),
       List(
-        target.duplicate
+        target.duplicate,
+        Ident(newTermName("prettifier"))
       )
     )
 
@@ -298,7 +303,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
         Select(
           Ident(newTermName("$org_scalatest_assert_macro_left")),
           select.name
-        )
+        ),
+        Ident(newTermName("prettifier"))
       )
     )
 
@@ -332,7 +338,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
             select.name
           ),
           List(typeArg)
-        )
+        ),
+        Ident(newTermName("prettifier"))
       )
     )
 
@@ -363,7 +370,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
           Ident("$org_scalatest_assert_macro_left"),
           select.name
         ),
-        Ident(newTermName("$org_scalatest_assert_macro_right"))
+        Ident(newTermName("$org_scalatest_assert_macro_right")),
+        Ident(newTermName("prettifier"))
       )
     )
 
@@ -398,7 +406,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
           List(
             func
           )
-        )
+        ),
+        Ident(newTermName("prettifier"))
       )
     )
 
