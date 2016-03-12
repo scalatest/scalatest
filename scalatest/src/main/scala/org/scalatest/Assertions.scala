@@ -417,7 +417,7 @@ import org.scalactic.DefaultPrettifier
  */
 trait Assertions extends TripleEquals with DefaultPrettifier {
 
-  private[scalatest] implicit val FailureMessages = new FailureMessages(prettifier)
+  implicit val FailureMessages = new FailureMessages(prettifier)
 
   import language.experimental.macros
 

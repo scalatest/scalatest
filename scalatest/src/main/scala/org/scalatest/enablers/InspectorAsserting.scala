@@ -38,9 +38,8 @@ trait InspectorAsserting[T] {
 
 abstract class UnitInspectorAsserting {
 
-  abstract class InspectorAssertingImpl[T](prettifier: Prettifier) extends InspectorAsserting[T] {
+  abstract class InspectorAssertingImpl[T](FailureMessages: FailureMessages) extends InspectorAsserting[T] {
 
-    private val FailureMessages = new FailureMessages(prettifier)
     import FailureMessages.decorateToStringValue
 
     import InspectorAsserting._
@@ -264,8 +263,8 @@ abstract class UnitInspectorAsserting {
     private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
   }
 
-  implicit def assertingNatureOfT[T](implicit prettifier: Prettifier): InspectorAsserting[T] { type Result = Unit } =
-    new InspectorAssertingImpl[T](prettifier) {
+  implicit def assertingNatureOfT[T](implicit failureMessages: FailureMessages): InspectorAsserting[T] { type Result = Unit } =
+    new InspectorAssertingImpl[T](failureMessages) {
       type Result = Unit
       def indicateSuccess(message: => String): Unit = ()
       def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
@@ -280,8 +279,8 @@ abstract class UnitInspectorAsserting {
 
 abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
-    new InspectorAssertingImpl[Expectation](prettifier) {
+  private[scalatest] implicit def assertingNatureOfExpectation(implicit failureMessages: FailureMessages): InspectorAsserting[Expectation] { type Result = Expectation } = {
+    new InspectorAssertingImpl[Expectation](failureMessages) {
       type Result = Expectation
       def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
       def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Expectation = Fact.No(message)
@@ -291,8 +290,8 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
 object InspectorAsserting extends ExpectationInspectorAsserting {
 
-  implicit def assertingNatureOfAssertion(implicit prettifier: Prettifier): InspectorAsserting[Assertion] { type Result = Assertion } =
-    new InspectorAssertingImpl[Assertion](prettifier) {
+  implicit def assertingNatureOfAssertion(implicit failureMessages: FailureMessages): InspectorAsserting[Assertion] { type Result = Assertion } =
+    new InspectorAssertingImpl[Assertion](failureMessages) {
       type Result = Assertion
       def indicateSuccess(message: => String): Assertion = Succeeded
       def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {

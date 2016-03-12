@@ -37,9 +37,7 @@ trait CheckerAsserting[T] {
 
 abstract class UnitCheckerAsserting {
 
-  abstract class CheckerAssertingImpl[T](prettifier: Prettifier) extends CheckerAsserting[T] {
-
-    private val FailureMessages = new FailureMessages(prettifier)
+  abstract class CheckerAssertingImpl[T](FailureMessages: FailureMessages) extends CheckerAsserting[T] {
 
     import FailureMessages.decorateToStringValue
 
@@ -130,8 +128,8 @@ abstract class UnitCheckerAsserting {
     private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
   }
 
-  implicit def assertingNatureOfT[T](implicit prettifier: Prettifier): CheckerAsserting[T] { type Result = Unit } =
-    new CheckerAssertingImpl[T](prettifier) {
+  implicit def assertingNatureOfT[T](implicit failureMessages: FailureMessages): CheckerAsserting[T] { type Result = Unit } =
+    new CheckerAssertingImpl[T](failureMessages) {
       type Result = Unit
       private[scalatest] def indicateSuccess(message: => String): Unit = ()
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
@@ -161,8 +159,8 @@ abstract class ExpectationCheckerAsserting extends UnitCheckerAsserting {
 
 object CheckerAsserting extends ExpectationCheckerAsserting {
 
-  implicit def assertingNatureOfAssertion(implicit prettifier: Prettifier): CheckerAsserting[Assertion] { type Result = Assertion } = {
-    new CheckerAssertingImpl[Assertion](prettifier) {
+  implicit def assertingNatureOfAssertion(implicit failureMessages: FailureMessages): CheckerAsserting[Assertion] { type Result = Assertion } = {
+    new CheckerAssertingImpl[Assertion](failureMessages) {
       type Result = Assertion
       private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
       private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {

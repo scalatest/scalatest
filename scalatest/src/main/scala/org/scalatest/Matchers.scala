@@ -3141,7 +3141,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   
   private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, methodName: String, stackDepth: Int)(fun: T => Assertion): Assertion = {
 
-    val asserting = InspectorAsserting.assertingNatureOfAssertion(prettifier)
+    val asserting = InspectorAsserting.assertingNatureOfAssertion(failureMessages)
 
     collected match {
       case AllCollected =>
