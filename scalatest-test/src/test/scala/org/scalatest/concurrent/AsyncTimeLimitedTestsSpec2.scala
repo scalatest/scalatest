@@ -21,7 +21,6 @@ import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import scala.concurrent.{Promise, Future}
 
-/*
 class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
   describe("A time-limited test") {
     describe("when it does not timeout ") {
@@ -29,7 +28,7 @@ class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
         it("should succeed without Future") {
           val a =
             new AsyncFunSuite with AsyncTimeLimitedTests {
-              val timeLimit = Span(100L, Millis)
+              val timeLimit = Span(1000L, Millis)
               test("plain old success") { assert(1 + 1 === 2) }
             }
           val rep = new EventRecordingReporter
@@ -94,7 +93,6 @@ class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
       it("should fail with a timeout exception with the proper error message test when timeout from main code") {
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
-            //implicit override def executionContext = scala.concurrent.ExecutionContext.Implicits.global
             val timeLimit = Span(100L, Millis)
             test("time out failure") { SleepHelper.sleep(500); succeed }
           }
@@ -126,7 +124,7 @@ class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
           tfe.message should be(Resources.testTimeLimitExceeded("100 milliseconds"))
         }
       }
-      it("should fail with a timeout exception with the proper cause, if the test timed out after it completed abruptly from main code") {
+      it("should fail with the thrown exception, if the test timed out after it completed abruptly from main code") {
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
             val timeLimit = Span(10L, Millis)
@@ -143,16 +141,12 @@ class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
           val tf = rep.testFailedEventsReceived
           tf.size should be(1)
           val tfe = tf(0)
-          tfe.message should be(Resources.testTimeLimitExceeded("10 milliseconds"))
+          tfe.message should be("oops!")
           import org.scalatest.OptionValues._
           tfe.throwable.value match {
-            case tfe: TestFailedDueToTimeoutException =>
-              tfe.cause.value match {
-                case re: RuntimeException =>
-                  re.getMessage should be("oops!")
-                case e => fail("Cause was not a RuntimeException", e)
-              }
-            case e => fail("Was not a TestFailedDueToTimeoutException", e)
+            case re: RuntimeException =>
+              re.getMessage should be("oops!")
+            case e => fail("throwable was not a RuntimeException", e)
           }
         }
       }
@@ -188,4 +182,3 @@ class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
     }
   }
 }
-*/

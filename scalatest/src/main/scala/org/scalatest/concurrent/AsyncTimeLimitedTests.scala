@@ -13,27 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
 package org.scalatest.concurrent
 
 import org.scalatest.exceptions.TimeoutField
 import org.scalatest.time.Span
 import org.scalatest._
 
-import scala.concurrent.Future
-
-trait AsyncTimeLimitedTests extends AsyncTestSuiteMixin with AsyncTimeouts { this: AsyncTestSuite =>
+trait AsyncTimeLimitedTests extends AsyncTestSuiteMixin with TimeLimits { this: AsyncTestSuite =>
 
   abstract override def withFixture(test: NoArgAsyncTest): FutureOutcome = {
 
-    failingAfter(timeLimit) {
-      super.withFixture(test)
-    } map { outcome =>
-      outcome match {
-        case Exceptional(e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField) =>
-          Exceptional(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString))))
-        case other => other
+    try {
+      failAfter(timeLimit) {
+        super.withFixture(test)
+      } change { outcome =>
+        outcome match {
+          case Exceptional(e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField) =>
+            Exceptional(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString))))
+          case other => other
+        }
       }
+    }
+    catch {
+      case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField =>
+        throw e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString)))
+      case other: Throwable => throw other
     }
   }
 
@@ -45,4 +49,3 @@ trait AsyncTimeLimitedTests extends AsyncTestSuiteMixin with AsyncTimeouts { thi
    */
   def timeLimit: Span
 }
-*/

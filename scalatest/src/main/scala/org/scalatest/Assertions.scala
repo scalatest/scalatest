@@ -791,7 +791,7 @@ trait Assertions extends TripleEquals {
   private[scalatest] val cancelStackDepth = 3
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY private[scalatest] val failStackDepth = 13
-  //SCALATESTJS-ONLY private[scalatest] val cancelStackDepth = 12
+  //SCALATESTJS-ONLY private[scalatest] val cancelStackDepth = 13
 
   /**
    * Intercept and return an exception that's expected to

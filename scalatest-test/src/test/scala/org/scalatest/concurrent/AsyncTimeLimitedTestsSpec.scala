@@ -21,7 +21,6 @@ import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import scala.concurrent.Future
 
-/*
 class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces {
   describe("A time-limited test") {
     describe("when it does not timeout ") {
@@ -29,8 +28,7 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         it("should succeed without Future") {
           val a =
             new AsyncFunSuite with AsyncTimeLimitedTests {
-              //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-              val timeLimit = Span(100L, Millis)
+              val timeLimit = Span(1000L, Millis)
               test("plain old success") { assert(1 + 1 === 2) }
             }
           val rep = new EventRecordingReporter
@@ -41,7 +39,6 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         it("should succeed with Future") {
           val a =
             new AsyncFunSuite with AsyncTimeLimitedTests {
-              //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
               val timeLimit = Span(100L, Millis)
               test("plain old success") { Future { assert(1 + 1 === 2) } }
             }
@@ -55,7 +52,6 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         it("should fail without Future") {
           val a =
             new AsyncFunSuite with AsyncTimeLimitedTests {
-              //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
               val timeLimit = Span(100L, Millis)
               test("plain old failure") { assert(1 + 1 === 3) }
             }
@@ -67,7 +63,6 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         it("should fail with Future") {
           val a =
             new AsyncFunSuite with AsyncTimeLimitedTests {
-              //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
               val timeLimit = Span(100L, Millis)
               test("plain old failure") { Future { assert(1 + 1 === 3) } }
             }
@@ -82,7 +77,6 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
       it("should fail with a timeout exception with the proper error message test when timeout from main code") {
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
-            //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
             val timeLimit = Span(100L, Millis)
             test("time out failure") { SleepHelper.sleep(500); succeed }
           }
@@ -96,7 +90,6 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
       it("should fail with a timeout exception with the proper error message test when timeout from future returned") {
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
-            //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
             val timeLimit = Span(100L, Millis)
             test("time out failure") { Future { SleepHelper.sleep(500); succeed } }
           }
@@ -107,10 +100,9 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         val tfe = tf(0)
         tfe.message should be (Resources.testTimeLimitExceeded("100 milliseconds"))
       }
-      it("should fail with a timeout exception with the proper cause, if the test timed out after it completed abruptly from main code") {
+      it("should fail directly with thrown exception, if the test timed out after it completed abruptly from main code") {
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
-            //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
             val timeLimit = Span(10L, Millis)
             test("time out failure") {
               SleepHelper.sleep(50)
@@ -122,26 +114,20 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         val tf = rep.testFailedEventsReceived
         tf.size should be (1)
         val tfe = tf(0)
-        tfe.message should be (Resources.testTimeLimitExceeded("10 milliseconds"))
+        tfe.message should be ("oops!")
         import org.scalatest.OptionValues._
         tfe.throwable.value match {
-          case tfe: TestFailedDueToTimeoutException =>
-            tfe.cause.value match {
-              case re: RuntimeException =>
-                re.getMessage should be ("oops!")
-              case e => fail("Cause was not a RuntimeException", e)
-            }
-          case e => fail("Was not a TestFailedDueToTimeoutException", e)
+          case re: RuntimeException => re.getMessage shouldBe "oops!"
+          case e => fail("throwable was not a RuntimeException", e)
         }
       }
       it("should fail with a timeout exception with the proper cause, if the test timed out after it completed abruptly from future returned") {
         val a =
           new AsyncFunSuite with AsyncTimeLimitedTests {
-            //SCALATESTJS-ONLY implicit override def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
-            val timeLimit = Span(10L, Millis)
+            val timeLimit = Span(1000L, Millis)
             test("time out failure") {
               Future {
-                SleepHelper.sleep(50)
+                SleepHelper.sleep(5000)
                 throw new RuntimeException("oops!")
               }
             }
@@ -151,11 +137,11 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
         val tf = rep.testFailedEventsReceived
         tf.size should be (1)
         val tfe = tf(0)
-        tfe.message should be (Resources.testTimeLimitExceeded("10 milliseconds"))
+        tfe.message should be (Resources.testTimeLimitExceeded("1000 milliseconds"))
         import org.scalatest.OptionValues._
         tfe.throwable.value match {
-          case tfe: TestFailedDueToTimeoutException =>
-            tfe.cause should not be defined
+          case tfe2: TestFailedDueToTimeoutException =>
+            tfe2.cause should not be defined
 
           case e => fail("Was not a TestFailedDueToTimeoutException", e)
         }
@@ -163,4 +149,3 @@ class AsyncTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackT
     }
   }
 }
-*/

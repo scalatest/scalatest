@@ -15,22 +15,23 @@
  */
 package org.scalatest.enablers
 
-import org.scalatest.Exceptional
+import org.scalactic.{Bad, Good}
+import org.scalatest._
 import org.scalatest.concurrent.Signaler
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.StackDepthExceptionHelper._
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestPendingException
 
 import scala.util.{Failure, Success}
 
 //import java.util.TimerTask
 //import java.util.Timer
-import org.scalatest.TimerTask
-import org.scalatest.Timer
 import org.scalatest.time.Span
 import org.scalatest.concurrent.SignalerTimeoutTask
-import org.scalatest.Outcome
 import scala.concurrent.{Promise, Future, ExecutionContext}
-import org.scalatest.FutureOutcome
 
 trait Timed[T] {
   def timeoutAfter(
@@ -54,9 +55,9 @@ object Timed {
         exceptionFun: (Option[Throwable], Int) => StackDepthException
       ): T = {
         // SKIP-SCALATESTJS-START
-        val stackDepthAdjustment = 4
+        val stackDepthAdjustment = 2
         // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepthAdjustment = 2
+        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
 
         val timer = new Timer
         val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
@@ -92,15 +93,6 @@ object Timed {
         }
       }
     }
-
-  /*
-  Chee Seng: This one should catch TestCanceledException and change it into
-  a Canceled. It should catch TestPendingException and change it into
-  a Pending. It should catch any other non-suite-aborting exception and
-  turn it into a Failed. A timeout should become a Failed(TestFailedDueToTimeoutException).
-  I believe this is what you did in AsyncTimeouts.
-  */
-  implicit def timedFutureOfOutcome: Timed[Future[Outcome]] = ???
 
   /*
   Chee Seng: This one should allow any exception to just do the usual
@@ -186,5 +178,61 @@ object Timed {
   turn it into a Failed. A timeout should become a Failed(TestFailedDueToTimeoutException).
   I believe this is what you did in AsyncTimeouts.
   */
-  implicit def timedFutureOutcome: Timed[FutureOutcome] = ???
+  implicit def timedFutureOutcome(implicit executionContext: ExecutionContext): Timed[FutureOutcome] =
+    new Timed[FutureOutcome] {
+      def timeoutAfter(
+                        timeout: Span,
+                        f: => FutureOutcome,
+                        signaler: Signaler,
+                        exceptionFun: (Option[Throwable], Int) => StackDepthException
+                        ): FutureOutcome = {
+        // SKIP-SCALATESTJS-START
+        val stackDepthAdjustment = 2
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+
+        val timer = new Timer
+        val maxDuration = timeout.totalNanos / 1000 / 1000
+        val startTime = scala.compat.Platform.currentTime
+
+        val result = f
+        val endTime = scala.compat.Platform.currentTime
+
+        if ((endTime - startTime) > maxDuration)
+          throw exceptionFun(None, stackDepthAdjustment)
+
+        val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
+        val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
+
+        val futureOutcome = result.onCompletedThen { t =>
+          t match {
+            case Good(r) =>
+              task.cancel()
+              val endTime = scala.compat.Platform.currentTime
+              val duration = endTime - startTime
+              try {
+                if (duration > maxDuration) {
+                  throw exceptionFun(None, stackDepthAdjustment)
+                }
+              }
+              catch {
+                case t: Throwable =>
+                  throw t
+              }
+
+            case Bad(e) =>
+              task.cancel()
+              val endTime = scala.compat.Platform.currentTime
+              val duration = endTime - startTime
+              if (duration > maxDuration)
+                throw exceptionFun(None, stackDepthAdjustment)
+              else
+                throw e
+          }
+        }
+
+        timer.schedule(task, delay)
+        futureOutcome
+      }
+    }
 }
