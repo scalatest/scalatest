@@ -23,6 +23,7 @@ import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.Prettifier
 
 class FunSuiteSpec extends FunSpec {
 
@@ -1403,6 +1404,27 @@ class FunSuiteSpec extends FunSpec {
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 11)
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
+    }
+
+    it("should allow custom Prettifier to be installed") {
+      class TestSpec extends FunSuite {
+        override val prettifier =
+          Prettifier {
+            case s: String => "!!!" + s + "!!!"
+            case other => super.prettifier(other)
+          }
+        test("test 1") {
+          val a = "one"
+          assert(a == "two")
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s = new TestSpec
+      s.run(None, Args(rep))
+      val testFailedEvents = rep.testFailedEventsReceived
+      assert(testFailedEvents.size == 1)
+      val tfe = testFailedEvents(0)
+      assert(tfe.message == "!!![one]!!! did not equal !!![two]!!!")
     }
   }
   
