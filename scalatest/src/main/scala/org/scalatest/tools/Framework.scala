@@ -33,6 +33,7 @@ import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import ArgsParser._
 import org.scalactic.Requirements._
+import org.scalatest.time.{Span, Millis}
 
 /**
  * <p>
@@ -220,49 +221,6 @@ class Framework extends SbtFramework {
         def annotationName = "org.scalatest.WrapWith"
         def isModule = false
       })
-  
-  private def createTaskDispatchReporter(
-    reporter: Reporter,
-    loggers: Array[Logger],
-    loader: ClassLoader,
-    useSbtLogInfoReporter: Boolean,
-    presentAllDurations: Boolean,
-    presentInColor: Boolean, 
-    presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean,
-    presentUnformatted: Boolean,
-    presentReminder: Boolean,
-    presentReminderWithShortStackTraces: Boolean,
-    presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean,
-    configSet: Set[ReporterConfigParam],
-    summaryCounter: SummaryCounter
-  ) = {
-    val reporters = 
-      if (useSbtLogInfoReporter) {
-        val sbtLogInfoReporter =
-          new FilterReporter(
-            new SbtLogInfoReporter(
-              loggers,
-              presentAllDurations,
-              presentInColor,
-              presentShortStackTraces,
-              presentFullStackTraces, // If they say both S and F, F overrules
-              presentUnformatted,
-              presentReminder,
-              presentReminderWithShortStackTraces,
-              presentReminderWithFullStackTraces,
-              presentReminderWithoutCanceledTests,
-              summaryCounter
-            ),
-          configSet
-          )
-        Vector(reporter, sbtLogInfoReporter)
-      }
-      else 
-        Vector(reporter)
-    new SbtDispatchReporter(reporters)
-  }
       
   private def runSuite(
     taskDefinition: TaskDef,
@@ -412,7 +370,7 @@ class Framework extends SbtFramework {
   private class ScalaTestTask(
     taskDefinition: TaskDef, 
     loader: ClassLoader,
-    reporter: Reporter,
+    suiteSortingReporter: SuiteSortingReporter,
     tracker: Tracker,
     tagsToInclude: Set[String], 
     tagsToExclude: Set[String],
@@ -487,32 +445,34 @@ class Framework extends SbtFramework {
           } catch {
             case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
           }
-        
-        val taskReporter =
-          createTaskDispatchReporter(
-            reporter,
-            loggers,
-            loader,
-            useSbtLogInfoReporter,
-            presentAllDurations,
-            presentInColor,
-            presentShortStackTraces, 
-            presentFullStackTraces,
-            presentUnformatted,
-            presentReminder,
-            presentReminderWithShortStackTraces,
-            presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests,
-            configSet,
-            summaryCounter
-          )
+
+        if (useSbtLogInfoReporter) {
+          val sbtLogInfoReporter =
+            new FilterReporter(
+              new SbtLogInfoReporter(
+                loggers,
+                presentAllDurations,
+                presentInColor,
+                presentShortStackTraces,
+                presentFullStackTraces, // If they say both S and F, F overrules
+                presentUnformatted,
+                presentReminder,
+                presentReminderWithShortStackTraces,
+                presentReminderWithFullStackTraces,
+                presentReminderWithoutCanceledTests,
+                summaryCounter
+              ),
+              configSet
+            )
+          suiteSortingReporter.registerReporter(suite.suiteId, sbtLogInfoReporter)
+        }
 
         runSuite(
           taskDefinition,
           suite.suiteId,
           suite,
           loader,
-          taskReporter,
+          suiteSortingReporter,
           tracker,
           eventHandler,
           tagsToInclude,
@@ -672,7 +632,13 @@ class Framework extends SbtFramework {
     val summaryCounter = new SummaryCounter
     val runStartTime = System.currentTimeMillis
     
-    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod) 
+    val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
+
+    val suiteSortingReporter =
+      new SuiteSortingReporter(
+        dispatchReporter,
+        Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis),
+        System.err)
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
 
@@ -696,7 +662,7 @@ class Framework extends SbtFramework {
       new ScalaTestTask(
           td, 
           loader,
-          dispatchReporter,
+          suiteSortingReporter,
           tracker,
           tagsToInclude,
           tagsToExclude,
