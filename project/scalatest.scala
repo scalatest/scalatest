@@ -199,6 +199,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.concurrent",
       "-m", "org.scalatest.testng",
       "-m", "org.scalatest.junit",
+      "-m", "org.scalatest.jmock",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
