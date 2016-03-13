@@ -31,6 +31,10 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   private val slotMap = collection.mutable.HashMap[String, Slot]()
   // suiteEventMap is suite Id -> events for that suite (should be a Vector)
   private val suiteEventMap = collection.mutable.HashMap[String, Vector[Event]]()
+  private val suiteReporterMap = collection.mutable.HashMap[String, Reporter]()
+
+  def registerReporter(suiteId: String, reporter: Reporter): Unit =
+    suiteReporterMap += (suiteId -> reporter)
   
   // Passed slot will always be the head of waitingBuffer
   class TimeoutTask(val slot: Slot) extends TimerTask {
@@ -118,6 +122,12 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
   }
 
+  private def dispatchToRegisteredSuiteReporter(suiteId: String, event: Event): Unit =
+    suiteReporterMap.get(suiteId) match {
+      case Some(rep) => rep(event)
+      case None =>
+    }
+
   // Handles just SuiteCompleted and SuiteAborted
   private def handleSuiteEvents(suiteId: String, event: Event) {
     val slot = slotMap(suiteId)
@@ -126,8 +136,10 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     val slotIdx = slotListBuf.indexOf(slot)
     if (slotIdx >= 0)                                 // In what case would it not be there?
       slotListBuf.update(slotIdx, newSlot)  // Why not fire ready events here? Oh, at end of apply
-    else
-      dispatch(event)  // could happens after timeout
+    else {
+      dispatch(event) // could happens after timeout
+      dispatchToRegisteredSuiteReporter(suiteId, event)
+    }
   }
   // Handles SuiteStarting, TestStarting, TestIgnored, TestSucceeded, TestFailed, TestPending,
   // TestCanceled, InfoProvided, AlertProvided, NoteProvided, MarkupProvided, ScopeOpened, ScopeClosed, ScopePending
@@ -143,8 +155,10 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
           suiteEventMap.put(suiteId, Vector(event))
       }
     }
-    else
+    else {
       dispatch(event)
+      dispatchToRegisteredSuiteReporter(suiteId, event)
+    }
   }
 
   // Only called within synchronized
@@ -153,8 +167,10 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       val head = slotListBuf.head
       fireSuiteEvents(head.suiteId)
       if (head.ready) {
-        for (doneEvent<- head.doneEvent)
+        for (doneEvent<- head.doneEvent) {
           dispatch(doneEvent)
+          dispatchToRegisteredSuiteReporter(head.suiteId, doneEvent)
+        }
         slotListBuf = fireReadySuiteEvents(slotListBuf.tail)
         if (slotListBuf.size > 0) 
           scheduleTimeoutTask()
@@ -172,12 +188,14 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
           val head = eventList.head
           suiteEventMap.put(suiteId, eventList.tail)
           dispatch(head)
+          dispatchToRegisteredSuiteReporter(suiteId, head)
           fireSuiteEvents(suiteId)
         }
         else if (eventList.length == 1) {
           val head = eventList.head
           suiteEventMap.put(suiteId, Vector.empty[Event])
           dispatch(head)
+          dispatchToRegisteredSuiteReporter(suiteId, head)
         }
       case None =>
       // Unable to get event vector from map, shouldn't happen
@@ -190,6 +208,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       slot =>
         fireSuiteEvents(slot.suiteId)
         dispatch(slot.doneEvent.get)
+        dispatchToRegisteredSuiteReporter(slot.suiteId, slot.doneEvent.get)
     }
     undone
   }
