@@ -140,6 +140,8 @@ trait GenResourcesJVM extends GenResources {
        |
        |private[$packageName] class FailureMessages(prettifier: org.scalactic.Prettifier) {
        |
+       |require(prettifier != null)
+       |
        |def decorateToStringValue(o: Any): String = prettifier.apply(o)
        |
        |$methods

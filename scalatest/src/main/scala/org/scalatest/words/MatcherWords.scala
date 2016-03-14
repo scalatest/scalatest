@@ -17,7 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import org.scalactic.{Equality, Prettifier}
-import org.scalatest.{FailureMessages, Resources, Suite, SymbolHelper}
+import org.scalatest.{FailureMessages, Resources, Suite, SymbolHelper, MatchersHelper}
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 
 /**
@@ -30,6 +30,8 @@ trait MatcherWords {
 
   protected[scalatest] val failureMessages: FailureMessages
 
+  protected[scalatest] val matchersHelper: MatchersHelper
+
   protected[scalatest] val symbolHelper: SymbolHelper
 
   /**
@@ -40,7 +42,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val fullyMatch = new FullyMatchWord
+  lazy val fullyMatch = new FullyMatchWord(matchersHelper)
 
   /**
    * This field enables syntax such as the following:
@@ -50,7 +52,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val startWith = new StartWithWord
+  lazy val startWith = new StartWithWord(matchersHelper)
 
   /**
    * This field enables syntax such as the following:
@@ -60,7 +62,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val endWith = new EndWithWord
+  lazy val endWith = new EndWithWord(matchersHelper)
 
   /**
    * This field enables syntax such as the following:
@@ -70,7 +72,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val include = new IncludeWord
+  lazy val include = new IncludeWord(matchersHelper)
 
 /*
     In HaveWord's methods key, value, length, and size, I can give type parameters.
@@ -130,7 +132,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  lazy val not = new NotWord(symbolHelper, failureMessages, this)
+  lazy val not = new NotWord(symbolHelper, failureMessages, this, matchersHelper)
   
   /**
    * This field enables the following syntax: 
@@ -180,7 +182,7 @@ trait MatcherWords {
    * ^
    * </pre>
    */
-  val noException = new NoExceptionWord
+  lazy val noException = new NoExceptionWord(matchersHelper)
   
   /**
    * This field enables the following syntax: 

@@ -15,15 +15,14 @@
  */
 package org.scalatest.matchers
 
-import org.scalatest.{FailureMessages, Resources}
+import org.scalatest.{MatchersHelper, FailureMessages, Resources}
 import org.scalactic.Prettifier
-import org.scalatest.MatchersHelper._
 import org.scalatest.words.ResultOfNotWordForAny
 
 /**
  * <code>MatchPatternHelper</code> is called by <code>MatchPatternMacro</code> to support <code>matchPattern</code> syntax.
  */
-class MatchPatternHelper(failureMessages: FailureMessages) {
+class MatchPatternHelper(failureMessages: FailureMessages, matchersHelper: MatchersHelper) {
 
   /**
    * <code>MatchPatternHelper</code> that is called by <code>MatchPatternMacro</code> to support the following syntax:
@@ -77,7 +76,7 @@ class MatchPatternHelper(failureMessages: FailureMessages) {
    */
   def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
     if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
-      throw newTestFailedException(
+      throw matchersHelper.newTestFailedException(
         if (resultOfNoWordForAny.shouldBeTrue)
           failureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
         else

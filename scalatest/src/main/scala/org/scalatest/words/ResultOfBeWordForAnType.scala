@@ -15,11 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.Resources
-import org.scalatest.MatchersHelper.checkExpectedException
-import org.scalatest.MatchersHelper.indicateSuccess
-import org.scalatest.MatchersHelper.indicateFailure
-import org.scalatest.Assertion
+import org.scalatest.{MatchersHelper, Resources, Assertion}
 import org.scalatest.exceptions.TestFailedException
 
 /**
@@ -28,7 +24,7 @@ import org.scalatest.exceptions.TestFailedException
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAnType[T](clazz: Class[T]) {
+final class ResultOfBeWordForAnType[T](clazz: Class[T], matchersHelper: MatchersHelper) {
   
   /**
    * This method enables the following syntax: 
@@ -44,11 +40,11 @@ final class ResultOfBeWordForAnType[T](clazz: Class[T]) {
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 10
     try {
-      checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
-      indicateSuccess(Resources.exceptionThrown(clazz.getName))
+      matchersHelper.checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
+      matchersHelper.indicateSuccess(Resources.exceptionThrown(clazz.getName))
     }
     catch {
-      case tfe: TestFailedException => indicateFailure(tfe)
+      case tfe: TestFailedException => matchersHelper.indicateFailure(tfe)
     }
   }
   

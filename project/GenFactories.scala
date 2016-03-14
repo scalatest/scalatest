@@ -25,8 +25,7 @@ object GenFactories {
 package org.scalatest.matchers
 
 import org.scalatest.enablers._
-import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.MatchersHelper.orMatchersAndApply
+import org.scalatest.MatchersHelper
 import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
@@ -140,7 +139,7 @@ $endif$
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
-            andMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcher) + ")"
         }
@@ -157,7 +156,7 @@ $endif$
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
-            orMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcher) + ")"
         }
@@ -175,7 +174,7 @@ $endif$
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
             val rightMatcher = rightMatcherFactory.matcher
-            andMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcherFactory) + ")"
         }
@@ -193,7 +192,7 @@ $endif$
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
             val rightMatcher = rightMatcherFactory.matcher
-            orMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcherFactory) + ")"
         }
@@ -231,7 +230,7 @@ $endif$
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
             val rightMatcher = rightMatcherFactory.matcher
-            andMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
         }
       }
@@ -247,7 +246,7 @@ $endif$
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
             val rightMatcher = rightMatcherFactory.matcher
-            orMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
         }
       }

@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers._
 import java.lang.reflect.Method
@@ -30,7 +31,7 @@ import org.scalatest.exceptions.TestFailedException
 // TODO: document how to turn off the === implicit conversion
 // TODO: Document you can use JMock, EasyMock, etc.
 
-private[scalatest] object MatchersHelper {
+private[scalatest] class MatchersHelper(prettifier: Prettifier) {
 
   // SKIP-SCALATESTJS-START
   // If the symbol passed is 'title, this will look for a field named "title", a method named "title", or a

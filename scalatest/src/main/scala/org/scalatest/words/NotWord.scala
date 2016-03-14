@@ -25,10 +25,6 @@ import org.scalatest._
 import org.scalactic.Equality
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import scala.annotation.tailrec
-import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
-import org.scalatest.MatchersHelper.startWithRegexWithGroups
-import org.scalatest.MatchersHelper.endWithRegexWithGroups
-import org.scalatest.MatchersHelper.includeRegexWithGroups
 import org.scalatest.Suite.getObjectsForFailureMessage
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
@@ -44,7 +40,7 @@ import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
  *
  * @author Bill Venners
  */
-final class NotWord(symbolHelper: org.scalatest.SymbolHelper, FailureMessages: FailureMessages, MatcherWords: MatcherWords) {
+final class NotWord(symbolHelper: org.scalatest.SymbolHelper, FailureMessages: FailureMessages, MatcherWords: MatcherWords, matchersHelper: MatchersHelper) {
 
   // SKIP-SCALATESTJS-START
   import symbolHelper.matchSymbolToPredicateMethod
@@ -822,7 +818,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper, FailureMessages: F
   def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication): Matcher[String] = {
     new Matcher[String] {
       def apply(left: String): MatchResult = {
-        val result = fullyMatchRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+        val result = matchersHelper.fullyMatchRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
           !result.matches, 
           result.rawNegatedFailureMessage, 
@@ -847,7 +843,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper, FailureMessages: F
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
       def apply(left: String): MatchResult = {
-        val result = includeRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+        val result = matchersHelper.includeRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
           !result.matches, 
           result.rawNegatedFailureMessage, 
@@ -893,7 +889,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper, FailureMessages: F
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
       def apply(left: String): MatchResult = {
-        val result = startWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+        val result = matchersHelper.startWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
           !result.matches, 
           result.rawNegatedFailureMessage, 
@@ -939,7 +935,7 @@ final class NotWord(symbolHelper: org.scalatest.SymbolHelper, FailureMessages: F
     val rightRegex = resultOfRegexWordApplication.regex
     new Matcher[String] {
       def apply(left: String): MatchResult = {
-        val result = endWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
+        val result = matchersHelper.endWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         MatchResult(
           !result.matches, 
           result.rawNegatedFailureMessage, 

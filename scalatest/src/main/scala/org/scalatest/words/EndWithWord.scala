@@ -18,10 +18,7 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalactic._
 import scala.util.matching.Regex
-import org.scalatest.FailureMessages
-import org.scalatest.Resources
-import org.scalatest.UnquotedString
-import org.scalatest.MatchersHelper.endWithRegexWithGroups
+import org.scalatest.{MatchersHelper, FailureMessages, Resources, UnquotedString}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -29,7 +26,7 @@ import org.scalatest.MatchersHelper.endWithRegexWithGroups
  *
  * @author Bill Venners
  */
-final class EndWithWord {
+final class EndWithWord(matchersHelper: MatchersHelper) {
 
   /**
    * This method enables the following syntax:
@@ -73,7 +70,7 @@ final class EndWithWord {
   def regex(regexWithGroups: RegexWithGroups) = 
     new Matcher[String] {
       def apply(left: String): MatchResult = 
-        endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+        matchersHelper.endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       override def toString: String = "endWith regex " + Prettifier.default(regexWithGroups)
     }
 

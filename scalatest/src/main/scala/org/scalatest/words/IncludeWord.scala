@@ -18,9 +18,7 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalactic._
 import scala.util.matching.Regex
-import org.scalatest.UnquotedString
-import org.scalatest.Resources
-import org.scalatest.MatchersHelper.includeRegexWithGroups
+import org.scalatest.{MatchersHelper, UnquotedString, Resources}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -28,7 +26,7 @@ import org.scalatest.MatchersHelper.includeRegexWithGroups
  *
  * @author Bill Venners
  */
-final class IncludeWord {
+final class IncludeWord(matchersHelper: MatchersHelper) {
 
   /**
    * This method enables the following syntax:
@@ -72,7 +70,7 @@ final class IncludeWord {
   def regex(regexWithGroups: RegexWithGroups) = 
     new Matcher[String] {
       def apply(left: String): MatchResult = 
-        includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+        matchersHelper.includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       override def toString: String = "include regex " + Prettifier.default(regexWithGroups)
     }
 

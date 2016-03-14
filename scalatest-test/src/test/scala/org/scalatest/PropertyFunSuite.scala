@@ -19,10 +19,12 @@ import Matchers._
 
 class PropertyFunSuite extends FunSuite {
 
+  val matchersHelper = new MatchersHelper(prettifier)
+
   test("object has no appropriately named field, method, or get method (0, 0, 0)") {
     class DontGotNuthin
     val dgn = new DontGotNuthin
-    val result = MatchersHelper.accessProperty(dgn, 'fred, false)
+    val result = matchersHelper.accessProperty(dgn, 'fred, false)
     result should be (None)
   }
 
@@ -31,7 +33,7 @@ class PropertyFunSuite extends FunSuite {
       def getCow: Int = 1
     }
     val obj = new HasGetMethod
-    val result = MatchersHelper.accessProperty(obj, 'cow, false)
+    val result = matchersHelper.accessProperty(obj, 'cow, false)
     result should be (Some(1))
   }
 
@@ -40,7 +42,7 @@ class PropertyFunSuite extends FunSuite {
       def isCow: Boolean = true
     }
     val obj = new HasIsMethod
-    val result = MatchersHelper.accessProperty(obj, 'cow, true)
+    val result = matchersHelper.accessProperty(obj, 'cow, true)
     result should be (Some(true))
   }
 
@@ -49,7 +51,7 @@ class PropertyFunSuite extends FunSuite {
       def cow: Int = 1
     }
     val obj = new HasMethod
-    val result = MatchersHelper.accessProperty(obj, 'cow, false)
+    val result = matchersHelper.accessProperty(obj, 'cow, false)
     result should be (Some(1))
   }
 
@@ -58,7 +60,7 @@ class PropertyFunSuite extends FunSuite {
       val cow: Int = 1
     }
     val obj = new HasScalaField
-    val result = MatchersHelper.accessProperty(obj, 'cow, false)
+    val result = matchersHelper.accessProperty(obj, 'cow, false)
     result should be (Some(1))
   }
 
@@ -68,38 +70,38 @@ class PropertyFunSuite extends FunSuite {
       def getCow: Int = 2
     }
     val obj = new HasMethod
-    val result = MatchersHelper.accessProperty(obj, 'cow, false)
+    val result = matchersHelper.accessProperty(obj, 'cow, false)
     result should be (Some(1))
   }
 
   test("object has only an appropriately named field (1, 0, 0)") {
     val obj = new HasField // A Java class, because can't get a field in a Scala class
-    val result = MatchersHelper.accessProperty(obj, 'cow, false)
+    val result = matchersHelper.accessProperty(obj, 'cow, false)
     result should be (Some(1))
   }
 
   test("object has an appropriately named field and getMethod (1, 0, 1)") {
     val obj = new HasFieldAndGetMethod // A Java class, because can't get a field in a Scala class
-    val result = MatchersHelper.accessProperty(obj, 'cow, false)
+    val result = matchersHelper.accessProperty(obj, 'cow, false)
     result should be (Some(1))
   }
 
   test("object has an appropriately named field and method (1, 1, 0)") {
     val obj = new HasFieldAndMethod // A Java class, because can't get a field in a Scala class
-    val result = MatchersHelper.accessProperty(obj, 'cow, false)
+    val result = matchersHelper.accessProperty(obj, 'cow, false)
     result should be (Some(1))
   }
 
   test("object has an appropriately named field and method and getMethod (1, 1, 1)") {
     val obj = new HasFieldMethodAndGetMethod // A Java class, because can't get a field in a Scala class
-    val result = MatchersHelper.accessProperty(obj, 'cow, false)
+    val result = matchersHelper.accessProperty(obj, 'cow, false)
     result should be (Some(1))
   }
 
   test("works on set.empty") {
-    val result1 = MatchersHelper.accessProperty(Set(), 'empty, true)
+    val result1 = matchersHelper.accessProperty(Set(), 'empty, true)
     result1 should be (Some(true))
-    val result2 = MatchersHelper.accessProperty(Set(1, 2, 3), 'empty, true)
+    val result2 = matchersHelper.accessProperty(Set(1, 2, 3), 'empty, true)
     result2 should be (Some(false))
   }
 }

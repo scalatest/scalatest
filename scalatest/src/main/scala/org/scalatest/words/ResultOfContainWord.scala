@@ -21,14 +21,10 @@ import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.KeyMapping
 import org.scalatest.enablers.ValueMapping
-import org.scalatest.FailureMessages
-import org.scalatest.UnquotedString
+import org.scalatest.{MatchersHelper, FailureMessages, UnquotedString, Assertion}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.{Prettifier, Every}
-import org.scalatest.Assertion
-import org.scalatest.MatchersHelper.indicateSuccess
-import org.scalatest.MatchersHelper.indicateFailure
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -36,7 +32,7 @@ import org.scalatest.MatchersHelper.indicateFailure
  *
  * @author Bill Venners
  */
-class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBeTrue: Boolean = true) {
+class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, matchersHelper: MatchersHelper, shouldBeTrue: Boolean = true) {
 
   /**
    * This method enables the following syntax: 
@@ -51,13 +47,13 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.oneOfDuplicate, getStackDepthFun("ResultOfContainWord.scala", "oneOf"))
     if (containing.containsOneOf(left, right) != shouldBeTrue)
-      indicateFailure(
+      matchersHelper.indicateFailure(
         shouldBeTrue,
         FailureMessages.didNotContainOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.containedOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         shouldBeTrue,
         FailureMessages.containedOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.didNotContainOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -75,8 +71,8 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
   def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
     val right = elements.toList
     if (containing.containsOneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainOneElementOf(left, right), FailureMessages.containedOneElementOf(left, right))
-    else indicateSuccess(shouldBeTrue, FailureMessages.containedOneElementOf(left, right), FailureMessages.didNotContainOneElementOf(left, right))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.didNotContainOneElementOf(left, right), FailureMessages.containedOneElementOf(left, right))
+    else matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.containedOneElementOf(left, right), FailureMessages.didNotContainOneElementOf(left, right))
   }
 
   /**
@@ -92,13 +88,13 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun("ResultOfContainWord.scala", "atLeastOneOf"))
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
-      indicateFailure(
+      matchersHelper.indicateFailure(
         shouldBeTrue,
         FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         shouldBeTrue,
         FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -116,9 +112,9 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
   def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
     val right = elements.toList
     if (aggregating.containsAtLeastOneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(left, right), FailureMessages.containedAtLeastOneElementOf(left, right))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(left, right), FailureMessages.containedAtLeastOneElementOf(left, right))
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(left, right), FailureMessages.didNotContainAtLeastOneElementOf(left, right))
+      matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(left, right), FailureMessages.didNotContainAtLeastOneElementOf(left, right))
   }
   
   /**
@@ -134,13 +130,13 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.noneOfDuplicate, getStackDepthFun("ResultOfContainWord.scala", "noneOf"))
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
-      indicateFailure(
+      matchersHelper.indicateFailure(
         shouldBeTrue,
         FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         shouldBeTrue,
         FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -158,9 +154,9 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
   def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
     val right = elements.toList
     if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(left, right), FailureMessages.didNotContainAtLeastOneElementOf(left, right))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(left, right), FailureMessages.didNotContainAtLeastOneElementOf(left, right))
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(left, right), FailureMessages.containedAtLeastOneElementOf(left, right))
+      matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(left, right), FailureMessages.containedAtLeastOneElementOf(left, right))
   }
   
   /**
@@ -173,9 +169,9 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
    */
   def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]): Assertion = {
     if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainSameElements(left, right), FailureMessages.containedSameElements(left, right))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.didNotContainSameElements(left, right), FailureMessages.containedSameElements(left, right))
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(left, right), FailureMessages.didNotContainSameElements(left, right))
+      matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(left, right), FailureMessages.didNotContainSameElements(left, right))
   }
   
   /**
@@ -188,9 +184,9 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
    */
   def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[L]): Assertion = {
     if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainSameElementsInOrder(left, right), FailureMessages.containedSameElementsInOrder(left, right))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.didNotContainSameElementsInOrder(left, right), FailureMessages.containedSameElementsInOrder(left, right))
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.containedSameElementsInOrder(left, right), FailureMessages.didNotContainSameElementsInOrder(left, right))
+      matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.containedSameElementsInOrder(left, right), FailureMessages.didNotContainSameElementsInOrder(left, right))
   }
   
   /**
@@ -208,7 +204,7 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
       throw new NotAllowedException(FailureMessages.onlyDuplicate, getStackDepthFun("ResultOfContainWord.scala", "only"))
     val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
-      indicateFailure(
+      matchersHelper.indicateFailure(
         if (shouldBeTrue)
           if (withFriendlyReminder)
             FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -222,7 +218,7 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
       )
     }
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         if (shouldBeTrue)
           if (withFriendlyReminder)
             FailureMessages.containedOnlyElementsWithFriendlyReminder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -250,13 +246,13 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, getStackDepthFun("ResultOfContainWord.scala", "inOrderOnly"))
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
-      indicateFailure(
+      matchersHelper.indicateFailure(
         shouldBeTrue,
         FailureMessages.didNotContainInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.containedInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         shouldBeTrue,
         FailureMessages.containedInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.didNotContainInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -276,13 +272,13 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun("ResultOfContainWord.scala", "allOf"))
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
-      indicateFailure(
+      matchersHelper.indicateFailure(
         shouldBeTrue,
         FailureMessages.didNotContainAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.containedAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         shouldBeTrue,
         FailureMessages.didNotContainAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.containedAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -300,9 +296,9 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
   def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
     val right = elements.toList
     if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainAllElementsOf(left, right), FailureMessages.containedAllElementsOf(left, right))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.didNotContainAllElementsOf(left, right), FailureMessages.containedAllElementsOf(left, right))
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOf(left, right), FailureMessages.didNotContainAllElementsOf(left, right))
+      matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOf(left, right), FailureMessages.didNotContainAllElementsOf(left, right))
   }
   
   /**
@@ -318,13 +314,13 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun("ResultOfContainWord.scala", "inOrder"))
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
-      indicateFailure(
+      matchersHelper.indicateFailure(
         shouldBeTrue,
         FailureMessages.didNotContainAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.containedAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         shouldBeTrue,
         FailureMessages.containedAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.didNotContainAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -342,9 +338,9 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
   def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: Sequencing[L]): Assertion = {
     val right = elements.toList
     if (sequencing.containsInOrder(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainAllElementsOfInOrder(left, right), FailureMessages.containedAllElementsOfInOrder(left, right))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.didNotContainAllElementsOfInOrder(left, right), FailureMessages.containedAllElementsOfInOrder(left, right))
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOfInOrder(left, right), FailureMessages.didNotContainAllElementsOfInOrder(left, right))
+      matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOfInOrder(left, right), FailureMessages.didNotContainAllElementsOfInOrder(left, right))
   }
 
   /**
@@ -357,9 +353,9 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
    */
   def key(expectedKey: Any)(implicit keyMapping: KeyMapping[L]): Assertion = {
     if (keyMapping.containsKey(left, expectedKey) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainKey(left, expectedKey), FailureMessages.containedKey(left, expectedKey))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.didNotContainKey(left, expectedKey), FailureMessages.containedKey(left, expectedKey))
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.containedKey(left, expectedKey), FailureMessages.didNotContainKey(left, expectedKey))
+      matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.containedKey(left, expectedKey), FailureMessages.didNotContainKey(left, expectedKey))
   }
 
   /**
@@ -372,9 +368,9 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
    */
   def value(expectedValue: Any)(implicit valueMapping: ValueMapping[L]): Assertion = {
     if (valueMapping.containsValue(left, expectedValue) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainValue(left, expectedValue), FailureMessages.containedValue(left, expectedValue))
+      matchersHelper.indicateFailure(shouldBeTrue, FailureMessages.didNotContainValue(left, expectedValue), FailureMessages.containedValue(left, expectedValue))
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.containedValue(left, expectedValue), FailureMessages.didNotContainValue(left, expectedValue))
+      matchersHelper.indicateSuccess(shouldBeTrue, FailureMessages.containedValue(left, expectedValue), FailureMessages.didNotContainValue(left, expectedValue))
   }
   
   /**
@@ -390,13 +386,13 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun("ResultOfContainWord.scala", "atMostOneOf"))
     if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
-      indicateFailure(
+      matchersHelper.indicateFailure(
         shouldBeTrue,
         FailureMessages.didNotContainAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.containedAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
       )
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         shouldBeTrue,
         FailureMessages.containedAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
         FailureMessages.didNotContainAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
@@ -414,13 +410,13 @@ class ResultOfContainWord[L](left: L, FailureMessages: FailureMessages, shouldBe
   def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
     val right = elements.toList
     if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(
+      matchersHelper.indicateFailure(
         shouldBeTrue,
         FailureMessages.didNotContainAtMostOneElementOf(left, right),
         FailureMessages.containedAtMostOneElementOf(left, right)
       )
     else
-      indicateSuccess(
+      matchersHelper.indicateSuccess(
         shouldBeTrue,
         FailureMessages.containedAtMostOneElementOf(left, right),
         FailureMessages.didNotContainAtMostOneElementOf(left, right)

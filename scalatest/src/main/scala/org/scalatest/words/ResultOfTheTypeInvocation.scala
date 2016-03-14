@@ -15,8 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.Resources
-import org.scalatest.MatchersHelper.checkExpectedException
+import org.scalatest.{MatchersHelper, Resources}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -24,7 +23,7 @@ import org.scalatest.MatchersHelper.checkExpectedException
  *
  * @author Bill Venners
  */
-final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
+final class ResultOfTheTypeInvocation[T](clazz: Class[T], matchersHelper: MatchersHelper) {
 
   // SKIP-SCALATESTJS-START
   private val stackDepth = 0
@@ -40,7 +39,7 @@ final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
    * </pre>
    */
   def thrownBy(fun: => Any): T = {
-    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
+    matchersHelper.checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
   }
   
   override def toString: String = "the [" + clazz.getName + "]"

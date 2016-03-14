@@ -16,11 +16,8 @@
 package org.scalatest
 
 import matchers.MatchResult
-import MatchersHelper.accessProperty
-import MatchersHelper.transformOperatorChars
-import MatchersHelper.newTestFailedException
 
-private[scalatest] class SymbolHelper(FailureMessages: FailureMessages) {
+private[scalatest] class SymbolHelper(FailureMessages: FailureMessages, matchersHelper: MatchersHelper) {
 
   // SKIP-SCALATESTJS-START
   def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0): MatchResult = {
@@ -28,12 +25,12 @@ private[scalatest] class SymbolHelper(FailureMessages: FailureMessages) {
     // If 'empty passed, rightNoTick would be "empty"
     val propertyName = right.name
 
-    accessProperty(left, right, true) match {
+    matchersHelper.accessProperty(left, right, true) match {
 
       case None =>
 
         // if propertyName is '>, mangledPropertyName would be "$greater"
-        val mangledPropertyName = transformOperatorChars(propertyName)
+        val mangledPropertyName = matchersHelper.transformOperatorChars(propertyName)
 
         // methodNameToInvoke would also be "empty"
         val methodNameToInvoke = mangledPropertyName
@@ -45,7 +42,7 @@ private[scalatest] class SymbolHelper(FailureMessages: FailureMessages) {
         val methodNameStartsWithVowel = firstChar == 'a' || firstChar == 'e' || firstChar == 'i' ||
           firstChar == 'o' || firstChar == 'u'
 
-        throw newTestFailedException(
+        throw matchersHelper.newTestFailedException(
           if (methodNameStartsWithVowel)
             FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
           else

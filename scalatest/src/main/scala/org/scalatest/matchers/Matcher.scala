@@ -16,8 +16,6 @@
 package org.scalatest.matchers
 
 import org.scalatest.enablers._
-import org.scalatest.MatchersHelper.orMatchersAndApply
-import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.words._
 import scala.collection.GenTraversable
 import scala.reflect.ClassTag
@@ -25,7 +23,7 @@ import scala.util.matching.Regex
 import org.scalactic.{DefaultPrettifier, Equality, Prettifier}
 import org.scalactic.TripleEqualsSupport.Spread
 import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
-import org.scalatest.{SymbolHelper, FailureMessages, Resources}
+import org.scalatest.{MatchersHelper, SymbolHelper, FailureMessages, Resources}
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -411,9 +409,10 @@ import org.scalatest.{SymbolHelper, FailureMessages, Resources}
  */
 trait Matcher[-T] extends Function1[T, MatchResult] with DefaultPrettifier { outerInstance =>
 
-  private val MatcherWords = new MatcherWords {
+  private lazy val MatcherWords = new MatcherWords {
     protected[scalatest] val failureMessages: FailureMessages = new FailureMessages(prettifier)
-    protected[scalatest] val symbolHelper: SymbolHelper =new SymbolHelper(failureMessages)
+    protected[scalatest] val matchersHelper = new MatchersHelper(prettifier)
+    protected[scalatest] val symbolHelper: SymbolHelper = new SymbolHelper(failureMessages, matchersHelper)
   }
 
   /**
@@ -523,7 +522,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] with DefaultPrettifier { out
   def and[U <: T](rightMatcher: Matcher[U]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult = {
-        andMatchersAndApply(left, outerInstance, rightMatcher)
+        MatcherWords.matchersHelper.andMatchersAndApply(left, outerInstance, rightMatcher)
       }
       override def toString: String = "(" + Prettifier.default(outerInstance) + ") and (" + Prettifier.default(rightMatcher) + ")"
     }
@@ -544,7 +543,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] with DefaultPrettifier { out
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val rightMatcher = rightMatcherFactory1.matcher
-            andMatchersAndApply(left, outerInstance, rightMatcher)
+            MatcherWords.matchersHelper.andMatchersAndApply(left, outerInstance, rightMatcher)
           }
         }
       }
@@ -577,7 +576,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] with DefaultPrettifier { out
   def or[U <: T](rightMatcher: Matcher[U]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult = {
-        orMatchersAndApply(left, outerInstance, rightMatcher)
+        MatcherWords.matchersHelper.orMatchersAndApply(left, outerInstance, rightMatcher)
       }
       override def toString: String = "(" + Prettifier.default(outerInstance) + ") or (" + Prettifier.default(rightMatcher) + ")"
     }
@@ -596,7 +595,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] with DefaultPrettifier { out
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val rightMatcher = rightMatcherFactory1.matcher
-            orMatchersAndApply(left, outerInstance, rightMatcher)
+            MatcherWords.matchersHelper.orMatchersAndApply(left, outerInstance, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(outerInstance) + ") or (" + Prettifier.default(rightMatcherFactory1) + ")"
         }

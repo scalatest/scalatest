@@ -15,9 +15,8 @@
  */
 package org.scalatest.matchers
 
-import org.scalatest.{UnquotedString, Suite, FailureMessages, Resources}
+import org.scalatest._
 import org.scalactic.Prettifier
-import org.scalatest.MatchersHelper._
 import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
 //import org.scalatest.words.{FactResultOfAnTypeInvocation, FactResultOfATypeInvocation}
 
@@ -29,7 +28,7 @@ import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
  * users would ever need to use <code>TypeMatcherHelper</code> directly.
  * </p>
  */
-class TypeMatcherHelper(failureMessages: FailureMessages) {
+class TypeMatcherHelper(failureMessages: FailureMessages, matchersHelper: MatchersHelper) {
 
   /**
    * Create a type matcher for the given <code>ResultOfATypeInvocation</code>.
@@ -126,7 +125,7 @@ class TypeMatcherHelper(failureMessages: FailureMessages) {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+      throw matchersHelper.newTestFailedException(failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
     org.scalatest.Succeeded
   }
@@ -158,7 +157,7 @@ class TypeMatcherHelper(failureMessages: FailureMessages) {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+      throw matchersHelper.newTestFailedException(failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
     }
     org.scalatest.Succeeded
   }
@@ -189,7 +188,7 @@ class TypeMatcherHelper(failureMessages: FailureMessages) {
   def assertATypeShouldBeTrue(left: Any, aType: ResultOfATypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Assertion = {
     val clazz = aType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
-      throw newTestFailedException(
+      throw matchersHelper.newTestFailedException(
         if (shouldBeTrue)
           failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
@@ -236,7 +235,7 @@ class TypeMatcherHelper(failureMessages: FailureMessages) {
   def assertAnTypeShouldBeTrue(left: Any, anType: ResultOfAnTypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Assertion = {
     val clazz = anType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
-      throw newTestFailedException(
+      throw matchersHelper.newTestFailedException(
         if (shouldBeTrue)
           failureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
