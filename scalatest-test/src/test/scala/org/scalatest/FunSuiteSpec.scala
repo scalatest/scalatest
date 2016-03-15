@@ -30,7 +30,7 @@ class FunSuiteSpec extends FunSpec {
   describe("A FunSuite") {
 
     it("should return the test names in registration order from testNames") {
-      
+
       val a = new FunSuite {
         test("test this") { /* ASSERTION_SUCCEED */ }
         test("test that") { /* ASSERTION_SUCCEED */ }
@@ -1021,7 +1021,7 @@ class FunSuiteSpec extends FunSpec {
       assert(!k.theTestThatCalled)
       assert(!k.theTestTheOtherCalled)
     }
-    
+
     it("should return the correct test count from its expectedTestCount method") {
 
       val a = new FunSuite {
@@ -1406,7 +1406,7 @@ class FunSuiteSpec extends FunSpec {
       assert(rep.testFailedEventsReceived(1).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 10)
     }
 
-    it("should allow custom Prettifier to be installed") {
+    it("should use custom Prettifier installed in error message of assert") {
       class TestSpec extends FunSuite {
         override val prettifier =
           Prettifier {
@@ -1426,8 +1426,29 @@ class FunSuiteSpec extends FunSpec {
       val tfe = testFailedEvents(0)
       assert(tfe.message == "!!![one]!!! did not equal !!![two]!!!")
     }
+
+    it("should use custom Prettifier installed in error message of Matchers") {
+      class TestSpec extends FunSuite with Matchers {
+        override val prettifier =
+          Prettifier {
+            case s: String => "!!!" + s + "!!!"
+            case other => super.prettifier(other)
+          }
+        test("test 1") {
+          val a = "one"
+          a should equal ("two")
+        }
+      }
+      val rep = new EventRecordingReporter
+      val s = new TestSpec
+      s.run(None, Args(rep))
+      val testFailedEvents = rep.testFailedEventsReceived
+      assert(testFailedEvents.size == 1)
+      val tfe = testFailedEvents(0)
+      assert(tfe.message == "!!![one]!!! did not equal !!![two]!!!")
+    }
   }
-  
+
   describe("when failure happens") {
     it("should fire TestFailed event with correct stack depth info when test failed") {
       class TestSpec extends FunSuite {
@@ -1442,7 +1463,7 @@ class FunSuiteSpec extends FunSpec {
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeFileName.get === "FunSuiteSpec.scala")
       assert(rep.testFailedEventsReceived(0).throwable.get.asInstanceOf[TestFailedException].failedCodeLineNumber.get === thisLineNumber - 8)
     }
-    
+
     it("should generate TestRegistrationClosedException with correct stack depth info when has a test nested inside a test") {
       class TestSpec extends FunSuite {
         var registrationClosedThrown = false
@@ -1454,7 +1475,7 @@ class FunSuiteSpec extends FunSpec {
         override def withFixture(test: NoArgTest): Outcome = {
           val outcome = test.apply()
           outcome match {
-            case Exceptional(ex: TestRegistrationClosedException) => 
+            case Exceptional(ex: TestRegistrationClosedException) =>
               registrationClosedThrown = true
             case _ =>
           }
