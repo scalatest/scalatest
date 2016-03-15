@@ -63,7 +63,8 @@ private[scalatest] class SymbolHelper(FailureMessages: FailureMessages, matchers
           result == true, // Right now I just leave the return value of accessProperty as Any
           wasNot,
           was,
-          Vector(left, UnquotedString(propertyName))
+          Vector(left, UnquotedString(propertyName)),
+          FailureMessages.prettifier
         )
     }
   }

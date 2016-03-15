@@ -2430,7 +2430,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           spread.isWithin(left),
           Resources.rawDidNotEqualPlusOrMinus,
           Resources.rawEqualedPlusOrMinus,
-          Vector(left, spread.pivot, spread.tolerance)
+          Vector(left, spread.pivot, spread.tolerance),
+          prettifier
         )
       }
       override def toString: String = "equal (" + Prettifier.default(spread) + ")"
@@ -2455,7 +2456,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           Resources.rawDidNotEqualNull,
           Resources.rawMidSentenceEqualedNull,
           Vector(left), 
-          Vector.empty
+          Vector.empty,
+          prettifier
         )
       }
       override def toString: String = "equal (" + Prettifier.default(o) + ")"

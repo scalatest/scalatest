@@ -43,9 +43,10 @@ final class IncludeWord(matchersHelper: MatchersHelper) {
           left.indexOf(expectedSubstring) >= 0, 
           Resources.rawDidNotIncludeSubstring,
           Resources.rawIncludedSubstring,
-          Vector(left, expectedSubstring)
+          Vector(left, expectedSubstring),
+          matchersHelper.prettifier
         )
-      override def toString: String = "include (" + Prettifier.default(expectedSubstring) + ")"
+      override def toString: String = "include (" + matchersHelper.prettifier(expectedSubstring) + ")"
     }
 
   /**
@@ -71,7 +72,7 @@ final class IncludeWord(matchersHelper: MatchersHelper) {
     new Matcher[String] {
       def apply(left: String): MatchResult = 
         matchersHelper.includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
-      override def toString: String = "include regex " + Prettifier.default(regexWithGroups)
+      override def toString: String = "include regex " + matchersHelper.prettifier(regexWithGroups)
     }
 
   /**
@@ -90,9 +91,10 @@ final class IncludeWord(matchersHelper: MatchersHelper) {
           expectedRegex.findFirstIn(left).isDefined,
           Resources.rawDidNotIncludeRegex,
           Resources.rawIncludedRegex,
-          Vector(left, UnquotedString(expectedRegex.toString))
+          Vector(left, UnquotedString(expectedRegex.toString)),
+          matchersHelper.prettifier
         )
-      override def toString: String = "include regex \"" + Prettifier.default(expectedRegex) + "\""
+      override def toString: String = "include regex \"" + matchersHelper.prettifier(expectedRegex) + "\""
     }
   
   /**

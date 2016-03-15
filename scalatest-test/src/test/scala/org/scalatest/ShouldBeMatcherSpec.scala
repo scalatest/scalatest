@@ -25,6 +25,8 @@ import matchers.BeMatcher
 import matchers.MatchResult
 import Matchers._
 
+import org.scalactic.Prettifier
+
 class ShouldBeMatcherSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
   class OddMatcher extends BeMatcher[Int] {
@@ -32,7 +34,8 @@ class ShouldBeMatcherSpec extends FunSpec with Checkers with ReturnsNormallyThro
       MatchResult(
         left % 2 == 1,
         left.toString + " was even",
-        left.toString + " was odd"
+        left.toString + " was odd",
+        Prettifier.default
       )
     }
   }
@@ -384,7 +387,8 @@ class ShouldBeMatcherSpec extends FunSpec with Checkers with ReturnsNormallyThro
           MatchResult(
             false,
             left.toString + " was not to my liking",
-            left.toString + " was to my liking"
+            left.toString + " was to my liking",
+            Prettifier.default
           )
         }
       }
@@ -418,7 +422,7 @@ class ShouldBeMatcherSpec extends FunSpec with Checkers with ReturnsNormallyThro
   }
   describe("A factory method on BeMatcher's companion object") {
     it("should produce a be-matcher that executes the passed function when its apply is called") {
-      val f = { (s: String) => MatchResult(s.length < 3, "s was not less than 3", "s was less than 3") }
+      val f = { (s: String) => MatchResult(s.length < 3, "s was not less than 3", "s was less than 3", Prettifier.default) }
       val lessThanThreeInLength = BeMatcher(f)
       "" should be (lessThanThreeInLength)
       "x" should be (lessThanThreeInLength)

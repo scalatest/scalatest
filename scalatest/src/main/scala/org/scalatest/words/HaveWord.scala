@@ -52,7 +52,8 @@ final class HaveWord(matcherWords: MatcherWords) {
               Resources.rawHadLengthInsteadOfExpectedLength,
               Resources.rawHadLength,
               Vector(left, lengthOfLeft, expectedLength), 
-              Vector(left, expectedLength)
+              Vector(left, expectedLength),
+              matcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "have length " + expectedLength
@@ -88,7 +89,8 @@ final class HaveWord(matcherWords: MatcherWords) {
               Resources.rawHadSizeInsteadOfExpectedSize,
               Resources.rawHadSize,
               Vector(left, sizeOfLeft, expectedSize), 
-              Vector(left, expectedSize)
+              Vector(left, expectedSize),
+              matcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "have size " + expectedSize
@@ -117,7 +119,8 @@ final class HaveWord(matcherWords: MatcherWords) {
               Resources.rawHadMessageInsteadOfExpectedMessage,
               Resources.rawHadExpectedMessage,
               Vector(left, messageOfLeft, expectedMessage), 
-              Vector(left, expectedMessage)
+              Vector(left, expectedMessage),
+              matcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "have message " + Prettifier.default(expectedMessage)
@@ -185,7 +188,7 @@ final class HaveWord(matcherWords: MatcherWords) {
                 )
               )
 
-            MatchResult(false, rawFailureMessage, rawFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceFailureMessage, failureMessageArgs, midSentenceFailureMessageArgs)
+            MatchResult(false, rawFailureMessage, rawFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceFailureMessage, failureMessageArgs, midSentenceFailureMessageArgs, matcherWords.failureMessages.prettifier)
 
           case None =>
 
@@ -217,7 +220,7 @@ final class HaveWord(matcherWords: MatcherWords) {
               }
               else (Resources.rawMidSentenceAllPropertiesHadExpectedValues, Vector(left))
 
-            MatchResult(true, rawFailureMessage, rawFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceFailureMessage, failureMessageArgs, rawMidSentenceFailureMessageArgs)
+            MatchResult(true, rawFailureMessage, rawFailureMessage, rawMidSentenceFailureMessage, rawMidSentenceFailureMessage, failureMessageArgs, rawMidSentenceFailureMessageArgs, matcherWords.failureMessages.prettifier)
         }
       }
       

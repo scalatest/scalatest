@@ -138,7 +138,7 @@ trait GenResourcesJVM extends GenResources {
   def failureMessagesTemplate(methods: String): String =
     s"""package org.$packageName
        |
-       |private[$packageName] class FailureMessages(prettifier: org.scalactic.Prettifier) {
+       |private[$packageName] class FailureMessages(val prettifier: org.scalactic.Prettifier) {
        |
        |require(prettifier != null)
        |

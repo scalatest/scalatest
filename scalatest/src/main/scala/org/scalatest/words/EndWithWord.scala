@@ -43,7 +43,8 @@ final class EndWithWord(matchersHelper: MatchersHelper) {
           left endsWith right,
           Resources.rawDidNotEndWith,
           Resources.rawEndedWith,
-          Vector(left, right)
+          Vector(left, right),
+          matchersHelper.prettifier
         )
       override def toString: String = "endWith (" + Prettifier.default(right) + ")"
     }
@@ -91,7 +92,8 @@ final class EndWithWord(matchersHelper: MatchersHelper) {
           allMatches.hasNext && (allMatches.end == left.length),
           Resources.rawDidNotEndWithRegex,
           Resources.rawEndedWithRegex,
-          Vector(left, UnquotedString(rightRegex.toString))
+          Vector(left, UnquotedString(rightRegex.toString)),
+          matchersHelper.prettifier
         )
       }
       override def toString: String = "endWith regex \"" + Prettifier.default(rightRegex) + "\""

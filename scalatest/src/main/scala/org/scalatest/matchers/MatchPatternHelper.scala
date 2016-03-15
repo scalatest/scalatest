@@ -39,7 +39,8 @@ class MatchPatternHelper(failureMessages: FailureMessages, matchersHelper: Match
           right.isDefinedAt(left),
           Resources.rawDidNotMatchTheGivenPattern,
           Resources.rawMatchedTheGivenPattern,
-          Vector(left)
+          Vector(left),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "patternMatch " + Prettifier.default(right)
@@ -60,7 +61,8 @@ class MatchPatternHelper(failureMessages: FailureMessages, matchersHelper: Match
           !right.isDefinedAt(left),
           Resources.rawMatchedTheGivenPattern,
           Resources.rawDidNotMatchTheGivenPattern,
-          Vector(left)
+          Vector(left),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "not patternMatch " + Prettifier.default(right)

@@ -99,7 +99,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           ordering.lt(left, right), // left < right
           Resources.rawWasNotLessThan,
           Resources.rawWasLessThan,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be < " + Prettifier.default(right)
@@ -138,7 +139,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           ordering.gt(left, right), // left > right
           Resources.rawWasNotGreaterThan,
           Resources.rawWasGreaterThan,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be > " + Prettifier.default(right)
@@ -177,7 +179,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           ordering.lteq(left, right), // left <= right
           Resources.rawWasNotLessThanOrEqualTo,
           Resources.rawWasLessThanOrEqualTo,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be <= " + Prettifier.default(right)
@@ -216,7 +219,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           ordering.gteq(left, right), // left >= right
           Resources.rawWasNotGreaterThanOrEqualTo,
           Resources.rawWasGreaterThanOrEqualTo,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be >= " + Prettifier.default(right)
@@ -273,7 +277,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           result.matches,
           Resources.rawWasNotA,
           Resources.rawWasA,
-          Vector(left, UnquotedString(result.propertyName))
+          Vector(left, UnquotedString(result.propertyName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be a " + Prettifier.default(bePropertyMatcher)
@@ -326,7 +331,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           result.matches,
           Resources.rawWasNotAn,
           Resources.rawWasAn,
-          Vector(left, UnquotedString(result.propertyName))
+          Vector(left, UnquotedString(result.propertyName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be an " + Prettifier.default(bePropertyMatcher)
@@ -361,7 +367,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           spread.isWithin(left),
           Resources.rawWasNotPlusOrMinus,
           Resources.rawWasPlusOrMinus,
-          Vector(left, spread.pivot, spread.tolerance)
+          Vector(left, spread.pivot, spread.tolerance),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (" + Prettifier.default(spread) + ")"
@@ -382,7 +389,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           left eq right,
           Resources.rawWasNotSameInstanceAs,
           Resources.rawWasSameInstanceAs,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       override def toString: String = "be theSameInstanceAs " + Prettifier.default(right)
     }
@@ -402,7 +410,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           left == right,
           Resources.rawWasNot,
           Resources.rawWas,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
@@ -425,7 +434,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           Resources.rawWasNotNull,
           Resources.rawMidSentenceWasNull,
           Vector(left), 
-          Vector.empty
+          Vector.empty,
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (null)"
@@ -498,7 +508,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           result.matches,
           Resources.rawWasNot,
           Resources.rawWas,
-          Vector(left, UnquotedString(result.propertyName))
+          Vector(left, UnquotedString(result.propertyName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (" + Prettifier.default(bePropertyMatcher) + ")"
@@ -529,7 +540,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           Resources.rawWasNotEqualTo,
           Resources.rawWasEqualTo,
           Vector(leftee, rightee), 
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (" + Prettifier.default(right) + ")"
@@ -553,7 +565,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
               sortable.isSorted(left), 
               Resources.rawWasNotSorted,
               Resources.rawWasSorted,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (sorted)"
@@ -576,7 +589,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           left.isDefinedAt(right),
           Resources.rawWasNotDefinedAt,
           Resources.rawWasDefinedAt,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       override def toString: String = "be definedAt " + Prettifier.default(right)
     }
@@ -606,7 +620,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
           left.isDefinedAt(resultOfDefinedAt.right),
           Resources.rawWasNotDefinedAt,
           Resources.rawWasDefinedAt,
-          Vector(left, resultOfDefinedAt.right)
+          Vector(left, resultOfDefinedAt.right),
+          failureMessages.prettifier
         )
       override def toString: String = "be definedAt " + Prettifier.default(resultOfDefinedAt.right)
     }
@@ -651,7 +666,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
               readability.isReadable(left), 
               Resources.rawWasNotReadable,
               Resources.rawWasReadable,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (" + Prettifier.default(readable) + ")"
@@ -677,7 +693,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
               writability.isWritable(left), 
               Resources.rawWasNotWritable,
               Resources.rawWasWritable,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (writable)"
@@ -703,7 +720,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
               emptiness.isEmpty(left), 
               Resources.rawWasNotEmpty,
               Resources.rawWasEmpty,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (empty)"
@@ -729,7 +747,8 @@ final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: Fa
               definition.isDefined(left), 
               Resources.rawWasNotDefined,
               Resources.rawWasDefined,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (defined)"

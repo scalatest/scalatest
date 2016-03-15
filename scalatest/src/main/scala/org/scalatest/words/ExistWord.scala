@@ -41,7 +41,8 @@ final class ExistWord(matcherWords: MatcherWords) {
               existence.exists(left), 
               Resources.rawDoesNotExist,
               Resources.rawExists,
-              Vector(left)
+              Vector(left),
+              matcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "exist"

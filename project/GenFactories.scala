@@ -886,7 +886,8 @@ $endif$
               Resources.rawMidSentenceEqualedNull,
               Resources.rawDidNotEqualNull,
               Vector.empty, 
-              Vector(left)
+              Vector(left),
+              MatcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "not equal null"
@@ -2180,7 +2181,8 @@ $endif$
               Resources.rawMidSentenceEqualedNull,
               Resources.rawDidNotEqualNull,
               Vector.empty, 
-              Vector(left)
+              Vector(left),
+              MatcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "not equal null"

@@ -22,11 +22,11 @@ import org.scalactic.{PrettyMethods, Prettifier}
 class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
 
   "A MatchResult" - {
-    val mr = MatchResult(false, "1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2")
+    val mr = MatchResult(false, "1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2", Prettifier.default)
     "can be negated" in {
-      mr should equal (MatchResult(false, "1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2"))
-      mr.negated should equal (MatchResult(true, "1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2"))
-      val mr2 = MatchResult(false, "{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty)
+      mr should equal (MatchResult(false, "1 did not equal 2", "1 equaled 2", "1 did not equal 2", "1 equaled 2", Prettifier.default))
+      mr.negated should equal (MatchResult(true, "1 equaled 2", "1 did not equal 2", "1 equaled 2", "1 did not equal 2", Prettifier.default))
+      val mr2 = MatchResult(false, "{0} did not equal null", "The reference equaled null", "{0} did not equal null", "the reference equaled null", Vector("howdy"), Vector.empty, Prettifier.default)
       mr2.matches shouldBe (false)
       mr2.failureMessage shouldBe ("\"howdy\" did not equal null")
       mr2.negatedFailureMessage shouldBe ("The reference equaled null")
@@ -42,7 +42,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr2.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
 
       val mr2Negated = mr2.negated
-      mr2Negated should equal (MatchResult(true, "The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy")))
+      mr2Negated should equal (MatchResult(true, "The reference equaled null", "{0} did not equal null", "the reference equaled null", "{0} did not equal null", Vector.empty, Vector("howdy"), Prettifier.default))
       mr2Negated.matches shouldBe (true)
       mr2Negated.failureMessage shouldBe ("The reference equaled null")
       mr2Negated.negatedFailureMessage shouldBe ("\"howdy\" did not equal null")
@@ -68,7 +68,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       }
     }
     "should construct localized strings from the raw strings and args" in {
-      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2))
+      val mr = MatchResult(false, "{0} did not equal {1}", "{0} equaled {1}", "{0} did not equal {1}", "{0} equaled {1}", Vector(1, 2), Vector(1, 2), Prettifier.default)
       mr.matches shouldBe (false)
       mr.failureMessage shouldBe ("1 did not equal 2")
       mr.negatedFailureMessage shouldBe ("1 equaled 2")
@@ -97,7 +97,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
 
   "The MatchResult companion object factory method" - {
     "that takes two strings should work correctly" in {
-      val mr = MatchResult(true, "one", "two")
+      val mr = MatchResult(true, "one", "two", Prettifier.default)
       mr.matches shouldBe (true)
       mr.failureMessage shouldBe ("one")
       mr.negatedFailureMessage shouldBe ("two")
@@ -112,7 +112,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr.midSentenceFailureMessageArgs shouldBe (Vector.empty)
       mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
 
-      val ms = MatchResult(false, "aaa", "bbb")
+      val ms = MatchResult(false, "aaa", "bbb", Prettifier.default)
       ms.matches shouldBe (false)
       ms.failureMessage shouldBe ("aaa")
       ms.negatedFailureMessage shouldBe ("bbb")
@@ -128,7 +128,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
     }
     "that takes four strings should work correctly" in {
-      val mr = MatchResult(true, "one", "two", "three", "four")
+      val mr = MatchResult(true, "one", "two", "three", "four", Prettifier.default)
       mr.matches shouldBe (true)
       mr.failureMessage shouldBe ("one")
       mr.negatedFailureMessage shouldBe ("two")
@@ -143,7 +143,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr.midSentenceFailureMessageArgs shouldBe (Vector.empty)
       mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
 
-      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd")
+      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Prettifier.default)
       ms.matches shouldBe (false)
       ms.failureMessage shouldBe ("aaa")
       ms.negatedFailureMessage shouldBe ("bbb")
@@ -159,7 +159,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector.empty)
     }
     "that takes four strings and two IndexedSeqs should work correctly" in {
-      val mr = MatchResult(true, "one", "two", "three", "four", Vector(42), Vector(42.0))
+      val mr = MatchResult(true, "one", "two", "three", "four", Vector(42), Vector(42.0), Prettifier.default)
       mr.matches shouldBe (true)
       mr.failureMessage shouldBe ("one")
       mr.negatedFailureMessage shouldBe ("two")
@@ -174,7 +174,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr.midSentenceFailureMessageArgs shouldBe (Vector(42))
       mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(42.0))
 
-      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"))
+      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector("ho", "he"), Vector("foo", "fie"), Prettifier.default)
       ms.matches shouldBe (false)
       ms.failureMessage shouldBe ("aaa")
       ms.negatedFailureMessage shouldBe ("bbb")
@@ -190,7 +190,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector("foo", "fie"))
     }
     "that takes two strings and one IndexedSeq should work correctly" in {
-      val mr = MatchResult(true, "one", "two", Vector(42))
+      val mr = MatchResult(true, "one", "two", Vector(42), Prettifier.default)
       mr.matches shouldBe (true)
       mr.failureMessage shouldBe ("one")
       mr.negatedFailureMessage shouldBe ("two")
@@ -205,7 +205,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr.midSentenceFailureMessageArgs shouldBe (Vector(42))
       mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(42))
 
-      val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"))
+      val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"), Prettifier.default)
       ms.matches shouldBe (false)
       ms.failureMessage shouldBe ("aaa")
       ms.negatedFailureMessage shouldBe ("bbb")
@@ -221,7 +221,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       ms.midSentenceNegatedFailureMessageArgs shouldBe (Vector("ho", "he"))
     }
     "that takes two strings and two IndexedSeqs should work correctly" in {
-      val mr = MatchResult(true, "one", "two", Vector(42), Vector(42.0))
+      val mr = MatchResult(true, "one", "two", Vector(42), Vector(42.0), Prettifier.default)
       mr.matches shouldBe (true)
       mr.failureMessage shouldBe ("one")
       mr.negatedFailureMessage shouldBe ("two")
@@ -236,7 +236,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr.midSentenceFailureMessageArgs shouldBe (Vector(42))
       mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(42.0))
 
-      val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"))
+      val ms = MatchResult(false, "aaa", "bbb", Vector("ho", "he"), Vector("foo", "fie"), Prettifier.default)
       ms.matches shouldBe (false)
       ms.failureMessage shouldBe ("aaa")
       ms.negatedFailureMessage shouldBe ("bbb")
@@ -253,7 +253,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
 
     }
     "that takes four strings and four IndexedSeqs should work correctly" in {
-      val mr = MatchResult(true, "one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4))
+      val mr = MatchResult(true, "one", "two", "three", "four", Vector(1), Vector(2), Vector(3), Vector(4), Prettifier.default)
       mr.matches shouldBe (true)
       mr.failureMessage shouldBe ("one")
       mr.negatedFailureMessage shouldBe ("two")
@@ -268,7 +268,7 @@ class MatchResultSpec extends FreeSpec with Matchers with PrettyMethods {
       mr.midSentenceFailureMessageArgs shouldBe (Vector(3))
       mr.midSentenceNegatedFailureMessageArgs shouldBe (Vector(4))
 
-      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'))
+      val ms = MatchResult(false, "aaa", "bbb", "ccc", "ddd", Vector('A'), Vector('B'), Vector('C'), Vector('D'), Prettifier.default)
       ms.matches shouldBe (false)
       ms.failureMessage shouldBe ("aaa")
       ms.negatedFailureMessage shouldBe ("bbb")

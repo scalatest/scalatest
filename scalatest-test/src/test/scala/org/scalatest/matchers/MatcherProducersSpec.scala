@@ -17,7 +17,7 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import Inside._
-import org.scalactic.PrettyMethods
+import org.scalactic.{PrettyMethods, Prettifier}
 import org.scalatest.exceptions.TestFailedException
 
 class MatcherProducersSpec extends FunSpec with Matchers {
@@ -47,7 +47,7 @@ class MatcherProducersSpec extends FunSpec with Matchers {
       tfe.message should be (Some(Resources.wasNotGreaterThan("7", "8")))
     }
     it("should enable failure messages to be modified via mapResult") {
-      val beAsIntsGreaterThan = f composeTwice g mapResult { mr => MatchResult(mr.matches, mr.failureMessage.toUpperCase, mr.negatedFailureMessage.toUpperCase) }
+      val beAsIntsGreaterThan = f composeTwice g mapResult { mr => MatchResult(mr.matches, mr.failureMessage.toUpperCase, mr.negatedFailureMessage.toUpperCase, Prettifier.default) }
       "8" should beAsIntsGreaterThan ("7")
       val tfe = the [TestFailedException] thrownBy {
         "7" should beAsIntsGreaterThan ("8")

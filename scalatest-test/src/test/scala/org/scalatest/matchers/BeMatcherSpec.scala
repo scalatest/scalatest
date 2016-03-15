@@ -17,6 +17,7 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import Matchers._
+import org.scalactic.Prettifier
 
 class BeMatcherSpec extends FunSpec {
   
@@ -25,7 +26,7 @@ class BeMatcherSpec extends FunSpec {
     describe("instance created by BeMatcher apply method") {
       
       val beMatcher = BeMatcher[List[Int]] { list =>
-        MatchResult(true, "test", "test")
+        MatchResult(true, "test", "test", Prettifier.default)
       }
       
       it("should have pretty toString") {

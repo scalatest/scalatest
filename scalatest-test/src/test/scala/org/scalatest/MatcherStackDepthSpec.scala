@@ -22,6 +22,7 @@ import matchers.BeMatcher
 import matchers.MatchResult
 import org.scalactic.Explicitly._
 import org.scalactic.StringNormalizations._
+import org.scalactic.Prettifier
 import org.scalatest.Inspectors._
 import collection.JavaConverters._
 import LoneElement._
@@ -240,7 +241,8 @@ class MatcherStackDepthSpec extends FunSuite with Matchers {
         MatchResult(
           left % 2 == 1,
           left.toString + " was even",
-          left.toString + " was odd"
+          left.toString + " was odd",
+          Prettifier.default
         )
     }
     val odd = new OddMatcher

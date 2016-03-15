@@ -305,13 +305,14 @@ trait MatcherWords {
               Resources.rawDidNotEqual,
               Resources.rawEqualed,
               Vector(leftee, rightee), 
-              Vector(left, right)
+              Vector(left, right),
+              failureMessages.prettifier
             )
           }
-          override def toString: String = "equal (" + Prettifier.default(right) + ")"
+          override def toString: String = "equal (" + failureMessages.prettifier(right) + ")"
         }
       }
-      override def toString: String = "equal (" + Prettifier.default(right) + ")"
+      override def toString: String = "equal (" + failureMessages.prettifier(right) + ")"
     }
 }
 

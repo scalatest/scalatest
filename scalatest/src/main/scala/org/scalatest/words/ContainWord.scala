@@ -56,7 +56,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               containing.contains(left, null),
               Resources.rawDidNotContainNull,
               Resources.rawContainedNull,
-              Vector(left)
+              Vector(left),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain (null)"
@@ -82,7 +83,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               containing.contains(left, expectedElement),
               Resources.rawDidNotContainExpectedElement,
               Resources.rawContainedExpectedElement,
-              Vector(left, expectedElement)
+              Vector(left, expectedElement),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
@@ -127,7 +129,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               keyMapping.containsKey(left, expectedKey),
               Resources.rawDidNotContainKey,
               Resources.rawContainedKey,
-              Vector(left, expectedKey)
+              Vector(left, expectedKey),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain key " + Prettifier.default(expectedKey)
@@ -173,7 +176,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               valueMapping.containsValue(left, expectedValue),
               Resources.rawDidNotContainValue,
               Resources.rawContainedValue,
-              Vector(left, expectedValue)
+              Vector(left, expectedValue),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain value " + Prettifier.default(expectedValue)
@@ -198,7 +202,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
           Resources.rawDidNotContainA,
           Resources.rawContainedA,
           Vector(left, UnquotedString(aMatcher.nounName)), 
-          Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage else "-"))
+          Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage else "-")),
+          FailureMessages.prettifier
         )
       }
       override def toString: String = "contain a " + Prettifier.default(aMatcher)
@@ -221,7 +226,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
           Resources.rawDidNotContainAn,
           Resources.rawContainedAn,
           Vector(left, UnquotedString(anMatcher.nounName)), 
-          Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage else "-"))
+          Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage else "-")),
+          FailureMessages.prettifier
         )
       }
       override def toString: String = "contain an " + Prettifier.default(anMatcher)
@@ -239,7 +245,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               containing.containsOneOf(left, right),
               Resources.rawDidNotContainOneOfElements,
               Resources.rawContainedOneOfElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain oneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -259,7 +266,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               containing.containsOneOf(left, right.distinct),
               Resources.rawDidNotContainOneElementOf,
               Resources.rawContainedOneElementOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain oneElementOf " + Prettifier.default(right)
@@ -281,7 +289,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               aggregating.containsAtLeastOneOf(left, right),
               Resources.rawDidNotContainAtLeastOneOf,
               Resources.rawContainedAtLeastOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain atLeastOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -301,7 +310,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               aggregating.containsAtLeastOneOf(left, right),
               Resources.rawDidNotContainAtLeastOneElementOf,
               Resources.rawContainedAtLeastOneElementOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain atLeastOneElementOf " + Prettifier.default(right)
@@ -323,7 +333,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               containing.containsNoneOf(left, right),
               Resources.rawContainedAtLeastOneOf,
               Resources.rawDidNotContainAtLeastOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain noneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -343,7 +354,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               containing.containsNoneOf(left, right.distinct),
               Resources.rawContainedAtLeastOneElementOf,
               Resources.rawDidNotContainAtLeastOneElementOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain noElementsOf (" + Prettifier.default(right) + ")"
@@ -362,7 +374,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               aggregating.containsTheSameElementsAs(left, right),
               Resources.rawDidNotContainSameElements,
               Resources.rawContainedSameElements,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain theSameElementsAs " + Prettifier.default(right)
@@ -381,7 +394,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               sequencing.containsTheSameElementsInOrderAs(left, right),
               Resources.rawDidNotContainSameElementsInOrder,
               Resources.rawContainedSameElementsInOrder,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain theSameElementsInOrderAs " + Prettifier.default(right)
@@ -405,7 +419,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               aggregating.containsOnly(left, right),
               if (withFriendlyReminder) Resources.rawDidNotContainOnlyElementsWithFriendlyReminder else Resources.rawDidNotContainOnlyElements,
               if (withFriendlyReminder) Resources.rawContainedOnlyElementsWithFriendlyReminder else Resources.rawContainedOnlyElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain only (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -427,7 +442,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               sequencing.containsInOrderOnly(left, right),
               Resources.rawDidNotContainInOrderOnlyElements,
               Resources.rawContainedInOrderOnlyElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain inOrderOnly (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -449,7 +465,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               aggregating.containsAllOf(left, right),
               Resources.rawDidNotContainAllOfElements,
               Resources.rawContainedAllOfElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain allOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -469,7 +486,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               aggregating.containsAllOf(left, right.distinct),
               Resources.rawDidNotContainAllElementsOf,
               Resources.rawContainedAllElementsOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain allElementsOf " + Prettifier.default(right)
@@ -491,7 +509,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               sequencing.containsInOrder(left, right),
               Resources.rawDidNotContainAllOfElementsInOrder,
               Resources.rawContainedAllOfElementsInOrder,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain inOrder (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -511,7 +530,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               sequencing.containsInOrder(left, right.distinct),
               Resources.rawDidNotContainAllElementsOfInOrder,
               Resources.rawContainedAllElementsOfInOrder,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain inOrderElementsOf (" + Prettifier.default(right) + ")"
@@ -533,7 +553,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               aggregating.containsAtMostOneOf(left, right),
               Resources.rawDidNotContainAtMostOneOf,
               Resources.rawContainedAtMostOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain atMostOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -553,7 +574,8 @@ final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherW
               aggregating.containsAtMostOneOf(left, right.distinct),
               Resources.rawDidNotContainAtMostOneElementOf,
               Resources.rawContainedAtMostOneElementOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain atMostOneElementOf (" + Prettifier.default(right) + ")"

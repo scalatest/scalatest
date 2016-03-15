@@ -1229,7 +1229,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] with DefaultPrettifier { out
               Resources.rawMidSentenceEqualedNull,
               Resources.rawDidNotEqualNull,
               Vector.empty, 
-              Vector(left)
+              Vector(left),
+              prettifier
             )
           }
           override def toString: String = "not equal null"
@@ -2511,7 +2512,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] with DefaultPrettifier { out
               Resources.rawMidSentenceEqualedNull,
               Resources.rawDidNotEqualNull,
               Vector.empty, 
-              Vector(left)
+              Vector(left),
+              prettifier
             )
           }
           override def toString: String = "not equal null"

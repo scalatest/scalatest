@@ -45,7 +45,8 @@ class TypeMatcherHelper(failureMessages: FailureMessages, matchersHelper: Matche
           Resources.rawWasNotAnInstanceOf,
           Resources.rawWasAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
-          Vector(left, UnquotedString(clazz.getName))
+          Vector(left, UnquotedString(clazz.getName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (" + Prettifier.default(aType) + ")"
@@ -66,7 +67,8 @@ class TypeMatcherHelper(failureMessages: FailureMessages, matchersHelper: Matche
           Resources.rawWasNotAnInstanceOf,
           Resources.rawWasAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
-          Vector(left, UnquotedString(clazz.getName))
+          Vector(left, UnquotedString(clazz.getName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (" + Prettifier.default(anType) + ")"
@@ -87,7 +89,8 @@ class TypeMatcherHelper(failureMessages: FailureMessages, matchersHelper: Matche
           Resources.rawWasAnInstanceOf,
           Resources.rawWasNotAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName)),
-          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "not be " + Prettifier.default(aType)
@@ -108,7 +111,8 @@ class TypeMatcherHelper(failureMessages: FailureMessages, matchersHelper: Matche
           Resources.rawWasAnInstanceOf,
           Resources.rawWasNotAnInstanceOf,
           Vector(left, UnquotedString(clazz.getName)),
-          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          Vector(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "not be " + Prettifier.default(anType)

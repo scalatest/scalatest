@@ -19,6 +19,7 @@ import matchers.{BeMatcher, MatchResult, BePropertyMatcher, BePropertyMatchResul
 import SharedHelpers._
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
 
@@ -110,7 +111,8 @@ class ShouldBeShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMat
           MatchResult(
             left % 2 == 1,
             left.toString + " was even",
-            left.toString + " was odd"
+            left.toString + " was odd",
+            Prettifier.default
           )
         }
       }

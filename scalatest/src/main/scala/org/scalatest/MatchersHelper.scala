@@ -31,7 +31,7 @@ import org.scalatest.exceptions.TestFailedException
 // TODO: document how to turn off the === implicit conversion
 // TODO: Document you can use JMock, EasyMock, etc.
 
-private[scalatest] class MatchersHelper(prettifier: Prettifier) {
+private[scalatest] class MatchersHelper(val prettifier: Prettifier) {
 
   // SKIP-SCALATESTJS-START
   // If the symbol passed is 'title, this will look for a field named "title", a method named "title", or a
@@ -164,7 +164,8 @@ private[scalatest] class MatchersHelper(prettifier: Prettifier) {
         Vector(NegatedFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
         Vector(NegatedFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
         Vector(MidSentenceNegatedFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
-        Vector(MidSentenceNegatedFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult))
+        Vector(MidSentenceNegatedFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
+        prettifier
       )
     }
   }
@@ -183,7 +184,8 @@ private[scalatest] class MatchersHelper(prettifier: Prettifier) {
         Vector(FailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
         Vector(FailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
         Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
-        Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult))
+        Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
+        prettifier
       )
     }
   }
@@ -196,7 +198,8 @@ private[scalatest] class MatchersHelper(prettifier: Prettifier) {
         matches, 
         didNotMatchMessage,
         matchMessage,
-        Vector(left, UnquotedString(regex.toString))
+        Vector(left, UnquotedString(regex.toString)),
+        prettifier
       )
     else {
       val count = pMatcher.groupCount
@@ -212,7 +215,8 @@ private[scalatest] class MatchersHelper(prettifier: Prettifier) {
             if (groups.size > 1) notGroupAtIndexMessage else notGroupMessage,
             andGroupMessage,
             if (groups.size > 1) Vector(left, UnquotedString(regex.toString), pMatcher.group(idx + 1), UnquotedString(group), idx) else Vector(left, UnquotedString(regex.toString), pMatcher.group(1), UnquotedString(group)), 
-            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
+            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", "))),
+            prettifier
           )
         case None => 
           // None of group failed
@@ -221,7 +225,8 @@ private[scalatest] class MatchersHelper(prettifier: Prettifier) {
             notGroupMessage,
             andGroupMessage,
             Vector(left, UnquotedString(regex.toString), pMatcher.group(1),  UnquotedString(groups.mkString(", "))), 
-            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
+            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", "))),
+            prettifier
           )
       }
     }

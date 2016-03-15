@@ -21,6 +21,8 @@ import org.scalatest.exceptions.TestFailedException
 import matchers.Matcher
 import matchers.MatchResult
 
+import org.scalactic.Prettifier
+
 trait CustomMatchers {
 
   trait File {
@@ -46,7 +48,8 @@ trait CustomMatchers {
         "The " + failureMessageSuffix,
         "The " + negatedFailureMessageSuffix,
         "the " + failureMessageSuffix,
-        "the " + negatedFailureMessageSuffix
+        "the " + negatedFailureMessageSuffix,
+        Prettifier.default
       )
     }
   }
@@ -127,7 +130,8 @@ class CustomMatcherSpec extends FunSpec with CustomMatchers {
               MatchResult(
                 left % 2 == 1,
                 left + " was not odd",
-                left + " was odd"
+                left + " was odd",
+                Prettifier.default
               )
           }
 
@@ -151,7 +155,7 @@ class CustomMatcherSpec extends FunSpec with CustomMatchers {
 
   describe("A factory method on Matcher's companion object") {
     it("should produce a matcher that executes the passed function when its apply is called") {
-      val f = { (s: String) => MatchResult(s.length < 3, "s was not less than 3", "s was less than 3") }
+      val f = { (s: String) => MatchResult(s.length < 3, "s was not less than 3", "s was less than 3", Prettifier.default) }
       val haveLengthLessThanThree = Matcher(f)
       "" should haveLengthLessThanThree
       "x" should haveLengthLessThanThree
