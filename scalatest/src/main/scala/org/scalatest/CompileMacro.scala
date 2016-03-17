@@ -144,7 +144,7 @@ private[scalatest] object CompileMacro {
     val codeStr = getCodeStringFromCodeExpression(c)("assertDoesNotCompile", code)
 
     try {
-      c.typeCheck(c.parse("{ "+codeStr+" }"))  // parse and type check code snippet
+      c.typeCheck(c.parse("{ "+codeStr+" }"), c.universe.WildcardType, false, true, false)  // parse and type check code snippet
       // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
       val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(codeStr))
       reify {
@@ -161,6 +161,9 @@ private[scalatest] object CompileMacro {
           // parse error, code snippet does not compile as expected, generate code to return Succeeded
           Succeeded
         }
+      case t: Throwable =>
+        t.printStackTrace()
+        throw t
     }
   }
 
