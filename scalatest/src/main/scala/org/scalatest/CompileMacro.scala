@@ -175,7 +175,7 @@ private[scalatest] object CompileMacro {
     val codeStr = getCodeStringFromCodeExpression(c)("expectDoesNotCompile", code)
 
     try {
-      c.typeCheck(c.parse("{ "+codeStr+" }"))  // parse and type check code snippet
+      c.typeCheck(c.parse("{ "+codeStr+" }"), c.universe.WildcardType, false, true, false)  // parse and type check code snippet
       // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
       val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(codeStr))
       reify {

@@ -417,6 +417,12 @@ class ExpectationsSpec extends FunSpec with Expectations {
         assert(fact.factMessage == Resources.didNotCompile("println(\"test)"))
         assert(!fact.isVacuousYes)
       }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        val fact = expectDoesNotCompile("val i: Int = null")
+        assert(fact.isInstanceOf[Fact.Leaf])
+        assert(fact.isYes)
+      }
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
