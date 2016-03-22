@@ -16,6 +16,7 @@
 package org.scalatest
 
 import enablers.Collecting
+import org.scalactic.Prettifier
 
 /**
  * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which
@@ -99,7 +100,7 @@ trait LoneElement {
    * @param collection a collection to wrap in a <code>LoneElementCollectionWrapper</code>, which provides the <code>loneElement</code> method.
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementCollectionWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]) {
+  final class LoneElementCollectionWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier) {
 
     /**
      * Returns the value contained in the wrapped collection, if it contains one and only one element, else throws <code>TestFailedException</code> with
@@ -121,7 +122,7 @@ trait LoneElement {
           throw new exceptions.TestFailedException(
             Some(FailureMessages.notLoneElement(
                  collection,
-                 collecting.sizeOf(collection))), 
+                 collecting.sizeOf(collection))(prettifier)),
             None,
             stackDepth
           )
@@ -140,7 +141,7 @@ trait LoneElement {
    * @param collection the collection on which to add the <code>loneElement</code> method
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
+  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
 
   /**
    * Wrapper class that adds a <code>loneElement</code> method to Java Map for which
@@ -159,7 +160,7 @@ trait LoneElement {
    * @tparam JMAP the "Java Map type constructor" for the collection on which to add the <code>loneElement</code> method
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
+  final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier) {
 
     def loneElement: org.scalatest.Entry[K, V] = {
       collecting.loneElementOf(jmap) match {
@@ -177,8 +178,8 @@ trait LoneElement {
   }
 
   // Needed for Java Map to work, any better solution?
-  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): LoneElementJavaMapWrapper[K, V, JMAP]  = {
-    new LoneElementJavaMapWrapper[K, V, JMAP](jmap)(collecting)
+  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier): LoneElementJavaMapWrapper[K, V, JMAP]  = {
+    new LoneElementJavaMapWrapper[K, V, JMAP](jmap)(collecting, prettifier)
   }
 
   /**
@@ -196,7 +197,7 @@ trait LoneElement {
    * @param s the <code>String</code> to wrap
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementStringWrapper(s: String)(implicit collecting: Collecting[Char, String]) {
+  final class LoneElementStringWrapper(s: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier) {
 
     def loneElement: Char = {
       if (s.length == 1)
@@ -220,8 +221,8 @@ trait LoneElement {
    * @param s the <code>String</code> to wrap
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  implicit def convertToStringLoneElementWrapper(s: String)(implicit collecting: Collecting[Char, String]): LoneElementStringWrapper =
-    new LoneElementStringWrapper(s)(collecting)
+  implicit def convertToStringLoneElementWrapper(s: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier): LoneElementStringWrapper =
+    new LoneElementStringWrapper(s)(collecting, prettifier)
 }
 
 /**

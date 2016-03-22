@@ -124,6 +124,8 @@ import exceptions.NullArgumentException
  */
 trait Requirements {
 
+  //implicit val prettifier = Prettifier.default
+
   import language.experimental.macros
 
   /**
@@ -154,7 +156,7 @@ trait Requirements {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
-        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage(prettifier), clue)
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
         throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse()(prettifier) else failureMessage)
       }
     }
@@ -169,7 +171,7 @@ trait Requirements {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
-        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage(prettifier), clue)
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
         throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse()(prettifier) else failureMessage)
       }
     }

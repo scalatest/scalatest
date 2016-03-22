@@ -17,8 +17,6 @@ package org.scalatest
 
 import exceptions.TestCanceledException
 import exceptions.TestPendingException
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
 import scala.reflect.ClassTag
 import Assertions.areEqualComparingArraysStructurally
 import org.scalactic.TripleEquals
@@ -416,7 +414,9 @@ import org.scalactic.Requirements._
  *
  * @author Bill Venners
  */
-trait Assertions extends TripleEquals {
+trait Assertions extends TripleEquals  {
+
+  //implicit val prettifier = Prettifier.default
 
   import language.experimental.macros
 
@@ -502,9 +502,9 @@ trait Assertions extends TripleEquals {
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
     def macroAssert(bool: Bool, clue: Any, prettifier: Prettifier): Assertion = {
-      requireNonNull(clue)
+      requireNonNull(clue)(prettifier)
       if (!bool.value) {
-        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage(prettifier))
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
       }
       Succeeded
@@ -517,9 +517,9 @@ trait Assertions extends TripleEquals {
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
     def macroAssume(bool: Bool, clue: Any, prettifier: Prettifier): Assertion = {
-      requireNonNull(clue)
+      requireNonNull(clue)(prettifier)
       if (!bool.value) {
-        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage(prettifier))
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
         throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
       }
       Succeeded
