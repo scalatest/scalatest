@@ -29,35 +29,35 @@ package org.scalactic
  */
 trait Bool {
 
-  private def makeString(raw: String, args: Array[Any]): String =
-    Resources.formatString(raw, args.map(Prettifier.default))
+  private def makeString(raw: String, args: Array[Any])(implicit prettifier: Prettifier): String =
+    Resources.formatString(raw, args.map(prettifier))
 
   /**
    * Construct and return failure message, by applying arguments returned from <code>failureMessageArgs</code> to
    * raw message returned from <code>rawFailureMessage</code>
    */
-  def failureMessage: String =
+  def failureMessage(implicit prettifier: Prettifier): String =
     if (failureMessageArgs.isEmpty) rawFailureMessage else makeString(rawFailureMessage, failureMessageArgs.toArray)
 
   /**
    * Construct and return negated failure message, by applying arguments returned from <code>negatedFailureMessageArgs</code> to
    * raw message returned from <code>rawNegatedFailureMessage</code>
    */
-  def negatedFailureMessage: String =
+  def negatedFailureMessage(implicit prettifier: Prettifier): String =
     if (negatedFailureMessageArgs.isEmpty) rawNegatedFailureMessage else makeString(rawNegatedFailureMessage, negatedFailureMessageArgs.toArray)
 
   /**
    * Construct and return mid sentence failure message, by applying arguments returned from <code>midSentenceFailureMessageArgs</code> to
    * raw message returned from <code>rawMidSentenceFailureMessage</code>
    */
-  def midSentenceFailureMessage: String =
+  def midSentenceFailureMessage(implicit prettifier: Prettifier): String =
     if (midSentenceFailureMessageArgs.isEmpty) rawMidSentenceFailureMessage else makeString(rawMidSentenceFailureMessage, midSentenceFailureMessageArgs.toArray)
 
   /**
    * Construct and return mid sentence negated failure message, by applying arguments returned from <code>midSentenceNegatedFailureMessageArgs</code> to
    * raw message returned from <code>rawMidSentenceNegatedFailureMessage</code>
    */
-  def midSentenceNegatedFailureMessage: String =
+  def midSentenceNegatedFailureMessage(implicit prettifier: Prettifier): String =
     if (midSentenceNegatedFailureMessageArgs.isEmpty) rawMidSentenceNegatedFailureMessage else makeString(rawMidSentenceNegatedFailureMessage, midSentenceNegatedFailureMessageArgs.toArray)
 
   /**
