@@ -23,7 +23,7 @@ object ScalatestBuild extends Build {
 
   val releaseVersion = "3.0.0-M15"
 
-  val scalacheckVersion = "1.12.5"
+  val scalacheckVersion = "1.13.0"
 
   val githubTag = "release-3.0.0-M15-for-scala-2.11-and-2.10" // for scaladoc source urls
 
