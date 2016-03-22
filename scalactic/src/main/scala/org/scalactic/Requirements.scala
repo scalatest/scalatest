@@ -150,12 +150,12 @@ trait Requirements {
      * @param bool the <code>Bool</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalArgumentException</code>'s error message when the requirement failed
      */
-    def macroRequire(bool: Bool, clue: Any) {
+    def macroRequire(bool: Bool, clue: Any, prettifier: Prettifier) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
-        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
-        throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse else failureMessage)
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage(prettifier), clue)
+        throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse()(prettifier) else failureMessage)
       }
     }
 
@@ -165,12 +165,12 @@ trait Requirements {
      * @param bool the <code>Bool</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when the requirement failed
      */
-    def macroRequireState(bool: Bool, clue: Any) {
+    def macroRequireState(bool: Bool, clue: Any, prettifier: Prettifier) {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
-        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
-        throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse else failureMessage)
+        val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage(prettifier), clue)
+        throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse()(prettifier) else failureMessage)
       }
     }
 
@@ -180,7 +180,7 @@ trait Requirements {
      * @param variableNames names of variable passed as appear in source
      * @param arguments arguments to check for <code>null</code> value
      */
-    def macroRequireNonNull(variableNames: Array[String], arguments: Array[Any]) {
+    def macroRequireNonNull(variableNames: Array[String], arguments: Array[Any], prettifier: Prettifier) {
       val nullList = arguments.zipWithIndex.filter { case (e, idx) =>
         e == null
       }
@@ -191,14 +191,14 @@ trait Requirements {
         }
         val errorMessage =
           if (nullCount == 1)
-            FailureMessages.wasNull(UnquotedString(nullVariableNames(0)))
+            FailureMessages.wasNull(UnquotedString(nullVariableNames(0)))(prettifier)
           else if (nullCount == 2) {
             val combinedVariableNames = Resources.and(nullVariableNames.head, nullVariableNames.last)
-            FailureMessages.wereNull(UnquotedString(combinedVariableNames))
+            FailureMessages.wereNull(UnquotedString(combinedVariableNames))(prettifier)
           }
           else {
             val combinedVariableNames = Resources.commaAnd(nullVariableNames.dropRight(1).mkString(Resources.comma), nullVariableNames.last)
-            FailureMessages.wereNull(UnquotedString(combinedVariableNames))
+            FailureMessages.wereNull(UnquotedString(combinedVariableNames))(prettifier)
           }
         throw new NullArgumentException(errorMessage)
       }
@@ -227,7 +227,7 @@ trait Requirements {
    * @param condition the boolean condition to check as requirement
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    */
-  def require(condition: Boolean): Unit = macro RequirementsMacro.require
+  def require(condition: Boolean)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.require
 
   /**
    * Require that a boolean condition about an argument passed to a method, function, or constructor,
@@ -244,7 +244,7 @@ trait Requirements {
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  def require(condition: Boolean, clue: Any): Unit = macro RequirementsMacro.requireWithClue
+  def require(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.requireWithClue
 
   /**
    * Require that a boolean condition is true about the state of an object on which a method has been invoked.
@@ -261,7 +261,7 @@ trait Requirements {
    * @param condition the boolean condition to check as requirement
    * @throws IllegalStateException if the condition is <code>false</code>.
    */
-  def requireState(condition: Boolean): Unit = macro RequirementsMacro.requireState
+  def requireState(condition: Boolean)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.requireState
 
   /**
    * Require that a boolean condition about the state of an object on which a method has been
@@ -280,7 +280,7 @@ trait Requirements {
    * @throws IllegalStateException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  def requireState(condition: Boolean, clue: Any): Unit = macro RequirementsMacro.requireStateWithClue
+  def requireState(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.requireStateWithClue
 
   /**
    * Require that all passed arguments are non-null.
@@ -294,7 +294,7 @@ trait Requirements {
    * @param arguments arguments to check for <code>null</code> value
    * @throws NullArgumentException if any of the arguments are <code>null</code>.
    */
-  def requireNonNull(arguments: Any*): Unit = macro RequirementsMacro.requireNonNull
+  def requireNonNull(arguments: Any*)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.requireNonNull
 }
 
 /**
@@ -309,8 +309,8 @@ private[scalactic] object RequirementsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message if requirement failed
    */
-  def require(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", context.literal(""))
+  def require(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", context.literal(""), prettifier)
 
   /**
    * Provides requirement implementation for <code>Requirements.require(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -320,8 +320,8 @@ private[scalactic] object RequirementsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message (clue included) if requirement failed
    */
-  def requireWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", clue)
+  def requireWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[_]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", clue, prettifier)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean)</code>, with rich error message.
@@ -330,8 +330,8 @@ private[scalactic] object RequirementsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
    */
-  def requireState(context: Context)(condition: context.Expr[Boolean]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", context.literal(""))
+  def requireState(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", context.literal(""), prettifier)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -341,17 +341,18 @@ private[scalactic] object RequirementsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message (clue included) if requirement failed
    */
-  def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", clue)
+  def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[_]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", clue, prettifier)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireNonNull(arguments: Any*)</code>, with rich error message.
    *
    * @param context macro context
    * @param arguments original arguments expression(s)
+   * @param prettifier <code>Prettifier</code> to be used for error message
    * @return transformed expression that performs the requirement check and throw <code>NullArgumentException</code> with rich error message if requirement failed
    */
-  def requireNonNull(context: Context)(arguments: context.Expr[Any]*): context.Expr[Unit] = {
+  def requireNonNull(context: Context)(arguments: context.Expr[Any]*)(prettifier: context.Expr[_]): context.Expr[Unit] = {
     import context.universe._
 
     // generate AST that create array containing the argument name in source (get from calling 'show')
@@ -399,7 +400,7 @@ private[scalactic] object RequirementsMacro {
           Ident("requirementsHelper"),
           newTermName("macroRequireNonNull")
         ),
-        List(variablesNamesArray, argumentsArray)
+        List(variablesNamesArray, argumentsArray, prettifier.tree)
       )
     )
   }

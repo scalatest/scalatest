@@ -69,7 +69,7 @@ private[scalatest] object DiagrammedAssertionsMacro {
    * The macro implementation, it'll try to detect if it is a multiline expression, if it is, it'll just fallback to use BooleanMacro.
    *
    */
-  private def macroImpl(context: Context)(methodName: String, condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Assertion] = {
+  private def macroImpl(context: Context)(methodName: String, condition: context.Expr[Boolean], clue: context.Expr[Any], prettifier: context.Expr[_]): context.Expr[Assertion] = {
     import context.universe._
 
     val startLine = getFirstLine(context)(condition.tree) // Get the expression first line number
@@ -78,18 +78,18 @@ private[scalatest] object DiagrammedAssertionsMacro {
     if (startLine == endLine) // Only use diagram macro if it is one line, where startLine will be equaled to endLine
       new DiagrammedExprMacro[context.type](context, "diagrammedAssertionsHelper").genMacro(condition, methodName, clue, getSourceText(context)(condition.tree))
     else // otherwise we'll just fallback to use BooleanMacro
-      new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, methodName, clue)
+      new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, methodName, clue, prettifier)
   }
 
-  def assert(context: Context)(condition: context.Expr[Boolean]): context.Expr[Assertion] =
-    macroImpl(context)("macroAssert", condition, context.literal(""))
+  def assert(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_]): context.Expr[Assertion] =
+    macroImpl(context)("macroAssert", condition, context.literal(""), prettifier)
 
-  def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Assertion] =
-    macroImpl(context)("macroAssert", condition, clue)
+  def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[_]): context.Expr[Assertion] =
+    macroImpl(context)("macroAssert", condition, clue, prettifier)
 
-  def assume(context: Context)(condition: context.Expr[Boolean]): context.Expr[Assertion] =
-    macroImpl(context)("macroAssume", condition, context.literal(""))
+  def assume(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[_]): context.Expr[Assertion] =
+    macroImpl(context)("macroAssume", condition, context.literal(""), prettifier)
 
-  def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any]): context.Expr[Assertion] =
-    macroImpl(context)("macroAssume", condition, clue)
+  def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[_]): context.Expr[Assertion] =
+    macroImpl(context)("macroAssume", condition, clue, prettifier)
 }

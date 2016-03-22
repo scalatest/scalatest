@@ -15,6 +15,12 @@
  */
 package org.scalatest
 
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+
 import scala.reflect.ClassTag
 import Fact._
 import org.scalactic.Bool
@@ -26,7 +32,7 @@ private[scalatest] trait Expectations {
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 
   // TODO: Need to make this and assertResult use custom equality I think.
-  def expectResult(expected: Any)(actual: Any): Fact = {
+  def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier): Fact = {
     if (!Assertions.areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedButGot
@@ -42,7 +48,7 @@ private[scalatest] trait Expectations {
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act)
-      )
+      )(prettifier)
     }
     else {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
@@ -59,11 +65,11 @@ private[scalatest] trait Expectations {
         Vector(exp, act),
         Vector(exp, act),
         Vector(exp, act)
-      )
+      )(prettifier)
     }
   }
 
-  def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Expectation = {
+  def expectThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier): Expectation = {
     val clazz = classTag.runtimeClass
     try {
       f
@@ -76,7 +82,7 @@ private[scalatest] trait Expectations {
         simplifiedFactMessageArgs = Vector.empty,
         midSentenceFactMessageArgs = Vector(clazz.getName),
         midSentenceSimplifiedFactMessageArgs = Vector.empty
-      ) 
+      )(prettifier)
     }
     catch {
       case u: Throwable => {
@@ -91,7 +97,7 @@ private[scalatest] trait Expectations {
             midSentenceFactMessageArgs = Vector(clazz.getName, u.getClass.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(u.getClass.getName),
             cause = Some(u)
-          ) 
+          )(prettifier)
         else
           Yes(
             rawFactMessage = Resources.rawExceptionExpected,
@@ -103,14 +109,14 @@ private[scalatest] trait Expectations {
             midSentenceFactMessageArgs = Vector(clazz.getName),
             midSentenceSimplifiedFactMessageArgs = Vector(clazz.getName),
             cause = Some(u)
-          )
+          )(prettifier)
       }
     }
   }
 
   class ExpectationsHelper {
 
-    def macroExpect(bool: Bool, clue: Any): Fact = {
+    def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier): Fact = {
       //requireNonNull(clue)
       if (!bool.value)
         No(
@@ -122,7 +128,7 @@ private[scalatest] trait Expectations {
           bool.failureMessageArgs,
           bool.failureMessageArgs,
           bool.failureMessageArgs
-        )
+        )(prettifier)
       else
         Yes(
           bool.rawNegatedFailureMessage,
@@ -133,7 +139,7 @@ private[scalatest] trait Expectations {
           bool.negatedFailureMessageArgs,
           bool.negatedFailureMessageArgs,
           bool.negatedFailureMessageArgs
-        )
+        )(prettifier)
     }
 
   }
@@ -142,13 +148,13 @@ private[scalatest] trait Expectations {
 
   import language.experimental.macros
 
-  def expect(expression: Boolean): Fact = macro ExpectationsMacro.expect
+  def expect(expression: Boolean)(implicit prettifier: Prettifier): Fact = macro ExpectationsMacro.expect
 
-  def expectDoesNotCompile(code: String): Fact = macro CompileMacro.expectDoesNotCompileImpl
+  def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier): Fact = macro CompileMacro.expectDoesNotCompileImpl
 
-  def expectCompiles(code: String): Fact = macro CompileMacro.expectCompilesImpl
+  def expectCompiles(code: String)(implicit prettifier: Prettifier): Fact = macro CompileMacro.expectCompilesImpl
 
-  def expectTypeError(code: String): Fact = macro CompileMacro.expectTypeErrorImpl
+  def expectTypeError(code: String)(implicit prettifier: Prettifier): Fact = macro CompileMacro.expectTypeErrorImpl
 }
 
 private[scalatest] object Expectations extends Expectations

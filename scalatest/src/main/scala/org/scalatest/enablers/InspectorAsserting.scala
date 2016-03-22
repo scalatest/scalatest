@@ -15,6 +15,7 @@
  */
 package org.scalatest.enablers
 
+import org.scalactic.Prettifier
 import org.scalatest._
 import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec
@@ -275,11 +276,11 @@ abstract class UnitInspectorAsserting {
 
 abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  private[scalatest] implicit def assertingNatureOfExpectation: InspectorAsserting[Expectation] { type Result = Expectation } = {
+  private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
     new InspectorAssertingImpl[Expectation] {
       type Result = Expectation
-      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Expectation = Fact.No(message)
+      def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Expectation = Fact.No(message)(prettifier)
     }
   }
 }

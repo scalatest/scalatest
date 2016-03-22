@@ -22,6 +22,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import org.scalatest.exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -329,7 +330,7 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  def checkNoException(fun: => Any): Assertion = {
+  def checkNoException(fun: => Any)(implicit prettifier: Prettifier): Assertion = {
     try {
       fun
       Succeeded
@@ -346,11 +347,11 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  def indicateSuccess(message: => String): Assertion = Succeeded
+  def indicateSuccess(message: => String)(implicit prettifier: Prettifier): Assertion = Succeeded
 
-  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
+  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String)(implicit prettifier: Prettifier): Assertion = Succeeded
 
-  def indicateFailure(failureMessage: => String): Assertion = {
+  def indicateFailure(failureMessage: => String)(implicit prettifier: Prettifier): Assertion = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 0
     // SKIP-SCALATESTJS-END
@@ -358,7 +359,7 @@ private[scalatest] object MatchersHelper {
     throw newTestFailedException(failureMessage, None, stackDepth)
   }
 
-  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String): Assertion = {
+  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String)(implicit prettifier: Prettifier): Assertion = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 0
     // SKIP-SCALATESTJS-END
@@ -370,14 +371,14 @@ private[scalatest] object MatchersHelper {
     )
   }
 
-  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Assertion =
+  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0)(implicit prettifier: Prettifier): Assertion =
     throw newTestFailedException(
       if (shouldBeTrue) failureMessage else negatedFailureMessage,
       None,
       stackDepthAdjustment
     )
 
-  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], stackDepthAdjustment: Int): Assertion =
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], stackDepthAdjustment: Int)(implicit prettifier: Prettifier): Assertion =
     throw newTestFailedException(
       failureMessage,
       optionalCause,
@@ -386,7 +387,7 @@ private[scalatest] object MatchersHelper {
 
   def indicateFailure(shouldBeTrue: Boolean, withFriendlyReminder: Boolean, failureMessageWithFriendlyReminder: => String, failureMessageWithoutFriendlyReminder: => String,
                                          negatedFailureMessageWithFriendlyReminder: => String, negatedFailureMessageWithoutFriendlyReminder: => String, optionalCause: Option[Throwable],
-                                         stackDepthAdjustment: Int): Assertion =
+                                         stackDepthAdjustment: Int)(implicit prettifier: Prettifier): Assertion =
     throw newTestFailedException(
       if (shouldBeTrue)
         if (withFriendlyReminder)
@@ -402,6 +403,6 @@ private[scalatest] object MatchersHelper {
       stackDepthAdjustment
     )
 
-  def indicateFailure(e: TestFailedException): Assertion =
+  def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Assertion =
     throw e
 }

@@ -15,6 +15,15 @@
  */
 package org.scalatest
 
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
+import org.scalactic.Prettifier
 import org.scalatest.exceptions.StackDepthExceptionHelper
 
 import scala.language.experimental.macros
@@ -80,7 +89,7 @@ private[scalatest] object CompileMacro {
     }
   }
 
-  def expectTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Fact] = {
+  def expectTypeErrorImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
     import c.universe._
 
     // extract code snippet
@@ -100,7 +109,7 @@ private[scalatest] object CompileMacro {
           Vector.empty,
           Vector.empty,
           Vector.empty
-        )
+        )(prettifier.splice)
       }
     } catch {
       case e: TypecheckException =>
@@ -116,7 +125,7 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty
-          )
+          )(prettifier.splice)
         }
       case e: ParseException =>
         // parse error, generate code to throw TestFailedException
@@ -131,7 +140,7 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty
-          )
+          )(prettifier.splice)
         }
     }
   }
@@ -168,7 +177,7 @@ private[scalatest] object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to return Fact (Yes or No).
-  def expectDoesNotCompileImpl(c: Context)(code: c.Expr[String]): c.Expr[Fact] = {
+  def expectDoesNotCompileImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
     import c.universe._
 
     // extract code snippet
@@ -188,7 +197,7 @@ private[scalatest] object CompileMacro {
           Vector.empty,
           Vector.empty,
           Vector.empty
-        )
+        )(prettifier.splice)
         //throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
       }
     } catch {
@@ -205,7 +214,7 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty
-          )
+          )(prettifier.splice)
         }
       case e: ParseException =>
         val messageExpr = c.literal(Resources.didNotCompile(codeStr))
@@ -220,7 +229,7 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty
-          )
+          )(prettifier.splice)
           //Succeeded
         }
     }
@@ -255,7 +264,7 @@ private[scalatest] object CompileMacro {
     }
   }
 
-  def expectCompilesImpl(c: Context)(code: c.Expr[String]): c.Expr[Fact] = {
+  def expectCompilesImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
     import c.universe._
 
     // extract code snippet
@@ -275,7 +284,7 @@ private[scalatest] object CompileMacro {
           Vector.empty,
           Vector.empty,
           Vector.empty
-        )
+        )(prettifier.splice)
         //Succeeded
       }
     } catch {
@@ -292,7 +301,7 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty
-          )
+          )(prettifier.splice)
         }
       case e: ParseException =>
         // parse error, compiles fails, generate code to throw TestFailedException
@@ -307,7 +316,7 @@ private[scalatest] object CompileMacro {
             Vector.empty,
             Vector.empty,
             Vector.empty
-          )
+          )(prettifier.splice)
         }
     }
   }
@@ -400,7 +409,7 @@ private[scalatest] object CompileMacro {
   def mustNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
     assertNotCompileImpl(c)(compileWord)("must")
 
-  def expectNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] = {
+  def expectNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord], prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
 
     import c.universe._
 
@@ -411,20 +420,20 @@ private[scalatest] object CompileMacro {
         // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(code))
         reify {
-          Fact.No(messageExpr.splice)
+          Fact.No(messageExpr.splice)(prettifier.splice)
         }
       } catch {
         case e: TypecheckException =>
           val messageExpr = c.literal(Resources.compiledSuccessfully(code))
           reify {
             // type check error, compile fails as expected, generate code to return Succeeded
-            Fact.Yes(messageExpr.splice)
+            Fact.Yes(messageExpr.splice)(prettifier.splice)
           }
         case e: ParseException =>
           val messageExpr = c.literal(Resources.compiledSuccessfully(code))
           reify {
             // parse error, compile fails as expected, generate code to return Succeeded
-            Fact.Yes(messageExpr.splice)
+            Fact.Yes(messageExpr.splice)(prettifier.splice)
           }
       }
     }
@@ -482,8 +491,8 @@ private[scalatest] object CompileMacro {
   }
 
   // used by willNot compile syntax, delegate to expectNotCompileImpl to generate code
-  def willNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] =
-    expectNotCompileImpl(c)(compileWord)
+  def willNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] =
+    expectNotCompileImpl(c)(compileWord, prettifier)
 
   // check that a code snippet does not compile
   def assertNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(shouldOrMust: String): c.Expr[Assertion] = {
@@ -574,7 +583,7 @@ private[scalatest] object CompileMacro {
   def mustNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Assertion] =
     assertNotTypeCheckImpl(c)(typeCheckWord)("must")
 
-  def expectNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Fact] = {
+  def expectNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord], prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
 
     import c.universe._
 
@@ -585,20 +594,20 @@ private[scalatest] object CompileMacro {
         // both parse and type check succeeded unexpectedly, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(code))
         reify {
-          Fact.No(messageExpr.splice)
+          Fact.No(messageExpr.splice)(prettifier.splice)
         }
       } catch {
         case e: TypecheckException =>
           val messageExpr = c.literal(Resources.gotTypeErrorAsExpected(code))
           reify {
             // type check error as expected, generate code to return Succeeded
-            Fact.Yes(messageExpr.splice)
+            Fact.Yes(messageExpr.splice)(prettifier.splice)
           }
         case e: ParseException =>
           // expect type check error but got parse error, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, code))
           reify {
-            Fact.No(messageExpr.splice)
+            Fact.No(messageExpr.splice)(prettifier.splice)
           }
       }
     }
@@ -656,8 +665,8 @@ private[scalatest] object CompileMacro {
   }
 
   // used by willNot typeCheck syntax, delegate to expectNotTypeCheckImpl to generate code
-  def willNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Fact] =
-    expectNotTypeCheckImpl(c)(typeCheckWord)
+  def willNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] =
+    expectNotTypeCheckImpl(c)(typeCheckWord, prettifier)
 
   // check that a code snippet compiles
   def assertCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Assertion] = {
@@ -747,7 +756,7 @@ private[scalatest] object CompileMacro {
   def mustCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
     assertCompileImpl(c)(compileWord)("must")
 
-  def expectCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] = {
+  def expectCompileImpl(c: Context)(compileWord: c.Expr[CompileWord], prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
     import c.universe._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if either parse error or type check error
@@ -757,20 +766,20 @@ private[scalatest] object CompileMacro {
         val messageExpr = c.literal(Resources.compiledSuccessfully(code))
         // both parse and type check succeeded, compile succeeded expectedly, generate code to do nothing
         reify {
-          Fact.Yes(messageExpr.splice)
+          Fact.Yes(messageExpr.splice)(prettifier.splice)
         }
       } catch {
         case e: TypecheckException =>
           // type check error, compile fails unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, code))
           reify {
-            Fact.No(messageExpr.splice)
+            Fact.No(messageExpr.splice)(prettifier.splice)
           }
         case e: ParseException =>
           // parse error, compile failes unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, code))
           reify {
-            Fact.No(messageExpr.splice)
+            Fact.No(messageExpr.splice)(prettifier.splice)
           }
       }
     }
@@ -828,7 +837,7 @@ private[scalatest] object CompileMacro {
   }
 
   // used by will compile syntax, delegate to expectCompileImpl to generate code
-  def willCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Fact] =
-    willCompileImpl(c)(compileWord)
+  def willCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] =
+    expectCompileImpl(c)(compileWord, prettifier)
 
 }

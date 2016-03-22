@@ -138,13 +138,13 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param aType an instance of <code>ResultOfATypeInvocation</code>
    */
-  def expectAType(left: Any, aType: ResultOfATypeInvocation[_]): org.scalatest.Fact = {
+  def expectAType(left: Any, aType: ResultOfATypeInvocation[_], prettifier: Prettifier): org.scalatest.Fact = {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
+      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(prettifier)
     }
-    else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))
+    else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))(prettifier)
   }
 
   /**
@@ -170,12 +170,12 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
    */
-  def expectAnType(left: Any, anType: ResultOfAnTypeInvocation[_]): org.scalatest.Fact = {
+  def expectAnType(left: Any, anType: ResultOfAnTypeInvocation[_], prettifier: Prettifier): org.scalatest.Fact = {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))
-    } else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))
+      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(prettifier)
+    } else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))(prettifier)
   }
 
   /**
