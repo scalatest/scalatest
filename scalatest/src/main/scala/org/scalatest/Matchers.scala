@@ -2023,7 +2023,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true)
       if (matcherResult.matches != shouldBeTrue) {
         indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
@@ -2058,7 +2058,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                 ^
      * </pre>
      */
-    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false)
       if (matcherResult.matches != shouldBeTrue) {
         indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
@@ -3579,7 +3579,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       doCollected(collected, xs, original, "be", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, false)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3597,7 +3597,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       doCollected(collected, xs, original, "be", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
@@ -3615,7 +3615,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       doCollected(collected, xs, original, "be", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
@@ -5043,7 +5043,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       doCollected(collected, xs, original, "a", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true)
         if (matcherResult.matches != shouldBeTrue) {
@@ -5072,7 +5072,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       doCollected(collected, xs, original, "an", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false)
         if (matcherResult.matches != shouldBeTrue) {
@@ -5208,7 +5208,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                           ^
      * </pre>
      */
-    def apply(right: Symbol): Matcher[Array[T]] =
+    def apply(right: Symbol)(implicit prettifier: Prettifier): Matcher[Array[T]] =
       new Matcher[Array[T]] {
         def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false)
       }
@@ -5694,7 +5694,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, 6)
         if (!matcherResult.matches) 
@@ -5711,7 +5711,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, 6)
         if (!matcherResult.matches) {
@@ -5729,7 +5729,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, 6)
         if (!matcherResult.matches) {
@@ -7234,7 +7234,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true)
       if (!matcherResult.matches) 
         indicateFailure(matcherResult.failureMessage)
@@ -7249,7 +7249,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true)
       if (!matcherResult.matches) {
         indicateFailure(
@@ -7267,7 +7267,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false)
       if (!matcherResult.matches) {
         indicateFailure(
