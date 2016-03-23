@@ -21,7 +21,7 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.11.8"
 
-  val releaseVersion = "3.0.0-M16-SNAP2"
+  val releaseVersion = "3.0.0-M16-SNAP3"
 
   val scalacheckVersion = "1.13.0"
 
@@ -564,6 +564,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.enablers",
         "org.scalatest.events",
@@ -653,6 +654,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.easymock",
         "org.scalatest.enablers",
