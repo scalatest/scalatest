@@ -22,7 +22,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic.Prettifier
+import org.scalactic.{Prettifier, SourceInfo}
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -189,7 +189,7 @@ private[scalatest] object MatchersHelper {
   }
 
   // SKIP-SCALATESTJS-START
-  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0)(implicit prettier: Prettifier): MatchResult = {
+  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0)(implicit prettier: Prettifier, sourceInfo: SourceInfo): MatchResult = {
 
     // If 'empty passed, rightNoTick would be "empty"
     val propertyName = right.name

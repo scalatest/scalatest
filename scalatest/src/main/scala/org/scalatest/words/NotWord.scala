@@ -437,10 +437,10 @@ final class NotWord {
    *                    ^
    * </pre>
    */
-  def be[T <: AnyRef](symbol: Symbol): Matcher[T] = {
+  def be[T <: AnyRef](symbol: Symbol)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = {
-        val positiveMatchResult = matchSymbolToPredicateMethod(left, symbol, false, false)
+        val positiveMatchResult = matchSymbolToPredicateMethod(left, symbol, false, false)(prettifier, sourceInfo)
         MatchResult(
           !positiveMatchResult.matches,
           positiveMatchResult.rawNegatedFailureMessage,
@@ -487,10 +487,10 @@ final class NotWord {
    *                           ^
    * </pre>
    */
-  def be[T <: AnyRef](resultOfAWordApplication: ResultOfAWordToSymbolApplication): Matcher[T] = {
+  def be[T <: AnyRef](resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = {
-        val positiveMatchResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)
+        val positiveMatchResult = matchSymbolToPredicateMethod(left, resultOfAWordApplication.symbol, true, true)(prettifier, sourceInfo)
         MatchResult(
           !positiveMatchResult.matches,
           positiveMatchResult.rawNegatedFailureMessage,
@@ -561,10 +561,10 @@ final class NotWord {
    *                            ^
    * </pre>
    */
-  def be[T <: AnyRef](resultOfAnWordApplication: ResultOfAnWordToSymbolApplication): Matcher[T] = {
+  def be[T <: AnyRef](resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[T] = {
     new Matcher[T] {
       def apply(left: T): MatchResult = {
-        val positiveMatchResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false)
+        val positiveMatchResult = matchSymbolToPredicateMethod(left, resultOfAnWordApplication.symbol, true, false)(prettifier, sourceInfo)
         MatchResult(
           !positiveMatchResult.matches,
           positiveMatchResult.rawNegatedFailureMessage,

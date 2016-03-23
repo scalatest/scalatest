@@ -34,6 +34,7 @@ import org.scalactic.TripleEqualsSupport.TripleEqualsInvocationOnSpread
 import org.scalactic.CanEqual
 import org.scalactic.Prettifier
 import org.scalactic.Every
+import org.scalactic.SourceInfo
 import org.scalatest.words._
 // SKIP-SCALATESTJS-START
 import MatchersHelper.matchSymbolToPredicateMethod
@@ -2023,8 +2024,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true)
+    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true)(prettifier, sourceInfo)
       if (matcherResult.matches != shouldBeTrue) {
         indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
@@ -2058,8 +2059,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                 ^
      * </pre>
      */
-    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false)
+    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false)(prettifier, sourceInfo)
       if (matcherResult.matches != shouldBeTrue) {
         indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
@@ -3579,9 +3580,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
+    def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       doCollected(collected, xs, original, "be", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, false)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, false)(prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage, None, innerStackDepth)
         }
@@ -3597,9 +3598,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
+    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       doCollected(collected, xs, original, "be", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true)(prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage, None, innerStackDepth)
         }
@@ -3615,9 +3616,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
+    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       doCollected(collected, xs, original, "be", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false)(prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage, None, innerStackDepth)
         }
@@ -5043,9 +5044,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
+    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       doCollected(collected, xs, original, "a", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true)(prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(
             shouldBeTrue,
@@ -5072,9 +5073,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                   ^
      * </pre>
      */
-    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
+    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       doCollected(collected, xs, original, "an", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false)(prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(
             shouldBeTrue,
@@ -5208,9 +5209,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                           ^
      * </pre>
      */
-    def apply(right: Symbol)(implicit prettifier: Prettifier): Matcher[Array[T]] =
+    def apply(right: Symbol)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[Array[T]] =
       new Matcher[Array[T]] {
-        def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false)
+        def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false)(prettifier, sourceInfo)
       }
 
     /**
@@ -5694,9 +5695,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, 6)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, 6)(prettifier, sourceInfo)
         if (!matcherResult.matches) 
           indicateFailure(matcherResult.failureMessage, None, innerStackDepth)
         else indicateSuccess(matcherResult.negatedFailureMessage)
@@ -5711,9 +5712,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, 6)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, 6)(prettifier, sourceInfo)
         if (!matcherResult.matches) {
           indicateFailure(matcherResult.failureMessage, None, 6)
         }
@@ -5729,9 +5730,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, 6)
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, 6)(prettifier, sourceInfo)
         if (!matcherResult.matches) {
           indicateFailure(matcherResult.failureMessage, None, 6)
         }
@@ -7234,8 +7235,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true)
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true)(prettifier, sourceInfo)
       if (!matcherResult.matches) 
         indicateFailure(matcherResult.failureMessage)
       else indicateSuccess(matcherResult.negatedFailureMessage)
@@ -7249,8 +7250,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true)
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true)(prettifier, sourceInfo)
       if (!matcherResult.matches) {
         indicateFailure(
           matcherResult.failureMessage
@@ -7267,8 +7268,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false)
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false)(prettifier, sourceInfo)
       if (!matcherResult.matches) {
         indicateFailure(
           matcherResult.failureMessage

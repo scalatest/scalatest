@@ -53,6 +53,7 @@ import org.scalactic.Prettifier
 import org.scalactic.Every
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
+import org.scalactic.SourceInfo
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -505,8 +506,8 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                  ^
    * </pre>
    */
-  def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, false)
+  def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, false)(prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
     else
@@ -540,8 +541,8 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                        ^
    * </pre>
    */
-  def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true)
+  def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true)(prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
     else
@@ -575,8 +576,8 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    *                     ^
    * </pre>
    */
-  def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false)
+  def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false)(prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
     else
