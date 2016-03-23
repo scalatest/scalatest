@@ -15,15 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
+import org.scalactic.{Prettifier, SourceInfo}
 import org.scalatest.exceptions.StackDepthExceptionHelper
 
 import scala.language.experimental.macros
@@ -89,7 +81,7 @@ private[scalatest] object CompileMacro {
     }
   }
 
-  def expectTypeErrorImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
+  def expectTypeErrorImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Fact] = {
     import c.universe._
 
     // extract code snippet
@@ -177,7 +169,7 @@ private[scalatest] object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to return Fact (Yes or No).
-  def expectDoesNotCompileImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
+  def expectDoesNotCompileImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Fact] = {
     import c.universe._
 
     // extract code snippet
@@ -264,7 +256,7 @@ private[scalatest] object CompileMacro {
     }
   }
 
-  def expectCompilesImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
+  def expectCompilesImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Fact] = {
     import c.universe._
 
     // extract code snippet

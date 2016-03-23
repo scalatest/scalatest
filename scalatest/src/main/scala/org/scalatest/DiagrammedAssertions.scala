@@ -15,8 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
+import org.scalactic.{Prettifier, SourceInfo}
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 import org.scalactic.Requirements._
@@ -290,7 +289,7 @@ trait DiagrammedAssertions extends Assertions {
    * @param condition the boolean condition to assert
    * @throws TestFailedException if the condition is <code>false</code>.
    */
-  override def assert(condition: Boolean)(implicit prettifier: Prettifier): Assertion = macro DiagrammedAssertionsMacro.assert
+  override def assert(condition: Boolean)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = macro DiagrammedAssertionsMacro.assert
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -311,7 +310,7 @@ trait DiagrammedAssertions extends Assertions {
    * @throws TestFailedException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  override def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Assertion = macro DiagrammedAssertionsMacro.assertWithClue
+  override def assert(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = macro DiagrammedAssertionsMacro.assertWithClue
 
   /**
    * Assume that a boolean condition is true.
@@ -331,7 +330,7 @@ trait DiagrammedAssertions extends Assertions {
    * @param condition the boolean condition to assume
    * @throws TestCanceledException if the condition is <code>false</code>.
    */
-  override def assume(condition: Boolean)(implicit prettifier: Prettifier): Assertion = macro DiagrammedAssertionsMacro.assume
+  override def assume(condition: Boolean)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = macro DiagrammedAssertionsMacro.assume
 
   /**
    * Assume that a boolean condition, described in <code>String</code>
@@ -352,7 +351,7 @@ trait DiagrammedAssertions extends Assertions {
    * @throws TestCanceledException if the condition is <code>false</code>.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  override def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Assertion = macro DiagrammedAssertionsMacro.assumeWithClue
+  override def assume(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = macro DiagrammedAssertionsMacro.assumeWithClue
 }
 
 /**

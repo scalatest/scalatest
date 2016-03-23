@@ -15,17 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
+import org.scalactic.{Prettifier, SourceInfo}
 import org.scalatest.exceptions.StackDepthExceptionHelper
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
@@ -54,7 +44,7 @@ private[scalatest] sealed abstract class Fact {
 
   final def toBoolean: Boolean = isYes
 
-  final def toAssertion: Assertion = {
+  final def toAssertion(implicit sourceInfo: SourceInfo): Assertion = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 5
     // SKIP-SCALATESTJS-END
@@ -67,7 +57,7 @@ private[scalatest] sealed abstract class Fact {
   }
 
   // This is called internally by implicit conversions, which has different stack depth
-  private[scalatest] final def internalToAssertion: Assertion = {
+  private[scalatest] final def internalToAssertion(implicit sourceInfo: SourceInfo): Assertion = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 3
     // SKIP-SCALATESTJS-END

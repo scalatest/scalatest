@@ -16,10 +16,7 @@
 package org.scalatest
 
 import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
-import org.scalactic.Prettifier
+import org.scalactic.SourceInfo
 
 import scala.reflect.ClassTag
 import Fact._
@@ -32,7 +29,7 @@ private[scalatest] trait Expectations {
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 
   // TODO: Need to make this and assertResult use custom equality I think.
-  def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier): Fact = {
+  def expectResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Fact = {
     if (!Assertions.areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val rawFactMessage = Resources.rawExpectedButGot
@@ -116,7 +113,7 @@ private[scalatest] trait Expectations {
 
   class ExpectationsHelper {
 
-    def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier): Fact = {
+    def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier, sourceInfo: SourceInfo): Fact = {
       //requireNonNull(clue)
       if (!bool.value)
         No(
@@ -148,13 +145,13 @@ private[scalatest] trait Expectations {
 
   import language.experimental.macros
 
-  def expect(expression: Boolean)(implicit prettifier: Prettifier): Fact = macro ExpectationsMacro.expect
+  def expect(expression: Boolean)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Fact = macro ExpectationsMacro.expect
 
-  def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier): Fact = macro CompileMacro.expectDoesNotCompileImpl
+  def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Fact = macro CompileMacro.expectDoesNotCompileImpl
 
-  def expectCompiles(code: String)(implicit prettifier: Prettifier): Fact = macro CompileMacro.expectCompilesImpl
+  def expectCompiles(code: String)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Fact = macro CompileMacro.expectCompilesImpl
 
-  def expectTypeError(code: String)(implicit prettifier: Prettifier): Fact = macro CompileMacro.expectTypeErrorImpl
+  def expectTypeError(code: String)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Fact = macro CompileMacro.expectTypeErrorImpl
 }
 
 private[scalatest] object Expectations extends Expectations

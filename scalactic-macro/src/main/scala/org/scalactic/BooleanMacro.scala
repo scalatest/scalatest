@@ -785,13 +785,13 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
    *
    * {helperName}.{methodName}($org_scalatest_assert_macro_expr, clue)
    */
-  def callHelper(methodName: String, clueTree: Tree, prettifierTree: Tree): Apply =
+  def callHelper(methodName: String, clueTree: Tree, prettifierTree: Tree, sourceInfoTree: Tree): Apply =
     Apply(
       Select(
         Ident(newTermName(helperName)),
         newTermName(methodName)
       ),
-      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree, prettifierTree)
+      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree, prettifierTree, sourceInfoTree)
     )
 
   /**
@@ -802,13 +802,13 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
    *   [code generated from callHelper]
    * }
    */
-  def genMacro[T](booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any], prettifierExpr: Expr[_]): Expr[T] = {
+  def genMacro[T](booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any], prettifierExpr: Expr[_], sourceInfoExpr: Expr[_]): Expr[T] = {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =
       context.Expr(
         Block(
           valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
-          callHelper(methodName, clueExpr.tree, prettifierExpr.tree)
+          callHelper(methodName, clueExpr.tree, prettifierExpr.tree, sourceInfoExpr.tree)
         )
       )
     ownerRepair.repairOwners(expandedCode)
