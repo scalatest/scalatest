@@ -472,11 +472,6 @@ trait Assertions extends TripleEquals  {
    */
   class AssertionsHelper {
 
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepthAdjustment = 2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepthAdjustment = 0
-
     private def append(currentMessage: Option[String], clue: Any) = {
       val clueStr = clue.toString
       if (clueStr.isEmpty)
