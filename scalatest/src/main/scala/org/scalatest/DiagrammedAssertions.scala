@@ -226,11 +226,6 @@ trait DiagrammedAssertions extends Assertions {
       lines.mkString(Prettifier.lineSeparator)
     }
 
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepthAdjustment = 2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepthAdjustment = 0
-
     /**
      * Assert that the passed in <code>Bool</code> is <code>true</code>, else fail with <code>TestFailedException</code>
      * with error message that include a diagram showing expression values.
@@ -238,12 +233,12 @@ trait DiagrammedAssertions extends Assertions {
      * @param bool the <code>Bool</code> to assert for
      * @param clue optional clue to be included in <code>TestFailedException</code>'s error message when assertion failed
      */
-    def macroAssert(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String): Assertion = {
+    def macroAssert(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String, sourceInfo: SourceInfo): Assertion = {
       requireNonNull(clue)
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
-        throw newAssertionFailedException(failureMessage, None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
+        throw newAssertionFailedException(failureMessage, None, sourceInfo)
       }
       Succeeded
     }
@@ -255,12 +250,12 @@ trait DiagrammedAssertions extends Assertions {
      * @param bool the <code>Bool</code> to assume for
      * @param clue optional clue to be included in <code>TestCanceledException</code>'s error message when assertion failed
      */
-    def macroAssume(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String): Assertion = {
+    def macroAssume(bool: DiagrammedExpr[Boolean], clue: Any, sourceText: String, sourceInfo: SourceInfo): Assertion = {
       requireNonNull(clue)
       if (!bool.value) {
         val failureMessage =
           Some(clue + Prettifier.lineSeparator + Prettifier.lineSeparator + renderDiagram(sourceText, bool.anchorValues))
-        throw newTestCanceledException(failureMessage, None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
+        throw newTestCanceledException(failureMessage, None, sourceInfo)
       }
       Succeeded
     }

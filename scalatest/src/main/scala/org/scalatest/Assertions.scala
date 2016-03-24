@@ -548,9 +548,6 @@ trait Assertions extends TripleEquals  {
       case (Some(message), Some(cause)) => new TestCanceledException(message.toString, cause, stackDepth)
     }
 
-  private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
-    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment), None)
-
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], sourceInfo: SourceInfo): Throwable =
     new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(sourceInfo), None)
 
