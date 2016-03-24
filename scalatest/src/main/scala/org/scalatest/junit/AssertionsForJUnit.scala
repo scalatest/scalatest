@@ -18,6 +18,7 @@ package org.scalatest.junit
 import org.scalatest._
 import _root_.junit.framework.AssertionFailedError
 import exceptions.StackDepthExceptionHelper.getStackDepth
+import org.scalactic.SourceInfo
 
 /**
  * Trait that contains ScalaTest's basic assertion methods, suitable for use with JUnit.
@@ -106,6 +107,17 @@ trait AssertionsForJUnit extends Assertions {
   private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable = {
     val e = new Exception
     val stackDepth = getStackDepth(e.getStackTrace, fileName, methodName, stackDepthAdjustment) - 1
+    (optionalMessage, optionalCause) match {
+      case (None, None) => new JUnitTestFailedError(stackDepth)
+      case (None, Some(cause)) => new JUnitTestFailedError(cause, stackDepth)
+      case (Some(message), None) => new JUnitTestFailedError(message.toString, stackDepth)
+      case (Some(message), Some(cause)) => new JUnitTestFailedError(message.toString, cause, stackDepth)
+    }
+  }
+
+  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], sourceInfo: SourceInfo): Throwable = {
+    val e = new Exception
+    val stackDepth = getStackDepth(e.getStackTrace, sourceInfo)
     (optionalMessage, optionalCause) match {
       case (None, None) => new JUnitTestFailedError(stackDepth)
       case (None, Some(cause)) => new JUnitTestFailedError(cause, stackDepth)

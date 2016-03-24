@@ -505,7 +505,7 @@ trait Assertions extends TripleEquals  {
       requireNonNull(clue)(prettifier, sourceInfo)
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newAssertionFailedException(append(failureMessage, clue), None, "Assertions.scala", "macroAssert", stackDepthAdjustment)
+        throw newAssertionFailedException(append(failureMessage, clue), None, sourceInfo)
       }
       Succeeded
     }
@@ -520,7 +520,7 @@ trait Assertions extends TripleEquals  {
       requireNonNull(clue)(prettifier, sourceInfo)
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) None else Some(bool.failureMessage)
-        throw newTestCanceledException(append(failureMessage, clue), None, "Assertions.scala", "macroAssume", stackDepthAdjustment)
+        throw newTestCanceledException(append(failureMessage, clue), None, sourceInfo)
       }
       Succeeded
     }
@@ -542,6 +542,9 @@ trait Assertions extends TripleEquals  {
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
     new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment))
 
+  private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], sourceInfo: SourceInfo): Throwable =
+    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(sourceInfo))
+
   private def newTestCanceledException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
     (optionalMessage, optionalCause) match {
       case (None, None) => new TestCanceledException(stackDepth)
@@ -552,6 +555,9 @@ trait Assertions extends TripleEquals  {
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
     new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment), None)
+
+  private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], sourceInfo: SourceInfo): Throwable =
+    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(sourceInfo), None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
