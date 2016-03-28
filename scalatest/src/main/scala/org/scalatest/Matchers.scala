@@ -6728,6 +6728,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   // This is where ShouldMatchers.scala started 
 
   private object ShouldMethodHelper {
+
+    def shouldMatcherNew[T](left: T, rightMatcher: Matcher[T], sourceInfo: SourceInfo): Assertion = {
+      rightMatcher(left) match {
+        case MatchFailed(failureMessage) => indicateFailure(failureMessage, None, sourceInfo)
+        case result => indicateSuccess(result.negatedFailureMessage)
+      }
+    }
+
     // SKIP-SCALATESTJS-START
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
     // SKIP-SCALATESTJS-END
@@ -6770,7 +6778,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(rightMatcherX1: Matcher[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1)
+      ShouldMethodHelper.shouldMatcherNew(leftSideValue, rightMatcherX1, sourceInfo)
     }
 
     /**
@@ -7733,7 +7741,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit override def convertToStringShouldWrapper(o: String): StringShouldWrapper = new StringShouldWrapper(o, SourceInfo.sourceInfo)
+  implicit override def convertToStringShouldWrapper(o: String)(implicit sourceInfo: SourceInfo): StringShouldWrapper = new StringShouldWrapper(o, sourceInfo)
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,

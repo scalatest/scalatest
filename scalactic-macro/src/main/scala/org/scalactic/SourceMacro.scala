@@ -46,4 +46,31 @@ object SourceMacro {
     )
   }
 
+  def genSourceInfoExplicit(context: Context) = {
+    import context.universe._
+
+    context.Expr(
+      Apply(
+        Select(
+          Select(
+            Select(
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalactic")
+            ),
+            newTermName("SourceInfo")
+          ),
+          newTermName("apply")
+        ),
+        List(
+          Literal(Constant(context.enclosingPosition.source.file.name)),
+          Literal(Constant(context.enclosingPosition.source.path)),
+          Literal(Constant(context.enclosingPosition.line))
+        )
+      )
+    )
+  }
+
 }

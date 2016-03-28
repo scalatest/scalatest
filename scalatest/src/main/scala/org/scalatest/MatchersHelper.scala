@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalatest.exceptions.StackDepthExceptionHelper
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers._
 import java.lang.reflect.Method
@@ -384,6 +385,10 @@ private[scalatest] object MatchersHelper {
       optionalCause,
       stackDepthAdjustment
     )
+
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], sourceInfo: SourceInfo)(implicit prettifier: Prettifier): Assertion = {
+    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
+  }
 
   def indicateFailure(shouldBeTrue: Boolean, withFriendlyReminder: Boolean, failureMessageWithFriendlyReminder: => String, failureMessageWithoutFriendlyReminder: => String,
                                          negatedFailureMessageWithFriendlyReminder: => String, negatedFailureMessageWithoutFriendlyReminder: => String, optionalCause: Option[Throwable],

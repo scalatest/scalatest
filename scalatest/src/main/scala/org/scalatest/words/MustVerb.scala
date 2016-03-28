@@ -224,7 +224,7 @@ trait MustVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
    * to enable <code>must</code> methods to be invokable on that object.
    */
-  implicit def convertToStringMustWrapper(o: String): StringMustWrapperForVerb =
+  implicit def convertToStringMustWrapper(o: String)(implicit sourceInfo: SourceInfo): StringMustWrapperForVerb =
     new StringMustWrapperForVerb {
       val leftSideString = o.trim
     }
