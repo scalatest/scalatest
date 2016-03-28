@@ -126,7 +126,7 @@ abstract class StackDepthException(
 
   /*
   * Throws <code>IllegalStateException</code>, because <code>StackDepthException</code>s are
-  * always initialized with a cause passed to the constructor of superclass <code>
+  * always initialized with a cause passed to the constructor of superclass <code>RuntimeException</code>.
   */
   override final def initCause(throwable: Throwable): Throwable = { throw new IllegalStateException }
 
