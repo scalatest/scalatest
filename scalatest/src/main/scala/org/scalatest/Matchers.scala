@@ -6759,7 +6759,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  sealed class AnyShouldWrapper[T](val leftSideValue: T) {
+  sealed class AnyShouldWrapper[T](val leftSideValue: T, sourceInfo: SourceInfo) {
 
     /**
      * This method enables syntax such as the following:
@@ -7481,7 +7481,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class StringShouldWrapper(val leftSideString: String) extends AnyShouldWrapper(leftSideString) with StringShouldWrapperForVerb {
+  final class StringShouldWrapper(val leftSideString: String, sourceInfo: SourceInfo) extends AnyShouldWrapper(leftSideString, sourceInfo) with StringShouldWrapperForVerb {
 
     /**
      * This method enables syntax such as the following:
@@ -7727,13 +7727,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
+  implicit def convertToAnyShouldWrapper[T](o: T)(implicit sourceInfo: SourceInfo): AnyShouldWrapper[T] = new AnyShouldWrapper(o, sourceInfo)
 
   /**
    * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit override def convertToStringShouldWrapper(o: String): StringShouldWrapper = new StringShouldWrapper(o)
+  implicit override def convertToStringShouldWrapper(o: String): StringShouldWrapper = new StringShouldWrapper(o, SourceInfo.sourceInfo)
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,

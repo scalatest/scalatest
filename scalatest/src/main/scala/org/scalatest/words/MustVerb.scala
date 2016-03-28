@@ -16,6 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
+import org.scalactic.SourceInfo
 
 /**
  * Provides an implicit conversion that adds <code>must</code> methods to <code>String</code>
