@@ -22,24 +22,26 @@ object SourceMacro {
   def genSourceInfo(context: Context) = {
     import context.universe._
 
-    Apply(
-      Select(
+    context.Expr(
+      Apply(
         Select(
           Select(
             Select(
-              Ident(newTermName("_root_")),
-              newTermName("org")
+              Select(
+                Ident(newTermName("_root_")),
+                newTermName("org")
+              ),
+              newTermName("scalactic")
             ),
-            newTermName("scalactic")
+            newTermName("SourceInfo")
           ),
-          newTermName("SourceInfo")
+          newTermName("apply")
         ),
-        newTermName("apply")
-      ),
-      List(
-        context.literal(context.enclosingPosition.source.file.name).tree,
-        context.literal(context.enclosingPosition.source.path).tree,
-        context.literal(context.enclosingPosition.line).tree
+        List(
+          Literal(Constant(context.enclosingPosition.source.file.name)),
+          Literal(Constant(context.enclosingPosition.source.path)),
+          Literal(Constant(context.enclosingPosition.line))
+        )
       )
     )
   }
