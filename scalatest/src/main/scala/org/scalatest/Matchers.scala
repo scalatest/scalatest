@@ -6729,22 +6729,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   private object ShouldMethodHelper {
 
-    def shouldMatcherNew[T](left: T, rightMatcher: Matcher[T], sourceInfo: SourceInfo): Assertion = {
+    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], sourceInfo: SourceInfo): Assertion = {
       rightMatcher(left) match {
         case MatchFailed(failureMessage) => indicateFailure(failureMessage, None, sourceInfo)
         case result => indicateSuccess(result.negatedFailureMessage)
       }
     }
 
-    // SKIP-SCALATESTJS-START
-    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 11): Assertion = {
-      rightMatcher(left) match {
-        case MatchFailed(failureMessage) => indicateFailure(failureMessage, None, stackDepthAdjustment)
-        case result => indicateSuccess(result.negatedFailureMessage)
-      }
-    }
     // SKIP-SCALATESTJS-START
     def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
     // SKIP-SCALATESTJS-END
@@ -6778,7 +6769,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(rightMatcherX1: Matcher[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcherNew(leftSideValue, rightMatcherX1, sourceInfo)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1, sourceInfo)
     }
 
     /**
@@ -6790,7 +6781,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory1.matcher)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory1.matcher, sourceInfo)
     }
 
     /**
@@ -6802,7 +6793,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory2.matcher)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory2.matcher, sourceInfo)
     }
 
     /**
