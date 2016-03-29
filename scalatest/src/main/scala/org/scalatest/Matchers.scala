@@ -7741,7 +7741,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit override def convertToStringShouldWrapper(o: String)(implicit sourceInfo: SourceInfo): StringShouldWrapper = new StringShouldWrapper(o, sourceInfo)
+  implicit def convertToStringShouldWrapper(o: String)(implicit sourceInfo: SourceInfo): StringShouldWrapper = new StringShouldWrapper(o, sourceInfo)
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,
