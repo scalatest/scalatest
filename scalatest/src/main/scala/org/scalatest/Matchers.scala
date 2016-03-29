@@ -6736,12 +6736,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       }
     }
 
-    // SKIP-SCALATESTJS-START
-    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 11): Assertion = {
+    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], sourceInfo: SourceInfo): Assertion = {
       rightMatcher(left) match {
-        case MatchSucceeded(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, stackDepthAdjustment)
+        case MatchSucceeded(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, sourceInfo)
         case result => indicateSuccess(result.failureMessage)
       }
     }
@@ -7146,7 +7143,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(rightMatcherX1: Matcher[T]): Assertion = {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1)
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1, sourceInfo)
     }
     
     /**
@@ -7158,7 +7155,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory1.matcher)
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory1.matcher, sourceInfo)
     }
     
     /**
