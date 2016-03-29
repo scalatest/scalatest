@@ -6758,7 +6758,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  sealed class AnyShouldWrapper[T](val leftSideValue: T, sourceInfo: SourceInfo) {
+  sealed class AnyShouldWrapper[T](val leftSideValue: T, sourceInfo: SourceInfo, prettifier: Prettifier) {
 
     /**
      * This method enables syntax such as the following:
@@ -7480,7 +7480,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class StringShouldWrapper(val leftSideString: String, sourceInfo: SourceInfo) extends AnyShouldWrapper(leftSideString, sourceInfo) with StringShouldWrapperForVerb {
+  final class StringShouldWrapper(val leftSideString: String, sourceInfo: SourceInfo, prettifier: Prettifier) extends AnyShouldWrapper(leftSideString, sourceInfo, prettifier) with StringShouldWrapperForVerb {
 
     /**
      * This method enables syntax such as the following:
@@ -7726,13 +7726,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToAnyShouldWrapper[T](o: T)(implicit sourceInfo: SourceInfo): AnyShouldWrapper[T] = new AnyShouldWrapper(o, sourceInfo)
+  implicit def convertToAnyShouldWrapper[T](o: T)(implicit sourceInfo: SourceInfo, prettifier: Prettifier): AnyShouldWrapper[T] = new AnyShouldWrapper(o, sourceInfo, prettifier)
 
   /**
    * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToStringShouldWrapper(o: String)(implicit sourceInfo: SourceInfo): StringShouldWrapper = new StringShouldWrapper(o, sourceInfo)
+  implicit def convertToStringShouldWrapper(o: String)(implicit sourceInfo: SourceInfo, prettifier: Prettifier): StringShouldWrapper = new StringShouldWrapper(o, sourceInfo, prettifier)
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,
