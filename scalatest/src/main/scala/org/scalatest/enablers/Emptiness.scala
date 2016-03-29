@@ -40,7 +40,7 @@ import scala.collection.JavaConverters._
 trait Emptiness[-T] {
 
   /**
-   * Determines whether the passed thing is readable, <em>i.e.</em>, the passed file is readable.
+   * Determines whether the passed thing is empty.
    *
    * @param thing the thing to check for emptiness
    * @return <code>true</code> if passed thing is empty, <code>false</code> otherwise
