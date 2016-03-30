@@ -386,7 +386,7 @@ private[scalatest] object MatchersHelper {
       stackDepthAdjustment
     )
 
-  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], sourceInfo: SourceInfo)(implicit prettifier: Prettifier): Assertion = {
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], sourceInfo: SourceInfo): Assertion = {
     throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
   }
 
