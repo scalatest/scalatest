@@ -3183,10 +3183,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     import org.scalatest.InspectorsHelper._
 
     // SKIP-SCALATESTJS-START
-    private[scalatest] val outerStackDepth = 1
     private[scalatest] val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
     //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
  
     /**
@@ -4455,10 +4453,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
-    private[scalatest] val outerStackDepth = 1
     private[scalatest] val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
     //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
 
     /**
@@ -5001,10 +4997,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
-    private[scalatest] val outerStackDepth = 1
     private[scalatest] val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
     //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
 
     // TODO: Missing should(AMatcher) and should(AnMatcher)
@@ -5234,10 +5228,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   final class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
-    private[scalatest] val outerStackDepth = 1
     private[scalatest] val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
     //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
 
 // TODO: shouldBe null works, b ut should be (null) does not when type is Any: 
@@ -6097,10 +6089,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 1
     private val innerStackDepth = 6
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 18
 
     /**
@@ -6176,10 +6166,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 2
     private val innerStackDepth = 7
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 19
 
     /**
@@ -6250,10 +6238,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 2
     private val innerStackDepth = 7
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 19
 
     /**
@@ -6324,10 +6310,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 2
     private val innerStackDepth = 7
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 19
 
     /**
@@ -6398,10 +6382,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 2
     private val innerStackDepth = 7
     // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
     //SCALATESTJS-ONLY private val innerStackDepth = 19
 
     /**
