@@ -2157,14 +2157,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfIncludeWordForString(left: String, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepth = 0
-    private[scalatest] val withGroupStackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
-    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+  final class ResultOfIncludeWordForString(left: String, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * This method enables the following syntax: 
@@ -2187,7 +2180,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
+        indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
     }
 
@@ -2201,7 +2194,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.findFirstIn(left).isDefined != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotIncludeRegex(left, rightRegex), FailureMessages.includedRegex(left, rightRegex), None, stackDepth)
+        indicateFailure(if (shouldBeTrue) FailureMessages.didNotIncludeRegex(left, rightRegex) else FailureMessages.includedRegex(left, rightRegex), None, sourceInfo)
       else indicateSuccess(shouldBeTrue, FailureMessages.includedRegex(left, rightRegex), FailureMessages.didNotIncludeRegex(left, rightRegex))
     }
 
@@ -2219,14 +2212,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfStartWithWordForString(left: String, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepth = 0
-    private[scalatest] val withGroupStackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
-    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+  final class ResultOfStartWithWordForString(left: String, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * This method enables the following syntax: 
@@ -2249,7 +2235,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
+        indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
     }
 
@@ -2263,7 +2249,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).lookingAt != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotStartWithRegex(left, rightRegex), FailureMessages.startedWithRegex(left, rightRegex), None, stackDepth)
+        indicateFailure(if (shouldBeTrue) FailureMessages.didNotStartWithRegex(left, rightRegex) else FailureMessages.startedWithRegex(left, rightRegex), None, sourceInfo)
       else indicateSuccess(shouldBeTrue, FailureMessages.startedWithRegex(left, rightRegex), FailureMessages.didNotStartWithRegex(left, rightRegex))
     }
 
@@ -2281,14 +2267,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfEndWithWordForString(left: String, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepth = 0
-    private[scalatest] val withGroupStackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
-    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+  final class ResultOfEndWithWordForString(left: String, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * This method enables the following syntax: 
@@ -2311,7 +2290,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
+        indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
     }
 
@@ -2326,7 +2305,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(rightRegex: Regex): Assertion = {
       val allMatches = rightRegex.findAllIn(left)
       if ((allMatches.hasNext && (allMatches.end == left.length)) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotEndWithRegex(left, rightRegex), FailureMessages.endedWithRegex(left, rightRegex), None, stackDepth)
+        indicateFailure(if (shouldBeTrue) FailureMessages.didNotEndWithRegex(left, rightRegex) else FailureMessages.endedWithRegex(left, rightRegex), None, sourceInfo)
       else indicateSuccess(shouldBeTrue, FailureMessages.endedWithRegex(left, rightRegex), FailureMessages.didNotEndWithRegex(left, rightRegex))
     }
 
@@ -2344,14 +2323,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfFullyMatchWordForString(left: String, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepth = 0
-    private[scalatest] val withGroupStackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
-    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+  final class ResultOfFullyMatchWordForString(left: String, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * This method enables the following syntax: 
@@ -2374,7 +2346,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
+        indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
     }
 
@@ -2388,7 +2360,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotFullyMatchRegex(left, rightRegex), FailureMessages.fullyMatchedRegex(left, rightRegex), None, stackDepth)
+        indicateFailure(if (shouldBeTrue) FailureMessages.didNotFullyMatchRegex(left, rightRegex) else FailureMessages.fullyMatchedRegex(left, rightRegex), None, sourceInfo)
       else indicateSuccess(shouldBeTrue, FailureMessages.fullyMatchedRegex(left, rightRegex), FailureMessages.didNotFullyMatchRegex(left, rightRegex))
     }
 
@@ -7419,7 +7391,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForString = {
-      new ResultOfIncludeWordForString(leftSideValue, true)
+      new ResultOfIncludeWordForString(leftSideValue, true, prettifier, sourceInfo)
     }
 
     /**
@@ -7431,7 +7403,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForString = {
-      new ResultOfStartWithWordForString(leftSideValue, true)
+      new ResultOfStartWithWordForString(leftSideValue, true, prettifier, sourceInfo)
     }
 
     /**
@@ -7443,7 +7415,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForString = {
-      new ResultOfEndWithWordForString(leftSideValue, true)
+      new ResultOfEndWithWordForString(leftSideValue, true, prettifier, sourceInfo)
     }
 
     /**
@@ -7455,7 +7427,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForString = 
-      new ResultOfStartWithWordForString(leftSideValue, false)
+      new ResultOfStartWithWordForString(leftSideValue, false, prettifier, sourceInfo)
 
     /**
      * This method enables syntax such as the following:
@@ -7466,7 +7438,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForString = 
-      new ResultOfEndWithWordForString(leftSideValue, false)
+      new ResultOfEndWithWordForString(leftSideValue, false, prettifier, sourceInfo)
 
     /**
      * This method enables syntax such as the following:
@@ -7477,7 +7449,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForString = 
-      new ResultOfIncludeWordForString(leftSideValue, false)
+      new ResultOfIncludeWordForString(leftSideValue, false, prettifier, sourceInfo)
   }
 
   /**
@@ -7524,7 +7496,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
-      new ResultOfFullyMatchWordForString(leftSideString, true)
+      new ResultOfFullyMatchWordForString(leftSideString, true, prettifier, sourceInfo)
     }
 
     /**
@@ -7536,7 +7508,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
-      new ResultOfFullyMatchWordForString(leftSideString, false)
+      new ResultOfFullyMatchWordForString(leftSideString, false, prettifier, sourceInfo)
 
     /**
      * This method enables syntax such as the following:
