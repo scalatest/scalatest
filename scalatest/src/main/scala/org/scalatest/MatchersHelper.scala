@@ -352,61 +352,9 @@ private[scalatest] object MatchersHelper {
 
   def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String)(implicit prettifier: Prettifier): Assertion = Succeeded
 
-  def indicateFailure(failureMessage: => String)(implicit prettifier: Prettifier): Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 10
-    throw newTestFailedException(failureMessage, None, stackDepth)
-  }
-
-  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String)(implicit prettifier: Prettifier): Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 10
-    throw newTestFailedException(
-      if (shouldBeTrue) failureMessage else negatedFailureMessage,
-      None,
-      stackDepth
-    )
-  }
-
-  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0)(implicit prettifier: Prettifier): Assertion =
-    throw newTestFailedException(
-      if (shouldBeTrue) failureMessage else negatedFailureMessage,
-      None,
-      stackDepthAdjustment
-    )
-
-  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], stackDepthAdjustment: Int)(implicit prettifier: Prettifier): Assertion =
-    throw newTestFailedException(
-      failureMessage,
-      optionalCause,
-      stackDepthAdjustment
-    )
-
   def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], sourceInfo: SourceInfo): Assertion = {
     throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
   }
-
-  def indicateFailure(shouldBeTrue: Boolean, withFriendlyReminder: Boolean, failureMessageWithFriendlyReminder: => String, failureMessageWithoutFriendlyReminder: => String,
-                                         negatedFailureMessageWithFriendlyReminder: => String, negatedFailureMessageWithoutFriendlyReminder: => String, optionalCause: Option[Throwable],
-                                         stackDepthAdjustment: Int)(implicit prettifier: Prettifier): Assertion =
-    throw newTestFailedException(
-      if (shouldBeTrue)
-        if (withFriendlyReminder)
-          failureMessageWithFriendlyReminder
-        else
-          failureMessageWithoutFriendlyReminder
-      else
-      if (withFriendlyReminder)
-        negatedFailureMessageWithFriendlyReminder
-      else
-        negatedFailureMessageWithoutFriendlyReminder,
-      None,
-      stackDepthAdjustment
-    )
 
   def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Assertion =
     throw e

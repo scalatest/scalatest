@@ -18,6 +18,7 @@ package org.scalatest.words
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
+import org.scalactic.{Prettifier, SourceInfo}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -25,12 +26,7 @@ import org.scalatest.MatchersHelper.indicateFailure
  *
  * @author Bill Venners
  */
-final class NoExceptionWord {
-
-  // SKIP-SCALATESTJS-START
-  private val stackDepth = 1
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private val stackDepth = 11
+final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
   
   /**
    * This method enables the following syntax: 
@@ -59,7 +55,7 @@ final class NoExceptionWord {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), stackDepth)
+        indicateFailure(message, Some(u), sourceInfo)
       }
     }
   }
@@ -91,7 +87,7 @@ final class NoExceptionWord {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), stackDepth)
+        indicateFailure(message, Some(u), sourceInfo)
       }
     }
   }

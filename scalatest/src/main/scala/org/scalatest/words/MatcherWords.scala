@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest.matchers._
-import org.scalactic.{Equality, Prettifier}
+import org.scalactic.{Equality, Prettifier, SourceInfo}
 import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
@@ -177,7 +177,7 @@ trait MatcherWords {
    * ^
    * </pre>
    */
-  val noException = new NoExceptionWord
+  def noException(implicit prettiifier: Prettifier, sourceInfo: SourceInfo) = new NoExceptionWord(prettiifier, sourceInfo)
   
   /**
    * This field enables the following syntax: 

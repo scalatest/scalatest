@@ -15,10 +15,8 @@
  */
 package org.scalatest
 
-import org.scalactic.Prettifier
-import org.scalatest.enablers.InspectorAsserting
-import org.scalatest.matchers._
 import org.scalatest.enablers._
+import org.scalatest.matchers._
 import org.scalatest.words.ResultOfNoElementsOfApplication
 import org.scalatest.words.ResultOfOneElementOfApplication
 import scala.util.matching.Regex
@@ -6666,8 +6664,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T: ClassTag]: ResultOfATypeInvocation[T] =
-    new ResultOfATypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
+  def a[T: ClassTag](implicit prettifier: Prettifier, sourceInfo: SourceInfo): ResultOfATypeInvocation[T] =
+    new ResultOfATypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], prettifier, sourceInfo)
 
   /**
    * This method enables the following syntax: 
@@ -6677,8 +6675,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
-    new ResultOfAnTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
+  def an[T : ClassTag](implicit prettifier: Prettifier, sourceInfo: SourceInfo): ResultOfAnTypeInvocation[T] =
+    new ResultOfAnTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], prettifier, sourceInfo)
 
   /**
    * This method enables the following syntax: 
@@ -6813,7 +6811,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](leftSideValue, false)
+    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](leftSideValue, false, prettifier, sourceInfo)
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -7325,7 +7323,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
-      new ResultOfContainWord(leftSideValue, true)
+      new ResultOfContainWord(leftSideValue, true, prettifier, sourceInfo)
     }
     
     /**
@@ -7337,7 +7335,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(contain: ContainWord): ResultOfContainWord[T] = 
-      new ResultOfContainWord(leftSideValue, false)
+      new ResultOfContainWord(leftSideValue, false, prettifier, sourceInfo)
     
     /**
      * This method enables syntax such as the following:

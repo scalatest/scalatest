@@ -18,6 +18,7 @@ package org.scalatest.words
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
+import org.scalactic.{Prettifier, SourceInfo}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -25,13 +26,8 @@ import org.scalatest.MatchersHelper.indicateFailure
  *
  * @author Bill Venners
  */
-final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
+final class ResultOfAnTypeInvocation[T](val clazz: Class[T], prettifier: Prettifier, sourceInfo: SourceInfo) {
 
-  // SKIP-SCALATESTJS-START
-  private val stackDepth = 1
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private val stackDepth = 11
-  
   /**
    * This method enables the following syntax: 
    *
@@ -76,12 +72,12 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
 
     if (caught.isEmpty) {
       val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, stackDepth)
+      indicateFailure(message, None, sourceInfo)
     } else {
       val u = caught.get
       if (!clazz.isAssignableFrom(u.getClass)) {
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), stackDepth)
+        indicateFailure(s, Some(u), sourceInfo)
       } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
     }
   }
@@ -99,14 +95,14 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
     val noThrowable = throwables.find(_.isEmpty)
     if (noThrowable.isDefined) {
       val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, stackDepth)
+      indicateFailure(message, None, sourceInfo)
     }
     else {
       val unmatch = throwables.map(_.get).find(t => !clazz.isAssignableFrom(t.getClass))
       if (unmatch.isDefined) {
         val u = unmatch.get
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), stackDepth)
+        indicateFailure(s, Some(u), sourceInfo)
       }
       else indicateSuccess(Resources.exceptionThrown(clazz.getName))
     }
@@ -156,12 +152,12 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
 
     if (caught.isEmpty) {
       val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, stackDepth)
+      indicateFailure(message, None, sourceInfo)
     } else {
       val u = caught.get
       if (!clazz.isAssignableFrom(u.getClass)) {
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), stackDepth)
+        indicateFailure(s, Some(u), sourceInfo)
       } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
     }
   }
@@ -179,14 +175,14 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
     val noThrowable = throwables.find(_.isEmpty)
     if (noThrowable.isDefined) {
       val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, stackDepth)
+      indicateFailure(message, None, sourceInfo)
     }
     else {
       val unmatch = throwables.map(_.get).find(t => !clazz.isAssignableFrom(t.getClass))
       if (unmatch.isDefined) {
         val u = unmatch.get
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), stackDepth)
+        indicateFailure(s, Some(u), sourceInfo)
       }
       else indicateSuccess(Resources.exceptionThrown(clazz.getName))
     }

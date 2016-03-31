@@ -32,6 +32,7 @@ import java.io.File
 // SKIP-SCALATESTJS-END
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.NotAllowedException
+import org.scalactic.{Prettifier, SourceInfo}
 
 class NotWordSpec extends FunSpec with FileMocks {
   
@@ -1701,7 +1702,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(clazz)
+      val resultOfAType = new ResultOfATypeInvocation(clazz, Prettifier.default, SourceInfo.sourceInfo)
       
       val mt = not be (resultOfAType)
       
@@ -1759,7 +1760,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
+      val resultOfAnType = new ResultOfAnTypeInvocation(clazz, Prettifier.default, SourceInfo.sourceInfo)
       
       val mt = not be (resultOfAnType)
       

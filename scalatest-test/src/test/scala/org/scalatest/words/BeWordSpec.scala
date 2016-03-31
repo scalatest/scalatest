@@ -24,6 +24,7 @@ import matchers.{BePropertyMatcher,
                  AnMatcher, 
                  BeMatcher, 
                  MatchResult}
+import org.scalactic.{Prettifier, SourceInfo}
 
 class BeWordSpec extends FunSpec with FileMocks {
   
@@ -1140,7 +1141,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(clazz)
+      val resultOfAType = new ResultOfATypeInvocation(clazz, Prettifier.default, SourceInfo.sourceInfo)
       
       val mt = be (resultOfAType)
       
@@ -1198,7 +1199,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
+      val resultOfAnType = new ResultOfAnTypeInvocation(clazz, Prettifier.default, SourceInfo.sourceInfo)
       
       val mt = be (resultOfAnType)
       

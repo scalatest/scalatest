@@ -61,7 +61,7 @@ import org.scalactic.SourceInfo
  *
  * @author Bill Venners
  */
-sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
+sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
   /**
    * This method enables the following syntax:
@@ -73,7 +73,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def equal(right: Any)(implicit equality: Equality[T]): Assertion = {
     if (equality.areEqual(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotEqual(left, right), FailureMessages.equaled(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqual(left, right) else FailureMessages.equaled(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.equaled(left, right), FailureMessages.didNotEqual(left, right))
   }
@@ -88,7 +88,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be(right: Any): Assertion = {
     if ((left == right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotEqualTo(left, right), FailureMessages.wasEqualTo(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotEqualTo(left, right) else FailureMessages.wasEqualTo(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasEqualTo(left, right), FailureMessages.wasNotEqualTo(left, right))
   }
@@ -103,7 +103,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
     if (comparison(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotLessThanOrEqualTo(left, comparison.right), FailureMessages.wasLessThanOrEqualTo(left, comparison.right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThanOrEqualTo(left, comparison.right) else FailureMessages.wasLessThanOrEqualTo(left, comparison.right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasLessThanOrEqualTo(left, comparison.right), FailureMessages.wasNotLessThanOrEqualTo(left, comparison.right))
   }
@@ -118,7 +118,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
     if (comparison(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotGreaterThanOrEqualTo(left, comparison.right), FailureMessages.wasGreaterThanOrEqualTo(left, comparison.right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThanOrEqualTo(left, comparison.right) else FailureMessages.wasGreaterThanOrEqualTo(left, comparison.right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThanOrEqualTo(left, comparison.right), FailureMessages.wasNotGreaterThanOrEqualTo(left, comparison.right))
   }
@@ -133,7 +133,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be(comparison: ResultOfLessThanComparison[T]): Assertion = {
     if (comparison(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotLessThan(left, comparison.right), FailureMessages.wasLessThan(left, comparison.right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThan(left, comparison.right) else FailureMessages.wasLessThan(left, comparison.right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasLessThan(left, comparison.right), FailureMessages.wasNotLessThan(left, comparison.right))
   }
@@ -148,7 +148,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
     if (comparison(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotGreaterThan(left, comparison.right), FailureMessages.wasGreaterThan(left, comparison.right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThan(left, comparison.right) else FailureMessages.wasGreaterThan(left, comparison.right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThan(left, comparison.right), FailureMessages.wasNotGreaterThan(left, comparison.right))
   }
@@ -168,7 +168,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(comparison: TripleEqualsInvocation[_]): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
-                                  getStackDepthFun("ResultOfNotWordForAny.scala", "be")) 
+                                  getStackDepthFun(sourceInfo))
   }
 
   /**
@@ -183,7 +183,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(beMatcher: BeMatcher[T]): Assertion = {
     val result = beMatcher(left)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
   }
@@ -201,7 +201,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val aMatcher = resultOfAWordToAMatcherApplication.aMatcher
     val result = aMatcher(left)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
   }
@@ -219,7 +219,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val anMatcher = resultOfAnWordToAnMatcherApplication.anMatcher
     val result = anMatcher(left)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
   }
@@ -256,7 +256,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be(spread: Spread[T]): Assertion = {
     if (spread.isWithin(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotPlusOrMinus(left, spread.pivot, spread.tolerance), FailureMessages.wasPlusOrMinus(left, spread.pivot, spread.tolerance))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotPlusOrMinus(left, spread.pivot, spread.tolerance) else FailureMessages.wasPlusOrMinus(left, spread.pivot, spread.tolerance), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasPlusOrMinus(left, spread.pivot, spread.tolerance), FailureMessages.wasNotPlusOrMinus(left, spread.pivot, spread.tolerance))
   }
@@ -271,7 +271,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
     if (left.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotDefinedAt(left, resultOfDefinedAt.right), FailureMessages.wasDefinedAt(left, resultOfDefinedAt.right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefinedAt(left, resultOfDefinedAt.right) else FailureMessages.wasDefinedAt(left, resultOfDefinedAt.right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasDefinedAt(left, resultOfDefinedAt.right), FailureMessages.wasNotDefinedAt(left, resultOfDefinedAt.right))
   }
@@ -286,7 +286,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def equal(spread: Spread[T]): Assertion = {
     if (spread.isWithin(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotEqualPlusOrMinus(left, spread.pivot, spread.tolerance), FailureMessages.equaledPlusOrMinus(left, spread.pivot, spread.tolerance))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqualPlusOrMinus(left, spread.pivot, spread.tolerance) else FailureMessages.equaledPlusOrMinus(left, spread.pivot, spread.tolerance), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.equaledPlusOrMinus(left, spread.pivot, spread.tolerance), FailureMessages.didNotEqualPlusOrMinus(left, spread.pivot, spread.tolerance))
   }
@@ -301,7 +301,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def equal(right: Null): Assertion = {
     if ((left == null) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotEqualNull(left), FailureMessages.equaledNull)
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqualNull(left) else FailureMessages.equaledNull, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.equaledNull, FailureMessages.didNotEqualNull(left))
   }
@@ -314,7 +314,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = resultOfLengthWordApplication.expectedLength
     val leftLength = len.lengthOf(left)
     if ((leftLength == right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, right), FailureMessages.hadLength(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, right) else FailureMessages.hadLength(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.hadLength(left, right), FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, right))
   }
@@ -327,7 +327,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = resultOfSizeWordApplication.expectedSize
     val leftSize = sz.sizeOf(left)
     if ((leftSize == right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, right), FailureMessages.hadSize(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, right) else FailureMessages.hadSize(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.hadSize(left, right), FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, right))
   }
@@ -384,7 +384,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
                firstFailure.expectedValue,
                firstFailure.actualValue,
                left
-            )
+            ),
+            None,
+            sourceInfo
           )
         case None =>
           // This is this cases, thus will only get here if shouldBeTrue is false
@@ -400,7 +402,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
             }
             else FailureMessages.allPropertiesHadExpectedValues(left)
 
-          indicateFailure(failureMessage)
+          indicateFailure(failureMessage, None, sourceInfo)
       } 
     }
     else {
@@ -446,7 +448,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = resultOfMessageWordApplication.expectedMessage
     val actualMessage = messaging.messageOf(left)
     if ((actualMessage == right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, right), FailureMessages.hadExpectedMessage(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, right) else FailureMessages.hadExpectedMessage(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.hadExpectedMessage(left, right), FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, right))
   }
@@ -461,7 +463,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def contain(nullValue: Null)(implicit containing: Containing[T]): Assertion = {
     if (containing.contains(left, null) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainNull(left), FailureMessages.containedNull(left))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainNull(left) else FailureMessages.containedNull(left), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedNull(left), FailureMessages.didNotContainNull(left))
   }
@@ -477,7 +479,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def contain(expectedElement: Any)(implicit containing: Containing[T]): Assertion = {
     val right = expectedElement
     if (containing.contains(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainExpectedElement(left, right), FailureMessages.containedExpectedElement(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainExpectedElement(left, right) else FailureMessages.containedExpectedElement(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedExpectedElement(left, right), FailureMessages.didNotContainExpectedElement(left, right))
   }
@@ -492,7 +494,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
     if ((left == null) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotNull(left), FailureMessages.wasNull)
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotNull(left) else FailureMessages.wasNull, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasNull, FailureMessages.wasNotNull(left))
   }
@@ -509,7 +511,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
     val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, false)(prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
   }
@@ -527,7 +529,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = {
     val result = bePropertyMatcher(left)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNot(left, UnquotedString(result.propertyName)), FailureMessages.was(left, UnquotedString(result.propertyName)))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNot(left, UnquotedString(result.propertyName)) else FailureMessages.was(left, UnquotedString(result.propertyName)), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.was(left, UnquotedString(result.propertyName)), FailureMessages.wasNot(left, UnquotedString(result.propertyName)))
   }
@@ -544,7 +546,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
     val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true)(prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
   }
@@ -562,7 +564,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {
     val result = resultOfAWordApplication.bePropertyMatcher(left)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotA(left, UnquotedString(result.propertyName)), FailureMessages.wasA(left, UnquotedString(result.propertyName)))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotA(left, UnquotedString(result.propertyName)) else FailureMessages.wasA(left, UnquotedString(result.propertyName)), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasA(left, UnquotedString(result.propertyName)), FailureMessages.wasNotA(left, UnquotedString(result.propertyName)))
   }
@@ -579,7 +581,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
     val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false)(prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
   }
@@ -597,7 +599,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {
     val result = resultOfAnWordApplication.bePropertyMatcher(left)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotAn(left, UnquotedString(result.propertyName)), FailureMessages.wasAn(left, UnquotedString(result.propertyName)))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotAn(left, UnquotedString(result.propertyName)) else FailureMessages.wasAn(left, UnquotedString(result.propertyName)), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasAn(left, UnquotedString(result.propertyName)), FailureMessages.wasNotAn(left, UnquotedString(result.propertyName)))
   }
@@ -612,7 +614,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
     if ((resultOfSameInstanceAsApplication.right eq toAnyRef(left)) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotSameInstanceAs(left, resultOfSameInstanceAsApplication.right), FailureMessages.wasSameInstanceAs(left, resultOfSameInstanceAsApplication.right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSameInstanceAs(left, resultOfSameInstanceAsApplication.right) else FailureMessages.wasSameInstanceAs(left, resultOfSameInstanceAsApplication.right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasSameInstanceAs(left, resultOfSameInstanceAsApplication.right), FailureMessages.wasNotSameInstanceAs(left, resultOfSameInstanceAsApplication.right))
   }
@@ -627,7 +629,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be[U](sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
     if (sortable.isSorted(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotSorted(left), FailureMessages.wasSorted(left))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSorted(left) else FailureMessages.wasSorted(left), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasSorted(left), FailureMessages.wasNotSorted(left))
   }
@@ -642,7 +644,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be[U](readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
     if (readability.isReadable(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotReadable(left), FailureMessages.wasReadable(left))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotReadable(left) else FailureMessages.wasReadable(left), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasReadable(left), FailureMessages.wasNotReadable(left))
   }
@@ -657,7 +659,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be[U](writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
     if (writability.isWritable(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotWritable(left), FailureMessages.wasWritable(left))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotWritable(left) else FailureMessages.wasWritable(left), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasWritable(left), FailureMessages.wasNotWritable(left))
   }
@@ -672,7 +674,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be[U](emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
     if (emptiness.isEmpty(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotEmpty(left), FailureMessages.wasEmpty(left))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotEmpty(left) else FailureMessages.wasEmpty(left), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasEmpty(left), FailureMessages.wasNotEmpty(left))
   }
@@ -687,7 +689,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def be[U](definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
     if (definition.isDefined(left) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.wasNotDefined(left), FailureMessages.wasDefined(left))
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefined(left) else FailureMessages.wasDefined(left), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasDefined(left), FailureMessages.wasNotDefined(left))
   }
@@ -698,9 +700,12 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (containing.containsOneOf(left, right) != shouldBeTrue)
       indicateFailure(
-        shouldBeTrue,
-        FailureMessages.didNotContainOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-        FailureMessages.containedOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        if (shouldBeTrue)
+          FailureMessages.didNotContainOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedOneOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+        None,
+        sourceInfo
       )
     else
       indicateSuccess(
@@ -715,7 +720,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = oneElementOf.right
 
     if (evidence.containsOneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainOneElementOf(left, right), FailureMessages.containedOneElementOf(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainOneElementOf(left, right) else FailureMessages.containedOneElementOf(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedOneElementOf(left, right), FailureMessages.didNotContainOneElementOf(left, right))
   }
@@ -726,9 +731,12 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
       indicateFailure(
-        shouldBeTrue,
-        FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-        FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+        None,
+        sourceInfo
       )
     else
       indicateSuccess(
@@ -743,7 +751,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = atLeastOneElementOf.right
 
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(left, right), FailureMessages.containedAtLeastOneElementOf(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAtLeastOneElementOf(left, right) else FailureMessages.containedAtLeastOneElementOf(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(left, right), FailureMessages.didNotContainAtLeastOneElementOf(left, right))
   }
@@ -754,9 +762,12 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
       indicateFailure(
-        shouldBeTrue,
-        FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-        FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        if (shouldBeTrue)
+          FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+        None,
+        sourceInfo
       )
     else
       indicateSuccess(
@@ -771,7 +782,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = noElementsOf.right
 
     if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(left, right), FailureMessages.didNotContainAtLeastOneElementOf(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.containedAtLeastOneElementOf(left, right) else FailureMessages.didNotContainAtLeastOneElementOf(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(left, right), FailureMessages.containedAtLeastOneElementOf(left, right))
   }
@@ -781,7 +792,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = theSameElementsAs.right
 
     if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainSameElements(left, right), FailureMessages.containedSameElements(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElements(left, right) else FailureMessages.containedSameElements(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(left, right), FailureMessages.didNotContainSameElements(left, right))
   }
@@ -791,7 +802,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = theSameElementsInOrderAs.right
 
     if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainSameElementsInOrder(left, right), FailureMessages.containedSameElementsInOrder(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElementsInOrder(left, right) else FailureMessages.containedSameElementsInOrder(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedSameElementsInOrder(left, right), FailureMessages.didNotContainSameElementsInOrder(left, right))
   }
@@ -810,7 +821,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
           if (withFriendlyReminder)
             FailureMessages.containedOnlyElementsWithFriendlyReminder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
           else
-            FailureMessages.containedOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+        None,
+        sourceInfo
       )
     }
     else
@@ -832,9 +845,12 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = only.right
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
       indicateFailure(
-        shouldBeTrue,
-        FailureMessages.didNotContainInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-        FailureMessages.containedInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        if (shouldBeTrue)
+          FailureMessages.didNotContainInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedInOrderOnlyElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+        None,
+        sourceInfo
       )
     else
       indicateSuccess(
@@ -849,9 +865,12 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = allOf.right
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       indicateFailure(
-        shouldBeTrue,
-        FailureMessages.didNotContainAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-        FailureMessages.containedAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedAllOfElements(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+        None,
+        sourceInfo
       )
     else
       indicateSuccess(
@@ -865,7 +884,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     val right = allElementsOf.right
     if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainAllElementsOf(left, right), FailureMessages.containedAllElementsOf(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAllElementsOf(left, right) else FailureMessages.containedAllElementsOf(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOf(left, right), FailureMessages.didNotContainAllElementsOf(left, right))
   }
@@ -875,9 +894,12 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = only.right
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
       indicateFailure(
-        shouldBeTrue,
-        FailureMessages.didNotContainAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-        FailureMessages.containedAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        if (shouldBeTrue)
+          FailureMessages.didNotContainAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+          FailureMessages.containedAllOfElementsInOrder(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+        None,
+        sourceInfo
       )
     else
       indicateSuccess(
@@ -891,7 +913,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     val right = only.right
     if (sequencing.containsInOrder(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainAllElementsOfInOrder(left, right), FailureMessages.containedAllElementsOfInOrder(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAllElementsOfInOrder(left, right) else FailureMessages.containedAllElementsOfInOrder(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOfInOrder(left, right), FailureMessages.didNotContainAllElementsOfInOrder(left, right))
   }
@@ -902,9 +924,12 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
 
     if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
       indicateFailure(
-	      shouldBeTrue,
-        FailureMessages.didNotContainAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-	      FailureMessages.containedAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+	      if (shouldBeTrue)
+          FailureMessages.didNotContainAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+        else
+	        FailureMessages.containedAtMostOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+        None,
+        sourceInfo
       )
     else
       indicateSuccess(
@@ -919,7 +944,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
     val right = atMostOneElementOf.right
 
     if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainAtMostOneElementOf(left, right), FailureMessages.containedAtMostOneElementOf(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAtMostOneElementOf(left, right) else FailureMessages.containedAtMostOneElementOf(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedAtMostOneElementOf(left, right), FailureMessages.didNotContainAtMostOneElementOf(left, right))
   }
@@ -927,14 +952,14 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]): Assertion = {
     val right = resultOfKeyWordApplication.expectedKey
     if (keyMapping.containsKey(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainKey(left, right), FailureMessages.containedKey(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainKey(left, right) else FailureMessages.containedKey(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedKey(left, right), FailureMessages.didNotContainKey(left, right))
   }
   def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]): Assertion = {
     val right = resultOfValueWordApplication.expectedValue
     if (valueMapping.containsValue(left, right) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotContainValue(left, right), FailureMessages.containedValue(left, right))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainValue(left, right) else FailureMessages.containedValue(left, right), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedValue(left, right), FailureMessages.didNotContainValue(left, right))
   }
@@ -955,7 +980,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
     val result = fullyMatchRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
   }
@@ -976,7 +1001,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def include(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
     val result = includeRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
   }
@@ -991,7 +1016,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def include(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
     if ((left.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotIncludeSubstring(left, expectedSubstring), FailureMessages.includedSubstring(left, expectedSubstring))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotIncludeSubstring(left, expectedSubstring) else FailureMessages.includedSubstring(left, expectedSubstring), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.includedSubstring(left, expectedSubstring), FailureMessages.didNotIncludeSubstring(left, expectedSubstring))
   }
@@ -1012,7 +1037,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
     val result = startWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
   }
@@ -1027,7 +1052,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def startWith(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
     if ((left.indexOf(expectedSubstring) == 0) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotStartWith(left, expectedSubstring), FailureMessages.startedWith(left, expectedSubstring))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotStartWith(left, expectedSubstring) else FailureMessages.startedWith(left, expectedSubstring), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.startedWith(left, expectedSubstring), FailureMessages.didNotStartWith(left, expectedSubstring))
   }
@@ -1043,7 +1068,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
   def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
     val result = endWithRegexWithGroups(left, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
     if (result.matches != shouldBeTrue)
-      indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage)
+      indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
   }
@@ -1058,7 +1083,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean) {
    */
   def endWith(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
     if ((left endsWith expectedSubstring) != shouldBeTrue)
-      indicateFailure(shouldBeTrue, FailureMessages.didNotEndWith(left, expectedSubstring), FailureMessages.endedWith(left, expectedSubstring))
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotEndWith(left, expectedSubstring) else FailureMessages.endedWith(left, expectedSubstring), None, sourceInfo)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.endedWith(left, expectedSubstring), FailureMessages.didNotEndWith(left, expectedSubstring))
   }
