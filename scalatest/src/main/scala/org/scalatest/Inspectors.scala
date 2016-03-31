@@ -206,11 +206,6 @@ trait Inspectors {
 
   import InspectorsHelper._
 
-  // SKIP-SCALATESTJS-START
-  val stackDepthAdjustment = 2
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY val stackDepthAdjustment = 0
-
   /**
    * Ensure that all elements in a given collection pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
    * without throwing an exception).
