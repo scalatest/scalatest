@@ -5030,11 +5030,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val innerStackDepth = 6
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
-
     // TODO: Missing should(AMatcher) and should(AnMatcher)
 
     /**
@@ -5049,11 +5044,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if ((toAnyRef(e) eq right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.wasNotSameInstanceAs(e, right),
-            FailureMessages.wasSameInstanceAs(e, right),
+            if (shouldBeTrue)
+              FailureMessages.wasNotSameInstanceAs(e, right)
+            else
+              FailureMessages.wasSameInstanceAs(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -5078,11 +5074,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true)(prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            matcherResult.failureMessage,
-            matcherResult.negatedFailureMessage,
+            if (shouldBeTrue)
+              matcherResult.failureMessage
+            else
+              matcherResult.negatedFailureMessage,
             None,
-            innerStackDepth
+            sourceInfo
           )
         }
         else
@@ -5107,11 +5104,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false)(prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            matcherResult.failureMessage,
-            matcherResult.negatedFailureMessage,
+            if (shouldBeTrue)
+              matcherResult.failureMessage
+            else
+              matcherResult.negatedFailureMessage,
             None,
-            innerStackDepth
+            sourceInfo
           )
         }
         else
@@ -5138,11 +5136,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (result.matches != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.wasNotA(e, UnquotedString(result.propertyName)),
-            FailureMessages.wasA(e, UnquotedString(result.propertyName)),
+            if (shouldBeTrue)
+              FailureMessages.wasNotA(e, UnquotedString(result.propertyName))
+            else
+              FailureMessages.wasA(e, UnquotedString(result.propertyName)),
             None,
-            innerStackDepth
+            sourceInfo
           )
         }
         else
@@ -5168,11 +5167,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         val beTrueMatchResult = beTrueMatcher(e.asInstanceOf[U])
         if (beTrueMatchResult.matches != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.wasNotAn(e, UnquotedString(beTrueMatchResult.propertyName)),
-            FailureMessages.wasAn(e, UnquotedString(beTrueMatchResult.propertyName)),
+            if (shouldBeTrue)
+              FailureMessages.wasNotAn(e, UnquotedString(beTrueMatchResult.propertyName))
+            else
+              FailureMessages.wasAn(e, UnquotedString(beTrueMatchResult.propertyName)),
             None,
-            innerStackDepth
+            sourceInfo
           )
         }
         else
@@ -5196,11 +5196,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, xs, prettifier, sourceInfo) { e =>
       if (e.isDefinedAt(right) != shouldBeTrue)
         indicateFailure(
-          shouldBeTrue,
-          FailureMessages.wasNotDefinedAt(e, right),
-          FailureMessages.wasDefinedAt(e, right),
+          if (shouldBeTrue)
+            FailureMessages.wasNotDefinedAt(e, right)
+          else
+            FailureMessages.wasDefinedAt(e, right),
           None,
-          innerStackDepth
+          sourceInfo
         )
         else
         indicateSuccess(
