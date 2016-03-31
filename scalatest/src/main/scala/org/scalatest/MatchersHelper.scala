@@ -331,7 +331,7 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  def checkNoException(fun: => Any)(implicit prettifier: Prettifier): Assertion = {
+  def checkNoException(sourceInfo: SourceInfo)(fun: => Any): Assertion = {
     try {
       fun
       Succeeded
@@ -339,11 +339,7 @@ private[scalatest] object MatchersHelper {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        // SKIP-SCALATESTJS-START
-        val stackDepth = 0
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepth = 11
-        throw newTestFailedException(message, Some(u), stackDepth)
+        throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), Some(u), StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
       }
     }
   }

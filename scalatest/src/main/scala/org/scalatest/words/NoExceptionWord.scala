@@ -37,7 +37,7 @@ final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
    * </pre>
    */
   def should(beWord: BeWord): ResultOfBeWordForNoException = 
-    new ResultOfBeWordForNoException
+    new ResultOfBeWordForNoException(prettifier, sourceInfo)
   
   /**
    * This method enables the following syntax: 
@@ -69,7 +69,7 @@ final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
    * </pre>
    */
   def must(beWord: BeWord): ResultOfBeWordForNoException =
-    new ResultOfBeWordForNoException
+    new ResultOfBeWordForNoException(prettifier, sourceInfo)
 
   /**
    * This method enables the following syntax:
