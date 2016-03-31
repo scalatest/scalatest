@@ -1950,7 +1950,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  class ResultOfBeWordForAny[T](left: T, shouldBeTrue: Boolean) {
+  class ResultOfBeWordForAny[T](left: T, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
@@ -1963,7 +1963,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(aMatcher: AMatcher[T]): Assertion = {
       val matcherResult = aMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
     }
     
@@ -1978,7 +1978,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(anMatcher: AnMatcher[T]): Assertion = {
       val matcherResult = anMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
     }
 
@@ -1992,7 +1992,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       if ((toAnyRef(left) eq right) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.wasNotSameInstanceAs(left, right), FailureMessages.wasSameInstanceAs(left, right))
+        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSameInstanceAs(left, right) else FailureMessages.wasSameInstanceAs(left, right), None, sourceInfo)
       else indicateSuccess(shouldBeTrue, FailureMessages.wasSameInstanceAs(left, right), FailureMessages.wasNotSameInstanceAs(left, right))
     }
 
@@ -2028,7 +2028,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true)(prettifier, sourceInfo)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
     }
     // SKIP-SCALATESTJS-END
@@ -2046,7 +2046,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
       val result = bePropertyMatcher(left)
       if (result.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, FailureMessages.wasNotA(left, UnquotedString(result.propertyName)), FailureMessages.wasA(left, UnquotedString(result.propertyName)))
+        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotA(left, UnquotedString(result.propertyName)) else FailureMessages.wasA(left, UnquotedString(result.propertyName)), None, sourceInfo)
       } else indicateSuccess(shouldBeTrue, FailureMessages.wasA(left, UnquotedString(result.propertyName)), FailureMessages.wasNotA(left, UnquotedString(result.propertyName)))
     }
 
@@ -2063,7 +2063,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false)(prettifier, sourceInfo)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
     }
     // SKIP-SCALATESTJS-END
@@ -2080,7 +2080,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(beTrueMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
       val beTrueMatchResult = beTrueMatcher(left)
       if (beTrueMatchResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, FailureMessages.wasNotAn(left, UnquotedString(beTrueMatchResult.propertyName)), FailureMessages.wasAn(left, UnquotedString(beTrueMatchResult.propertyName)))
+        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotAn(left, UnquotedString(beTrueMatchResult.propertyName)) else FailureMessages.wasAn(left, UnquotedString(beTrueMatchResult.propertyName)), None, sourceInfo)
       } else indicateSuccess(shouldBeTrue, FailureMessages.wasAn(left, UnquotedString(beTrueMatchResult.propertyName)), FailureMessages.wasNotAn(left, UnquotedString(beTrueMatchResult.propertyName)))
     }
 
@@ -2094,7 +2094,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
       if (left.isDefinedAt(right) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.wasNotDefinedAt(left, right), FailureMessages.wasDefinedAt(left, right))
+        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefinedAt(left, right) else FailureMessages.wasDefinedAt(left, right), None, sourceInfo)
       else indicateSuccess(shouldBeTrue, FailureMessages.wasDefinedAt(left, right), FailureMessages.wasNotDefinedAt(left, right))
     }
 
@@ -6906,7 +6906,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, true)
+    def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, true, prettifier, sourceInfo)
   
     /**
      * This method enables syntax such as the following:
@@ -7140,7 +7140,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, false)
+    def shouldNot(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, false, prettifier, sourceInfo)
 
     /**
      * This method enables syntax such as the following:
