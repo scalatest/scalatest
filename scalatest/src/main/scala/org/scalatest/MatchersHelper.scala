@@ -348,9 +348,9 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  def indicateSuccess(message: => String)(implicit prettifier: Prettifier): Assertion = Succeeded
+  def indicateSuccess(message: => String): Assertion = Succeeded
 
-  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String)(implicit prettifier: Prettifier): Assertion = Succeeded
+  def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
 
   def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], sourceInfo: SourceInfo): Assertion = {
     throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
