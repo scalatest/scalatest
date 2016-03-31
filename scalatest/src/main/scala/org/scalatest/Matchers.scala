@@ -4471,11 +4471,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val innerStackDepth = 6
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
-
     /**
      * This method enables the following syntax: 
      *
@@ -4491,11 +4486,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            innerStackDepth
+            sourceInfo
         )
         else
           indicateSuccess(
@@ -4519,11 +4515,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainOneElementOf(e, right),
-            FailureMessages.containedOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneElementOf(e, right)
+            else
+              FailureMessages.containedOneElementOf(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4549,11 +4546,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            innerStackDepth
+            sourceInfo
         )
         else
           indicateSuccess(
@@ -4577,11 +4575,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (aggregating.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtLeastOneElementOf(e, right),
-            FailureMessages.containedAtLeastOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right)
+            else
+              FailureMessages.containedAtLeastOneElementOf(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4607,11 +4606,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4635,11 +4635,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (containing.containsNoneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.containedAtLeastOneElementOf(e, right),
-            FailureMessages.didNotContainAtLeastOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.containedAtLeastOneElementOf(e, right)
+            else
+              FailureMessages.didNotContainAtLeastOneElementOf(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4662,11 +4663,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainSameElements(e, right),
-            FailureMessages.containedSameElements(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainSameElements(e, right)
+            else
+              FailureMessages.containedSameElements(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4689,11 +4691,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainSameElementsInOrder(e, right),
-            FailureMessages.containedSameElementsInOrder(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainSameElementsInOrder(e, right)
+            else
+              FailureMessages.containedSameElementsInOrder(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4721,14 +4724,18 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
           val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
           indicateFailure(
-            shouldBeTrue,
-            withFriendlyReminder,
-            FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              if (withFriendlyReminder)
+                FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              else
+                FailureMessages.didNotContainOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              if (withFriendlyReminder)
+                FailureMessages.containedOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              else
+                FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            innerStackDepth
+            sourceInfo
           )
         }
         else
@@ -4755,11 +4762,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4785,11 +4793,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4813,11 +4822,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (aggregating.containsAllOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllElementsOf(e, right),
-            FailureMessages.containedAllElementsOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOf(e, right)
+            else
+              FailureMessages.containedAllElementsOf(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4843,11 +4853,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (sequencing.containsInOrder(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4871,11 +4882,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (sequencing.containsInOrder(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllElementsOfInOrder(e, right),
-            FailureMessages.containedAllElementsOfInOrder(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOfInOrder(e, right)
+            else
+              FailureMessages.containedAllElementsOfInOrder(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4901,11 +4913,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            else
+              FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4929,11 +4942,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         if (aggregating.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtMostOneElementOf(e, right),
-            FailureMessages.containedAtMostOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtMostOneElementOf(e, right)
+            else
+              FailureMessages.containedAtMostOneElementOf(e, right),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4956,11 +4970,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { map =>
         if (keyMapping.containsKey(map, expectedKey) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainKey(map, expectedKey),
-            FailureMessages.containedKey(map, expectedKey),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainKey(map, expectedKey)
+            else
+              FailureMessages.containedKey(map, expectedKey),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4983,11 +4998,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { map =>
         if (valueMapping.containsValue(map, expectedValue) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainValue(map, expectedValue),
-            FailureMessages.containedValue(map, expectedValue),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainValue(map, expectedValue)
+            else
+              FailureMessages.containedValue(map, expectedValue),
             None,
-            innerStackDepth
+            sourceInfo
           )
         else
           indicateSuccess(
@@ -4997,7 +5013,6 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           )
       }
     }
-
     /**
      * Overrides to return pretty toString.
      *
