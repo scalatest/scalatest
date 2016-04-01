@@ -27,7 +27,7 @@ import org.scalactic.{Prettifier, SourceInfo}
  *
  * @author Bill Venners
  */
-final class ResultOfATypeInvocation[T](val clazz: Class[T], prettifier: Prettifier, sourceInfo: SourceInfo) {
+final class ResultOfATypeInvocation[T](val clazz: Class[T], val prettifier: Prettifier, val sourceInfo: SourceInfo) {
 
   /**
    * This method enables the following syntax: 
@@ -38,7 +38,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T], prettifier: Prettifi
    * </pre>
    */
   def should(beWord: BeWord): ResultOfBeWordForAType[T] = 
-    new ResultOfBeWordForAType[T](clazz)
+    new ResultOfBeWordForAType[T](clazz, prettifier, sourceInfo)
 
   /**
    * This method enables the following syntax:
@@ -116,7 +116,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T], prettifier: Prettifi
    * </pre>
    */
   def must(beWord: BeWord): ResultOfBeWordForAType[T] =
-    new ResultOfBeWordForAType[T](clazz)
+    new ResultOfBeWordForAType[T](clazz, prettifier, sourceInfo)
 
   /**
    * This method enables the following syntax:

@@ -134,7 +134,7 @@ private[scalatest] object MatchersHelper {
   }
 
   // SKIP-SCALATESTJS-START
-  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
+  /*def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 9): Throwable = {
     val temp = new RuntimeException
@@ -148,6 +148,15 @@ private[scalatest] object MatchersHelper {
     optionalCause match {
       case Some(cause) => new TestFailedException(message, cause, stackDepth + stackDepthAdjustment)
       case None => new TestFailedException(message, stackDepth + stackDepthAdjustment)
+    }
+  }*/
+
+  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, sourceInfo: SourceInfo): Throwable = {
+    val temp = new RuntimeException
+    val stackDepth = StackDepthExceptionHelper.getStackDepth(temp.getStackTrace, sourceInfo)
+    optionalCause match {
+      case Some(cause) => new TestFailedException(message, cause, stackDepth)
+      case None => new TestFailedException(message, stackDepth)
     }
   }
 
@@ -190,7 +199,7 @@ private[scalatest] object MatchersHelper {
   }
 
   // SKIP-SCALATESTJS-START
-  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0)(implicit prettier: Prettifier, sourceInfo: SourceInfo): MatchResult = {
+  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo): MatchResult = {
 
     // If 'empty passed, rightNoTick would be "empty"
     val propertyName = right.name
@@ -217,8 +226,8 @@ private[scalatest] object MatchersHelper {
             FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
           else
             FailureMessages.hasNeitherAOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
-          None, 
-          stackDepth
+          None,
+          sourceInfo
         )
 
       case Some(result) =>
@@ -307,7 +316,7 @@ private[scalatest] object MatchersHelper {
                                Resources.rawIncludedRegexButNotGroup, Resources.rawIncludedRegexAndGroup)
   }
 
-  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, stackDepth: Int): T = {
+  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, sourceInfo: SourceInfo): T = {
     val caught = try {
       f
       None
@@ -316,7 +325,7 @@ private[scalatest] object MatchersHelper {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = wrongExceptionMessageFun(clazz.getName, u.getClass.getName)
-          throw newTestFailedException(s, Some(u), stackDepth)
+          throw newTestFailedException(s, Some(u), sourceInfo)
         }
         else {
           Some(u)
@@ -326,7 +335,7 @@ private[scalatest] object MatchersHelper {
     caught match {
       case None =>
         val message = exceptionExpectedMessageFun(clazz.getName)
-        throw newTestFailedException(message, None, stackDepth)
+        throw newTestFailedException(message, None, sourceInfo)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
   }

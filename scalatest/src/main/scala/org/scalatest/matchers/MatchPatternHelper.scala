@@ -16,7 +16,7 @@
 package org.scalatest.matchers
 
 import org.scalatest.{FailureMessages, Resources}
-import org.scalactic.Prettifier
+import org.scalactic.{Prettifier, SourceInfo}
 import org.scalatest.MatchersHelper._
 import org.scalatest.words.ResultOfNotWordForAny
 
@@ -81,7 +81,9 @@ object MatchPatternHelper {
         if (resultOfNoWordForAny.shouldBeTrue)
           FailureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
         else
-          FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left)
+          FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left),
+        None,
+        resultOfNoWordForAny.sourceInfo
       )
   }
 

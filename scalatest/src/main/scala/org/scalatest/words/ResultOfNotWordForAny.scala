@@ -61,7 +61,7 @@ import org.scalactic.SourceInfo
  *
  * @author Bill Venners
  */
-sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo) {
+sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val prettifier: Prettifier, val sourceInfo: SourceInfo) {
 
   /**
    * This method enables the following syntax:
@@ -509,7 +509,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, pr
    * </pre>
    */
   def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
-    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, false)(prettifier, sourceInfo)
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, false, false, prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
     else
@@ -544,7 +544,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, pr
    * </pre>
    */
   def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
-    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true)(prettifier, sourceInfo)
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAWordApplication.symbol, true, true, prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
     else
@@ -579,7 +579,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, pr
    * </pre>
    */
   def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
-    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false)(prettifier, sourceInfo)
+    val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), resultOfAnWordApplication.symbol, true, false, prettifier, sourceInfo)
     if (matcherResult.matches != shouldBeTrue)
       indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
     else

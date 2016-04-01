@@ -21,6 +21,7 @@ import org.scalatest.Assertion
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
+import org.scalactic.{Prettifier, SourceInfo}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -28,7 +29,7 @@ import org.scalatest.MatchersHelper.indicateFailure
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAType[T](clazz: Class[T]) {
+final class ResultOfBeWordForAType[T](clazz: Class[T], prettifier: Prettifier, sourceInfo: SourceInfo) {
   
   /**
    * This method enables the following syntax: 
@@ -44,7 +45,7 @@ final class ResultOfBeWordForAType[T](clazz: Class[T]) {
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 10
     try {
-      checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
+      checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, sourceInfo)
       indicateSuccess(Resources.exceptionThrown(clazz.getName))
     }
     catch {

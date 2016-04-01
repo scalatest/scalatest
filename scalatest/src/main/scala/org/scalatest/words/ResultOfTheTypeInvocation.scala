@@ -15,6 +15,7 @@
  */
 package org.scalatest.words
 
+import org.scalactic.{SourceInfo, Prettifier}
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.checkExpectedException
 
@@ -24,7 +25,7 @@ import org.scalatest.MatchersHelper.checkExpectedException
  *
  * @author Bill Venners
  */
-final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
+final class ResultOfTheTypeInvocation[T](clazz: Class[T], prettifier: Prettifier, sourceInfo: SourceInfo) {
 
   // SKIP-SCALATESTJS-START
   private val stackDepth = 0
@@ -40,7 +41,7 @@ final class ResultOfTheTypeInvocation[T](clazz: Class[T]) {
    * </pre>
    */
   def thrownBy(fun: => Any): T = {
-    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, stackDepth)
+    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, sourceInfo)
   }
   
   override def toString: String = "the [" + clazz.getName + "]"

@@ -251,7 +251,7 @@ final class BeWord {
    */
   def a(right: Symbol)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[AnyRef] =
     new Matcher[AnyRef] {
-      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true)(prettifier, sourceInfo)
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true, prettifier, sourceInfo)
       override def toString: String = "be a " + prettifier(right)
     }
   // SKIP-SCALATESTJS-END
@@ -304,7 +304,7 @@ final class BeWord {
    */
   def an(right: Symbol)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[AnyRef] =
     new Matcher[AnyRef] {
-      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false)(prettifier, sourceInfo)
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false, prettifier, sourceInfo)
       override def toString: String = "be an " + Prettifier.default(right)
     }
   // SKIP-SCALATESTJS-END
@@ -462,7 +462,7 @@ final class BeWord {
    */
   def apply(right: Symbol)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[AnyRef] =
     new Matcher[AnyRef] {
-      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false)(prettifier, sourceInfo)
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false, prettifier, sourceInfo)
       override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
   // SKIP-SCALATESTJS-END
