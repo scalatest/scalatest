@@ -26,6 +26,7 @@ import org.scalactic.Equality
 import org.scalactic.TripleEqualsSupport.Spread
 import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalactic.Prettifier
+import org.scalactic.SourceInfo
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 
@@ -656,7 +657,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *
    * @author Bill Venners
    */
-  final class AndContainWord {
+  final class AndContainWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * This method enables the following syntax:
@@ -719,7 +720,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Sequencing] =
-      outerInstance.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.and(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -730,7 +731,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
-      outerInstance.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.and(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -752,7 +753,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Sequencing] =
-      outerInstance.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.and(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -774,7 +775,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
-      outerInstance.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.and(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -796,7 +797,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
-      outerInstance.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.and(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -818,7 +819,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def only(right: Any*): MatcherFactory1[T, Aggregating] = 
-      outerInstance.and(MatcherWords.contain.only(right.toList: _*))
+      outerInstance.and(MatcherWords.contain.only(right.toList: _*)(prettifier, sourceInfo))
     
     /**
      * This method enables the following syntax:
@@ -829,7 +830,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
-      outerInstance.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.and(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -851,7 +852,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
-      outerInstance.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.and(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -873,7 +874,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *          ^
    * </pre>
    */
-  def and(containWord: ContainWord): AndContainWord = new AndContainWord
+  def and(containWord: ContainWord)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): AndContainWord = new AndContainWord(prettifier, sourceInfo)
 
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -1938,7 +1939,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *
    * @author Bill Venners
    */
-  final class OrContainWord {
+  final class OrContainWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * This method enables the following syntax:
@@ -2001,7 +2002,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
-      outerInstance.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.or(MatcherWords.contain.allOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -2023,7 +2024,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Sequencing] =
-      outerInstance.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.or(MatcherWords.contain.inOrder(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -2045,7 +2046,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
-      outerInstance.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.or(MatcherWords.contain.oneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -2067,7 +2068,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
-      outerInstance.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.or(MatcherWords.contain.atLeastOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -2089,7 +2090,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def only(right: Any*): MatcherFactory1[T, Aggregating] = 
-      outerInstance.or(MatcherWords.contain.only(right.toList: _*))
+      outerInstance.or(MatcherWords.contain.only(right.toList: _*)(prettifier, sourceInfo))
     
     /**
      * This method enables the following syntax:
@@ -2100,7 +2101,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Sequencing] =
-      outerInstance.or(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.or(MatcherWords.contain.inOrderOnly(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
     
     /**
      * This method enables the following syntax:
@@ -2111,7 +2112,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Containing] =
-      outerInstance.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.or(MatcherWords.contain.noneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -2133,7 +2134,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
      * </pre>
      */
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*): MatcherFactory1[T, Aggregating] =
-      outerInstance.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*))
+      outerInstance.or(MatcherWords.contain.atMostOneOf(firstEle, secondEle, remainingEles.toList: _*)(prettifier, sourceInfo))
 
     /**
      * This method enables the following syntax:
@@ -2155,7 +2156,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    *          ^
    * </pre>
    */
-  def or(containWord: ContainWord): OrContainWord = new OrContainWord
+  def or(containWord: ContainWord)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): OrContainWord = new OrContainWord(prettifier, sourceInfo)
   
   /**
    * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
