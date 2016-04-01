@@ -841,7 +841,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class AndNotWord {
+  final class AndNotWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * Get the <code>MatcherFactory</code> instance, currently used by macro only.
@@ -1018,7 +1018,7 @@ $endif$
      * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation))
+      thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation)(prettifier, sourceInfo))
 
     // SKIP-SCALATESTJS-START
     /**
@@ -1532,7 +1532,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  def and(notWord: NotWord): AndNotWord = new AndNotWord
+  def and(notWord: NotWord)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): AndNotWord = new AndNotWord(prettifier, sourceInfo)
 
   /**
    * This method enables the following syntax:
@@ -2135,7 +2135,7 @@ $endif$
    *
    * @author Bill Venners
    */
-  final class OrNotWord {
+  final class OrNotWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * Get the <code>MatcherFactory</code> instance, currently used by macro.
@@ -2312,7 +2312,7 @@ $endif$
      * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation))
+      thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation)(prettifier, sourceInfo))
 
     // SKIP-SCALATESTJS-START
     /**
@@ -2823,7 +2823,7 @@ $endif$
    *                 ^
    * </pre>
    */
-  def or(notWord: NotWord): OrNotWord = new OrNotWord
+  def or(notWord: NotWord)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): OrNotWord = new OrNotWord(prettifier, sourceInfo)
 
   /**
    * This method enables the following syntax:
