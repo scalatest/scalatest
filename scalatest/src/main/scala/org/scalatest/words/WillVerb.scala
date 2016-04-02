@@ -226,7 +226,7 @@ private[scalatest] trait WillVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringWillWrapperForVerb</code>,
    * to enable <code>will</code> methods to be invokable on that object.
    */
-  implicit def convertToStringWillWrapper(o: String): StringWillWrapperForVerb =
+  implicit def convertToStringWillWrapperForVerb(o: String): StringWillWrapperForVerb =
     new StringWillWrapperForVerb {
       val leftSideString = o.trim
     }
