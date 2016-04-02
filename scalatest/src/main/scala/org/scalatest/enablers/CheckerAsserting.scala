@@ -29,10 +29,11 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.StackDepthException
+import org.scalactic.{Prettifier, SourceInfo}
 
 trait CheckerAsserting[T] {
   type Result
-  def check(p: Prop, prms: Test.Parameters, argNames: Option[List[String]] = None): Result
+  def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, sourceInfo: SourceInfo, argNames: Option[List[String]] = None): Result
 }
 
 abstract class UnitCheckerAsserting {
@@ -41,9 +42,7 @@ abstract class UnitCheckerAsserting {
 
     import CheckerAsserting._
 
-    private val sourceFileName: String = "CheckerAsserting.scala"
-
-    def check(p: Prop, prms: Test.Parameters, argNames: Option[List[String]] = None): Result = {
+    def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, sourceInfo: SourceInfo, argNames: Option[List[String]] = None): Result = {
 
       val result = Test.check(prms, p)
       if (!result.passed) {
@@ -66,7 +65,7 @@ abstract class UnitCheckerAsserting {
               args,
               labels,
               None,
-              getStackDepthFun(sourceFileName, "check")
+              getStackDepthFun(sourceInfo)
             )
 
           case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
@@ -92,7 +91,7 @@ abstract class UnitCheckerAsserting {
               scalaCheckArgs,
               scalaCheckLabels.toList,
               None,
-              getStackDepthFun(sourceFileName, "check", stackDepth)
+              getStackDepthFun(sourceInfo)
             )
 
           case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
@@ -115,7 +114,7 @@ abstract class UnitCheckerAsserting {
               scalaCheckArgs,
               scalaCheckLabels.toList,
               Some(e),
-              getStackDepthFun(sourceFileName, "check")
+              getStackDepthFun(sourceInfo)
             )
         }
       } else indicateSuccess(FailureMessages.propertyCheckSucceeded)
