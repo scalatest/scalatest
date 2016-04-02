@@ -40,10 +40,6 @@ final class ResultOfBeWordForAnType[T](clazz: Class[T], prettifier: Prettifier, 
    * </pre>
    */
   def thrownBy(fun: => Any): Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 10
     try {
       checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, sourceInfo)
       indicateSuccess(Resources.exceptionThrown(clazz.getName))
