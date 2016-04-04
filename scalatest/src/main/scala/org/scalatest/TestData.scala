@@ -71,8 +71,8 @@ package org.scalatest
  * </p>
  *
  * <ul>
- * <li><code>A Stack when empty should have size 0</code></li>
- * <li><code>A Stack when empty should produce NoSuchElementException when head is invoked</code></li>
+ * <li><code>A Set when empty should have size 0</code></li>
+ * <li><code>A Set when empty should produce NoSuchElementException when head is invoked</code></li>
  * </ul>
  *
  * <p>
@@ -80,8 +80,8 @@ package org.scalatest
  * </p>
  *
  * <ul>
- * <li><code>name</code>: <code>"A Stack when empty should have size 0"</code></li>
- * <li><code>scopes</code>: <code>collection.immutable.IndexedSeq("A Stack", "when empty")</code></li>
+ * <li><code>name</code>: <code>"A Set when empty should have size 0"</code></li>
+ * <li><code>scopes</code>: <code>collection.immutable.IndexedSeq("A Set", "when empty")</code></li>
  * <li><code>text</code>: <code>"should have size 0"</code></li>
  * </ul>
  *
