@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.{Prettifier, SourceInfo}
+
 /**
  * A bundle of information about the current test.
  *
@@ -131,5 +133,7 @@ trait TestData {
    * Tag names for this test.
    */
   val tags: Set[String]
+
+  val sourceInfo: SourceInfo
 }
 

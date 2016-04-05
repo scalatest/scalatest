@@ -24,6 +24,7 @@ import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalactic.Requirements._
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>RefSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -143,10 +144,13 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
                 case Some(tagSet) => tagSet.contains(Suite.IgnoreTagName) || methodTags.contains(Suite.IgnoreTagName)
                 case None => methodTags.contains(Suite.IgnoreTagName)
               }
+
+              val sourceInfo = SourceInfo("NA", "NA", 0)
+
               if (isIgnore)
-                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), sourceInfo, methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), sourceInfo, None, methodTags.map(new Tag(_)): _*)
             }
           }
         }
@@ -272,6 +276,7 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
           val scopes = testData.scopes
           val text = testData.text
           val tags = testData.tags
+          val sourceInfo = testData.sourceInfo
         }
       )
     }

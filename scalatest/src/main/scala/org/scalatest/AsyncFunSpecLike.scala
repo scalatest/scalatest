@@ -19,6 +19,7 @@ import scala.collection.immutable.ListSet
 import words.BehaveWord
 import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>AsyncFunSpec</code>, which
@@ -95,20 +96,20 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
   private[scalatest] val sourceFileName = "FunSpecRegistering.scala"
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   /**
@@ -157,14 +158,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
+    def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-      engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+      engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
     }
 
     /**
@@ -275,8 +276,8 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
-      engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, testTags: _*)
+    def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+      engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, sourceInfo, testTags: _*)
     }
 
     /**
@@ -359,14 +360,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
+  protected def ignore(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   /**
@@ -463,6 +464,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
+            val sourceInfo = testData.sourceInfo
           }
         ).underlying
       )

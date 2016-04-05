@@ -23,6 +23,7 @@ import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>FlatSpec</code>, which facilitates a
@@ -94,20 +95,20 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   /**
@@ -129,7 +130,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Any /* Assertion */) {
+  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Any /* Assertion */)(sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -141,7 +142,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, "FlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, "FlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
   }
 
   /**
@@ -267,8 +268,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */) {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)
+    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)(sourceInfo)
     }
 
     /**
@@ -289,8 +290,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement) {
-      registerTestToRun(verb.trim + " " + name.trim, "is", tags, () => { testFun; succeed })
+    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + name.trim, "is", tags, () => { testFun; succeed })(sourceInfo)
     }
 
     /**
@@ -311,8 +312,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */) {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)
+    def ignore(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)(sourceInfo)
     }
   }
 
@@ -379,8 +380,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */) {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)
+    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)(sourceInfo)
     }
 
     /**
@@ -400,8 +401,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement) {
-      registerTestToRun(verb.trim + " " + name.trim, "is", List(), () => { testFun; succeed })
+    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + name.trim, "is", List(), () => { testFun; succeed })(sourceInfo)
     }
 
     /**
@@ -421,8 +422,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */) {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)
+    def ignore(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)(sourceInfo)
     }
 
     /**
@@ -673,8 +674,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */) {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _)
+    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _)(sourceInfo)
     }
 
     /**
@@ -703,8 +704,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement) {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "is", () => { testFun; succeed })
+    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "is", () => { testFun; succeed })(sourceInfo)
     }
     // Note: no def ignore here, so you can't put two ignores in the same line
   }
@@ -770,8 +771,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */) {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _)
+    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _)(sourceInfo)
     }
 
     /**
@@ -799,8 +800,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement) {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "is", () => { testFun; succeed })
+    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "is", () => { testFun; succeed })(sourceInfo)
     }
 
     /**
@@ -982,8 +983,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */) {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)
+    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)(sourceInfo)
     }
 
     /**
@@ -1004,8 +1005,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement) {
-      registerTestToRun(verb.trim + " " + name.trim, "is", tags, () => { testFun; succeed })
+    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + name.trim, "is", tags, () => { testFun; succeed })(sourceInfo)
     }
 
     /**
@@ -1026,8 +1027,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */) {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)
+    def ignore(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)(sourceInfo)
     }
   }
 
@@ -1094,8 +1095,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */) {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)
+    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)(sourceInfo)
     }
 
     /**
@@ -1115,8 +1116,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement) {
-      registerTestToRun(verb.trim + " " + name.trim, "is", List(), () => { testFun; succeed })
+    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + name.trim, "is", List(), () => { testFun; succeed })(sourceInfo)
     }
 
     /**
@@ -1136,8 +1137,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */) {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)
+    def ignore(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)(sourceInfo)
     }
 
     /**
@@ -1395,8 +1396,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */) {
-      registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _)
+    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _)(sourceInfo)
     }
     
     /**
@@ -1416,8 +1417,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */) {
-      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _)
+    def ignore(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _)(sourceInfo)
     }
   }
 
@@ -1493,8 +1494,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */) {
-      registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _)
+    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _)(sourceInfo)
     }
 
     /**
@@ -1516,8 +1517,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */) {
-      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _)
+    def ignore(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _)(sourceInfo)
     }
   }
 
@@ -1560,8 +1561,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecLike.scala", "apply", stackDepth, 0)
       new ResultOfStringPassedToVerb(verb, rest) {
 
-        def is(testFun: => PendingStatement) {
-          registerTestToRun(verb.trim + " " + rest.trim, "is", List(), () => { testFun; succeed })
+        def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+          registerTestToRun(verb.trim + " " + rest.trim, "is", List(), () => { testFun; succeed })(sourceInfo)
         }
         // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
         // to say is (fixture => pending), rather just say is (pending)
@@ -1570,8 +1571,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
           new ResultOfTaggedAsInvocation(verb, rest, tagList) {
             // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
             //                                               ^
-            def is(testFun: => PendingStatement) {
-              registerTestToRun(verb.trim + " " + rest.trim, "is", tags, () => { testFun; succeed })
+            def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+              registerTestToRun(verb.trim + " " + rest.trim, "is", tags, () => { testFun; succeed })(sourceInfo)
             }
           }
         }
@@ -1630,14 +1631,14 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   /**
@@ -1683,6 +1684,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
           val scopes = testData.scopes
           val text = testData.text
           val tags = testData.tags
+          val sourceInfo = testData.sourceInfo
         }
       )
     }

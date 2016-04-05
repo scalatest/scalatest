@@ -19,6 +19,7 @@ import org.scalatest._
 import scala.collection.immutable.ListSet
 import org.scalatest.Suite.autoTagClassAnnotations
 import scala.concurrent.Future
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>fixture.AsyncFunSuite</code>, which is
@@ -93,41 +94,41 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerAsyncTest", 4, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerAsyncTest", 4, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FunSuite.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   class ResultOfTestInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
+    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+      engine.registerAsyncTest(testName, transformToOutcome(testFun), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
     }
 
-    def apply(testFun: () => Future[compatible.Assertion]) {
+    def apply(testFun: () => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerAsyncTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+      engine.registerAsyncTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.testCannotAppearInsideAnotherTest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
     }
   }
 
@@ -159,24 +160,24 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
 */
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Future[compatible.Assertion]) {
+    def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredAsyncTest(testName, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
     }
 
-    def apply(testFun: () => Future[compatible.Assertion]) {
+    def apply(testFun: () => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
       //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-      engine.registerIgnoredAsyncTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredAsyncTest(testName, transformToOutcome(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideATest, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
     }
   }
 
@@ -248,6 +249,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
+            val sourceInfo = testData.sourceInfo
           }
         ).underlying
       )

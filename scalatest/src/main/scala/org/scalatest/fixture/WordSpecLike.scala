@@ -26,6 +26,7 @@ import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>fixture.WordSpec</code>, which is
@@ -100,20 +101,20 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   /**
@@ -135,18 +136,18 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */)(sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, None, testTags: _*)
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(sourceInfo: SourceInfo) {
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, sourceInfo, None, testTags: _*)
   }
 
   /**
@@ -168,18 +169,18 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */)(sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, testTags: _*)
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(sourceInfo: SourceInfo) {
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, sourceInfo, testTags: _*)
   }
 
   private def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String, errorMessage: String): String =
@@ -316,8 +317,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Any /* Assertion */) {
-      registerTestToRun(specText, tags, "in", testFun)
+    def in(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(specText, tags, "in", testFun)(sourceInfo)
     }
 
     /**
@@ -338,8 +339,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Any /* Assertion */) {
-      registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))
+    def in(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))(sourceInfo)
     }
 
     /**
@@ -360,8 +361,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement) {
-      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)
+    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)(sourceInfo)
     }
 
     /**
@@ -382,8 +383,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Any /* Assertion */) {
-      registerTestToIgnore(specText, tags, "ignore", testFun)
+    def ignore(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(specText, tags, "ignore", testFun)(sourceInfo)
     }
 
     /**
@@ -404,8 +405,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Any /* Assertion */) {
-      registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))
+    def ignore(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))(sourceInfo)
     }
   }
 
@@ -446,8 +447,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Any /* Assertion */) {
-      registerTestToRun(string, List(), "in", testFun)
+    def in(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(string, List(), "in", testFun)(sourceInfo)
     }
 
     /**
@@ -468,8 +469,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Any /* Assertion */) {
-      registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))
+    def in(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))(sourceInfo)
     }
 
     /**
@@ -490,8 +491,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement) {
-      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)
+    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
+      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)(sourceInfo)
     }
 
     /**
@@ -512,8 +513,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Any /* Assertion */) {
-      registerTestToIgnore(string, List(), "ignore", testFun)
+    def ignore(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(string, List(), "ignore", testFun)(sourceInfo)
     }
 
     /**
@@ -534,8 +535,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Any /* Assertion */) {
-      registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))
+    def ignore(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))(sourceInfo)
 
     }
 

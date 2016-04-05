@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.SourceInfo
+
 /**
  * Trait declaring methods that can be used to register by-name test functions that
  * have any result type.
@@ -28,7 +30,7 @@ trait TestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)
+  def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo)
 
   /**
    * Registers an ignored test.
@@ -37,5 +39,5 @@ trait TestRegistration { theSuite: Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo)
 }

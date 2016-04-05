@@ -20,6 +20,7 @@ import scala.collection.immutable.ListSet
 import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest._
 import org.scalatest.Suite.autoTagClassAnnotations
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>path.FunSpec</code>, which is
@@ -143,14 +144,14 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
+    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
     }
     
     /**
@@ -261,8 +262,8 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
-      handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, testTags: _*)
+    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, sourceInfo, testTags: _*)
     }
  
     /**
@@ -346,7 +347,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */) {
+  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -354,7 +355,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
     // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
+    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
   
   /**

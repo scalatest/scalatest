@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.SourceInfo
+
 /**
  * The base trait of ScalaTest's <em>synchronous testing styles</em>, which defines a 
  * <code>withFixture</code> lifecycle method that accepts as its parameter a test function
@@ -161,6 +163,7 @@ trait TestSuite extends Suite { thisTestSuite =>
         val scopes: collection.immutable.IndexedSeq[String] = test.scopes
         val name: String = test.name
         val tags: Set[String] = test.tags
+        val sourceInfo: SourceInfo = test.sourceInfo
       }
     }
   }

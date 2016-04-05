@@ -16,7 +16,7 @@
 package org.scalatest.concurrent
 
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalatest.Resources
+import org.scalatest.{FailureMessages, UnquotedString}
 import org.scalatest.exceptions.{StackDepthException, TestFailedDueToTimeoutException, TestCanceledException}
 import java.nio.channels.ClosedByInterruptException
 import java.nio.channels.Selector
@@ -24,6 +24,7 @@ import java.net.Socket
 import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.enablers.Timed
+import org.scalactic.{Prettifier, SourceInfo}
 
 /**
  * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
@@ -236,17 +237,17 @@ trait TimeLimits {
    * @param fun the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, timed: Timed[T] = implicitly[Timed[T]]): T = {
+  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, sourceInfo: SourceInfo = implicitly[SourceInfo], timed: Timed[T] = implicitly[Timed[T]]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
     timed.timeoutAfter(
       timeout,
       fun,
       interruptor,
-      (cause: Option[Throwable], stackDepthAdjustment: Int) => {
+      (cause: Option[Throwable]) => {
         val e = new TestFailedDueToTimeoutException(
-          sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)),
+          sde => Some(FailureMessages.timeoutFailedAfter(UnquotedString(timeout.prettyString))),
           cause,
-          getStackDepthFun("TimeLimits.scala", "failAfter", stackDepthAdjustment),
+          getStackDepthFun(sourceInfo),
           None,
           timeout
         )
@@ -291,17 +292,17 @@ trait TimeLimits {
    * @param f the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, timed: Timed[T] = implicitly[Timed[T]]): T = {
+  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, sourceInfo: SourceInfo = implicitly[SourceInfo], timed: Timed[T] = implicitly[Timed[T]]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
     timed.timeoutAfter(
       timeout,
       fun,
       interruptor,
-      (cause: Option[Throwable], stackDepthAdjustment: Int) => {
+      (cause: Option[Throwable]) => {
         val e = new TestCanceledException(
-          sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)),
+          sde => Some(FailureMessages.timeoutCanceledAfter(UnquotedString(timeout.prettyString))),
           cause,
-          getStackDepthFun("TimeLimits.scala", "cancelAfter", stackDepthAdjustment),
+          getStackDepthFun(sourceInfo),
           None
         )
         e.setStackTrace(stackTraceElements)

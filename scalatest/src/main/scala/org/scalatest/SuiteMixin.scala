@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.SourceInfo
+
 /**
  * Trait defining abstract "lifecycle" methods that are implemented in <a href="Suite.html#lifecycle-methods"><code>Suite</code></a> and can
  * be overridden in stackable modification traits.

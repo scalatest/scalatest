@@ -36,6 +36,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import scala.concurrent.ExecutionContext
+import org.scalactic.SourceInfo
 
 import scala.util.{Failure, Success}
 
@@ -67,6 +68,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testText: String, // The last portion of the test name that showed up on an inner most nested level
     testFun: T, 
     location: Option[Location],
+    sourceInfo: SourceInfo,
     recordedDuration: Option[Long] = None
   ) extends Node(Some(parent))
 
@@ -448,7 +450,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       branch.subNodes.reverse.foreach { node =>
         if (!stopper.stopRequested) {
           node match {
-            case testLeaf @ TestLeaf(_, testName, testText, _, _, _) =>
+            case testLeaf @ TestLeaf(_, testName, testText, _, _, _, _) =>
               val (filterTest, ignoreTest) = args.filter(testName, theSuite.tags, theSuite.suiteId)
               if (!filterTest)
                 if (ignoreTest) {
@@ -733,7 +735,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   }
 
   // Path traits need to register the message recording informer, so it can fire any info events later
-  def registerAsyncTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], testTags: Tag*): String = { // returns testName
+  def registerAsyncTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], sourceInfo: SourceInfo, testTags: Tag*): String = { // returns testName
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -759,7 +761,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         case None => getLineInFile(Thread.currentThread().getStackTrace, stackDepth)
       }
 
-    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, duration)
+    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, sourceInfo, duration)
     testsMap += (testName -> testLeaf)
     testNamesList ::= testName
     currentBranch.subNodes ::= testLeaf
@@ -773,7 +775,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testName
   }
 
-  def registerIgnoredAsyncTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  def registerIgnoredAsyncTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: SourceInfo, testTags: Tag*) {
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -781,7 +783,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 //    if (atomic.get.registrationClosed)
 //      throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideATest, getStackDepth(sourceFileName, "ignore"))
 
-    val testName = registerAsyncTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location) // Call test without passing the tags
+    val testName = registerAsyncTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location, sourceInfo) // Call test without passing the tags
 
     val oldBundle = atomic.get
     var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -836,14 +838,17 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     }
   }
   
-  private[scalatest] def createTestDataFor(testName: String, theConfigMap: ConfigMap, theSuite: Suite) = 
+  private[scalatest] def createTestDataFor(testName: String, theConfigMap: ConfigMap, theSuite: Suite) = {
+    val theTest = atomic.get.testsMap(testName)
     new TestData {
-      val configMap = theConfigMap 
+      val configMap = theConfigMap
       val name = testName
       val scopes = testScopes(testName)
       val text = testText(testName)
       val tags = testTags(testName, theSuite)
+      val sourceInfo = theTest.sourceInfo
     }
+  }
   
   private[scalatest] def testTags(testName: String, theSuite: Suite): Set[String] = {
     // SKIP-SCALATESTJS-START

@@ -21,6 +21,7 @@ import time.Span
 import time.SpanSugar._
 import Matchers._
 import Retries._
+import org.scalactic.SourceInfo
 
 class RetriesSpec extends FunSpec {
 
@@ -602,6 +603,7 @@ class RetriesSpec extends FunSpec {
           val scopes: collection.immutable.IndexedSeq[String] = Vector.empty
           val text: String = name
           val tags: Set[String] = Set("org.scalatest.tags.Retryable")
+          val sourceInfo: SourceInfo = SourceInfo.sourceInfo
         }
         val no = new TestData {
           val configMap: ConfigMap = ConfigMap.empty
@@ -609,6 +611,7 @@ class RetriesSpec extends FunSpec {
           val scopes: collection.immutable.IndexedSeq[String] = Vector.empty
           val text: String = name
           val tags: Set[String] = Set("NotMe")
+          val sourceInfo = SourceInfo.sourceInfo
         }
 
         isRetryable(yes) shouldBe true

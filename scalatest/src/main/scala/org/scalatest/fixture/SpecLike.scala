@@ -23,6 +23,7 @@ import Suite._
 import org.scalatest.events.{TopOfClass, TopOfMethod}
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
+import org.scalactic.SourceInfo
 
 /**
  * <strong>Trait <code>fixture.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
@@ -162,10 +163,13 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
                 case Some(tagSet) => tagSet.contains(IgnoreTagName) || methodTags.contains(IgnoreTagName)
                 case None => methodTags.contains(IgnoreTagName)
               }
+
+              val sourceInfo = SourceInfo("NA", "NA", 0)
+
               if (isIgnore)
-                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), sourceInfo, methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), sourceInfo, None, methodTags.map(new Tag(_)): _*)
             }
           }
         }
@@ -300,6 +304,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
           val scopes = testData.scopes
           val text = testData.text
           val tags = testData.tags
+          val sourceInfo = testData.sourceInfo
         }
         //new TestFunAndConfigMap(testName, theTest.testFun, theConfigMap)
       )

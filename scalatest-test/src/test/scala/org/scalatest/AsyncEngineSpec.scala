@@ -25,6 +25,7 @@ import scala.concurrent.Future
 // SKIP-SCALATESTJS-START
 import concurrent.Eventually._
 // SKIP-SCALATESTJS-END
+import org.scalactic.SourceInfo
 
 class AsyncEngineSpec extends FlatSpec with Matchers {
 
@@ -66,13 +67,13 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
-    val childTest = TestLeaf(Trunk, "child test", "child test", () => PastOutcome(Succeeded), None)
+    val childTest = TestLeaf(Trunk, "child test", "child test", () => PastOutcome(Succeeded), None, SourceInfo.sourceInfo)
     Trunk.subNodes ::= childTest
     val grandchild = DescriptionBranch(child, "grandchild", None, None)
     child.subNodes ::= grandchild
-    val grandchildTest = TestLeaf(child, "grandchild test", "grandchild test", () => PastOutcome(Succeeded), None)
+    val grandchildTest = TestLeaf(child, "grandchild test", "grandchild test", () => PastOutcome(Succeeded), None, SourceInfo.sourceInfo)
     child.subNodes ::= grandchildTest
-    val greatGrandchildTest = TestLeaf(grandchild, "great-grandchild test", "great-grandchild test", () => PastOutcome(Succeeded), None)
+    val greatGrandchildTest = TestLeaf(grandchild, "great-grandchild test", "great-grandchild test", () => PastOutcome(Succeeded), None, SourceInfo.sourceInfo)
     grandchild.subNodes ::= greatGrandchildTest
     Trunk.indentationLevel should be (0)
     child.indentationLevel should be (0)
@@ -93,16 +94,16 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
           list should be (ListBuffer(1)) 
           list.clear()
           PastOutcome(Succeeded)
-        }, "Anything", "Anything", "Anything", 1, 0, None, None)
+        }, "Anything", "Anything", "Anything", 1, 0, None, None, SourceInfo.sourceInfo)
         engine.registerAsyncTest("then the list length = 1", () => {
           PastOutcome(outcomeOf { list.length should be (1) })
-        }, "Anything", "Anything", "Anything", 1, 0, None, None)
+        }, "Anything", "Anything", "Anything", 1, 0, None, None, SourceInfo.sourceInfo)
       }, "Anything", "Anything", "Anything", 1, 0, None)
       engine.registerNestedBranch("when 2 is inserted", None, {
         list += 2
         engine.registerAsyncTest("then the list has only 2 in it", () => {
           PastOutcome(outcomeOf { list should be (ListBuffer(2)) })
-        }, "Anything", "Anything", "Anything", 1, 0, None, None)
+        }, "Anything", "Anything", "Anything", 1, 0, None, None, SourceInfo.sourceInfo)
       }, "Anything", "Anything", "Anything", 1, 0, None)
     }, "Anything", "Anything", "Anything", 1, 0, None)
     engine

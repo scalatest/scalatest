@@ -19,6 +19,7 @@ import org.scalatest.OutcomeOf._
 import org.scalatest.{AsyncOutcome, Tag}
 import scala.concurrent.Future
 import org.scalatest.compatible
+import org.scalactic.SourceInfo
 
 /**
  * Trait declaring methods that can be used to register test functions that accept
@@ -33,7 +34,7 @@ trait AsyncTestRegistration { theSuite: org.scalatest.fixture.AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo)
 
   /**
    * Registers an ignored test.
@@ -42,5 +43,5 @@ trait AsyncTestRegistration { theSuite: org.scalatest.fixture.AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo)
 }

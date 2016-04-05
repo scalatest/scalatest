@@ -25,6 +25,7 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>fixture.FunSpec</code>, which is
@@ -99,20 +100,20 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = 0
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -2
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 1, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   /**
@@ -141,24 +142,24 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
 
     class ResultOfItWordApplication(specText: String, testTags: Tag*) {
 
-      def apply(testFun: FixtureParam => Any /* Assertion */) {
+      def apply(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepth = 5
         //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-        engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+        engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
       }
 
-      def apply(testFun: () => Any /* Assertion */) {
+      def apply(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepth = 5
         //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-        engine.registerTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
+        engine.registerTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
       }
     }
 
@@ -274,20 +275,20 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    */
   protected final class TheyWord {
 
-    class ResultOfTheyWordApplication(specText: String, testTags: Tag*) {
-      def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    class ResultOfTheyWordApplication(specText: String, testTags: Tag*)(implicit sourceInfo: SourceInfo) {
+      def apply(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepthAdjustment = -3
-        engine.registerTest(specText, Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
+        engine.registerTest(specText, Transformer(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
       }
-      def apply(testFun: () => Any /* Assertion */): Unit = {
+      def apply(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = -2
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY val stackDepthAdjustment = -3
-        engine.registerTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, None, testTags: _*)
+        engine.registerTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
       }
     }
 
@@ -380,23 +381,23 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
   protected val they = new TheyWord
 
   class ResultOfIgnoreInvocation(specText: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */): Unit = {
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */): Unit = {
+    def apply(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, testTags: _*)
+      engine.registerIgnoredTest(specText, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
     }
   }
 

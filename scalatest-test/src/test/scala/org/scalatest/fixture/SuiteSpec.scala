@@ -23,6 +23,7 @@ import mockito.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.events.InfoProvided
 import SharedHelpers._
+import org.scalactic.SourceInfo
 
 class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 
@@ -284,6 +285,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
              val scopes: collection.immutable.IndexedSeq[String] = test.scopes
              val name: String = test.name
              val tags: Set[String] = test.tags
+             val sourceInfo: SourceInfo = test.sourceInfo
             }
           )
         }

@@ -19,6 +19,7 @@ import org.scalatest.words.BehaveWord
 import scala.collection.immutable.ListSet
 import org.scalatest._
 import org.scalatest.Suite.autoTagClassAnnotations
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>path.FreeSpec</code>, which is
@@ -115,14 +116,14 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */)(sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    handleTest(thisSuite, specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    handleTest(thisSuite, specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   /**
@@ -144,14 +145,14 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Unit /* Assertion */)(sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    handleIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    handleIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIt, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
   }
 
   /**
@@ -186,8 +187,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */) {
-      registerTestToRun(specText, tags, "in", testFun _)
+    def in(testFun: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(specText, tags, "in", testFun _)(sourceInfo)
     }
 
     /**
@@ -213,8 +214,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing) {
-      registerTestToRun(specText, tags, "is", testFun _)
+    def is(testFun: => PendingNothing)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(specText, tags, "is", testFun _)(sourceInfo)
     }
 
     /**
@@ -237,8 +238,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * be executed. Instead, a <code>TestIgnored</code> event will be fired.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */) {
-      registerTestToIgnore(specText, tags, "ignore", testFun _)
+    def ignore(testFun: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(specText, tags, "ignore", testFun _)(sourceInfo)
     }
   }       
 
@@ -304,8 +305,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def in(f: => Unit /* Assertion */) {
-      registerTestToRun(string, List(), "in", f _)
+    def in(f: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(string, List(), "in", f _)(sourceInfo)
     }
 
     /**
@@ -328,8 +329,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * be executed. Instead, a <code>TestIgnored</code> event will be fired.
      * </p>
      */
-    def ignore(f: => Unit /* Assertion */) {
-      registerTestToIgnore(string, List(), "ignore", f _)
+    def ignore(f: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
+      registerTestToIgnore(string, List(), "ignore", f _)(sourceInfo)
     }
 
     /**
@@ -355,8 +356,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingNothing) {
-      registerTestToRun(string, List(), "is", f _)
+    def is(f: => PendingNothing)(implicit sourceInfo: SourceInfo) {
+      registerTestToRun(string, List(), "is", f _)(sourceInfo)
     }
 
     /**

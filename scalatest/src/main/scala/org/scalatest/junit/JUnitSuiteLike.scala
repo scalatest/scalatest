@@ -25,6 +25,7 @@ import org.junit.runner.notification.Failure
 import org.scalatest.events._
 import org.scalatest.Suite.autoTagClassAnnotations
 import Suite.wrapReporterIfNecessary
+import org.scalactic.SourceInfo
 
 /**
  * Implementation trait for class <code>JUnitSuite</code>, which represents
@@ -214,6 +215,7 @@ trait JUnitSuiteLike extends Suite with AssertionsForJUnit { thisSuite =>
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty ++ suiteTags ++ testTags
+      val sourceInfo = SourceInfo("NA", "NA", 0)
     }
   }
 

@@ -133,7 +133,7 @@ trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
     try {
       failAfter(timeLimit) {
         super.withFixture(test)
-      } (defaultTestSignaler)
+      } (defaultTestSignaler, test.sourceInfo)
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => 

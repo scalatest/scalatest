@@ -269,6 +269,7 @@ trait AsyncTestSuite extends org.scalatest.fixture.Suite with org.scalatest.Asyn
         val scopes = thisOneArgAsyncTest.scopes
         val text = thisOneArgAsyncTest.text
         val tags = thisOneArgAsyncTest.tags
+        val sourceInfo = thisOneArgAsyncTest.sourceInfo
       }
   }
 

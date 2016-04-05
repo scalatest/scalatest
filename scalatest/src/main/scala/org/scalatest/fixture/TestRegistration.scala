@@ -17,6 +17,7 @@ package org.scalatest.fixture
 
 import org.scalatest.Tag
 import org.scalatest.Assertion
+import org.scalactic.SourceInfo
 
 /**
  * Trait declaring methods that can be used to register test functions that accept
@@ -31,7 +32,7 @@ trait TestRegistration { theSuite: org.scalatest.fixture.Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)
+  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo)
 
   /**
    * Registers an ignored test.
@@ -40,5 +41,5 @@ trait TestRegistration { theSuite: org.scalatest.fixture.Suite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)
+  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo)
 }

@@ -25,6 +25,7 @@ import org.scalactic.exceptions.NullArgumentException
 // SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
+import org.scalactic.SourceInfo
 
 protected[scalatest] class MandarinOrangeFunSuite(ns: Suite*) extends FunSuite {
   override def nestedSuites = Vector.empty ++ ns // ns.toVector
@@ -433,6 +434,7 @@ class SuiteSpec extends FunSpec {
              val scopes: collection.immutable.IndexedSeq[String] = test.scopes
              val name: String = test.name
              val tags: Set[String] = test.tags
+             val sourceInfo: SourceInfo = test.sourceInfo
             }
           )
         }
