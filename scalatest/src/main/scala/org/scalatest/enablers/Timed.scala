@@ -104,10 +104,6 @@ object Timed {
                         signaler: Signaler,
                         exceptionFun: (Option[Throwable]) => StackDepthException
                         ): Future[T] = {
-        // SKIP-SCALATESTJS-START
-        val stackDepthAdjustment = 2
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
 
         val timer = new Timer
         val maxDuration = timeout.totalNanos / 1000 / 1000
@@ -181,11 +177,7 @@ object Timed {
                         signaler: Signaler,
                         exceptionFun: (Option[Throwable]) => StackDepthException
                         ): FutureOutcome = {
-        // SKIP-SCALATESTJS-START
-        val stackDepthAdjustment = 2
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
-
+        
         val timer = new Timer
         val maxDuration = timeout.totalNanos / 1000 / 1000
         val startTime = scala.compat.Platform.currentTime
