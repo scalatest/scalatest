@@ -21,7 +21,7 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.12.0-M4"
 
-  val releaseVersion = "3.0.0-M15"
+  val releaseVersion = "3.0.0-M16-SNAP4"
 
   val scalacheckVersion = "1.11.6"
 
