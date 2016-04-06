@@ -24,7 +24,7 @@ import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalactic.Requirements._
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>RefSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests

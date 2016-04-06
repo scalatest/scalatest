@@ -24,7 +24,7 @@ import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import org.scalatest.exceptions.NotAllowedException
 import scala.concurrent.Future
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>AsyncFeatureSpec</code>, which represents

@@ -15,6 +15,7 @@
  */
 package org.scalatest.matchers
 
+import org.scalactic.source.SourceInfo
 import org.scalatest.enablers._
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.andMatchersAndApply
@@ -26,7 +27,6 @@ import org.scalactic.Equality
 import org.scalactic.TripleEqualsSupport.Spread
 import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalactic.Prettifier
-import org.scalactic.SourceInfo
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 

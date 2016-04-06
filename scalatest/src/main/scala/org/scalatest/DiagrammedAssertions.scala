@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
 import org.scalactic.Requirements._

@@ -25,7 +25,7 @@ import org.junit.runner.notification.Failure
 import org.scalatest.events._
 import org.scalatest.Suite.autoTagClassAnnotations
 import Suite.wrapReporterIfNecessary
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>JUnitSuite</code>, which represents

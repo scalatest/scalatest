@@ -1,6 +1,6 @@
 package org.scalatest.exceptions
 
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /*
 For check methods in Checkers, passed fileName will be "Checkers.scala" and

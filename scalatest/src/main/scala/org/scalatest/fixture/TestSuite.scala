@@ -17,7 +17,7 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import OutcomeOf.outcomeOf
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite { thisTestSuite =>
 

@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalactic.BooleanMacro
 import org.scalactic.Prettifier
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 import reflect.macros.Context
 
 /**

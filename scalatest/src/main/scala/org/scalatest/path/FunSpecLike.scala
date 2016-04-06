@@ -20,7 +20,7 @@ import scala.collection.immutable.ListSet
 import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest._
 import org.scalatest.Suite.autoTagClassAnnotations
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>path.FunSpec</code>, which is

@@ -23,7 +23,7 @@ import mockito.MockitoSugar
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.events.InfoProvided
 import SharedHelpers._
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 

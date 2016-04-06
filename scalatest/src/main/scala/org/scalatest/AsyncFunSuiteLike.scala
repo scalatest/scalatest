@@ -18,7 +18,7 @@ package org.scalatest
 import scala.collection.immutable.ListSet
 import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>AsyncFunSuite</code>, which represents

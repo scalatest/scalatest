@@ -179,7 +179,8 @@ import org.scalacheck.Gen
 import org.scalacheck.Prop._
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.enablers.CheckerAsserting
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 /**
  * Trait containing methods that faciliate property checks against generated data using ScalaCheck.

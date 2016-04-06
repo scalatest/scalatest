@@ -29,7 +29,8 @@ import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalacheck.Test.Parameters
 import org.scalacheck.Test.TestCallback
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 /**
  * Trait that contains several &ldquo;check&rdquo; methods that perform ScalaCheck property checks.

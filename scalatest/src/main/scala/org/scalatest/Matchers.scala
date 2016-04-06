@@ -33,7 +33,7 @@ import org.scalactic.TripleEqualsSupport.TripleEqualsInvocationOnSpread
 import org.scalactic.CanEqual
 import org.scalactic.Prettifier
 import org.scalactic.Every
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 import org.scalatest.words._
 // SKIP-SCALATESTJS-START
 import MatchersHelper.matchSymbolToPredicateMethod

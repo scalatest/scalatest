@@ -42,7 +42,7 @@ import org.scalactic.Prettifier
 import scala.util.control.NonFatal
 import Suite.getTopOfMethod
 import org.scalactic.Requirements._
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 // SKIP-SCALATESTJS-START
 import tools.SuiteDiscoveryHelper

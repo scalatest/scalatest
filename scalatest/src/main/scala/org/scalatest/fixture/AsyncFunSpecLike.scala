@@ -26,7 +26,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
 import org.scalatest.exceptions.TestRegistrationClosedException
 import scala.concurrent.Future
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>fixture.AsyncFunSpec</code>, which is

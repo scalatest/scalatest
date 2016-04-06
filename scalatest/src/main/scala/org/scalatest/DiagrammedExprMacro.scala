@@ -16,7 +16,8 @@
 package org.scalatest
 
 import reflect.macros.Context
-import org.scalactic.{MacroOwnerRepair, SourceInfo}
+import org.scalactic.MacroOwnerRepair
+import org.scalactic.source.SourceInfo
 import scala.annotation.tailrec
 
 private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName: String) {

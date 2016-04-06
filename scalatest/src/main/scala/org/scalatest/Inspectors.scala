@@ -25,7 +25,8 @@ import enablers.Collecting
 import scala.language.higherKinds
 import exceptions.NotAllowedException
 import enablers.InspectorAsserting
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 /**
  * Provides nestable <em>inspector methods</em> (or just <em>inspectors</em>) that enable assertions to be made about collections.

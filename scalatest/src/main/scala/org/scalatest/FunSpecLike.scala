@@ -18,7 +18,7 @@ package org.scalatest
 import scala.collection.immutable.ListSet
 import words.BehaveWord
 import Suite.autoTagClassAnnotations
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>FunSpec</code>, which 

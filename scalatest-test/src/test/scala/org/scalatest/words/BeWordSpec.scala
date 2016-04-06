@@ -24,7 +24,8 @@ import matchers.{BePropertyMatcher,
                  AnMatcher, 
                  BeMatcher, 
                  MatchResult}
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 class BeWordSpec extends FunSpec with FileMocks {
   

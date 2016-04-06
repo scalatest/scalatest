@@ -25,7 +25,7 @@ import scala.concurrent.Future
 // SKIP-SCALATESTJS-START
 import concurrent.Eventually._
 // SKIP-SCALATESTJS-END
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 class AsyncEngineSpec extends FlatSpec with Matchers {
 

@@ -15,9 +15,10 @@
  */
 package org.scalatest.words
 
+import org.scalactic.source.SourceInfo
 import org.scalatest.MatchersHelper.checkNoException
 import org.scalatest.Assertion
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

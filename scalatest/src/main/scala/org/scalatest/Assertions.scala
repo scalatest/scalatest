@@ -23,7 +23,8 @@ import org.scalactic.TripleEquals
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
-import org.scalactic.{Prettifier, Bool, SourceInfo}
+import org.scalactic.{Prettifier, Bool}
+import org.scalactic.source.SourceInfo
 import exceptions.TestFailedException
 import org.scalactic.Requirements._
 

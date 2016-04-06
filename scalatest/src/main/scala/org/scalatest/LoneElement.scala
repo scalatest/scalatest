@@ -16,7 +16,8 @@
 package org.scalatest
 
 import enablers.Collecting
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 /**
  * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which

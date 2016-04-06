@@ -15,6 +15,7 @@
  */
 package org.scalatest.words
 
+import org.scalactic.source.SourceInfo
 import org.scalatest.matchers._
 import org.scalatest.enablers._
 import java.lang.reflect.Method
@@ -53,7 +54,6 @@ import org.scalactic.Prettifier
 import org.scalactic.Every
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
-import org.scalactic.SourceInfo
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of

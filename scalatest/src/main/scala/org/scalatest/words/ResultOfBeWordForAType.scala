@@ -15,13 +15,14 @@
  */
 package org.scalatest.words
 
+import org.scalactic.source.SourceInfo
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.checkExpectedException
 import org.scalatest.Assertion
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

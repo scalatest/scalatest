@@ -27,7 +27,7 @@ import org.testng.TestNG
 import org.testng.TestListenerAdapter
 import exceptions._
 import Suite.wrapReporterIfNecessary
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>TestNGSuite</code>, which represents

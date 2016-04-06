@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-import org.scalactic.{BooleanMacro, SourceInfo}
+import org.scalactic.BooleanMacro
+import org.scalactic.source.SourceInfo
 import reflect.macros.Context
 
 private[scalatest] object DiagrammedAssertionsMacro {

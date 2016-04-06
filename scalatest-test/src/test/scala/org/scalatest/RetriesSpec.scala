@@ -21,7 +21,7 @@ import time.Span
 import time.SpanSugar._
 import Matchers._
 import Retries._
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 class RetriesSpec extends FunSpec {
 

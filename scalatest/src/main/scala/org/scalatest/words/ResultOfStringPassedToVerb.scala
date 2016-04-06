@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 import org.scalatest._
 
 /**

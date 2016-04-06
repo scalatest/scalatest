@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 import org.scalatest.exceptions.StackDepthExceptionHelper
 
 import scala.language.experimental.macros

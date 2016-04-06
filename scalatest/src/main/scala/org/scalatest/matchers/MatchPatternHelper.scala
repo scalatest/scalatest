@@ -16,7 +16,7 @@
 package org.scalatest.matchers
 
 import org.scalatest.{FailureMessages, Resources}
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
 import org.scalatest.MatchersHelper._
 import org.scalatest.words.ResultOfNotWordForAny
 

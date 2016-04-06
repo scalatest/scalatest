@@ -23,7 +23,7 @@ import Suite._
 import org.scalatest.events.{TopOfClass, TopOfMethod}
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * <strong>Trait <code>fixture.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use

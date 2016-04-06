@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Trait declaring methods that can be used to register by-name test functions that

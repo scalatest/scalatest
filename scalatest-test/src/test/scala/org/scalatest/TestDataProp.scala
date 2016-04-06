@@ -23,7 +23,7 @@ import org.scalatest.testng.TestNGSuite
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 class TestDataProp extends AllSuiteProp {
 

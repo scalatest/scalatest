@@ -15,6 +15,8 @@
  */
 package org.scalactic
 
+import org.scalactic.source.SourceInfo
+
 import reflect.macros.Context
 import exceptions.NullArgumentException
 

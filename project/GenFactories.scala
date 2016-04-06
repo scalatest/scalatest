@@ -34,7 +34,7 @@ import org.scalactic.Equality
 import org.scalactic.TripleEqualsSupport.Spread
 import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
 import org.scalactic.Prettifier
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
 import org.scalatest.words.FullyMatchWord

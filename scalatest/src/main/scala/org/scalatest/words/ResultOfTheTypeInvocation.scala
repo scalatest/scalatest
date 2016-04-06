@@ -15,7 +15,8 @@
  */
 package org.scalatest.words
 
-import org.scalactic.{SourceInfo, Prettifier}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.checkExpectedException
 

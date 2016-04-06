@@ -18,7 +18,7 @@ package org.scalatest.junit
 import org.scalatest._
 import _root_.junit.framework.AssertionFailedError
 import exceptions.StackDepthExceptionHelper.getStackDepth
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Trait that contains ScalaTest's basic assertion methods, suitable for use with JUnit.

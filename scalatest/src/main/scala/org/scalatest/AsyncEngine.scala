@@ -36,7 +36,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import scala.concurrent.ExecutionContext
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 import scala.util.{Failure, Success}
 

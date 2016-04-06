@@ -15,7 +15,8 @@
  */
 package org.scalatest.enablers
 
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 import org.scalatest._
 import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec

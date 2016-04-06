@@ -19,7 +19,7 @@ import org.scalatest.words.BehaveWord
 import scala.collection.immutable.ListSet
 import org.scalatest._
 import org.scalatest.Suite.autoTagClassAnnotations
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Implementation trait for class <code>path.FreeSpec</code>, which is

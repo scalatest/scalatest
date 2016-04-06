@@ -15,6 +15,8 @@
  */
 package org.scalatest.words
 
+import org.scalactic.source.SourceInfo
+
 import scala.collection.GenTraversable
 import org.scalatest.enablers.Containing
 import org.scalatest.enablers.Aggregating
@@ -25,7 +27,7 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalactic.{Prettifier, Every, SourceInfo}
+import org.scalactic.{Prettifier, Every}
 import org.scalatest.Assertion
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure

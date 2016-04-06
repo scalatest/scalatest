@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 /**
  * A bundle of information about the current test.

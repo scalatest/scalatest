@@ -34,7 +34,7 @@ import Suite.getIndentedTextForTest
 import org.scalatest.events._
 import exceptions._
 import Suite.wrapReporterIfNecessary
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * A <code>Suite</code> that is also a <code>junit.framework.TestCase</code>. 

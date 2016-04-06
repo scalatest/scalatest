@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.source
 
-import reflect.macros.Context
+import scala.reflect.macros.Context
 
 object SourceMacro {
 
@@ -28,10 +28,13 @@ object SourceMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
-              ),
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
               newTermName("scalactic")
+              ),
+              newTermName("source")
             ),
             newTermName("SourceInfo")
           ),
@@ -55,10 +58,13 @@ object SourceMacro {
           Select(
             Select(
               Select(
-                Ident(newTermName("_root_")),
-                newTermName("org")
+                Select(
+                  Ident(newTermName("_root_")),
+                  newTermName("org")
+                ),
+                newTermName("scalactic")
               ),
-              newTermName("scalactic")
+              newTermName("source")
             ),
             newTermName("SourceInfo")
           ),

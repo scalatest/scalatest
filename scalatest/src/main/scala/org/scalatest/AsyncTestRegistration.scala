@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalatest.OutcomeOf._
 import scala.concurrent.Future
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * Trait declaring methods that can be used to register by-name test functions that

@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 // Used to make an implicit conversion more specific. If there were ever another
 // implicit (String, String, () => Unit) lying around in scope, it would clash with

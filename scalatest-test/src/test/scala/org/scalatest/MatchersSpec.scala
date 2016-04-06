@@ -19,7 +19,8 @@ import org.scalatest._
 import Matchers._
 import FailureMessages.decorateToStringValue
 import org.scalatest.matchers.MatchResult
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 class MatchersSpec extends FunSpec {
   

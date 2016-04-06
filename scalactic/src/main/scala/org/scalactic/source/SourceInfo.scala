@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalactic.source
 
 case class SourceInfo(fileName: String, path: String, lineNumber: Int)
 

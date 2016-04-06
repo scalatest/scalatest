@@ -15,6 +15,7 @@
  */
 package org.scalatest.enablers
 
+import org.scalactic.source.SourceInfo
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
 import org.scalatest.Resources
@@ -29,7 +30,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.StackDepthException
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
 
 trait CheckerAsserting[T] {
   type Result

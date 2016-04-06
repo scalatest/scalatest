@@ -32,7 +32,8 @@ import java.io.File
 // SKIP-SCALATESTJS-END
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.NotAllowedException
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 class NotWordSpec extends FunSpec with FileMocks {
   

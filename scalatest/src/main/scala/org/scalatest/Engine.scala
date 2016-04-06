@@ -34,7 +34,7 @@ import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {

@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 /**
  * The base trait of ScalaTest's <em>synchronous testing styles</em>, which defines a 

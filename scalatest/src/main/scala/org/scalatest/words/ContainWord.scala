@@ -15,6 +15,7 @@
  */
 package org.scalatest.words
 
+import org.scalactic.source.SourceInfo
 import org.scalatest.matchers._
 import scala.collection.GenTraversable
 import org.scalactic._

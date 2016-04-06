@@ -16,7 +16,7 @@
 package org.scalatest
 
 import org.scalactic.Prettifier
-import org.scalactic.SourceInfo
+import org.scalactic.source.SourceInfo
 
 import scala.reflect.ClassTag
 import Fact._

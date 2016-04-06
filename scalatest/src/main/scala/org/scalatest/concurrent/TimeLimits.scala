@@ -15,6 +15,7 @@
  */
 package org.scalatest.concurrent
 
+import org.scalactic.source.SourceInfo
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.{FailureMessages, UnquotedString}
 import org.scalatest.exceptions.{StackDepthException, TestFailedDueToTimeoutException, TestCanceledException}
@@ -24,7 +25,7 @@ import java.net.Socket
 import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.enablers.Timed
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
 
 /**
  * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an

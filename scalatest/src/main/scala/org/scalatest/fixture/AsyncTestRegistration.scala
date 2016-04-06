@@ -15,11 +15,11 @@
  */
 package org.scalatest.fixture
 
+import org.scalactic.source.SourceInfo
 import org.scalatest.OutcomeOf._
 import org.scalatest.{AsyncOutcome, Tag}
 import scala.concurrent.Future
 import org.scalatest.compatible
-import org.scalactic.SourceInfo
 
 /**
  * Trait declaring methods that can be used to register test functions that accept

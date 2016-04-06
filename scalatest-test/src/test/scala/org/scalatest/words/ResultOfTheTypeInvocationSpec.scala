@@ -17,7 +17,8 @@ package org.scalatest.words
 
 import org.scalatest._
 import Matchers._
-import org.scalactic.{Prettifier, SourceInfo}
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
 
 class ResultOfTheTypeInvocationSpec extends FunSpec {
   
