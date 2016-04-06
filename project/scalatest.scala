@@ -8,10 +8,10 @@ import com.typesafe.sbt.SbtPgp._
 
 object ScalatestBuild extends Build {
 
-  val buildScalaVersion = "2.12.0-M3"
+  val buildScalaVersion = "2.12.0-M4"
 
   val releaseVersion = "2.2.6"
-  val githubTag = "release-2.2.6-for-scala-2.12.0-M3" // for scaladoc source urls
+  val githubTag = "release-2.2.6-for-scala-2.12.0-M4" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -123,10 +123,10 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
-          "org.scalacheck" %% "scalacheck" % "1.12.5" % "optional"
+          "org.scalacheck" %% "scalacheck" % "1.11.6" % "optional"
         )
       case _ =>
-        Seq("org.scalacheck" %% "scalacheck" % "1.12.5" % "optional")
+        Seq("org.scalacheck" %% "scalacheck" % "1.11.6" % "optional")
     }
 
   def scalaLibraries(theScalaVersion: String) =
