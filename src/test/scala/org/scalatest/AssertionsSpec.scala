@@ -255,13 +255,13 @@ class AssertionsSpec extends FunSpec {
   def wasInstanceOf(left: Any, className: String) =
     quoteString(left) + " was instance of " + className
 
-  def hadLengthInsteadOfExpectedLength(left: Any, actual: Long, expected: Long): String =
+  def hadLengthInsteadOfExpectedLength(left: Any, actual: Any, expected: Any): String =
     FailureMessages("hadLengthInsteadOfExpectedLength", left, actual, expected)
 
   def hadLength(left: Any, actual: Long): String =
     FailureMessages("hadLength", left, actual)
 
-  def hadSizeInsteadOfExpectedSize(left: Any, actual: Long, expected: Long): String =
+  def hadSizeInsteadOfExpectedSize(left: Any, actual: Any, expected: Any): String =
     FailureMessages("hadSizeInsteadOfExpectedSize", left, actual, expected)
 
   def hadSize(left: Any, actual: Long): String =
@@ -305,6 +305,15 @@ class AssertionsSpec extends FunSpec {
   private def neverRuns1(f: => Unit): Boolean = true
   private def neverRuns2(f: => Unit)(a: Int): Boolean = true
   private def neverRuns3[T](f: => Unit)(a: T): Boolean = true
+
+  class FloatLengthSize(value: Float) {
+
+    val length: Float = value
+
+    val size: Float = value
+  }
+
+  val floatLengthSize = new FloatLengthSize(2.0f)
   
   describe("The assert(boolean) method") {
     val a = 3
@@ -1410,6 +1419,19 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
+      assert(floatLengthSize.length == 2.0f)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
+      val e = intercept[TestFailedException] {
+        assert(floatLengthSize.length == 1.0f)
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(floatLengthSize, 2.0f, 1.0f)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
     it("should do nothing when is used to check s1.size == 9") {
       assert(s1.size == 12)
     }
@@ -1458,6 +1480,19 @@ class AssertionsSpec extends FunSpec {
         assert(!(l1.size == 3))
       }
       assert(e.message == Some(hadSize(l1, 3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
+      assert(floatLengthSize.size == 2.0f)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
+      val e = intercept[TestFailedException] {
+        assert(floatLengthSize.size == 1.0f)
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(floatLengthSize, 2.0f, 1.0f)))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -2730,6 +2765,19 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
+      assert(floatLengthSize.length == 2.0f, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
+      val e = intercept[TestFailedException] {
+        assert(floatLengthSize.length == 1.0f, ", dude")
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(floatLengthSize, 2.0f, 1.0f) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
     it("should do nothing when is used to check s1.size == 9") {
       assert(s1.size == 12, ", dude")
     }
@@ -2778,6 +2826,19 @@ class AssertionsSpec extends FunSpec {
         assert(!(l1.size == 3), ", dude")
       }
       assert(e.message == Some(hadSize(l1, 3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
+      assert(floatLengthSize.size == 2.0f, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
+      val e = intercept[TestFailedException] {
+        assert(floatLengthSize.size == 1.0f, ", dude")
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(floatLengthSize, 2.0f, 1.0f) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -4044,6 +4105,19 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
+      assume(floatLengthSize.length == 2.0f)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
+      val e = intercept[TestCanceledException] {
+        assume(floatLengthSize.length == 1.0f)
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(floatLengthSize, 2.0f, 1.0f)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
     it("should do nothing when is used to check s1.size == 9") {
       assume(s1.size == 12)
     }
@@ -4092,6 +4166,19 @@ class AssertionsSpec extends FunSpec {
         assume(!(l1.size == 3))
       }
       assert(e.message == Some(hadSize(l1, 3)))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
+      assume(floatLengthSize.size == 2.0f)
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
+      val e = intercept[TestCanceledException] {
+        assume(floatLengthSize.size == 1.0f)
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(floatLengthSize, 2.0f, 1.0f)))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
@@ -5364,6 +5451,19 @@ class AssertionsSpec extends FunSpec {
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }
 
+    it("should do nothing when is used to check floatLengthSize.length == 2.0f") {
+      assume(floatLengthSize.length == 2.0f, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.length == 1.0f") {
+      val e = intercept[TestCanceledException] {
+        assume(floatLengthSize.length == 1.0f, ", dude")
+      }
+      assert(e.message == Some(hadLengthInsteadOfExpectedLength(floatLengthSize, 2.0f, 1.0f) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
     it("should do nothing when is used to check s1.size == 9") {
       assume(s1.size == 12, ", dude")
     }
@@ -5412,6 +5512,19 @@ class AssertionsSpec extends FunSpec {
         assume(!(l1.size == 3), ", dude")
       }
       assert(e.message == Some(hadSize(l1, 3) + ", dude"))
+      assert(e.failedCodeFileName == (Some(fileName)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+    }
+
+    it("should do nothing when is used to check floatLengthSize.size == 2.0f") {
+      assume(floatLengthSize.size == 2.0f, ", dude")
+    }
+
+    it("should throw TestFailedException with correct message and stack depth when is used to check floatLengthSize.size == 1.0f") {
+      val e = intercept[TestCanceledException] {
+        assume(floatLengthSize.size == 1.0f, ", dude")
+      }
+      assert(e.message == Some(hadSizeInsteadOfExpectedSize(floatLengthSize, 2.0f, 1.0f) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
       assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
     }

@@ -76,7 +76,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
    *
    * org.scalatest.DiagrammedExpr.simpleExpr(expr, anchorOfExpr)
    */
-  def simpleExpr(tree: Tree): Apply =
+  def simpleExpr(tree: Tree): Apply = {
     Apply(
       Select(
         Select(
@@ -96,6 +96,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
         Literal(Constant(getAnchor(tree)))
       )
     )
+  }
 
   // A data holder for result of traverseApply
   case class ApplyInfo(select: Select, applyList: List[GenericApply])
@@ -365,13 +366,18 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
       case _ => false
     }
 
+  def isJavaStatic(tree: Tree): Boolean = tree.symbol.isJava && tree.symbol.isStatic
+
   // Transform the input expression by parsing out the anchor and generate expression that can support diagram rendering
   def transformAst(tree: Tree): Tree = {
     tree match {
+      case Apply(Select(New(_), _), _) => simpleExpr(tree)  // delegate to simpleExpr if it is a New expression
       case apply: Apply if isXmlSugar(apply) => simpleExpr(tree)
+      case apply: Apply if isJavaStatic(apply) => simpleExpr(apply)
       case apply: GenericApply => applyExpr(apply) // delegate to applyExpr if it is Apply
       case Select(This(_), _) => simpleExpr(tree) // delegate to simpleExpr if it is a Select for this, e.g. referring a to instance member.
       case x: Select if x.symbol.isModule => simpleExpr(tree) // don't traverse packages
+      case x: Select if isJavaStatic(x) => simpleExpr(tree)
       case select: Select => selectExpr(select) // delegate to selectExpr if it is a Select
       case Block(stats, expr) => Block(stats, transformAst(expr)) // call transformAst recursively using the expr argument if it is a block
       case other => simpleExpr(other) // for others, just delegate to simpleExpr

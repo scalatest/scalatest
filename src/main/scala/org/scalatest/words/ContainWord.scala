@@ -63,6 +63,32 @@ final class ContainWord {
         }
       override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
     }
+
+  /**
+   * This method enables the following syntax:
+   *
+   * <pre class="stHighlight">
+   * list should contain (null)
+   *                     ^
+   * </pre>
+   */
+  def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
+    new MatcherFactory1[Any, Containing] {
+      def matcher[U <: Any : Containing]: Matcher[U] =
+        new Matcher[U] {
+          def apply(left: U): MatchResult = {
+            val containing = implicitly[Containing[U]]
+            MatchResult(
+              containing.contains(left, null),
+              Resources("didNotContainNull"),
+              Resources("containedNull"),
+              Vector(left)
+            )
+          }
+          override def toString: String = "contain (null)"
+        }
+      override def toString: String = "contain (null)"
+    }
   
   //
   // This key method is called when "contain" is used in a logical expression, such as:

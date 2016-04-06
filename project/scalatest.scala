@@ -10,8 +10,8 @@ object ScalatestBuild extends Build {
 
   val buildScalaVersion = "2.12.0-M3"
 
-  val releaseVersion = "2.2.5-M3"
-  val githubTag = "release-2.2.5-M3-for-scala-2.12.0-M3" // for scaladoc source urls
+  val releaseVersion = "2.2.6"
+  val githubTag = "release-2.2.6-for-scala-2.12.0-M3" // for scaladoc source urls
 
   val docSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -62,7 +62,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.11.6", "2.10.4"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.11.8", "2.10.6"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.5"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -123,10 +123,10 @@ object ScalatestBuild extends Build {
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
           "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
-          "org.scalacheck" %% "scalacheck" % "1.11.6" % "optional"
+          "org.scalacheck" %% "scalacheck" % "1.12.5" % "optional"
         )
       case _ =>
-        Seq("org.scalacheck" %% "scalacheck" % "1.11.6" % "optional")
+        Seq("org.scalacheck" %% "scalacheck" % "1.12.5" % "optional")
     }
 
   def scalaLibraries(theScalaVersion: String) =
@@ -185,7 +185,8 @@ object ScalatestBuild extends Build {
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
      sourceGenerators in Compile <+=
          (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
-     testOptions in Test := Seq(Tests.Argument("-l", "org.scalatest.tags.Slow",
+     testOptions in Test := Seq(Tests.Argument(TestFrameworks.ScalaTest,
+                                               "-l", "org.scalatest.tags.Slow",
                                                "-m", "org.scalatest",
                                                "-m", "org.scalactic",
                                                "-m", "org.scalatest.fixture",
