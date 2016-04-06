@@ -115,8 +115,8 @@ trait CanVerb {
      * <code>"can"</code>, and right, and returns the result.
      * </p>
      */
-    def can(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(left, "can", right)
+    def can(right: String)(implicit fun: (String, String, String, SourceInfo) => ResultOfStringPassedToVerb, sourceInfo: SourceInfo): ResultOfStringPassedToVerb = {
+      fun(left, "can", right, sourceInfo)
     }
 
     /**
@@ -138,8 +138,8 @@ trait CanVerb {
      * simply invokes this function, passing in left, and returns the result.
      * </p>
      */
-    def can(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
-      fun(left)
+    def can(right: BehaveWord)(implicit fun: (String, SourceInfo) => BehaveWord, sourceInfo: SourceInfo): BehaveWord = {
+      fun(left, sourceInfo)
     }
 
     /**

@@ -202,12 +202,12 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      *
      * @param description the description text
      */
-    def of(description: String) {
+    def of(description: String)(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
-      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, sourceFileName, "of", stackDepth, 0)
+      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, sourceFileName, "of", stackDepth, 0, sourceInfo)
     }
   }
 
@@ -2006,13 +2006,13 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * the function, respectively).
    * </p>
    */
-  protected implicit val shorthandTestRegistrationFunction: (String, String, String) => ResultOfStringPassedToVerb = {
-    (subject, verb, rest) => {
+  protected implicit val shorthandTestRegistrationFunction: (String, String, String, SourceInfo) => ResultOfStringPassedToVerb = {
+    (subject, verb, rest, sourceInfo) => {
       // SKIP-SCALATESTJS-START
       val stackDepth = 6
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 8
-      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0)
+      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, sourceInfo)
       new ResultOfStringPassedToVerb(verb, rest) {
         def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
           registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)(sourceInfo)
@@ -2053,9 +2053,9 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * subject description (the  parameter to the function) and returns a <code>BehaveWord</code>.
    * </p>
    */
-  protected implicit val shorthandSharedTestRegistrationFunction: (String) => BehaveWord = {
-    (left) => {
-      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", 5, 0)
+  protected implicit val shorthandSharedTestRegistrationFunction: (String, SourceInfo) => BehaveWord = {
+    (left, sourceInfo) => {
+      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", 5, 0, sourceInfo)
       new BehaveWord
     }
   }

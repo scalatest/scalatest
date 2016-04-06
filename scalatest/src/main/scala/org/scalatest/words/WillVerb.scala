@@ -140,8 +140,8 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and right, and returns the result.
      * </p>
      */
-    def will(right: String)(implicit fun: (String, String, String) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "will", right)
+    def will(right: String)(implicit fun: (String, String, String, SourceInfo) => ResultOfStringPassedToVerb, sourceInfo: SourceInfo): ResultOfStringPassedToVerb = {
+      fun(leftSideString, "will", right, sourceInfo)
     }
 
     /**
@@ -163,8 +163,8 @@ private[scalatest] trait WillVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def will(right: BehaveWord)(implicit fun: (String) => BehaveWord): BehaveWord = {
-      fun(leftSideString)
+    def will(right: BehaveWord)(implicit fun: (String, SourceInfo) => BehaveWord, sourceInfo: SourceInfo): BehaveWord = {
+      fun(leftSideString, sourceInfo)
     }
 
     /**
