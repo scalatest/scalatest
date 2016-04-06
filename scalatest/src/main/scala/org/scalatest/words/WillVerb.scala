@@ -99,7 +99,7 @@ import org.scalatest._
  *
  * @author Bill Venners
  */
-trait WillVerb {
+private[scalatest] trait WillVerb {
 
   // This can't be final or abstract, because it is instantiated directly by the implicit conversion, and
   // extended by something in Matchers.

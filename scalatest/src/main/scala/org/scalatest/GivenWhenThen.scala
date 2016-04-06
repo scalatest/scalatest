@@ -54,7 +54,7 @@ package org.scalatest
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
@@ -73,7 +73,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def Given(message: String) {
+  def Given(message: String): Provided = {
     info(Resources.givenMessage(message))
   }
   
@@ -82,7 +82,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def When(message: String) {
+  def When(message: String): Provided = {
     info(Resources.whenMessage(message))
   }
   
@@ -91,7 +91,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def Then(message: String) {
+  def Then(message: String): Provided = {
     info(Resources.thenMessage(message))
   }
   
@@ -100,7 +100,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def And(message: String) {
+  def And(message: String): Provided = {
     info(Resources.andMessage(message))
   }
 }

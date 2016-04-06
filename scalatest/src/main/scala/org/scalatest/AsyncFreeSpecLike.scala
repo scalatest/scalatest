@@ -50,20 +50,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FreeSpecFinder"))
-trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuite =>
-
-  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
-    () => {
-      val futureAssertion = testFun
-      FutureOutcome(
-        futureAssertion.recover {
-          case ex: exceptions.TestCanceledException => Canceled(ex)
-          case _: exceptions.TestPendingException => Pending
-          case tfe: exceptions.TestFailedException => Failed(tfe)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-        }
-      )
-    }
+trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
     () => {
@@ -82,20 +69,62 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
 
   import engine._
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  /**
+   * Returns an <code>Informer</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
+   * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
+   * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
+   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
+   * This method can be called safely by any thread.
+   */
+  protected def info: Informer = atomicInformer.get
+
+  /**
+   * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked while this
+   * <code>FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * the current reporter immediately. If invoked at any other time, it will
+   * print to the standard output. This method can be called safely by any thread.
+   */
+  protected def note: Notifier = atomicNotifier.get
+
+  /**
+   * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked while this
+   * <code>FreeSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * the current reporter immediately. If invoked at any other time, it will
+   * print to the standard output. This method can be called safely by any thread.
+   */
+  protected def alert: Alerter = atomicAlerter.get
+
+  /**
+   * Returns a <code>Documenter</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
+   * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
+   * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
+   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
+   * This method can be called safely by any thread.
+   */
+  protected def markup: Documenter = atomicDocumenter.get
+
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerTest", 5, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerTest", 5, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -117,19 +146,19 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion]) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Future[Assertion] = testFun()
-    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
+    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement) {
-    engine.registerTest(specText, transformPendingToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**
@@ -151,15 +180,15 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion]) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Future[Assertion] = testFun()
-    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
+    engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement) {
@@ -169,7 +198,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -200,7 +229,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToRun(specText, tags, "in", testFun _)
     }
 
@@ -240,7 +269,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[Assertion]) {
+    def ignore(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(specText, tags, "ignore", testFun _)
     }
   }
@@ -265,9 +294,11 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val errorStackDepth = 3
+      val duplicateErrorStackDepth = 1
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val errorStackDepth = 10
+      //SCALATESTJS-ONLY val duplicateErrorStackDepth = 9
 
       try {
         registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecRegistering.scala", "-", stackDepth, -2, None)
@@ -276,7 +307,8 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
         case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
         case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(other.getClass.getName), string), Some(other), e => errorStackDepth)
+        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), e => errorStackDepth)
         case other: Throwable => throw other
       }
     }
@@ -297,7 +329,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(f: => Future[Assertion]) {
+    def in(f: => Future[compatible.Assertion]) {
       registerTestToRun(string, List(), "in", f _)
     }
 
@@ -317,7 +349,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(f: => Future[Assertion]) {
+    def ignore(f: => Future[compatible.Assertion]) {
       registerTestToIgnore(string, List(), "ignore", f _)
     }
 
@@ -406,21 +438,21 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
     def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      FutureOutcome(
-        withAsyncFixture(
+      InternalFutureOutcome(
+        withFixture(
           new NoArgAsyncTest {
             val name = testData.name
-            def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
+            def apply(): FutureOutcome = { theTest.testFun().toFutureOutcome }
             val configMap = testData.configMap
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
           }
-        )
+        ).underlying
       )
     }
 
-    runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
+    runTestImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, invokeWithAsyncFixture)
   }
 
   /**
@@ -524,7 +556,7 @@ trait AsyncFreeSpecLike extends AsyncSuite with AsyncTestRegistration { thisSuit
   }
 
   override def run(testName: Option[String], args: Args): Status = {
-    runImpl(thisSuite, testName, args, super.run)
+    runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
   }
 
   /**

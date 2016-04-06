@@ -19,13 +19,13 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.12.0-M3"
+  val buildScalaVersion = "2.12.0-M4"
 
-  val releaseVersion = "3.0.0-M12"
+  val releaseVersion = "3.0.0-M15"
 
-  val scalacheckVersion = "1.12.5"
+  val scalacheckVersion = "1.11.6"
 
-  val githubTag = "release-3.0.0-M12-for-scala-2.12" // for scaladoc source urls
+  val githubTag = "release-3.0.0-M15-for-scala-2.12.0-M4" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -184,7 +184,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.5"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.7"
     )
 
   def scalatestTestOptions =
@@ -199,6 +199,7 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.concurrent",
       "-m", "org.scalatest.testng",
       "-m", "org.scalatest.junit",
+      "-m", "org.scalatest.jmock",
       "-m", "org.scalatest.events",
       "-m", "org.scalatest.prop",
       "-m", "org.scalatest.tools",
@@ -391,6 +392,9 @@ object ScalatestBuild extends Build {
       organization := "org.scalactic",
       jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
+      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      //jsEnv := NodeJSEnv(executable = "node").value,
+      //jsEnv := PhantomJSEnv().value,
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -601,6 +605,9 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       jsDependencies += RuntimeDOM % "test",
+      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      //jsEnv := NodeJSEnv(executable = "node").value,
+      //jsEnv := PhantomJSEnv().value,
       //scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -956,9 +963,9 @@ object ScalatestBuild extends Build {
     .settings(
       scalaVersion := buildScalaVersion,
       libraryDependencies += scalacheckDependency("compile"),
-      sourceGenerators in Compile += {
+      sourceGenerators in Test += {
         Def.task {
-          GenExamplesJS.genScala((sourceManaged in Compile).value / "scala", version.value, scalaVersion.value)
+          GenExamplesJS.genScala((sourceManaged in Test).value / "scala", version.value, scalaVersion.value)
         }.taskValue
       }
     ).dependsOn(scalacticMacroJS, scalacticJS, scalatestJS).enablePlugins(ScalaJSPlugin)

@@ -91,7 +91,7 @@ class MySpec extends FunSpec with Eventually with AkkaSpanScaleFactor {
  *
  * <p>
  * The default timeouts and intervals defined for traits <a href="Eventually.html"><code>Eventually</code></a> and
- * <a href="AsyncAssertions.html"><code>AsyncAssertions</code></a> invoke <code>scaled</code>, so those defaults 
+ * <a href="Waiters.html"><code>Waiters</code></a> invoke <code>scaled</code>, so those defaults
  * will be scaled automatically. Other than such defaults, however, to get a <code>Span</code>
  * to scale you'll need to explicitly pass it to <code>scaled</code>.
  * For example, here's how you would scale a <code>Span</code> you supply to 

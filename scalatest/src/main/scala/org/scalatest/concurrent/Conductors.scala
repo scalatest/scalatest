@@ -64,11 +64,11 @@ import PatienceConfiguration._
  *
  * <pre class="stHighlight">
  * import org.scalatest.fixture.FunSuite
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import java.util.concurrent.ArrayBlockingQueue
  * import org.scalatest.concurrent.Conductors
  *
- * class ArrayBlockingQueueSuite extends FunSuite with ShouldMatchers with Conductors {
+ * class ArrayBlockingQueueSuite extends FunSuite with Matchers with Conductors {
  *
  *   test("calling put on a full queue blocks the producer thread") {
  *
@@ -294,11 +294,11 @@ trait Conductors extends PatienceConfiguration {
    *
    * <pre class="stHighlight">
    * import org.scalatest.fixture.FunSuite
-   * import org.scalatest.matchers.ShouldMatchers
+   * import org.scalatest.matchers.Matchers
    * import java.util.concurrent.ArrayBlockingQueue
    * import org.scalatest.concurrent.Conductors
    *
-   * class ArrayBlockingQueueSuite extends FunSuite with ShouldMatchers with Conductors {
+   * class ArrayBlockingQueueSuite extends FunSuite with Matchers with Conductors {
    *
    *   test("calling put on a full queue blocks the producer thread") {
    *
@@ -522,7 +522,15 @@ trait Conductors extends PatienceConfiguration {
      * @param fun the function to be executed by the newly created thread
      * @return the newly created thread
      */
-    def thread(fun: => Unit): Thread = threadNamed("Conductor-Thread-" + threads.size) { fun }
+    def thread(fun: => Any): Thread = threadNamed("Conductor-Thread-" + threads.size) { fun }
+
+    /**
+     * <strong>The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.</strong>
+     */
+    @deprecated("The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.")
+    def thread(name: String)(fun: => Any): Thread = {
+      threadNamed(name)(fun)
+    }
 
     /**
      * Creates a new thread with the specified name that will execute the specified function.
@@ -535,7 +543,7 @@ trait Conductors extends PatienceConfiguration {
      * @param fun the function to be executed by the newly created thread
      * @return the newly created thread
      */
-    def threadNamed(name: String)(fun: => Unit): Thread = {
+    def threadNamed(name: String)(fun: => Any): Thread = {
       currentState.get match {
         case TestFinished =>
           throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, getStackDepthFun("Conductors.scala", "thread"))

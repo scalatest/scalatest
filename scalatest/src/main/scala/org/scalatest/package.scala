@@ -81,7 +81,7 @@ package object scalatest {
 
   private[scalatest] type Expectation = Fact
 
-  /**
+  /* 
    * Marker trait that serves as the result type of <code>assert</code>, <code>assume</code>, and <code>pending</code> methods of
    * trait <code>Assertions</code>, which return its only instance, the <code>Succeeded</code> singleton, or throw
    * an exception that indicates a failed, canceled, or pending test.
@@ -89,9 +89,29 @@ package object scalatest {
   type Assertion = Succeeded.type
 
   // SKIP-SCALATESTJS-START
+  /**
+   * <strong>The name <code>org.scalatest.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.refspec.RefSpecLike</code>, instead.</strong>
+   *
+   * <p>
+   * Because this style uses reflection at runtime to discover scopes and tests, it can only be supported on the JVM, not Scala.js.
+   * Thus in ScalaTest 3.0.0, class <code>org.scalatest.SpecLike</code> was moved to the <code>org.scalatest.refspec</code> package and renamed
+   * <code>RefSpecLike</code>, with the intention of later moving it to a separate module available only on the JVM.
+   * </p>
+   */
   @deprecated("Please use org.scalatest.refspec.RefSpecLike instead")
   type SpecLike = refspec.RefSpecLike
 
+  /**
+   * <strong>The name <code>org.scalatest.Spec</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
+   * its new name, <code>org.scalatest.refspec.RefSpec</code>, instead.</strong>
+   *
+   * <p>
+   * Because this style uses reflection at runtime to discover scopes and tests, it can only be supported on the JVM, not Scala.js.
+   * Thus in ScalaTest 3.0.0, class <code>org.scalatest.Spec</code> was moved to the <code>org.scalatest.refspec</code> package and renamed
+   * <code>RefSpec</code>, with the intention of later moving it to a separate module available only on the JVM.
+   * </p>
+   */
   @deprecated("Please use org.scalatest.refspec.RefSpec instead")
   type Spec = refspec.RefSpec
   // SKIP-SCALATESTJS-END

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.fixture
+/*package org.scalatest.fixture
 
 abstract class AsyncPropSpec extends AsyncPropSpecLike {
 
@@ -26,4 +26,4 @@ abstract class AsyncPropSpec extends AsyncPropSpecLike {
    * @return a user-friendly string for this suite
    */
   override def toString: String = org.scalatest.Suite.suiteToString(None, this)
-}
+}*/

@@ -195,8 +195,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
                 if (!result)
                   statefulStatus.setFailed()
               case Failure(ex) =>
-                  statefulStatus.setFailed()
-                  statefulStatus.setUnreportedException(ex)
+                  statefulStatus.setFailedWith(ex)
             }
             statefulStatus.setCompleted()
           }

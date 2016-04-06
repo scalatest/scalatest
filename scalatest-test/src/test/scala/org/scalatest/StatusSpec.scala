@@ -15,7 +15,8 @@
  */
 package org.scalatest
 
-import scala.util.Success
+import scala.concurrent.ExecutionException
+import scala.util.{Failure, Success}
 
 class StatusSpec extends fixture.FunSpec {
   
@@ -96,12 +97,100 @@ class StatusSpec extends fixture.FunSpec {
     it("should be serializable") { status =>
       SharedHelpers.serializeRoundtrip(status)
     }
+
+    it("waitUntilCompleted should throw unreportedException if set") { () =>
+      val status = new StatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setFailedWith(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.waitUntilCompleted()
+      }
+      assert(e eq t)
+    }
+    it("succeeds should throw unreportedException if set") { () =>
+      val status = new StatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setFailedWith(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.succeeds
+      }
+      assert(e eq t)
+    }
+    it("withAfterEffect should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
+      val status = new StatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val returnedStatus =
+        status.withAfterEffect {
+          throw e
+        }
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.setCompleted() // StatefulStatus.setCompleted() executes the callbacks on the calling thread
+      }
+      assert(t eq e)
+      assert(returnedStatus.unreportedException.isDefined)
+      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
+      assert(returnedStatus.unreportedException.get.getCause eq e)
+    }
+    it("thenRun should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
+      val status = new StatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val returnedStatus =
+        status.thenRun {
+          throw e
+        }
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.setCompleted() // StatefulStatus.setCompleted() executes the callbacks on the calling thread
+      }
+      assert(t eq e)
+      assert(returnedStatus.unreportedException.isDefined)
+      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
+      assert(returnedStatus.unreportedException.get.getCause eq e)
+    }
+
     // SKIP-SCALATESTJS-END
+
+    it("toFuture should return Future[Boolean] that will be complete later and has correct value of Option[Try[Boolean]]") { () =>
+      val status1 = new StatefulStatus
+      val future1 = status1.toFuture
+      assert(status1.unreportedException == None)
+      assert(!future1.isCompleted)
+      assert(future1.value == None)
+      status1.setCompleted()
+      assert(status1.unreportedException == None)
+      assert(future1.isCompleted)
+      assert(future1.value == Some(Success(true)))
+
+      val status2 = new StatefulStatus
+      val future2 = status2.toFuture
+      assert(status2.unreportedException == None)
+      assert(!future2.isCompleted)
+      assert(future2.value == None)
+      status2.setFailed()
+      status2.setCompleted()
+      assert(status2.unreportedException == None)
+      assert(future2.isCompleted)
+      assert(future2.value == Some(Success(false)))
+
+      val status3 = new StatefulStatus
+      val future3 = status3.toFuture
+      assert(status3.unreportedException == None)
+      assert(!future3.isCompleted)
+      assert(future3.value == None)
+      status3.setFailed()
+      val e = new IllegalArgumentException("test")
+      status3.setFailedWith(e)
+      status3.setCompleted()
+      assert(status3.unreportedException == Some(e))
+      assert(future3.isCompleted)
+      assert(future3.value == Some(Failure(e)))
+    }
   }
 
   describe("SucceededStatus ") {
 
-    it("should invoke a function registered with whenCompleted, passing a succeeded value") { status =>
+    it("should invoke a function registered with whenCompleted, passing a succeeded value") { () =>
 
       @volatile var callbackInvoked = false
       @volatile var succeeded = false
@@ -119,7 +208,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(succeeded === true)
     }
 
-    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value") { status =>
+    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value") { () =>
       // register two callbacks
       // ensure neither was executed yet
       // complete the status
@@ -151,11 +240,32 @@ class StatusSpec extends fixture.FunSpec {
       assert(firstSucceeded === true)
       assert(secondSucceeded === true)
     }
+
+    it("toFuture should return Future[Boolean] that is completed and has value Some(Success(true))") { () =>
+      val status = SucceededStatus
+      assert(status.unreportedException == None)
+      val future = status.toFuture
+      assert(future.isCompleted)
+      assert(future.value == Some(Success(true)))
+    }
+
+    // SKIP-SCALATESTJS-START
+    it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
+      val status = SucceededStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.thenRun {
+          throw e
+        }
+      }
+      assert(t eq e)
+    }
+    // SKIP-SCALATESTJS-END
   }
 
   describe("FailedStatus ") {
 
-    it("should invoke a function registered with whenCompleted, passing a failed value") { status =>
+    it("should invoke a function registered with whenCompleted, passing a failed value") { () =>
 
       @volatile var callbackInvoked = false
       @volatile var succeeded = true
@@ -173,7 +283,7 @@ class StatusSpec extends fixture.FunSpec {
       assert(succeeded === false)
     }
 
-    it("should invoke multiple functions registered with whenCompleted, passing a failed value") { status =>
+    it("should invoke multiple functions registered with whenCompleted, passing a failed value") { () =>
       // register two callbacks
       // ensure neither was executed yet
       // complete the status
@@ -205,10 +315,74 @@ class StatusSpec extends fixture.FunSpec {
       assert(firstSucceeded === false)
       assert(secondSucceeded === false)
     }
+
+    it("toFuture should return Future[Boolean] that is completed and has value Some(Success(false))") { () =>
+      val status = FailedStatus
+      assert(status.unreportedException == None)
+      val future = status.toFuture
+      assert(future.isCompleted)
+      assert(future.value == Some(Success(false)))
+    }
+
+    // SKIP-SCALATESTJS-START
+    it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
+      val status = FailedStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.thenRun {
+          throw e
+        }
+      }
+      assert(t eq e)
+    }
+    // SKIP-SCALATESTJS-END
+  }
+
+  describe("AbortedStatus") {
+
+    it("toFuture should return Future[Boolean] that is completed and has value Some(Failure(unreportedException))") { () =>
+      val e = new IllegalArgumentException("test")
+      val status = AbortedStatus(e)
+      assert(status.unreportedException == Some(e))
+      val future = status.toFuture
+      assert(future.isCompleted)
+      assert(future.value == Some(Failure(e)))
+    }
+
+    // SKIP-SCALATESTJS-START
+    it("waitUntilCompleted should throw unreportedException") { () =>
+      val e = new IllegalArgumentException("test")
+      val status = new AbortedStatus(e)
+      val t = intercept[IllegalArgumentException] {
+        status.waitUntilCompleted()
+      }
+      assert(e eq t)
+    }
+
+    it("succeeds should throw unreportedException") { () =>
+      val e = new IllegalArgumentException("test")
+      val status = new AbortedStatus(e)
+      val t = intercept[IllegalArgumentException] {
+        status.succeeds
+      }
+      assert(e eq t)
+    }
+
+    it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
+      val status = AbortedStatus(new IllegalArgumentException("test"))
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.thenRun {
+          throw e
+        }
+      }
+      assert(t eq e)
+    }
+    // SKIP-SCALATESTJS-END
   }
 
   describe("CompositeStatus ") {
-    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully") { status =>
+    it("should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully") { () =>
 
       @volatile var firstCallbackInvoked = false
       @volatile var secondCallbackInvoked = false
@@ -253,5 +427,108 @@ class StatusSpec extends fixture.FunSpec {
       assert(firstSucceeded === true)
       assert(secondSucceeded === true)
     }
+    it("should search its nested status for unreportedExceptions") { () =>
+      val nestedStatus1 = new ScalaTestStatefulStatus
+      val nestedStatus2 = new ScalaTestStatefulStatus
+      val compoStatus = new CompositeStatus(Set(nestedStatus1, nestedStatus2))
+
+      assert(compoStatus.unreportedException.isEmpty)
+
+      val ex = new Exception("oops")
+      nestedStatus1.setFailedWith(ex)
+
+      assert(compoStatus.unreportedException.isDefined)
+      assert(compoStatus.unreportedException.get eq ex)
+    }
+  }
+
+  describe("ScalaTestStatefulStatus") {
+    it("toFuture should return Future[Boolean] that will be complete later and has correct value of Option[Try[Boolean]]") { () =>
+      val status1 = new ScalaTestStatefulStatus
+      val future1 = status1.toFuture
+      assert(status1.unreportedException == None)
+      assert(!future1.isCompleted)
+      assert(future1.value == None)
+      status1.setCompleted()
+      assert(status1.unreportedException == None)
+      assert(future1.isCompleted)
+      assert(future1.value == Some(Success(true)))
+
+      val status2 = new ScalaTestStatefulStatus
+      val future2 = status2.toFuture
+      assert(status2.unreportedException == None)
+      assert(!future2.isCompleted)
+      assert(future2.value == None)
+      status2.setFailed()
+      status2.setCompleted()
+      assert(status2.unreportedException == None)
+      assert(future2.isCompleted)
+      assert(future2.value == Some(Success(false)))
+
+      val status3 = new ScalaTestStatefulStatus
+      val future3 = status3.toFuture
+      assert(status3.unreportedException == None)
+      assert(!future3.isCompleted)
+      assert(future3.value == None)
+      status3.setFailed()
+      val e = new IllegalArgumentException("test")
+      status3.setFailedWith(e)
+      status3.setCompleted()
+      assert(status3.unreportedException == Some(e))
+      assert(future3.isCompleted)
+      assert(future3.value == Some(Failure(e)))
+    }
+    // SKIP-SCALATESTJS-START
+    it("waitUntilCompleted should throw unreportedException if set") { () =>
+      val status = new ScalaTestStatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setFailedWith(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.waitUntilCompleted()
+      }
+      assert(e eq t)
+    }
+    it("succeeds should throw unreportedException if set") { () =>
+      val status = new ScalaTestStatefulStatus
+      val e = new IllegalArgumentException("test")
+      status.setFailedWith(e)
+      status.setCompleted()
+      val t = intercept[IllegalArgumentException] {
+        status.succeeds
+      }
+      assert(e eq t)
+    }
+    it("withAfterEffect should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
+      val status = new ScalaTestStatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val returnedStatus =
+        status.withAfterEffect {
+          throw e
+        }
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.setCompleted()
+      }
+      assert(t eq e)
+      assert(returnedStatus.unreportedException.isDefined)
+      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
+      assert(returnedStatus.unreportedException.get.getCause eq e)
+    }
+    it("thenRun should wrap suite-aborting exceptions in ExecutionException before setting it as unreportedException, and rethrow the original suite-aborting exception") { () =>
+      val status = new ScalaTestStatefulStatus
+      val e = new java.lang.annotation.AnnotationFormatError("test")
+      val returnedStatus =
+        status.thenRun {
+          throw e
+        }
+      val t = intercept[java.lang.annotation.AnnotationFormatError] {
+        status.setCompleted()
+      }
+      assert(t eq e)
+      assert(returnedStatus.unreportedException.isDefined)
+      assert(returnedStatus.unreportedException.get.isInstanceOf[ExecutionException])
+      assert(returnedStatus.unreportedException.get.getCause eq e)
+    }
+    // SKIP-SCALATESTJS-END
   }
 }

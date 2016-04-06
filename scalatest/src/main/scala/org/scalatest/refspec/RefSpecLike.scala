@@ -42,7 +42,7 @@ import org.scalactic.Requirements._
  * @author Bill Venners
  */
 @Finders(Array("org.scalatest.finders.SpecFinder"))
-trait RefSpecLike extends Suite with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentSpecMod, "RefSpecLike")
   import engine._
@@ -140,8 +140,8 @@ trait RefSpecLike extends Suite with Informing with Notifying with Alerting with
           
               val testLocation = TopOfMethod(getScopeClassName(o), m.toGenericString)
               val isIgnore = testTags.get(methodName) match {
-                case Some(tagSet) => tagSet.contains(Suite.IgnoreAnnotation) || methodTags.contains(Suite.IgnoreAnnotation)
-                case None => methodTags.contains(Suite.IgnoreAnnotation)
+                case Some(tagSet) => tagSet.contains(Suite.IgnoreTagName) || methodTags.contains(Suite.IgnoreTagName)
+                case None => methodTags.contains(Suite.IgnoreTagName)
               }
               if (isIgnore)
                 registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), methodTags.map(new Tag(_)): _*)

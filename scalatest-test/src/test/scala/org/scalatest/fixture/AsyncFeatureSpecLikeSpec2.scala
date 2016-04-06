@@ -15,17 +15,15 @@
  */
 package org.scalatest.fixture
 
-import scala.concurrent.{Promise, Future}
+import scala.concurrent.{ExecutionContext, Promise, Future}
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import org.scalatest.concurrent.SleepHelper
+import org.scalatest.events.{InfoProvided, MarkupProvided}
+
+import scala.util.Success
 
 class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
-
-  // SKIP-SCALATESTJS-START
-  implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 
   describe("AsyncFeatureSpecLike") {
 
@@ -33,13 +31,8 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -101,13 +94,8 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike with ParallelTestExecution {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         val a = 1
@@ -161,13 +149,8 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         scenario("test 1") { fixture =>
@@ -213,13 +196,8 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
 
       class ExampleSpec extends AsyncFeatureSpecLike {
 
-        // SKIP-SCALATESTJS-START
-        implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
-
         type FixtureParam = String
-        def withAsyncFixture(test: OneArgAsyncTest): Future[Outcome] =
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
           test("testing")
 
         scenario("test 1") { fixture =>
@@ -250,6 +228,714 @@ class AsyncFeatureSpecLikeSpec2 extends org.scalatest.AsyncFunSpec {
       promise.future.map { repo =>
         assert(repo.testStartingEventsReceived.length == 3)
         assert(repo.testSucceededEventsReceived.length == 3)
+      }
+    }
+
+    // SKIP-SCALATESTJS-START
+    it("should run tests and its future in same main thread when use SerialExecutionContext") {
+
+      var mainThread = Thread.currentThread
+      var test1Thread: Option[Thread] = None
+      var test2Thread: Option[Thread] = None
+      var onCompleteThread: Option[Thread] = None
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        scenario("test 1") { fixture =>
+          Future {
+            test1Thread = Some(Thread.currentThread)
+            succeed
+          }
+        }
+
+        scenario("test 2") { fixture =>
+          Future {
+            test2Thread = Some(Thread.currentThread)
+            succeed
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.whenCompleted { s =>
+        onCompleteThread = Some(Thread.currentThread)
+      }
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(test1Thread.isDefined)
+        assert(test1Thread.get == mainThread)
+        assert(test2Thread.isDefined)
+        assert(test2Thread.get == mainThread)
+        assert(onCompleteThread.isDefined)
+        assert(onCompleteThread.get == mainThread)
+      }
+    }
+
+    it("should run tests and its true async future in the same thread when use SerialExecutionContext") {
+      var mainThread = Thread.currentThread
+      @volatile var test1Thread: Option[Thread] = None
+      @volatile var test2Thread: Option[Thread] = None
+      var onCompleteThread: Option[Thread] = None
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        scenario("test 1") { fixture =>
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            1000
+          )
+          promise.future.map { s =>
+            test1Thread = Some(Thread.currentThread)
+            s
+          }
+        }
+
+        scenario("test 2") { fixture =>
+          val promise = Promise[Assertion]
+          val timer = new java.util.Timer
+          timer.schedule(
+            new java.util.TimerTask {
+              def run(): Unit = {
+                promise.complete(Success(succeed))
+              }
+            },
+            500
+          )
+          promise.future.map { s =>
+            test2Thread = Some(Thread.currentThread)
+            s
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+      status.whenCompleted { s =>
+        onCompleteThread = Some(Thread.currentThread)
+      }
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(test1Thread.isDefined)
+        assert(test1Thread.get == mainThread)
+        assert(test2Thread.isDefined)
+        assert(test2Thread.get == mainThread)
+        assert(onCompleteThread.isDefined)
+        assert(onCompleteThread.get == mainThread)
+      }
+    }
+
+    it("should not run out of stack space with nested futures when using SerialExecutionContext") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        // Note we get a StackOverflowError with the following execution
+        // context.
+        // override implicit def executionContext: ExecutionContext = new ExecutionContext { def execute(runnable: Runnable) = runnable.run; def reportFailure(cause: Throwable) = () }
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        def sum(xs: List[Int]): Future[Int] =
+          xs match {
+            case Nil => Future.successful(0)
+            case x :: xs => Future(x).flatMap(xx => sum(xs).map(xxx => xx + xxx))
+          }
+
+        scenario("test 1") { fixture =>
+          val fut: Future[Int] = sum((1 to 50000).toList)
+          fut.map(total => assert(total == 1250025000))
+        }
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(!rep.testSucceededEventsReceived.isEmpty)
+      }
+    }
+    // SKIP-SCALATESTJS-END
+
+    it("should run tests that returns Future and report their result in serial") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        scenario("test 1") { fixture =>
+          Future {
+            SleepHelper.sleep(60)
+            succeed
+          }
+        }
+
+        scenario("test 2") { fixture =>
+          Future {
+            SleepHelper.sleep(30)
+            succeed
+          }
+        }
+
+        scenario("test 3") { fixture =>
+          Future {
+            succeed
+          }
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+        assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+        assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+        assert(rep.testSucceededEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+        assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 2")
+        assert(rep.testSucceededEventsReceived(2).testName == "Scenario: test 3")
+      }
+    }
+
+    it("should run tests that does not return Future and report their result in serial") {
+
+      class ExampleSpec extends AsyncFeatureSpecLike {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        scenario("test 1") { fixture =>
+          SleepHelper.sleep(60)
+          succeed
+        }
+
+        scenario("test 2") { fixture =>
+          SleepHelper.sleep(30)
+          succeed
+        }
+
+        scenario("test 3") { fixture =>
+          succeed
+        }
+
+      }
+
+      val rep = new EventRecordingReporter
+      val suite = new ExampleSpec
+      val status = suite.run(None, Args(reporter = rep))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(rep) }
+      promise.future.map { repo =>
+        assert(rep.testStartingEventsReceived.length == 3)
+        assert(rep.testStartingEventsReceived(0).testName == "Scenario: test 1")
+        assert(rep.testStartingEventsReceived(1).testName == "Scenario: test 2")
+        assert(rep.testStartingEventsReceived(2).testName == "Scenario: test 3")
+        assert(rep.testSucceededEventsReceived.length == 3)
+        assert(rep.testSucceededEventsReceived(0).testName == "Scenario: test 1")
+        assert(rep.testSucceededEventsReceived(1).testName == "Scenario: test 2")
+        assert(rep.testSucceededEventsReceived(2).testName == "Scenario: test 3")
+      }
+    }
+
+    it("should send an InfoProvided event for an info in main spec body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        info(
+          "hi there"
+        )
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val infoList = reporter.infoProvidedEventsReceived
+
+        assert(infoList.size == 1)
+        assert(infoList(0).message == "hi there")
+      }
+    }
+
+    it("should send an InfoProvided event for an info in feature body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          info(
+            "hi there"
+          )
+
+          scenario("test 1") { fixture => succeed }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val infoList = reporter.infoProvidedEventsReceived
+
+        assert(infoList.size == 1)
+        assert(infoList(0).message == "hi there")
+      }
+    }
+
+    it("should send an InfoProvided event for an info in scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          scenario("test 1") { fixture =>
+            info("hi there")
+            succeed
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val infoList = reporter.infoProvidedEventsReceived
+        assert(infoList.size == 0)
+
+        val testSucceededList = reporter.testSucceededEventsReceived
+        assert(testSucceededList.size == 1)
+        assert(testSucceededList(0).recordedEvents.size == 1)
+        val recordedEvent = testSucceededList(0).recordedEvents(0)
+        assert(recordedEvent.isInstanceOf[InfoProvided])
+        val infoProvided = recordedEvent.asInstanceOf[InfoProvided]
+        assert(infoProvided.message == "hi there")
+      }
+    }
+
+    it("should send an InfoProvided event for an info in Future returned by scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          scenario("test 1") { fixture =>
+            Future {
+              info("hi there")
+              succeed
+            }
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val infoList = reporter.infoProvidedEventsReceived
+        assert(infoList.size == 0)
+
+        val testSucceededList = reporter.testSucceededEventsReceived
+        assert(testSucceededList.size == 1)
+        assert(testSucceededList(0).recordedEvents.size == 1)
+        val recordedEvent = testSucceededList(0).recordedEvents(0)
+        assert(recordedEvent.isInstanceOf[InfoProvided])
+        val infoProvided = recordedEvent.asInstanceOf[InfoProvided]
+        assert(infoProvided.message == "hi there")
+      }
+    }
+
+    it("should send a NoteProvided event for a note in main spec body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        note(
+          "hi there"
+        )
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val noteList = reporter.noteProvidedEventsReceived
+
+        assert(noteList.size == 1)
+        assert(noteList(0).message == "hi there")
+      }
+    }
+
+    it("should send a NoteProvided event for a note in feature body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          note(
+            "hi there"
+          )
+
+          scenario("test 1") { fixture => succeed }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val noteList = reporter.noteProvidedEventsReceived
+
+        assert(noteList.size == 1)
+        assert(noteList(0).message == "hi there")
+      }
+    }
+
+    it("should send a NoteProvided event for a note in scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          scenario("test 1") { fixture =>
+            note("hi there")
+            succeed
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val noteList = reporter.noteProvidedEventsReceived
+        assert(noteList.size == 1)
+        assert(noteList(0).message == "hi there")
+      }
+    }
+
+    it("should send a NoteProvided event for a note in Future returned by scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          scenario("test 1") { fixture =>
+            Future {
+              note("hi there")
+              succeed
+            }
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val noteList = reporter.noteProvidedEventsReceived
+        assert(noteList.size == 1)
+        assert(noteList(0).message == "hi there")
+      }
+    }
+
+    it("should send an AlertProvided event for an alert in main spec body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        alert(
+          "hi there"
+        )
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val alertList = reporter.alertProvidedEventsReceived
+
+        assert(alertList.size == 1)
+        assert(alertList(0).message == "hi there")
+      }
+    }
+
+    it("should send an AlertProvided event for an alert in feature body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          alert(
+            "hi there"
+          )
+
+          scenario("test 1") { fixture => succeed }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val alertList = reporter.alertProvidedEventsReceived
+
+        assert(alertList.size == 1)
+        assert(alertList(0).message == "hi there")
+      }
+    }
+
+    it("should send an AlertProvided event for an alert in scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          scenario("test 1") { fixture =>
+            alert("hi there")
+            succeed
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val alertList = reporter.alertProvidedEventsReceived
+        assert(alertList.size == 1)
+        assert(alertList(0).message == "hi there")
+      }
+    }
+
+    it("should send an AlertProvided event for an alert in Future returned by scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          scenario("test 1") { fixture =>
+            Future {
+              alert("hi there")
+              succeed
+            }
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val alertList = reporter.alertProvidedEventsReceived
+        assert(alertList.size == 1)
+        assert(alertList(0).message == "hi there")
+      }
+    }
+
+    it("should send a MarkupProvided event for a markup in main spec body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        markup(
+          "hi there"
+        )
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val markupList = reporter.markupProvidedEventsReceived
+
+        assert(markupList.size == 1)
+        assert(markupList(0).text == "hi there")
+      }
+    }
+
+    it("should send a MarkupProvided event for a markup in feature body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          markup(
+            "hi there"
+          )
+
+          scenario("test 1") { fixture => succeed }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val markupList = reporter.markupProvidedEventsReceived
+
+        assert(markupList.size == 1)
+        assert(markupList(0).text == "hi there")
+      }
+    }
+
+    it("should send a MarkupProvided event for a markup in scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          scenario("test 1") { fixture =>
+            markup("hi there")
+            succeed
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val markupList = reporter.markupProvidedEventsReceived
+        assert(markupList.size == 0)
+
+        val testSucceededList = reporter.testSucceededEventsReceived
+        assert(testSucceededList.size == 1)
+        assert(testSucceededList(0).recordedEvents.size == 1)
+        val recordedEvent = testSucceededList(0).recordedEvents(0)
+        assert(recordedEvent.isInstanceOf[MarkupProvided])
+        val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
+        assert(markupProvided.text == "hi there")
+      }
+    }
+
+    it("should send a MarkupProvided event for a markup in Future returned by scenario body") {
+      class MySuite extends AsyncFeatureSpecLike  {
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        feature("test feature") {
+          scenario("test 1") { fixture =>
+            Future {
+              markup("hi there")
+              succeed
+            }
+          }
+        }
+      }
+      val suite = new MySuite
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { repo =>
+        val markupList = reporter.markupProvidedEventsReceived
+        assert(markupList.size == 0)
+
+        val testSucceededList = reporter.testSucceededEventsReceived
+        assert(testSucceededList.size == 1)
+        assert(testSucceededList(0).recordedEvents.size == 1)
+        val recordedEvent = testSucceededList(0).recordedEvents(0)
+        assert(recordedEvent.isInstanceOf[MarkupProvided])
+        val markupProvided = recordedEvent.asInstanceOf[MarkupProvided]
+        assert(markupProvided.text == "hi there")
       }
     }
 

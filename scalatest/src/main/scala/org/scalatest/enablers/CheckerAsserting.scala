@@ -32,7 +32,7 @@ import org.scalatest.exceptions.StackDepthException
 
 trait CheckerAsserting[T] {
   type Result
-  def check(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result
+  def check(p: Prop, prms: Test.Parameters, argNames: Option[List[String]] = None): Result
 }
 
 abstract class UnitCheckerAsserting {
@@ -41,7 +41,9 @@ abstract class UnitCheckerAsserting {
 
     import CheckerAsserting._
 
-    def check(p: Prop, prms: Test.Parameters, stackDepthFileName: String, stackDepthMethodName: String, argNames: Option[List[String]] = None): Result = {
+    private val sourceFileName: String = "CheckerAsserting.scala"
+
+    def check(p: Prop, prms: Test.Parameters, argNames: Option[List[String]] = None): Result = {
 
       val result = Test.check(prms, p)
       if (!result.passed) {
@@ -64,16 +66,13 @@ abstract class UnitCheckerAsserting {
               args,
               labels,
               None,
-              getStackDepthFun(stackDepthFileName, stackDepthMethodName)
+              getStackDepthFun(sourceFileName, "check")
             )
 
           case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
 
-            // SKIP-SCALATESTJS-START
-            val stackDepth = 2
-            // SKIP-SCALATESTJS-END
-            //SCALATESTJS-ONLY val stackDepth = 1
-
+            val stackDepth = 1
+            
             indicateFailure(
               sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
@@ -93,7 +92,7 @@ abstract class UnitCheckerAsserting {
               scalaCheckArgs,
               scalaCheckLabels.toList,
               None,
-              getStackDepthFun(stackDepthFileName, stackDepthMethodName, stackDepth)
+              getStackDepthFun(sourceFileName, "check", stackDepth)
             )
 
           case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
@@ -116,7 +115,7 @@ abstract class UnitCheckerAsserting {
               scalaCheckArgs,
               scalaCheckLabels.toList,
               Some(e),
-              getStackDepthFun(stackDepthFileName, stackDepthMethodName)
+              getStackDepthFun(sourceFileName, "check")
             )
         }
       } else indicateSuccess(FailureMessages.propertyCheckSucceeded)

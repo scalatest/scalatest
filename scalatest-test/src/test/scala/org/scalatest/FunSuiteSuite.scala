@@ -244,7 +244,7 @@ class YeOldeFunSuiteSpec extends RefSpec {
   }
 
   def callingIgnoreFromWithinATestClauseResultsInATestFailedErrorAtRuntime() {
-    
+
     var testFailedAsExpected = false
     class MyReporter extends Reporter {
       def apply(event: Event) {

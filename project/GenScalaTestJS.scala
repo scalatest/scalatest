@@ -109,6 +109,7 @@ object GenScalaTestJS {
         "JavaClassesWrappers.scala",
         "Shell.scala",
         "SuiteRerunner.scala",
+        "SuiteRerunner.scala",
         "run.scala"
       )
     ) ++
@@ -188,7 +189,7 @@ object GenScalaTestJS {
     copyDir("scalatest/src/main/scala/org/scalatest/prop", "org/scalatest/prop", targetDir, List.empty) ++
     copyDir("scalatest/src/main/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
-        "AsyncAssertions.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
+        "Waiters.scala",        // skipeed because doesn't really make sense on js's single-thread environment.
         "Conductors.scala",             // skipped because depends on PimpedReadWriteLock
         "ConductorFixture.scala",       // skipped because depends on Conductors
         "ConductorMethods.scala",       // skipped because depends on Conductors
@@ -203,9 +204,9 @@ object GenScalaTestJS {
         "SocketInterruptor.scala",       // skipped because it is for java socket.
         "TestThreadsStartingCounter.scala",    // skipped because doesn't really make sense under js's single-threaded environment.
         "ThreadInterruptor.scala",          // skipped because no interrupt in js.
-        "TimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
+        "DeprecatedTimeLimitedTests.scala",       // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
         "Timeouts.scala",               // skipped because js is single-threaded and does not share memory, there's no practical way to interrupt in js.
-        "TimeoutTask.scala"             // skipped because timeout is not supported.
+        "TimeoutTask.scala"            // skipped because timeout is not supported.,
       )
     ) ++
     copyDir("scalatest/src/main/scala/org/scalatest/path", "org/scalatest/path", targetDir, List.empty) ++
@@ -255,15 +256,19 @@ object GenScalaTestJS {
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/concurrent", "org/scalatest/concurrent", targetDir,
       List(
-        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions not supported.
+        "WaitersSpec.scala",    // skipped because Waiters not supported.
+        "AsyncAssertionsSpec.scala",    // skipped because AsyncAssertions (deprecated name for Waiters) not supported.
         "ConductorFixtureSuite.scala",  // skipped because Conductors not supported.
         "ConductorMethodsSuite.scala",   // skipped because Conductors not supported.
         "ConductorSuite.scala",   // skipped because Conductors not supported.
+        "ConductorFixtureDeprecatedSuite.scala",  // skipped because Conductors not supported.
+        "ConductorMethodsDeprecatedSuite.scala",   // skipped because Conductors not supported.
+        "ConductorDeprecatedSuite.scala",   // skipped because Conductors not supported.
         "EventuallySpec.scala",   // skipped because Eventually not supported.
         "IntegrationPatienceSpec.scala",  // skipped because depends on Eventually
         "JavaFuturesSpec.scala",      // skipped because depends on java futures
         "TestThreadsStartingCounterSpec.scala",   // skipped because depends on Conductors
-        "TimeLimitedTestsSpec.scala",   // skipped because TimeLimitedTests not supported.
+        "DeprecatedTimeLimitedTestsSpec.scala",   // skipped because DeprecatedTimeLimitedTests not supported.
         "TimeoutsSpec.scala"            // skipped because Timeouts not supported.
       )) ++
     copyDir("scalatest-test/src/test/scala/org/scalatest/enablers", "org/scalatest/enablers", targetDir, List.empty) ++

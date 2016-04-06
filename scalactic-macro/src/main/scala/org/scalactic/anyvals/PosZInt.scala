@@ -34,7 +34,7 @@ import scala.collection.immutable.Range
  * compile time. Here's an example:
  * </p>
  * 
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import anyvals._
  * import anyvals._
  *
@@ -59,7 +59,7 @@ import scala.collection.immutable.Range
  * instead:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; val x = 1
  * x: Int = 1
  *
@@ -75,7 +75,7 @@ import scala.collection.immutable.Range
  * Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; PosZInt.from(x)
  * res4: Option[org.scalactic.anyvals.PosZInt] = Some(PosZInt(1))
  *
@@ -93,7 +93,7 @@ import scala.collection.immutable.Range
  * calling <code>PosZInt.apply</code> explicitly. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; def invert(pos: PosZInt): Int = Int.MaxValue - pos
  * invert: (pos: org.scalactic.anyvals.PosZInt)Int
  *

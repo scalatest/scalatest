@@ -27,7 +27,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces
         it("should succeed") {
           val a =
             new FunSuite with TimeLimitedTests {
-              val timeLimit = Span(100L, Millis)
+              val timeLimit = Span(500L, Millis)
               test("plain old success") { assert(1 + 1 === 2) }
             }
           val rep = new EventRecordingReporter
@@ -40,7 +40,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces
         it("should fail") {
           val a =
             new FunSuite with TimeLimitedTests {
-              val timeLimit = Span(100L, Millis)
+              val timeLimit = Span(500L, Millis)
               test("plain old failure") { assert(1 + 1 === 3) }
             }
           val rep = new EventRecordingReporter
@@ -55,7 +55,7 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces
         val a =
           new FunSuite with TimeLimitedTests {
             val timeLimit = Span(100L, Millis)
-            test("time out failure") { Thread.sleep(500) }
+            test("time out failure") { SleepHelper.sleep(500) }
           }
         val rep = new EventRecordingReporter
         a.run(None, Args(rep))
@@ -68,9 +68,9 @@ class TimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces
         val a =
           new FunSuite with TimeLimitedTests {
             val timeLimit = Span(10L, Millis)
-            override val defaultTestInterruptor = DoNotInterrupt
+            override val defaultTestSignaler = DoNotSignal
             test("time out failure") {
-              Thread.sleep(50)
+              SleepHelper.sleep(50)
               throw new RuntimeException("oops!")
             }
           }

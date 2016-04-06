@@ -23,6 +23,11 @@ import org.scalatest.words.{ResultOfAnTypeInvocation, ResultOfATypeInvocation}
 
 /**
  * <code>TypeMatcherHelper</code> is called by <code>TypeMatcherMacro</code> to support <code>a [Type]</code> and <code>an [Type]</code> syntax.
+ *
+ * <p>
+ * This object needs to be public so that the macro-generated code can be compiled. It is expected that ScalaTest
+ * users would ever need to use <code>TypeMatcherHelper</code> directly.
+ * </p>
  */
 object TypeMatcherHelper {
 
@@ -240,7 +245,7 @@ object TypeMatcherHelper {
     } else org.scalatest.Succeeded
   }
 
-  /**
+  /*
    * Based on <code>shouldBeTrue</code> value, check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfAnTypeInvocation</code>.
    * If <code>shouldBeTrue</code> is true, a <code>Fact.No</code> will be returned if <code>left</code> is not an instance of the type given by <code>ResultOfAnTypeInvocation</code>.
    * If <code>shouldBeTrue</code> is false, a <code>Fact.No</code> will be returned if <code>left</code> is an instance of the type given by <code>ResultOfAnTypeInvocation</code>.

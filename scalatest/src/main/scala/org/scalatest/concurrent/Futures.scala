@@ -48,6 +48,9 @@ import PatienceConfiguration._
  * 
  * <pre class="stHighlight">
  * assert(result.futureValue === 7)
+ *
+ * // Or, if you expect the future to fail:
+ * assert(result.failed.futureValue.isInstanceOf[ArithmeticException])
  * </pre>
  * 
  * <p>
@@ -81,7 +84,7 @@ import PatienceConfiguration._
  *
  * <pre class="stHighlight">
  * import org.scalatest._
- * import matchers.ShouldMatchers._
+ * import Matchers._
  * import concurrent.Futures._
  * import java.util.concurrent._
  * 
@@ -303,7 +306,7 @@ trait Futures extends PatienceConfiguration {
       // SKIP-SCALATESTJS-START
       val stackDepthAdjustment = 3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 1
 
       try {
         futureValueImpl("isReadyWithin", stackDepthAdjustment)(PatienceConfig(timeout, config.interval))
@@ -489,7 +492,7 @@ trait Futures extends PatienceConfiguration {
       // SKIP-SCALATESTJS-START
       val stackDepthAdjustment = 3
       // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepthAdjustment = 0
+      //SCALATESTJS-ONLY val stackDepthAdjustment = 1
       futureValueImpl("futureValue", stackDepthAdjustment)(config)
     }
 

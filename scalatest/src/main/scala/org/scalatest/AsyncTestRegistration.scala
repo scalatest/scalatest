@@ -19,35 +19,26 @@ import org.scalatest.OutcomeOf._
 import scala.concurrent.Future
 
 /**
- * Trait for test registration support.
+ * Trait declaring methods that can be used to register by-name test functions that
+ * have result type <code>Future[Assertion]</code>.
  */
-trait AsyncTestRegistration { theSuite: Suite =>
+trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
 
   /**
-   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
-   *
-   * @param testFun test function
-   * @return function that returns `AsyncOutcome`
-   */
-  private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
-    throw new Exception("NOT USING THIS")
-
-  /**
-   * Register a test.
+   * Registers a test.
    *
    * @param testText the test text
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion])
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])
 
   /**
-   * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
-   * event to be fired.
+   * Registers an ignored test.
    *
    * @param testText the test text
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion])
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])
 }

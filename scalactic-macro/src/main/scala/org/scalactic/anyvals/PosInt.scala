@@ -37,7 +37,7 @@ import scala.collection.immutable.Range
  * at run time or an error at compile time. Here's an example:
  * </p>
  * 
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import anyvals._
  * import anyvals._
  *
@@ -57,7 +57,7 @@ import scala.collection.immutable.Range
  * <code>PosInt.from</code>, instead:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; val x = 1
  * x: Int = 1
  *
@@ -73,7 +73,7 @@ import scala.collection.immutable.Range
  * Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; PosInt.from(x)
  * res3: Option[org.scalactic.anyvals.PosInt] = Some(PosInt(1))
  *
@@ -90,7 +90,7 @@ import scala.collection.immutable.Range
  * <code>PosInt.apply</code> explicitly. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; def invert(pos: PosInt): Int = Int.MaxValue - pos
  * invert: (pos: org.scalactic.anyvals.PosInt)Int
  *

@@ -23,38 +23,66 @@ package org.scalatest.enablers
  * Objects of type T for which an implicit <code>Size[T]</code> is available can be used
  * with the <code>should have size</code> syntax.
  * In other words, this trait enables you to use the size checking
- * syntax with arbitrary objects. As an example, consider
- * <code>java.net.DatagramPacket</code>, which has a <code>getSize</code> method. By default, this
- * can't be used with ScalaTest's <code>have size</code> syntax.
+ * syntax with arbitrary objects. As an example, the following <code>Bridge</code> class:
  * </p>
  *
- * <pre>
- * scala&gt; import java.awt.image.DataBufferByte
- * import java.awt.image.DataBufferByte
- * 
- * scala&gt; import org.scalatest.matchers.ShouldMatchers._
- * import org.scalatest.matchers.ShouldMatchers._
+ * <pre class="stREPL">
+ * scala&gt; import org.scalatest._
+ * import org.scalatest._
  *
- * scala&gt; val db = new DataBufferByte(4)
- * db: java.awt.image.DataBufferByte = java.awt.image.DataBufferByte@33d5e94f
- * 
- * scala&gt; db.getSize
- * res0: Int = 4
+ * scala&gt; import enablers.Size
+ * import enablers.Size
  *
- * scala&gt; db should have size 4
- * <console>:17: error: could not find implicit value for parameter ev: org.scalatest.matchers.ShouldMatchers.Extent[java.awt.image.DataBufferByte]
- *               db should have size 4
- *                  ^
- * scala&gt; implicit val sizeOfDataBufferByte =
- *      |   new Size[DataBufferByte] {
- *      |     def sizeOf(db: DataBufferByte): Long = db.getSize
+ * scala&gt; import Matchers._
+ * import Matchers._
+ *
+ * scala&gt; case class Bridge(span: Int)
+ * defined class Bridge
+ * </pre>
+ *
+ * <p>
+ * Out of the box you can't use the <code>should have size</code> syntax with <code>Bridge</code>,
+ * because ScalaTest doesn't know that a bridge's span means its size:
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; val bridge = new Bridge(2000)
+ * bridge: Bridge = Bridge(2000)
+ *
+ * scala&gt; bridge should have size 2000
+ * &lt;console&gt;:34: error: could not find implicit value for
+ *     parameter sz: org.scalatest.enablers.Size[Bridge]
+ *       bridge should have size 2000
+ *                          ^
+ * </pre>
+ *
+ * <p>
+ * You can teach this to ScalaTest, however, by defining an implicit <code>Size[Bridge]</code>.
+ * </p>
+ *
+ * <pre class="stREPL">
+ * scala&gt; implicit val sizeOfBridge: Size[Bridge] =
+ *      |   new Size[Bridge] {
+ *      |     def sizeOf(b: Bridge): Long = b.span
  *      |   }
- * sizeOfDataBufferByte: java.lang.Object with org.scalatest.matchers.ShouldMatchers.Size[java.awt.image.DataBufferByte] = $anon$1@4c69bdf8
+ * sizeOfBridge: org.scalatest.enablers.Size[Bridge] = $anon$1@3fa27a4a
+ * </pre>
  *
- * scala&gt; db should have size 4
+ * <p>
+ * With the implicit <code>Size[Bridge]</code> in scope, you can now use ScalaTest's <code>should have size</code>
+ * syntax with <code>Bridge</code> instances:
+ * </p>
  *
- * scala&gt; db should have size 3
- * org.scalatest.exceptions.TestFailedException:  java.awt.image.DataBufferByte@33d5e94f had size 4, not size 3
+ * <pre class="stREPL">
+ * scala&gt; bridge should have size 2000
+ * res4: org.scalatest.Assertion = Succeeded
+ * 
+ * scala&gt; bridge should have size 2001
+ * org.scalatest.exceptions.TestFailedException: Bridge(2000) had size 2000 instead of expected size 2001
+ *   at org.scalatest.MatchersHelper$.newTestFailedException(MatchersHelper.scala:148)
+ *   at org.scalatest.MatchersHelper$.indicateFailure(MatchersHelper.scala:366)
+ *   at org.scalatest.Matchers$ResultOfHaveWordForExtent.size(Matchers.scala:2720)
+ *   ... 43 elided
  * </pre>
  *
  * @author Bill Venners
@@ -71,7 +99,7 @@ trait Size[T] {
 }
 
 /**
- * Companion object for <code>Length</code> that provides implicit implementations for the following types:
+ * Companion object for <code>Size</code> that provides implicit implementations for the following types:
  *
  * <ul>
  * <li><code>scala.collection.GenTraversable</code></li>

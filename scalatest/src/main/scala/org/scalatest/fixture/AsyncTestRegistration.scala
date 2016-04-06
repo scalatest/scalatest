@@ -18,36 +18,29 @@ package org.scalatest.fixture
 import org.scalatest.OutcomeOf._
 import org.scalatest.{AsyncOutcome, Tag}
 import scala.concurrent.Future
-import org.scalatest.Assertion
+import org.scalatest.compatible
 
-trait AsyncTestRegistration { theSuite: Suite =>
-
-  /**
-   * Transform the test outcome, `Registration` type to `AsyncOutcome`.
-   *
-   * @param testFun test function
-   * @return function that returns `AsyncOutcome`
-   */
-  private[scalatest] def transformToOutcome(testFun: FixtureParam => Future[Assertion]): FixtureParam => AsyncOutcome = {
-    throw new Exception("THIS IS NOT BEING USED")
-  }
+/**
+ * Trait declaring methods that can be used to register test functions that accept
+ * a fixture parameter and have result type <code>Future[Assertion]</code>.
+ */
+trait AsyncTestRegistration { theSuite: org.scalatest.fixture.AsyncTestSuite =>
 
   /**
-   * Register a test.
+   * Registers a test.
    *
    * @param testText the test text
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])
 
   /**
-   * Register an ignored test, note that an ignored test will not be executed, but it will cause a <code>TestIgnored</code>
-   * event to be fired.
+   * Registers an ignored test.
    *
    * @param testText the test text
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[Assertion])
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])
 }

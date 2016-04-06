@@ -68,7 +68,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -87,7 +87,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute "size 0"
+ * scala&gt; org.scalatest.run(new SetSpec, "size 0")
  * <span class="stGreen">SetSpec:
  * - an empty Set should have size 0</span>
  * </pre>
@@ -173,7 +173,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -246,7 +246,7 @@ import Suite.autoTagClassAnnotations
  * If you run this <code>PropSpec</code> from the interpreter, you will see the following output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * - an element can be added to an empty mutable Set
  *   + ---------------- 
@@ -412,7 +412,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  *   + notes are sent immediately</span>
  *   <span class="stYellow">+ alerts are also sent immediately</span>
@@ -420,6 +420,13 @@ import Suite.autoTagClassAnnotations
  *   + info is recorded
  *   + markup is *also* recorded</span>
  * </pre>
+ *
+ * <p>
+ * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
+ * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
+ * longer than a specified amount of time.
+ * </p>
  *
  * <p>
  * In summary, use <code>info</code> and <code>markup</code> for text that should form part of the specification output. Use
@@ -489,7 +496,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala> new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * </pre>
  *
  * <p>
@@ -550,7 +557,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * Given these definitions, you could place <code>PropSpec</code> tests into groups like this:
+ * Given these definitions, you could place <code>PropSpec</code> tests into groups with tags like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -688,11 +695,11 @@ import Suite.autoTagClassAnnotations
  *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
  *     Use this technique unless:
  *     </p>
- *  <ul>
- *  <li>Different tests need different fixtures (refactor using Scala instead)</li>
- *  <li>An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</li>
- *  <li>You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</li>
- *  </ul>
+ *  <dl>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">Different tests need different fixtures (refactor using Scala instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</dd>
+ *  </dl>
  *  </td>
  * </tr>
  *

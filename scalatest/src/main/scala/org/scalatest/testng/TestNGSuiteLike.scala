@@ -154,11 +154,46 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
 
   // This seems wrong. Should ask TestNG if possible, but not sure that's even possible. Anyway some tests
   // rely on this behavior that used to be inherited, but is no more.
-  override def testNames: Set[String] = super.yeOldeTestNames
+  override def testNames: Set[String] = yeOldeTestNames
 
-  override def tags: Map[String, Set[String]] = super.yeOldeTags
+  private def getTags(testName: String) =
+    for {
+      a <- Suite.getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
+      annotationClass = a.annotationType
+      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
+    } yield annotationClass.getName
 
-  override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = super.yeOldeTestDataFor(testName, theConfigMap)
+  override def tags: Map[String, Set[String]] = {
+    val testNameSet = testNames
+
+    val testTags = Map() ++
+      (for (testName <- testNameSet; if !getTags(testName).isEmpty)
+        yield testName -> (Set() ++ getTags(testName)))
+
+    Suite.autoTagClassAnnotations(testTags, this)
+  }
+
+  override def testDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
+    val suiteTags = for {
+      a <- this.getClass.getAnnotations
+      annotationClass = a.annotationType
+      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
+    } yield annotationClass.getName
+    val testTags: Set[String] =
+      try {
+        getTags(testName).toSet
+      }
+      catch {
+        case e: IllegalArgumentException => Set.empty[String]
+      }
+    new TestData {
+      val configMap = theConfigMap
+      val name = testName
+      val scopes = Vector.empty
+      val text = testName
+      val tags = Set.empty ++ suiteTags ++ testTags
+    }
+  }
 
   /**
    * Runs TestNG with no test name, no groups. All tests in the class will be executed.
@@ -374,25 +409,6 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
     (12:02:27 AM) bvenners: onTestFailedButWithinSuccessPercentage(ITestResult tr)
     (12:02:34 AM) bvenners: maybe a TestSucceeded with some extra info in the report
   */
-
-  /**
-   * Throws <code>UnsupportedOperationException</code>, because this method is unused by this
-   * class, given this class's <code>run</code> method delegates to JUnit to run
-   * its tests.
-   *
-   * <p>
-   * The main purpose of this method implementation is to render a compiler error an attempt
-   * to mix in a trait that overrides <code>withFixture</code>. Because this
-   * trait does not actually use <code>withFixture</code>, the attempt to mix
-   * in behavior would very likely not work.
-   * </p>
-   *
-   *
-   * @param test the no-arg test function to run with a fixture
-   */
-  override final protected def withFixture(test: NoArgTest): Outcome = {
-     throw new UnsupportedOperationException
-  }
 
   /**
    * Throws <code>UnsupportedOperationException</code>, because this method is unused by this

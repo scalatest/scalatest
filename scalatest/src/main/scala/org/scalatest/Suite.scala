@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import java.lang.annotation._
-import java.lang.reflect.{InvocationTargetException, Method, Modifier}
+import java.lang.annotation.AnnotationFormatError
+import java.lang.reflect.{Method, Modifier}
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
@@ -24,33 +24,20 @@ import Suite.formatterForSuiteStarting
 import Suite.formatterForSuiteCompleted
 import Suite.checkChosenStyles
 import Suite.formatterForSuiteAborted
-import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.getSimpleNameOfAnObjectsClass
 import Suite.takesInformer
-import Suite.handleFailedTest
 import Suite.isTestMethodGoodies
-import Suite.testMethodTakesAnInformer
 import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
 import Suite.getEscapedIndentedTextForTest
-import Suite.autoTagClassAnnotations
 import org.scalatest.events._
-import Suite.getMessageForException
-import Suite.reportTestStarting
 import Suite.reportTestIgnored
-import Suite.reportTestSucceeded
-import Suite.reportTestPending
-import Suite.reportTestCanceled
-import Suite.createInfoProvided
-import Suite.createMarkupProvided
 import Suite.wrapReporterIfNecessary
-import scala.reflect.NameTransformer
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions._
+import StackDepthExceptionHelper.getStackDepthFun
 import collection.mutable.ListBuffer
 import collection.GenTraversable
 import annotation.tailrec
-import OutcomeOf.outcomeOf
 import org.scalactic.Prettifier
 import scala.util.control.NonFatal
 import Suite.getTopOfMethod
@@ -60,8 +47,6 @@ import org.scalactic.Requirements._
 import tools.SuiteDiscoveryHelper
 import org.scalatest.tools.StandardOutReporter
 import Suite.getTopOfClass
-import Suite.getSuiteRunTestGoodies
-import Suite.getMethodForTestName
 // SKIP-SCALATESTJS-END
 
 /*
@@ -113,7 +98,7 @@ import Suite.getMethodForTestName
  * included in the output:
  *
  * <pre class="stREPL">
- * scala&gt; new SetSuite execute
+ * scala&gt; org.scalatest.run(new SetSuite)
  * <span class="stGreen">SetSuite:
  * - an element can be added to an empty mutable Set
  *   + Given an empty mutable Set
@@ -378,7 +363,7 @@ import Suite.getMethodForTestName
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ASCIISuite execute
+ * scala&gt; org.scalatest.run(new ASCIISuite)
  * </pre>
  *
  * <p>
@@ -443,23 +428,25 @@ import Suite.getMethodForTestName
  * </p>
  *
  * <a name="errorHandling"></a>
- * <h2>Treatment of <code>java.lang.Error</code>s</h2>
+ * <h2>"Run-aborting" exceptions</h2>
  *
  * <p>
  * The Javadoc documentation for <code>java.lang.Error</code> states:
  * </p>
  *
  * <blockquote>
- * An <code>Error</code> is a subclass of <code>Throwable</code> that indicates serious problems that a reasonable application should not try to catch. Most
+ * An <code>Error</code> is a subclass of <code>Throwable</code> that indicates serious problems that a reasonable application
+ * should not try to catch. Most
  * such errors are abnormal conditions.
  * </blockquote>
  *
  * <p>
- * Because <code>Error</code>s are used to denote serious errors, trait <code>Suite</code> and its subtypes in the ScalaTest API do not always treat a test
- * that completes abruptly with an <code>Error</code> as a test failure, but sometimes as an indication that serious problems
- * have arisen that should cause the run to abort. For example, if a test completes abruptly with an <code>OutOfMemoryError</code>, 
- * it will not be reported as a test failure, but will instead cause the run to abort. Because not everyone uses <code>Error</code>s only to represent serious
- * problems, however, ScalaTest only behaves this way for the following exception types (and their subclasses):
+ * Because <code>Error</code>s are used to denote serious errors, trait <code>Suite</code> and its subtypes in the ScalaTest API
+ * do not always treat a test that completes abruptly with an <code>Error</code> as a test failure, but sometimes as an indication
+ * that serious problems have arisen that should cause the run to abort. For example, if a test completes abruptly with an
+ * <code>OutOfMemoryError</code>, it will not be reported as a test failure, but will instead cause the run to abort. Because not
+ * everyone uses <code>Error</code>s only to represent serious
+ * problems, however, ScalaTest only behaves this way for the following <em>run-aborting</em> exception types (and their subclasses):
  * </p>
  *
  * <ul>
@@ -474,9 +461,10 @@ import Suite.getMethodForTestName
  * </ul>
  *
  * <p>
- * The previous list includes all <code>Error</code>s that exist as part of Java 1.5 API, excluding <code>java.lang.AssertionError</code>. ScalaTest
- * does treat a thrown <code>AssertionError</code> as an indication of a test failure. In addition, any other <code>Error</code> that is not an instance of a
- * type mentioned in the previous list will be caught by the <code>Suite</code> traits in the ScalaTest API and reported as the cause of a test failure. 
+ * The previous list includes all <code>Error</code>s that exist as part of Java 1.5 API, excluding <code>java.lang.AssertionError</code>.
+ * ScalaTest does treat a thrown <code>AssertionError</code> as an indication of a test failure. In addition, any other
+ * <code>Error</code> that is not an instance of a type mentioned in the previous list will be caught by the <code>Suite</code> traits
+ * in the ScalaTest API and reported as the cause of a test failure. 
  * </p>
  *
  * <p>
@@ -542,40 +530,9 @@ import Suite.getMethodForTestName
  *
  * @author Bill Venners
  */
-@Finders(Array("org.scalatest.finders.MethodFinder"))
 trait Suite extends Assertions with Serializable { thisSuite =>
 
-  import Suite.TestMethodPrefix, Suite.InformerInParens, Suite.IgnoreAnnotation
-
-  /**
-   * A test function taking no arguments and returning an <code>Outcome</code>.
-   *
-   * <p>
-   * For more detail and examples, see the relevant section in the 
-   * <a href="FlatSpec.html#withFixtureNoArgTest">documentation for trait <code>fixture.FlatSpec</code></a>.
-   * </p>
-   */
-  protected trait NoArgTest extends (() => Outcome) with TestData {
-
-    /**
-     * Runs the body of the test, returning an <code>Outcome</code>.
-     */
-    def apply(): Outcome
-  }
-
-  // Keep this out of the public until there's a use case demonstrating its need
-  private[scalatest] object NoArgTest {
-    def apply(test: NoArgTest)(f: => Outcome): NoArgTest = {
-      new NoArgTest {
-        def apply(): Outcome = { f }
-        val text: String = test.text
-        val configMap: ConfigMap = test.configMap
-        val scopes: collection.immutable.IndexedSeq[String] = test.scopes
-        val name: String = test.name
-        val tags: Set[String] = test.tags
-      }
-    }
-  }
+  import Suite.InformerInParens
 
   /**
   * An immutable <code>IndexedSeq</code> of this <code>Suite</code> object's nested <code>Suite</code>s. If this <code>Suite</code> contains no nested <code>Suite</code>s,
@@ -605,7 +562,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute
+   * scala&gt; (new ExampleSuite).execute()
    * </pre>
    *
    * <p>
@@ -614,7 +571,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute ("my favorite test")
+   * scala&gt; (new ExampleSuite).execute("my favorite test")
    * </pre>
    *
    * <p>
@@ -622,7 +579,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (testName = "my favorite test")
+   * scala&gt; (new ExampleSuite).execute(testName = "my favorite test")
    * </pre>
    *
    * <p>
@@ -637,7 +594,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (configMap = Map("inputFileName" -> "in.txt")
+   * scala&gt; (new ExampleSuite).execute(configMap = Map("inputFileName" -&gt; "in.txt")
    * </pre>
    *
    * <p>
@@ -650,7 +607,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (color = false)
+   * scala&gt; (new ExampleSuite).execute(color = false)
    * </pre>
    *
    * <p>
@@ -664,7 +621,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (durations = true)
+   * scala&gt; (new ExampleSuite).execute(durations = true)
    * </pre>
    *
    * <p>
@@ -679,7 +636,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (shortstacks = true)
+   * scala&gt; (new ExampleSuite).execute(shortstacks = true)
    * </pre>
    *
    * <p>
@@ -687,7 +644,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (fullstacks = true)
+   * scala&gt; (new ExampleSuite).execute(fullstacks = true)
    * </pre>
    *
    * <p>
@@ -707,7 +664,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new ExampleSuite execute (stats = true)
+   * scala&gt; (new ExampleSuite).execute(stats = true)
    * </pre>
    *
    *
@@ -865,32 +822,35 @@ trait Suite extends Assertions with Serializable { thisSuite =>
   }
 
   /**
-   * Executes this <code>Suite</code>, printing results to the standard output.
+   * <strong>The parameterless <code>execute</code> method has been deprecated and will be removed in a future version
+   * of ScalaTest. Please invoke <code>execute</code> with empty parens instead: <code>execute()</code>.</strong>
    *
    * <p>
-   * This method, which simply invokes the other overloaded form of <code>execute</code> with default parameter values,
-   * is intended for use only as a mini-DSL for the Scala interpreter. It allows you to execute a <code>Suite</code> in the
+   * The original purpose of this method, which simply invokes the other overloaded form of <code>execute</code> with default parameter values,
+   * was to serve as a mini-DSL for the Scala interpreter. It allowed you to execute a <code>Suite</code> in the
    * interpreter with a minimum of finger typing:
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; new SetSpec execute
+   * scala&gt; org.scalatest.run(new SetSpec)
    * <span class="stGreen">An empty Set</span>
    * <span class="stGreen">- should have size 0</span>
    * <span class="stYellow">- should produce NoSuchElementException when head is invoked !!! IGNORED !!!</span>
    * </pre>
    *
    * <p>
-   * If you do ever want to invoke <code>execute</code> outside the Scala interpreter, it is best style to invoke it with
-   * empty parens to indicate it has a side effect, like this:
+   * However it uses postfix notation, which is now behind a language feature import. Thus better to use
+   * the other <code>execute</code> method or <code>org.scalatest.run</code>:
    * </p>
    *
    * <pre class="stREPL">
-   * // Use empty parens form in regular code (outside the Scala interpreter)
    * (new ExampleSuite).execute()
+   * // or
+   * org.scalatest.run(new ExampleSuite)
    * </pre>
    */
-  final def execute { execute() }
+    @deprecated("The parameterless execute method has been deprecated and will be removed in a future version of ScalaTest. Please invoke execute with empty parens instead: execute().")
+   final def execute { execute() }
 
   // SKIP-SCALATESTJS-END
 
@@ -919,25 +879,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </p>
    */
   def tags: Map[String, Set[String]] = Map.empty
-
-  // SKIP-SCALATESTJS-START
-  private[scalatest] def yeOldeTags: Map[String, Set[String]] = {
-    val testNameSet = testNames
-      
-    val testTags = Map() ++ 
-      (for (testName <- testNameSet; if !getTags(testName).isEmpty)
-        yield testName -> (Set() ++ getTags(testName)))
-
-    autoTagClassAnnotations(testTags, this)
-  }
-
-  private def getTags(testName: String) =
-    for {
-      a <- getMethodForTestName(thisSuite, testName).getDeclaredAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
-  // SKIP-SCALATESTJS-END
 
   /**
    * A <code>Set</code> of test names. If this <code>Suite</code> contains no tests, this method returns an empty <code>Set</code>.
@@ -998,38 +939,11 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
 
   /**
-   * Run the passed test function in the context of a fixture established by this method.
-   *
-   * <p>
-   * This method should set up the fixture needed by the tests of the
-   * current suite, invoke the test function, and if needed, perform any clean
-   * up needed after the test completes. Because the <code>NoArgTest</code> function
-   * passed to this method takes no parameters, preparing the fixture will require
-   * side effects, such as reassigning instance <code>var</code>s in this <code>Suite</code> or initializing
-   * a globally accessible external database. If you want to avoid reassigning instance <code>var</code>s
-   * you can use <a href="fixture/Suite.html">fixture.Suite</a>.
-   * </p>
-   *
-   * <p>
-   * This trait's implementation of <code>runTest</code> invokes this method for each test, passing
-   * in a <code>NoArgTest</code> whose <code>apply</code> method will execute the code of the test.
-   * </p>
-   *
-   * <p>
-   * This trait's implementation of this method simply invokes the passed <code>NoArgTest</code> function.
-   * </p>
-   *
-   * @param test the no-arg test function to run with a fixture
-   */
-  protected def withFixture(test: NoArgTest): Outcome = {
-    test()
-  }
-
-  /**
    * Run a test.
    *
    * <p>
-   * This trait's implementation returns the <code>Succeeded</code> singleton.
+   * This trait's implementation of this method simply returns <code>SucceededStatus</code> 
+   * and has no other effect.
    * </p>
    *
    * @param testName the name of one test to run.
@@ -1042,88 +956,6 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    */
   protected def runTest(testName: String, args: Args): Status = SucceededStatus
 
-  // SKIP-SCALATESTJS-START
-  private[scalatest] def yeOldeRunTest(testName: String, args: Args): Status = {
-
-    requireNonNull(testName, args)
-    
-    import args._
-
-    val (theStopper, report, method, testStartTime) =
-      getSuiteRunTestGoodies(thisSuite, stopper, reporter, testName)
-
-    reportTestStarting(this, report, tracker, testName, testName, rerunner, Some(getTopOfMethod(thisSuite, testName)))
-
-    val formatter = getEscapedIndentedTextForTest(testName, 1, true)
-
-    val messageRecorderForThisTest = new MessageRecorder(report)
-    val informerForThisTest =
-      MessageRecordingInformer(
-        messageRecorderForThisTest, 
-        (message, payload, isConstructingThread, testWasPending, testWasCanceled, location) => createInfoProvided(thisSuite, report, tracker, Some(testName), message, payload, 2, location, isConstructingThread, true)
-      )
-
-    // TODO: Was using reportInfoProvided here before, to double check with Bill for changing to markup provided.
-    val documenterForThisTest =
-      MessageRecordingDocumenter(
-        messageRecorderForThisTest, 
-        (message, _, isConstructingThread, testWasPending, testWasCanceled, location) => createMarkupProvided(thisSuite, report, tracker, Some(testName), message, 2, location, isConstructingThread) // TODO: Need a test that fails because testWasCanceleed isn't being passed
-      )
-
-    val argsArray: Array[Object] =
-      if (testMethodTakesAnInformer(testName)) {
-        Array(informerForThisTest)  
-      }
-      else Array()
-
-    try {
-      val theConfigMap = configMap
-      val testData = testDataFor(testName, theConfigMap)
-      withFixture(
-        new NoArgTest {
-          val name = testData.name
-          def apply(): Outcome = { outcomeOf { method.invoke(thisSuite, argsArray: _*) } }
-          val configMap = testData.configMap
-          val scopes = testData.scopes
-          val text = testData.text
-          val tags = testData.tags
-        }
-      ).toUnit
-      val duration = System.currentTimeMillis - testStartTime
-      reportTestSucceeded(this, report, tracker, testName, testName, messageRecorderForThisTest.recordedEvents(false, false), duration, formatter, rerunner, Some(getTopOfMethod(thisSuite, method)))
-      SucceededStatus
-    }
-    catch { 
-      case ite: InvocationTargetException =>
-        val t = ite.getTargetException
-        t match {
-          case _: TestPendingException =>
-            val duration = System.currentTimeMillis - testStartTime
-            // testWasPending = true so info's printed out in the finally clause show up yellow
-            reportTestPending(this, report, tracker, testName, testName, messageRecorderForThisTest.recordedEvents(true, false), duration, formatter, Some(getTopOfMethod(thisSuite, method)))
-            SucceededStatus
-          case e: TestCanceledException =>
-            val duration = System.currentTimeMillis - testStartTime
-            val message = getMessageForException(e)
-            val formatter = getEscapedIndentedTextForTest(testName, 1, true)
-            // testWasCanceled = true so info's printed out in the finally clause show up yellow
-            reportTestCanceled(this, report, t, testName, testName, messageRecorderForThisTest.recordedEvents(false, true), rerunner, tracker, duration, formatter, Some(TopOfMethod(thisSuite.getClass.getName, method.toGenericString())))
-            SucceededStatus                 
-          case e if !anExceptionThatShouldCauseAnAbort(e) =>
-            val duration = System.currentTimeMillis - testStartTime
-            handleFailedTest(thisSuite, t, testName, messageRecorderForThisTest.recordedEvents(false, false), report, tracker, getEscapedIndentedTextForTest(testName, 1, true), duration)
-            FailedStatus
-          case e => throw e
-        }
-      case e if !anExceptionThatShouldCauseAnAbort(e) =>
-        val duration = System.currentTimeMillis - testStartTime
-        handleFailedTest(thisSuite, e, testName, messageRecorderForThisTest.recordedEvents(false, false), report, tracker, getEscapedIndentedTextForTest(testName, 1, true), duration)
-        FailedStatus
-      case e: Throwable => throw e  
-    }
-  }
-  // SKIP-SCALATESTJS-END
-  
   /**
    * Run zero to many of this <code>Suite</code>'s tests.
    *
@@ -1550,36 +1382,19 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val tags = Set.empty[String]
     }
   }
-  // SKIP-SCALATESTJS-START
-  private[scalatest] def yeOldeTestDataFor(testName: String, theConfigMap: ConfigMap = ConfigMap.empty): TestData = {
-    val suiteTags = for { 
-      a <- this.getClass.getAnnotations
-      annotationClass = a.annotationType
-      if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
-    } yield annotationClass.getName
-    val testTags: Set[String] = 
-      try {
-        getTags(testName).toSet
-      }
-      catch {
-        case e: IllegalArgumentException => Set.empty[String]
-      }
-    new TestData {
-      val configMap = theConfigMap 
-      val name = testName
-      val scopes = Vector.empty
-      val text = testName
-      val tags = Set.empty ++ suiteTags ++ testTags
-    }
-  }
-  // SKIP-SCALATESTJS-END
 }
 
 private[scalatest] object Suite {
 
-  val TestMethodPrefix = "test"
   val InformerInParens = "(Informer)"
-  val IgnoreAnnotation = "org.scalatest.Ignore"
+  val FixtureAndInformerInParens = "(FixtureParam, Informer)"
+  val FixtureInParens = "(FixtureParam)"
+  val IgnoreTagName = "org.scalatest.Ignore"
+
+  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
+  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
+
+  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 
   def getSimpleNameOfAnObjectsClass(o: AnyRef) = stripDollars(parseSimpleName(o.getClass.getName))
 
@@ -1653,8 +1468,14 @@ private[scalatest] object Suite {
   def formatterForSuiteCompleted(suite: Suite): Option[Formatter] =
       Some(MotionToSuppress)
 
-  def formatterForSuiteAborted(suite: Suite, message: String): Option[Formatter] =
-      Some(IndentedText(message, message, 0))
+  def formatterForSuiteAborted(suite: Suite, message: String): Option[Formatter] = {
+    val actualSuiteName =
+      suite match {
+        case DeferredAbortedSuite(suiteClassName, deferredThrowable) => suiteClassName
+        case _ => suite.getClass.getName
+      }
+    Some(IndentedText(actualSuiteName, message, 0))
+  }
 
 /*
   def simpleNameForTest(testName: String) =
@@ -2242,21 +2063,21 @@ used for test events like succeeded/failed, etc.
         leading.mkString(", ") + ", " + Resources.leftCommaAndRight(trailing(0), trailing(1))
     }
   }
-  
+
   def autoTagClassAnnotations(tags: Map[String, Set[String]], theSuite: Suite) = {
     // SKIP-SCALATESTJS-START
-    val suiteTags = for { 
+    val suiteTags = for {
       a <- theSuite.getClass.getAnnotations
       annotationClass = a.annotationType
       if annotationClass.isAnnotationPresent(classOf[TagAnnotation])
     } yield annotationClass.getName
-    
-    val autoTestTags = 
+
+    val autoTestTags =
       if (suiteTags.size > 0)
         Map() ++ theSuite.testNames.map(tn => (tn, suiteTags.toSet))
       else
         Map.empty[String, Set[String]]
-    
+
     mergeMap[String, Set[String]](List(tags, autoTestTags)) ( _ ++ _ )
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY tags
@@ -2316,9 +2137,6 @@ used for test events like succeeded/failed, etc.
     case cr: CatchReporter => cr
     case _ => theSuite.createCatchReporter(reporter)
   }
-
-  val FixtureAndInformerInParens = "(FixtureParam, Informer)"
-  val FixtureInParens = "(FixtureParam)"
 
   def testMethodTakesAFixtureAndInformer(testName: String) = testName.endsWith(FixtureAndInformerInParens)
   def testMethodTakesAFixture(testName: String) = testName.endsWith(FixtureInParens)
@@ -2382,17 +2200,10 @@ used for test events like succeeded/failed, etc.
    else simpleName + theSuite.nestedSuites.mkString("(", ", ", ")")
   }
 
-  val IgnoreTagName = "org.scalatest.Ignore"
-
   private[scalatest] def mergeMap[A, B](ms: List[Map[A, B]])(f: (B, B) => B): Map[A, B] =
     (Map[A, B]() /: (for (m <- ms; kv <- m) yield kv)) { (a, kv) =>
       a + (if (a.contains(kv._1)) kv._1 -> f(a(kv._1), kv._2) else kv)
     }
-
-  private[scalatest] val SELECTED_TAG = "org.scalatest.Selected"
-  private[scalatest] val CHOSEN_STYLES = "org.scalatest.ChosenStyles"
-
-  @volatile private[scalatest] var testSortingReporterTimeout = Span(2, Seconds)
 }
 
 

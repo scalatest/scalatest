@@ -1450,5 +1450,35 @@ class PropSpecSpec extends org.scalatest.FunSpec {
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
+
+    it("should generate a DuplicateTestNameException when duplicate test name is detected") {
+      class TestSpec extends PropSpec {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        property("test 1") { fixture => }
+        property("test 1") { fixture => }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("PropSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
+
+    it("should generate a DuplicateTestNameException when duplicate test name is detected when use ignore") {
+      class TestSpec extends PropSpec {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        property("test 1") { fixture => }
+        ignore("test 1") { fixture => }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("PropSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
   }
 }

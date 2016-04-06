@@ -33,7 +33,7 @@ import org.scalactic.Resources
  * a <em>postcondition</em>):
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * def nextOdd(i: Int): Int = {
  *   def isOdd(x: Int): Boolean = x.abs % 2 == 1
  *   require(isOdd(i))
@@ -50,7 +50,7 @@ import org.scalactic.Resources
  * This might look like:
  * </p>
  * 
- * <pre>
+ * <pre class="stHighlight">
  * final class OddInt private (val value: Int) extends AnyVal {
  *   override def toString: String = s"OddInt($value)"
  * }
@@ -75,7 +75,7 @@ import org.scalactic.Resources
  * method could, therefore, be rewritten as:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * def nextOdd(oi: OddInt): OddInt = OddInt(oi.value + 2)
  * </pre>
  *
@@ -87,7 +87,7 @@ import org.scalactic.Resources
  * same as before:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * final class OddInt private (val value: Int) extends AnyVal {
  *   override def toString: String = s"OddInt($value)"
  * }
@@ -104,7 +104,7 @@ import org.scalactic.Resources
  * can be processed to deal with the potential for non-odd values.
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * object OddInt {
  *
  *   // The from factory method validates at run time
@@ -124,7 +124,7 @@ import org.scalactic.Resources
  * <code>isValid</code> method implementation and the text of the error messages.
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * import org.scalactic.anyvals.CompileTimeAssertions
  * import reflect.macros.Context
  *

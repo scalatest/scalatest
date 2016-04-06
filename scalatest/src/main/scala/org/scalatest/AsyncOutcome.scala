@@ -12,7 +12,8 @@ private[scalatest] trait AsyncOutcome {
   // SKIP-SCALATESTJS-START
   def toOutcome: Outcome // may block
   // SKIP-SCALATESTJS-END
-  def toFutureOutcome: Future[Outcome]
+  def toInternalFutureOutcome: Future[Outcome]
+  def toFutureOutcome: FutureOutcome
 }
 
 private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
@@ -28,10 +29,11 @@ private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
   // SKIP-SCALATESTJS-START
   def toOutcome: Outcome = past
   // SKIP-SCALATESTJS-END
-  def toFutureOutcome: Future[Outcome] = Future.successful(past)
+  def toInternalFutureOutcome: Future[Outcome] = Future.successful(past)
+  def toFutureOutcome: FutureOutcome = FutureOutcome { Future.successful(past) }
 }
 
-private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
+private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(implicit ctx: ExecutionContext) extends AsyncOutcome {
 
   private final val queue = new ConcurrentLinkedQueue[Try[Outcome] => Unit]
   private final val status = new ScalaTestStatefulStatus
@@ -45,7 +47,7 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
     case Failure(ex) =>
       for (f <- queue.iterator)
         f(Failure(ex))
-      status.setFailed()
+      status.setFailedWith(ex)
       status.setCompleted()
   } /* fills in ctx here */
 
@@ -68,5 +70,6 @@ private[scalatest] case class FutureOutcome(future: Future[Outcome])(implicit ct
   // SKIP-SCALATESTJS-START
   def toOutcome: Outcome = Await.result(future, Duration.Inf)
   // SKIP-SCALATESTJS-END
-  def toFutureOutcome: Future[Outcome] = future
+  def toInternalFutureOutcome: Future[Outcome] = future
+  def toFutureOutcome: FutureOutcome = FutureOutcome { future }
 }

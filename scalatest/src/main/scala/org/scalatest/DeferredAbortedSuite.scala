@@ -15,9 +15,11 @@
  */
 package org.scalatest
 
-private[scalatest] class DeferredAbortedSuite(t: Throwable) extends Suite {
+private[scalatest] case class DeferredAbortedSuite(suiteClassName: String, t: Throwable) extends Suite {
 
   override def run(testName: Option[String], args: Args): Status = {
     throw t
   }
+
+  override def suiteName: String = Suite.stripDollars(Suite.parseSimpleName(suiteClassName))
 }

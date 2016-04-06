@@ -48,20 +48,7 @@ import scala.concurrent.Future
  */
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
 @Finders(Array("org.scalatest.finders.FlatSpecFinder"))
-trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb { thisSuite =>
-
-  override private[scalatest] def transformToOutcome(testFun: => Future[Assertion]): () => AsyncOutcome =
-    () => {
-      val futureAssertion = testFun
-      FutureOutcome(
-        futureAssertion.recover {
-          case ex: exceptions.TestCanceledException => Canceled(ex)
-          case _: exceptions.TestPendingException => Pending
-          case tfe: exceptions.TestFailedException => Failed(tfe)
-          case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) => Failed(ex)
-        }
-      )
-    }
+trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with ShouldVerb with MustVerb with CanVerb with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private[scalatest] def transformPendingToOutcome(testFun: () => PendingStatement): () => AsyncOutcome =
     () => {
@@ -80,20 +67,62 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
 
   import engine._
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  /**
+   * Returns an <code>Informer</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
+   * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
+   * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
+   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
+   * This method can be called safely by any thread.
+   */
+  protected def info: Informer = atomicInformer.get
+
+  /**
+   * Returns a <code>Notifier</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked while this
+   * <code>FlatSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * the current reporter immediately. If invoked at any other time, it will
+   * print to the standard output. This method can be called safely by any thread.
+   */
+  protected def note: Notifier = atomicNotifier.get
+
+  /**
+   * Returns an <code>Alerter</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked while this
+   * <code>FlatSpec</code> is being executed, such as from inside a test function, it will forward the information to
+   * the current reporter immediately. If invoked at any other time, it will
+   * print to the standard output. This method can be called safely by any thread.
+   */
+  protected def alert: Alerter = atomicAlerter.get
+
+  /**
+   * Returns a <code>Documenter</code> that during test execution will forward strings passed to its
+   * <code>apply</code> method to the current reporter. If invoked in a constructor, it
+   * will register the passed string for forwarding later during test execution. If invoked from inside a scope,
+   * it will forward the information to the current reporter immediately.  If invoked from inside a test function,
+   * it will record the information and forward it to the current reporter only after the test completed, as <code>recordedEvents</code>
+   * of the test completed event, such as <code>TestSucceeded</code>. If invoked at any other time, it will print to the standard output.
+   * This method can be called safely by any thread.
+   */
+  protected def markup: Documenter = atomicDocumenter.get
+
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Future[Assertion]) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -115,7 +144,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[Assertion]) {
+  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -123,13 +152,13 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
 
-    def transformToOutcomeParam: Future[Assertion] = testFun()
+    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement) {
@@ -139,7 +168,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, "FlatSpecRegistering.scala", methodName, 4, -3, None, None, testTags: _*)
+    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, 4, -3, None, None, testTags: _*)
   }
 
   /**
@@ -265,7 +294,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)
     }
 
@@ -309,7 +338,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[Assertion]) {
+    def ignore(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)
     }
   }
@@ -377,7 +406,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)
     }
 
@@ -419,7 +448,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[Assertion]) {
+    def ignore(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)
     }
 
@@ -671,7 +700,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _)
     }
 
@@ -768,7 +797,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _)
     }
 
@@ -980,7 +1009,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)
     }
 
@@ -1024,7 +1053,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[Assertion]) {
+    def ignore(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)
     }
   }
@@ -1092,7 +1121,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)
     }
 
@@ -1134,7 +1163,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[Assertion]) {
+    def ignore(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)
     }
 
@@ -1393,7 +1422,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _)
     }
 
@@ -1414,7 +1443,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[Assertion]) {
+    def ignore(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _)
     }
   }
@@ -1491,7 +1520,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[Assertion]) {
+    def in(testFun: => Future[compatible.Assertion]) {
       registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _)
     }
 
@@ -1514,7 +1543,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[Assertion]) {
+    def ignore(testFun: => Future[compatible.Assertion]) {
       registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _)
     }
   }
@@ -1628,15 +1657,15 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[Assertion]) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion]) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    def transformToOutcomeParam: Future[Assertion] = testFun()
-    engine.registerIgnoredTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
+    engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement) {
@@ -1646,7 +1675,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 
   /**
@@ -1684,21 +1713,21 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
     def invokeWithAsyncFixture(theTest: TestLeaf): AsyncOutcome = {
       val theConfigMap = args.configMap
       val testData = testDataFor(testName, theConfigMap)
-      FutureOutcome(
-        withAsyncFixture(
+      InternalFutureOutcome(
+        withFixture(
           new NoArgAsyncTest {
             val name = testData.name
-            def apply(): Future[Outcome] = { theTest.testFun().toFutureOutcome }
+            def apply(): FutureOutcome = { theTest.testFun().toFutureOutcome }
             val configMap = testData.configMap
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
           }
-        )
+        ).underlying
       )
     }
 
-    runTestImpl(thisSuite, testName, args, true, invokeWithAsyncFixture)
+    runTestImpl(thisSuite, testName, args, true, parallelAsyncTestExecution, invokeWithAsyncFixture)
   }
 
   /**
@@ -1802,7 +1831,7 @@ trait AsyncFlatSpecLike extends AsyncSuite with AsyncTestRegistration with Shoul
 
   override def run(testName: Option[String], args: Args): Status = {
 
-    runImpl(thisSuite, testName, args, super.run)
+    runImpl(thisSuite, testName, args, parallelAsyncTestExecution, super.run)
   }
 
   /**

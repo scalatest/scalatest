@@ -143,7 +143,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  * 
  * <pre class="stREPL">
- * scala&gt; new StackSpec execute
+ * scala&gt; org.scalatest.run(new StackSpec)
  * <span class="stGreen">StackSpec:
  * A Stack
  *   when empty
@@ -216,7 +216,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  * 
  * <pre class="stREPL">
- * scala> new AndOrSpec execute
+ * scala&gt; org.scalatest.run(new AndOrSpec)
  * <span class="stGreen">AndOrSpec:
  * The ScalaTest Matchers DSL
  *   should provide an and operator, which
@@ -274,7 +274,7 @@ import Suite.autoTagClassAnnotations
  *  </p>
  * 
  * <pre class="stREPL">
- * scala&gt; new AndOrSpec execute
+ * scala&gt; org.scalatest.run(new AndOrSpec)
  * <span class="stGreen">AndOrSpec:
  * The ScalaTest Matchers DSL
  *   should provide
@@ -325,7 +325,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ScalaTestGUISpec execute
+ * scala&gt; org.scalatest.run(new ScalaTestGUISpec)
  * <span class="stGreen">ScalaTestGUISpec:
  * The ScalaTest GUI
  *   when the user clicks on an event report in the list box
@@ -374,6 +374,7 @@ import Suite.autoTagClassAnnotations
  *
  * <a name="ignoredTests"></a><h2>Ignored tests</h2>
  *
+ * <p>
  * To support the common use case of temporarily disabling a test, with the
  * good intention of resurrecting the test at a later time, <code>WordSpec</code> adds a method
  * <code>ignore</code> to strings that can be used instead of <code>in</code> to register a test. For example, to temporarily
@@ -409,7 +410,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -459,7 +460,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A Set
  *   when empty</span>
@@ -473,7 +474,6 @@ import Suite.autoTagClassAnnotations
  * class visible, to encourage the developers to eventually fix and &ldquo;un-ignore&rdquo; it. If you want to
  * prevent a class from being discovered at all (on the JVM, not Scala.js), use the <a href="DoNotDiscover.html"><code>DoNotDiscover</code></a> annotation instead.
  * </p>
- *
  *
  * <a name="informers"></a><h2>Informers</h2>
  *
@@ -529,7 +529,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">A mutable Set
  * - should allow an element to be added
  *   + Given an empty mutable Set 
@@ -662,7 +662,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * <span class="stGreen">SetSpec:
  * A mutable Set
  *   + notes are sent immediately</span>
@@ -671,6 +671,13 @@ import Suite.autoTagClassAnnotations
  *   + info is recorded
  *   + markup is *also* recorded</span>
  * </pre>
+ *
+ * <p>
+ * Another example is <a href="tools/Runner$.html#slowpokeNotifications">slowpoke notifications</a>.
+ * If you find a test is taking a long time to complete, but you're not sure which test, you can enable 
+ * slowpoke notifications. ScalaTest will use an <code>Alerter</code> to fire an event whenever a test has been running
+ * longer than a specified amount of time.
+ * </p>
  *
  * <p>
  * In summary, use <code>info</code> and <code>markup</code> for text that should form part of the specification output. Use
@@ -731,7 +738,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SetSpec execute
+ * scala&gt; org.scalatest.run(new SetSpec)
  * </pre>
  *
  * <p>
@@ -815,7 +822,7 @@ import Suite.autoTagClassAnnotations
  * </pre>
  *
  * <p>
- * Given these definitions, you could place <code>WordSpec</code> tests into groups like this:
+ * Given these definitions, you could place <code>WordSpec</code> tests into groups with tags like this:
  * </p>
  *
  * <pre class="stHighlight">
@@ -857,9 +864,10 @@ import Suite.autoTagClassAnnotations
  *
  * <p>
  * It is recommended, though not required, that you create a corresponding tag annotation when you
- * create a <code>Tag</code> object. A tag annotation allows you to tag all the tests of a <code>WordSpec</code> in
+ * create a <code>Tag</code> object. A tag annotation (on the JVM, not Scala.js) allows you to tag all the tests of a <code>WordSpec</code> in
  * one stroke by annotating the class. For more information and examples, see the
- * <a href="Tag.html">documentation for class <code>Tag</code></a>.
+ * <a href="Tag.html">documentation for class <code>Tag</code></a>. On Scala.js, to tag all tests of a suite, you'll need to
+ * tag each test individually at the test site.
  * </p>
  *
  * <a name="sharedFixtures"></a>
@@ -946,11 +954,11 @@ import Suite.autoTagClassAnnotations
  *     transform the outcome of tests, retry tests, make decisions based on test names, tags, or other test data.
  *     Use this technique unless:
  *     </p>
- *  <ul>
- *  <li>Different tests need different fixtures (refactor using Scala instead)</li>
- *  <li>An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</li>
- *  <li>You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</li>
- *  </ul>
+ *  <dl>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">Different tests need different fixtures (refactor using Scala instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">An exception in fixture code should abort the suite, not fail the test (use a <em>before-and-after</em> trait instead)</dd>
+ *  <dd style="display: list-item; list-style-type: disc; margin-left: 1.2em;">You have objects to pass into tests (override <code>withFixture(<em>One</em>ArgTest)</code> instead)</dd>
+ *  </dl>
  *  </td>
  * </tr>
  *
@@ -1193,7 +1201,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSuite execute
+ * scala&gt; org.scalatest.run(new ExampleSuite)
  * <span class="stGreen">ExampleSuite:
  * This test
  * - should succeed</span>
@@ -1436,7 +1444,7 @@ import Suite.autoTagClassAnnotations
  * Note that the only way <code>before</code> and <code>after</code> code can communicate with test code is via some side-effecting mechanism, commonly by
  * reassigning instance <code>var</code>s or by changing the state of mutable objects held from instance <code>val</code>s (as in this example). If using
  * instance <code>var</code>s or mutable objects held from instance <code>val</code>s you wouldn't be able to run tests in parallel in the same instance
- * of the test class unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
+ * of the test class (on the JVM, not Scala.js) unless you synchronized access to the shared, mutable state. This is why ScalaTest's <code>ParallelTestExecution</code> trait extends
  * <a href="OneInstancePerTest.html"><code>OneInstancePerTest</code></a>. By running each test in its own instance of the class, each test has its own copy of the instance variables, so you
  * don't need to synchronize. If you mixed <code>ParallelTestExecution</code> into the <code>ExampleSuite</code> above, the tests would run in parallel just fine
  * without any synchronization needed on the mutable <code>StringBuilder</code> and <code>ListBuffer[String]</code> objects.
@@ -1466,7 +1474,7 @@ import Suite.autoTagClassAnnotations
  * import org.scalatest._
  * import collection.mutable.ListBuffer
  * 
- * trait Builder extends SuiteMixin { this: Suite =&gt;
+ * trait Builder extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val builder = new StringBuilder
  * 
@@ -1477,7 +1485,7 @@ import Suite.autoTagClassAnnotations
  *   }
  * }
  * 
- * trait Buffer extends SuiteMixin { this: Suite =&gt;
+ * trait Buffer extends TestSuiteMixin { this: TestSuite =&gt;
  * 
  *   val buffer = new ListBuffer[String]
  * 
@@ -1515,7 +1523,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stHighlight">
- * class Example2Suite extends Suite with Buffer with Builder
+ * class Example2Spec extends WordSpec with Buffer with Builder
  * </pre>
  *
  * <p>
@@ -1523,7 +1531,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stHighlight">
- * class Example3Suite extends Suite with Builder
+ * class Example3Spec extends WordSpec with Builder
  * </pre>
  *
  * <p>
@@ -1819,7 +1827,7 @@ import Suite.autoTagClassAnnotations
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new SharedTestExampleSpec execute
+ * scala&gt; org.scalatest.run(new SharedTestExampleSpec)
  * <span class="stGreen">SharedTestExampleSpec:
  * A Stack
  *   when empty

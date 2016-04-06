@@ -88,7 +88,7 @@ class ExampleScopePendingSuite extends Suite with ScopePendingFixtureServices {
 }
 
 @DoNotDiscover
-class ExampleScopePendingFixtureSuite extends fixture.Suite with ScopePendingFixtureServices with StringFixture {
+class ExampleScopePendingFixtureSuite extends fixture.TestSuite with ScopePendingFixtureServices with StringFixture {
   override val supportScope = false
 }
 

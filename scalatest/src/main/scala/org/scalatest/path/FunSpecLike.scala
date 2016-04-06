@@ -374,16 +374,19 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val errorStackDepth = 4
+    val duplicateErrorStackDepth = 2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val errorStackDepth = 11
+    //SCALATESTJS-ONLY val duplicateErrorStackDepth = 10
     try {
       handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None)
     }
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
       case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description), Some(other), e => errorStackDepth)
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => errorStackDepth)
       case other: Throwable => throw other
     }
   }
@@ -407,19 +410,6 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * </p>
    */
   protected val behave = new BehaveWord
-
-  /**
-   * This lifecycle method is unused by this trait, and will complete abruptly with
-   * <code>UnsupportedOperationException</code> if invoked.
-   *
-   * <p>
-   * This trait's implementation of this method is  marked as final. For insight onto why, see the
-   * <a href="#sharedFixtures">Shared fixtures</a> section in the main documentation for this trait.
-   * </p>
-   */
-  final override def withFixture(test: NoArgTest): Outcome = {
-    throw new UnsupportedOperationException
-  }
 
   /**
    * An immutable <code>Set</code> of test names. If this <code>FunSpec</code> contains no tests, this method returns an

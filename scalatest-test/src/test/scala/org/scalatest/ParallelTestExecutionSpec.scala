@@ -25,9 +25,6 @@ import org.scalatest.events.SuiteStarting
 import org.scalatest.events.SuiteCompleted
 import org.scalatest.events.InfoProvided
 import java.util.concurrent.Future
-// SKIP-SCALATESTJS-START
-import java.util.concurrent.LinkedBlockingQueue
-// SKIP-SCALATESTJS-END
 import org.scalatest.time.Span
 import org.scalatest.time.Second
 import org.scalatest.time.Seconds
@@ -86,7 +83,7 @@ class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
 
     // SKIP-SCALATESTJS-START
     class ControlledOrderConcurrentDistributor(poolSize: Int) extends Distributor {
-      private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]
+      private val futureQueue = new java.util.concurrent.LinkedBlockingQueue[Future[T] forSome { type T }]
       
       val buf = ListBuffer.empty[SuiteRunner]
       val execSvc: ExecutorService = Executors.newFixedThreadPool(2)

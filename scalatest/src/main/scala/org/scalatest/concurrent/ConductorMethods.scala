@@ -33,10 +33,10 @@ import org.scalatest.OutcomeOf.outcomeOf
  * <pre class="stHighlight">
  * import org.scalatest.FunSuite
  * import org.scalatest.concurrent.ConductorMethods
- * import org.scalatest.matchers.ShouldMatchers
+ * import org.scalatest.matchers.Matchers
  * import java.util.concurrent.ArrayBlockingQueue
  *
- * class ArrayBlockingQueueSuite extends FunSuite with ConductorMethods with ShouldMatchers {
+ * class ArrayBlockingQueueSuite extends FunSuite with ConductorMethods with Matchers {
  * 
  *   test("calling put on a full queue blocks the producer thread") {
  *
@@ -89,7 +89,7 @@ import org.scalatest.OutcomeOf.outcomeOf
  * @author Josh Cough
  * @author Bill Venners
  */
-trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
+trait ConductorMethods extends TestSuiteMixin with Conductors { this: TestSuite =>
 
   private val conductor = new AtomicReference[Conductor]()
 
@@ -100,7 +100,13 @@ trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
    * all threads are up and ready to go.
    * @param f the function to be executed by the thread
    */
-  protected def thread(f: => Unit): Thread = conductor.get.thread{ f }
+  protected def thread(f: => Any): Thread = conductor.get.thread{ f }
+
+  /**
+   * <strong>The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.</strong>
+   */
+  @deprecated("The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.")
+  protected def thread(name: String)(f: => Any): Thread = conductor.get.thread(name){ f }
 
   /**
    * Create a new thread that will execute the given function.
@@ -111,8 +117,6 @@ trait ConductorMethods extends SuiteMixin with Conductors { this: Suite =>
    * @param f the function to be executed by the thread
    */
   protected def threadNamed(name: String)(f: => Unit): Thread = conductor.get.threadNamed(name){ f }
-
-  // protected def thread(name: String)(f: => Unit): Thread = conductor.get.thread(name){ f }
 
   /*
    * Create a new thread that will execute the given Runnable

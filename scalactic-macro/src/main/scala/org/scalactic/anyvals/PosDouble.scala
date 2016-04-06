@@ -40,7 +40,7 @@ import scala.collection.immutable.NumericRange
  * compile time. Here's an example:
  * </p>
  * 
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; import anyvals._
  * import anyvals._
  *
@@ -63,7 +63,7 @@ import scala.collection.immutable.NumericRange
  * method, <code>PosDouble.from</code>, instead:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; val x = 1.0
  * x: Double = 1.0
  *
@@ -82,7 +82,7 @@ import scala.collection.immutable.NumericRange
  * <code>None</code>.  Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; PosDouble.from(x)
  * res4: Option[org.scalactic.anyvals.PosDouble] = Some(PosDouble(1.0))
  *
@@ -101,7 +101,7 @@ import scala.collection.immutable.NumericRange
  * <code>PosDouble.apply</code> explicitly. Here's an example:
  * </p>
  *
- * <pre>
+ * <pre class="stREPL">
  * scala&gt; def invert(pos: PosDouble): Double = Double.MaxValue - pos
  * invert: (pos: org.scalactic.anyvals.PosDouble)Double
  *

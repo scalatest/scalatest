@@ -20,6 +20,11 @@ import events.InfoProvided
 import org.scalatest.events.LineInFile
 import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf
+import events.Ordinal
+import scala.concurrent.Future
+// SKIP-SCALATESTJS-START
+import concurrent.Eventually._
+// SKIP-SCALATESTJS-END
 
 class AsyncEngineSpec extends FlatSpec with Matchers {
 
@@ -84,18 +89,18 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
       val list = ListBuffer[Int]() 
       engine.registerNestedBranch("when 1 is inserted", None, {
         list += 1 
-        engine.registerTest("then the list has only 1 in it", () => {
+        engine.registerAsyncTest("then the list has only 1 in it", () => {
           list should be (ListBuffer(1)) 
           list.clear()
           PastOutcome(Succeeded)
         }, "Anything", "Anything", "Anything", 1, 0, None, None)
-        engine.registerTest("then the list length = 1", () => {
+        engine.registerAsyncTest("then the list length = 1", () => {
           PastOutcome(outcomeOf { list.length should be (1) })
         }, "Anything", "Anything", "Anything", 1, 0, None, None)
       }, "Anything", "Anything", "Anything", 1, 0, None)
       engine.registerNestedBranch("when 2 is inserted", None, {
         list += 2
-        engine.registerTest("then the list has only 2 in it", () => {
+        engine.registerAsyncTest("then the list has only 2 in it", () => {
           PastOutcome(outcomeOf { list should be (ListBuffer(2)) })
         }, "Anything", "Anything", "Anything", 1, 0, None, None)
       }, "Anything", "Anything", "Anything", 1, 0, None)
@@ -116,4 +121,48 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     engine.testPath("Given an empty list when 1 is inserted then the list length = 1") should be (List(0, 0, 1))
     engine.testPath("Given an empty list when 2 is inserted then the list has only 2 in it") should be (List(0, 1, 0))
   }
+
+  // SKIP-SCALATESTJS-START
+  "AsyncEngine" should "abort a suite if an exception that should cause an abort is thrown in a test" in {
+    val ex = new OutOfMemoryError("I meant to do that!")
+    class MySpec extends AsyncFunSuite {
+      test("should abort the suite") {
+        Future.failed(ex)
+      }
+    }
+    val s = new MySpec
+    val myReporter = new EventRecordingReporter
+    val status = s.run(None, Args(myReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    myReporter.suiteCompletedEventsReceived should have size 0
+    eventually { status.unreportedException shouldBe defined }
+  // SKIP-SCALATESTJS-END
+    
+/*
+    // THings like OutOfMemoryError in a test didn't cause a suite abort, it killed the thread all the
+    // way back up. Suite aborts were caused by before or after code that died. Now we have a new problem
+    // in async of what do we do when a test dies with OutOfMemoryError. Can't just propagate it back.
+    // Unless there's someplace we can throw it, maybe have to report SuiteAborted. 
+    class SuiteThatAborts extends AsyncFunSuite {
+      // SKIP-SCALATESTJS-START
+      implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+      // SKIP-SCALATESTJS-END
+      //SCALATESTJS-ONLY implicit def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
+      test("should abort this suite") {
+        Future.failed(ex)
+      }
+    }
+
+    class MyFunSuite extends FunSuite {
+      override def nestedSuites = Vector(new SuiteThatAborts {})
+    }
+
+    val myFunSuite = new MyFunSuite
+    val mySecondReporter = new SuiteDurationReporter
+    myFunSuite.run(None, Args(mySecondReporter, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker(new Ordinal(99)), Set.empty))
+    eventually { assert(mySecondReporter.suiteAbortedWasFiredAndHadADuration) }
+*/
+  // SKIP-SCALATESTJS-START
+  }
+  // SKIP-SCALATESTJS-END
+
 }

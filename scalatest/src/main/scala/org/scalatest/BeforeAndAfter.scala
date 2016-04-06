@@ -190,39 +190,40 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
   */
   abstract protected override def runTest(testName: String, args: Args): Status = {
 
+    // Do I need to make this volatile?
     var thrownException: Option[Throwable] = None
-
-    beforeFunctionAtomic.get match {
-      case Some(fun) => if (!args.runTestInNewInstance) fun()
-      case None =>
-    }
 
     val runTestStatus: Status =
       try {
+        beforeFunctionAtomic.get match {
+          case Some(fun) => if (!args.runTestInNewInstance) fun()
+          case None =>
+        }
         super.runTest(testName, args)
       }
       catch {
         case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
           thrownException = Some(e)
-          FailedStatus
+          FailedStatus // I think if this happens, we just want to try the after code, swallowing exceptions, right here. No
+                       // need to do it asynchronously. I suspect that would simplify the code.
       }
     // And if the exception should cause an abort, abort the afterAll too. (TODO: Update the Scaladoc.)
     try {
       val statusToReturn: Status =
         if (!args.runTestInNewInstance) {
+          // Make sure that afterEach is called even if runTest completes abruptly.
           runTestStatus withAfterEffect {
             try {
               afterFunctionAtomic.get match {
                 case Some(fun) => fun()
                 case None =>
               }
-              None
             }
-            catch { 
-              case e: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(e) =>
-                Some(e)
+            catch {
+              case ex: Throwable if !Suite.anExceptionThatShouldCauseAnAbort(ex) && thrownException.isDefined =>
+                // We will swallow the exception thrown from after if it is not test-aborting and exception was already thrown by before or test itself.
             }
-          } // Make sure that afterEach is called even if runTest completes abruptly.
+          }
         }
         else
           runTestStatus
@@ -234,7 +235,7 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
     }
     catch {
       case laterException: Exception =>
-        thrownException match { // If both run and afterAll throw an exception, report the test exception
+        thrownException match { // If both run and after throw an exception, report the test exception
           case Some(earlierException) => throw earlierException
           case None => throw laterException
         }

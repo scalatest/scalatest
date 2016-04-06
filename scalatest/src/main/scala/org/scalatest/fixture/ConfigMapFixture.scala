@@ -26,12 +26,12 @@ import org.scalatest._
  * are defined keys in the config map:
  * </p>
  *
- * <pre>
+ * <pre class="stHighlight">
  * package org.scalatest.examples.fixture.configmapfixture
  * 
  * import org.scalatest._
  * 
- * class ExampleSpec extends fixture.FlatSpec with fixture.ConfigMapFixture with ShouldMatchers {
+ * class ExampleSpec extends fixture.FlatSpec with fixture.ConfigMapFixture with Matchers {
  * 
  *   "The config map" should "contain hello" in { configMap =&gt;
  *     // Use the configMap passed to runTest in the test
@@ -50,7 +50,7 @@ import org.scalatest._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute
+ * scala&gt; org.scalatest.run(new ExampleSpec)
  * <span class="stGreen">ExampleSpec:
  * The config map</span>
  * <span class="stRed">- should contain hello *** FAILED ***
@@ -65,7 +65,7 @@ import org.scalatest._
  * </p>
  *
  * <pre class="stREPL">
- * scala&gt; new ExampleSpec execute (configMap = Map("hello" -&gt; "hi", "world" -&gt; "globe"))
+ * scala&gt; org.scalatest.run(new ExampleSpec, configMap = Map("hello" -&gt; "hi", "world" -&gt; "globe"))
  * <span class="stGreen">ExampleSpec:
  * The config map
  * - should contain hello
@@ -74,7 +74,7 @@ import org.scalatest._
  * 
  * @author Bill Venners
  */
-trait ConfigMapFixture { this: fixture.Suite =>
+trait ConfigMapFixture { this: fixture.TestSuite =>
 
   /**
    * The type of the <code>configMap</code>, which is <code>ConfigMap</code>.

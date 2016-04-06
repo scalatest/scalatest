@@ -40,7 +40,7 @@ import Suite.autoTagClassAnnotations
  */
 @Finders(Array("org.scalatest.finders.PropSpecFinder"))
 //SCALATESTJS-ONLY @scala.scalajs.js.annotation.JSExportDescendentClasses(ignoreInvalidDescendants = true)
-trait PropSpecLike extends Suite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
+trait PropSpecLike extends TestSuite with TestRegistration with Informing with Notifying with Alerting with Documenting { thisSuite =>
 
   private final val engine = new Engine(Resources.concurrentPropSpecMod, "PropSpec")
   import engine._
@@ -123,7 +123,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
     engine.registerTest(testName, Transformer(testFun _), Resources.propertyCannotAppearInsideAnotherProperty, "PropSpecLike.scala", "property", stackDepth, stackDepthAdjustment, None, None, None, testTags: _*)
   }
 
@@ -148,7 +148,7 @@ trait PropSpecLike extends Suite with TestRegistration with Informing with Notif
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
+    //SCALATESTJS-ONLY val stackDepthAdjustment = -7
     engine.registerIgnoredTest(testName, Transformer(testFun _), Resources.ignoreCannotAppearInsideAProperty, "PropSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, testTags: _*)
   }
 

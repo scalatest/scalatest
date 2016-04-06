@@ -1927,5 +1927,21 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("Test cannot be nested inside another test."))
     }
+
+    it("should generate a DuplicateTestNameException is detected") {
+      class TestSpec extends FlatSpec {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        behavior of "a feature"
+        it should "test 1" in { fixture => }
+        it should "test 1" in { fixture => }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("FlatSpecSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
   }
 }

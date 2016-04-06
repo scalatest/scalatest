@@ -15,10 +15,9 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.SuiteMixin
-import org.scalatest.Suite
-import Timeouts._
-import org.scalatest.exceptions.ModifiableMessage
+import org.scalatest.TestSuiteMixin
+import org.scalatest.TestSuite
+import TimeLimits._
 import org.scalatest.Resources
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TimeoutField
@@ -122,7 +121,7 @@ import org.scalatest.Exceptional
  * to run.
  * </p>
  */
-trait TimeLimitedTests extends SuiteMixin { this: Suite =>
+trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
 
   /**
    * A stackable implementation of <code>withFixture</code> that wraps a call to <code>super.withFixture</code> in a 
@@ -134,7 +133,7 @@ trait TimeLimitedTests extends SuiteMixin { this: Suite =>
     try {
       failAfter(timeLimit) {
         super.withFixture(test)
-      } (defaultTestInterruptor)
+      } (defaultTestSignaler)
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => 
@@ -151,16 +150,16 @@ trait TimeLimitedTests extends SuiteMixin { this: Suite =>
   def timeLimit: Span
   
   /**
-   * The default <a href="Interruptor.html"><code>Interruptor</code></a> strategy used to interrupt tests that exceed their time limit.
+   * The default <a href="Signaler.html"><code>Signaler</code></a> strategy used to interrupt tests that exceed their time limit.
    * 
    * <p>
-   * This trait's implementation of this method returns <a href="ThreadInterruptor$.html"><code>ThreadInterruptor</code></a>, which invokes <code>interrupt</code>
-   * on the main test thread. Override this method to change the test interruption strategy.
+   * This trait's implementation of this method returns <a href="DoNotSignal$.html"><code>DoNotSignal</code></a>, which does not signal/interrupt
+   * the main test and future thread. Override this method to change the test signaling strategy.
    * </p>
    * 
    * @return a <code>ThreadInterruptor</code>
    */
-  val defaultTestInterruptor: Interruptor = ThreadInterruptor
+  val defaultTestSignaler: Signaler = DoNotSignal
 }
 
 /*

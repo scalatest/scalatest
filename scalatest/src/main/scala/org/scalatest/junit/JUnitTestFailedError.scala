@@ -42,9 +42,7 @@ import org.scalactic.exceptions.NullArgumentException
  * exception, that is considered an <em>error</em> in JUnit. This class differs from
  * <a href="../exceptions/TestFailedException.html"><code>TestFailedException</code></a> in that it extends
  * <code>junit.framework.AssertionFailedError</code>. Instances of this class are thrown by the
- * assertions provided by <a href="AssertionsForJUnit.html"><code>AssertionsForJUnit</code></a>, and matcher
- * expressions provided by <a href="ShouldMatchersForJUnit.html"><code>ShouldMatchersForJUnit</code></a>, and
- * <a href="MustMatchersForJUnit.html"><code>MustMatchersForJUnit</code></a>.
+ * assertions provided by <a href="AssertionsForJUnit.html"><code>AssertionsForJUnit</code></a>.
  * </p>
  *
  * <p>
@@ -55,7 +53,7 @@ import org.scalactic.exceptions.NullArgumentException
  * and <code>fail</code>) was, therefore, <code>AssertionFailedError</code>. In JUnit 4, <code>AssertionFailedError</code>
  * was made to extend <code>java.lang.AssertionError</code>, and the distinction between failures and errors
  * was essentially dropped. However, some tools that integrate with JUnit carry on this distinction, so even
- * if you are using JUnit 4 you may want to use the "<code>ForJUnit</code>" of ScalaTest assertions and matchers.
+ * if you are using JUnit 4 you may want to use <code>AssertionsForJUnit</code>.
  * </p>
  *
  * @param message an optional detail message for this <code>TestFailedException</code>.

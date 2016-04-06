@@ -79,7 +79,7 @@ object GenExamplesJS {
   }
 
   def genScala(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    copyDir("examples/src/main/scala", "", targetDir,
+    copyDir("examples/src/test/scala", "", targetDir,
       List(
         "refspec",
         "selenium",

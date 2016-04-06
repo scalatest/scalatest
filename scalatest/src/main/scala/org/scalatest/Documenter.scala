@@ -131,7 +131,7 @@ package org.scalatest
  * 
  * @author Bill Venners
  */
-trait Documenter extends (String => Unit) {
+trait Documenter {
 
   /**
    * Provide documentation to the <code>Reporter</code>.
@@ -141,5 +141,5 @@ trait Documenter extends (String => Unit) {
    *
    * @throws NullArgumentException if <code>message</code> reference is <code>null</code>
    */
-  def apply(text: String): Unit
+  def apply(text: String): Provided
 }

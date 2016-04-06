@@ -1453,6 +1453,36 @@ class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
       assert(trce.failedCodeLineNumber.get === thisLineNumber - 23)
       assert(trce.message == Some("An ignore clause may not appear inside a test clause."))
     }
+
+    it("should generate a DuplicateTestNameException when duplicate test name is detected") {
+      class TestSpec extends FunSuite {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        test("test 1") { fixture => }
+        test("test 1") { fixture => }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("FunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
+
+    it("should generate a DuplicateTestNameException when duplicate test name is detected when use ignore") {
+      class TestSpec extends FunSuite {
+        type FixtureParam = String
+        def withFixture(test: OneArgTest): Outcome = { test("hi") }
+        test("test 1") { fixture => }
+        ignore("test 1") { fixture => }
+      }
+      val e = intercept[DuplicateTestNameException] {
+        new TestSpec
+      }
+      assert("FunSuiteSpec.scala" == e.failedCodeFileName.get)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 6)
+      assert(!e.cause.isDefined)
+    }
     
   }
 }

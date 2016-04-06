@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.Requirements._
+
 /**
  * Arguments bundle passed to four of ScalaTest's lifecycle methods: <code>run</code>, <code>runNestedSuites</code>,
  * <code>runTests</code>, and <code>runTest</code>.
@@ -53,8 +55,6 @@ package org.scalatest
  * @throws NullArgumentException if any passed parameter is <code>null</code>.
  *
  */
-import org.scalactic.Requirements._
-
 case class Args(
   reporter: Reporter,
   stopper: Stopper = Stopper.default,
