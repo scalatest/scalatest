@@ -16,6 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
+import org.scalactic.SourceInfo
 
 /**
  * Provides an implicit conversion that adds <code>can</code> methods to <code>String</code>
@@ -163,8 +164,8 @@ trait CanVerb {
      * no-arg function.
      * </p>
      */
-    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(left, "can", right _)
+    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration, sourceInfo: SourceInfo) {
+      fun(left, "can", sourceInfo, right _)
     }
 
     /**
@@ -190,8 +191,8 @@ trait CanVerb {
      * <code>"can"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>can</code>.
      * </p>
      */
-    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(left, "can", resultOfAfterWordApplication)
+    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit, sourceInfo: SourceInfo) {
+      fun(left, "can", resultOfAfterWordApplication, sourceInfo)
     }
   }
 

@@ -16,6 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
+import org.scalactic.SourceInfo
 
 /**
  * Provides an implicit conversion that adds <code>will</code> methods to <code>String</code>
@@ -188,8 +189,8 @@ private[scalatest] trait WillVerb {
      * no-arg function.
      * </p>
      */
-    def will(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(leftSideString, "will", right _)
+    def will(right: => Unit)(implicit fun: StringVerbBlockRegistration, sourceInfo: SourceInfo) {
+      fun(leftSideString, "will", sourceInfo, right _)
     }
 
     /**
@@ -215,8 +216,8 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>will</code>.
      * </p>
      */
-    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(leftSideString, "will", resultOfAfterWordApplication)
+    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit, sourceInfo: SourceInfo) {
+      fun(leftSideString, "will", resultOfAfterWordApplication, sourceInfo)
     }
   }
 

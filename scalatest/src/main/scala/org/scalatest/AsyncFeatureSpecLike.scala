@@ -175,7 +175,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
-  protected def feature(description: String)(fun: => Unit) {
+  protected def feature(description: String)(fun: => Unit)(implicit sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
@@ -192,7 +192,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
       throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun("FeatureSpecRegistering.scala", "feature"))
 
     try {
-      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecRegistering.scala", "feature", stackDepth, stackDepthAdjustment, None)
+      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecRegistering.scala", "feature", stackDepth, stackDepthAdjustment, None, sourceInfo)
     }
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)

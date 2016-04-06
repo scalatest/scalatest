@@ -176,7 +176,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       case "can" => FailureMessages.exceptionWasThrownInCanClause(className, description, errorMessage)
     }
 
-  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, fun: () => Unit) {
+  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, sourceInfo: SourceInfo, fun: () => Unit) {
     val (getStackDepth, duplicateErrorStackDepth) =
       verb match {
         // SKIP-SCALATESTJS-START
@@ -457,12 +457,12 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def when(f: => Unit) {
+    def when(f: => Unit)(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string, Some("when"), "when", "when", stackDepth, -2, f _)
+      registerBranch(string, Some("when"), "when", "when", stackDepth, -2, sourceInfo, f _)
     }
 
     /**
@@ -483,8 +483,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def when(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, resultOfAfterWordApplication.f)
+    def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit sourceInfo: SourceInfo) {
+      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, sourceInfo, resultOfAfterWordApplication.f)
     }
 
     /**
@@ -503,12 +503,12 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def that(f: => Unit) {
+    def that(f: => Unit)(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, f _)
+      registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, sourceInfo, f _)
     }
 
     /**
@@ -527,12 +527,12 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def which(f: => Unit) {
+    def which(f: => Unit)(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, f _)
+      registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, sourceInfo, f _)
     }
 
     /**
@@ -553,8 +553,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def that(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, resultOfAfterWordApplication.f)
+    def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit sourceInfo: SourceInfo) {
+      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, sourceInfo, resultOfAfterWordApplication.f)
     }
     
     /**
@@ -575,8 +575,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def which(resultOfAfterWordApplication: ResultOfAfterWordApplication) {
-      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, resultOfAfterWordApplication.f)
+    def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit sourceInfo: SourceInfo) {
+      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, sourceInfo, resultOfAfterWordApplication.f)
     }
   }
 
@@ -1020,7 +1020,7 @@ one error found
    */
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
-      def apply(left: String, verb: String, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, f)
+      def apply(left: String, verb: String, sourceInfo: SourceInfo, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, sourceInfo, f)
     }
 
   /**
@@ -1045,21 +1045,21 @@ one error found
    * subject and executes the block.
    * </p>
    */
-  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication) => Unit = {
-    (left, verb, resultOfAfterWordApplication) => {
+  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit = {
+    (left, verb, resultOfAfterWordApplication, sourceInfo) => {
       val afterWordFunction =
         () => {
           // SKIP-SCALATESTJS-START
           val stackDepth = 10
           // SKIP-SCALATESTJS-END
           //SCALATESTJS-ONLY val stackDepth = 15
-          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, resultOfAfterWordApplication.f)
+          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, sourceInfo, resultOfAfterWordApplication.f)
         }
       // SKIP-SCALATESTJS-START
       val stackDepth = 7
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 9
-      registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, afterWordFunction)
+      registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, sourceInfo, afterWordFunction)
     }
   }
 

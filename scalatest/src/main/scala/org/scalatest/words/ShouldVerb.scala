@@ -15,6 +15,7 @@
  */
 package org.scalatest.words
 
+import org.scalactic.SourceInfo
 import org.scalatest._
 import org.scalactic.SourceInfo
 
@@ -189,8 +190,8 @@ trait ShouldVerb {
      * no-arg function.
      * </p>
      */
-    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
-      fun(leftSideString, "should", right _)
+    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration, sourceInfo: SourceInfo) {
+      fun(leftSideString, "should", sourceInfo, right _)
     }
 
     /**
@@ -216,8 +217,8 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication) => Unit) {
-      fun(leftSideString, "should", resultOfAfterWordApplication)
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit, sourceInfo: SourceInfo) {
+      fun(leftSideString, "should", resultOfAfterWordApplication, sourceInfo)
     }
   }
 

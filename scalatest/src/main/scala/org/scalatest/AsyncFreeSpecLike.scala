@@ -290,7 +290,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
-    def - (fun: => Unit) {
+    def - (fun: => Unit)(implicit sourceInfo: SourceInfo) {
 
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
@@ -302,7 +302,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
       //SCALATESTJS-ONLY val duplicateErrorStackDepth = 9
 
       try {
-        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecRegistering.scala", "-", stackDepth, -2, None)
+        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecRegistering.scala", "-", stackDepth, -2, None, sourceInfo)
       }
       catch {
         case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
