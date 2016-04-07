@@ -18,7 +18,7 @@ package org.scalatest
 import exceptions.TestCanceledException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
 import Suite.IgnoreTagName
 import org.scalatest.Suite._
 import org.scalatest.events.LineInFile
@@ -645,7 +645,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, sourceInfo.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
 //    throw new TestRegistrationClosedException(Resources.testCannotAppearInsideAnotherTest, getStackDepth(sourceFileName, "test"))
 
     val oldBundle = atomic.get
@@ -658,12 +658,14 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       val duplicateTestNameAdjustment = 0
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val duplicateTestNameAdjustment = -1
-      throw new DuplicateTestNameException(testName, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment))
+      throw new DuplicateTestNameException(testName, sourceInfo.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment)))
     }
     val testLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None => getLineInFile(Thread.currentThread().getStackTrace, stackDepth)
+        case None =>
+          val stackTraceElements = Thread.currentThread().getStackTrace
+          getLineInFile(stackTraceElements, sourceInfo.map(si => getStackDepth(stackTraceElements, si)).getOrElse(stackDepth))
       }
 
     val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, sourceInfo, duration, informer)
