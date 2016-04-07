@@ -239,23 +239,6 @@ trait TimeLimits {
    * @param interruptor a strategy for interrupting the passed operation
    */
   def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, sourceInfo: SourceInfo = implicitly[SourceInfo], timed: Timed[T] = implicitly[Timed[T]]): T = {
-    /*val stackTraceElements = Thread.currentThread.getStackTrace()
-    timed.timeoutAfter(
-      timeout,
-      fun,
-      interruptor,
-      (cause: Option[Throwable], stackDepthAdjustment: Int) => {
-        val e = new TestFailedDueToTimeoutException(
-          sde => Some(FailureMessages.timeoutFailedAfter(UnquotedString(timeout.prettyString))),
-          cause,
-          getStackDepthFun(sourceInfo),
-          None,
-          timeout
-        )
-        e.setStackTrace(stackTraceElements)
-        e
-      }
-    )*/
     failAfterImpl(timeout, interruptor, adj => getStackDepthFun(sourceInfo))(fun)(timed)
   }
 
@@ -270,7 +253,6 @@ trait TimeLimits {
           sde => Some(FailureMessages.timeoutFailedAfter(UnquotedString(timeout.prettyString))),
           cause,
           stackDepthFun(stackDepthAdjustment),
-          //getStackDepthFun("TimeLimits.scala", "failAfter", stackDepthAdjustment),
           None,
           timeout
         )
@@ -316,22 +298,6 @@ trait TimeLimits {
    * @param interruptor a strategy for interrupting the passed operation
    */
   def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, sourceInfo: SourceInfo = implicitly[SourceInfo], timed: Timed[T] = implicitly[Timed[T]]): T = {
-    /*val stackTraceElements = Thread.currentThread.getStackTrace()
-    timed.timeoutAfter(
-      timeout,
-      fun,
-      interruptor,
-      (cause: Option[Throwable], stackDepthAdjustment: Int) => {
-        val e = new TestCanceledException(
-          sde => Some(FailureMessages.timeoutCanceledAfter(UnquotedString(timeout.prettyString))),
-          cause,
-          sourceInfo.map(si => getStackDepthFun(si)).getOrElse(getStackDepthFun("TimeLimits.scala", "cancelAfter", stackDepthAdjustment)),
-          None
-        )
-        e.setStackTrace(stackTraceElements)
-        e
-      }
-    )*/
     cancelAfterImpl(timeout, interruptor, adj => getStackDepthFun(sourceInfo))(fun)(timed)
   }
 
@@ -353,33 +319,6 @@ trait TimeLimits {
       }
     )
   }
-
-  /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Signaler, exceptionFun: Option[Throwable] => StackDepthException): T = {
-    val timer = new Timer()
-    val task = new TimeoutTask(Thread.currentThread(), interruptor)
-    timer.schedule(task, timeout.totalNanos / 1000 / 1000)
-    try {
-      val result = f
-      timer.cancel()
-      if (task.timedOut) {
-        if (task.needToResetInterruptedStatus)
-          Thread.interrupted() // To reset the flag probably. He only does this if it was not set before and was set after, I think.
-        throw exceptionFun(None)
-      }
-      result
-    }
-    catch {
-      case t: Throwable => 
-        timer.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
-        if(task.timedOut) {
-          if (task.needToResetInterruptedStatus)
-            Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
-          throw exceptionFun(Some(t))
-        }
-        else
-          throw t
-    }
-  }*/
   
 }
 
