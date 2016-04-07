@@ -239,16 +239,38 @@ trait TimeLimits {
    * @param interruptor a strategy for interrupting the passed operation
    */
   def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, sourceInfo: SourceInfo = implicitly[SourceInfo], timed: Timed[T] = implicitly[Timed[T]]): T = {
+    /*val stackTraceElements = Thread.currentThread.getStackTrace()
+    timed.timeoutAfter(
+      timeout,
+      fun,
+      interruptor,
+      (cause: Option[Throwable], stackDepthAdjustment: Int) => {
+        val e = new TestFailedDueToTimeoutException(
+          sde => Some(FailureMessages.timeoutFailedAfter(UnquotedString(timeout.prettyString))),
+          cause,
+          getStackDepthFun(sourceInfo),
+          None,
+          timeout
+        )
+        e.setStackTrace(stackTraceElements)
+        e
+      }
+    )*/
+    failAfterImpl(timeout, interruptor, adj => getStackDepthFun(sourceInfo))(fun)(timed)
+  }
+
+  private[scalatest] def failAfterImpl[T](timeout: Span, interruptor: Signaler, stackDepthFun: Int => (StackDepthException => Int))(fun: => T)(implicit timed: Timed[T]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
     timed.timeoutAfter(
       timeout,
       fun,
       interruptor,
-      (cause: Option[Throwable]) => {
+      (cause: Option[Throwable], stackDepthAdjustment: Int) => {
         val e = new TestFailedDueToTimeoutException(
           sde => Some(FailureMessages.timeoutFailedAfter(UnquotedString(timeout.prettyString))),
           cause,
-          getStackDepthFun(sourceInfo),
+          stackDepthFun(stackDepthAdjustment),
+          //getStackDepthFun("TimeLimits.scala", "failAfter", stackDepthAdjustment),
           None,
           timeout
         )
@@ -294,16 +316,36 @@ trait TimeLimits {
    * @param interruptor a strategy for interrupting the passed operation
    */
   def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, sourceInfo: SourceInfo = implicitly[SourceInfo], timed: Timed[T] = implicitly[Timed[T]]): T = {
+    /*val stackTraceElements = Thread.currentThread.getStackTrace()
+    timed.timeoutAfter(
+      timeout,
+      fun,
+      interruptor,
+      (cause: Option[Throwable], stackDepthAdjustment: Int) => {
+        val e = new TestCanceledException(
+          sde => Some(FailureMessages.timeoutCanceledAfter(UnquotedString(timeout.prettyString))),
+          cause,
+          sourceInfo.map(si => getStackDepthFun(si)).getOrElse(getStackDepthFun("TimeLimits.scala", "cancelAfter", stackDepthAdjustment)),
+          None
+        )
+        e.setStackTrace(stackTraceElements)
+        e
+      }
+    )*/
+    cancelAfterImpl(timeout, interruptor, adj => getStackDepthFun(sourceInfo))(fun)(timed)
+  }
+
+  private[scalatest] def cancelAfterImpl[T](timeout: Span, interruptor: Signaler, stackDepthFun: Int => (StackDepthException => Int))(fun: => T)(implicit timed: Timed[T]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
     timed.timeoutAfter(
       timeout,
       fun,
       interruptor,
-      (cause: Option[Throwable]) => {
+      (cause: Option[Throwable], stackDepthAdjustment: Int) => {
         val e = new TestCanceledException(
           sde => Some(FailureMessages.timeoutCanceledAfter(UnquotedString(timeout.prettyString))),
           cause,
-          getStackDepthFun(sourceInfo),
+          stackDepthFun(stackDepthAdjustment),
           None
         )
         e.setStackTrace(stackTraceElements)

@@ -164,12 +164,10 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
                 case None => methodTags.contains(IgnoreTagName)
               }
 
-              val sourceInfo = SourceInfo("NA", "NA", 0)
-
               if (isIgnore)
-                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), sourceInfo, methodTags.map(new Tag(_)): _*)
+                registerIgnoredTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 3, 0, Some(testLocation), None, methodTags.map(new Tag(_)): _*)
               else
-                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), sourceInfo, None, methodTags.map(new Tag(_)): _*)
+                registerTest(testName, Transformer(testFun), Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 1, None, Some(testLocation), None, None, methodTags.map(new Tag(_)): _*)
             }
           }
         }

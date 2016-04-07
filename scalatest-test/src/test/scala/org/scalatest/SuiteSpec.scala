@@ -434,7 +434,7 @@ class SuiteSpec extends FunSpec {
              val scopes: collection.immutable.IndexedSeq[String] = test.scopes
              val name: String = test.name
              val tags: Set[String] = test.tags
-             val sourceInfo: SourceInfo = test.sourceInfo
+             val sourceInfo: Option[SourceInfo] = test.sourceInfo
             }
           )
         }

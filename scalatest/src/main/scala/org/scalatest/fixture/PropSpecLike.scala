@@ -98,7 +98,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
@@ -106,7 +106,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
   }
 
   class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
@@ -117,7 +117,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(testName, Transformer(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
+      engine.registerTest(testName, Transformer(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
     }
     def apply(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
@@ -126,7 +126,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
+      engine.registerTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
     }
   }
 
@@ -155,7 +155,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+      engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
     }
     def apply(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
@@ -164,7 +164,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+      engine.registerIgnoredTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
     }
   }
 

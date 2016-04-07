@@ -68,7 +68,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     testText: String, // The last portion of the test name that showed up on an inner most nested level
     testFun: T, 
     location: Option[Location],
-    sourceInfo: SourceInfo,
+    sourceInfo: Option[SourceInfo],
     recordedDuration: Option[Long] = None,
     recordedMessages: Option[PathMessageRecordingInformer] = None
   ) extends Node(Some(parent))
@@ -640,7 +640,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   }
 
   // Path traits need to register the message recording informer, so it can fire any info events later
-  def registerTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], sourceInfo: SourceInfo, informer: Option[PathMessageRecordingInformer], testTags: Tag*): String = { // returns testName
+  def registerTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], sourceInfo: Option[SourceInfo], informer: Option[PathMessageRecordingInformer], testTags: Tag*): String = { // returns testName
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -680,7 +680,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     testName
   }
 
-  def registerIgnoredTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: SourceInfo, testTags: Tag*) {
+  def registerIgnoredTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: Option[SourceInfo], testTags: Tag*) {
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -885,7 +885,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
  * 
  * 
  */
-  def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: SourceInfo, testTags: Tag*) {
+  def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: Option[SourceInfo], testTags: Tag*) {
 
     if (insideAPathTest) 
       throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
@@ -1133,7 +1133,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     }
   }
    
-  def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: SourceInfo, testTags: Tag*) {
+  def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: Option[SourceInfo], testTags: Tag*) {
 
     if (insideAPathTest) 
       throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))

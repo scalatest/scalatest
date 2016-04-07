@@ -104,7 +104,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
@@ -112,7 +112,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
   }
 
   /**
@@ -149,7 +149,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(implicit sourceInfo: SourceInfo) {
@@ -159,7 +159,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, sourceInfo, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, 4, -3, None, None, Some(sourceInfo), None, testTags: _*)
   }
 
   /**
@@ -2086,11 +2086,11 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(sourceInfo: SourceInfo) {
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, Some(sourceInfo), testTags: _*)
   }
 
   /**

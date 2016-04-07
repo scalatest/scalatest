@@ -193,7 +193,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty ++ suiteTags ++ testTags
-      val sourceInfo = SourceInfo("NA", "NA", 0)
+      val sourceInfo = None
     }
   }
 

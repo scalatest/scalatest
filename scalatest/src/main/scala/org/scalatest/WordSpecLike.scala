@@ -97,7 +97,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
   }
 
   final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
@@ -105,7 +105,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
   }
 
   /**
@@ -134,7 +134,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, sourceInfo, None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
   }
 
   /**
@@ -163,7 +163,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
   }
 
   private def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String, errorMessage: String): String =

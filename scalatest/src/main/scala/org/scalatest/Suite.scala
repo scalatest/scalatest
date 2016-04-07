@@ -1381,7 +1381,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty[String]
-      val sourceInfo = SourceInfo("NA", "NA", 0)
+      val sourceInfo = None
     }
   }
 }

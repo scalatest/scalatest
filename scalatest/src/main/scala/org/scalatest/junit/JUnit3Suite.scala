@@ -278,7 +278,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty[String]
-      val sourceInfo = SourceInfo("NA", "NA", 0)
+      val sourceInfo = None
     }
 }
 

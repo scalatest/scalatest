@@ -67,13 +67,13 @@ class AsyncEngineSpec extends FlatSpec with Matchers {
     import engine._
     val child = DescriptionBranch(Trunk, "child", Some("child prefix"), None)
     Trunk.subNodes ::= child
-    val childTest = TestLeaf(Trunk, "child test", "child test", () => PastOutcome(Succeeded), None, SourceInfo.sourceInfo)
+    val childTest = TestLeaf(Trunk, "child test", "child test", () => PastOutcome(Succeeded), None, Some(SourceInfo.sourceInfo))
     Trunk.subNodes ::= childTest
     val grandchild = DescriptionBranch(child, "grandchild", None, None)
     child.subNodes ::= grandchild
-    val grandchildTest = TestLeaf(child, "grandchild test", "grandchild test", () => PastOutcome(Succeeded), None, SourceInfo.sourceInfo)
+    val grandchildTest = TestLeaf(child, "grandchild test", "grandchild test", () => PastOutcome(Succeeded), None, Some(SourceInfo.sourceInfo))
     child.subNodes ::= grandchildTest
-    val greatGrandchildTest = TestLeaf(grandchild, "great-grandchild test", "great-grandchild test", () => PastOutcome(Succeeded), None, SourceInfo.sourceInfo)
+    val greatGrandchildTest = TestLeaf(grandchild, "great-grandchild test", "great-grandchild test", () => PastOutcome(Succeeded), None, Some(SourceInfo.sourceInfo))
     grandchild.subNodes ::= greatGrandchildTest
     Trunk.indentationLevel should be (0)
     child.indentationLevel should be (0)

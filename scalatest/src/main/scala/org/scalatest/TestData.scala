@@ -135,6 +135,6 @@ trait TestData {
    */
   val tags: Set[String]
 
-  val sourceInfo: SourceInfo
+  val sourceInfo: Option[SourceInfo]
 }
 

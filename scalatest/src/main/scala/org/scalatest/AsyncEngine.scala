@@ -68,7 +68,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testText: String, // The last portion of the test name that showed up on an inner most nested level
     testFun: T, 
     location: Option[Location],
-    sourceInfo: SourceInfo,
+    sourceInfo: Option[SourceInfo],
     recordedDuration: Option[Long] = None
   ) extends Node(Some(parent))
 
@@ -761,7 +761,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         case None => getLineInFile(Thread.currentThread().getStackTrace, stackDepth)
       }
 
-    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, sourceInfo, duration)
+    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, Some(sourceInfo), duration)
     testsMap += (testName -> testLeaf)
     testNamesList ::= testName
     currentBranch.subNodes ::= testLeaf
