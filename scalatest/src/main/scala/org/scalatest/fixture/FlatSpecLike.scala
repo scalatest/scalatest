@@ -207,7 +207,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       val stackDepth = 3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
-      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, sourceFileName, "of", stackDepth, 0, sourceInfo)
+      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, sourceFileName, "of", stackDepth, 0, Some(sourceInfo))
     }
   }
 
@@ -2012,7 +2012,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       val stackDepth = 6
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 8
-      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, sourceInfo)
+      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, Some(sourceInfo))
       new ResultOfStringPassedToVerb(verb, rest) {
         def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
           registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)(sourceInfo)
@@ -2055,7 +2055,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    */
   protected implicit val shorthandSharedTestRegistrationFunction: (String, SourceInfo) => BehaveWord = {
     (left, sourceInfo) => {
-      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", 5, 0, sourceInfo)
+      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", 5, 0, Some(sourceInfo))
       new BehaveWord
     }
   }
