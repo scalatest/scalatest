@@ -261,7 +261,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for trait
      * <code>org.scalatest.path.FreeSpec</code>.
      */
-    def - (fun: => Unit) {
+    def - (fun: => Unit)(implicit sourceInfo: SourceInfo) {
 
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
@@ -273,7 +273,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
       //SCALATESTJS-ONLY val duplicateErrorStackDepth = 9
 
       try {
-        handleNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None)
+        handleNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None, Some(sourceInfo))
       }
       catch {
         case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)

@@ -578,18 +578,20 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     }
   } */
 
-  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location]) {
+  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: Option[SourceInfo]) {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, sourceInfo.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFile, methodName, stackDepth + adjustment)))
 
     val branchLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None => getLineInFile(Thread.currentThread().getStackTrace, stackDepth)
+        case None =>
+          val stackTraceElements = Thread.currentThread().getStackTrace
+          getLineInFile(stackTraceElements, sourceInfo.map(si => getStackDepth(stackTraceElements, si)).getOrElse(stackDepth))
       }
     
     val oldBranch = currentBranch
@@ -980,10 +982,10 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     }
   }
 
-  def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location]) {
+  def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: Option[SourceInfo]) {
 
     if (insideAPathTest)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, sourceInfo.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
 
     val nextPath = getNextPath()
     // val nextPathZero = if (nextPath.length > 0) nextPath(0) else -1
@@ -1005,7 +1007,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
         // Set this to true before executing the describe. If it has a test, then handleTest will be invoked
         // and it will set previousDescribeWasEmpty back to false
         describeRegisteredNoTests = true
-        registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, methodName, stackDepth + 1, adjustment, location)
+        registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, methodName, stackDepth + 1, adjustment, location, sourceInfo)
         registeredPathSet += nextPath
         if (describeRegisteredNoTests)
           targetLeafHasBeenReached = true

@@ -456,7 +456,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * @param description the description text
    * @param fun the function which makes up the body for the description
    */
-  protected def describe(description: String)(fun: => Unit) {
+  protected def describe(description: String)(fun: => Unit)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val errorStackDepth = 4
@@ -466,7 +466,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
     //SCALATESTJS-ONLY val errorStackDepth = 11
     //SCALATESTJS-ONLY val duplicateErrorStackDepth = 10
     try {
-      registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", stackDepth, -2, None)
+      registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", stackDepth, -2, None, Some(sourceInfo))
     }
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)

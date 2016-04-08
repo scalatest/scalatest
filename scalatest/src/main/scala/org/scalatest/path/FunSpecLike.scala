@@ -371,7 +371,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <code>org.scalatest.path.FunSpec</code>.
    * </p>
    */
-  protected def describe(description: String)(fun: => Unit) {
+  protected def describe(description: String)(fun: => Unit)(implicit sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val errorStackDepth = 4
@@ -381,7 +381,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
     //SCALATESTJS-ONLY val errorStackDepth = 11
     //SCALATESTJS-ONLY val duplicateErrorStackDepth = 10
     try {
-      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None)
+      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None, Some(sourceInfo))
     }
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)

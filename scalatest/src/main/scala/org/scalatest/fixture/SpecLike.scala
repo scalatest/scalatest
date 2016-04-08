@@ -126,7 +126,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
               }
               val scopeLocation = TopOfClass(m.getReturnType.getName)
               try {
-                registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation))
+                registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation), None)
               }
               catch {
                 case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)

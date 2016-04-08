@@ -251,7 +251,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    *
    * @author Bill Venners
    */
-  protected final class FreeSpecStringWrapper(string: String) {
+  protected final class FreeSpecStringWrapper(string: String, sourceInfo: SourceInfo) {
 
     /**
      * Register some text that may surround one or more tests. Thepassed function value may contain surrounding text
@@ -271,7 +271,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
       //SCALATESTJS-ONLY val duplicateErrorStackDepth = 9
 
       try {
-        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None)
+        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None, Some(sourceInfo))
       }
       catch {
         case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
@@ -372,7 +372,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
    * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToFreeSpecStringWrapper(s: String) = new FreeSpecStringWrapper(s)
+  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit sourceInfo: SourceInfo) = new FreeSpecStringWrapper(s, sourceInfo)
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
