@@ -95,25 +95,6 @@ import org.scalactic.source.SourceInfo
  * @author Bill Venners
  */
 trait AssertionsForJUnit extends Assertions {
-  
-  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
-    (optionalMessage, optionalCause) match {
-      case (None, None) => new JUnitTestFailedError(stackDepth)
-      case (None, Some(cause)) => new JUnitTestFailedError(cause, stackDepth)
-      case (Some(message), None) => new JUnitTestFailedError(message.toString, stackDepth)
-      case (Some(message), Some(cause)) => new JUnitTestFailedError(message.toString, cause, stackDepth)
-    }
-  
-  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable = {
-    val e = new Exception
-    val stackDepth = getStackDepth(e.getStackTrace, fileName, methodName, stackDepthAdjustment) - 1
-    (optionalMessage, optionalCause) match {
-      case (None, None) => new JUnitTestFailedError(stackDepth)
-      case (None, Some(cause)) => new JUnitTestFailedError(cause, stackDepth)
-      case (Some(message), None) => new JUnitTestFailedError(message.toString, stackDepth)
-      case (Some(message), Some(cause)) => new JUnitTestFailedError(message.toString, cause, stackDepth)
-    }
-  }
 
   private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], sourceInfo: SourceInfo): Throwable = {
     val e = new Exception

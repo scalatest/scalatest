@@ -527,27 +527,8 @@ trait Assertions extends TripleEquals  {
    */
   val assertionsHelper = new AssertionsHelper
 
-  private[scalatest] def newAssertionFailedException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
-    (optionalMessage, optionalCause) match {
-      case (None, None) => new TestFailedException(stackDepth)
-      case (None, Some(cause)) => new TestFailedException(cause, stackDepth)
-      case (Some(message), None) => new TestFailedException(message.toString, stackDepth)
-      case (Some(message), Some(cause)) => new TestFailedException(message.toString, cause, stackDepth)
-    }
-  
-  private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], fileName: String, methodName: String, stackDepthAdjustment: Int): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(fileName, methodName, stackDepthAdjustment))
-
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], sourceInfo: SourceInfo): Throwable =
     new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(sourceInfo))
-
-  private def newTestCanceledException(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
-    (optionalMessage, optionalCause) match {
-      case (None, None) => new TestCanceledException(stackDepth)
-      case (None, Some(cause)) => new TestCanceledException(cause, stackDepth)
-      case (Some(message), None) => new TestCanceledException(message.toString, stackDepth)
-      case (Some(message), Some(cause)) => new TestCanceledException(message.toString, cause, stackDepth)
-    }
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], sourceInfo: SourceInfo): Throwable =
     new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(sourceInfo), None)
@@ -787,13 +768,6 @@ trait Assertions extends TripleEquals  {
    */
   def assertCompiles(code: String): Assertion = macro CompileMacro.assertCompilesImpl
 
-  // SKIP-SCALATESTJS-START
-  private[scalatest] val failStackDepth = 4
-  private[scalatest] val cancelStackDepth = 3
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val failStackDepth = 13
-  //SCALATESTJS-ONLY private[scalatest] val cancelStackDepth = 13
-
   /**
    * Intercept and return an exception that's expected to
    * be thrown by the passed function value. The thrown exception must be an instance of the
@@ -828,7 +802,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): T = {
+  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier, sourceInfo: SourceInfo): T = {
     val clazz = classTag.runtimeClass
     val caught = try {
       f
@@ -838,7 +812,7 @@ trait Assertions extends TripleEquals  {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-          throw newAssertionFailedException(Some(s), Some(u), failStackDepth)
+          throw newAssertionFailedException(Some(s), Some(u), sourceInfo)
         }
         else {
           Some(u)
@@ -848,7 +822,7 @@ trait Assertions extends TripleEquals  {
     caught match {
       case None =>
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, failStackDepth)
+        throw newAssertionFailedException(Some(message), None, sourceInfo)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase isAssignableFrom succeeded above
     }
   }
@@ -886,7 +860,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T]): Assertion = {
+  def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
     val clazz = classTag.runtimeClass
     val threwExpectedException =
       try {
@@ -897,7 +871,7 @@ trait Assertions extends TripleEquals  {
           case u: Throwable => {
           if (!clazz.isAssignableFrom(u.getClass)) {
             val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-            throw newAssertionFailedException(Some(s), Some(u), failStackDepth)
+            throw newAssertionFailedException(Some(s), Some(u), sourceInfo)
           }
           else true
         }
@@ -907,7 +881,7 @@ trait Assertions extends TripleEquals  {
     }
     else {
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedException(Some(message), None, failStackDepth)
+        throw newAssertionFailedException(Some(message), None, sourceInfo)
     }
   }
 
@@ -1023,12 +997,12 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any, clue: Any)(actual: Any): Assertion = {
+  def assertResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(exp, act)
       val fullMsg = AppendedClues.appendClue(s, clue.toString)
-      throw newAssertionFailedException(Some(fullMsg), None, failStackDepth)
+      throw newAssertionFailedException(Some(fullMsg), None, sourceInfo)
     }
     Succeeded
   }
@@ -1044,11 +1018,11 @@ trait Assertions extends TripleEquals  {
    * @param actual the actual value, which should equal the passed <code>expected</code> value
    * @throws TestFailedException if the passed <code>actual</code> value does not equal the passed <code>expected</code> value.
    */
-  def assertResult(expected: Any)(actual: Any): Assertion = {
+  def assertResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
       val s = FailureMessages.expectedButGot(exp, act)
-      throw newAssertionFailedException(Some(s), None, failStackDepth)
+      throw newAssertionFailedException(Some(s), None, sourceInfo)
     }
     Succeeded
   }
@@ -1100,7 +1074,7 @@ trait Assertions extends TripleEquals  {
   /**
    * Throws <code>TestFailedException</code> to indicate a test failed.
    */
-  def fail(): Nothing = { throw newAssertionFailedException(None, None, failStackDepth) }
+  def fail()(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Nothing = { throw newAssertionFailedException(None, None, sourceInfo) }
 
   /**
    * Throws <code>TestFailedException</code>, with the passed
@@ -1110,11 +1084,11 @@ trait Assertions extends TripleEquals  {
    * @param message A message describing the failure.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def fail(message: String): Nothing = {
+  def fail(message: String)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Nothing = {
 
     requireNonNull(message)
      
-    throw newAssertionFailedException(Some(message),  None, failStackDepth)
+    throw newAssertionFailedException(Some(message),  None, sourceInfo)
   }
 
   /**
@@ -1126,11 +1100,11 @@ trait Assertions extends TripleEquals  {
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  def fail(message: String, cause: Throwable): Nothing = {
+  def fail(message: String, cause: Throwable)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Nothing = {
 
     requireNonNull(message, cause)
 
-    throw newAssertionFailedException(Some(message), Some(cause), failStackDepth)
+    throw newAssertionFailedException(Some(message), Some(cause), sourceInfo)
   }
 
   /**
@@ -1142,17 +1116,17 @@ trait Assertions extends TripleEquals  {
    * @param cause a <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  def fail(cause: Throwable): Nothing = {
+  def fail(cause: Throwable)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Nothing = {
 
     requireNonNull(cause)
         
-    throw newAssertionFailedException(None, Some(cause), failStackDepth)
+    throw newAssertionFailedException(None, Some(cause), sourceInfo)
   }
   
   /**
    * Throws <code>TestCanceledException</code> to indicate a test was canceled.
    */
-  def cancel(): Nothing = { throw newTestCanceledException(None, None, cancelStackDepth) }
+  def cancel()(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Nothing = { throw newTestCanceledException(None, None, sourceInfo) }
 
   /**
    * Throws <code>TestCanceledException</code>, with the passed
@@ -1162,11 +1136,11 @@ trait Assertions extends TripleEquals  {
    * @param message A message describing the cancellation.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def cancel(message: String): Nothing = {
+  def cancel(message: String)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Nothing = {
 
     requireNonNull(message)
      
-    throw newTestCanceledException(Some(message),  None, cancelStackDepth)
+    throw newTestCanceledException(Some(message),  None, sourceInfo)
   }
 
   /**
@@ -1178,11 +1152,11 @@ trait Assertions extends TripleEquals  {
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  def cancel(message: String, cause: Throwable): Nothing = {
+  def cancel(message: String, cause: Throwable)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Nothing = {
 
     requireNonNull(message, cause)
 
-    throw newTestCanceledException(Some(message), Some(cause), cancelStackDepth)
+    throw newTestCanceledException(Some(message), Some(cause), sourceInfo)
   }
 
   /**
@@ -1194,11 +1168,11 @@ trait Assertions extends TripleEquals  {
    * @param cause a <code>Throwable</code> that indicates the cause of the cancellation.
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  def cancel(cause: Throwable): Nothing = {
+  def cancel(cause: Throwable)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Nothing = {
 
     requireNonNull(cause)
         
-    throw newTestCanceledException(None, Some(cause), cancelStackDepth)
+    throw newTestCanceledException(None, Some(cause), sourceInfo)
   }
   
   /**
