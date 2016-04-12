@@ -24,6 +24,7 @@ import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import org.scalatest.exceptions.NotAllowedException
 import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * Implementation trait for class <code>FeatureSpec</code>, which represents
@@ -173,7 +174,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
-  protected def feature(description: String)(fun: => Unit)(implicit sourceInfo: SourceInfo) {
+  protected def feature(description: String)(fun: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
@@ -193,11 +194,11 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
       registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecLike.scala", "feature", stackDepth, stackDepthAdjustment, None, Some(sourceInfo))
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause(prettifier), Some(e), e => scopeErrorStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause(prettifier), Some(e), e => scopeErrorStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => scopeErrorStackDepth)
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(prettifier, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => scopeErrorStackDepth)
       case other: Throwable => throw other
     }
   }

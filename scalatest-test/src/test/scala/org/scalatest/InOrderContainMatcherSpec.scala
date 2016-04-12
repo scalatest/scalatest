@@ -19,13 +19,16 @@ import collection.GenTraversable
 import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import Matchers._
+import org.scalactic.Prettifier
 
 class InOrderContainMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("inOrder ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " did not contain all of (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -93,19 +96,19 @@ class InOrderContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e1.getMessage() should be (FailureMessages.inOrderDuplicate)
+      e1.getMessage() should be (FailureMessages.inOrderDuplicate(prettifier))
 
       // SKIP-SCALATESTJS-START
       val e2 = intercept[exceptions.NotAllowedException] {
         javaList(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e2.getMessage() should be (FailureMessages.inOrderDuplicate)
+      e2.getMessage() should be (FailureMessages.inOrderDuplicate(prettifier))
       // SKIP-SCALATESTJS-END
 
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e3.getMessage() should be (FailureMessages.inOrderDuplicate)
+      e3.getMessage() should be (FailureMessages.inOrderDuplicate(prettifier))
     }
     
     it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements") {
@@ -256,7 +259,7 @@ class InOrderContainMatcherSpec extends FunSpec {
   describe("not inOrder ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " contained all of (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

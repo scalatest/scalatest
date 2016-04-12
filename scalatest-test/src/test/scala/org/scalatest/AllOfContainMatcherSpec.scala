@@ -18,13 +18,16 @@ package org.scalatest
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
+import org.scalactic.Prettifier
 
 class AllOfContainMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("allOf ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " did not contain all of (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("AllOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -67,18 +70,18 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e1.getMessage() should be (FailureMessages.allOfDuplicate)
+      e1.getMessage() should be (FailureMessages.allOfDuplicate(prettifier))
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e2.getMessage() should be (FailureMessages.allOfDuplicate)
+      e2.getMessage() should be (FailureMessages.allOfDuplicate(prettifier))
 
       // SKIP-SCALATESTJS-START
       val e3 = intercept[exceptions.NotAllowedException] {
         javaList(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e3.getMessage() should be (FailureMessages.allOfDuplicate)
+      e3.getMessage() should be (FailureMessages.allOfDuplicate(prettifier))
       // SKIP-SCALATESTJS-END
     }
     
@@ -188,7 +191,7 @@ class AllOfContainMatcherSpec extends FunSpec {
   describe("not allOf ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " contained all of (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("AllOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

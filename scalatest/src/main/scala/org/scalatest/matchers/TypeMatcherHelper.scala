@@ -126,7 +126,7 @@ object TypeMatcherHelper {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, aType.sourceInfo)
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, aType.sourceInfo)
     }
     org.scalatest.Succeeded
   }
@@ -142,9 +142,9 @@ object TypeMatcherHelper {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(prettifier)
+      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(prettifier)
     }
-    else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))(prettifier)
+    else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName)))(prettifier)
   }
 
   /**
@@ -158,7 +158,7 @@ object TypeMatcherHelper {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, anType.sourceInfo)
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, anType.sourceInfo)
     }
     org.scalatest.Succeeded
   }
@@ -174,8 +174,8 @@ object TypeMatcherHelper {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(prettifier)
-    } else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)))(prettifier)
+      org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(prettifier)
+    } else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName)))(prettifier)
   }
 
   /**
@@ -191,9 +191,9 @@ object TypeMatcherHelper {
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)),
+          FailureMessages.wasAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName)),
         None,
         aType.sourceInfo
       )
@@ -213,17 +213,17 @@ object TypeMatcherHelper {
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       org.scalatest.Fact.No(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
+          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName))
       )
     }
     else
       org.scalatest.Fact.Yes(
         if (shouldBeTrue)
-          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
+          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName))
         else
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
       )
   }*/
 
@@ -240,9 +240,9 @@ object TypeMatcherHelper {
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName)),
+          FailureMessages.wasAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName)),
         None,
         anType.sourceInfo
       )
@@ -262,17 +262,17 @@ object TypeMatcherHelper {
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       org.scalatest.Fact.No(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
+          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName))
       )
     }
     else
       org.scalatest.Fact.Yes(
         if (shouldBeTrue)
-          FailureMessages.wasAnInstanceOf(left, UnquotedString(clazz.getName))
+          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName))
         else
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
       )
   }*/
 

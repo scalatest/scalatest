@@ -27,6 +27,7 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * Implementation trait for class <code>fixture.AsyncFreeSpec</code>, which is
@@ -341,7 +342,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
-    def - (fun: => Unit)(implicit sourceInfo: SourceInfo) {
+    def - (fun: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
 
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
@@ -356,11 +357,11 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
         registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, sourceFileName, "-", stackDepth, -2, None, sourceInfo)
       }
       catch {
-        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
-        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
+        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause(prettifier), Some(e), e => errorStackDepth)
+        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause(prettifier), Some(e), e => errorStackDepth)
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e => duplicateErrorStackDepth)
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), e => errorStackDepth)
+        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), e => errorStackDepth)
         case other: Throwable => throw other
       }
     }

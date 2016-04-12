@@ -18,28 +18,31 @@ package org.scalatest
 import SharedHelpers.thisLineNumber
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeEmptyStructuralLogicalAndSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   val fileName: String = "ShouldBeEmptyStructuralLogicalAndSpec.scala"
   
   def wasEqualTo(left: Any, right: Any): String = 
-    FailureMessages.wasEqualTo(left, right)
+    FailureMessages.wasEqualTo(prettifier, left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String = 
-    FailureMessages.wasNotEqualTo(left, right)
+    FailureMessages.wasNotEqualTo(prettifier, left, right)
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
     
   def didNotEqual(left: Any, right: Any): String =
-    FailureMessages.didNotEqual(left, right)
+    FailureMessages.didNotEqual(prettifier, left, right)
   
   def wasNotEmpty(left: Any): String = 
-    FailureMessages.wasNotEmpty(left)
+    FailureMessages.wasNotEmpty(prettifier, left)
     
   def wasEmpty(left: Any): String = 
-    FailureMessages.wasEmpty(left)
+    FailureMessages.wasEmpty(prettifier, left)
     
   describe("empty matcher") {
     

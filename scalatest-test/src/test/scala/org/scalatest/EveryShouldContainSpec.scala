@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.{Equality, NormalizingEquality, Every}
+import org.scalactic.{Equality, NormalizingEquality, Every, Prettifier}
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
@@ -23,6 +23,8 @@ import Matchers._
 import exceptions.TestFailedException
 
 class EveryShouldContainSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("a List") {
 
@@ -38,7 +40,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           xs should contain ("ho")
         }
-        e1.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(xs), "\"ho\""))
+        e1.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(prettifier, xs), "\"ho\""))
         e1.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -95,7 +97,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           xs should contain (null)
         }
-        e.message.get should be (Resources.didNotContainNull(decorateToStringValue(xs)))
+        e.message.get should be (Resources.didNotContainNull(decorateToStringValue(prettifier, xs)))
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -109,7 +111,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e3 = intercept[TestFailedException] {
           xs should not contain "hi"
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -166,7 +168,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           xsWithNull should not contain (null)
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, xsWithNull)))
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -181,7 +183,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e3 = intercept[TestFailedException] {
           xs should not (contain ("hi"))
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -241,7 +243,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           xsWithNull should not (contain (null))
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, xsWithNull)))
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -255,7 +257,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e3 = intercept[TestFailedException] {
           xs should (not contain "hi")
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -315,7 +317,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           xsWithNull should (not contain (null))
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, xsWithNull)))
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -329,7 +331,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e3 = intercept[TestFailedException] {
           xs shouldNot contain ("hi")
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -386,7 +388,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           xsWithNull shouldNot contain (null)
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, xsWithNull)))
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -401,7 +403,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e3 = intercept[TestFailedException] {
           xs shouldNot (contain ("hi"))
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(xs), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, xs), "\"hi\""))
         e3.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -461,7 +463,7 @@ class EveryShouldContainSpec extends FunSpec {
         val e = intercept[TestFailedException] {
           xsWithNull shouldNot (contain (null))
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(xsWithNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, xsWithNull)))
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -567,8 +569,8 @@ class EveryShouldContainSpec extends FunSpec {
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiLists(0)) + " did not contain null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiLists(0)) + " did not contain null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiLists)))
       }
     }
     describe("when used with not contain value syntax") {
@@ -623,8 +625,8 @@ class EveryShouldContainSpec extends FunSpec {
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullLists)))
       }
     }
     describe("when used with not (contain (value)) syntax") {
@@ -679,8 +681,8 @@ class EveryShouldContainSpec extends FunSpec {
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullLists)))
       }
     }
     describe("when used with (not contain value) syntax") {
@@ -735,8 +737,8 @@ class EveryShouldContainSpec extends FunSpec {
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullLists)))
       }
     }
 
@@ -792,8 +794,8 @@ class EveryShouldContainSpec extends FunSpec {
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullLists)))
       }
     }
     describe("when used with shouldNot (contain (value)) syntax") {
@@ -848,8 +850,8 @@ class EveryShouldContainSpec extends FunSpec {
         e.failedCodeFileName.get should be ("EveryShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullLists)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullLists(0)) + " contained null (EveryShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullLists)))
       }
     }
   }

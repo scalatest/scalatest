@@ -236,9 +236,9 @@ final class BeWord {
    * </p>
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-  def ===(right: Any): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
-                                  getStackDepthFun("BeWord.scala", "$eq$eq$eq"))
+  def ===(right: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[Any] = {
+    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed(prettifier),
+                                  getStackDepthFun(sourceInfo))
   }
 
   // SKIP-SCALATESTJS-START
@@ -444,9 +444,9 @@ final class BeWord {
       def apply(left: Any): MatchResult = 
         MatchResult(
           right.isAssignableFromClassOf(left),
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
           FailureMessages.wasAnInstanceOf, // TODO, missing the left, right.className here. Write a test and fix it.
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
           FailureMessages.wasAnInstanceOf
         )
     }

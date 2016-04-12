@@ -1307,7 +1307,7 @@ $columnsOfIndexes$
   def genTableAsserting(targetDir: File, scalaJS: Boolean): Unit = {
 
     val doForAllMethodTemplate: String =
-      "def forAll[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+      "def forAll[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Result"
 
     def doForAllMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1362,30 +1362,32 @@ $columnsOfIndexes$
           |        //SCALATESTJS-ONLY val stackDepth = 1
           |
           |        indicateFailure(
-          |          sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
+          |          sde => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
           |            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-          |            "  " + FailureMessages.thrownExceptionsMessage(if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+          |            "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
           |            (
           |              ex match {
           |                case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-          |                  "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+          |                  "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
           |                case _ => ""
           |              }
           |            ) +
-          |            "  " + FailureMessages.occurredAtRow(idx) + "\n" +
+          |            "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
           |            $namesAndValues$
           |            "  )",
-          |          FailureMessages.undecoratedPropertyCheckFailureMessage,
+          |          FailureMessages.undecoratedPropertyCheckFailureMessage(prettifier),
           |          List($alphaLower$),
           |          List($alphaName$),
           |          Some(ex),
           |          None, // Payload
           |          getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", stackDepth),
+          |          prettifier,
+          |          sourceInfo,
           |          idx
           |        )
           |      }
           |  }
-          |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
+          |  indicateSuccess(FailureMessages.propertyCheckSucceeded(prettifier))
           |}
         """.stripMargin
 
@@ -1424,7 +1426,7 @@ $columnsOfIndexes$
     }
 
     val doForEveryMethodTemplate: String =
-      "def forEvery[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+      "def forEvery[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Result"
 
     def doForEveryMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1475,7 +1477,7 @@ $columnsOfIndexes$
           "rows"
       val forEveryImplTemplate: String =
         doForEveryMethodTemplate + """ = {
-                                   |  doForEvery[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "forEvery", 2)((row: $rowType$) => fun($row$))
+                                   |  doForEvery[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "forEvery", 2, prettifier, sourceInfo)((row: $rowType$) => fun($row$))
                                    |}
                                  """.stripMargin
 
@@ -1519,7 +1521,7 @@ $columnsOfIndexes$
     }
 
     val doExistsMethodTemplate: String =
-      "def exists[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION): Result"
+      "def exists[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Result"
 
     def doExistsMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1570,7 +1572,7 @@ $columnsOfIndexes$
           "rows"
       val forEveryImplTemplate: String =
         doExistsMethodTemplate + """ = {
-                                     |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2)((row: $rowType$) => fun($row$))
+                                     |  doExists[Tuple$n$[$alphaUpper$]](List($heading$), $rows$, Resources.tableDrivenForEveryFailed _, "TableAsserting.scala", "doExists", 2, prettifier, sourceInfo)((row: $rowType$) => fun($row$))
                                      |}
                                    """.stripMargin
 
@@ -1641,6 +1643,8 @@ $columnsOfIndexes$
          |import org.scalatest.exceptions.DiscardedEvaluationException
          |import org.scalatest.exceptions.StackDepth
          |import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+         |import org.scalactic.source.SourceInfo
+         |import org.scalactic.Prettifier
          |
          |trait TableAsserting[ASSERTION] {
          |  type Result
@@ -1663,7 +1667,7 @@ $columnsOfIndexes$
          |                          passedElements: IndexedSeq[(Int, E)] = IndexedSeq.empty,
          |                          failedElements: IndexedSeq[(Int, E, Throwable)] = IndexedSeq.empty)
          |
-         |    private[scalatest] def runAndCollectResult[E <: Product](namesOfArgs: List[String], rows: Seq[E], sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION): ForResult[E] = {
+         |    private[scalatest] def runAndCollectResult[E <: Product](namesOfArgs: List[String], rows: Seq[E], sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, sourceInfo: SourceInfo)(fun: E => ASSERTION): ForResult[E] = {
          |      import org.scalatest.InspectorsHelper.{shouldPropagate, indentErrorMessages}
          |
          |      @scala.annotation.tailrec
@@ -1682,20 +1686,20 @@ $columnsOfIndexes$
          |                  result.failedElements :+ ((index,
          |                    head,
          |                    new org.scalatest.exceptions.TableDrivenPropertyCheckFailedException(
-         |                      (sde => FailureMessages.propertyException(UnquotedString(ex.getClass.getSimpleName)) +
+         |                      (sde => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
          |                        (sde.failedCodeFileNameAndLineNumberString match {
          |                          case Some(s) => " (" + s + ")";
          |                          case None => ""
          |                        }) + "\n" +
-         |                        "  " + FailureMessages.thrownExceptionsMessage(if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
+         |                        "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
          |                        (
          |                          ex match {
          |                            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-         |                              "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+         |                              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
          |                            case _ => ""
          |                          }
          |                          ) +
-         |                        "  " + FailureMessages.occurredAtRow(index) + "\n" +
+         |                        "  " + FailureMessages.occurredAtRow(prettifier, index) + "\n" +
          |                        indentErrorMessages(namesOfArgs.zip(head.productIterator.toSeq).map { case (name, value) =>
          |                          name + " = " + value
          |                        }.toIndexedSeq).mkString("\n") +
@@ -1703,7 +1707,7 @@ $columnsOfIndexes$
          |                      Some(ex),
          |                      getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
          |                      None,
-         |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
+         |                      FailureMessages.undecoratedPropertyCheckFailureMessage(prettifier),
          |                      head.productIterator.toList,
          |                      namesOfArgs,
          |                      index
@@ -1720,47 +1724,51 @@ $columnsOfIndexes$
          |      innerRunAndCollectResult(rows.toIterator, ForResult(), 0)(fun)
          |    }
          |
-         |    private def doForEvery[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    private def doForEvery[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, sourceInfo: SourceInfo)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
-         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, sourceInfo)(fun)
          |      val messageList = result.failedElements.map(_._3)
          |      if (messageList.size > 0)
          |        indicateFailure(
          |          messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
          |          messageList.headOption,
-         |          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+         |          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+         |          prettifier,
+         |          sourceInfo
          |        )
-         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded(prettifier))
          |    }
          |
          |    $existsMethodImpls$
          |
-         |    private def doExists[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
+         |    private def doExists[E <: Product](namesOfArgs: List[String], rows: Seq[E], messageFun: Any => String, sourceFileName: String, methodName: String, stackDepthAdjustment: Int, prettifier: Prettifier, sourceInfo: SourceInfo)(fun: E => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): Result = {
          |      import org.scalatest.InspectorsHelper.indentErrorMessages
-         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2)(fun)
+         |      val result = runAndCollectResult(namesOfArgs, rows, sourceFileName, methodName, stackDepthAdjustment + 2, prettifier, sourceInfo)(fun)
          |      if (result.passedCount == 0) {
          |        val messageList = result.failedElements.map(_._3)
          |        indicateFailure(
          |          messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
          |          messageList.headOption,
-         |          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment)
+         |          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+         |          prettifier,
+         |          sourceInfo
          |        )
          |      }
-         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded(prettifier))
          |    }
          |
          |    private[scalatest] def indicateSuccess(message: => String): Result
          |
-         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, idx: Int): Result
+         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, sourceInfo: SourceInfo, idx: Int): Result
          |
-         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
+         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, sourceInfo: SourceInfo): Result
          |  }
          |
          |  implicit def assertingNatureOfT[T]: TableAsserting[T] { type Result = Unit } = {
          |    new TableAssertingImpl[T] {
          |      type Result = Unit
          |      def indicateSuccess(message: => String): Unit = ()
-         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, idx: Int): Unit =
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, sourceInfo: SourceInfo, idx: Int): Unit =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
@@ -1771,7 +1779,7 @@ $columnsOfIndexes$
          |          namesOfArgs,
          |          idx
          |        )
-         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit =
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, sourceInfo: SourceInfo): Unit =
          |        throw new org.scalatest.exceptions.TestFailedException(
          |          sde => Some(message),
          |          optionalCause,
@@ -1798,7 +1806,7 @@ $columnsOfIndexes$
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion
          |      def indicateSuccess(message: => String): Assertion = Succeeded
-         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, idx: Int): Assertion =
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, sourceInfo: SourceInfo, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
@@ -1809,7 +1817,7 @@ $columnsOfIndexes$
          |          namesOfArgs,
          |          idx
          |        )
-         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion =
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion =
          |        throw new org.scalatest.exceptions.TestFailedException(
          |          sde => Some(message),
          |          optionalCause,

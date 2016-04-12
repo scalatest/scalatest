@@ -24,6 +24,7 @@ import org.scalatest.events.{TopOfClass, TopOfMethod}
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * <strong>Trait <code>fixture.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
@@ -129,10 +130,10 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
                 registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation), None)
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
+                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject(Prettifier.default), Some(e), e => 8)
+                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject(Prettifier.default), Some(e), e => 8)
                 case dtne: exceptions.DuplicateTestNameException => throw dtne
-                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInObject(UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
                 case other: Throwable => throw other
               }
             }

@@ -79,9 +79,9 @@ object MatchPatternHelper {
     if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
       throw newTestFailedException(
         if (resultOfNoWordForAny.shouldBeTrue)
-          FailureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
+          FailureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.prettifier, resultOfNoWordForAny.left)
         else
-          FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left),
+          FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.prettifier, resultOfNoWordForAny.left),
         None,
         resultOfNoWordForAny.sourceInfo
       )

@@ -19,8 +19,11 @@ import SharedHelpers.thisLineNumber
 import java.io.FileNotFoundException
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShorthandShouldNotBeThrownBySpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   val fileName: String = "ShorthandShouldNotBeThrownBySpec.scala"
     
@@ -31,7 +34,7 @@ class ShorthandShouldNotBeThrownBySpec extends FunSpec {
     Resources.exceptionExpected(clz.getName)
     
   def hadExpectedMessage(left: Throwable, expectedMessage: String): String = 
-    FailureMessages.hadExpectedMessage(left, expectedMessage)
+    FailureMessages.hadExpectedMessage(prettifier, left, expectedMessage)
 
   class TestException(message: String) extends Exception(message)
   

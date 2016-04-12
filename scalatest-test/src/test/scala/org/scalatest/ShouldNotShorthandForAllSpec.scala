@@ -20,13 +20,16 @@ import exceptions.TestFailedException
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
+import org.scalactic.Prettifier
 
 class ShouldNotShorthandForAllSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
+
+  private val prettifier = Prettifier.default
   
   def errorMessage(index: Int, message: String, lineNumber: Int, left: Any): String = 
     "'all' inspection failed, because: \n" +
     "  at index " + index + ", " + message + " (ShouldNotShorthandForAllSpec.scala:" + lineNumber + ") \n" +
-    "in " + decorateToStringValue(left)
+    "in " + decorateToStringValue(prettifier, left)
   
   describe("The shouldNot syntax") {
 

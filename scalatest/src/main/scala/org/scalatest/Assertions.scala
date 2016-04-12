@@ -1000,7 +1000,7 @@ trait Assertions extends TripleEquals  {
   def assertResult(expected: Any, clue: Any)(actual: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages.expectedButGot(exp, act)
+      val s = FailureMessages.expectedButGot(prettifier, exp, act)
       val fullMsg = AppendedClues.appendClue(s, clue.toString)
       throw newAssertionFailedException(Some(fullMsg), None, sourceInfo)
     }
@@ -1021,7 +1021,7 @@ trait Assertions extends TripleEquals  {
   def assertResult(expected: Any)(actual: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
     if (!areEqualComparingArraysStructurally(actual, expected)) {
       val (act, exp) = Suite.getObjectsForFailureMessage(actual, expected)
-      val s = FailureMessages.expectedButGot(exp, act)
+      val s = FailureMessages.expectedButGot(prettifier, exp, act)
       throw newAssertionFailedException(Some(s), None, sourceInfo)
     }
     Succeeded

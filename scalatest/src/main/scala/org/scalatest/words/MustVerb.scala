@@ -17,6 +17,7 @@ package org.scalatest.words
 
 import org.scalatest._
 import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * Provides an implicit conversion that adds <code>must</code> methods to <code>String</code>
@@ -186,8 +187,8 @@ trait MustVerb {
      * no-arg function.
      * </p>
      */
-    def must(right: => Unit)(implicit fun: StringVerbBlockRegistration, sourceInfo: SourceInfo) {
-      fun(leftSideString, "must", sourceInfo, right _)
+    def must(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, sourceInfo: SourceInfo) {
+      fun(leftSideString, "must", prettifier, sourceInfo, right _)
     }
 
     /**
@@ -213,8 +214,8 @@ trait MustVerb {
      * <code>"must"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>must</code>.
      * </p>
      */
-    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit, sourceInfo: SourceInfo) {
-      fun(leftSideString, "must", resultOfAfterWordApplication, sourceInfo)
+    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, SourceInfo) => Unit, prettifier: Prettifier, sourceInfo: SourceInfo) {
+      fun(leftSideString, "must", resultOfAfterWordApplication, prettifier, sourceInfo)
     }
   }
 

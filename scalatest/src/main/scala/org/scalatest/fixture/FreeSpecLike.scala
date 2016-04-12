@@ -26,6 +26,7 @@ import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * Implementation trait for class <code>fixture.FreeSpec</code>, which is
@@ -332,7 +333,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    *
    * @author Bill Venners
    */
-  protected final class FreeSpecStringWrapper(string: String, sourceInfo: SourceInfo) {
+  protected final class FreeSpecStringWrapper(string: String, prettifier: Prettifier, sourceInfo: SourceInfo) {
 
     /**
      * Register some text that may surround one or more tests. Thepassed function value may contain surrounding text
@@ -355,11 +356,11 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
         registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, sourceFileName, "-", stackDepth, -2, None, Some(sourceInfo))
       }
       catch {
-        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
-        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e => errorStackDepth)
+        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause(prettifier), Some(e), e => errorStackDepth)
+        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause(prettifier), Some(e), e => errorStackDepth)
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e => duplicateErrorStackDepth)
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), e => errorStackDepth)
+        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), e => errorStackDepth)
         case other: Throwable => throw other
       }
     }
@@ -506,7 +507,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * methods <code>when</code>, <code>that</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
    * and <code>ignore</code> to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit sourceInfo: SourceInfo) = new FreeSpecStringWrapper(s, sourceInfo)
+  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) = new FreeSpecStringWrapper(s, prettifier, sourceInfo)
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FreeSpec</code> belong, and values

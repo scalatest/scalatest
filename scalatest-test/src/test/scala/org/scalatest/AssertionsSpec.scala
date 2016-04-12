@@ -30,7 +30,9 @@ class AssertionsSpec extends FunSpec {
 
   val fileName: String = "AssertionsSpec.scala"
 
-  describe("The === method ") {
+  private val prettifier = Prettifier.default
+
+  describe("The === method") {
     it("should be usable when the left expression results in null") {
       val npe = new NullPointerException
       assert(npe.getMessage === null)
@@ -89,7 +91,7 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assert(a === null)
       }
-      assert(e1.message === Some(FailureMessages.didNotEqual(a, null)))
+      assert(e1.message === Some(FailureMessages.didNotEqual(prettifier, a, null)))
     }
   }
   describe("The intercept method") {
@@ -214,44 +216,44 @@ class AssertionsSpec extends FunSpec {
 
   def didNotEqual(left: Any, right: Any): String = {
     val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-    FailureMessages.didNotEqual(leftee, rightee)
+    FailureMessages.didNotEqual(prettifier, leftee, rightee)
   }
 
   def equaled(left: Any, right: Any): String =
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
 
   def expressionFailed(left: String): String =
-    FailureMessages.expressionFailed(UnquotedString(left))
+    FailureMessages.expressionFailed(prettifier, UnquotedString(left))
 
   def wasNotGreaterThan(left: Any, right: Any): String =
-    FailureMessages.wasNotGreaterThan(left, right)
+    FailureMessages.wasNotGreaterThan(prettifier, left, right)
 
   def wasGreaterThan(left: Any, right: Any): String =
-    FailureMessages.wasGreaterThan(left, right)
+    FailureMessages.wasGreaterThan(prettifier, left, right)
 
   def wasNotGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasNotGreaterThanOrEqualTo(left, right)
+    FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, left, right)
 
   def wasGreaterThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasGreaterThanOrEqualTo(left, right)
+    FailureMessages.wasGreaterThanOrEqualTo(prettifier, left, right)
 
   def wasNotLessThan(left: Any, right: Any): String =
-    FailureMessages.wasNotLessThan(left, right)
+    FailureMessages.wasNotLessThan(prettifier, left, right)
 
   def wasLessThan(left: Any, right: Any): String =
-    FailureMessages.wasLessThan(left, right)
+    FailureMessages.wasLessThan(prettifier, left, right)
 
   def wasNotLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasNotLessThanOrEqualTo(left, right)
+    FailureMessages.wasNotLessThanOrEqualTo(prettifier, left, right)
 
   def wasLessThanOrEqualTo(left: Any, right: Any): String =
-    FailureMessages.wasLessThanOrEqualTo(left, right)
+    FailureMessages.wasLessThanOrEqualTo(prettifier, left, right)
 
   def commaAnd(left: String, right: String): String =
-    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(prettifier, UnquotedString(left), UnquotedString(right))
 
   def commaBut(left: String, right: String): String =
-    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(prettifier, UnquotedString(left), UnquotedString(right))
 
   def wasFalse(left: String): String =
     left + " was false"
@@ -308,16 +310,16 @@ class AssertionsSpec extends FunSpec {
     quoteString(left) + " was instance of " + className
 
   def hadLengthInsteadOfExpectedLength(left: Any, actual: Any, expected: Any): String =
-    FailureMessages.hadLengthInsteadOfExpectedLength(left, actual, expected)
+    FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, actual, expected)
 
   def hadLength(left: Any, actual: Long): String =
-    FailureMessages.hadLength(left, actual)
+    FailureMessages.hadLength(prettifier, left, actual)
 
   def hadSizeInsteadOfExpectedSize(left: Any, actual: Any, expected: Any): String =
-    FailureMessages.hadSizeInsteadOfExpectedSize(left, actual, expected)
+    FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, left, actual, expected)
 
   def hadSize(left: Any, actual: Long): String =
-    FailureMessages.hadSize(left, actual)
+    FailureMessages.hadSize(prettifier, left, actual)
 
   class Stateful {
     var state = false
@@ -6385,7 +6387,7 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a) { null }
       }
-      assert(e1.message === Some(FailureMessages.expectedButGot(a, null)))
+      assert(e1.message === Some(FailureMessages.expectedButGot(prettifier, a, null)))
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1
@@ -6452,7 +6454,7 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a, "a clue") { null }
       }
-      assert(e1.message === Some(FailureMessages.expectedButGot(a, null) + " a clue"))
+      assert(e1.message === Some(FailureMessages.expectedButGot(prettifier, a, null) + " a clue"))
     }
     it("should append clues in a satisfying manner") {
       val a = "hi"
@@ -6462,22 +6464,22 @@ class AssertionsSpec extends FunSpec {
       val e1 = intercept[TestFailedException] {
         assertResult(a, "the clue") { b }
       }
-      assert(e1.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + " the clue"))
+      assert(e1.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + " the clue"))
 
       val e2 = intercept[TestFailedException] {
         assertResult(a, ", the clue") { b }
       }
-      assert(e2.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + ", the clue"))
+      assert(e2.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + ", the clue"))
 
       val e3 = intercept[TestFailedException] {
         assertResult(a, ". the clue") { b }
       }
-      assert(e3.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + ". the clue"))
+      assert(e3.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + ". the clue"))
 
       val e4 = intercept[TestFailedException] {
         assertResult(a, "; the clue") { b }
       }
-      assert(e4.message === Some(FailureMessages.expectedButGot(aDiff, bDiff) + "; the clue"))
+      assert(e4.message === Some(FailureMessages.expectedButGot(prettifier, aDiff, bDiff) + "; the clue"))
     }
     it("should result in type Assertion and, on success, return the Succeeded value") {
       val x = 1

@@ -126,8 +126,6 @@ import exceptions.NullArgumentException
  */
 trait Requirements {
 
-  //implicit val prettifier = Prettifier.default
-
   import language.experimental.macros
 
   /**
@@ -159,7 +157,7 @@ trait Requirements {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
-        throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse()(prettifier) else failureMessage)
+        throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse(prettifier) else failureMessage)
       }
     }
 
@@ -174,7 +172,7 @@ trait Requirements {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
-        throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse()(prettifier) else failureMessage)
+        throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse(prettifier) else failureMessage)
       }
     }
 
@@ -195,14 +193,14 @@ trait Requirements {
         }
         val errorMessage =
           if (nullCount == 1)
-            FailureMessages.wasNull(UnquotedString(nullVariableNames(0)))(prettifier)
+            FailureMessages.wasNull(prettifier, UnquotedString(nullVariableNames(0)))
           else if (nullCount == 2) {
             val combinedVariableNames = Resources.and(nullVariableNames.head, nullVariableNames.last)
-            FailureMessages.wereNull(UnquotedString(combinedVariableNames))(prettifier)
+            FailureMessages.wereNull(prettifier, UnquotedString(combinedVariableNames))
           }
           else {
             val combinedVariableNames = Resources.commaAnd(nullVariableNames.dropRight(1).mkString(Resources.comma), nullVariableNames.last)
-            FailureMessages.wereNull(UnquotedString(combinedVariableNames))(prettifier)
+            FailureMessages.wereNull(prettifier, UnquotedString(combinedVariableNames))
           }
         throw new NullArgumentException(errorMessage)
       }

@@ -18,13 +18,16 @@ package org.scalatest
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
+import org.scalactic.Prettifier
 
 class NoneOfContainMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("noneOf ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.mkString(", ")))))
+      e.message should be (Some(FailureMessages.containedAtLeastOneOf(prettifier, left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -59,17 +62,17 @@ class NoneOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e1.getMessage() should be (FailureMessages.noneOfDuplicate)
+      e1.getMessage() should be (FailureMessages.noneOfDuplicate(prettifier))
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e2.getMessage() should be (FailureMessages.noneOfDuplicate)
+      e2.getMessage() should be (FailureMessages.noneOfDuplicate(prettifier))
       
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e3.getMessage() should be (FailureMessages.noneOfDuplicate)
+      e3.getMessage() should be (FailureMessages.noneOfDuplicate(prettifier))
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List contains element in right List") {
@@ -110,8 +113,8 @@ class NoneOfContainMatcherSpec extends FunSpec {
   describe("not noneOf ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.mkString(", ")))))
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(prettifier, left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

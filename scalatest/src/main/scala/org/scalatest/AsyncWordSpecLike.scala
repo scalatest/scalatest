@@ -27,6 +27,7 @@ import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
 import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * Implementation trait for class <code>AsyncWordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -191,17 +192,17 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecRegistering.scala", methodName, 4, -3, None, sourceInfo, testTags: _*)
   }
 
-  private def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String, errorMessage: String): String =
+  private def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String, errorMessage: String, prettifier: Prettifier): String =
     verb match {
-      case "when" => FailureMessages.exceptionWasThrownInWhenClause(className, description, errorMessage)
-      case "which" => FailureMessages.exceptionWasThrownInWhichClause(className, description, errorMessage)
-      case "that" => FailureMessages.exceptionWasThrownInThatClause(className, description, errorMessage)
-      case "should" => FailureMessages.exceptionWasThrownInShouldClause(className, description, errorMessage)
-      case "must" => FailureMessages.exceptionWasThrownInMustClause(className, description, errorMessage)
-      case "can" => FailureMessages.exceptionWasThrownInCanClause(className, description, errorMessage)
+      case "when" => FailureMessages.exceptionWasThrownInWhenClause(prettifier, className, description, errorMessage)
+      case "which" => FailureMessages.exceptionWasThrownInWhichClause(prettifier, className, description, errorMessage)
+      case "that" => FailureMessages.exceptionWasThrownInThatClause(prettifier, className, description, errorMessage)
+      case "should" => FailureMessages.exceptionWasThrownInShouldClause(prettifier, className, description, errorMessage)
+      case "must" => FailureMessages.exceptionWasThrownInMustClause(prettifier, className, description, errorMessage)
+      case "can" => FailureMessages.exceptionWasThrownInCanClause(prettifier, className, description, errorMessage)
     }
 
-  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, sourceInfo: SourceInfo, fun: () => Unit) {
+  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, prettifier: Prettifier, sourceInfo: SourceInfo, fun: () => Unit) {
     val (getStackDepth, duplicateErrorStackDepth) =
       verb match {
         // SKIP-SCALATESTJS-START
@@ -226,17 +227,17 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "AsyncWordSpecLike.scala", methodName, stackDepth, adjustment, None, sourceInfo)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage), Some(other), e => getStackDepth)
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage, prettifier), Some(e), e => duplicateErrorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage, prettifier), Some(other), e => getStackDepth)
       case other: Throwable => throw other
     }
   }
 
-  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessage: => String, methodName:String, stackDepth: Int, adjustment: Int, sourceInfo: SourceInfo, fun: () => Unit) {
+  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessage: => String, methodName:String, stackDepth: Int, adjustment: Int, prettifier: Prettifier, sourceInfo: SourceInfo, fun: () => Unit) {
 
     // SKIP-SCALATESTJS-START
     val notAllowStackDepth = 2
@@ -275,12 +276,12 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
                 registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "AsyncWordSpecLike.scala", methodName, stackDepth, adjustment, None, sourceInfo)
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
+                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
                 case nae: exceptions.NotAllowedException => throw nae
                 case trce: TestRegistrationClosedException => throw trce
-                case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage), Some(e), e => duplicateErrorStackDepth)
-                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(other.getClass.getName), if (descriptionText.endsWith(" " + methodName)) descriptionText.substring(0, descriptionText.length - (" " + methodName).length) else descriptionText, other.getMessage), Some(other), e => getStackDepth)
+                case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage, prettifier), Some(e), e => duplicateErrorStackDepth)
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(other.getClass.getName), if (descriptionText.endsWith(" " + methodName)) descriptionText.substring(0, descriptionText.length - (" " + methodName).length) else descriptionText, other.getMessage, prettifier), Some(other), e => getStackDepth)
                 case other: Throwable => throw other
               }
 
@@ -482,12 +483,12 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def when(f: => Unit)(implicit sourceInfo: SourceInfo) {
+    def when(f: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string, Some("when"), "when", "when", stackDepth, -2, sourceInfo, f _)
+      registerBranch(string, Some("when"), "when", "when", stackDepth, -2, prettifier, sourceInfo, f _)
     }
 
     /**
@@ -508,8 +509,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit sourceInfo: SourceInfo) {
-      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, sourceInfo, resultOfAfterWordApplication.f)
+    def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, prettifier, sourceInfo, resultOfAfterWordApplication.f)
     }
 
     /**
@@ -528,12 +529,12 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def that(f: => Unit)(implicit sourceInfo: SourceInfo) {
+    def that(f: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, sourceInfo, f _)
+      registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, prettifier, sourceInfo, f _)
     }
 
     /**
@@ -552,12 +553,12 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def which(f: => Unit)(implicit sourceInfo: SourceInfo) {
+    def which(f: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, sourceInfo, f _)
+      registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, prettifier, sourceInfo, f _)
     }
 
     /**
@@ -578,8 +579,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit sourceInfo: SourceInfo) {
-      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, sourceInfo, resultOfAfterWordApplication.f)
+    def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, prettifier, sourceInfo, resultOfAfterWordApplication.f)
     }
 
     /**
@@ -600,8 +601,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit sourceInfo: SourceInfo) {
-      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, sourceInfo, resultOfAfterWordApplication.f)
+    def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, prettifier, sourceInfo, resultOfAfterWordApplication.f)
     }
   }
 
@@ -764,8 +765,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for <code>WordSpec</code>.
      * </p>
      */
-    def should(right: => Unit)(implicit sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, sourceInfo, right _)
+    def should(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, prettifier, sourceInfo, right _)
     }
 
     /**
@@ -787,8 +788,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for <code>WordSpec</code>.
      * </p>
      */
-    def must(right: => Unit)(implicit sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, sourceInfo, right _)
+    def must(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, prettifier, sourceInfo, right _)
     }
 
     /**
@@ -810,8 +811,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for <code>WordSpec</code>.
      * </p>
      */
-    def can(right: => Unit)(implicit sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, sourceInfo, right _)
+    def can(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, prettifier, sourceInfo, right _)
     }
 
     /**
@@ -833,8 +834,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for <code>WordSpec</code>.
      * </p>
      */
-    def when(right: => Unit)(implicit sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, sourceInfo, right _)
+    def when(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, prettifier, sourceInfo, right _)
     }
   }
 
@@ -899,8 +900,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for <code>WordSpec</code>.
      * </p>
      */
-    def should(right: => Unit)(implicit sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, sourceInfo, right _)
+    def should(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, prettifier, sourceInfo, right _)
     }
 
     /**
@@ -922,8 +923,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for <code>WordSpec</code>.
      * </p>
      */
-    def must(right: => Unit)(implicit sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, sourceInfo, right _)
+    def must(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, prettifier, sourceInfo, right _)
     }
 
     /**
@@ -945,8 +946,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for <code>WordSpec</code>.
      * </p>
      */
-    def can(right: => Unit)(implicit sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, sourceInfo, right _)
+    def can(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, prettifier, sourceInfo, right _)
     }
 
     /**
@@ -968,8 +969,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for <code>WordSpec</code>.
      * </p>
      */
-    def when(right: => Unit)(implicit sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, sourceInfo, right _)
+    def when(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, prettifier, sourceInfo, right _)
     }
   }
 
@@ -1045,7 +1046,7 @@ one error found
    */
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
-      def apply(left: String, verb: String, sourceInfo: SourceInfo, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, sourceInfo, f)
+      def apply(left: String, verb: String, prettifier: Prettifier, sourceInfo: SourceInfo, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, prettifier, sourceInfo, f)
     }
 
   /**
@@ -1070,21 +1071,21 @@ one error found
    * subject and executes the block.
    * </p>
    */
-  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit = {
-    (left, verb, resultOfAfterWordApplication, sourceInfo) => {
+  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication, Prettifier, SourceInfo) => Unit = {
+    (left, verb, resultOfAfterWordApplication, prettifier, sourceInfo) => {
       val afterWordFunction =
         () => {
           // SKIP-SCALATESTJS-START
           val stackDepth = 10
           // SKIP-SCALATESTJS-END
           //SCALATESTJS-ONLY val stackDepth = 15
-          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, sourceInfo, resultOfAfterWordApplication.f)
+          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, prettifier, sourceInfo, resultOfAfterWordApplication.f)
         }
       // SKIP-SCALATESTJS-START
       val stackDepth = 7
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 9
-      registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, sourceInfo, afterWordFunction)
+      registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, prettifier, sourceInfo, afterWordFunction)
     }
   }
 

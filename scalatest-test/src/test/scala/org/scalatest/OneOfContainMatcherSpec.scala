@@ -18,13 +18,16 @@ package org.scalatest
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
+import org.scalactic.Prettifier
 
 class OneOfContainMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("oneOf ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages.didNotContainOneOfElements(left, UnquotedString(right.mkString(", ")))))
+      e.message should be (Some(FailureMessages.didNotContainOneOfElements(prettifier, left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("OneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -98,17 +101,17 @@ class OneOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e1.getMessage() should be (FailureMessages.oneOfDuplicate)
+      e1.getMessage() should be (FailureMessages.oneOfDuplicate(prettifier))
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e2.getMessage() should be (FailureMessages.oneOfDuplicate)
+      e2.getMessage() should be (FailureMessages.oneOfDuplicate(prettifier))
       
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e3.getMessage() should be (FailureMessages.oneOfDuplicate)
+      e3.getMessage() should be (FailureMessages.oneOfDuplicate(prettifier))
     }
     
     it("should throw TestFailedException with correct stack depth and message when left and right List are same size but does not contain any same element") {
@@ -319,8 +322,8 @@ class OneOfContainMatcherSpec extends FunSpec {
   describe("not oneOf ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages.containedOneOfElements(left, UnquotedString(right.mkString(", ")))))
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(FailureMessages.containedOneOfElements(prettifier, left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("OneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

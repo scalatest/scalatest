@@ -19,8 +19,11 @@ import SharedHelpers.thisLineNumber
 import java.io.FileNotFoundException
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldNotBeThrownBySpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   val fileName: String = "ShouldNotBeThrownBySpec.scala"
     
@@ -31,7 +34,7 @@ class ShouldNotBeThrownBySpec extends FunSpec {
     Resources.exceptionExpected(clz.getName)
     
   def hadExpectedMessage(left: Throwable, expectedMessage: String): String = 
-    FailureMessages.hadExpectedMessage(left, expectedMessage)
+    FailureMessages.hadExpectedMessage(prettifier, left, expectedMessage)
   
   describe("the [Exception] 'should not have message' syntax should") {
 

@@ -17,12 +17,15 @@ package org.scalatest
 
 import org.scalactic.Equality
 import org.scalactic.NormalizingEquality
+import org.scalactic.Prettifier
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import exceptions.TestFailedException
 
 class OptionShouldContainSpec extends FunSpec with Matchers {
+
+  private val prettifier = Prettifier.default
 
   describe("an Option") {
 
@@ -38,21 +41,21 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e1 = intercept[TestFailedException] {
           some should contain ("ho")
         }
-        e1.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(some), "\"ho\""))
+        e1.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(prettifier, some), "\"ho\""))
         e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e2 = intercept[TestFailedException] {
           none should contain ("ho")
         }
-        e2.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(none), "\"ho\""))
+        e2.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(prettifier, none), "\"ho\""))
         e2.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e4 = intercept[TestFailedException] {
           Some("hi") should contain ("ho")
         }
-        e4.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(some), "\"ho\""))
+        e4.message.get should be (Resources.didNotContainExpectedElement(decorateToStringValue(prettifier, some), "\"ho\""))
         e4.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e4.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -94,7 +97,7 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e = intercept[TestFailedException] {
           some should contain (null)
         }
-        e.message.get should be (Resources.didNotContainNull(decorateToStringValue(some)))
+        e.message.get should be (Resources.didNotContainNull(decorateToStringValue(prettifier, some)))
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -109,14 +112,14 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e3 = intercept[TestFailedException] {
           some should not contain "hi"
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(some), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, some), "\"hi\""))
         e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e5 = intercept[TestFailedException] {
           Some("hi") should not contain "hi"
         }
-        e5.message.get should be (Resources.containedExpectedElement(decorateToStringValue(some), "\"hi\""))
+        e5.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, some), "\"hi\""))
         e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -152,7 +155,7 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e = intercept[TestFailedException] {
           someNull should not contain (null)
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(someNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, someNull)))
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -169,14 +172,14 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e3 = intercept[TestFailedException] {
           some should not (contain ("hi"))
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(some), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, some), "\"hi\""))
         e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e5 = intercept[TestFailedException] {
           Some("hi") should not (contain ("hi"))
         }
-        e5.message.get should be (Resources.containedExpectedElement(decorateToStringValue(some), "\"hi\""))
+        e5.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, some), "\"hi\""))
         e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -213,7 +216,7 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e = intercept[TestFailedException] {
           someNull should not (contain (null))
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(someNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, someNull)))
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -229,14 +232,14 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e3 = intercept[TestFailedException] {
           some should (not contain "hi")
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(some), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, some), "\"hi\""))
         e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
 
         val e5 = intercept[TestFailedException] {
           Some("hi") should (not contain "hi")
         }
-        e5.message.get should be (Resources.containedExpectedElement(decorateToStringValue(some), "\"hi\""))
+        e5.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, some), "\"hi\""))
         e5.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e5.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -273,7 +276,7 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e = intercept[TestFailedException] {
           someNull should (not contain (null))
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(someNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, someNull)))
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -288,7 +291,7 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e3 = intercept[TestFailedException] {
           some shouldNot contain ("hi")
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(some), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, some), "\"hi\""))
         e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -345,7 +348,7 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e = intercept[TestFailedException] {
           someNull shouldNot contain (null)
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(someNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, someNull)))
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -361,7 +364,7 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e3 = intercept[TestFailedException] {
           some shouldNot (contain ("hi"))
         }
-        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(some), "\"hi\""))
+        e3.message.get should be (Resources.containedExpectedElement(decorateToStringValue(prettifier, some), "\"hi\""))
         e3.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e3.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -421,7 +424,7 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         val e = intercept[TestFailedException] {
           someNull shouldNot (contain (null))
         }
-        e.message.get should be (Resources.containedNull(decorateToStringValue(someNull)))
+        e.message.get should be (Resources.containedNull(decorateToStringValue(prettifier, someNull)))
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 4)
       }
@@ -507,8 +510,8 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiSomes(0)) + " did not contain null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiSomes)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiSomes(0)) + " did not contain null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiSomes)))
       }
     }
     describe("when used with not contain value syntax") {
@@ -571,8 +574,8 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullSomes)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullSomes)))
       }
     }
     describe("when used with not (contain (value)) syntax") {
@@ -635,8 +638,8 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullSomes)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullSomes)))
       }
     }
     describe("when used with (not contain value) syntax") {
@@ -699,8 +702,8 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullSomes)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullSomes)))
       }
     }
 
@@ -721,15 +724,15 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(somes(2)) + " contained element 2 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(somes)))
+          "  at index 2, " + decorateToStringValue(prettifier, somes(2)) + " contained element 2 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, somes)))
 
         val e2 = intercept[TestFailedException] {
           atMost (2, nones) shouldNot contain ("ho")
         }
         e2.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in " + decorateToStringValue(nones)))
+        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in " + decorateToStringValue(prettifier, nones)))
       }
       it("should use the implicit Equality in scope") {
         all (hiSomes) shouldNot contain ("ho")
@@ -764,8 +767,8 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullSomes)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullSomes)))
       }
     }
 
@@ -786,15 +789,15 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         e1.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e1.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e1.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 2, " + decorateToStringValue(somes(2)) + " contained element 2 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(somes)))
+          "  at index 2, " + decorateToStringValue(prettifier, somes(2)) + " contained element 2 (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, somes)))
 
         val e2 = intercept[TestFailedException] {
           atMost (2, nones) shouldNot (contain ("ho"))
         }
         e2.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e2.failedCodeLineNumber.get should be (thisLineNumber - 3)
-        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in " + decorateToStringValue(nones)))
+        e2.message should be (Some("'atMost(2)' inspection failed, because 3 elements satisfied the assertion block at index 0, 1 and 2 in " + decorateToStringValue(prettifier, nones)))
       }
       it("should use the implicit Equality in scope") {
         all (hiSomes) shouldNot (contain ("ho"))
@@ -829,8 +832,8 @@ class OptionShouldContainSpec extends FunSpec with Matchers {
         e.failedCodeFileName.get should be ("OptionShouldContainSpec.scala")
         e.failedCodeLineNumber.get should be (thisLineNumber - 3)
         e.message should be (Some("'all' inspection failed, because: \n" +
-          "  at index 0, " + decorateToStringValue(hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
-          "in " + decorateToStringValue(hiNullSomes)))
+          "  at index 0, " + decorateToStringValue(prettifier, hiNullSomes(0)) + " contained null (OptionShouldContainSpec.scala:" + (thisLineNumber - 5) + ") \n" +
+          "in " + decorateToStringValue(prettifier, hiNullSomes)))
       }
     }
   }

@@ -26,6 +26,7 @@ import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * Implementation trait for class <code>fixture.FunSpec</code>, which is
@@ -456,7 +457,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * @param description the description text
    * @param fun the function which makes up the body for the description
    */
-  protected def describe(description: String)(fun: => Unit)(implicit sourceInfo: SourceInfo) {
+  protected def describe(description: String)(fun: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val errorStackDepth = 4
@@ -469,10 +470,10 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
       registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", stackDepth, -2, None, Some(sourceInfo))
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), e => errorStackDepth)
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => errorStackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause(prettifier), Some(e), e => errorStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause(prettifier), Some(e), e => errorStackDepth)
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e => duplicateErrorStackDepth)
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => errorStackDepth)
       case other: Throwable => throw other
     }
   }

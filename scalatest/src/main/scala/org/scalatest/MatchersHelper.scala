@@ -224,9 +224,9 @@ private[scalatest] object MatchersHelper {
 
         throw newTestFailedException(
           if (methodNameStartsWithVowel)
-            FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
+            FailureMessages.hasNeitherAnOrAnMethod(prettifier, left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
           else
-            FailureMessages.hasNeitherAOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
+            FailureMessages.hasNeitherAOrAnMethod(prettifier, left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
           None,
           sourceInfo
         )

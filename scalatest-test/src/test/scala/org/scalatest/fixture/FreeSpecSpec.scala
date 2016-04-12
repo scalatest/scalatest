@@ -30,8 +30,11 @@ import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalatest.exceptions.NotAllowedException
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.Prettifier
 
 class FreeSpecSpec extends org.scalatest.FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("A fixture.FreeSpec") {
 
@@ -1711,7 +1714,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec {
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause(prettifier)))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1719,7 +1722,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("FreeSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
@@ -1736,7 +1739,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec {
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause(prettifier)))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1744,7 +1747,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("FreeSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
@@ -1762,7 +1765,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -1785,11 +1788,11 @@ class FreeSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))
     }
 
     // SKIP-SCALATESTJS-START

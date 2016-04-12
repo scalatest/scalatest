@@ -15,7 +15,7 @@
 */
 package org.scalatest
 
-import org.scalactic.{Equality, Every, One, Many}
+import org.scalactic.{Equality, Every, One, Many, Prettifier}
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
@@ -24,6 +24,8 @@ import Matchers._
 import exceptions.TestFailedException
 
 class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   val invertedStringEquality =
     new Equality[String] {
@@ -75,11 +77,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("happy", "birthday", "to", "you") and contain oneElementOf Seq("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(fumList, Seq("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("fee", "fie", "foe", "fum") and contain oneElementOf Seq("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e2, FailureMessages.containedOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -88,11 +90,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("fee", "fie", "foe", "fum") and contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM") and (contain oneElementOf Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -100,11 +102,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (contain oneElementOf Seq("fee", "fie", "foe", "fum") and contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM") and contain oneElementOf Seq("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
         (fumList should (contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -121,11 +123,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) and contain oneElementOf Seq("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(prettifier, fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (equal (fumList) and contain oneElementOf Seq("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(prettifier, fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -134,11 +136,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) and contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(prettifier, fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (equal (fumList) and (contain oneElementOf Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(prettifier, fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -146,11 +148,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (equal (fumList) and contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(prettifier, fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (equal (toList) and contain oneElementOf Seq("fee", "fie", "foe", "fum"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, toList) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(prettifier, fumList, toList) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
         (fumList should (equal (toList) and contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
 
@@ -166,11 +168,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (be (toList) and contain oneElementOf Seq("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(prettifier, fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (be (fumList) and contain oneElementOf Seq("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(prettifier, fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("happy", "birthday", "to", "you")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -179,11 +181,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (be (toList) and contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))
         }
-        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(prettifier, fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (be (fumList) and (contain oneElementOf Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(prettifier, fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -191,11 +193,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (be (fumList) and contain oneElementOf Seq("fee", "fie", "foe", "fum"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(prettifier, fumList, fumList) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (be (toList) and contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(prettifier, fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (be (fumList) and contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
 
@@ -211,11 +213,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("fee", "fie", "foe", "fum") and be (toList))
         }
-        checkMessageStackDepth(e1, FailureMessages.containedOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.wasNotEqualTo(prettifier, fumList, toList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM") and be (fumList))
         }
-        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -224,11 +226,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("fie", "fee", "fum", "foe") and be (toList))
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (contain oneElementOf Seq("fie", "fee", "fum", "foe") and (be (fumList)))
         }
-        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -236,11 +238,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (contain oneElementOf Seq("fie", "fee", "fum", "foe") and be (fumList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fie", "fee", "fum", "foe")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (contain oneElementOf Seq("FEE", "FIE", "FOE", "FUM") and be (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.wasNotEqualTo(fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.wasNotEqualTo(prettifier, fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and be (fumList))) (after being lowerCased and trimmed)
       }
 
@@ -256,11 +258,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not contain oneElementOf (Seq("fee", "fie", "foe", "fum")) and not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, FailureMessages.containedOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -273,7 +275,7 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e2 = intercept[TestFailedException] {
           fumList should (not contain oneElementOf (Seq("fee", "fie", "foe", "fum")) and (not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))))
         }
-        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -281,11 +283,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM")) and not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not contain oneElementOf (Seq("fee", "fie", "foe", "fum")) and not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotContainOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         (fumList should (contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM ") and contain oneElementOf Seq(" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -302,11 +304,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) and not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, FailureMessages.equaled(fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.equaled(prettifier, fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not equal (toList) and not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, toList) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotEqual(prettifier, fumList, toList) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -315,11 +317,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) and not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e1, FailureMessages.equaled(fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.equaled(prettifier, fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not equal (toList) and (not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))))
         }
-        checkMessageStackDepth(e2, FailureMessages.didNotEqual(fumList, toList) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.didNotEqual(prettifier, fumList, toList) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -327,11 +329,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not equal (fumList) and not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages.didNotEqual(fumList, fumList) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.didNotEqual(prettifier, fumList, fumList) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not equal (toList) and not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages.equaled(fumList, toList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.equaled(prettifier, fumList, toList), fileName, thisLineNumber - 2)
         (fumList should (not contain oneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain oneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -347,11 +349,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not be (fumList) and not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(prettifier, fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not be (toList) and not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(prettifier, fumList, toList) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("fee", "fie", "foe", "fum")), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -360,11 +362,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not be (fumList) and not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))
         }
-        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasEqualTo(prettifier, fumList, fumList), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           fumList should (not be (toList) and (not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM"))))
         }
-        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasNotEqualTo(prettifier, fumList, toList) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -372,11 +374,11 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not be (toList) and not contain oneElementOf (Seq("FEE", "FIE", "FOE", "FUM")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(fumList, toList) + ", but " + FailureMessages.containedOneElementOf(fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, FailureMessages.wasNotEqualTo(prettifier, fumList, toList) + ", but " + FailureMessages.containedOneElementOf(prettifier, fumList, Seq("FEE", "FIE", "FOE", "FUM")), fileName, thisLineNumber - 2)
         val e2 = intercept[TestFailedException] {
           (fumList should (not be (fumList) and not contain oneElementOf (Seq("fee", "fie", "foe", "fum")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(fumList, fumList), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, FailureMessages.wasEqualTo(prettifier, fumList, fumList), fileName, thisLineNumber - 2)
         (fumList should (not contain oneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")) and not contain oneElementOf (Seq(" FEE ", " FIE ", " FOE ", " FUU ")))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -397,7 +399,7 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
     def allErrMsg(index: Int, message: String, lineNumber: Int, left: Any): String =
       "'all' inspection failed, because: \n" +
         "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
-        "in " + decorateToStringValue(left)
+        "in " + decorateToStringValue(prettifier, left)
 
     describe("when used with (contain oneElementOf (..) and contain oneElementOf (..))") {
 
@@ -410,22 +412,22 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (contain oneElementOf Seq(1, 6, 8) and contain oneElementOf Seq(1, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, FailureMessages.didNotContainOneElementOf(lists(2), Seq(1, 6, 8)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, FailureMessages.didNotContainOneElementOf(prettifier, lists(2), Seq(1, 6, 8)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (lists) should (contain oneElementOf Seq(1, 2, 8) and contain oneElementOf Seq(1, 3, 4))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, FailureMessages.containedOneElementOf(lists(2), Seq(1, 2, 8)) + ", but " + FailureMessages.didNotContainOneElementOf(lists(2), Seq(1, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, FailureMessages.containedOneElementOf(prettifier, lists(2), Seq(1, 2, 8)) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, lists(2), Seq(1, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (contain oneElementOf Seq("hi", "hello") and contain oneElementOf Seq("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, FailureMessages.containedOneElementOf(hiLists(0), Seq("hi", "hello")) + ", but " + FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("ho", "hey", "howdy")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("hi", "hello")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("ho", "hey", "howdy")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
           all (lists) should (contain oneElementOf Seq(1, 2, 8) and contain oneElementOf Seq(1, 3, 4))
         }
-        checkMessageStackDepth(e4, allErrMsg(2, FailureMessages.containedOneElementOf(lists(2), Seq(1, 2, 8)) + ", but " + FailureMessages.didNotContainOneElementOf(lists(2), Seq(1, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(2, FailureMessages.containedOneElementOf(prettifier, lists(2), Seq(1, 2, 8)) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, lists(2), Seq(1, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -436,12 +438,12 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (contain oneElementOf Seq("hi", "he") and contain oneElementOf Seq("HI", "HE"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (contain oneElementOf Seq("HI", "HE") and contain oneElementOf Seq("hi", "he"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.containedOneElementOf(hiLists(0), Seq("HI", "HE")) + ", but " + FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("HI", "HE")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -449,12 +451,12 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (contain oneElementOf Seq("hi", "he") and contain oneElementOf Seq("HI", "HE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (contain oneElementOf Seq("HI", "HE") and contain oneElementOf Seq("hi", "he"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.containedOneElementOf(hiLists(0), Seq("HI", "HE")) + ", but " + FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("HI", "HE")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -474,22 +476,22 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (be (One(1)) and contain oneElementOf Seq(1, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(One(2)) + " was not equal to " + decorateToStringValue(One(1)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(prettifier, One(2)) + " was not equal to " + decorateToStringValue(prettifier, One(1)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (list1s) should (be (One(1)) and contain oneElementOf Seq(2, 3, 8))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One(1)) + " was equal to " + decorateToStringValue(One(1)) + ", but " + FailureMessages.didNotContainOneElementOf(list1s(0), Seq(2, 3, 8)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, One(1)) + " was equal to " + decorateToStringValue(prettifier, One(1)) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, list1s(0), Seq(2, 3, 8)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (be (One("hi")) and contain oneElementOf Seq("ho", "hey", "howdy"))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(One("hi")) + " was equal to " + decorateToStringValue(One("hi")) + ", but " + FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("ho", "hey", "howdy")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was equal to " + decorateToStringValue(prettifier, One("hi")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("ho", "hey", "howdy")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
           all (list1s) should (be (One(1)) and contain oneElementOf Seq(2, 3, 8))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(One(1)) + " was equal to " + decorateToStringValue(One(1)) + ", but " + FailureMessages.didNotContainOneElementOf(list1s(0), Seq(2, 3, 8)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(prettifier, One(1)) + " was equal to " + decorateToStringValue(prettifier, One(1)) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, list1s(0), Seq(2, 3, 8)), thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -500,12 +502,12 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (be (One("ho")) and contain oneElementOf Seq("hi", "he"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(One("hi")) + " was not equal to " + decorateToStringValue(One("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was not equal to " + decorateToStringValue(prettifier, One("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (be (One("hi")) and contain oneElementOf Seq("hi", "he"))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One("hi")) + " was equal to " + decorateToStringValue(One("hi")) + ", but " + FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was equal to " + decorateToStringValue(prettifier, One("hi")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -513,12 +515,12 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (be (One("ho")) and contain oneElementOf Seq("hi", "he"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(One("hi")) + " was not equal to " + decorateToStringValue(One("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was not equal to " + decorateToStringValue(prettifier, One("ho")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (be (One("hi")) and contain oneElementOf Seq("hi", "he"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One("hi")) + " was equal to " + decorateToStringValue(One("hi")) + ", but " + FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was equal to " + decorateToStringValue(prettifier, One("hi")) + ", but " + FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("hi", "he")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -537,22 +539,22 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (not contain oneElementOf (Seq(2, 6, 8)) and not contain oneElementOf (Seq(2, 3, 4)))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, FailureMessages.containedOneElementOf(lists(2), Seq(2, 6, 8)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, FailureMessages.containedOneElementOf(prettifier, lists(2), Seq(2, 6, 8)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (lists) should (not contain oneElementOf (Seq(3, 6, 8)) and not contain oneElementOf (Seq(2, 3, 4)))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, FailureMessages.didNotContainOneElementOf(lists(2), Seq(3, 6, 8)) + ", but " + FailureMessages.containedOneElementOf(lists(2), Seq(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, FailureMessages.didNotContainOneElementOf(prettifier, lists(2), Seq(3, 6, 8)) + ", but " + FailureMessages.containedOneElementOf(prettifier, lists(2), Seq(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not contain oneElementOf (Seq("hi", "hello")) and not contain oneElementOf (Seq("ho", "hey", "howdy")))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, FailureMessages.containedOneElementOf(hiLists(0), Seq("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not contain oneElementOf (Seq("ho", "hey", "howdy")) and not contain oneElementOf (Seq("hi", "hello")))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("ho", "hey", "howdy")) + ", but " + FailureMessages.containedOneElementOf(hiLists(0), Seq("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("ho", "hey", "howdy")) + ", but " + FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -563,12 +565,12 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not contain oneElementOf (Seq("HI", "HE")) and not contain oneElementOf (Seq("HO", "HEY", "HOWDY")))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.containedOneElementOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (not contain oneElementOf (Seq("HO", "HEY", "HOWDY")) and not contain oneElementOf (Seq("HI", "HE")))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("HO", "HEY", "HOWDY")) + ", but " + FailureMessages.containedOneElementOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("HO", "HEY", "HOWDY")) + ", but " + FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -576,12 +578,12 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not contain oneElementOf (Seq("HI", "HE")) and not contain oneElementOf (Seq("HO", "HEY", "HOWDY")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.containedOneElementOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (not contain oneElementOf (Seq("HO", "HEY", "HOWDY")) and not contain oneElementOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.didNotContainOneElementOf(hiLists(0), Seq("HO", "HEY", "HOWDY")) + ", but " + FailureMessages.containedOneElementOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, FailureMessages.didNotContainOneElementOf(prettifier, hiLists(0), Seq("HO", "HEY", "HOWDY")) + ", but " + FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should allow RHS to contain duplicated value") {
@@ -601,22 +603,22 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (not be (One(2)) and not contain oneElementOf (Seq(2, 3, 4)))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(One(2)) + " was equal to " + decorateToStringValue(One(2)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(prettifier, One(2)) + " was equal to " + decorateToStringValue(prettifier, One(2)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (lists) should (not be (One(3)) and not contain oneElementOf (Seq(2, 3, 4)))
         }
-        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(One(2)) + " was not equal to " + decorateToStringValue(One(3)) + ", but " + FailureMessages.containedOneElementOf(lists(2), Seq(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(2, decorateToStringValue(prettifier, One(2)) + " was not equal to " + decorateToStringValue(prettifier, One(3)) + ", but " + FailureMessages.containedOneElementOf(prettifier, lists(2), Seq(2, 3, 4)), thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
 
         val e3 = intercept[TestFailedException] {
           all (hiLists) should (not be (One("hi")) and not contain oneElementOf (Seq("ho", "hey", "howdy")))
         }
-        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(One("hi")) + " was equal to " + decorateToStringValue(One("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e3, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was equal to " + decorateToStringValue(prettifier, One("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e4 = intercept[TestFailedException] {
           all (hiLists) should (not be (One("ho")) and not contain oneElementOf (Seq("hi", "hello")))
         }
-        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(One("hi")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + FailureMessages.containedOneElementOf(hiLists(0), Seq("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e4, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was not equal to " + decorateToStringValue(prettifier, One("ho")) + ", but " + FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("hi", "hello")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -627,12 +629,12 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not be (One("hi")) and not contain oneElementOf (Seq("HI", "HE")))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(One("hi")) + " was equal to " + decorateToStringValue(One("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was equal to " + decorateToStringValue(prettifier, One("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           all (hiLists) should (not be (One("ho")) and not contain oneElementOf (Seq("HI", "HE")))
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One("hi")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + FailureMessages.containedOneElementOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was not equal to " + decorateToStringValue(prettifier, One("ho")) + ", but " + FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -640,12 +642,12 @@ class EveryShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not be (One("hi")) and not contain oneElementOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(One("hi")) + " was equal to " + decorateToStringValue(One("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was equal to " + decorateToStringValue(prettifier, One("hi")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
 
         val e2 = intercept[TestFailedException] {
           (all (hiLists) should (not be (One("ho")) and not contain oneElementOf (Seq("HI", "HE")))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(One("hi")) + " was not equal to " + decorateToStringValue(One("ho")) + ", but " + FailureMessages.containedOneElementOf(hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, allErrMsg(0, decorateToStringValue(prettifier, One("hi")) + " was not equal to " + decorateToStringValue(prettifier, One("ho")) + ", but " + FailureMessages.containedOneElementOf(prettifier, hiLists(0), Seq("HI", "HE")), thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should allow RHS to contain duplicated value") {

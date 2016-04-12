@@ -18,17 +18,19 @@ package org.scalatest
 import scala.collection.immutable.TreeSet
 import org.scalatest.events._
 import Matchers._
-
+import org.scalactic.Prettifier
 
 class FailureMessagesSuite extends FunSuite {
 
+  private val prettifier = Prettifier.default
+
   test("test: prettify arrays should handle null array element values") {
     assertResult("Array(1, null, 3)") {
-      FailureMessages.decorateToStringValue(Array(1, null, 3))
+      FailureMessages.decorateToStringValue(prettifier, Array(1, null, 3))
     }
     Array(1, null, 3) should be (Array(1, null, 3))
     assertResult("Array(1, Array(\"hi\", null), null, 3)") {
-      FailureMessages.decorateToStringValue(Array(1, Array("hi", null), null, 3))
+      FailureMessages.decorateToStringValue(prettifier, Array(1, Array("hi", null), null, 3))
     }
   }
 }

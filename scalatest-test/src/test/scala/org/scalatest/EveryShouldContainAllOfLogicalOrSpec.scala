@@ -15,7 +15,7 @@
 */
 package org.scalatest
 
-import org.scalactic.{Equality, Every, One, Many}
+import org.scalactic.{Equality, Every, One, Many, Prettifier}
 import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
@@ -23,6 +23,8 @@ import Matchers._
 import org.scalatest.exceptions.TestFailedException
 
 class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   val invertedStringEquality =
     new Equality[String] {
@@ -71,7 +73,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain allOf ("fee", "fie", "foe", "fam") or contain allOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -82,7 +84,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or (contain allOf ("FIE", "FEE", "FAM", "FOE")))
         }
-        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -92,7 +94,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
         (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -122,7 +124,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) or contain allOf ("happy", "birthday", "to", "you"))
         }
-        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"happy\", \"birthday\", \"to\", \"you\""), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -133,7 +135,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (equal (toList) or (contain allOf ("FIE", "FEE", "FAM", "FOE")))
         }
-        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -143,7 +145,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (equal (fumList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotEqual(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
         (fumList should (equal (toList) or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (decided by invertedListOfStringEquality, after being lowerCased and trimmed)
       }
 
@@ -166,7 +168,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (be (toList) or contain allOf ("fie", "fee", "fam", "foe"))
         }
-        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"fie\", \"fee\", \"fam\", \"foe\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"fie\", \"fee\", \"fam\", \"foe\""), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -177,7 +179,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (be (toList) or (contain allOf ("FIE", "FEE", "FAM", "FOE")))
         }
-        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -187,7 +189,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (be (toList) or contain allOf ("FIE", "FEE", "FAM", "FOE"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FAM\", \"FOE\""), fileName, thisLineNumber - 2)
         (fumList should (be (fumList) or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed)
       }
 
@@ -210,7 +212,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain allOf ("fee", "fie", "foe", "fam") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"fee\", \"fie\", \"foe\", \"fam\"") + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -221,7 +223,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or be (toList))
         }
-        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -231,7 +233,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (contain allOf ("FEE", "FIE", "FOE", "FAM") or be (toList))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.wasNotEqualTo(decorateToStringValue(fumList), decorateToStringValue(toList)), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.didNotContainAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FAM\"") + ", and " + Resources.wasNotEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)), fileName, thisLineNumber - 2)
         (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or be (fumList))) (after being lowerCased and trimmed)
       }
 
@@ -254,7 +256,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not contain allOf ("fee", "fie", "foe", "fum") or not contain allOf ("fie", "fee", "fum", "foe"))
         }
-        checkMessageStackDepth(e1, Resources.containedAllOfElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"fee\", \"fie\", \"foe\", \"fum\"") + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"fie\", \"fee\", \"fum\", \"foe\""), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -265,7 +267,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUM") or not contain allOf ("FIE", "FEE", "FUM", "FOE"))
         }
-        checkMessageStackDepth(e1, Resources.containedAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -275,7 +277,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not contain allOf ("FEE", "FIE", "FOE", "FUM") or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.containedAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\"") + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
         (fumList should (contain allOf (" FEE ", " FIE ", " FOE ", " FUM ") or contain allOf (" FEE ", " FIE ", " FOE ", " FUM "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -305,7 +307,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not equal (fumList) or not contain allOf ("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -316,7 +318,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e2 = intercept[TestFailedException] {
           fumList should (not equal (fumList) or (not contain allOf ("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e2, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -326,7 +328,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not equal (toList) or not contain allOf ("FIE", "FEE", "FUM", "FOE"))) (decided by invertedListOfStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(fumList), decorateToStringValue(toList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.equaled(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, toList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FIE\", \"FEE\", \"FUM\", \"FOE\""), fileName, thisLineNumber - 2)
         (fumList should (not contain allOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain allOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -349,7 +351,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not be (fumList) or not contain allOf ("fee", "fie", "foe", "fum"))
         }
-        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"fee\", \"fie\", \"foe\", \"fum\""), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -360,7 +362,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           fumList should (not be (fumList) or (not contain allOf ("FEE", "FIE", "FOE", "FUM")))
         }
-        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -370,7 +372,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (fumList should (not be (fumList) or not contain allOf ("FEE", "FIE", "FOE", "FUM"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(fumList), decorateToStringValue(fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, Resources.wasEqualTo(decorateToStringValue(prettifier, fumList), decorateToStringValue(prettifier, fumList)) + ", and " + Resources.containedAllOfElements(decorateToStringValue(prettifier, fumList), "\"FEE\", \"FIE\", \"FOE\", \"FUM\""), fileName, thisLineNumber - 2)
         (fumList should (not contain allOf (" FEE ", " FIE ", " FOE ", " FUU ") or not contain allOf (" FEE ", " FIE ", " FOE ", " FUU "))) (after being lowerCased and trimmed, after being lowerCased and trimmed)
       }
 
@@ -396,7 +398,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
     def allErrMsg(index: Int, message: String, lineNumber: Int, left: Any): String =
       "'all' inspection failed, because: \n" +
         "  at index " + index + ", " + message + " (" + fileName + ":" + (lineNumber) + ") \n" +
-        "in " + decorateToStringValue(left)
+        "in " + decorateToStringValue(prettifier, left)
 
     describe("when used with (contain allOf (..) and contain allOf (..))") {
 
@@ -412,7 +414,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (contain allOf (3, 1, 2) or contain allOf (1, 3, 2))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all of " + "(3, 1, 2)" + ", and " + decorateToStringValue(Many(8, 4, 3, 2)) + " did not contain all of " + "(1, 3, 2)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(prettifier, Many(8, 4, 3, 2)) + " did not contain all of " + "(3, 1, 2)" + ", and " + decorateToStringValue(prettifier, Many(8, 4, 3, 2)) + " did not contain all of " + "(1, 3, 2)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -425,7 +427,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (contain allOf ("HELLO", "HO") or contain allOf ("hello", "ho"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")" + ", and " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"hello\", \"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")" + ", and " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"hello\", \"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -436,7 +438,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (contain allOf ("HELLO", "HO") or contain allOf ("hello", "ho"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")" + ", and " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"hello\", \"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")" + ", and " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"hello\", \"ho\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -466,7 +468,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (list1s) should (be (Many(2, 3, 4)) or contain allOf (2, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many(3, 2, 1, 0)) + " was not equal to " + decorateToStringValue(Many(2, 3, 4)) + ", and " + decorateToStringValue(Many(3, 2, 1, 0)) + " did not contain all of " + "(2, 3, 4)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many(3, 2, 1, 0)) + " was not equal to " + decorateToStringValue(prettifier, Many(2, 3, 4)) + ", and " + decorateToStringValue(prettifier, Many(3, 2, 1, 0)) + " did not contain all of " + "(2, 3, 4)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -479,7 +481,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (be (Many("ho", "hello")) or contain allOf ("HELLO", "HO"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(Many("ho", "hello")) + ", and " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, Many("ho", "hello")) + ", and " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -490,7 +492,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (be (Many("ho", "hello")) or contain allOf ("HELLO", "HO"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(Many("ho", "hello")) + ", and " + decorateToStringValue(Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " was not equal to " + decorateToStringValue(prettifier, Many("ho", "hello")) + ", and " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " did not contain all of " + "(\"HELLO\", \"HO\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -513,7 +515,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (lists) should (not contain allOf (4, 2, 3) or not contain allOf (2, 3, 4))
         }
-        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(Many(8, 4, 3, 2)) + " contained all of " + "(4, 2, 3)" + ", and " + decorateToStringValue(Many(8, 4, 3, 2)) + " contained all of " + "(2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(2, decorateToStringValue(prettifier, Many(8, 4, 3, 2)) + " contained all of " + "(4, 2, 3)" + ", and " + decorateToStringValue(prettifier, Many(8, 4, 3, 2)) + " contained all of " + "(2, 3, 4)", thisLineNumber - 2, lists), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -526,7 +528,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not contain allOf ("HELLO", "HI") or not contain allOf ("hello", "hi"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")" + ", and " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all of " + "(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")" + ", and " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " contained all of " + "(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -537,7 +539,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not contain allOf ("HELLO", "HI") or not contain allOf ("hello", "hi"))) (decided by upperCaseStringEquality, decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")" + ", and " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all of " + "(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")" + ", and " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " contained all of " + "(\"hello\", \"hi\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {
@@ -567,7 +569,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (list1s) should (not be (Many(3, 2, 1, 0)) or not contain allOf (2, 3, 1))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many(3, 2, 1, 0)) + " was equal to " + decorateToStringValue(Many(3, 2, 1, 0)) + ", and " + decorateToStringValue(Many(3, 2, 1, 0)) + " contained all of " + "(2, 3, 1)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many(3, 2, 1, 0)) + " was equal to " + decorateToStringValue(prettifier, Many(3, 2, 1, 0)) + ", and " + decorateToStringValue(prettifier, Many(3, 2, 1, 0)) + " contained all of " + "(2, 3, 1)", thisLineNumber - 2, list1s), fileName, thisLineNumber - 2)
       }
 
       it("should use the implicit Equality in scope") {
@@ -580,7 +582,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           all (hiLists) should (not be (Many("howdy", "hi", "hello")) or not contain allOf ("HELLO", "HI"))
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(Many("howdy", "hi", "hello")) + ", and " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + ", and " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should use an explicitly provided Equality") {
@@ -591,7 +593,7 @@ class EveryShouldContainAllOfLogicalOrSpec extends FunSpec {
         val e1 = intercept[TestFailedException] {
           (all (hiLists) should (not be (Many("howdy", "hi", "hello")) or not contain allOf ("HELLO", "HI"))) (decided by upperCaseStringEquality)
         }
-        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(Many("howdy", "hi", "hello")) + ", and " + decorateToStringValue(Many("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
+        checkMessageStackDepth(e1, allErrMsg(0, decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " was equal to " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + ", and " + decorateToStringValue(prettifier, Many("howdy", "hi", "hello")) + " contained all of " + "(\"HELLO\", \"HI\")", thisLineNumber - 2, hiLists), fileName, thisLineNumber - 2)
       }
 
       it("should throw NotAllowedException with correct stack depth and message when RHS contain duplicated value") {

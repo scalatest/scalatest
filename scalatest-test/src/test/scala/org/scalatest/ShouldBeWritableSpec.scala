@@ -19,8 +19,11 @@ import SharedHelpers.{createTempDirectory, thisLineNumber}
 import java.io.File
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeWritableSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   // SKIP-SCALATESTJS-START
   val tempDir = createTempDirectory()
@@ -37,10 +40,10 @@ class ShouldBeWritableSpec extends FunSpec {
   val fileName: String = "ShouldBeWritableSpec.scala"
     
   def wasNotWritable(left: Any): String = 
-    FailureMessages.wasNotWritable(left)
+    FailureMessages.wasNotWritable(prettifier, left)
     
   def wasWritable(left: Any): String = 
-    FailureMessages.wasWritable(left)
+    FailureMessages.wasWritable(prettifier, left)
   
   it("writableFile should be writable, secretFile should not be writable") {
     assert(writableFile.canWrite === true)
@@ -48,8 +51,8 @@ class ShouldBeWritableSpec extends FunSpec {
   }
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
   
   describe("writable matcher") {

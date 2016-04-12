@@ -327,7 +327,7 @@ object GenInspectors {
                           "ForAllInspectorsSpec.scala",
                           "\"forAll failed, because: \\n\" + \n" +
                           "\"  at \" + " + getIndexForType(colName, 2) + " + \", 2 equaled 2 (ForAllInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
-                          "\"in \" + decorateToStringValue(col)",
+                          "\"in \" + decorateToStringValue(prettifier, col)",
                           5,
                           "ForAllInspectorsSpec.scala",
                           "\"2 equaled 2\"",
@@ -343,7 +343,7 @@ object GenInspectors {
             "ForAllInspectorsSpec.scala",
             "\"forAll failed, because: \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "firstViolation") + " + \", \" + " + getLhs(colName, "firstViolation") + " + \" was not less than 2 (ForAllInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5,
             "ForAllInspectorsSpec.scala",
             getLhs(colName, "firstViolation") + " + \" was not less than 2\"",
@@ -471,7 +471,7 @@ object GenInspectors {
             "\"forAtLeast(2) failed, because only 1 element satisfied the assertion block: \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
-            "\"in \" + decorateToStringValue(col)",
+            "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'no element' in error message when no element satisfied the assertion block for " + colName,
@@ -489,7 +489,7 @@ object GenInspectors {
             "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 5 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 5 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" did not equal 5 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
-            "\"in \" + decorateToStringValue(col)",
+            "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block for " + colName,
@@ -505,7 +505,7 @@ object GenInspectors {
             "\"forAtLeast(2) failed, because only 1 element satisfied the assertion block: \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block for " + colName,
@@ -519,7 +519,7 @@ object GenInspectors {
             "ForAtLeastInspectorsSpec.scala",
             "\"forAtLeast(3) failed, because only 2 elements satisfied the assertion block: \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not less than 3 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
-            "\"in \" + decorateToStringValue(col)",
+            "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should pass when more than minimum count of elements passed for " + colName,
@@ -543,7 +543,7 @@ object GenInspectors {
               "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not greater than 5 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not greater than 5 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" was not greater than 5 (ForAtLeastInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should pass when all of the elements passed for " + colName,
@@ -676,7 +676,7 @@ object GenInspectors {
             "  assert(" + lhs + " < 4) \n" +
             "}",
             "ForAtMostInspectorsSpec.scala",
-            "\"forAtMost(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(col)",
+            "\"forAtMost(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should pass when none of the elements passed for " + colName,
@@ -799,7 +799,7 @@ object GenInspectors {
             "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 5 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 5 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" did not equal 5 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
-            "\"in \" + decorateToStringValue(col)",
+            "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is less than the expected count for " + colName,
@@ -816,7 +816,7 @@ object GenInspectors {
             "\"forExactly(2) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block, when passed count is more than the expected count for " + colName,
@@ -830,7 +830,7 @@ object GenInspectors {
             "  assert(" + lhs + " < 5)\n" +
             "}",
             "ForExactlyInspectorsSpec.scala",
-            "\"forExactly(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(col)",
+            "\"forExactly(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is less than the expected count for " + colName,
@@ -846,7 +846,7 @@ object GenInspectors {
             "ForExactlyInspectorsSpec.scala",
             "\"forExactly(3) failed, because only 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \": \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not less than 3 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
-            "\"in \" + decorateToStringValue(col)",
+            "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when passed count is more than the expected count for " + colName,
@@ -859,7 +859,7 @@ object GenInspectors {
             "  assert(" + lhs + " < 3) \n" +
             "}",
             "ForExactlyInspectorsSpec.scala",
-            "\"forExactly(1) failed, because 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \" in \" + decorateToStringValue(col)",
+            "\"forExactly(1) failed, because 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \" in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should throw TestFailedException with correct stack depth and message when number of element passed is less than specified succeeded count for " + colName,
@@ -876,7 +876,7 @@ object GenInspectors {
             "\"forExactly(2) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (ForExactlyInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should throw TestFailedException with correct stack depth and messsage when number of element passed is more than specified succeeded count for " + colName,
@@ -890,7 +890,7 @@ object GenInspectors {
             "  assert(" + lhs + " < 5)\n" +
             "}",
             "ForExactlyInspectorsSpec.scala",
-            "\"forExactly(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(col)",
+            "\"forExactly(2) failed, because 3 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \" and \" + " + getIndexOrKey(colName, "third") + " + \" in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should propagate TestPendingException thrown from assertion for " + colName,
@@ -988,7 +988,7 @@ object GenInspectors {
             "val first = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " == 2)",
             "forNo(col) { e => assert(" + lhs + " == 2) }\n",
             "ForNoInspectorsSpec.scala",
-            "\"forNo failed, because 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" in \" + decorateToStringValue(col)",
+            "\"forNo failed, because 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" in \" + decorateToStringValue(prettifier, col)",
             3)
         ),
         new DefTemplate("should throw TestFailedException with correct stack depth and message when 2 element passed for " + colName,
@@ -997,7 +997,7 @@ object GenInspectors {
             "val first = " + getFirst(colName) + getElementType(colName) + "(col, " + getLhs(colName, "_") + " < 5)",
             "forNo(col) { e => assert(" + lhs + " < 5) }\n",
             "ForNoInspectorsSpec.scala",
-            "\"forNo failed, because 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" in \" + decorateToStringValue(col)",
+            "\"forNo failed, because 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" in \" + decorateToStringValue(prettifier, col)",
             3)
         ),
         new DefTemplate("should pass when empty list of element is passed in for " + colName,
@@ -1167,7 +1167,7 @@ object GenInspectors {
               "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 5 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 5 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" did not equal 5 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 8) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'element' in error message when exactly 1 element satisfied the assertion block, when total passed is less than 'from' for " + colName,
@@ -1184,7 +1184,7 @@ object GenInspectors {
             "\"forBetween(2, 3) failed, because only 1 element satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "succeeded") + " + \": \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" did not equal 2 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" did not equal 2 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is less than 'from' for " + colName,
@@ -1200,7 +1200,7 @@ object GenInspectors {
             "ForBetweenInspectorsSpec.scala",
             "\"forBetween(3, 4) failed, because only 2 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \" and \" + " + getIndexOrKey(colName, "second") + " + \": \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "failed") + " + \", \" + " + getLhs(colName, "failed") + " + \" was not less than 3 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should use 'elements' in error message when > 1 element satisfied the assertion block, when total passed is more than 'upTo' for " + colName,
@@ -1215,7 +1215,7 @@ object GenInspectors {
             "  assert(" + lhs + " > 1) \n" +
             "}",
             "ForBetweenInspectorsSpec.scala",
-            "\"forBetween(2, 3) failed, because 4 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \", \" + " + getIndexOrKey(colName, "third") + " + \" and \" + " + getIndexOrKey(colName, "forth") + " + \" in \" + decorateToStringValue(col)",
+            "\"forBetween(2, 3) failed, because 4 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \", \" + " + getIndexOrKey(colName, "third") + " + \" and \" + " + getIndexOrKey(colName, "forth") + " + \" in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should throw TestFailedException with correct stack depth and message when number of element passed is less than lower bound of the specified range for " + colName,
@@ -1236,7 +1236,7 @@ object GenInspectors {
               "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not greater than 4 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 7) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "third") + " + \", \" + " + getLhs(colName, "third") + " + \" was not greater than 4 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 8) + \"), \\n\" + \n" +
               "\"  at \" + " + getVariableIndexForType(colName, "forth") + " + \", \" + " + getLhs(colName, "forth") + " + \" was not greater than 4 (ForBetweenInspectorsSpec.scala:\" + (thisLineNumber - 9) + \") \\n\" + \n" +
-              "\"in \" + decorateToStringValue(col)",
+              "\"in \" + decorateToStringValue(prettifier, col)",
             5)
         ),
         new DefTemplate("should throw TestFailedException with correct stack depth and message when number of element passed is more than upper bound of the specified range for " + colName,
@@ -1250,7 +1250,7 @@ object GenInspectors {
             "val fifth = itr.next\n",
             "forBetween(2, 4, col) { e => assert(" + lhs + " > 0) }",
             "ForBetweenInspectorsSpec.scala",
-            "\"forBetween(2, 4) failed, because 5 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \", \" + " + getIndexOrKey(colName, "third") + " + \", \" + " + getIndexOrKey(colName, "forth") + " + \" and \" + " + getIndexOrKey(colName, "fifth") + " + \" in \" + decorateToStringValue(col)",
+            "\"forBetween(2, 4) failed, because 5 elements satisfied the assertion block at " + getIndexOrKeyWord(colName) + " \" + " + getIndexOrKey(colName, "first") + " + \", \" + " + getIndexOrKey(colName, "second") + " + \", \" + " + getIndexOrKey(colName, "third") + " + \", \" + " + getIndexOrKey(colName, "forth") + " + \" and \" + " + getIndexOrKey(colName, "fifth") + " + \" in \" + decorateToStringValue(prettifier, col)",
             3)
         ),
         new DefTemplate("should propagate TestPendingException thrown from assertion for " + colName,
@@ -1349,7 +1349,7 @@ object GenInspectors {
             "ForEveryInspectorsSpec.scala",
             "\"forEvery failed, because: \\n\" + \n" +
             "\"  at \" + " + getIndexForType(colName, 2) + " + \", 2 equaled 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 5) + \") \\n\" + \n" +
-            "\"in \" + decorateToStringValue(col)",
+            "\"in \" + decorateToStringValue(prettifier, col)",
             3)
         ),
         new DefTemplate("should throw TestFailedException with correct stack depth and message when more than one element failed for " + colName,
@@ -1363,7 +1363,7 @@ object GenInspectors {
             "\"forEvery failed, because: \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "first") + " + \", \" + " + getLhs(colName, "first") + " + \" was not less than 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 5) + \"), \\n\" + \n" +
             "\"  at \" + " + getVariableIndexForType(colName, "second") + " + \", \" + " + getLhs(colName, "second") + " + \" was not less than 2 (ForEveryInspectorsSpec.scala:\" + (thisLineNumber - 6) + \") \\n\" + \n" +
-            "\"in \" + decorateToStringValue(col)",
+            "\"in \" + decorateToStringValue(prettifier, col)",
             3)
         ),
         new DefTemplate("should propagate TestPendingException thrown from assertion for " + colName,

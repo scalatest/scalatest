@@ -425,7 +425,7 @@ final class NotWord {
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(tripleEqualsInvocation: TripleEqualsInvocation[_])(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
+    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed(prettifier),
                                   getStackDepthFun(sourceInfo))
   }
 
@@ -1036,7 +1036,7 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[T](oneOf: ResultOfOneOfApplication): MatcherFactory1[Any, Containing] = {
+  def contain[T](oneOf: ResultOfOneOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1048,7 +1048,7 @@ final class NotWord {
               !containing.containsOneOf(left, right),
               Resources.rawContainedOneOfElements,
               Resources.rawDidNotContainOneOfElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
           override def toString: String = "not contain " + Prettifier.default(oneOf)
@@ -1096,7 +1096,7 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](atLeastOneOf: ResultOfAtLeastOneOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1108,7 +1108,7 @@ final class NotWord {
               !aggregating.containsAtLeastOneOf(left, right),
               Resources.rawContainedAtLeastOneOf,
               Resources.rawDidNotContainAtLeastOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
           override def toString: String = "not contain " + Prettifier.default(atLeastOneOf)
@@ -1156,7 +1156,7 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[T](noneOf: ResultOfNoneOfApplication): MatcherFactory1[Any, Containing] = {
+  def contain[T](noneOf: ResultOfNoneOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Containing] = {
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1168,7 +1168,7 @@ final class NotWord {
               !containing.containsNoneOf(left, right),
               Resources.rawDidNotContainAtLeastOneOf,
               Resources.rawContainedAtLeastOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
           override def toString: String = "not contain " + Prettifier.default(noneOf)
@@ -1276,7 +1276,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[T](only: ResultOfOnlyApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](only: ResultOfOnlyApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1290,7 +1290,7 @@ final class NotWord {
               !aggregating.containsOnly(left, right),
               if (withFriendlyReminder) Resources.rawContainedOnlyElementsWithFriendlyReminder else Resources.rawContainedOnlyElements,
               if (withFriendlyReminder) Resources.rawDidNotContainOnlyElementsWithFriendlyReminder else Resources.rawDidNotContainOnlyElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
           override def toString: String = "not contain " + Prettifier.default(only)
@@ -1308,7 +1308,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[T](inOrderOnly: ResultOfInOrderOnlyApplication): MatcherFactory1[Any, Sequencing] = {
+  def contain[T](inOrderOnly: ResultOfInOrderOnlyApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Sequencing] = {
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1320,7 +1320,7 @@ final class NotWord {
               !sequencing.containsInOrderOnly(left, right),
               Resources.rawContainedInOrderOnlyElements,
               Resources.rawDidNotContainInOrderOnlyElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
           override def toString: String = "not contain " + Prettifier.default(inOrderOnly)
@@ -1338,7 +1338,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[T](allOf: ResultOfAllOfApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](allOf: ResultOfAllOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1350,7 +1350,7 @@ final class NotWord {
               !aggregating.containsAllOf(left, right),
               Resources.rawContainedAllOfElements,
               Resources.rawDidNotContainAllOfElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
           override def toString: String = "not contain " + Prettifier.default(allOf)
@@ -1398,7 +1398,7 @@ final class NotWord {
    *                                 ^
    * </pre>
    */
-  def contain[T](inOrder: ResultOfInOrderApplication): MatcherFactory1[Any, Sequencing] = {
+  def contain[T](inOrder: ResultOfInOrderApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Sequencing] = {
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1410,7 +1410,7 @@ final class NotWord {
               !sequencing.containsInOrder(left, right),
               Resources.rawContainedAllOfElementsInOrder,
               Resources.rawDidNotContainAllOfElementsInOrder,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
           override def toString: String = "not contain " + Prettifier.default(inOrder)
@@ -1458,7 +1458,7 @@ final class NotWord {
    *                         ^
    * </pre>
    */
-  def contain[T](atMostOneOf: ResultOfAtMostOneOfApplication): MatcherFactory1[Any, Aggregating] = {
+  def contain[T](atMostOneOf: ResultOfAtMostOneOfApplication)(implicit prettifier: Prettifier): MatcherFactory1[Any, Aggregating] = {
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -1470,7 +1470,7 @@ final class NotWord {
               !aggregating.containsAtMostOneOf(left, right),
               Resources.rawContainedAtMostOneOf,
               Resources.rawDidNotContainAtMostOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
             )
           }
           override def toString: String = "not contain " + Prettifier.default(atMostOneOf)

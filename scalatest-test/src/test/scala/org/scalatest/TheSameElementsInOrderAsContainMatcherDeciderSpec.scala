@@ -19,10 +19,13 @@ import org.scalactic.Equality
 import org.scalactic.Explicitly
 import org.scalactic.StringNormalizations._
 import org.scalactic.Uniformity
+import org.scalactic.Prettifier
 import SharedHelpers._
 import Matchers._
 
 class TheSameElementsInOrderAsContainMatcherDeciderSpec extends FunSpec with Explicitly {
+
+  private val prettifier = Prettifier.default
   
   val incremented: Uniformity[Int] = 
     new Uniformity[Int] {
@@ -60,16 +63,16 @@ class TheSameElementsInOrderAsContainMatcherDeciderSpec extends FunSpec with Exp
   describe("theSameElementsInOrderAs ") {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      val rightText = FailureMessages.decorateToStringValue(right)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " did not contain the same elements in the same (iterated) order as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsInOrderAsContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
 
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      val rightText = FailureMessages.decorateToStringValue(right)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " contained the same elements in the same (iterated) order as " + rightText))
       e.failedCodeFileName should be (Some("TheSameElementsInOrderAsContainMatcherDeciderSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

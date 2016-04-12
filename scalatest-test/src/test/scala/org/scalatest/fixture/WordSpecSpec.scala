@@ -32,8 +32,11 @@ import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.Prettifier
 
 class WordSpecSpec extends org.scalatest.FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("A fixture.WordSpec") {
 
@@ -3007,7 +3010,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3015,7 +3018,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in must scope") {
@@ -3032,7 +3035,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3040,7 +3043,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in when scope") {
@@ -3057,7 +3060,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3065,7 +3068,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in that scope") {
@@ -3082,7 +3085,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3090,7 +3093,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in which scope") {
@@ -3107,7 +3110,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3115,7 +3118,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestFailedException when assert fails in can scope") {
@@ -3132,7 +3135,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3140,7 +3143,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestFailedException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in should scope") {
@@ -3157,7 +3160,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3165,7 +3168,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in must scope") {
@@ -3182,7 +3185,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3190,7 +3193,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in when scope") {
@@ -3207,7 +3210,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3215,7 +3218,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in that scope") {
@@ -3232,7 +3235,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3240,7 +3243,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in which scope") {
@@ -3257,7 +3260,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3265,7 +3268,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in can scope") {
@@ -3282,7 +3285,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3290,7 +3293,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           val cause = causeThrowable.asInstanceOf[TestCanceledException]
           assert("WordSpecSpec.scala" == cause.failedCodeFileName.get)
           assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-          assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+          assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
         }
 
         it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside should scope") {
@@ -3310,7 +3313,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -3334,7 +3337,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -3358,7 +3361,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -3382,7 +3385,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages.exceptionWasThrownInThatClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInThatClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -3406,7 +3409,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages.exceptionWasThrownInWhichClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInWhichClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -3430,7 +3433,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
-          assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(UnquotedString(causeThrowable.getClass.getName), "a feature")))
+          assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature")))
 
           assert(causeThrowable.isInstanceOf[RuntimeException])
           val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -4228,11 +4231,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature when test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature when test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand when") {
@@ -4252,11 +4255,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature when test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature when test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature when test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside should") {
@@ -4275,11 +4278,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature should test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature should test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature should test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature should test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand should") {
@@ -4299,11 +4302,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature should test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature should test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature should test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature should test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside must") {
@@ -4322,11 +4325,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature must test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature must test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature must test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature must test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand must") {
@@ -4346,11 +4349,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature must test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature must test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature must test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature must test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside that") {
@@ -4369,11 +4372,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInThatClause(UnquotedString(causeThrowable.getClass.getName), "a feature that", FailureMessages.duplicateTestName(UnquotedString("a feature that test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInThatClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature that", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature that test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature that test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature that test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside which") {
@@ -4392,11 +4395,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhichClause(UnquotedString(causeThrowable.getClass.getName), "a feature which", FailureMessages.duplicateTestName(UnquotedString("a feature which test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInWhichClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature which", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature which test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature which test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature which test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside can") {
@@ -4415,11 +4418,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature can test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature can test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature can test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature can test 1")))
     }
 
     it("should throw NotAllowedException wrapping a DuplicateTestNameException when duplicate test name is detected inside shorthand can") {
@@ -4439,11 +4442,11 @@ class WordSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature can test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature can test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature can test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature can test 1")))
     }
 
   }

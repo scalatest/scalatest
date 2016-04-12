@@ -19,13 +19,16 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 import org.scalatest.exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class OnlyContainMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("only ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " did not contain only (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -94,17 +97,17 @@ class OnlyContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain only (1, 2, 1)
       }
-      e1.getMessage() should be (FailureMessages.onlyDuplicate)
+      e1.getMessage() should be (FailureMessages.onlyDuplicate(prettifier))
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain only (1, 2, 1)
       }
-      e2.getMessage() should be (FailureMessages.onlyDuplicate)
+      e2.getMessage() should be (FailureMessages.onlyDuplicate(prettifier))
       
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain only (1, 2, 1)
       }
-      e3.getMessage() should be (FailureMessages.onlyDuplicate)
+      e3.getMessage() should be (FailureMessages.onlyDuplicate(prettifier))
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List contains element not in right List") {
@@ -145,7 +148,7 @@ class OnlyContainMatcherSpec extends FunSpec {
   describe("not only ") {
     
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " contained only (" + right.mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

@@ -121,9 +121,9 @@ trait LoneElement {
         case Some(ele) => ele
         case None =>
           throw new exceptions.TestFailedException(
-            Some(FailureMessages.notLoneElement(
+            Some(FailureMessages.notLoneElement(prettifier,
                  collection,
-                 collecting.sizeOf(collection))(prettifier)),
+                 collecting.sizeOf(collection))),
             None,
             stackDepth
           )
@@ -168,7 +168,7 @@ trait LoneElement {
         case Some(ele) => ele
         case None =>
           throw new exceptions.TestFailedException(
-            Some(FailureMessages.notLoneElement(
+            Some(FailureMessages.notLoneElement(prettifier,
                  jmap,
                  collecting.sizeOf(jmap))), 
             None,
@@ -205,7 +205,7 @@ trait LoneElement {
         s.charAt(0)
       else
         throw new exceptions.TestFailedException(
-          Some(FailureMessages.notLoneElement(
+          Some(FailureMessages.notLoneElement(prettifier,
             s,
             collecting.sizeOf(s))),
           None,

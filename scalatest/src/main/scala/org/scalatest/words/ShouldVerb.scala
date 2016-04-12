@@ -17,7 +17,7 @@ package org.scalatest.words
 
 import org.scalactic.source.SourceInfo
 import org.scalatest._
-import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * Provides an implicit conversion that adds <code>should</code> methods to <code>String</code>
@@ -190,8 +190,8 @@ trait ShouldVerb {
      * no-arg function.
      * </p>
      */
-    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration, sourceInfo: SourceInfo) {
-      fun(leftSideString, "should", sourceInfo, right _)
+    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, sourceInfo: SourceInfo) {
+      fun(leftSideString, "should", prettifier, sourceInfo, right _)
     }
 
     /**
@@ -217,8 +217,8 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit, sourceInfo: SourceInfo) {
-      fun(leftSideString, "should", resultOfAfterWordApplication, sourceInfo)
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, SourceInfo) => Unit, prettifier: Prettifier, sourceInfo: SourceInfo) {
+      fun(leftSideString, "should", resultOfAfterWordApplication, prettifier, sourceInfo)
     }
   }
 

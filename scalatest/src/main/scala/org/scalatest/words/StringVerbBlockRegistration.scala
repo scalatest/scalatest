@@ -17,6 +17,7 @@ package org.scalatest.words
 
 import org.scalatest._
 import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 // Used to make an implicit conversion more specific. If there were ever another
 // implicit (String, String, () => Unit) lying around in scope, it would clash with
@@ -44,7 +45,7 @@ import org.scalactic.source.SourceInfo
  *
  * @author Bill Venners
  */
-abstract class StringVerbBlockRegistration extends ((String, String, SourceInfo, () => Unit) => Unit) {
+abstract class StringVerbBlockRegistration extends ((String, String, Prettifier, SourceInfo, () => Unit) => Unit) {
 
   /**
    * Registers a subject description in <code>WordSpec</code> and <code>fixture.WordSpec</code>.
@@ -60,6 +61,6 @@ abstract class StringVerbBlockRegistration extends ((String, String, SourceInfo,
    * </pre>
    *
    */
-  def apply(string: String, verb: String, sourceInfo: SourceInfo, block: () => Unit)
+  def apply(string: String, verb: String, prettifier: Prettifier, sourceInfo: SourceInfo, block: () => Unit)
 }
 
