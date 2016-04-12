@@ -18,9 +18,7 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalactic._
 import scala.util.matching.Regex
-import org.scalatest.Resources
-import org.scalatest.UnquotedString
-import org.scalatest.MatchersHelper.startWithRegexWithGroups
+import org.scalatest.{MatchersHelper, Resources, UnquotedString}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -28,7 +26,7 @@ import org.scalatest.MatchersHelper.startWithRegexWithGroups
  *
  * @author Bill Venners
  */
-final class StartWithWord {
+final class StartWithWord(matchersHelper: MatchersHelper) {
 
   /**
    * This method enables the following syntax:
@@ -45,9 +43,10 @@ final class StartWithWord {
           left startsWith right,
           Resources.rawDidNotStartWith,
           Resources.rawStartedWith,
-          Vector(left, right)
+          Vector(left, right),
+          matchersHelper.prettifier
         )
-      override def toString: String = "startWith (" + Prettifier.default(right) + ")"
+      override def toString: String = "startWith (" + matchersHelper.prettifier(right) + ")"
     }
 
   /**
@@ -72,8 +71,8 @@ final class StartWithWord {
   def regex(regexWithGroups: RegexWithGroups) = 
     new Matcher[String] {
       def apply(left: String): MatchResult = 
-        startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
-      override def toString: String = "startWith regex " + Prettifier.default(regexWithGroups)
+        matchersHelper.startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+      override def toString: String = "startWith regex " + matchersHelper.prettifier(regexWithGroups)
     }
 
   /**
@@ -92,9 +91,10 @@ final class StartWithWord {
           rightRegex.pattern.matcher(left).lookingAt,
           Resources.rawDidNotStartWithRegex,
           Resources.rawStartedWithRegex,
-          Vector(left, UnquotedString(rightRegex.toString))
+          Vector(left, UnquotedString(rightRegex.toString)),
+          matchersHelper.prettifier
         )
-      override def toString: String = "startWith regex " + Prettifier.default(rightRegex)
+      override def toString: String = "startWith regex " + matchersHelper.prettifier(rightRegex)
     }
   
   /**

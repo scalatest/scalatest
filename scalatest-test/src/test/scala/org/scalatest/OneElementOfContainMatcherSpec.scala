@@ -18,9 +18,10 @@ package org.scalatest
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
-import FailureMessages.decorateToStringValue
 
 class OneElementOfContainMatcherSpec extends FunSpec {
+
+  import FailureMessages.decorateToStringValue
 
   describe("oneElementOf ") {
 

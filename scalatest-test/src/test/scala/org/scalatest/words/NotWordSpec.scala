@@ -15,6 +15,7 @@
  */
 package org.scalatest.words
 
+import org.scalactic.Prettifier
 import org.scalatest._
 import SharedHelpers.createTempDirectory
 import Matchers._
@@ -196,7 +197,8 @@ class NotWordSpec extends FunSpec with FileMocks {
             left % 2 == 1,
             left.toString + " was even",
             left.toString + " was odd", 
-            Vector(left)
+            Vector(left),
+            Prettifier.default
           )
         }
       }
@@ -449,7 +451,8 @@ class NotWordSpec extends FunSpec with FileMocks {
             left % 2 == 1,
             left.toString + " was even",
             left.toString + " was odd", 
-            Vector(left)
+            Vector(left),
+            Prettifier.default
           )
         }
       }
@@ -1701,7 +1704,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(clazz)
+      val resultOfAType = new ResultOfATypeInvocation(clazz, matchersHelper)
       
       val mt = not be (resultOfAType)
       
@@ -1759,7 +1762,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
+      val resultOfAnType = new ResultOfAnTypeInvocation(clazz, matchersHelper)
       
       val mt = not be (resultOfAnType)
       

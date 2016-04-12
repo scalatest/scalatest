@@ -15,7 +15,7 @@
  */
 package org.scalatest.enablers
 
-import org.scalactic.{Equality, Every}
+import org.scalactic.{Prettifier, Equality, Every}
 import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
@@ -279,22 +279,22 @@ object Aggregating {
    * @tparam E the type of the element in the <code>Array</code>
    * @return <code>Aggregating[Array[E]]</code> that supports <code>Array</code> in relevant <code>contain</code> syntax
    */
-  implicit def aggregatingNatureOfArray[E](implicit equality: Equality[E]): Aggregating[Array[E]] = 
+  implicit def aggregatingNatureOfArray[E](implicit equality: Equality[E], failureMessages: FailureMessages): Aggregating[Array[E]] =
     new Aggregating[Array[E]] {
       def containsAtLeastOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        new ArrayWrapper(array).exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
+        new ArrayWrapper(array, failureMessages).exists((e: E) => elements.exists((ele: Any) => equality.areEqual(e, ele)))
       }
       def containsTheSameElementsAs(array: Array[E], elements: GenTraversable[Any]): Boolean = {
-        checkTheSameElementsAs[E](new ArrayWrapper(array), elements, equality)
+        checkTheSameElementsAs[E](new ArrayWrapper(array, failureMessages), elements, equality)
       }
       def containsOnly(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkOnly(new ArrayWrapper(array), elements, equality)
+        checkOnly(new ArrayWrapper(array, failureMessages), elements, equality)
       }
       def containsAllOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAllOf(new ArrayWrapper(array), elements, equality)
+        checkAllOf(new ArrayWrapper(array, failureMessages), elements, equality)
       }
       def containsAtMostOneOf(array: Array[E], elements: scala.collection.Seq[Any]): Boolean = {
-        checkAtMostOneOf(new ArrayWrapper(array), elements, equality)
+        checkAtMostOneOf(new ArrayWrapper(array, failureMessages), elements, equality)
       }
     }
 
@@ -314,8 +314,8 @@ object Aggregating {
    * @tparam E type of elements in the <code>Array</code>
    * @return <code>Aggregating</code> of type <code>Array[E]</code>
    */
-  implicit def convertEqualityToArrayAggregating[E](equality: Equality[E]): Aggregating[Array[E]] = 
-    aggregatingNatureOfArray(equality)
+  implicit def convertEqualityToArrayAggregating[E](equality: Equality[E])(implicit failureMessages: FailureMessages): Aggregating[Array[E]] =
+    aggregatingNatureOfArray(equality, failureMessages)
 
   /**
    * Implicit to support <code>Aggregating</code> nature of <code>String</code>.

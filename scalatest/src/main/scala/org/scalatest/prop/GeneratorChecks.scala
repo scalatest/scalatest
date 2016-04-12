@@ -15,6 +15,8 @@
  */
 package org.scalatest.prop
 
+import org.scalactic.DefaultPrettifier
+
 import scala.annotation.tailrec
 import scala.util.{Try, Failure, Success}
 import org.scalatest.exceptions.DiscardedEvaluationException
@@ -26,7 +28,10 @@ import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 
 // For now, hard coding a size of 10. Later will need to do the size based on config
-private[prop] trait GeneratorChecks extends Configuration with Whenever {
+private[prop] trait GeneratorChecks extends Configuration with Whenever with DefaultPrettifier {
+
+  val failureMessages = new FailureMessages(prettifier)
+
   import GeneratorChecks.stackDepthFileName
   import GeneratorChecks.stackDepthMethodName
   import GeneratorChecks.prettyArgs
@@ -62,24 +67,24 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
           else throw new TestFailedException("too many discarded evaluations", 0)
         case Failure(ex) => 
           throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+            sde => failureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
-              "  " + FailureMessages.propertyFailed(succeededCount) + "\n" +
+              "  " + failureMessages.propertyFailed(succeededCount) + "\n" +
               (
                 sde match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + failureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
               ) +
-              "  " + FailureMessages.occurredOnValues + "\n" +
+              "  " + failureMessages.occurredOnValues + "\n" +
               prettyArgs(argsPassed) + "\n" +
               "  )" +
               "", // getLabelDisplay(scalaCheckLabels),
             Some(ex),
             getStackDepthFun(stackDepthFileName, stackDepthMethodName),
             None,
-            FailureMessages.propertyFailed(succeededCount),
+            failureMessages.propertyFailed(succeededCount),
             argsPassed,
             None,
             scalaCheckLabels.toList
@@ -165,7 +170,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
 private[prop] object GeneratorChecks extends GeneratorChecks {
   private val stackDepthFileName = "GeneratorChecks.scala"
   private val stackDepthMethodName = "apply"
-  import FailureMessages.decorateToStringValue
+  import failureMessages.decorateToStringValue
   private def prettyArgs(args: List[Any]) = {
     val strs = for((a, i) <- args.zipWithIndex) yield (
       "    " +

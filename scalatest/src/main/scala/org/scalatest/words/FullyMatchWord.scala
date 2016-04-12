@@ -18,9 +18,7 @@ package org.scalatest.words
 import org.scalatest.matchers._
 import org.scalactic._
 import scala.util.matching.Regex
-import org.scalatest.Resources
-import org.scalatest.UnquotedString
-import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
+import org.scalatest.{MatchersHelper, Resources, UnquotedString}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -28,7 +26,7 @@ import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
  *
  * @author Bill Venners
  */
-final class FullyMatchWord {
+final class FullyMatchWord(matchersHelper: MatchersHelper) {
 
   /**
    * This method enables the following syntax:
@@ -46,7 +44,8 @@ final class FullyMatchWord {
           java.util.regex.Pattern.matches(rightRegexString, left),
           Resources.rawDidNotFullyMatchRegex,
           Resources.rawFullyMatchedRegex,
-          Vector(left, UnquotedString(rightRegexString))
+          Vector(left, UnquotedString(rightRegexString)),
+          matchersHelper.prettifier
         )
       override def toString: String = "fullyMatch regex " + Prettifier.default(rightRegexString)
     }
@@ -62,7 +61,7 @@ final class FullyMatchWord {
   def regex(regexWithGroups: RegexWithGroups) = 
     new Matcher[String] {
       def apply(left: String): MatchResult = 
-        fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
+        matchersHelper.fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       override def toString: String = "fullyMatch regex " + Prettifier.default(regexWithGroups)
     }
 
@@ -82,7 +81,8 @@ final class FullyMatchWord {
           rightRegex.pattern.matcher(left).matches,
           Resources.rawDidNotFullyMatchRegex,
           Resources.rawFullyMatchedRegex,
-          Vector(left, UnquotedString(rightRegex.toString))
+          Vector(left, UnquotedString(rightRegex.toString)),
+          matchersHelper.prettifier
         )
       override def toString: String = "fullyMatch regex \"" + Prettifier.default(rightRegex) + "\""
     }

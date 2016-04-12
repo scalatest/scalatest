@@ -16,15 +16,16 @@
 package org.scalatest.matchers
 
 import org.scalatest._
+import org.scalactic.Prettifier
 
 class LazyArgSpec extends FunSpec with Matchers {
 
   describe("A LazyArg") {
     it("should offer a nested args IndexedSeq") {
-      new FailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))).nestedArgs should be (Vector("hi", 1))
-      new NegatedFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))).nestedArgs should be (Vector("hi", 2))
-      new MidSentenceFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))).nestedArgs should be (Vector("hi", 1))
-      new MidSentenceNegatedFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2))).nestedArgs should be (Vector("hi", 2))
+      new FailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2), Prettifier.default)).nestedArgs should be (Vector("hi", 1))
+      new NegatedFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2), Prettifier.default)).nestedArgs should be (Vector("hi", 2))
+      new MidSentenceFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2), Prettifier.default)).nestedArgs should be (Vector("hi", 1))
+      new MidSentenceNegatedFailureMessage(MatchResult(true, "hi", "lo", "hi", "lo", Vector("hi", 1), Vector("hi", 2), Prettifier.default)).nestedArgs should be (Vector("hi", 2))
     }
   }
 }

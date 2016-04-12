@@ -23,7 +23,7 @@ class ResultOfTheTypeInvocationSpec extends FunSpec {
   describe("ResultOfTheTypeInvocation ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfTheTypeInvocation(classOf[FunSpec])
+      val result = new ResultOfTheTypeInvocation(classOf[FunSpec], new MatchersHelper(prettifier))
       result.toString should be ("the [org.scalatest.FunSpec]")
     }
   }

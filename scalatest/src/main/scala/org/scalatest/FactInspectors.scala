@@ -20,7 +20,6 @@ import scala.annotation.tailrec
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.collection.GenSeq
 import Suite.indentLines
-import FailureMessages.decorateToStringValue
 import enablers.Collecting
 import scala.language.higherKinds
 import Fact.Yes

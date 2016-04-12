@@ -36,7 +36,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  *
  * @author Bill Venners
  */
-final class ContainWord {
+final class ContainWord(FailureMessages: FailureMessages, matcherWords: MatcherWords) {
 
   /**
    * This method enables the following syntax:
@@ -47,7 +47,7 @@ final class ContainWord {
    * </pre>
    */
   def apply(nullValue: Null): MatcherFactory1[Any, Containing] =
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](matcherWords) {
       def matcher[U <: Any : Containing]: Matcher[U] =
         new Matcher[U] {
           def apply(left: U): MatchResult = {
@@ -56,7 +56,8 @@ final class ContainWord {
               containing.contains(left, null),
               Resources.rawDidNotContainNull,
               Resources.rawContainedNull,
-              Vector(left)
+              Vector(left),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain (null)"
@@ -73,7 +74,7 @@ final class ContainWord {
    * </pre>
    */
   def apply(expectedElement: Any): MatcherFactory1[Any, Containing] =
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](matcherWords) {
       def matcher[U <: Any : Containing]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
@@ -82,7 +83,8 @@ final class ContainWord {
               containing.contains(left, expectedElement),
               Resources.rawDidNotContainExpectedElement,
               Resources.rawContainedExpectedElement,
-              Vector(left, expectedElement)
+              Vector(left, expectedElement),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain (" + Prettifier.default(expectedElement) + ")"
@@ -118,7 +120,7 @@ final class ContainWord {
    * the inferred key type.
    */
   def key[K](expectedKey: Any): MatcherFactory1[Any, KeyMapping] =
-    new MatcherFactory1[Any, KeyMapping] {
+    new MatcherFactory1[Any, KeyMapping](matcherWords) {
       def matcher[U <: Any : KeyMapping]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
@@ -127,7 +129,8 @@ final class ContainWord {
               keyMapping.containsKey(left, expectedKey),
               Resources.rawDidNotContainKey,
               Resources.rawContainedKey,
-              Vector(left, expectedKey)
+              Vector(left, expectedKey),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain key " + Prettifier.default(expectedKey)
@@ -164,7 +167,7 @@ final class ContainWord {
    *
    */
   def value[K](expectedValue: Any): MatcherFactory1[Any, ValueMapping] =
-    new MatcherFactory1[Any, ValueMapping] {
+    new MatcherFactory1[Any, ValueMapping](matcherWords) {
       def matcher[U <: Any : ValueMapping]: Matcher[U] = 
         new Matcher[U] {
           def apply(left: U): MatchResult = {
@@ -173,7 +176,8 @@ final class ContainWord {
               valueMapping.containsValue(left, expectedValue),
               Resources.rawDidNotContainValue,
               Resources.rawContainedValue,
-              Vector(left, expectedValue)
+              Vector(left, expectedValue),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain value " + Prettifier.default(expectedValue)
@@ -198,7 +202,8 @@ final class ContainWord {
           Resources.rawDidNotContainA,
           Resources.rawContainedA,
           Vector(left, UnquotedString(aMatcher.nounName)), 
-          Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage else "-"))
+          Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage else "-")),
+          FailureMessages.prettifier
         )
       }
       override def toString: String = "contain a " + Prettifier.default(aMatcher)
@@ -221,7 +226,8 @@ final class ContainWord {
           Resources.rawDidNotContainAn,
           Resources.rawContainedAn,
           Vector(left, UnquotedString(anMatcher.nounName)), 
-          Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage else "-"))
+          Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage else "-")),
+          FailureMessages.prettifier
         )
       }
       override def toString: String = "contain an " + Prettifier.default(anMatcher)
@@ -231,7 +237,7 @@ final class ContainWord {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.oneOfDuplicate, getStackDepthFun("ContainWord.scala", "oneOf"))
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](matcherWords) {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -239,7 +245,8 @@ final class ContainWord {
               containing.containsOneOf(left, right),
               Resources.rawDidNotContainOneOfElements,
               Resources.rawContainedOneOfElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain oneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -251,7 +258,7 @@ final class ContainWord {
 
   def oneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
     val right = elements.toList
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](matcherWords) {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -259,7 +266,8 @@ final class ContainWord {
               containing.containsOneOf(left, right.distinct),
               Resources.rawDidNotContainOneElementOf,
               Resources.rawContainedOneElementOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain oneElementOf " + Prettifier.default(right)
@@ -273,7 +281,7 @@ final class ContainWord {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun("ContainWord.scala", "atLeastOneOf"))
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](matcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -281,7 +289,8 @@ final class ContainWord {
               aggregating.containsAtLeastOneOf(left, right),
               Resources.rawDidNotContainAtLeastOneOf,
               Resources.rawContainedAtLeastOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain atLeastOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -293,7 +302,7 @@ final class ContainWord {
 
   def atLeastOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     val right = elements.toList
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](matcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -301,7 +310,8 @@ final class ContainWord {
               aggregating.containsAtLeastOneOf(left, right),
               Resources.rawDidNotContainAtLeastOneElementOf,
               Resources.rawContainedAtLeastOneElementOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain atLeastOneElementOf " + Prettifier.default(right)
@@ -315,7 +325,7 @@ final class ContainWord {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.noneOfDuplicate, getStackDepthFun("ContainWord.scala", "noneOf"))
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](matcherWords) {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -323,7 +333,8 @@ final class ContainWord {
               containing.containsNoneOf(left, right),
               Resources.rawContainedAtLeastOneOf,
               Resources.rawDidNotContainAtLeastOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain noneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -335,7 +346,7 @@ final class ContainWord {
 
   def noElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Containing] = {
     val right = elements.toList
-    new MatcherFactory1[Any, Containing] {
+    new MatcherFactory1[Any, Containing](matcherWords) {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -343,7 +354,8 @@ final class ContainWord {
               containing.containsNoneOf(left, right.distinct),
               Resources.rawContainedAtLeastOneElementOf,
               Resources.rawDidNotContainAtLeastOneElementOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain noElementsOf (" + Prettifier.default(right) + ")"
@@ -354,7 +366,7 @@ final class ContainWord {
   }
   
   def theSameElementsAs(right: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](matcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -362,7 +374,8 @@ final class ContainWord {
               aggregating.containsTheSameElementsAs(left, right),
               Resources.rawDidNotContainSameElements,
               Resources.rawContainedSameElements,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain theSameElementsAs " + Prettifier.default(right)
@@ -373,7 +386,7 @@ final class ContainWord {
   }
   
   def theSameElementsInOrderAs(right: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
-    new MatcherFactory1[Any, Sequencing] {
+    new MatcherFactory1[Any, Sequencing](matcherWords) {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -381,7 +394,8 @@ final class ContainWord {
               sequencing.containsTheSameElementsInOrderAs(left, right),
               Resources.rawDidNotContainSameElementsInOrder,
               Resources.rawContainedSameElementsInOrder,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain theSameElementsInOrderAs " + Prettifier.default(right)
@@ -396,7 +410,7 @@ final class ContainWord {
       throw new NotAllowedException(FailureMessages.onlyEmpty, getStackDepthFun("ContainWord.scala", "only"))
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.onlyDuplicate, getStackDepthFun("ContainWord.scala", "only"))
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](matcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -405,7 +419,8 @@ final class ContainWord {
               aggregating.containsOnly(left, right),
               if (withFriendlyReminder) Resources.rawDidNotContainOnlyElementsWithFriendlyReminder else Resources.rawDidNotContainOnlyElements,
               if (withFriendlyReminder) Resources.rawContainedOnlyElementsWithFriendlyReminder else Resources.rawContainedOnlyElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain only (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -419,7 +434,7 @@ final class ContainWord {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, getStackDepthFun("ContainWord.scala", "inOrderOnly"))
-    new MatcherFactory1[Any, Sequencing] {
+    new MatcherFactory1[Any, Sequencing](matcherWords) {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -427,7 +442,8 @@ final class ContainWord {
               sequencing.containsInOrderOnly(left, right),
               Resources.rawDidNotContainInOrderOnlyElements,
               Resources.rawContainedInOrderOnlyElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain inOrderOnly (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -441,7 +457,7 @@ final class ContainWord {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun("ContainWord.scala", "allOf"))
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](matcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -449,7 +465,8 @@ final class ContainWord {
               aggregating.containsAllOf(left, right),
               Resources.rawDidNotContainAllOfElements,
               Resources.rawContainedAllOfElements,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain allOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -461,7 +478,7 @@ final class ContainWord {
 
   def allElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     val right = elements.toList
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](matcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -469,7 +486,8 @@ final class ContainWord {
               aggregating.containsAllOf(left, right.distinct),
               Resources.rawDidNotContainAllElementsOf,
               Resources.rawContainedAllElementsOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain allElementsOf " + Prettifier.default(right)
@@ -483,7 +501,7 @@ final class ContainWord {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun("ContainWord.scala", "inOrder"))
-    new MatcherFactory1[Any, Sequencing] {
+    new MatcherFactory1[Any, Sequencing](matcherWords) {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -491,7 +509,8 @@ final class ContainWord {
               sequencing.containsInOrder(left, right),
               Resources.rawDidNotContainAllOfElementsInOrder,
               Resources.rawContainedAllOfElementsInOrder,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain inOrder (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -503,7 +522,7 @@ final class ContainWord {
 
   def inOrderElementsOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Sequencing] = {
     val right = elements.toList
-    new MatcherFactory1[Any, Sequencing] {
+    new MatcherFactory1[Any, Sequencing](matcherWords) {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -511,7 +530,8 @@ final class ContainWord {
               sequencing.containsInOrder(left, right.distinct),
               Resources.rawDidNotContainAllElementsOfInOrder,
               Resources.rawContainedAllElementsOfInOrder,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain inOrderElementsOf (" + Prettifier.default(right) + ")"
@@ -525,7 +545,7 @@ final class ContainWord {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun("ContainWord.scala", "atMostOneOf"))
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](matcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -533,7 +553,8 @@ final class ContainWord {
               aggregating.containsAtMostOneOf(left, right),
               Resources.rawDidNotContainAtMostOneOf,
               Resources.rawContainedAtMostOneOf,
-              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+              Vector(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain atMostOneOf (" + right.map(Prettifier.default(_)).mkString(", ") + ")"
@@ -545,7 +566,7 @@ final class ContainWord {
 
   def atMostOneElementOf(elements: GenTraversable[Any]): MatcherFactory1[Any, Aggregating] = {
     val right = elements.toList
-    new MatcherFactory1[Any, Aggregating] {
+    new MatcherFactory1[Any, Aggregating](matcherWords) {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -553,7 +574,8 @@ final class ContainWord {
               aggregating.containsAtMostOneOf(left, right.distinct),
               Resources.rawDidNotContainAtMostOneElementOf,
               Resources.rawContainedAtMostOneElementOf,
-              Vector(left, right)
+              Vector(left, right),
+              FailureMessages.prettifier
             )
           }
           override def toString: String = "contain atMostOneElementOf (" + Prettifier.default(right) + ")"

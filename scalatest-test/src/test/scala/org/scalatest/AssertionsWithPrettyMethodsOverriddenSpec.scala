@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest.matchers
+package org.scalatest
 
-import org.scalatest._
-import Matchers._
+import scala.collection.mutable.WrappedArray
+import org.scalactic.PrettyMethods
 import org.scalactic.Prettifier
+import org.scalactic.Pretty
 
-class BeMatcherSpec extends FunSpec {
-  
-  describe("BeMatcher ") {
-    
-    describe("instance created by BeMatcher apply method") {
-      
-      val beMatcher = BeMatcher[List[Int]] { list =>
-        MatchResult(true, "test", "test", Prettifier.default)
-      }
-      
-      it("should have pretty toString") {
-        beMatcher.toString should be ("BeMatcher[scala.collection.immutable.List](scala.collection.immutable.List => MatchResult)")
-      }
-      
+class AssertionsWithPrettyMethodsOverriddenSpec extends FunSpec with Matchers with PrettyMethods {
+
+  override def prettifier =
+    Prettifier {
+      case s: String => "!!! " + s + " !!!"
+      case other => super.prettifier(other)
     }
-    
+
+  describe("Trait Assertions when PrettyMethods is mixed in") {
+    it("should allow .pretty output to be customized by overriding prettifier") {
+      'c'.pretty shouldBe "'c'"
+      "hello".pretty shouldBe "!!! hello !!!"
+    }
   }
-  
 }
+
+

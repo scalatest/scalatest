@@ -15,8 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.MatchersHelper.checkNoException
-import org.scalatest.Assertion
+import org.scalatest.{MatchersHelper, Assertion}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -24,7 +23,7 @@ import org.scalatest.Assertion
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForNoException {
+final class ResultOfBeWordForNoException(matchersHelper: MatchersHelper) {
   
   /**
    * This method enables the following syntax: 
@@ -35,7 +34,7 @@ final class ResultOfBeWordForNoException {
    * </pre>
    */
   def thrownBy(fun: => Any): Assertion = {
-    checkNoException(fun)
+    matchersHelper.checkNoException(fun)
   }
   
   /**

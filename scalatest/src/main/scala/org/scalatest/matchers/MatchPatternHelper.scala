@@ -15,15 +15,14 @@
  */
 package org.scalatest.matchers
 
-import org.scalatest.{FailureMessages, Resources}
+import org.scalatest.{MatchersHelper, FailureMessages, Resources}
 import org.scalactic.Prettifier
-import org.scalatest.MatchersHelper._
 import org.scalatest.words.ResultOfNotWordForAny
 
 /**
  * <code>MatchPatternHelper</code> is called by <code>MatchPatternMacro</code> to support <code>matchPattern</code> syntax.
  */
-object MatchPatternHelper {
+class MatchPatternHelper(failureMessages: FailureMessages, matchersHelper: MatchersHelper) {
 
   /**
    * <code>MatchPatternHelper</code> that is called by <code>MatchPatternMacro</code> to support the following syntax:
@@ -40,7 +39,8 @@ object MatchPatternHelper {
           right.isDefinedAt(left),
           Resources.rawDidNotMatchTheGivenPattern,
           Resources.rawMatchedTheGivenPattern,
-          Vector(left)
+          Vector(left),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "patternMatch " + Prettifier.default(right)
@@ -61,7 +61,8 @@ object MatchPatternHelper {
           !right.isDefinedAt(left),
           Resources.rawMatchedTheGivenPattern,
           Resources.rawDidNotMatchTheGivenPattern,
-          Vector(left)
+          Vector(left),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "not patternMatch " + Prettifier.default(right)
@@ -77,11 +78,11 @@ object MatchPatternHelper {
    */
   def checkMatchPattern(resultOfNoWordForAny: ResultOfNotWordForAny[_], right: PartialFunction[Any, _]) {
     if (right.isDefinedAt(resultOfNoWordForAny.left) != resultOfNoWordForAny.shouldBeTrue)
-      throw newTestFailedException(
+      throw matchersHelper.newTestFailedException(
         if (resultOfNoWordForAny.shouldBeTrue)
-          FailureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
+          failureMessages.didNotMatchTheGivenPattern(resultOfNoWordForAny.left)
         else
-          FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left)
+          failureMessages.matchedTheGivenPattern(resultOfNoWordForAny.left)
       )
   }
 

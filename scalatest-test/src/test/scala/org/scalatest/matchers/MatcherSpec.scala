@@ -22,6 +22,7 @@ import matchers.{MatchResult,
                  NegatedFailureMessage, 
                  MidSentenceNegatedFailureMessage, 
                  MidSentenceFailureMessage}
+import org.scalactic.Prettifier
 
 class MatcherSpec extends FunSpec {
   
@@ -46,7 +47,8 @@ class MatcherSpec extends FunSpec {
             "{0} was equal to {1}", 
             "{0} was not equal to {1}",
             Vector("Bob", "hi"), 
-            Vector("[Bob]", "[hi]")
+            Vector("[Bob]", "[hi]"),
+            Prettifier.default
           )
           
         val rightResult = 
@@ -57,7 +59,8 @@ class MatcherSpec extends FunSpec {
             "the reference equaled null", 
             "{0} did not equal null", 
             Vector.empty, 
-            Vector("Bob")
+            Vector("Bob"),
+            Prettifier.default
           )
           
         it("should have correct MatcherResult") {
@@ -117,7 +120,8 @@ class MatcherSpec extends FunSpec {
             "{0} was equal to {1}", 
             "{0} was not equal to {1}",
             Vector("Bob", "Bob"), 
-            Vector("Bob", "Bob")
+            Vector("Bob", "Bob"),
+            Prettifier.default
           )
           
         val rightResult = 
@@ -128,7 +132,8 @@ class MatcherSpec extends FunSpec {
             "the reference equaled null", 
             "{0} did not equal null", 
             Vector.empty, 
-            Vector("Bob")
+            Vector("Bob"),
+            Prettifier.default
           )
         
         it("should have correct MatcherResult") {
@@ -205,7 +210,7 @@ class MatcherSpec extends FunSpec {
     
     describe("apply(T => MatchResult) method returns Matcher") {
       
-      val mt = Matcher.apply((test: String) => MatchResult(true, "test", "test"))
+      val mt = Matcher.apply((test: String) => MatchResult(true, "test", "test", Prettifier.default))
       
       it("should have pretty toString") {
         mt.toString should be ("Matcher[java.lang.String](java.lang.String => MatchResult)")

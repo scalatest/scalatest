@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalactic.Prettifier
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers._
 import java.lang.reflect.Method
@@ -30,7 +31,7 @@ import org.scalatest.exceptions.TestFailedException
 // TODO: document how to turn off the === implicit conversion
 // TODO: Document you can use JMock, EasyMock, etc.
 
-private[scalatest] object MatchersHelper {
+private[scalatest] class MatchersHelper(val prettifier: Prettifier) {
 
   // SKIP-SCALATESTJS-START
   // If the symbol passed is 'title, this will look for a field named "title", a method named "title", or a
@@ -163,7 +164,8 @@ private[scalatest] object MatchersHelper {
         Vector(NegatedFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
         Vector(NegatedFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
         Vector(MidSentenceNegatedFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
-        Vector(MidSentenceNegatedFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult))
+        Vector(MidSentenceNegatedFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
+        prettifier
       )
     }
   }
@@ -182,60 +184,11 @@ private[scalatest] object MatchersHelper {
         Vector(FailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
         Vector(FailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
         Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceFailureMessage(rightMatchResult)),
-        Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult))
+        Vector(MidSentenceFailureMessage(leftMatchResult), MidSentenceNegatedFailureMessage(rightMatchResult)),
+        prettifier
       )
     }
   }
-
-  // SKIP-SCALATESTJS-START
-  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0): MatchResult = {
-
-    // If 'empty passed, rightNoTick would be "empty"
-    val propertyName = right.name
-
-    accessProperty(left, right, true) match {
-
-      case None =>
-
-        // if propertyName is '>, mangledPropertyName would be "$greater"
-        val mangledPropertyName = transformOperatorChars(propertyName)
-
-        // methodNameToInvoke would also be "empty"
-        val methodNameToInvoke = mangledPropertyName
-
-        // methodNameToInvokeWithIs would be "isEmpty"
-        val methodNameToInvokeWithIs = "is"+ mangledPropertyName(0).toUpper + mangledPropertyName.substring(1)
-
-        val firstChar = propertyName(0).toLower
-        val methodNameStartsWithVowel = firstChar == 'a' || firstChar == 'e' || firstChar == 'i' ||
-          firstChar == 'o' || firstChar == 'u'
-
-        throw newTestFailedException(
-          if (methodNameStartsWithVowel)
-            FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
-          else
-            FailureMessages.hasNeitherAOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
-          None, 
-          stackDepth
-        )
-
-      case Some(result) =>
-
-        val (wasNot, was) =
-          if (hasArticle) {
-            if (articleIsA) (Resources.rawWasNotA, Resources.rawWasA) else (Resources.rawWasNotAn, Resources.rawWasAn)
-          }
-          else (Resources.rawWasNot, Resources.rawWas)
-
-        MatchResult(
-          result == true, // Right now I just leave the return value of accessProperty as Any
-          wasNot,
-          was,
-          Vector(left, UnquotedString(propertyName))
-        )
-    }
-  }
-  // SKIP-SCALATESTJS-END
 
   def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
                                  didNotMatchMessage: => String, matchMessage: => String, notGroupAtIndexMessage:  => String, notGroupMessage: => String,
@@ -245,7 +198,8 @@ private[scalatest] object MatchersHelper {
         matches, 
         didNotMatchMessage,
         matchMessage,
-        Vector(left, UnquotedString(regex.toString))
+        Vector(left, UnquotedString(regex.toString)),
+        prettifier
       )
     else {
       val count = pMatcher.groupCount
@@ -261,7 +215,8 @@ private[scalatest] object MatchersHelper {
             if (groups.size > 1) notGroupAtIndexMessage else notGroupMessage,
             andGroupMessage,
             if (groups.size > 1) Vector(left, UnquotedString(regex.toString), pMatcher.group(idx + 1), UnquotedString(group), idx) else Vector(left, UnquotedString(regex.toString), pMatcher.group(1), UnquotedString(group)), 
-            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
+            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", "))),
+            prettifier
           )
         case None => 
           // None of group failed
@@ -270,7 +225,8 @@ private[scalatest] object MatchersHelper {
             notGroupMessage,
             andGroupMessage,
             Vector(left, UnquotedString(regex.toString), pMatcher.group(1),  UnquotedString(groups.mkString(", "))), 
-            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
+            Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", "))),
+            prettifier
           )
       }
     }

@@ -22,6 +22,7 @@ import matchers.{MatchResult,
                  NegatedFailureMessage, 
                  MidSentenceNegatedFailureMessage, 
                  MidSentenceFailureMessage}
+import org.scalactic.Prettifier
 
 class MatcherFactorySpec extends FunSpec {
   
@@ -47,7 +48,8 @@ class MatcherFactorySpec extends FunSpec {
             "{0} equaled {1}", 
             "{0} did not equal {1}",
             Vector("Bob", "hi"), 
-            Vector("[Bob]", "[hi]")
+            Vector("[Bob]", "[hi]"),
+            Prettifier.default
           )
           
         val rightResult = 
@@ -58,7 +60,8 @@ class MatcherFactorySpec extends FunSpec {
             "the reference equaled null", 
             "{0} did not equal null", 
             Vector.empty, 
-            Vector("Bob")
+            Vector("Bob"),
+            Prettifier.default
           )
           
         it("should have correct MatcherResult") {
@@ -119,7 +122,8 @@ class MatcherFactorySpec extends FunSpec {
             "{0} equaled {1}", 
             "{0} did not equal {1}",
             Vector("Bob", "Bob"), 
-            Vector("Bob", "Bob")
+            Vector("Bob", "Bob"),
+            Prettifier.default
           )
           
         val rightResult = 
@@ -130,7 +134,8 @@ class MatcherFactorySpec extends FunSpec {
             "the reference equaled null", 
             "{0} did not equal null", 
             Vector.empty, 
-            Vector("Bob")
+            Vector("Bob"),
+            Prettifier.default
           )
         
         it("should have correct MatcherResult") {

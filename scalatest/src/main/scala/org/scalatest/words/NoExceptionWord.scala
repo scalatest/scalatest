@@ -15,9 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalatest.Resources
-import org.scalatest.MatchersHelper.indicateSuccess
-import org.scalatest.MatchersHelper.indicateFailure
+import org.scalatest.{MatchersHelper, Resources}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -25,7 +23,7 @@ import org.scalatest.MatchersHelper.indicateFailure
  *
  * @author Bill Venners
  */
-final class NoExceptionWord {
+final class NoExceptionWord(matchersHelper: MatchersHelper) {
 
   // SKIP-SCALATESTJS-START
   private val stackDepth = 1
@@ -41,7 +39,7 @@ final class NoExceptionWord {
    * </pre>
    */
   def should(beWord: BeWord): ResultOfBeWordForNoException = 
-    new ResultOfBeWordForNoException
+    new ResultOfBeWordForNoException(matchersHelper)
   
   /**
    * This method enables the following syntax: 
@@ -54,12 +52,12 @@ final class NoExceptionWord {
   def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
-      indicateSuccess(Resources.noExceptionWasThrown)
+      matchersHelper.indicateSuccess(Resources.noExceptionWasThrown)
     }
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), stackDepth)
+        matchersHelper.indicateFailure(message, Some(u), stackDepth)
       }
     }
   }
@@ -73,7 +71,7 @@ final class NoExceptionWord {
    * </pre>
    */
   def must(beWord: BeWord): ResultOfBeWordForNoException =
-    new ResultOfBeWordForNoException
+    new ResultOfBeWordForNoException(matchersHelper)
 
   /**
    * This method enables the following syntax:
@@ -86,12 +84,12 @@ final class NoExceptionWord {
   def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
-      indicateSuccess(Resources.noExceptionWasThrown)
+      matchersHelper.indicateSuccess(Resources.noExceptionWasThrown)
     }
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), stackDepth)
+        matchersHelper.indicateFailure(message, Some(u), stackDepth)
       }
     }
   }

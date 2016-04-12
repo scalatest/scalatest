@@ -29,10 +29,10 @@ import org.scalatest.enablers.Existence
  * @author Bill Venners
  * @author Chee Seng
  */
-final class ExistWord {
+final class ExistWord(matcherWords: MatcherWords) {
   
   private[scalatest] val matcherFactory: MatcherFactory1[Any, Existence] = 
-    new MatcherFactory1[Any, Existence] {
+    new MatcherFactory1[Any, Existence](matcherWords) {
       def matcher[T <: Any : Existence]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -41,7 +41,8 @@ final class ExistWord {
               existence.exists(left), 
               Resources.rawDoesNotExist,
               Resources.rawExists,
-              Vector(left)
+              Vector(left),
+              matcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "exist"

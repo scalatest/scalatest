@@ -20,10 +20,11 @@ import org.scalacheck._
 import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
-import FailureMessages._
 import Matchers._
 
 class ShouldContainValueSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+
+  import FailureMessages._
 
   // Checking for a specific size
   describe("The 'contain value (Int)' syntax") {

@@ -148,7 +148,7 @@ private[scalatest] object AMatcher {
    * @author Bill Venners
    * @author Chee Seng
    */
-  def apply[T](name: String)(fun: T => Boolean)(implicit ev: ClassTag[T]) =
+  def apply[T](name: String)(fun: T => Boolean)(implicit ev: ClassTag[T], failureMessages: FailureMessages) =
     new AMatcher[T] {
       val nounName = name
       def apply(left: T): MatchResult = 
@@ -156,9 +156,10 @@ private[scalatest] object AMatcher {
           fun(left), 
           Resources.rawWasNotA,
           Resources.rawWasA,
-          Vector(left, UnquotedString(nounName))
+          Vector(left, UnquotedString(nounName)),
+          failureMessages.prettifier
         )
-      override def toString: String = "AMatcher[" + ev.runtimeClass.getName + "](" + Prettifier.default(name) + ", " + ev.runtimeClass.getName + " => Boolean)"
+      override def toString: String = "AMatcher[" + ev.runtimeClass.getName + "](" + failureMessages.prettifier(name) + ", " + ev.runtimeClass.getName + " => Boolean)"
     }
   
 }

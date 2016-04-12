@@ -16,18 +16,14 @@
 package org.scalatest.matchers
 
 import org.scalatest.enablers._
-import org.scalatest.MatchersHelper.orMatchersAndApply
-import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.words._
 import scala.collection.GenTraversable
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
-import org.scalactic.Equality
+import org.scalactic.{DefaultPrettifier, Equality, Prettifier}
 import org.scalactic.TripleEqualsSupport.Spread
 import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
-import org.scalactic.Prettifier
-import org.scalatest.FailureMessages
-import org.scalatest.Resources
+import org.scalatest.{MatchersHelper, SymbolHelper, FailureMessages, Resources}
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is
@@ -411,7 +407,13 @@ import org.scalatest.Resources
  *
  * @author Bill Venners
  */
-trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
+trait Matcher[-T] extends Function1[T, MatchResult] with DefaultPrettifier { outerInstance =>
+
+  private lazy val MatcherWords = new MatcherWords {
+    protected[scalatest] val failureMessages: FailureMessages = new FailureMessages(prettifier)
+    protected[scalatest] val matchersHelper = new MatchersHelper(prettifier)
+    protected[scalatest] val symbolHelper: SymbolHelper = new SymbolHelper(failureMessages, matchersHelper)
+  }
 
   /**
    * Check to see if the specified object, <code>left</code>, matches, and report the result in
@@ -520,7 +522,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
   def and[U <: T](rightMatcher: Matcher[U]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult = {
-        andMatchersAndApply(left, outerInstance, rightMatcher)
+        MatcherWords.matchersHelper.andMatchersAndApply(left, outerInstance, rightMatcher)
       }
       override def toString: String = "(" + Prettifier.default(outerInstance) + ") and (" + Prettifier.default(rightMatcher) + ")"
     }
@@ -536,12 +538,12 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * @return a <code>MatcherFactory</code> that performs the logical-and of this and the passed <code>MatcherFactory</code>
    */
   def and[U, TC1[_]](rightMatcherFactory1: MatcherFactory1[U, TC1]): MatcherFactory1[T with U, TC1] =
-    new MatcherFactory1[T with U, TC1] {
+    new MatcherFactory1[T with U, TC1](MatcherWords) {
       def matcher[V <: T with U : TC1]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val rightMatcher = rightMatcherFactory1.matcher
-            andMatchersAndApply(left, outerInstance, rightMatcher)
+            MatcherWords.matchersHelper.andMatchersAndApply(left, outerInstance, rightMatcher)
           }
         }
       }
@@ -574,7 +576,7 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
   def or[U <: T](rightMatcher: Matcher[U]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult = {
-        orMatchersAndApply(left, outerInstance, rightMatcher)
+        MatcherWords.matchersHelper.orMatchersAndApply(left, outerInstance, rightMatcher)
       }
       override def toString: String = "(" + Prettifier.default(outerInstance) + ") or (" + Prettifier.default(rightMatcher) + ")"
     }
@@ -588,12 +590,12 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
    * @return a <code>MatcherFactory</code> that performs the logical-or of this and the passed <code>MatcherFactory</code>
    */
   def or[U, TC1[_]](rightMatcherFactory1: MatcherFactory1[U, TC1]): MatcherFactory1[T with U, TC1] =
-    new MatcherFactory1[T with U, TC1] {
+    new MatcherFactory1[T with U, TC1](MatcherWords) {
       def matcher[V <: T with U : TC1]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val rightMatcher = rightMatcherFactory1.matcher
-            orMatchersAndApply(left, outerInstance, rightMatcher)
+            MatcherWords.matchersHelper.orMatchersAndApply(left, outerInstance, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(outerInstance) + ") or (" + Prettifier.default(rightMatcherFactory1) + ")"
         }
@@ -1227,7 +1229,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
               Resources.rawMidSentenceEqualedNull,
               Resources.rawDidNotEqualNull,
               Vector.empty, 
-              Vector(left)
+              Vector(left),
+              prettifier
             )
           }
           override def toString: String = "not equal null"
@@ -2509,7 +2512,8 @@ trait Matcher[-T] extends Function1[T, MatchResult] { outerInstance =>
               Resources.rawMidSentenceEqualedNull,
               Resources.rawDidNotEqualNull,
               Vector.empty, 
-              Vector(left)
+              Vector(left),
+              prettifier
             )
           }
           override def toString: String = "not equal null"

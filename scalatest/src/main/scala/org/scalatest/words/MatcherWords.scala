@@ -17,8 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import org.scalactic.{Equality, Prettifier}
-import org.scalatest.Resources
-import org.scalatest.Suite
+import org.scalatest.{FailureMessages, Resources, Suite, SymbolHelper, MatchersHelper}
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 
 /**
@@ -29,6 +28,12 @@ import org.scalatest.Assertions.areEqualComparingArraysStructurally
  */
 trait MatcherWords {
 
+  protected[scalatest] val failureMessages: FailureMessages
+
+  protected[scalatest] val matchersHelper: MatchersHelper
+
+  protected[scalatest] val symbolHelper: SymbolHelper
+
   /**
    * This field enables syntax such as the following:
    *
@@ -37,7 +42,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val fullyMatch = new FullyMatchWord
+  lazy val fullyMatch = new FullyMatchWord(matchersHelper)
 
   /**
    * This field enables syntax such as the following:
@@ -47,7 +52,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val startWith = new StartWithWord
+  lazy val startWith = new StartWithWord(matchersHelper)
 
   /**
    * This field enables syntax such as the following:
@@ -57,7 +62,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val endWith = new EndWithWord
+  lazy val endWith = new EndWithWord(matchersHelper)
 
   /**
    * This field enables syntax such as the following:
@@ -67,7 +72,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val include = new IncludeWord
+  lazy val include = new IncludeWord(matchersHelper)
 
 /*
     In HaveWord's methods key, value, length, and size, I can give type parameters.
@@ -97,7 +102,7 @@ trait MatcherWords {
    *              ^
    * </pre>
    */
-  val have = new HaveWord
+  val have = new HaveWord(this)
 
   /**
    * This field enables syntax such as the following:
@@ -107,7 +112,7 @@ trait MatcherWords {
    *             ^
    * </pre>
    */
-  val be = new BeWord
+  lazy val be = new BeWord(symbolHelper, failureMessages, this)
 
   /**
    * This field enables syntax such as the following:
@@ -117,7 +122,7 @@ trait MatcherWords {
    *              ^
    * </pre>
    */
-  val contain = new ContainWord
+  lazy val contain = new ContainWord(failureMessages, this)
 
   /**
    * This field enables syntax like the following: 
@@ -127,7 +132,7 @@ trait MatcherWords {
    *                ^
    * </pre>
    */
-  val not = new NotWord
+  lazy val not = new NotWord(symbolHelper, failureMessages, this, matchersHelper)
   
   /**
    * This field enables the following syntax: 
@@ -177,7 +182,7 @@ trait MatcherWords {
    * ^
    * </pre>
    */
-  val noException = new NoExceptionWord
+  lazy val noException = new NoExceptionWord(matchersHelper)
   
   /**
    * This field enables the following syntax: 
@@ -187,7 +192,7 @@ trait MatcherWords {
    *             ^
    * </pre>
    */
-  val exist = new ExistWord
+  val exist = new ExistWord(this)
 
   /**
    * This field enables the following syntax: 
@@ -289,7 +294,7 @@ trait MatcherWords {
    *
    */
   def equal(right: Any): MatcherFactory1[Any, Equality] =
-    new MatcherFactory1[Any, Equality] {
+    new MatcherFactory1[Any, Equality](this) {
       def matcher[T <: Any : Equality]: Matcher[T] = {
         val equality = implicitly[Equality[T]]
         new Matcher[T] {
@@ -300,14 +305,15 @@ trait MatcherWords {
               Resources.rawDidNotEqual,
               Resources.rawEqualed,
               Vector(leftee, rightee), 
-              Vector(left, right)
+              Vector(left, right),
+              failureMessages.prettifier
             )
           }
-          override def toString: String = "equal (" + Prettifier.default(right) + ")"
+          override def toString: String = "equal (" + failureMessages.prettifier(right) + ")"
         }
       }
-      override def toString: String = "equal (" + Prettifier.default(right) + ")"
+      override def toString: String = "equal (" + failureMessages.prettifier(right) + ")"
     }
 }
 
-object MatcherWords extends MatcherWords
+//object MatcherWords extends MatcherWords

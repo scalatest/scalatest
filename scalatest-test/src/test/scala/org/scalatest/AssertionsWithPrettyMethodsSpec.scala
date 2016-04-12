@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalactic
+package org.scalatest
 
-import org.scalatest._
 import scala.collection.mutable.WrappedArray
+import org.scalactic.PrettyMethods
+import org.scalactic.Prettifier
+import org.scalactic.Pretty
 
-class PrettyMethodsSpec extends FunSpec with Matchers {
-  describe("Trait PrettyMethods") {
+class AssertionsWithPrettyMethodsSpec extends FunSpec with Matchers with PrettyMethods {
+  describe("Trait Assertions when PrettyMethods is mixed in") {
     describe("should by default allow you to call pretty on anything and get default Prettifier output,") {
-      import PrettyMethods._
       it("putting double quotes around strings") {
         "hi".pretty should be ("\"hi\"")
       }
@@ -41,32 +42,11 @@ class PrettyMethodsSpec extends FunSpec with Matchers {
         List("1", "2", "3").pretty should be ("List(\"1\", \"2\", \"3\")")
       }
     }
-    it("should allow .pretty output to be customized by overriding prettifier") {
-      object MyPrettyMethods extends PrettyMethods {
-        override def prettifier =
-          Prettifier {
-            case s: String => "!!! " + s + " !!!"
-            case other => super.prettifier(other)
-          }
-      }
-      import MyPrettyMethods._
-      'c'.pretty shouldBe "'c'"
-      "hello".pretty shouldBe "!!! hello !!!"
-    }
     it("should allow .pretty output to be customized by defining a typeclass") {
-      import PrettyMethods._
       'c'.pretty shouldBe "'c'"
       implicit val prettyString: Pretty[String] = Pretty((s: String) => "!!! " + s + " !!!")
       "hello".pretty shouldBe "!!! hello !!!"
     }
-/* This proved that I got rid of the Any => String conversion, but by not compiling. 
-    it("should not simply convert Any to String") {
-      new ConversionCheckedTripleEquals {
-        import PrettyMethods._
-        "2" should === (2)
-      }
-    }
-*/
   }
 }
 

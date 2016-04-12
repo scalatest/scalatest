@@ -16,11 +16,12 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
-import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
 
 class MapShouldBeDefinedAtSpec extends FunSpec {
+
+  import FailureMessages.decorateToStringValue
   
   def wasDefinedAt(left: Any, right: Any): String =
     decorateToStringValue(left) + " was defined at " + decorateToStringValue(right)

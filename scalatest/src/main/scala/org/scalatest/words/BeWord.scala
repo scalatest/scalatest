@@ -23,9 +23,6 @@ import org.scalatest.Resources
 import org.scalatest.UnquotedString
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
-// SKIP-SCALATESTJS-START
-import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
-// SKIP-SCALATESTJS-END
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.Sortable
 import org.scalatest.enablers.Readability
@@ -63,8 +60,11 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  * 
  * @author Bill Venners
  */
-final class BeWord {
+final class BeWord(symbolHelper: org.scalatest.SymbolHelper, failureMessages: FailureMessages, matcherWords: MatcherWords) {
 
+  // SKIP-SCALATESTJS-START
+  import symbolHelper.matchSymbolToPredicateMethod
+  // SKIP-SCALATESTJS-END
 
   /**
    * This method enables the following syntax: 
@@ -99,7 +99,8 @@ final class BeWord {
           ordering.lt(left, right), // left < right
           Resources.rawWasNotLessThan,
           Resources.rawWasLessThan,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be < " + Prettifier.default(right)
@@ -138,7 +139,8 @@ final class BeWord {
           ordering.gt(left, right), // left > right
           Resources.rawWasNotGreaterThan,
           Resources.rawWasGreaterThan,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be > " + Prettifier.default(right)
@@ -177,7 +179,8 @@ final class BeWord {
           ordering.lteq(left, right), // left <= right
           Resources.rawWasNotLessThanOrEqualTo,
           Resources.rawWasLessThanOrEqualTo,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be <= " + Prettifier.default(right)
@@ -216,7 +219,8 @@ final class BeWord {
           ordering.gteq(left, right), // left >= right
           Resources.rawWasNotGreaterThanOrEqualTo,
           Resources.rawWasGreaterThanOrEqualTo,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be >= " + Prettifier.default(right)
@@ -236,7 +240,7 @@ final class BeWord {
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def ===(right: Any): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
+    throw new NotAllowedException(failureMessages.beTripleEqualsNotAllowed,
                                   getStackDepthFun("BeWord.scala", "$eq$eq$eq"))
   }
 
@@ -273,7 +277,8 @@ final class BeWord {
           result.matches,
           Resources.rawWasNotA,
           Resources.rawWasA,
-          Vector(left, UnquotedString(result.propertyName))
+          Vector(left, UnquotedString(result.propertyName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be a " + Prettifier.default(bePropertyMatcher)
@@ -326,7 +331,8 @@ final class BeWord {
           result.matches,
           Resources.rawWasNotAn,
           Resources.rawWasAn,
-          Vector(left, UnquotedString(result.propertyName))
+          Vector(left, UnquotedString(result.propertyName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be an " + Prettifier.default(bePropertyMatcher)
@@ -361,7 +367,8 @@ final class BeWord {
           spread.isWithin(left),
           Resources.rawWasNotPlusOrMinus,
           Resources.rawWasPlusOrMinus,
-          Vector(left, spread.pivot, spread.tolerance)
+          Vector(left, spread.pivot, spread.tolerance),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (" + Prettifier.default(spread) + ")"
@@ -382,7 +389,8 @@ final class BeWord {
           left eq right,
           Resources.rawWasNotSameInstanceAs,
           Resources.rawWasSameInstanceAs,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       override def toString: String = "be theSameInstanceAs " + Prettifier.default(right)
     }
@@ -402,7 +410,8 @@ final class BeWord {
           left == right,
           Resources.rawWasNot,
           Resources.rawWas,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
@@ -425,7 +434,8 @@ final class BeWord {
           Resources.rawWasNotNull,
           Resources.rawMidSentenceWasNull,
           Vector(left), 
-          Vector.empty
+          Vector.empty,
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (null)"
@@ -498,7 +508,8 @@ final class BeWord {
           result.matches,
           Resources.rawWasNot,
           Resources.rawWas,
-          Vector(left, UnquotedString(result.propertyName))
+          Vector(left, UnquotedString(result.propertyName)),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (" + Prettifier.default(bePropertyMatcher) + ")"
@@ -529,7 +540,8 @@ final class BeWord {
           Resources.rawWasNotEqualTo,
           Resources.rawWasEqualTo,
           Vector(leftee, rightee), 
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       }
       override def toString: String = "be (" + Prettifier.default(right) + ")"
@@ -544,7 +556,7 @@ final class BeWord {
    * </pre>
    */
   def apply(right: SortedWord): MatcherFactory1[Any, Sortable] = 
-    new MatcherFactory1[Any, Sortable] {
+    new MatcherFactory1[Any, Sortable](matcherWords) {
       def matcher[T <: Any : Sortable]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -553,7 +565,8 @@ final class BeWord {
               sortable.isSorted(left), 
               Resources.rawWasNotSorted,
               Resources.rawWasSorted,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (sorted)"
@@ -576,7 +589,8 @@ final class BeWord {
           left.isDefinedAt(right),
           Resources.rawWasNotDefinedAt,
           Resources.rawWasDefinedAt,
-          Vector(left, right)
+          Vector(left, right),
+          failureMessages.prettifier
         )
       override def toString: String = "be definedAt " + Prettifier.default(right)
     }
@@ -606,7 +620,8 @@ final class BeWord {
           left.isDefinedAt(resultOfDefinedAt.right),
           Resources.rawWasNotDefinedAt,
           Resources.rawWasDefinedAt,
-          Vector(left, resultOfDefinedAt.right)
+          Vector(left, resultOfDefinedAt.right),
+          failureMessages.prettifier
         )
       override def toString: String = "be definedAt " + Prettifier.default(resultOfDefinedAt.right)
     }
@@ -642,7 +657,7 @@ final class BeWord {
    * </pre>
    */
   def apply(readable: ReadableWord): MatcherFactory1[Any, Readability] = 
-    new MatcherFactory1[Any, Readability] {
+    new MatcherFactory1[Any, Readability](matcherWords) {
       def matcher[T <: Any : Readability]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -651,7 +666,8 @@ final class BeWord {
               readability.isReadable(left), 
               Resources.rawWasNotReadable,
               Resources.rawWasReadable,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (" + Prettifier.default(readable) + ")"
@@ -668,7 +684,7 @@ final class BeWord {
    * </pre>
    */
   def apply(writable: WritableWord): MatcherFactory1[Any, Writability] = 
-    new MatcherFactory1[Any, Writability] {
+    new MatcherFactory1[Any, Writability](matcherWords) {
       def matcher[T <: Any : Writability]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -677,7 +693,8 @@ final class BeWord {
               writability.isWritable(left), 
               Resources.rawWasNotWritable,
               Resources.rawWasWritable,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (writable)"
@@ -694,7 +711,7 @@ final class BeWord {
    * </pre>
    */
   def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] = 
-    new MatcherFactory1[Any, Emptiness] {
+    new MatcherFactory1[Any, Emptiness](matcherWords) {
       def matcher[T <: Any : Emptiness]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -703,7 +720,8 @@ final class BeWord {
               emptiness.isEmpty(left), 
               Resources.rawWasNotEmpty,
               Resources.rawWasEmpty,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (empty)"
@@ -720,7 +738,7 @@ final class BeWord {
    * </pre>
    */
   def apply(defined: DefinedWord): MatcherFactory1[Any, Definition] = 
-    new MatcherFactory1[Any, Definition] {
+    new MatcherFactory1[Any, Definition](matcherWords) {
       def matcher[T <: Any : Definition]: Matcher[T] = 
         new Matcher[T] {
           def apply(left: T): MatchResult = {
@@ -729,7 +747,8 @@ final class BeWord {
               definition.isDefined(left), 
               Resources.rawWasNotDefined,
               Resources.rawWasDefined,
-              Vector(left)
+              Vector(left),
+              failureMessages.prettifier
             )
           }
           override def toString: String = "be (defined)"

@@ -1642,8 +1642,11 @@ $columnsOfIndexes$
          |import org.scalatest.exceptions.StackDepth
          |import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
          |
-         |trait TableAsserting[ASSERTION] {
+         |trait TableAsserting[ASSERTION] extends org.scalactic.DefaultPrettifier {
          |  type Result
+         |
+         |  val FailureMessages = new FailureMessages(prettifier)
+         |
          |  $forAllMethods$
          |  $forEveryMethods$
          |  $existsMethods$
@@ -1773,7 +1776,7 @@ $columnsOfIndexes$
          |        )
          |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit =
          |        throw new org.scalatest.exceptions.TestFailedException(
-         |          sde => Some(message),
+         |          (sde: StackDepthException) => Some(message),
          |          optionalCause,
          |          stackDepthFun
          |        )
@@ -1811,7 +1814,7 @@ $columnsOfIndexes$
          |        )
          |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion =
          |        throw new org.scalatest.exceptions.TestFailedException(
-         |          sde => Some(message),
+         |          (sde: StackDepthException) => Some(message),
          |          optionalCause,
          |          stackDepthFun
          |        )

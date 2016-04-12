@@ -20,6 +20,7 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldNotShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMatchers {
 
@@ -132,7 +133,8 @@ class ShouldNotShorthandSpec extends FunSpec with EmptyMocks with BookPropertyMa
           MatchResult(
             left % 2 == 1,
             left.toString + " was even",
-            left.toString + " was odd"
+            left.toString + " was odd",
+            Prettifier.default
           )
         }
       }

@@ -25,8 +25,7 @@ object GenFactories {
 package org.scalatest.matchers
 
 import org.scalatest.enablers._
-import org.scalatest.MatchersHelper.andMatchersAndApply
-import org.scalatest.MatchersHelper.orMatchersAndApply
+import org.scalatest.MatchersHelper
 import org.scalatest.words.MatcherWords
 import scala.collection.GenTraversable
 import scala.util.matching.Regex
@@ -105,7 +104,7 @@ import scala.language.higherKinds
  * @author Bill Venners
  */
 // Add a TYPECLASSN for each N
-abstract class MatcherFactory$arity$[-SC, $typeConstructors$] { thisMatcherFactory =>
+abstract class MatcherFactory$arity$[-SC, $typeConstructors$](MatcherWords: MatcherWords) { thisMatcherFactory =>
 
   /**
    * Factory method that will produce a <code>Matcher[T]</code>, where <code>T</code> is a subtype of (or the same type
@@ -135,12 +134,12 @@ $endif$
    * Ands this matcher factory with the passed matcher.
    */
   def and[U <: SC](rightMatcher: Matcher[U]): MatcherFactory$arity$[U, $commaSeparatedTCNs$] =
-    new MatcherFactory$arity$[U, $commaSeparatedTCNs$] {
+    new MatcherFactory$arity$[U, $commaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $colonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
-            andMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcher) + ")"
         }
@@ -152,12 +151,12 @@ $endif$
    * Ors this matcher factory with the passed matcher.
    */
   def or[U <: SC](rightMatcher: Matcher[U]): MatcherFactory$arity$[U, $commaSeparatedTCNs$] =
-    new MatcherFactory$arity$[U, $commaSeparatedTCNs$] {
+    new MatcherFactory$arity$[U, $commaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $colonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
-            orMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcher) + ")"
         }
@@ -169,13 +168,13 @@ $endif$
    * Ands this matcher factory with the passed <code>MatcherFactory1</code> that has the same final typeclass as this one.
    */
   def and[U <: SC](rightMatcherFactory: MatcherFactory1[U, TC$arity$]): MatcherFactory$arity$[U, $commaSeparatedTCNs$] =
-    new MatcherFactory$arity$[U, $commaSeparatedTCNs$] {
+    new MatcherFactory$arity$[U, $commaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $colonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
             val rightMatcher = rightMatcherFactory.matcher
-            andMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") and (" + Prettifier.default(rightMatcherFactory) + ")"
         }
@@ -187,13 +186,13 @@ $endif$
    * Ors this matcher factory with the passed <code>MatcherFactory1</code> that has the same final typeclass as this one.
    */
   def or[U <: SC](rightMatcherFactory: MatcherFactory1[U, TC$arity$]): MatcherFactory$arity$[U, $commaSeparatedTCNs$] =
-    new MatcherFactory$arity$[U, $commaSeparatedTCNs$] {
+    new MatcherFactory$arity$[U, $commaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $colonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
             val rightMatcher = rightMatcherFactory.matcher
-            orMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
           override def toString: String = "(" + Prettifier.default(thisMatcherFactory) + ") or (" + Prettifier.default(rightMatcherFactory) + ")"
         }
@@ -225,13 +224,13 @@ $endif$
    * Ands this matcher factory with the passed matcher factory.
    */
   def and[U <: SC, $passedTypeConstructors$](rightMatcherFactory: MatcherFactory$passedArity$[U, $passedCommaSeparatedTCNs$]): MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$] =
-    new MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$] {
+    new MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $resultColonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
             val rightMatcher = rightMatcherFactory.matcher
-            andMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.andMatchersAndApply(left, leftMatcher, rightMatcher)
           }
         }
       }
@@ -241,13 +240,13 @@ $endif$
    * Ors this matcher factory with the passed matcher factory.
    */
   def or[U <: SC, $passedTypeConstructors$](rightMatcherFactory: MatcherFactory$passedArity$[U, $passedCommaSeparatedTCNs$]): MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$] =
-    new MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$] {
+    new MatcherFactory$resultArity$[U, $resultCommaSeparatedTCNs$](MatcherWords) {
       def matcher[V <: U : $resultColonSeparatedTCNs$]: Matcher[V] = {
         new Matcher[V] {
           def apply(left: V): MatchResult = {
             val leftMatcher = thisMatcherFactory.matcher
             val rightMatcher = rightMatcherFactory.matcher
-            orMatchersAndApply(left, leftMatcher, rightMatcher)
+            MatcherWords.matchersHelper.orMatchersAndApply(left, leftMatcher, rightMatcher)
           }
         }
       }
@@ -887,7 +886,8 @@ $endif$
               Resources.rawMidSentenceEqualedNull,
               Resources.rawDidNotEqualNull,
               Vector.empty, 
-              Vector(left)
+              Vector(left),
+              MatcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "not equal null"
@@ -2181,7 +2181,8 @@ $endif$
               Resources.rawMidSentenceEqualedNull,
               Resources.rawDidNotEqualNull,
               Vector.empty, 
-              Vector(left)
+              Vector(left),
+              MatcherWords.failureMessages.prettifier
             )
           }
           override def toString: String = "not equal null"
