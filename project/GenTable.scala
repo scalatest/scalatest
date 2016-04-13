@@ -182,6 +182,8 @@ import exceptions.StackDepth
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 import org.scalatest.enablers.TableAsserting
+import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 """
 
 val tableScaladocTemplate = """
@@ -313,15 +315,15 @@ class TableFor$n$[$alphaUpper$](val heading: ($strings$), rows: ($alphaUpper$)*)
    *
    * @param fun the property check function to apply to each row of this <code>TableFor$n$</code>
    */
-  def apply[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+  def apply[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, sourceInfo: SourceInfo): asserting.Result = {
     asserting.forAll(heading, rows: _*)(fun)
   }
 
-  def forEvery[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+  def forEvery[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, sourceInfo: SourceInfo): asserting.Result = {
     asserting.forEvery(heading, rows: _*)(fun)
   }
 
-  def exists[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+  def exists[ASSERTION](fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, sourceInfo: SourceInfo): asserting.Result = {
     asserting.exists(heading, rows: _*)(fun)
   }
 
@@ -484,6 +486,8 @@ import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
 import scala.annotation.tailrec
 import org.scalatest.enablers.TableAsserting
+import org.scalactic.source.SourceInfo
+import org.scalactic.Prettifier
 
 /**
  * Trait containing methods that faciliate property checks against tables of data.
@@ -864,7 +868,7 @@ val propertyCheckForAllTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forAll[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+  def forAll[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, sourceInfo: SourceInfo): asserting.Result = {
     table(fun)
   }
 """
@@ -883,7 +887,7 @@ val propertyCheckForEveryTemplateFor1 = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forEvery[A, ASSERTION](table: TableFor1[A])(fun: A => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+  def forEvery[A, ASSERTION](table: TableFor1[A])(fun: A => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, sourceInfo: SourceInfo): asserting.Result = {
     table.forEvery(fun)
     //asserting.forEvery[Tuple1[A], ASSERTION](table.heading, table.map(Tuple1.apply)){a => fun(a._1)}
   }
@@ -904,7 +908,7 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def forEvery[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+  def forEvery[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, sourceInfo: SourceInfo): asserting.Result = {
     table.forEvery(fun)
     //asserting.forEvery[($alphaUpper$), ASSERTION](table.heading, table)(fun.tupled)
   }
@@ -918,7 +922,7 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def exists[A, ASSERTION](table: TableFor1[A])(fun: A => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+  def exists[A, ASSERTION](table: TableFor1[A])(fun: A => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, sourceInfo: SourceInfo): asserting.Result = {
     table.exists(fun)
     //asserting.exists[Tuple1[A], ASSERTION](List(table.heading), table.map(Tuple1.apply), Resources.tableDrivenExistsFailed _, "TableDrivenPropertyChecks.scala", "exists", 3){a => fun(a._1)}
   }
@@ -933,7 +937,7 @@ val propertyCheckForEveryTemplate = """
    * @param table the table of data with which to perform the property check
    * @param fun the property check function to apply to each row of data in the table
    */
-  def exists[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION]): asserting.Result = {
+  def exists[$alphaUpper$, ASSERTION](table: TableFor$n$[$alphaUpper$])(fun: ($alphaUpper$) => ASSERTION)(implicit asserting: TableAsserting[ASSERTION], prettifier: Prettifier, sourceInfo: SourceInfo): asserting.Result = {
     table.exists(fun)
     //asserting.exists[($alphaUpper$), ASSERTION](table.heading.productIterator.to[List].map(_.toString), table, Resources.tableDrivenExistsFailed _, "$filename$", "exists", 3)(fun.tupled)
   }
@@ -1705,7 +1709,7 @@ $columnsOfIndexes$
          |                        }.toIndexedSeq).mkString("\n") +
          |                        "  )"),
          |                      Some(ex),
-         |                      getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+         |                      getStackDepthFun(sourceInfo),
          |                      None,
          |                      FailureMessages.undecoratedPropertyCheckFailureMessage(prettifier),
          |                      head.productIterator.toList,
@@ -1732,7 +1736,7 @@ $columnsOfIndexes$
          |        indicateFailure(
          |          messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
          |          messageList.headOption,
-         |          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+         |          getStackDepthFun(sourceInfo),
          |          prettifier,
          |          sourceInfo
          |        )
@@ -1749,7 +1753,7 @@ $columnsOfIndexes$
          |        indicateFailure(
          |          messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
          |          messageList.headOption,
-         |          getStackDepthFun(sourceFileName, methodName, stackDepthAdjustment),
+         |          getStackDepthFun(sourceInfo),
          |          prettifier,
          |          sourceInfo
          |        )
