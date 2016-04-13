@@ -22,6 +22,7 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Resources
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
 import org.scalatest.exceptions.TestCanceledException
+import org.scalactic.source.SourceInfo
 
 /**
  * Provides an implicit conversion from <code>java.util.concurrent.Future[T]</code> to
@@ -77,18 +78,18 @@ trait JavaFutures extends Futures {
       def isCanceled: Boolean = javaFuture.isCancelled // Two ll's in Canceled. The verbosity of Java strikes again!
       // TODO: Catch TimeoutException and wrap that in a TFE with ScalaTest's TimeoutException I think.
       // def awaitAtMost(span: Span): T = javaFuture.get(span.totalNanos, TimeUnit.NANOSECONDS)
-      override private[concurrent] def futureValueImpl(methodName: String, stackDepthAdjustment: Int)(implicit config: PatienceConfig): T = {
-        val adjustment =
+      override private[concurrent] def futureValueImpl(sourceInfo: SourceInfo)(implicit config: PatienceConfig): T = {
+        /*val adjustment =
           if (methodName == "whenReady")
             3
           else
-            0
+            0*/
 
         if (javaFuture.isCanceled)
           throw new TestFailedException(
             sde => Some(Resources.futureWasCanceled),
             None,
-            getStackDepthFun("JavaFutures.scala", methodName, adjustment)
+            getStackDepthFun(sourceInfo)
           )
         try {
           javaFuture.get(config.timeout.totalNanos, TimeUnit.NANOSECONDS)
@@ -98,7 +99,7 @@ trait JavaFutures extends Futures {
             throw new TestFailedException(
               sde => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
               None,
-              getStackDepthFun("JavaFutures.scala", methodName, adjustment)
+              getStackDepthFun(sourceInfo)
             ) with TimeoutField {
               val timeout: Span = config.timeout
             }
@@ -116,7 +117,7 @@ trait JavaFutures extends Futures {
                   Resources.futureReturnedAnExceptionWithMessage(exToReport.getClass.getName, exToReport.getMessage)
               },
               Some(exToReport),
-              getStackDepthFun("JavaFutures.scala", methodName, adjustment)
+              getStackDepthFun(sourceInfo)
             )
         }
       }
