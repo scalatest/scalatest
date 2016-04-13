@@ -221,7 +221,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
     //SCALATESTJS-ONLY val scopeErrorStackDepth = 11
 
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun(sourceFileName, "feature"))
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun(sourceInfo))
 
     try {
       registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, sourceFileName, "feature", stackDepth, stackDepthAdjustment, None, sourceInfo)

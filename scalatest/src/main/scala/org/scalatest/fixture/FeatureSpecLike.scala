@@ -222,7 +222,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     //SCALATESTJS-ONLY val duplicateErrorStackDepth = 10
 
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun(sourceFileName, "feature"))
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun(sourceInfo))
 
     try {
       registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, sourceFileName, "feature", stackDepth, stackDepthAdjustment, None, Some(sourceInfo))
