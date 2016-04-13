@@ -1380,7 +1380,7 @@ $columnsOfIndexes$
           |          List($alphaName$),
           |          Some(ex),
           |          None, // Payload
-          |          getStackDepthFun("TableDrivenPropertyChecks.scala", "forAll", stackDepth),
+          |          getStackDepthFun(sourceInfo),
           |          prettifier,
           |          sourceInfo,
           |          idx
