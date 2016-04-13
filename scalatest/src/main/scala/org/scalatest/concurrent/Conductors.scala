@@ -23,6 +23,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.NotAllowedException
 import time.{Seconds, Millis, Span}
 import PatienceConfiguration._
+import org.scalactic.source.SourceInfo
 
 /**
  * Trait whose <code>Conductor</code> member facilitates the testing of classes, traits, and libraries designed
@@ -528,7 +529,7 @@ trait Conductors extends PatienceConfiguration {
      * <strong>The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.</strong>
      */
     @deprecated("The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.")
-    def thread(name: String)(fun: => Any): Thread = {
+    def thread(name: String)(fun: => Any)(implicit sourceInfo: SourceInfo): Thread = {
       threadNamed(name)(fun)
     }
 
@@ -543,13 +544,13 @@ trait Conductors extends PatienceConfiguration {
      * @param fun the function to be executed by the newly created thread
      * @return the newly created thread
      */
-    def threadNamed(name: String)(fun: => Any): Thread = {
+    def threadNamed(name: String)(fun: => Any)(implicit sourceInfo: SourceInfo): Thread = {
       currentState.get match {
         case TestFinished =>
-          throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, getStackDepthFun("Conductors.scala", "thread"))
+          throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, getStackDepthFun(sourceInfo))
         case _ =>
           if (threadNames contains name)
-            throw new NotAllowedException(Resources.cantRegisterThreadsWithSameName(name), getStackDepthFun("Conductors.scala", "thread"))
+            throw new NotAllowedException(Resources.cantRegisterThreadsWithSameName(name), getStackDepthFun(sourceInfo))
           val t = TestThread(name, fun _)
           threads add t
           threadNames add name
@@ -642,13 +643,13 @@ trait Conductors extends PatienceConfiguration {
      *   instantiated this <code>Conductor</code>, or if <code>conduct</code> has already
      *    been invoked on this conductor.
      */
-    def whenFinished(fun: => Assertion): Assertion = {
+    def whenFinished(fun: => Assertion)(implicit sourceInfo: SourceInfo): Assertion = {
 
       if (Thread.currentThread != mainThread)
-        throw new NotAllowedException(Resources.whenFinishedCanOnlyBeCalledByMainThread, getStackDepthFun("Conductors.scala", "whenFinished"))
+        throw new NotAllowedException(Resources.whenFinishedCanOnlyBeCalledByMainThread, getStackDepthFun(sourceInfo))
 
       if (conductingHasBegun)
-        throw new NotAllowedException(Resources.cannotInvokeWhenFinishedAfterConduct, getStackDepthFun("Conductors.scala", "whenFinished"))
+        throw new NotAllowedException(Resources.cannotInvokeWhenFinishedAfterConduct, getStackDepthFun(sourceInfo))
 
       conduct()
 
@@ -662,11 +663,11 @@ trait Conductors extends PatienceConfiguration {
      * @param beat the tick value to wait for
      * @throws NotAllowedException if the a <code>beat</code> less than or equal to zero is passed
      */
-    def waitForBeat(beat: Int): Succeeded.type = {
+    def waitForBeat(beat: Int)(implicit sourceInfo: SourceInfo): Succeeded.type = {
       if (beat == 0)
-        throw new NotAllowedException(Resources.cannotWaitForBeatZero, getStackDepthFun("Conductors.scala", "waitForBeat"))
+        throw new NotAllowedException(Resources.cannotWaitForBeatZero, getStackDepthFun(sourceInfo))
       if (beat < 0)
-        throw new NotAllowedException(Resources.cannotWaitForNegativeBeat, getStackDepthFun("Conductors.scala", "waitForBeat"))
+        throw new NotAllowedException(Resources.cannotWaitForNegativeBeat, getStackDepthFun(sourceInfo))
       clock waitForBeat beat
     }
 

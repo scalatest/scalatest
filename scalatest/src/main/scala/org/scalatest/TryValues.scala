@@ -23,6 +23,8 @@ import scala.util.Try
 import scala.util.Failure
 import scala.util.Success
 
+import org.scalactic.source.SourceInfo
+
 /**
  * Trait that provides an implicit conversion that adds <code>success</code> and <code>failure</code> methods
  * to <code>scala.util.Try</code>, enabling you to make assertions about the value of a <code>Success</code> or
@@ -115,11 +117,11 @@ trait TryValues {
      * Returns the <code>Try</code> passed to the constructor as a <code>Failure</code>, if it is a <code>Failure</code>, else throws <code>TestFailedException</code> with
      * a detail message indicating the <code>Try</code> was not a <code>Failure</code>.
      */
-    def failure: Failure[T] = {
+    def failure(implicit sourceInfo: SourceInfo): Failure[T] = {
       theTry match {
         case failure: Failure[T] => failure
         case _ => 
-          throw new TestFailedException(sde => Some(Resources.tryNotAFailure), None, getStackDepthFun("TryValues.scala", "failure"))
+          throw new TestFailedException(sde => Some(Resources.tryNotAFailure), None, getStackDepthFun(sourceInfo))
       }
     }
 
@@ -127,11 +129,11 @@ trait TryValues {
      * Returns the <code>Try</code> passed to the constructor as a <code>Success</code>, if it is a <code>Success</code>, else throws <code>TestFailedException</code> with
      * a detail message indicating the <code>Try</code> was not a <code>Success</code>.
      */
-    def success: Success[T] = {
+    def success(implicit sourceInfo: SourceInfo): Success[T] = {
       theTry match {
         case success: Success[T] => success
         case _ => 
-          throw new TestFailedException(sde => Some(Resources.tryNotASuccess), None, getStackDepthFun("TryValues.scala", "success"))
+          throw new TestFailedException(sde => Some(Resources.tryNotASuccess), None, getStackDepthFun(sourceInfo))
       }
     }
   }
