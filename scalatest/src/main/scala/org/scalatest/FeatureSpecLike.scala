@@ -188,7 +188,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     //SCALATESTJS-ONLY val duplicateErrorStackDepth = 10
 
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun("FeatureSpecLike.scala", "feature"))
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun(sourceInfo))
 
     try {
       registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecLike.scala", "feature", stackDepth, stackDepthAdjustment, None, Some(sourceInfo))
