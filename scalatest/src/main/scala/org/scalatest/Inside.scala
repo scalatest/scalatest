@@ -18,6 +18,7 @@ package org.scalatest
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
 import scala.annotation.tailrec
+import org.scalactic.source.SourceInfo
 
 /**
  * Trait containing the <code>inside</code> construct, which allows you to make statements about nested object graphs using pattern matching.
@@ -99,7 +100,7 @@ trait Inside {
    * @param pf the partial function to use to inspect inside the passed value
    * @throws TestFailedException if the passed partial function is not defined at the passed value
    */
-  def inside[T, U](value: T)(pf: PartialFunction[T, U]): U = {
+  def inside[T, U](value: T)(pf: PartialFunction[T, U])(implicit sourceInfo: SourceInfo): U = {
 
     def appendInsideMessage(currentMessage: Option[String]) = {
       val st = Thread.currentThread.getStackTrace
@@ -136,7 +137,7 @@ trait Inside {
     }
     else {
       Inside.level.set(Inside.level.get - 1)
-      throw new TestFailedException(sde => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, getStackDepthFun("Inside.scala", "inside"))
+      throw new TestFailedException(sde => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, getStackDepthFun(sourceInfo))
       //throw new TestFailedException(Resources.insidePartialFunctionNotDefined(value.toString()), 2)
     }
   }
