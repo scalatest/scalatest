@@ -219,8 +219,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, sourceFileName, methodName, stackDepth, adjustment, None, Some(sourceInfo))
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
       case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage, prettifier), Some(e), e => duplicateErrorStackDepth)
@@ -268,8 +268,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
                 registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecLike.scala", methodName, stackDepth, adjustment, None, Some(sourceInfo))
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
+                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
                 case nae: exceptions.NotAllowedException => throw nae
                 case trce: TestRegistrationClosedException => throw trce
                 case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage, prettifier), Some(e), e => duplicateErrorStackDepth)

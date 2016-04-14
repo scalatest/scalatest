@@ -1379,7 +1379,7 @@ $columnsOfIndexes$
           |            "  " + FailureMessages.occurredAtRow(prettifier, idx) + "\n" +
           |            $namesAndValues$
           |            "  )",
-          |          FailureMessages.undecoratedPropertyCheckFailureMessage(prettifier),
+          |          FailureMessages.undecoratedPropertyCheckFailureMessage,
           |          List($alphaLower$),
           |          List($alphaName$),
           |          Some(ex),
@@ -1391,7 +1391,7 @@ $columnsOfIndexes$
           |        )
           |      }
           |  }
-          |  indicateSuccess(FailureMessages.propertyCheckSucceeded(prettifier))
+          |  indicateSuccess(FailureMessages.propertyCheckSucceeded)
           |}
         """.stripMargin
 
@@ -1711,7 +1711,7 @@ $columnsOfIndexes$
          |                      Some(ex),
          |                      getStackDepthFun(sourceInfo),
          |                      None,
-         |                      FailureMessages.undecoratedPropertyCheckFailureMessage(prettifier),
+         |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
          |                      head.productIterator.toList,
          |                      namesOfArgs,
          |                      index
@@ -1740,7 +1740,7 @@ $columnsOfIndexes$
          |          prettifier,
          |          sourceInfo
          |        )
-         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded(prettifier))
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
          |    }
          |
          |    $existsMethodImpls$
@@ -1758,7 +1758,7 @@ $columnsOfIndexes$
          |          sourceInfo
          |        )
          |      }
-         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded(prettifier))
+         |      else indicateSuccess(FailureMessages.propertyCheckSucceeded)
          |    }
          |
          |    private[scalatest] def indicateSuccess(message: => String): Result

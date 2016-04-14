@@ -76,7 +76,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
                   case _ => ""
                 }
               ) +
-              "  " + FailureMessages.occurredOnValues(prettifier) + "\n" +
+              "  " + FailureMessages.occurredOnValues + "\n" +
               prettyArgs(argsPassed, prettifier) + "\n" +
               "  )" +
               "", // getLabelDisplay(scalaCheckLabels),

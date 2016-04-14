@@ -237,7 +237,7 @@ final class BeWord {
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def ===(right: Any)(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed(prettifier),
+    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
                                   getStackDepthFun(sourceInfo))
   }
 

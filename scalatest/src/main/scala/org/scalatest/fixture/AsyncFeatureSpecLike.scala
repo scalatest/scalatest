@@ -227,8 +227,8 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
       registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, sourceFileName, "feature", stackDepth, stackDepthAdjustment, None, sourceInfo)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause(prettifier), Some(e), e => scopeErrorStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause(prettifier), Some(e), e => scopeErrorStackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e => scopeErrorStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
       case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), e => scopeErrorStackDepth)
       case other: Throwable => throw other

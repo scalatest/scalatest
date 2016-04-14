@@ -3010,7 +3010,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3035,7 +3035,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3060,7 +3060,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3085,7 +3085,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3110,7 +3110,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3135,7 +3135,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3160,7 +3160,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3185,7 +3185,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3210,7 +3210,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3235,7 +3235,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3260,7 +3260,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get
@@ -3285,7 +3285,7 @@ class WordSpecSpec extends org.scalatest.FunSpec {
           }
           assert("WordSpecSpec.scala" == e.failedCodeFileName.get)
           assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier)))
+          assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause))
 
           assert(e.cause.isDefined)
           val causeThrowable = e.cause.get

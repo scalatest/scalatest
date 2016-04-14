@@ -167,7 +167,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, va
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(comparison: TripleEqualsInvocation[_]): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed(prettifier),
+    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
                                   getStackDepthFun(sourceInfo))
   }
 
@@ -301,9 +301,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, va
    */
   def equal(right: Null): Assertion = {
     if ((left == null) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqualNull(prettifier, left) else FailureMessages.equaledNull(prettifier), None, sourceInfo)
+      indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqualNull(prettifier, left) else FailureMessages.equaledNull, None, sourceInfo)
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.equaledNull(prettifier), FailureMessages.didNotEqualNull(prettifier, left))
+      indicateSuccess(shouldBeTrue, FailureMessages.equaledNull, FailureMessages.didNotEqualNull(prettifier, left))
   }
 
   /**
@@ -494,9 +494,9 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, va
    */
   def be(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
     if ((left == null) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotNull(prettifier, left) else FailureMessages.wasNull(prettifier), None, sourceInfo)
+      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotNull(prettifier, left) else FailureMessages.wasNull, None, sourceInfo)
     else
-      indicateSuccess(shouldBeTrue, FailureMessages.wasNull(prettifier), FailureMessages.wasNotNull(prettifier, left))
+      indicateSuccess(shouldBeTrue, FailureMessages.wasNull, FailureMessages.wasNotNull(prettifier, left))
   }
 
   // SKIP-SCALATESTJS-START

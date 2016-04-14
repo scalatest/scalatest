@@ -101,17 +101,17 @@ class OneOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e1.getMessage() should be (FailureMessages.oneOfDuplicate(prettifier))
+      e1.getMessage() should be (FailureMessages.oneOfDuplicate)
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e2.getMessage() should be (FailureMessages.oneOfDuplicate(prettifier))
+      e2.getMessage() should be (FailureMessages.oneOfDuplicate)
       
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain oneOf(6, 7, 6)
       }
-      e3.getMessage() should be (FailureMessages.oneOfDuplicate(prettifier))
+      e3.getMessage() should be (FailureMessages.oneOfDuplicate)
     }
     
     it("should throw TestFailedException with correct stack depth and message when left and right List are same size but does not contain any same element") {

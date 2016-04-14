@@ -157,7 +157,7 @@ trait Requirements {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
-        throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse(prettifier) else failureMessage)
+        throw new IllegalArgumentException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse else failureMessage)
       }
     }
 
@@ -172,7 +172,7 @@ trait Requirements {
         throw new NullPointerException("clue was null")
       if (!bool.value) {
         val failureMessage = if (Bool.isSimpleWithoutExpressionText(bool)) append("", clue) else append(bool.failureMessage, clue)
-        throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse(prettifier) else failureMessage)
+        throw new IllegalStateException(if (failureMessage.isEmpty) FailureMessages.expressionWasFalse else failureMessage)
       }
     }
 

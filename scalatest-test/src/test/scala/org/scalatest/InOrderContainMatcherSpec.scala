@@ -96,19 +96,19 @@ class InOrderContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e1.getMessage() should be (FailureMessages.inOrderDuplicate(prettifier))
+      e1.getMessage() should be (FailureMessages.inOrderDuplicate)
 
       // SKIP-SCALATESTJS-START
       val e2 = intercept[exceptions.NotAllowedException] {
         javaList(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e2.getMessage() should be (FailureMessages.inOrderDuplicate(prettifier))
+      e2.getMessage() should be (FailureMessages.inOrderDuplicate)
       // SKIP-SCALATESTJS-END
 
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain inOrder (1, 2, 1)
       }
-      e3.getMessage() should be (FailureMessages.inOrderDuplicate(prettifier))
+      e3.getMessage() should be (FailureMessages.inOrderDuplicate)
     }
     
     it("should throw TestFailedException with correct stack depth and message when left and right List are same size but contain different elements") {

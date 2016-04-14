@@ -62,17 +62,17 @@ class NoneOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e1.getMessage() should be (FailureMessages.noneOfDuplicate(prettifier))
+      e1.getMessage() should be (FailureMessages.noneOfDuplicate)
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Set(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e2.getMessage() should be (FailureMessages.noneOfDuplicate(prettifier))
+      e2.getMessage() should be (FailureMessages.noneOfDuplicate)
       
       val e3 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain noneOf (6, 8, 6)
       }
-      e3.getMessage() should be (FailureMessages.noneOfDuplicate(prettifier))
+      e3.getMessage() should be (FailureMessages.noneOfDuplicate)
     }
     
     it("should throw TestFailedException with correct stack depth and message when left List contains element in right List") {

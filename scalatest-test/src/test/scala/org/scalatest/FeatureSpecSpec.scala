@@ -1376,7 +1376,7 @@ class FeatureSpecSpec extends FunSpec {
         }
         assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
         assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-        assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause(prettifier)))
+        assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
         assert(e.cause.isDefined)
         val causeThrowable = e.cause.get
@@ -1399,7 +1399,7 @@ class FeatureSpecSpec extends FunSpec {
         }
         assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
         assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-        assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause(prettifier)))
+        assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
         assert(e.cause.isDefined)
         val causeThrowable = e.cause.get

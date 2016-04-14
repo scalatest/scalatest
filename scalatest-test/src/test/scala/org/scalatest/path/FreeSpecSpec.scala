@@ -1049,7 +1049,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause(prettifier)))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -1073,7 +1073,7 @@ class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause(prettifier)))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get

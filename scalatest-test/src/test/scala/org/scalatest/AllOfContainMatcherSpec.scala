@@ -70,18 +70,18 @@ class AllOfContainMatcherSpec extends FunSpec {
       val e1 = intercept[exceptions.NotAllowedException] {
         List(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e1.getMessage() should be (FailureMessages.allOfDuplicate(prettifier))
+      e1.getMessage() should be (FailureMessages.allOfDuplicate)
       
       val e2 = intercept[exceptions.NotAllowedException] {
         Array(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e2.getMessage() should be (FailureMessages.allOfDuplicate(prettifier))
+      e2.getMessage() should be (FailureMessages.allOfDuplicate)
 
       // SKIP-SCALATESTJS-START
       val e3 = intercept[exceptions.NotAllowedException] {
         javaList(1, 2, 3) should contain allOf(1, 2, 1)
       }
-      e3.getMessage() should be (FailureMessages.allOfDuplicate(prettifier))
+      e3.getMessage() should be (FailureMessages.allOfDuplicate)
       // SKIP-SCALATESTJS-END
     }
     

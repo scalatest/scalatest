@@ -227,8 +227,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "AsyncWordSpecLike.scala", methodName, stackDepth, adjustment, None, sourceInfo)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
       case nae: exceptions.NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
       case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage, prettifier), Some(e), e => duplicateErrorStackDepth)
@@ -276,8 +276,8 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
                 registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "AsyncWordSpecLike.scala", methodName, stackDepth, adjustment, None, sourceInfo)
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause(prettifier), Some(e), e => getStackDepth)
+                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
+                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e => getStackDepth)
                 case nae: exceptions.NotAllowedException => throw nae
                 case trce: TestRegistrationClosedException => throw trce
                 case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage, prettifier), Some(e), e => duplicateErrorStackDepth)

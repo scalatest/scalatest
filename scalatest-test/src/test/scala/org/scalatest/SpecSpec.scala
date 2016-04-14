@@ -2447,7 +2447,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       }
       assert("SpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideDefNotObject(prettifier)))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideDefNotObject))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
@@ -2472,7 +2472,7 @@ class SpecSpec extends FunSpec with PrivateMethodTester {
       }
       assert("SpecSpec.scala" == e.failedCodeFileName.get)
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
-      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideDefNotObject(prettifier)))
+      assert(e.message == Some(FailureMessages.assertionShouldBePutInsideDefNotObject))
 
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get

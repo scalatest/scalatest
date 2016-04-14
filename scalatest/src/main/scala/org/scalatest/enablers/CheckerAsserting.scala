@@ -84,7 +84,7 @@ abstract class UnitCheckerAsserting {
                   case _ => ""
                 }
                 ) +
-              "  " + FailureMessages.occurredOnValues(prettifier) + "\n" +
+              "  " + FailureMessages.occurredOnValues + "\n" +
               prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs), prettifier) + "\n" +
               "  )" +
               getLabelDisplay(scalaCheckLabels),
@@ -107,7 +107,7 @@ abstract class UnitCheckerAsserting {
                   case _ => ""
                 }
               ) +
-              "  " + FailureMessages.occurredOnValues(prettifier) + "\n" +
+              "  " + FailureMessages.occurredOnValues + "\n" +
               prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs), prettifier) + "\n" +
               "  )" +
               getLabelDisplay(scalaCheckLabels),
@@ -118,7 +118,7 @@ abstract class UnitCheckerAsserting {
               getStackDepthFun(sourceInfo)
             )
         }
-      } else indicateSuccess(FailureMessages.propertyCheckSucceeded(prettifier))
+      } else indicateSuccess(FailureMessages.propertyCheckSucceeded)
     }
 
     private[scalatest] def indicateSuccess(message: => String): Result
