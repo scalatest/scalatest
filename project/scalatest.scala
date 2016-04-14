@@ -317,7 +317,8 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.exceptions"
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -356,7 +357,8 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.exceptions"
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -683,7 +685,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.words",
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.exceptions"
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -745,7 +748,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.words",
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.exceptions"
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
