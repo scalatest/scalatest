@@ -717,8 +717,8 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> and
      *          <code>interval</code> parameters used to configure the multi-threaded test
      */
-    def conduct()(implicit config: PatienceConfig): Assertion = {
-      conductImpl(config.timeout, config.interval)
+    def conduct()(implicit config: PatienceConfig, sourceInfo: SourceInfo): Assertion = {
+      conductImpl(config.timeout, config.interval, sourceInfo)
     }
 
     /**
@@ -735,8 +735,8 @@ trait Conductors extends PatienceConfiguration {
      * @param timeout the <code>Timeout</code> configuration parameter
      * @param interval the <code>Interval</code> configuration parameter
      */
-    def conduct(timeout: Timeout, interval: Interval): Assertion = {
-      conductImpl(timeout.value, interval. value)
+    def conduct(timeout: Timeout, interval: Interval)(implicit sourceInfo: SourceInfo): Assertion = {
+      conductImpl(timeout.value, interval. value, sourceInfo)
     }
 
     /**
@@ -754,8 +754,8 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the (unused) <code>timeout</code> and
      *          (used) <code>interval</code> parameters
      */
-    def conduct(timeout: Timeout)(implicit config: PatienceConfig): Assertion = {
-      conductImpl(timeout.value, config.interval)
+    def conduct(timeout: Timeout)(implicit config: PatienceConfig, sourceInfo: SourceInfo): Assertion = {
+      conductImpl(timeout.value, config.interval, sourceInfo)
     }
 
     /**
@@ -773,8 +773,8 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the (used) <code>timeout</code> and
      *          (unused) <code>interval</code> parameters
      */
-    def conduct(interval: Interval)(implicit config: PatienceConfig): Assertion = {
-      conductImpl(config.timeout, interval.value)
+    def conduct(interval: Interval)(implicit config: PatienceConfig, sourceInfo: SourceInfo): Assertion = {
+      conductImpl(config.timeout, interval.value, sourceInfo)
     }
 
     private val currentState: AtomicReference[ConductorState] = new AtomicReference(Setup)
@@ -793,12 +793,12 @@ trait Conductors extends PatienceConfiguration {
      */
     def conductingHasBegun: Boolean = currentState.get.testWasStarted
 
-    private def conductImpl(timeout: Span, clockInterval: Span): Assertion = {
+    private def conductImpl(timeout: Span, clockInterval: Span, sourceInfo: SourceInfo): Assertion = {
 
       // if the test was started already, explode
       // otherwise, change state to TestStarted
       if (conductingHasBegun)
-        throw new NotAllowedException(Resources.cannotCallConductTwice, getStackDepthFun("Conductors.scala", "conduct"))
+        throw new NotAllowedException(Resources.cannotCallConductTwice, getStackDepthFun(sourceInfo))
       else
         currentState set TestStarted
 
