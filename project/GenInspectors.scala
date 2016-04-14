@@ -30,7 +30,7 @@ object GenInspectors {
     override def toString =
       header +
         childrenContent +
-        "in \" + decorateToStringValue(" + xsName + ")"
+        "in \" + decorateToStringValue(prettifier, " + xsName + ")"
   }
 
   class ErrorDetailTemplate(indexOrKey: String, fileName: String, lineNumber: String, messageTemplate: Template) extends Template {
@@ -79,7 +79,7 @@ object GenInspectors {
       else
         xsName
     override def toString =
-      headerFailedPrefix + " failed, because " + elementText + " satisfied the assertion block at \" + failEarlySucceededIndexes" + getErrorMessageValuesFunName(colType, okFun) + "(" + extractXsName + ", " + errorValue + ", " + maxSucceed + ") + \" in \" + decorateToStringValue(" + xsName + ")"
+      headerFailedPrefix + " failed, because " + elementText + " satisfied the assertion block at \" + failEarlySucceededIndexes" + getErrorMessageValuesFunName(colType, okFun) + "(" + extractXsName + ", " + errorValue + ", " + maxSucceed + ") + \" in \" + decorateToStringValue(prettifier, " + xsName + ")"
   }
 
   class ForExactlyErrMsgTemplate(headerFailedPrefix: String, elementText: String, okFun: String, errorFun: String, errorValue: String, colType: String, details: List[Template]) extends ErrorMessageTemplate {
@@ -90,7 +90,7 @@ object GenInspectors {
   class ForNoErrMsgTemplate(headerFailedPrefix: String, indexOrKey: String, useIndex: Boolean) extends Template {
     val xsName: String = "xs"
     override def toString =
-      headerFailedPrefix + " failed, because 1 element satisfied the assertion block at " + (if (useIndex) "index" else "key") + " " + indexOrKey + " in \" + decorateToStringValue(" + xsName + ")"
+      headerFailedPrefix + " failed, because 1 element satisfied the assertion block at " + (if (useIndex) "index" else "key") + " " + indexOrKey + " in \" + decorateToStringValue(prettifier, " + xsName + ")"
   }
 
   class ForBetweenLessErrMsgTemplate(headerFailedPrefix: String, elementText: String, okFun: String, errorFun: String, errorValue: String, colType: String, details: List[Template]) extends ErrorMessageTemplate {

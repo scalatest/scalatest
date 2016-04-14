@@ -33,14 +33,14 @@ trait GenInspectorsShorthandsBase {
   class DynamicFirstElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
       if (colType == "String")
-        "\" + decorateToStringValue(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ")) + \""
+        "\" + decorateToStringValue(prettifier, " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ")) + \""
       else
-        "\" + decorateToStringValue(" + errorFun + "(xs, " + errorValue + ")) + \""
+        "\" + decorateToStringValue(prettifier, " + errorFun + "(xs, " + errorValue + ")) + \""
   }
 
   class DynamicFirstArrayElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
-      "\" + decorateToStringValue(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep) + \""
+      "\" + decorateToStringValue(prettifier, " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep) + \""
   }
 
   class DynamicFirstElementLengthTemplate(colType: String, errorFun: String, errorValue: String) extends Template {

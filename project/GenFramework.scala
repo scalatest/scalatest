@@ -24,7 +24,7 @@ trait ClassTemplate extends Template {
     withList.map("with " + _).mkString(" ")
   
   override def toString = 
-    "class " + name + " " + getExtend + " " + getWith + " {\n" + 
+    "class " + name + " " + getExtend + " " + getWith + " {\nprivate val prettifier = org.scalactic.Prettifier.default\n" +
     childrenContent + 
     "}"
 }
