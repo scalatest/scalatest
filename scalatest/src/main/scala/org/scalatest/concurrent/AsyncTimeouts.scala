@@ -62,11 +62,8 @@ trait AsyncTimeouts {
       val produceFutureDuration = endTime - startTime
 
       if (produceFutureDuration > limit) {
-        // SKIP-SCALATESTJS-START
         def stackDepthFun(sde: StackDepthException): Int =
           getStackDepth(sde.getStackTrace, sourceInfo)
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY def stackDepthFun(sde: StackDepthException): Int = if (methodName == "cancelingAfter") 14 else 15
         Future.successful(exceptionFun(None, timeLimit, stackDepthFun))
       }
       else {

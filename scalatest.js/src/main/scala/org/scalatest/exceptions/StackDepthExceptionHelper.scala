@@ -15,6 +15,8 @@
  */
 package org.scalatest.exceptions
 
+import org.scalactic.source.SourceInfo
+
 private[scalatest] object StackDepthExceptionHelper {
 
   def getStackDepth(stackTraces: Array[StackTraceElement], fileName: String, methodName: String, adjustment: Int = 0): Int = {
@@ -39,6 +41,15 @@ private[scalatest] object StackDepthExceptionHelper {
 
   def getStackDepthFun(fileName: String, methodName: String, adjustment: Int = 0): (StackDepthException => Int) = { sde =>
     getStackDepth(sde.getStackTrace, fileName, methodName, adjustment)
+  }
+
+  def getStackDepth(stackTrace: Array[StackTraceElement], sourceInfo: SourceInfo): Int = {
+    val idx = stackTrace.indexWhere(e => e.getFileName == sourceInfo.fileName && e.getLineNumber == sourceInfo.lineNumber)
+    if (idx >= 0) idx else 0
+  }
+
+  def getStackDepthFun(sourceInfo: SourceInfo): (StackDepthException => Int) = { sde =>
+    getStackDepth(sde.getStackTrace, sourceInfo)
   }
 
   def getFailedCodeFileName(stackTraceElement: StackTraceElement): Option[String] = {
