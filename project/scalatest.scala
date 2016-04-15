@@ -19,11 +19,11 @@ object ScalatestBuild extends Build {
 
   // To temporarily switch sbt to a different Scala version:
   // > ++ 2.10.5
-  val buildScalaVersion = "2.11.7"
+  val buildScalaVersion = "2.11.8"
 
-  val releaseVersion = "3.0.0-M15"
+  val releaseVersion = "3.0.0-M16-SNAP3"
 
-  val scalacheckVersion = "1.12.5"
+  val scalacheckVersion = "1.13.0"
 
   val githubTag = "release-3.0.0-M15-for-scala-2.11-and-2.10" // for scaladoc source urls
 
@@ -564,6 +564,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.enablers",
         "org.scalatest.events",
@@ -653,6 +654,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.easymock",
         "org.scalatest.enablers",
