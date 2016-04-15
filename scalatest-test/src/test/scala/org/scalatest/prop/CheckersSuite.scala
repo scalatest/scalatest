@@ -220,7 +220,7 @@ class CheckersSpec extends FunSpec with Checkers {
     expectFileNameLineNumber(ex6, "CheckersSuite.scala", thisLineNumber - 1)
     val ex7 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1)) }
     expectFileNameLineNumber(ex7, "CheckersSuite.scala", thisLineNumber - 1)
-    val ex8 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1), new Test.Parameters.Default { override val minSuccessfulTests = 5 }) }
+    val ex8 = intercept[GeneratorDrivenPropertyCheckFailedException] { check(Prop.forAll((n: Int) => n + 0 == n + 1), Test.Parameters.default.withMinSuccessfulTests(5)) }
     expectFileNameLineNumber(ex8, "CheckersSuite.scala", thisLineNumber - 1)
 
     try {
