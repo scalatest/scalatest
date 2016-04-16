@@ -65,6 +65,9 @@ object ScalatestBuild extends Build {
     crossScalaVersions := Seq(buildScalaVersion, "2.10.6"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.5"),
+    //fork in Test := true,
+    //parallelExecution in Test := true,
+    //testForkedParallel in Test := true,
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= scalaLibraries(scalaVersion.value),
     publishTo <<= version { v: String =>
