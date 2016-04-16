@@ -30,7 +30,7 @@ class AssertionsSpec extends FunSpec {
 
   val fileName: String = "AssertionsSpec.scala"
 
-  describe("The === method") {
+  describe("The === method ") {
     it("should be usable when the left expression results in null") {
       val npe = new NullPointerException
       assert(npe.getMessage === null)
@@ -6192,6 +6192,14 @@ class AssertionsSpec extends FunSpec {
         assertDoesNotCompile("println(\"test)")
       }
 
+      it("should result in type Assertion and, on success, return the Succeeded value") {
+        assert(assertDoesNotCompile("val x: String = 1") eq Succeeded)
+      }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertDoesNotCompile("val i: Int = null")
+      }
+
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -6224,9 +6232,21 @@ class AssertionsSpec extends FunSpec {
             |""".stripMargin
         )
       }
-    }
-    it("should result in type Assertion and, on success, return the Succeeded value") {
-      assert(assertDoesNotCompile("val x: String = 1") eq Succeeded)
+
+      it("should result in type Assertion and, on success, return the Succeeded value") {
+        assert(assertDoesNotCompile(
+          """
+            |val x: String = 1
+            |""".stripMargin) eq Succeeded)
+      }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertDoesNotCompile(
+          """
+            |val i: Int = null
+            |""".stripMargin
+        )
+      }
     }
   }
 

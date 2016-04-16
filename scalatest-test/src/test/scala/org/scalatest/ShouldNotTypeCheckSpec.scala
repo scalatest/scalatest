@@ -51,6 +51,10 @@ class ShouldNotTypeCheckSpec extends FunSpec {
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
       }
+
+      it("should do nothing when used with 'val i: Int = null") {
+        "val i: Int = null" shouldNot typeCheck
+      }
     }
 
     describe("when work with triple quotes string literal with stripMargin") {
@@ -83,6 +87,12 @@ class ShouldNotTypeCheckSpec extends FunSpec {
         assert(e.message.get.indexOf("println(\"test)") >= 0)
         assert(e.failedCodeFileName === (Some(fileName)))
         assert(e.failedCodeLineNumber === (Some(thisLineNumber - 6)))
+      }
+
+      it("should do nothing when used with 'val i: Int = null") {
+        """
+          |val i: Int = null
+          |""".stripMargin shouldNot typeCheck
       }
     }
   }
