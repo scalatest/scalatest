@@ -5777,6 +5777,10 @@ class AssertionsSpec extends FunSpec {
         assertDoesNotCompile("println(\"test)")
       }
 
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertDoesNotCompile("val i: Int = null")
+      }
+
     }
 
     describe("when used with triple quotes string literal with stripMargin") {
@@ -5806,6 +5810,14 @@ class AssertionsSpec extends FunSpec {
         assertDoesNotCompile(
           """
             |println(\"test)
+            |""".stripMargin
+        )
+      }
+
+      it("should do nothing when used with 'val i: Int = null'") {
+        assertDoesNotCompile(
+          """
+            |val i: Int = null
             |""".stripMargin
         )
       }

@@ -42,6 +42,10 @@ class ShouldNotCompileSpec extends FunSpec {
       it("should do nothing when parse failed") {
         "println(\"test)" shouldNot compile
       }
+
+      it("should do nothing when used with 'val i: Int = null") {
+        "val i: Int = null" shouldNot compile
+      }
     }
 
     describe("when work with triple quotes string literal with stripMargin") {
@@ -66,6 +70,12 @@ class ShouldNotCompileSpec extends FunSpec {
       it("should do nothing when parse failed") {
         """
           |println(\"test)
+          |""".stripMargin shouldNot compile
+      }
+
+      it("should do nothing when used with 'val i: Int = null") {
+        """
+          |val i: Int = null
           |""".stripMargin shouldNot compile
       }
     }

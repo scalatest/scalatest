@@ -80,7 +80,7 @@ private[scalatest] object CompileMacro {
     val codeStr = getCodeStringFromCodeExpression(c)("assertDoesNotCompile", code)
 
     try {
-      c.typeCheck(c.parse("{ "+codeStr+" }"))  // parse and type check code snippet
+      c.typeCheck(c.parse("{ "+codeStr+" }"), c.universe.WildcardType, false, true, false)  // parse and type check code snippet
       // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
       val messageExpr = c.literal(Resources("expectedCompileErrorButGotNone", codeStr))
       reify {
@@ -135,7 +135,7 @@ private[scalatest] object CompileMacro {
     // parse and type check a code snippet, generate code to throw TestFailedException if both parse and type check succeeded
     def checkNotCompile(code: String): c.Expr[Unit] = {
       try {
-        c.typeCheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
+        c.typeCheck(c.parse("{ " + code + " }"), c.universe.WildcardType, false, true, false)  // parse and type check code snippet
         // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources("expectedCompileErrorButGotNone", code))
         reify {
@@ -221,7 +221,7 @@ private[scalatest] object CompileMacro {
     // parse and type check a code snippet, generate code to throw TestFailedException if parse error or both parse and type check succeeded
     def checkNotTypeCheck(code: String): c.Expr[Unit] = {
       try {
-        c.typeCheck(c.parse("{ " + code + " }"))  // parse and type check code snippet
+        c.typeCheck(c.parse("{ " + code + " }"), c.universe.WildcardType, false, true, false)  // parse and type check code snippet
         // both parse and type check succeeded unexpectedly, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources("expectedTypeErrorButGotNone", code))
         reify {
