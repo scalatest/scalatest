@@ -48,6 +48,7 @@ import org.openqa.selenium.JavascriptExecutor
 import org.scalatest.ScreenshotCapturer
 import org.scalatest.time.Nanosecond
 import org.scalatest.Resources
+import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
 
 /**
  * Trait that provides a domain specific language (DSL) for writing browser-based tests using <a href="http://seleniumhq.org">Selenium</a>.  
@@ -2795,9 +2796,11 @@ trait WebBrowser {
         createTypedElement(driver.findElement(by))
       }
       catch {
-        case e: org.openqa.selenium.NoSuchElementException => 
+        case e: org.openqa.selenium.NoSuchElementException =>
+          // the following is avoid the suite instance to be bound/dragged into the messageFun, which can cause serialization problem.
+          val queryStringValue = queryString
           throw new TestFailedException(
-                     sde => Some("Element '" + queryString + "' not found."),
+                     sde => Some("Element '" + queryStringValue + "' not found."),
                      Some(e),
                      getStackDepthFun("WebBrowser.scala", "name", 1)
                    )
@@ -2858,9 +2861,11 @@ trait WebBrowser {
         driver.findElement(by)
       }
       catch {
-        case e: org.openqa.selenium.NoSuchElementException => 
+        case e: org.openqa.selenium.NoSuchElementException =>
+          // the following is avoid the suite instance to be bound/dragged into the messageFun, which can cause serialization problem.
+          val queryStringValue = queryString
           throw new TestFailedException(
-                     sde => Some("WebElement '" + queryString + "' not found."),
+                     sde => Some("WebElement '" + queryStringValue + "' not found."),
                      Some(e),
                      getStackDepthFun("WebBrowser.scala", "name", 1)
                    )
@@ -4444,48 +4449,6 @@ trait WebBrowser {
    */
   def setScriptTimeout(timeout: Span)(implicit driver: WebDriver) {
     driver.manage().timeouts().setScriptTimeout(timeout.totalNanos, TimeUnit.NANOSECONDS);
-  }
-  
-  private def getStackDepthFun(fileName: String, methodName: String, adjustment: Int = 0): (StackDepthException => Int) = { sde =>
-    getStackDepth(sde.getStackTrace, fileName, methodName, adjustment)
-  }
-  
-  private def getStackDepth(stackTrace: Array[StackTraceElement], fileName: String, methodName: String, adjustment: Int = 0) = {
-    val stackTraceList = stackTrace.toList
-
-    val fileNameIsDesiredList: List[Boolean] =
-      for (element <- stackTraceList) yield
-        element.getFileName == fileName // such as "Checkers.scala"
-
-    val methodNameIsDesiredList: List[Boolean] =
-      for (element <- stackTraceList) yield
-        element.getMethodName == methodName // such as "check"
-
-    // For element 0, the previous file name was not desired, because there is no previous
-    // one, so you start with false. For element 1, it depends on whether element 0 of the stack trace
-    // had the desired file name, and so forth.
-    val previousFileNameIsDesiredList: List[Boolean] = false :: (fileNameIsDesiredList.dropRight(1))
-
-    // Zip these two related lists together. They now have two boolean values together, when both
-    // are true, that's a stack trace element that should be included in the stack depth.
-    val zipped1 = methodNameIsDesiredList zip previousFileNameIsDesiredList
-    val methodNameAndPreviousFileNameAreDesiredList: List[Boolean] =
-      for ((methodNameIsDesired, previousFileNameIsDesired) <- zipped1) yield
-        methodNameIsDesired && previousFileNameIsDesired
-
-    // Zip the two lists together, that when one or the other is true is an include.
-    val zipped2 = fileNameIsDesiredList zip methodNameAndPreviousFileNameAreDesiredList
-    val includeInStackDepthList: List[Boolean] =
-      for ((fileNameIsDesired, methodNameAndPreviousFileNameAreDesired) <- zipped2) yield
-        fileNameIsDesired || methodNameAndPreviousFileNameAreDesired
-
-    val includeDepth = includeInStackDepthList.takeWhile(include => include).length
-    val depth = if (includeDepth == 0 && stackTrace(0).getFileName != fileName && stackTrace(0).getMethodName != methodName) 
-      stackTraceList.takeWhile(st => st.getFileName != fileName || st.getMethodName != methodName).length
-    else
-      includeDepth
-    
-    depth + adjustment
   }
 
   // Clears the text field or area, then presses the passed keys
