@@ -23,7 +23,7 @@ object ScalatestBuild extends Build {
 
   val releaseVersion = "3.0.0-M16-SNAP4"
 
-  val scalacheckVersion = "1.11.6"
+  val scalacheckVersion = "1.13.1"
 
   val githubTag = "release-3.0.0-M15-for-scala-2.12.0-M4" // for scaladoc source urls
 
@@ -184,7 +184,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.7"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.8"
     )
 
   def scalatestTestOptions =
@@ -564,6 +564,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.enablers",
         "org.scalatest.events",
@@ -653,6 +654,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.easymock",
         "org.scalatest.enablers",
