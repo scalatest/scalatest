@@ -135,12 +135,7 @@ private[scalatest] object MatchersHelper {
   }
 
   def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, sourceInfo: SourceInfo): Throwable = {
-    val temp = new RuntimeException
-    val stackDepth = StackDepthExceptionHelper.getStackDepth(temp.getStackTrace, sourceInfo)
-    optionalCause match {
-      case Some(cause) => new TestFailedException(message, cause, stackDepth)
-      case None => new TestFailedException(message, stackDepth)
-    }
+    new TestFailedException(e => Some(message), optionalCause, StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
   }
 
   def andMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {

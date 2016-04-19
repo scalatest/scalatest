@@ -15,14 +15,13 @@
  */
 package org.scalatest
 
+import org.scalatest.exceptions.StackDepthException
+
 import scala.collection.JavaConverters._
-import exceptions.TestCanceledException
-import exceptions.TestFailedException
-import exceptions.TestRegistrationClosedException
-import exceptions.TestRegistrationClosedException
-import exceptions.NotAllowedException
-import exceptions.DuplicateTestNameException
-import exceptions.StackDepth
+import org.scalatest.exceptions._
+import org.scalactic.Prettifier
+import org.scalactic.source.SourceInfo
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Trait providing class <code>Checkpoint</code>, which enables multiple assertions
@@ -150,7 +149,7 @@ trait Checkpoints {
      * whose detail message lists the failure messages and line numbers from each of the
      * failed checkpoints.
      */
-    def reportAll() {
+    def reportAll()(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 1
       // SKIP-SCALATESTJS-END
@@ -159,7 +158,7 @@ trait Checkpoints {
         val failMessages =
           for (failure <- failures.asScala)
           yield failure.getMessage + " " + Resources.atCheckpointAt + " " + getFailLine(failure)
-        throw new TestFailedException(failMessages.mkString("\n"), stackDepth)
+        throw new TestFailedException((sde: StackDepthException) => Some(failMessages.mkString("\n")), None, getStackDepthFun(sourceInfo))
       }
     }
   }

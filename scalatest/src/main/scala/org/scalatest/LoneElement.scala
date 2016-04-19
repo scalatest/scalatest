@@ -18,6 +18,8 @@ package org.scalatest
 import enablers.Collecting
 import org.scalactic.Prettifier
 import org.scalactic.source.SourceInfo
+import exceptions.StackDepthException
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which
@@ -79,11 +81,6 @@ trait LoneElement {
 
   import scala.language.higherKinds
 
-  // SKIP-SCALATESTJS-START
-  private[scalatest] val stackDepth = 1
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val stackDepth = 9
-
   /**
    * Wrapper class that adds a <code>loneElement</code> method to any collection type <code>C</code> for which 
    * an implicit <code>Collecting[C]</code> is available.
@@ -101,7 +98,7 @@ trait LoneElement {
    * @param collection a collection to wrap in a <code>LoneElementCollectionWrapper</code>, which provides the <code>loneElement</code> method.
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementCollectionWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, sourceInfo: SourceInfo) {
+  final class LoneElementCollectionWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]) {
 
     /**
      * Returns the value contained in the wrapped collection, if it contains one and only one element, else throws <code>TestFailedException</code> with
@@ -116,16 +113,16 @@ trait LoneElement {
      *      ^
      * </pre>
      */
-    def loneElement: E = {
+    def loneElement(implicit prettifier: Prettifier, sourceInfo: SourceInfo): E = {
       collecting.loneElementOf(collection) match {
         case Some(ele) => ele
         case None =>
           throw new exceptions.TestFailedException(
-            Some(FailureMessages.notLoneElement(prettifier,
+            (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
                  collection,
                  collecting.sizeOf(collection))),
             None,
-            stackDepth
+            getStackDepthFun(sourceInfo)
           )
       }
     }
@@ -142,7 +139,7 @@ trait LoneElement {
    * @param collection the collection on which to add the <code>loneElement</code> method
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, sourceInfo: SourceInfo): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
+  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
 
   /**
    * Wrapper class that adds a <code>loneElement</code> method to Java Map for which
@@ -161,26 +158,26 @@ trait LoneElement {
    * @tparam JMAP the "Java Map type constructor" for the collection on which to add the <code>loneElement</code> method
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, sourceInfo: SourceInfo) {
+  final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
 
-    def loneElement: org.scalatest.Entry[K, V] = {
+    def loneElement(implicit prettifier: Prettifier, sourceInfo: SourceInfo): org.scalatest.Entry[K, V] = {
       collecting.loneElementOf(jmap) match {
         case Some(ele) => ele
         case None =>
           throw new exceptions.TestFailedException(
-            Some(FailureMessages.notLoneElement(prettifier,
+            (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
                  jmap,
                  collecting.sizeOf(jmap))), 
             None,
-            stackDepth
+            getStackDepthFun(sourceInfo)
           )
       }
     }
   }
 
   // Needed for Java Map to work, any better solution?
-  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, sourceInfo: SourceInfo): LoneElementJavaMapWrapper[K, V, JMAP]  = {
-    new LoneElementJavaMapWrapper[K, V, JMAP](jmap)(collecting, prettifier, sourceInfo)
+  implicit def convertJavaMapToCollectionLoneElementWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): LoneElementJavaMapWrapper[K, V, JMAP]  = {
+    new LoneElementJavaMapWrapper[K, V, JMAP](jmap)(collecting)
   }
 
   /**
@@ -198,18 +195,18 @@ trait LoneElement {
    * @param s the <code>String</code> to wrap
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementStringWrapper(s: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, sourceInfo: SourceInfo) {
+  final class LoneElementStringWrapper(s: String)(implicit collecting: Collecting[Char, String]) {
 
-    def loneElement: Char = {
+    def loneElement(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Char = {
       if (s.length == 1)
         s.charAt(0)
       else
         throw new exceptions.TestFailedException(
-          Some(FailureMessages.notLoneElement(prettifier,
+          (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
             s,
             collecting.sizeOf(s))),
           None,
-          stackDepth
+          getStackDepthFun(sourceInfo)
         )
     }
 
@@ -222,8 +219,8 @@ trait LoneElement {
    * @param s the <code>String</code> to wrap
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  implicit def convertToStringLoneElementWrapper(s: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, sourceInfo: SourceInfo): LoneElementStringWrapper =
-    new LoneElementStringWrapper(s)(collecting, prettifier, sourceInfo)
+  implicit def convertToStringLoneElementWrapper(s: String)(implicit collecting: Collecting[Char, String]): LoneElementStringWrapper =
+    new LoneElementStringWrapper(s)(collecting)
 }
 
 /**

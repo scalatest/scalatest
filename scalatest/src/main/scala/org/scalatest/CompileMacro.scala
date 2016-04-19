@@ -27,11 +27,6 @@ import org.scalatest.words.{TypeCheckWord, CompileWord}
 
 private[scalatest] object CompileMacro {
 
-  // SKIP-SCALATESTJS-START
-  val stackDepth = 0
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY val stackDepth = 9
-
   // extract the code string from the AST
   def getCodeStringFromCodeExpression(c: Context)(methodName: String, code: c.Expr[String]): String = {
     import c.universe._
@@ -54,7 +49,7 @@ private[scalatest] object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when type check passes or parse error
-  def assertTypeErrorImpl(c: Context)(code: c.Expr[String]): c.Expr[Assertion] = {
+  def assertTypeErrorImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] = {
     import c.universe._
 
     // extract code snippet
@@ -65,7 +60,7 @@ private[scalatest] object CompileMacro {
       // If reach here, type check passes, let's generate code to throw TestFailedException
       val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(codeStr))
       reify {
-        throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+        throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
       }
     } catch {
       case e: TypecheckException =>
@@ -77,7 +72,7 @@ private[scalatest] object CompileMacro {
         // parse error, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+          throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
         }
     }
   }
@@ -139,7 +134,7 @@ private[scalatest] object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when both parse and type check succeeded
-  def assertDoesNotCompileImpl(c: Context)(code: c.Expr[String]): c.Expr[Assertion] = {
+  def assertDoesNotCompileImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] = {
     import c.universe._
 
     // extract code snippet
@@ -150,7 +145,7 @@ private[scalatest] object CompileMacro {
       // Both parse and type check succeeded, the code snippet compiles unexpectedly, let's generate code to throw TestFailedException
       val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(codeStr))
       reify {
-        throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+        throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
       }
     } catch {
       case e: TypecheckException =>
@@ -229,7 +224,7 @@ private[scalatest] object CompileMacro {
   }
 
   // parse and type check a code snippet, generate code to throw TestFailedException when either parse or type check fails.
-  def assertCompilesImpl(c: Context)(code: c.Expr[String]): c.Expr[Assertion] = {
+  def assertCompilesImpl(c: Context)(code: c.Expr[String])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] = {
     import c.universe._
 
     // extract code snippet
@@ -246,13 +241,13 @@ private[scalatest] object CompileMacro {
         // type check error, compiles fails, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+          throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
         }
       case e: ParseException =>
         // parse error, compiles fails, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, codeStr))
         reify {
-          throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+          throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
         }
     }
   }
@@ -315,7 +310,7 @@ private[scalatest] object CompileMacro {
   }
 
   // check that a code snippet does not compile
-  def assertNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Assertion] = {
+  def assertNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord], prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo])(shouldOrMust: String): c.Expr[Assertion] = {
 
     import c.universe._
 
@@ -326,7 +321,7 @@ private[scalatest] object CompileMacro {
         // both parse and type check succeeded, compiles succeeded unexpectedly, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedCompileErrorButGotNone(code))
         reify {
-          throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+          throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
         }
       } catch {
         case e: TypecheckException =>
@@ -346,17 +341,20 @@ private[scalatest] object CompileMacro {
 
     c.macroApplication match {
       case Apply(
-             Select(
-               Apply(
+             Apply(
+               Select(
                  Apply(
-                   _,
-                   List(
-                     Literal(Constant(code))
-                   )
+                   Apply(
+                     _,
+                     List(
+                       Literal(Constant(code))
+                     )
+                   ),
+                   _
                  ),
-                 _
+                 methodNameTermName
                ),
-               methodNameTermName
+               _
              ),
              _
            ) if methodNameTermName.decoded == methodName =>
@@ -365,30 +363,33 @@ private[scalatest] object CompileMacro {
         checkNotCompile(codeStr)
 
       case Apply(
-             Select(
-               Apply(
+             Apply(
+               Select(
                  Apply(
-                   _,
-                   List(
-                     Select(
-                       Apply(
-                         Select(
-                           _,
-                           augmentStringTermName
-                         ),
-                         List(
-                           Literal(
-                             Constant(code)
+                   Apply(
+                     _,
+                     List(
+                       Select(
+                         Apply(
+                           Select(
+                             _,
+                             augmentStringTermName
+                           ),
+                           List(
+                             Literal(
+                               Constant(code)
+                             )
                            )
-                         )
-                       ),
-                       stripMarginTermName
+                         ),
+                         stripMarginTermName
+                       )
                      )
-                   )
+                   ),
+                   _
                  ),
-                 _
+                 methodNameTermName
                ),
-               methodNameTermName
+               _
              ),
              _
            ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
@@ -401,14 +402,14 @@ private[scalatest] object CompileMacro {
   }
 
   // used by shouldNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def shouldNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
-    assertNotCompileImpl(c)(compileWord)("should")
+  def shouldNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] =
+    assertNotCompileImpl(c)(compileWord, prettifier, sourceInfo)("should")
 
   // used by mustNot compile syntax, delegate to assertNotCompileImpl to generate code
-  def mustNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
-    assertNotCompileImpl(c)(compileWord)("must")
+  def mustNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] =
+    assertNotCompileImpl(c)(compileWord, prettifier, sourceInfo)("must")
 
-  def expectNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord], prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
+  def expectNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord], prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Fact] = {
 
     import c.universe._
 
@@ -490,11 +491,11 @@ private[scalatest] object CompileMacro {
   }
 
   // used by willNot compile syntax, delegate to expectNotCompileImpl to generate code
-  def willNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier]): c.Expr[Fact] =
-    expectNotCompileImpl(c)(compileWord, prettifier)
+  def willNotCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Fact] =
+    expectNotCompileImpl(c)(compileWord, prettifier, sourceInfo)
 
   // check that a code snippet does not compile
-  def assertNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(shouldOrMust: String): c.Expr[Assertion] = {
+  def assertNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord], prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo])(shouldOrMust: String): c.Expr[Assertion] = {
 
     import c.universe._
 
@@ -505,7 +506,7 @@ private[scalatest] object CompileMacro {
         // both parse and type check succeeded unexpectedly, generate code to throw TestFailedException
         val messageExpr = c.literal(Resources.expectedTypeErrorButGotNone(code))
         reify {
-          throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+          throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
         }
       } catch {
         case e: TypecheckException =>
@@ -517,7 +518,7 @@ private[scalatest] object CompileMacro {
           // expect type check error but got parse error, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedTypeErrorButGotParseError(e.getMessage, code))
           reify {
-            throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+            throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
           }
       }
     }
@@ -526,17 +527,20 @@ private[scalatest] object CompileMacro {
 
     c.macroApplication match {
       case Apply(
-             Select(
-               Apply(
+             Apply(
+               Select(
                  Apply(
-                   _,
-                   List(
-                    Literal(Constant(code))
-                   )
+                   Apply(
+                     _,
+                     List(
+                      Literal(Constant(code))
+                     )
+                   ),
+                   _
                  ),
-                 _
+                 methodNameTermName
                ),
-               methodNameTermName
+               _
              ),
              _
            ) if methodNameTermName.decoded == methodName =>
@@ -545,30 +549,33 @@ private[scalatest] object CompileMacro {
         checkNotTypeCheck(codeStr)
 
       case Apply(
-             Select(
-               Apply(
+             Apply(
+               Select(
                  Apply(
-                   _,
-                   List(
-                     Select(
-                       Apply(
-                         Select(
-                           _,
-                           augmentStringTermName
-                         ),
-                         List(
-                           Literal(
-                             Constant(code)
+                   Apply(
+                     _,
+                     List(
+                       Select(
+                         Apply(
+                           Select(
+                             _,
+                             augmentStringTermName
+                           ),
+                           List(
+                             Literal(
+                               Constant(code)
+                             )
                            )
-                         )
-                       ),
-                       stripMarginTermName
+                         ),
+                         stripMarginTermName
+                       )
                      )
-                   )
+                   ),
+                   _
                  ),
-                 _
+                 methodNameTermName
                ),
-               methodNameTermName
+               _
              ),
              _
       ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && methodNameTermName.decoded == methodName =>
@@ -581,12 +588,12 @@ private[scalatest] object CompileMacro {
   }
 
   // used by shouldNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def shouldNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Assertion] =
-    assertNotTypeCheckImpl(c)(typeCheckWord)("should")
+  def shouldNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] =
+    assertNotTypeCheckImpl(c)(typeCheckWord, prettifier, sourceInfo)("should")
 
   // used by mustNot typeCheck syntax, delegate to assertNotTypeCheckImpl to generate code
-  def mustNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord]): c.Expr[Assertion] =
-    assertNotTypeCheckImpl(c)(typeCheckWord)("must")
+  def mustNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] =
+    assertNotTypeCheckImpl(c)(typeCheckWord, prettifier, sourceInfo)("must")
 
   def expectNotTypeCheckImpl(c: Context)(typeCheckWord: c.Expr[TypeCheckWord], prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
 
@@ -674,7 +681,7 @@ private[scalatest] object CompileMacro {
     expectNotTypeCheckImpl(c)(typeCheckWord, prettifier)
 
   // check that a code snippet compiles
-  def assertCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(shouldOrMust: String): c.Expr[Assertion] = {
+  def assertCompileImpl(c: Context)(compileWord: c.Expr[CompileWord], prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo])(shouldOrMust: String): c.Expr[Assertion] = {
     import c.universe._
 
     // parse and type check a code snippet, generate code to throw TestFailedException if either parse error or type check error
@@ -690,32 +697,35 @@ private[scalatest] object CompileMacro {
           // type check error, compile fails unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedNoErrorButGotTypeError(e.getMessage, code))
           reify {
-            throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+            throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
           }
         case e: ParseException =>
           // parse error, compile failes unexpectedly, generate code to throw TestFailedException
           val messageExpr = c.literal(Resources.expectedNoErrorButGotParseError(e.getMessage, code))
           reify {
-            throw new exceptions.TestFailedException(messageExpr.splice, stackDepth)
+            throw new exceptions.TestFailedException(e => Some(messageExpr.splice), None, StackDepthExceptionHelper.getStackDepthFun(sourceInfo.splice))
           }
       }
     }
 
     c.macroApplication match {
       case Apply(
-             Select(
-               Apply(
+             Apply(
+               Select(
                  Apply(
-                   _,
-                   List(
-                     Literal(
-                       Constant(code)
+                   Apply(
+                     _,
+                     List(
+                       Literal(
+                         Constant(code)
+                       )
                      )
-                   )
+                   ),
+                   _
                  ),
-                 _
+                 shouldOrMustTermName
                ),
-               shouldOrMustTermName
+               _
              ),
              _
       ) if shouldOrMustTermName.decoded == shouldOrMust =>
@@ -724,50 +734,52 @@ private[scalatest] object CompileMacro {
         checkCompile(codeStr)
 
       case Apply(
-             Select(
-               Apply(
+             Apply(
+               Select(
                  Apply(
-                   _,
-                   List(
-                     Select(
-                       Apply(
-                         Select(
-                           _,
-                           augmentStringTermName
-                         ),
-                         List(
-                           Literal(
-                             Constant(code)
+                   Apply(
+                     _,
+                     List(
+                       Select(
+                         Apply(
+                           Select(
+                             _,
+                             augmentStringTermName
+                           ),
+                           List(
+                             Literal(
+                               Constant(code)
+                             )
                            )
-                         )
-                       ),
-                       stripMarginTermName
+                         ),
+                         stripMarginTermName
+                       )
                      )
-                   )
+                   ),
+                   _
                  ),
-                 _
+                 shouldOrMustTermName
                ),
-               shouldOrMustTermName
+               _
              ),
-             _
+           _
       ) if augmentStringTermName.decoded == "augmentString" && stripMarginTermName.decoded == "stripMargin" && shouldOrMustTermName.decoded == shouldOrMust =>
         // LHS is a """xxx""".stripMargin string literal, call checkCompile with the extracted code string to generate code
         val codeStr = code.toString.stripMargin
         checkCompile(codeStr)
 
       case other =>
-        println("###other: " + showRaw(other))
         c.abort(c.enclosingPosition, "The '" + shouldOrMust + " compile' syntax only works with String literals.")
     }
   }
 
   // used by should compile syntax, delegate to assertCompileImpl to generate code
-  def shouldCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
-    assertCompileImpl(c)(compileWord)("should")
+  def shouldCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] =
+    assertCompileImpl(c)(compileWord, prettifier, sourceInfo)("should")
 
   // used by must compile syntax, delegate to assertCompileImpl to generate code
-  def mustCompileImpl(c: Context)(compileWord: c.Expr[CompileWord]): c.Expr[Assertion] =
-    assertCompileImpl(c)(compileWord)("must")
+  def mustCompileImpl(c: Context)(compileWord: c.Expr[CompileWord])(prettifier: c.Expr[Prettifier], sourceInfo: c.Expr[SourceInfo]): c.Expr[Assertion] =
+    assertCompileImpl(c)(compileWord, prettifier, sourceInfo)("must")
 
   def expectCompileImpl(c: Context)(compileWord: c.Expr[CompileWord], prettifier: c.Expr[Prettifier]): c.Expr[Fact] = {
     import c.universe._

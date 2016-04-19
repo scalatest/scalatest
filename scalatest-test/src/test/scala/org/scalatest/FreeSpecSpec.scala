@@ -1470,7 +1470,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
 
       assert(e.cause.isDefined)
@@ -1493,7 +1493,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause))
 
       assert(e.cause.isDefined)
@@ -1515,7 +1515,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FreeSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))

@@ -27,11 +27,6 @@ import org.scalatest.MatchersHelper.checkExpectedException
  * @author Bill Venners
  */
 final class ResultOfTheTypeInvocation[T](clazz: Class[T], prettifier: Prettifier, sourceInfo: SourceInfo) {
-
-  // SKIP-SCALATESTJS-START
-  private val stackDepth = 0
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private val stackDepth = 10
   
   /**
    * This method enables the following syntax: 

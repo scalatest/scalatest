@@ -17,7 +17,8 @@ package org.scalatest
 
 import org.scalactic.Prettifier
 import org.scalactic.source.SourceInfo
-import org.scalatest.exceptions.StackDepthExceptionHelper
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
 
@@ -46,28 +47,20 @@ private[scalatest] sealed abstract class Fact {
   final def toBoolean: Boolean = isYes
 
   final def toAssertion(implicit sourceInfo: SourceInfo): Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 5
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 10
     if (isYes) {
       if (!isVacuousYes) Succeeded
-      else throw new TestCanceledException(factMessage, stackDepth)
+      else throw new TestCanceledException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(sourceInfo), None)
     }
-    else throw new TestFailedException(factMessage, stackDepth)
+    else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(sourceInfo))
   }
 
   // This is called internally by implicit conversions, which has different stack depth
   private[scalatest] final def internalToAssertion(implicit sourceInfo: SourceInfo): Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 12
     if (isYes) {
       if (!isVacuousYes) Succeeded
-      else throw new TestCanceledException(factMessage, stackDepth)
+      else throw new TestCanceledException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(sourceInfo), None)
     }
-    else throw new TestFailedException(factMessage, stackDepth)
+    else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(sourceInfo))
   }
 
   /**
