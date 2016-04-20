@@ -34,11 +34,8 @@ trait AsyncTimeouts {
     class TimeoutTask[T](promise: Promise[T], span: Span, exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T) extends TimerTask {
 
       def run(): Unit = {
-        // SKIP-SCALATESTJS-START
         def stackDepthFun(sde: StackDepthException): Int =
           getStackDepth(sde.getStackTrace, sourceInfo)
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY def stackDepthFun(sde: StackDepthException): Int = { sde.printStackTrace(); 15 }
         if (!promise.isCompleted) {
           promise.complete(Success(exceptionFun(None, span, stackDepthFun)))
         }
@@ -46,11 +43,8 @@ trait AsyncTimeouts {
 
     }
 
-    // SKIP-SCALATESTJS-START
     def stackDepthFun(sde: StackDepthException): Int =
       getStackDepth(sde.getStackTrace, sourceInfo)
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def stackDepthFun(sde: StackDepthException): Int = 15
 
     val limit = timeLimit.totalNanos / 1000 / 1000
     val startTime = scala.compat.Platform.currentTime
