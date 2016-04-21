@@ -381,6 +381,7 @@ trait AsyncAssertions extends PatienceConfiguration {
       if (Thread.currentThread != creatingThread)
         throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, 2)
 
+      val minWaitTime = Span(1, Nanoseconds)
       val startTime: Long = System.nanoTime
       val endTime: Long = startTime + timeout.totalNanos
       def timedOut: Boolean = endTime < System.nanoTime
@@ -388,7 +389,7 @@ trait AsyncAssertions extends PatienceConfiguration {
         while (dismissedCount < dismissals && !timedOut && thrown.isEmpty) {
           val timeLeft: Span = {
             val diff = endTime - System.nanoTime
-            if (diff > 0) Span(diff, Nanoseconds) else Span.Zero
+            if (diff > 0) Span(diff, Nanoseconds) else minWaitTime
           }
           wait(timeLeft.millisPart, timeLeft.nanosPart)
         }
