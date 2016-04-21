@@ -392,7 +392,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      jsDependencies += RuntimeDOM % "test",
+      //jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
@@ -531,7 +531,7 @@ object ScalatestBuild extends Build {
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
-      jsDependencies += RuntimeDOM % "test",
+      //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestJS.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -611,8 +611,8 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      jsDependencies += RuntimeDOM % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      //jsDependencies += RuntimeDOM % "test",
+      //scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
       //scalaJSStage in Global := FastOptStage,
