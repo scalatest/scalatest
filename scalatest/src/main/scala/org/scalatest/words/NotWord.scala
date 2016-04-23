@@ -1583,7 +1583,7 @@ final class NotWord {
           !matched.isDefined, 
           Resources.rawContainedA,
           Resources.rawDidNotContainA,
-          Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage else "-")), 
+          Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage(Prettifier.default) else "-")),
           Vector(left, UnquotedString(aMatcher.nounName))
         )
       }
@@ -1608,7 +1608,7 @@ final class NotWord {
           !matched.isDefined, 
           Resources.rawContainedAn,
           Resources.rawDidNotContainAn,
-          Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage else "-")), 
+          Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage(Prettifier.default) else "-")),
           Vector(left, UnquotedString(anMatcher.nounName))
         )
       }

@@ -1961,8 +1961,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(aMatcher: AMatcher[T]): Assertion = {
       val matcherResult = aMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
-      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, sourceInfo)
+      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     
     /**
@@ -1976,8 +1976,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(anMatcher: AnMatcher[T]): Assertion = {
       val matcherResult = anMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
-      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, sourceInfo)
+      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
 
     /**
@@ -2026,8 +2026,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true, prettifier, sourceInfo)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
-      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, sourceInfo)
+      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     // SKIP-SCALATESTJS-END
 
@@ -2061,8 +2061,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false, prettifier, sourceInfo)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
-      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, sourceInfo)
+      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     // SKIP-SCALATESTJS-END
 
@@ -2178,8 +2178,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
-      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, sourceInfo)
+      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
     /**
@@ -2233,8 +2233,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
-      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, sourceInfo)
+      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
     /**
@@ -2288,8 +2288,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
-      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, sourceInfo)
+      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
     /**
@@ -2344,8 +2344,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
-      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, sourceInfo)
+      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
     /**
@@ -3283,9 +3283,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         val result = beMatcher(e)
         if (result.matches != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) result.failureMessage else result.negatedFailureMessage, None, sourceInfo)
+          indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, sourceInfo)
         }
-        else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
       }
     }
     
@@ -3548,9 +3548,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, false, prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
+          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, sourceInfo)
         }
-        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
     }
     
@@ -3566,9 +3566,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
+          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, sourceInfo)
         }
-        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
     }
     
@@ -3584,9 +3584,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, prettifier, sourceInfo)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage else matcherResult.negatedFailureMessage, None, sourceInfo)
+          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, sourceInfo)
         }
-        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
     }
     // SKIP-SCALATESTJS-END
@@ -4256,17 +4256,17 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (result.matches != shouldBeTrue)
           indicateFailure(
             if (shouldBeTrue)
-              result.failureMessage
+              result.failureMessage(prettifier)
             else
-              result.negatedFailureMessage,
+              result.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -4313,17 +4313,17 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (result.matches != shouldBeTrue)
           indicateFailure(
             if (shouldBeTrue)
-              result.failureMessage
+              result.failureMessage(prettifier)
             else
-              result.negatedFailureMessage,
+              result.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -4347,17 +4347,17 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (result.matches != shouldBeTrue)
           indicateFailure(
             if (shouldBeTrue)
-              result.failureMessage
+              result.failureMessage(prettifier)
             else
-              result.negatedFailureMessage,
+              result.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -4409,17 +4409,17 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (result.matches != shouldBeTrue)
           indicateFailure(
             if (shouldBeTrue)
-              result.failureMessage
+              result.failureMessage(prettifier)
             else
-              result.negatedFailureMessage,
+              result.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -5045,9 +5045,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(
             if (shouldBeTrue)
-              matcherResult.failureMessage
+              matcherResult.failureMessage(prettifier)
             else
-              matcherResult.negatedFailureMessage,
+              matcherResult.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
@@ -5055,8 +5055,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         else
           indicateSuccess(
             shouldBeTrue,
-            matcherResult.negatedFailureMessage,
-            matcherResult.failureMessage
+            matcherResult.negatedFailureMessage(prettifier),
+            matcherResult.failureMessage(prettifier)
           )
       }
     }
@@ -5075,9 +5075,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(
             if (shouldBeTrue)
-              matcherResult.failureMessage
+              matcherResult.failureMessage(prettifier)
             else
-              matcherResult.negatedFailureMessage,
+              matcherResult.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
@@ -5085,8 +5085,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         else
           indicateSuccess(
             shouldBeTrue,
-            matcherResult.negatedFailureMessage,
-            matcherResult.failureMessage
+            matcherResult.negatedFailureMessage(prettifier),
+            matcherResult.failureMessage(prettifier)
           )
       }
     }
@@ -5267,7 +5267,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         rightMatcher(e) match {
           case MatchFailed(failureMessage) =>
             indicateFailure(failureMessage, None, sourceInfo)
-          case result => indicateSuccess(result.negatedFailureMessage)
+          case result => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5450,7 +5450,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         rightMatcher(e) match {
           case MatchFailed(failureMessage) => 
             indicateFailure(failureMessage, None, sourceInfo)
-          case result => indicateSuccess(result.negatedFailureMessage)
+          case result => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5469,7 +5469,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         rightMatcher(e) match {
           case MatchFailed(failureMessage) => 
             indicateFailure(failureMessage, None, sourceInfo)
-          case result => indicateSuccess(result.negatedFailureMessage)
+          case result => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5635,8 +5635,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         val result = beMatcher.apply(e)
         if (!result.matches)
-          indicateFailure(result.failureMessage, None, sourceInfo)
-        else indicateSuccess(result.negatedFailureMessage)
+          indicateFailure(result.failureMessage(prettifier), None, sourceInfo)
+        else indicateSuccess(result.negatedFailureMessage(prettifier))
       }
     }
 
@@ -5692,8 +5692,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, prettifier, sourceInfo)
         if (!matcherResult.matches) 
-          indicateFailure(matcherResult.failureMessage, None, sourceInfo)
-        else indicateSuccess(matcherResult.negatedFailureMessage)
+          indicateFailure(matcherResult.failureMessage(prettifier), None, sourceInfo)
+        else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
       }
     }
     
@@ -5709,9 +5709,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, prettifier, sourceInfo)
         if (!matcherResult.matches) {
-          indicateFailure(matcherResult.failureMessage, None, sourceInfo)
+          indicateFailure(matcherResult.failureMessage(prettifier), None, sourceInfo)
         }
-        else indicateSuccess(matcherResult.negatedFailureMessage)
+        else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
       }
     }
 
@@ -5727,9 +5727,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, prettifier, sourceInfo)
         if (!matcherResult.matches) {
-          indicateFailure(matcherResult.failureMessage, None, sourceInfo)
+          indicateFailure(matcherResult.failureMessage(prettifier), None, sourceInfo)
         }
-        else indicateSuccess(matcherResult.negatedFailureMessage)
+        else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
       }
     }
     // SKIP-SCALATESTJS-END
@@ -5814,8 +5814,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         try  {
           val result = rightMatcherX1.apply(e.asInstanceOf[U])
           if (result.matches)
-            indicateFailure(result.negatedFailureMessage, None, sourceInfo)
-          else indicateSuccess(result.failureMessage)
+            indicateFailure(result.negatedFailureMessage(prettifier), None, sourceInfo)
+          else indicateSuccess(result.failureMessage(prettifier))
         }
         catch {
           case tfe: TestFailedException =>
@@ -5838,7 +5838,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         rightMatcher(e) match {
           case MatchSucceeded(negatedFailureMessage) => 
             indicateFailure(negatedFailureMessage, None, sourceInfo)
-          case result => indicateSuccess(result.failureMessage)
+          case result => indicateSuccess(result.failureMessage(prettifier))
         }
       }
     }
@@ -6198,17 +6198,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (result.matches != shouldBeTrue)
           indicateFailure(
             if (shouldBeTrue)
-              result.failureMessage
+              result.failureMessage(prettifier)
             else
-              result.negatedFailureMessage,
+              result.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -6266,17 +6266,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (result.matches != shouldBeTrue)
           indicateFailure(
             if (shouldBeTrue)
-              result.failureMessage
+              result.failureMessage(prettifier)
             else
-              result.negatedFailureMessage,
+              result.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -6334,17 +6334,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (result.matches != shouldBeTrue)
           indicateFailure(
             if (shouldBeTrue)
-              result.failureMessage
+              result.failureMessage(prettifier)
             else
-              result.negatedFailureMessage,
+              result.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -6402,17 +6402,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         if (result.matches != shouldBeTrue)
           indicateFailure(
             if (shouldBeTrue)
-              result.failureMessage
+              result.failureMessage(prettifier)
             else
-              result.negatedFailureMessage,
+              result.negatedFailureMessage(prettifier),
             None,
             sourceInfo
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -6693,17 +6693,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
 
   private object ShouldMethodHelper {
 
-    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], sourceInfo: SourceInfo): Assertion = {
+    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       rightMatcher(left) match {
         case MatchFailed(failureMessage) => indicateFailure(failureMessage, None, sourceInfo)
-        case result => indicateSuccess(result.negatedFailureMessage)
+        case result => indicateSuccess(result.negatedFailureMessage(prettifier))
       }
     }
 
-    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], sourceInfo: SourceInfo): Assertion = {
+    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       rightMatcher(left) match {
         case MatchSucceeded(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, sourceInfo)
-        case result => indicateSuccess(result.failureMessage)
+        case result => indicateSuccess(result.failureMessage(prettifier))
       }
     }
   }
@@ -6730,7 +6730,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(rightMatcherX1: Matcher[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1, sourceInfo)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1, prettifier, sourceInfo)
     }
 
     /**
@@ -6742,7 +6742,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory1.matcher, sourceInfo)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory1.matcher, prettifier, sourceInfo)
     }
 
     /**
@@ -6754,7 +6754,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory2.matcher, sourceInfo)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory2.matcher, prettifier, sourceInfo)
     }
 
     /**
@@ -6993,8 +6993,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(beMatcher: BeMatcher[T]): Assertion = {
       val result = beMatcher.apply(leftSideValue)
       if (!result.matches)
-        indicateFailure(result.failureMessage, None, sourceInfo)
-      else indicateSuccess(result.negatedFailureMessage)
+        indicateFailure(result.failureMessage(prettifier), None, sourceInfo)
+      else indicateSuccess(result.negatedFailureMessage(prettifier))
     }
 
     /**
@@ -7121,7 +7121,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(rightMatcherX1: Matcher[T]): Assertion = {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1, sourceInfo)
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1, prettifier, sourceInfo)
     }
     
     /**
@@ -7133,7 +7133,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory1.matcher, sourceInfo)
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory1.matcher, prettifier, sourceInfo)
     }
     
     /**
@@ -7214,8 +7214,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true, prettifier, sourceInfo)
       if (!matcherResult.matches) 
-        indicateFailure(matcherResult.failureMessage, None, sourceInfo)
-      else indicateSuccess(matcherResult.negatedFailureMessage)
+        indicateFailure(matcherResult.failureMessage(prettifier), None, sourceInfo)
+      else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
     }
 
     /**
@@ -7230,12 +7230,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true, prettifier, sourceInfo)
       if (!matcherResult.matches) {
         indicateFailure(
-          matcherResult.failureMessage,
+          matcherResult.failureMessage(prettifier),
           None,
           sourceInfo
         )
       }
-      else indicateSuccess(matcherResult.negatedFailureMessage)
+      else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
     }
 
     /**
@@ -7250,12 +7250,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false, prettifier, sourceInfo)
       if (!matcherResult.matches) {
         indicateFailure(
-          matcherResult.failureMessage,
+          matcherResult.failureMessage(prettifier),
           None,
           sourceInfo
         )
       }
-      else indicateSuccess(matcherResult.negatedFailureMessage)
+      else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
     }
     // SKIP-SCALATESTJS-END
     

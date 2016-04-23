@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package org.scalatest.matchers
- 
+
+import org.scalactic.Prettifier
+
 // Idea is to override toString each time it is used.
 sealed private[scalatest] abstract class LazyMessage {
   val nestedArgs: IndexedSeq[Any]
@@ -22,20 +24,20 @@ sealed private[scalatest] abstract class LazyMessage {
 
 private[scalatest] case class FailureMessage(matchResult: MatchResult) extends LazyMessage {
   val nestedArgs: IndexedSeq[Any] = matchResult.failureMessageArgs
-  override def toString: String = matchResult.failureMessage
+  override def toString: String = matchResult.failureMessage(Prettifier.default)
 }
 
 private[scalatest] case class NegatedFailureMessage(matchResult: MatchResult) extends LazyMessage {
   val nestedArgs: IndexedSeq[Any] = matchResult.negatedFailureMessageArgs
-  override def toString: String = matchResult.negatedFailureMessage
+  override def toString: String = matchResult.negatedFailureMessage(Prettifier.default)
 }
 
 private[scalatest] case class MidSentenceFailureMessage(matchResult: MatchResult) extends LazyMessage {
   val nestedArgs: IndexedSeq[Any] = matchResult.failureMessageArgs
-  override def toString: String = matchResult.midSentenceFailureMessage
+  override def toString: String = matchResult.midSentenceFailureMessage(Prettifier.default)
 }
 
 private[scalatest] case class MidSentenceNegatedFailureMessage(matchResult: MatchResult) extends LazyMessage {
   val nestedArgs: IndexedSeq[Any] = matchResult.negatedFailureMessageArgs
-  override def toString: String = matchResult.midSentenceNegatedFailureMessage
+  override def toString: String = matchResult.midSentenceNegatedFailureMessage(Prettifier.default)
 }

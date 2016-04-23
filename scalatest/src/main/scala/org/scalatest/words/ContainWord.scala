@@ -199,7 +199,7 @@ final class ContainWord {
           Resources.rawDidNotContainA,
           Resources.rawContainedA,
           Vector(left, UnquotedString(aMatcher.nounName)), 
-          Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage else "-"))
+          Vector(left, UnquotedString(aMatcher.nounName), UnquotedString(if (matched.isDefined) aMatcher(matched.get).negatedFailureMessage(Prettifier.default) else "-"))
         )
       }
       override def toString: String = "contain a " + Prettifier.default(aMatcher)
@@ -222,7 +222,7 @@ final class ContainWord {
           Resources.rawDidNotContainAn,
           Resources.rawContainedAn,
           Vector(left, UnquotedString(anMatcher.nounName)), 
-          Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage else "-"))
+          Vector(left, UnquotedString(anMatcher.nounName), UnquotedString(if (matched.isDefined) anMatcher(matched.get).negatedFailureMessage(Prettifier.default) else "-"))
         )
       }
       override def toString: String = "contain an " + Prettifier.default(anMatcher)
