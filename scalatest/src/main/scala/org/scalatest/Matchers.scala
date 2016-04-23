@@ -5264,10 +5264,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def should(rightMatcher: Matcher[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
-        rightMatcher(e) match {
-          case MatchFailed(failureMessage) =>
+        val result = rightMatcher(e)
+        MatchFailed.unapply(result)(prettifier) match {
+          case Some(failureMessage) =>
             indicateFailure(failureMessage, None, sourceInfo)
-          case result => indicateSuccess(result.negatedFailureMessage(prettifier))
+          case None => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5447,10 +5448,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
-        rightMatcher(e) match {
-          case MatchFailed(failureMessage) => 
+        val result = rightMatcher(e)
+        MatchFailed.unapply(result)(prettifier) match {
+          case Some(failureMessage) =>
             indicateFailure(failureMessage, None, sourceInfo)
-          case result => indicateSuccess(result.negatedFailureMessage(prettifier))
+          case None => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5466,10 +5468,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
       val rightMatcher = rightMatcherFactory2.matcher
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
-        rightMatcher(e) match {
-          case MatchFailed(failureMessage) => 
+        val result = rightMatcher(e)
+        MatchFailed.unapply(result)(prettifier) match {
+          case Some(failureMessage) =>
             indicateFailure(failureMessage, None, sourceInfo)
-          case result => indicateSuccess(result.negatedFailureMessage(prettifier))
+          case None => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5835,10 +5838,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
       val rightMatcher = rightMatcherFactory1.matcher
       doCollected(collected, xs, original, prettifier, sourceInfo) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) => 
+        val result = rightMatcher(e)
+        MatchSucceeded.unapply(result)(prettifier) match {
+          case Some(negatedFailureMessage) =>
             indicateFailure(negatedFailureMessage, None, sourceInfo)
-          case result => indicateSuccess(result.failureMessage(prettifier))
+          case None => indicateSuccess(result.failureMessage(prettifier))
         }
       }
     }
@@ -6694,16 +6698,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
   private object ShouldMethodHelper {
 
     def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
-      rightMatcher(left) match {
-        case MatchFailed(failureMessage) => indicateFailure(failureMessage, None, sourceInfo)
-        case result => indicateSuccess(result.negatedFailureMessage(prettifier))
+      val result = rightMatcher(left)
+      MatchFailed.unapply(result)(prettifier) match {
+        case Some(failureMessage) => indicateFailure(failureMessage, None, sourceInfo)
+        case None => indicateSuccess(result.negatedFailureMessage(prettifier))
       }
     }
 
     def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, sourceInfo: SourceInfo): Assertion = {
-      rightMatcher(left) match {
-        case MatchSucceeded(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, sourceInfo)
-        case result => indicateSuccess(result.failureMessage(prettifier))
+      val result = rightMatcher(left)
+      MatchSucceeded.unapply(result)(prettifier) match {
+        case Some(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, sourceInfo)
+        case None => indicateSuccess(result.failureMessage(prettifier))
       }
     }
   }
