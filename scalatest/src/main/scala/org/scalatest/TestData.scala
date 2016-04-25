@@ -15,8 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * A bundle of information about the current test.
@@ -135,6 +134,6 @@ trait TestData {
    */
   val tags: Set[String]
 
-  val sourceInfo: Option[SourceInfo]
+  val pos: Option[source.Position]
 }
 

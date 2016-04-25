@@ -15,9 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.BooleanMacro
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 import reflect.macros.Context
 
 /**
@@ -25,7 +23,7 @@ import reflect.macros.Context
  */
 private[scalatest] object ExpectationsMacro {
 
-  def expect(context: Context)(expression: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], sourceInfo: context.Expr[SourceInfo]): context.Expr[Fact] =
-    new BooleanMacro[context.type](context, "expectationsHelper").genMacro[Fact](expression, "macroExpect", context.literal(""), prettifier, sourceInfo)
+  def expect(context: Context)(expression: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Fact] =
+    new BooleanMacro[context.type](context, "expectationsHelper").genMacro[Fact](expression, "macroExpect", context.literal(""), prettifier, pos)
 
 }

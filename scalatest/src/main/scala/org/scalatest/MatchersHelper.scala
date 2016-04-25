@@ -23,8 +23,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -134,8 +133,8 @@ private[scalatest] object MatchersHelper {
     builder.toString
   }
 
-  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, sourceInfo: SourceInfo): Throwable = {
-    new TestFailedException(e => Some(message), optionalCause, StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
+  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, pos: source.Position): Throwable = {
+    new TestFailedException(e => Some(message), optionalCause, StackDepthExceptionHelper.getStackDepthFun(pos))
   }
 
   def andMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
@@ -177,7 +176,7 @@ private[scalatest] object MatchersHelper {
   }
 
   // SKIP-SCALATESTJS-START
-  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, prettifier: Prettifier, sourceInfo: SourceInfo): MatchResult = {
+  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, prettifier: Prettifier, pos: source.Position): MatchResult = {
 
     // If 'empty passed, rightNoTick would be "empty"
     val propertyName = right.name
@@ -205,7 +204,7 @@ private[scalatest] object MatchersHelper {
           else
             FailureMessages.hasNeitherAOrAnMethod(prettifier, left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
           None,
-          sourceInfo
+          pos
         )
 
       case Some(result) =>
@@ -294,7 +293,7 @@ private[scalatest] object MatchersHelper {
                                Resources.rawIncludedRegexButNotGroup, Resources.rawIncludedRegexAndGroup)
   }
 
-  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, sourceInfo: SourceInfo): T = {
+  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, pos: source.Position): T = {
     val caught = try {
       f
       None
@@ -303,7 +302,7 @@ private[scalatest] object MatchersHelper {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = wrongExceptionMessageFun(clazz.getName, u.getClass.getName)
-          throw newTestFailedException(s, Some(u), sourceInfo)
+          throw newTestFailedException(s, Some(u), pos)
         }
         else {
           Some(u)
@@ -313,12 +312,12 @@ private[scalatest] object MatchersHelper {
     caught match {
       case None =>
         val message = exceptionExpectedMessageFun(clazz.getName)
-        throw newTestFailedException(message, None, sourceInfo)
+        throw newTestFailedException(message, None, pos)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
   }
 
-  def checkNoException(sourceInfo: SourceInfo)(fun: => Any): Assertion = {
+  def checkNoException(pos: source.Position)(fun: => Any): Assertion = {
     try {
       fun
       Succeeded
@@ -326,7 +325,7 @@ private[scalatest] object MatchersHelper {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), Some(u), StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
+        throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), Some(u), StackDepthExceptionHelper.getStackDepthFun(pos))
       }
     }
   }
@@ -335,8 +334,8 @@ private[scalatest] object MatchersHelper {
 
   def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
 
-  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], sourceInfo: SourceInfo): Assertion = {
-    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, StackDepthExceptionHelper.getStackDepthFun(sourceInfo))
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, StackDepthExceptionHelper.getStackDepthFun(pos))
   }
 
   def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Assertion =

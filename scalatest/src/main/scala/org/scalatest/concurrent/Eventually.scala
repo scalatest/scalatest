@@ -22,7 +22,7 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import scala.annotation.tailrec
 import time.{Nanosecond, Span, Nanoseconds}
 import PatienceConfiguration._
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Trait that provides the <code>eventually</code> construct, which periodically retries executing
@@ -304,8 +304,8 @@ trait Eventually extends PatienceConfiguration {
    * @param fun the by-name parameter to repeatedly invoke
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
-  def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit sourceInfo: SourceInfo): T =
-    eventually(fun)(PatienceConfig(timeout.value, interval.value), sourceInfo)
+  def eventually[T](timeout: Timeout, interval: Interval)(fun: => T)(implicit pos: source.Position): T =
+    eventually(fun)(PatienceConfig(timeout.value, interval.value), pos)
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -333,8 +333,8 @@ trait Eventually extends PatienceConfiguration {
    *          (used) <code>interval</code> parameters
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
-  def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, sourceInfo: SourceInfo): T =
-    eventually(fun)(PatienceConfig(timeout.value, config.interval), sourceInfo)
+  def eventually[T](timeout: Timeout)(fun: => T)(implicit config: PatienceConfig, pos: source.Position): T =
+    eventually(fun)(PatienceConfig(timeout.value, config.interval), pos)
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -361,8 +361,8 @@ trait Eventually extends PatienceConfiguration {
    *          (unused) <code>interval</code> parameters
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
-  def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, sourceInfo: SourceInfo): T =
-    eventually(fun)(PatienceConfig(config.timeout, interval.value), sourceInfo)
+  def eventually[T](interval: Interval)(fun: => T)(implicit config: PatienceConfig, pos: source.Position): T =
+    eventually(fun)(PatienceConfig(config.timeout, interval.value), pos)
 
   /**
    * Invokes the passed by-name parameter repeatedly until it either succeeds, or a configured maximum
@@ -388,7 +388,7 @@ trait Eventually extends PatienceConfiguration {
    *          <code>interval</code> parameters
    * @return the result of invoking the <code>fun</code> by-name parameter, the first time it succeeds
    */
-  def eventually[T](fun: => T)(implicit config: PatienceConfig, sourceInfo: SourceInfo): T = {
+  def eventually[T](fun: => T)(implicit config: PatienceConfig, pos: source.Position): T = {
     val startNanos = System.nanoTime
     def makeAValiantAttempt(): Either[Throwable, T] = {
       try {
@@ -427,7 +427,7 @@ trait Eventually extends PatienceConfiguration {
                     Resources.didNotEventuallySucceedBecause(attempt.toString, durationSpan.prettyString, e.getMessage)
                 ),
               Some(e),
-              getStackDepthFun(sourceInfo),
+              getStackDepthFun(pos),
               None,
               config.timeout
             )

@@ -15,9 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.BooleanMacro
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 import reflect.macros.Context
 
 /**
@@ -32,8 +30,8 @@ private[scalatest] object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message if assertion failed
    */
-  def assert(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], sourceInfo: context.Expr[SourceInfo]): context.Expr[Assertion] =
-    new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, "macroAssert", context.literal(""), prettifier, sourceInfo)
+  def assert(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Assertion] =
+    new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, "macroAssert", context.literal(""), prettifier, pos)
 
   /**
    * Provides assertion implementation for <code>Assertions.assert(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -43,8 +41,8 @@ private[scalatest] object AssertionsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the assertion check and throw <code>TestFailedException</code> with rich error message (clue included) if assertion failed
    */
-  def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], sourceInfo: context.Expr[SourceInfo]): context.Expr[Assertion] =
-    new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, "macroAssert", clue, prettifier, sourceInfo)
+  def assertWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Assertion] =
+    new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, "macroAssert", clue, prettifier, pos)
 
   /**
    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean)</code>, with rich error message.
@@ -53,8 +51,8 @@ private[scalatest] object AssertionsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message if assumption failed
    */
-  def assume(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], sourceInfo: context.Expr[SourceInfo]): context.Expr[Assertion] =
-    new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, "macroAssume", context.literal(""), prettifier, sourceInfo)
+  def assume(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Assertion] =
+    new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, "macroAssume", context.literal(""), prettifier, pos)
 
   /**
    * Provides implementation for <code>Assertions.assume(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -64,6 +62,6 @@ private[scalatest] object AssertionsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the assumption check and throw <code>TestCanceledException</code> with rich error message (clue included) if assumption failed
    */
-  def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], sourceInfo: context.Expr[SourceInfo]): context.Expr[Assertion] =
-    new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, "macroAssume", clue, prettifier, sourceInfo)
+  def assumeWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], pos: context.Expr[source.Position]): context.Expr[Assertion] =
+    new BooleanMacro[context.type](context, "assertionsHelper").genMacro[Assertion](condition, "macroAssume", clue, prettifier, pos)
 }

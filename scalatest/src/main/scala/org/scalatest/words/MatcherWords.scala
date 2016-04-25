@@ -15,9 +15,8 @@
  */
 package org.scalatest.words
 
-import org.scalactic.source.SourceInfo
 import org.scalatest.matchers._
-import org.scalactic.{Equality, Prettifier}
+import org.scalactic._
 import org.scalatest.Resources
 import org.scalatest.Suite
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
@@ -37,7 +36,7 @@ trait MatcherWords {
    * string should (fullyMatch regex ("Hel*o, wor.d") and not have length (99))
    *                ^
    * </pre>
-   */
+   **/
   val fullyMatch = new FullyMatchWord
 
   /**
@@ -47,7 +46,7 @@ trait MatcherWords {
    * string should (startWith ("Four") and include ("year"))
    *                ^
    * </pre>
-   */
+   **/
   val startWith = new StartWithWord
 
   /**
@@ -57,7 +56,7 @@ trait MatcherWords {
    * string should (endWith ("ago") and include ("score"))
    *                ^
    * </pre>
-   */
+   **/
   val endWith = new EndWithWord
 
   /**
@@ -67,7 +66,7 @@ trait MatcherWords {
    * string should (include ("hope") and not startWith ("no"))
    *                ^
    * </pre>
-   */
+   **/
   val include = new IncludeWord
 
 /*
@@ -97,7 +96,7 @@ trait MatcherWords {
    * list should (have length (3) and not contain ('a'))
    *              ^
    * </pre>
-   */
+   **/
   val have = new HaveWord
 
   /**
@@ -107,7 +106,7 @@ trait MatcherWords {
    * obj should (be theSameInstanceAs (string) and be theSameInstanceAs (string))
    *             ^
    * </pre>
-   */
+   **/
   val be = new BeWord
 
   /**
@@ -117,7 +116,7 @@ trait MatcherWords {
    * list should (contain ('a') and have length (7))
    *              ^
    * </pre>
-   */
+   **/
   val contain = new ContainWord
 
   /**
@@ -127,7 +126,7 @@ trait MatcherWords {
    * myFile should (not be an (directory) and not have ('name ("foo.bar")))
    *                ^
    * </pre>
-   */
+   **/
   val not = new NotWord
   
   /**
@@ -137,7 +136,7 @@ trait MatcherWords {
    * "hi" should not have length (3)
    *                      ^
    * </pre>
-   */
+   **/
   val length = new LengthWord
   
   /**
@@ -147,7 +146,7 @@ trait MatcherWords {
    * set should not have size (3)
    *                     ^
    * </pre>
-   */
+   **/
   val size = new SizeWord
   
   /**
@@ -157,7 +156,7 @@ trait MatcherWords {
    * seq should be (sorted)
    *               ^
    * </pre>
-   */
+   **/
   val sorted = new SortedWord
 
   /**
@@ -167,7 +166,7 @@ trait MatcherWords {
    * seq should be (defined)
    *               ^
    * </pre>
-   */
+   **/
   val defined = new DefinedWord
   
   /**
@@ -177,8 +176,8 @@ trait MatcherWords {
    * noException should be thrownBy
    * ^
    * </pre>
-   */
-  def noException(implicit prettiifier: Prettifier, sourceInfo: SourceInfo) = new NoExceptionWord(prettiifier, sourceInfo)
+   **/
+  def noException(implicit prettiifier: Prettifier, pos: source.Position) = new NoExceptionWord(prettiifier, pos)
   
   /**
    * This field enables the following syntax: 
@@ -187,7 +186,7 @@ trait MatcherWords {
    * file should exist
    *             ^
    * </pre>
-   */
+   **/
   val exist = new ExistWord
 
   /**
@@ -198,7 +197,7 @@ trait MatcherWords {
    * file should be (readable)
    *                 ^
    * </pre>
-   */
+   **/
   val readable = new ReadableWord
   
   /**
@@ -208,7 +207,7 @@ trait MatcherWords {
    * file should be (writable)
    *                 ^
    * </pre>
-   */
+   **/
   val writable = new WritableWord
   
   /**
@@ -219,7 +218,7 @@ trait MatcherWords {
    * list should be (empty)
    *                 ^
    * </pre>
-   */
+   **/
   val empty = new EmptyWord
 
   /**
@@ -230,7 +229,7 @@ trait MatcherWords {
    * "val a: String = 1" shouldNot compile
    *                               ^
    * </pre>
-   */
+   **/
   val compile = new CompileWord
 
   /**
@@ -241,7 +240,7 @@ trait MatcherWords {
    * "val a: String = 1" shouldNot typeCheck
    *                               ^
    * </pre>
-   */
+   **/
   val typeCheck = new TypeCheckWord
 
   /**
@@ -252,7 +251,7 @@ trait MatcherWords {
    * result should matchPattern { case Person("Bob", _) => }
    *               ^
    * </pre>
-   */
+   **/
   val matchPattern = new MatchPatternWord
 
   /**

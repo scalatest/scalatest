@@ -15,9 +15,8 @@
  */
 package org.scalatest.words
 
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 import org.scalatest._
-import org.scalactic.Prettifier
 
 /**
  * Provides an implicit conversion that adds <code>should</code> methods to <code>String</code>
@@ -141,8 +140,8 @@ trait ShouldVerb {
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
-    def should(right: String)(implicit fun: (String, String, String, SourceInfo) => ResultOfStringPassedToVerb, sourceInfo: SourceInfo): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "should", right, sourceInfo)
+    def should(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb, pos: source.Position): ResultOfStringPassedToVerb = {
+      fun(leftSideString, "should", right, pos)
     }
 
     /**
@@ -164,8 +163,8 @@ trait ShouldVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def should(right: BehaveWord)(implicit fun: (String, SourceInfo) => BehaveWord, sourceInfo: SourceInfo): BehaveWord = {
-      fun(leftSideString, sourceInfo)
+    def should(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord, pos: source.Position): BehaveWord = {
+      fun(leftSideString, pos)
     }
 
     /**
@@ -190,8 +189,8 @@ trait ShouldVerb {
      * no-arg function.
      * </p>
      */
-    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, sourceInfo: SourceInfo) {
-      fun(leftSideString, "should", prettifier, sourceInfo, right _)
+    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, pos: source.Position) {
+      fun(leftSideString, "should", prettifier, pos, right _)
     }
 
     /**
@@ -217,8 +216,8 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, SourceInfo) => Unit, prettifier: Prettifier, sourceInfo: SourceInfo) {
-      fun(leftSideString, "should", resultOfAfterWordApplication, prettifier, sourceInfo)
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier, pos: source.Position) {
+      fun(leftSideString, "should", resultOfAfterWordApplication, prettifier, pos)
     }
   }
 
@@ -228,7 +227,7 @@ trait ShouldVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToStringShouldWrapperForVerb(o: String)(implicit sourceInfo: SourceInfo): StringShouldWrapperForVerb =
+  implicit def convertToStringShouldWrapperForVerb(o: String)(implicit pos: source.Position): StringShouldWrapperForVerb =
     new StringShouldWrapperForVerb {
       val leftSideString = o.trim
     }

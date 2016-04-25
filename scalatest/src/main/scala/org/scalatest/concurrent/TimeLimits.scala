@@ -15,7 +15,6 @@
  */
 package org.scalatest.concurrent
 
-import org.scalactic.source.SourceInfo
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.{FailureMessages, UnquotedString}
 import org.scalatest.exceptions.{StackDepthException, TestFailedDueToTimeoutException, TestCanceledException}
@@ -25,7 +24,7 @@ import java.net.Socket
 import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.enablers.Timed
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
@@ -238,8 +237,8 @@ trait TimeLimits {
    * @param fun the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], sourceInfo: SourceInfo = implicitly[SourceInfo], timed: Timed[T] = implicitly[Timed[T]]): T = {
-    failAfterImpl(timeout, interruptor, prettifier, adj => getStackDepthFun(sourceInfo))(fun)(timed)
+  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
+    failAfterImpl(timeout, interruptor, prettifier, adj => getStackDepthFun(pos))(fun)(timed)
   }
 
   private[scalatest] def failAfterImpl[T](timeout: Span, interruptor: Signaler, prettifier: Prettifier, stackDepthFun: Int => (StackDepthException => Int))(fun: => T)(implicit timed: Timed[T]): T = {
@@ -297,8 +296,8 @@ trait TimeLimits {
    * @param f the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], sourceInfo: SourceInfo = implicitly[SourceInfo], timed: Timed[T] = implicitly[Timed[T]]): T = {
-    cancelAfterImpl(timeout, interruptor, prettifier, adj => getStackDepthFun(sourceInfo))(fun)(timed)
+  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
+    cancelAfterImpl(timeout, interruptor, prettifier, adj => getStackDepthFun(pos))(fun)(timed)
   }
 
   private[scalatest] def cancelAfterImpl[T](timeout: Span, interruptor: Signaler, prettifier: Prettifier, stackDepthFun: Int => (StackDepthException => Int))(fun: => T)(implicit timed: Timed[T]): T = {

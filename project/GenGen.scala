@@ -179,8 +179,7 @@ import org.scalacheck.Gen
 import org.scalacheck.Prop._
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.enablers.CheckerAsserting
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Trait containing methods that faciliate property checks against generated data using ScalaCheck.
@@ -708,7 +707,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         arbA: Arbitrary[A], shrA: Shrink[A],
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
       ): asserting.Result = {
         val propF = { (a: A) =>
           val (unmetCondition, exception) =
@@ -726,7 +725,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, sourceInfo)
+        asserting.check(prop, params, prettifier, pos)
     }
 
   /**
@@ -753,7 +752,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         arbB: Arbitrary[B], shrB: Shrink[B],
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
       ): asserting.Result = {
         val propF = { (a: A, b: B) =>
           val (unmetCondition, exception) =
@@ -771,7 +770,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, sourceInfo)
+        asserting.check(prop, params, prettifier, pos)
     }
 
   /**
@@ -799,7 +798,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         arbC: Arbitrary[C], shrC: Shrink[C],
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
       ): asserting.Result = {
         val propF = { (a: A, b: B, c: C) =>
           val (unmetCondition, exception) =
@@ -817,7 +816,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, sourceInfo)
+        asserting.check(prop, params, prettifier, pos)
     }
 
   /**
@@ -846,7 +845,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         arbD: Arbitrary[D], shrD: Shrink[D],
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
       ): asserting.Result = {
         val propF = { (a: A, b: B, c: C, d: D) =>
           val (unmetCondition, exception) =
@@ -864,7 +863,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, sourceInfo)
+        asserting.check(prop, params, prettifier, pos)
     }
 
   /**
@@ -894,7 +893,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         arbE: Arbitrary[E], shrE: Shrink[E],
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
       ): asserting.Result = {
         val propF = { (a: A, b: B, c: C, d: D, e: E) =>
           val (unmetCondition, exception) =
@@ -912,7 +911,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, sourceInfo)
+        asserting.check(prop, params, prettifier, pos)
     }
 
   /**
@@ -943,7 +942,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         arbF: Arbitrary[F], shrF: Shrink[F],
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
       ): asserting.Result = {
         val propF = { (a: A, b: B, c: C, d: D, e: E, f: F) =>
           val (unmetCondition, exception) =
@@ -961,7 +960,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         }
         val prop = Prop.forAll(propF)
         val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, sourceInfo)
+        asserting.check(prop, params, prettifier, pos)
     }
   }
 """
@@ -989,7 +988,7 @@ val propertyCheckForAllTemplate = """
 $arbShrinks$,
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
     ): asserting.Result = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
@@ -1007,7 +1006,7 @@ $arbShrinks$,
       }
       val prop = Prop.forAll(propF)
       val params = getParams(Seq(), config)
-      asserting.check(prop, params, prettifier, sourceInfo)
+      asserting.check(prop, params, prettifier, pos)
   }
 
   /**
@@ -1032,7 +1031,7 @@ $arbShrinks$,
 $arbShrinks$,
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
     ): asserting.Result = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
@@ -1050,7 +1049,7 @@ $arbShrinks$,
       }
       val prop = Prop.forAll(propF)
       val params = getParams(configParams, config)
-      asserting.check(prop, params, prettifier, sourceInfo, Some(List($argNameNames$)))
+      asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
   }
 
   /**
@@ -1082,7 +1081,7 @@ $arbShrinks$,
 $shrinks$,
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
     ): asserting.Result = {
       val propF = { ($argType$) =>
         val (unmetCondition, exception) =
@@ -1100,7 +1099,7 @@ $shrinks$,
       }
       val prop = Prop.forAll($genArgs$)(propF)
       val params = getParams(configParams, config)
-      asserting.check(prop, params, prettifier, sourceInfo)
+      asserting.check(prop, params, prettifier, pos)
   }
 
   /**
@@ -1132,7 +1131,7 @@ $shrinks$,
 $shrinks$,
         asserting: CheckerAsserting[ASSERTION],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
     ): asserting.Result = {
 
 $tupleBusters$
@@ -1153,7 +1152,7 @@ $tupleBusters$
       }
       val prop = Prop.forAll($genArgs$)(propF)
       val params = getParams(configParams, config)
-      asserting.check(prop, params, prettifier, sourceInfo, Some(List($argNameNames$)))
+      asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
   }
 """
 

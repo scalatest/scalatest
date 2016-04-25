@@ -16,8 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * Provides an implicit conversion that adds <code>must</code> methods to <code>String</code>
@@ -138,8 +137,8 @@ trait MustVerb {
      * <code>"must"</code>, and right, and returns the result.
      * </p>
      */
-    def must(right: String)(implicit fun: (String, String, String, SourceInfo) => ResultOfStringPassedToVerb, sourceInfo: SourceInfo): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "must", right, sourceInfo)
+    def must(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb, pos: source.Position): ResultOfStringPassedToVerb = {
+      fun(leftSideString, "must", right, pos)
     }
 
     /**
@@ -161,8 +160,8 @@ trait MustVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def must(right: BehaveWord)(implicit fun: (String, SourceInfo) => BehaveWord, sourceInfo: SourceInfo): BehaveWord = {
-      fun(leftSideString, sourceInfo)
+    def must(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord, pos: source.Position): BehaveWord = {
+      fun(leftSideString, pos)
     }
 
     /**
@@ -187,8 +186,8 @@ trait MustVerb {
      * no-arg function.
      * </p>
      */
-    def must(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, sourceInfo: SourceInfo) {
-      fun(leftSideString, "must", prettifier, sourceInfo, right _)
+    def must(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, pos: source.Position) {
+      fun(leftSideString, "must", prettifier, pos, right _)
     }
 
     /**
@@ -214,8 +213,8 @@ trait MustVerb {
      * <code>"must"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>must</code>.
      * </p>
      */
-    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, SourceInfo) => Unit, prettifier: Prettifier, sourceInfo: SourceInfo) {
-      fun(leftSideString, "must", resultOfAfterWordApplication, prettifier, sourceInfo)
+    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier, pos: source.Position) {
+      fun(leftSideString, "must", resultOfAfterWordApplication, prettifier, pos)
     }
   }
 
@@ -225,7 +224,7 @@ trait MustVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
    * to enable <code>must</code> methods to be invokable on that object.
    */
-  implicit def convertToStringMustWrapperForVerb(o: String)(implicit sourceInfo: SourceInfo): StringMustWrapperForVerb =
+  implicit def convertToStringMustWrapperForVerb(o: String)(implicit pos: source.Position): StringMustWrapperForVerb =
     new StringMustWrapperForVerb {
       val leftSideString = o.trim
     }

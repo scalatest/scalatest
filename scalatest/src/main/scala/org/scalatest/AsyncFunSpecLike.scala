@@ -19,9 +19,8 @@ import scala.collection.immutable.ListSet
 import words.BehaveWord
 import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalactic._
 
 /**
  * Implementation trait for class <code>AsyncFunSpec</code>, which
@@ -98,20 +97,20 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
   // TODO: Probably make this private final val sourceFileName in a singleton object so it gets compiled in rather than carried around in each instance
   private[scalatest] val sourceFileName = "FunSpecRegistering.scala"
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
   /**
@@ -160,14 +159,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+    def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-      engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
+      engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
     }
 
     /**
@@ -278,8 +277,8 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, sourceInfo, testTags: _*)
+    def apply(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.theyCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", 3, -2, None, None, pos, testTags: _*)
     }
 
     /**
@@ -362,14 +361,14 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+  protected def ignore(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnItOrAThey, sourceFileName, "ignore", stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
   /**
@@ -378,7 +377,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
-  protected def describe(description: String)(fun: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+  protected def describe(description: String)(fun: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val errorStackDepth = 4
@@ -388,13 +387,13 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
     //SCALATESTJS-ONLY val errorStackDepth = 11
     //SCALATESTJS-ONLY val duplicateErrorStackDepth = 10
     try {
-      registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", stackDepth, -2, None, sourceInfo)
+      registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, "describe", stackDepth, -2, None, pos)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(sourceInfo))
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(sourceInfo))
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(sourceInfo))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(sourceInfo))
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(pos))
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(pos))
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(pos))
       case other: Throwable => throw other
     }
   }
@@ -466,7 +465,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
-            val sourceInfo = testData.sourceInfo
+            val pos = testData.pos
           }
         ).underlying
       )

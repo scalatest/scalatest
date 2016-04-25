@@ -27,7 +27,7 @@ import org.testng.TestNG
 import org.testng.TestListenerAdapter
 import exceptions._
 import Suite.wrapReporterIfNecessary
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Implementation trait for class <code>TestNGSuite</code>, which represents
@@ -193,7 +193,7 @@ trait TestNGSuiteLike extends Suite { thisSuite =>
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty ++ suiteTags ++ testTags
-      val sourceInfo = None
+      val pos = None
     }
   }
 

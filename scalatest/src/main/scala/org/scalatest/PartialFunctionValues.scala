@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Trait that provides an implicit conversion that adds a <code>valueAt</code> method
@@ -106,12 +106,12 @@ trait PartialFunctionValues {
      * Returns the result of applying the wrapped <code>PartialFunction</code> to the passed input, if it is defined at that input, else
      * throws <code>TestFailedException</code> with a detail message indicating the <code>PartialFunction</code> was not defined at the given input.
      */
-    def valueAt(input: A)(implicit sourceInfo: SourceInfo): B = {
+    def valueAt(input: A)(implicit pos: source.Position): B = {
       if (pf.isDefinedAt(input)) {
         pf.apply(input)
       }
       else
-        throw new TestFailedException(sde => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, getStackDepthFun(sourceInfo))
+        throw new TestFailedException(sde => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, getStackDepthFun(pos))
     }
   }
 }

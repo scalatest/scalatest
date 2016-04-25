@@ -15,14 +15,13 @@
  */
 package org.scalatest.words
 
-import org.scalactic.source.SourceInfo
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.checkExpectedException
 import org.scalatest.Assertion
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -30,7 +29,7 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForAType[T](clazz: Class[T], prettifier: Prettifier, sourceInfo: SourceInfo) {
+final class ResultOfBeWordForAType[T](clazz: Class[T], prettifier: Prettifier, pos: source.Position) {
   
   /**
    * This method enables the following syntax: 
@@ -39,10 +38,10 @@ final class ResultOfBeWordForAType[T](clazz: Class[T], prettifier: Prettifier, s
    * a [RuntimeException] should be thrownBy { ... }
    *                                ^
    * </pre>
-   */
+   **/
   def thrownBy(fun: => Any): Assertion = {
     try {
-      checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, sourceInfo)
+      checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, pos)
       indicateSuccess(Resources.exceptionThrown(clazz.getName))
     }
     catch {

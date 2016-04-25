@@ -19,15 +19,15 @@ import org.scalatest._
 import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord, MustVerb,
 StringVerbBlockRegistration}
 import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions._
+import StackDepthExceptionHelper.getStackDepthFun
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import scala.concurrent.Future
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * Implementation trait for class <code>fixture.AsyncFreeSpec</code>, which is
@@ -102,20 +102,20 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerAsyncTest", 5, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerAsyncTest", 5, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
   /**
@@ -137,18 +137,18 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(sourceInfo: SourceInfo) {
+  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
+    engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(sourceInfo: SourceInfo) {
-    engine.registerAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, sourceInfo, testTags: _*)
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position) {
+    engine.registerAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, pos, testTags: _*)
   }
 
   /**
@@ -170,18 +170,18 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(sourceInfo: SourceInfo) {
+  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -7
-    engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(sourceInfo: SourceInfo) {
-    engine.registerIgnoredAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, sourceInfo, testTags: _*)
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position) {
+    engine.registerIgnoredAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, pos, testTags: _*)
   }
   /*
  private def registerBranch(description: String, childPrefix: Option[String], fun: () => Unit) {
@@ -224,8 +224,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerAsyncTestToRun(specText, tags, "in", testFun)(sourceInfo)
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerAsyncTestToRun(specText, tags, "in", testFun)(pos)
     }
 
     /**
@@ -246,8 +246,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))(sourceInfo)
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))(pos)
     }
 
     /**
@@ -268,8 +268,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)(pos)
     }
 
     /**
@@ -290,8 +290,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerAsyncTestToIgnore(specText, tags, "ignore", testFun)(sourceInfo)
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerAsyncTestToIgnore(specText, tags, "ignore", testFun)(pos)
     }
 
     /**
@@ -312,8 +312,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))(sourceInfo)
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))(pos)
     }
   }
 
@@ -342,7 +342,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
-    def - (fun: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+    def - (fun: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
 
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
@@ -350,14 +350,14 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
       //SCALATESTJS-ONLY val stackDepth = 5
 
       try {
-        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, sourceFileName, "-", stackDepth, -2, None, sourceInfo)
+        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, sourceFileName, "-", stackDepth, -2, None, pos)
       }
       catch {
-        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(sourceInfo))
-        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(sourceInfo))
-        case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), getStackDepthFun(sourceInfo))
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), getStackDepthFun(sourceInfo))
+        case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(pos))
+        case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(pos))
+        case tgce: TestRegistrationClosedException => throw tgce
+        case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), getStackDepthFun(pos))
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), getStackDepthFun(pos))
         case other: Throwable => throw other
       }
     }
@@ -380,8 +380,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerAsyncTestToRun(string, List(), "in", testFun)(sourceInfo)
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerAsyncTestToRun(string, List(), "in", testFun)(pos)
     }
 
     /**
@@ -402,8 +402,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))(sourceInfo)
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))(pos)
     }
 
     /**
@@ -424,8 +424,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)(pos)
     }
 
     /**
@@ -446,8 +446,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerAsyncTestToIgnore(string, List(), "ignore", testFun)(sourceInfo)
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerAsyncTestToIgnore(string, List(), "ignore", testFun)(pos)
     }
 
     /**
@@ -468,8 +468,8 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))(sourceInfo)
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))(pos)
     }
 
     /**
@@ -549,7 +549,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
-            val sourceInfo = testData.sourceInfo
+            val pos = testData.pos
           }
         ).underlying
       )

@@ -15,11 +15,10 @@
  */
 package org.scalatest.words
 
-import org.scalactic.source.SourceInfo
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -27,7 +26,7 @@ import org.scalactic.Prettifier
  *
  * @author Bill Venners
  */
-final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
+final class NoExceptionWord(prettifier: Prettifier, pos: source.Position) {
   
   /**
    * This method enables the following syntax: 
@@ -36,9 +35,9 @@ final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
    * noException should be thrownBy { ... }
    *             ^
    * </pre>
-   */
+   **/
   def should(beWord: BeWord): ResultOfBeWordForNoException = 
-    new ResultOfBeWordForNoException(prettifier, sourceInfo)
+    new ResultOfBeWordForNoException(prettifier, pos)
   
   /**
    * This method enables the following syntax: 
@@ -47,7 +46,7 @@ final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
    * noException shouldBe thrownBy { ... }
    *             ^
    * </pre>
-   */
+   **/
   def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
@@ -56,7 +55,7 @@ final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), sourceInfo)
+        indicateFailure(message, Some(u), pos)
       }
     }
   }
@@ -68,9 +67,9 @@ final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
    * noException must be thrownBy { ... }
    *             ^
    * </pre>
-   */
+   **/
   def must(beWord: BeWord): ResultOfBeWordForNoException =
-    new ResultOfBeWordForNoException(prettifier, sourceInfo)
+    new ResultOfBeWordForNoException(prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -79,7 +78,7 @@ final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
    * noException mustBe thrownBy { ... }
    *             ^
    * </pre>
-   */
+   **/
   def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
@@ -88,7 +87,7 @@ final class NoExceptionWord(prettifier: Prettifier, sourceInfo: SourceInfo) {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), sourceInfo)
+        indicateFailure(message, Some(u), pos)
       }
     }
   }

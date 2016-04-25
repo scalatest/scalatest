@@ -83,7 +83,7 @@ object MatchPatternHelper {
         else
           FailureMessages.matchedTheGivenPattern(resultOfNoWordForAny.prettifier, resultOfNoWordForAny.left),
         None,
-        resultOfNoWordForAny.sourceInfo
+        resultOfNoWordForAny.pos
       )
   }
 

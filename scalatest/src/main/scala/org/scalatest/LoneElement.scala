@@ -16,8 +16,7 @@
 package org.scalatest
 
 import enablers.Collecting
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 import exceptions.StackDepthException
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
@@ -113,7 +112,7 @@ trait LoneElement {
      *      ^
      * </pre>
      */
-    def loneElement(implicit prettifier: Prettifier, sourceInfo: SourceInfo): E = {
+    def loneElement(implicit prettifier: Prettifier, pos: source.Position): E = {
       collecting.loneElementOf(collection) match {
         case Some(ele) => ele
         case None =>
@@ -122,7 +121,7 @@ trait LoneElement {
                  collection,
                  collecting.sizeOf(collection))),
             None,
-            getStackDepthFun(sourceInfo)
+            getStackDepthFun(pos)
           )
       }
     }
@@ -160,7 +159,7 @@ trait LoneElement {
    */
   final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
 
-    def loneElement(implicit prettifier: Prettifier, sourceInfo: SourceInfo): org.scalatest.Entry[K, V] = {
+    def loneElement(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Entry[K, V] = {
       collecting.loneElementOf(jmap) match {
         case Some(ele) => ele
         case None =>
@@ -169,7 +168,7 @@ trait LoneElement {
                  jmap,
                  collecting.sizeOf(jmap))), 
             None,
-            getStackDepthFun(sourceInfo)
+            getStackDepthFun(pos)
           )
       }
     }
@@ -197,7 +196,7 @@ trait LoneElement {
    */
   final class LoneElementStringWrapper(s: String)(implicit collecting: Collecting[Char, String]) {
 
-    def loneElement(implicit prettifier: Prettifier, sourceInfo: SourceInfo): Char = {
+    def loneElement(implicit prettifier: Prettifier, pos: source.Position): Char = {
       if (s.length == 1)
         s.charAt(0)
       else
@@ -206,7 +205,7 @@ trait LoneElement {
             s,
             collecting.sizeOf(s))),
           None,
-          getStackDepthFun(sourceInfo)
+          getStackDepthFun(pos)
         )
     }
 

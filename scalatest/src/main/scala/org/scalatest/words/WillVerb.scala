@@ -16,8 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * Provides an implicit conversion that adds <code>will</code> methods to <code>String</code>
@@ -141,8 +140,8 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and right, and returns the result.
      * </p>
      */
-    def will(right: String)(implicit fun: (String, String, String, SourceInfo) => ResultOfStringPassedToVerb, sourceInfo: SourceInfo): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "will", right, sourceInfo)
+    def will(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb, pos: source.Position): ResultOfStringPassedToVerb = {
+      fun(leftSideString, "will", right, pos)
     }
 
     /**
@@ -164,8 +163,8 @@ private[scalatest] trait WillVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def will(right: BehaveWord)(implicit fun: (String, SourceInfo) => BehaveWord, sourceInfo: SourceInfo): BehaveWord = {
-      fun(leftSideString, sourceInfo)
+    def will(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord, pos: source.Position): BehaveWord = {
+      fun(leftSideString, pos)
     }
 
     /**
@@ -190,8 +189,8 @@ private[scalatest] trait WillVerb {
      * no-arg function.
      * </p>
      */
-    def will(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, sourceInfo: SourceInfo) {
-      fun(leftSideString, "will", prettifier, sourceInfo, right _)
+    def will(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, pos: source.Position) {
+      fun(leftSideString, "will", prettifier, pos, right _)
     }
 
     /**
@@ -217,8 +216,8 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>will</code>.
      * </p>
      */
-    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit, sourceInfo: SourceInfo) {
-      fun(leftSideString, "will", resultOfAfterWordApplication, sourceInfo)
+    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, source.Position) => Unit, pos: source.Position) {
+      fun(leftSideString, "will", resultOfAfterWordApplication, pos)
     }
   }
 

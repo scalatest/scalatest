@@ -18,7 +18,7 @@ package org.scalatest.fixture
 import org.scalatest._
 import scala.collection.immutable.ListSet
 import org.scalatest.Suite.autoTagClassAnnotations
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Implementation trait for class <code>fixture.PropSpec</code>, which is
@@ -93,40 +93,40 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(testName, Transformer(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
+      engine.registerTest(testName, Transformer(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-      engine.registerTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
+      engine.registerTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
   }
 
@@ -148,23 +148,23 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     new ResultOfPropertyInvocation(testName, testTags: _*)
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+      engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-      engine.registerIgnoredTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+      engine.registerIgnoredTest(testName, Transformer(new NoArgTestWrapper(testFun)), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
   }
 

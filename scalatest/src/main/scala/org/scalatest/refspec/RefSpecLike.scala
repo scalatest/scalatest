@@ -17,15 +17,15 @@ package org.scalatest.refspec
 
 import scala.collection.immutable.ListSet
 import org.scalatest._
+import org.scalatest.exceptions._
 import Suite._
 import RefSpec.isTestMethod
 import RefSpec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
-import org.scalactic.Requirements._
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
+import Requirements._
 
 /**
  * Implementation trait for class <code>RefSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -121,9 +121,9 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
                 registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation), None)
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
-                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
+                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
+                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
                 case other: Throwable => throw other
               }
             }
@@ -275,7 +275,7 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
           val scopes = testData.scopes
           val text = testData.text
           val tags = testData.tags
-          val sourceInfo = testData.sourceInfo
+          val pos = testData.pos
         }
       )
     }

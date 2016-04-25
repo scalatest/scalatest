@@ -17,9 +17,9 @@ package org.scalactic.source
 
 import scala.reflect.macros.Context
 
-object SourceMacro {
+object PositionMacro {
 
-  def genSourceInfo(context: Context) = {
+  def genPosition(context: Context) = {
     import context.universe._
 
     context.Expr(
@@ -36,7 +36,7 @@ object SourceMacro {
               ),
               newTermName("source")
             ),
-            newTermName("SourceInfo")
+            newTermName("Position")
           ),
           newTermName("apply")
         ),
@@ -49,7 +49,7 @@ object SourceMacro {
     )
   }
 
-  def genSourceInfoExplicit(context: Context) = {
+  def genPositionExplicit(context: Context) = {
     import context.universe._
 
     context.Expr(
@@ -66,7 +66,7 @@ object SourceMacro {
               ),
               newTermName("source")
             ),
-            newTermName("SourceInfo")
+            newTermName("Position")
           ),
           newTermName("apply")
         ),

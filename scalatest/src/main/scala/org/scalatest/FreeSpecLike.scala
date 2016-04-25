@@ -24,8 +24,7 @@ import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * Implementation trait for class <code>FreeSpec</code>, which 
@@ -98,20 +97,20 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerTest", 5, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -133,14 +132,14 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(sourceInfo: SourceInfo) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   /**
@@ -162,14 +161,14 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(sourceInfo: SourceInfo) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -200,8 +199,8 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(specText, tags, "in", testFun _)(sourceInfo)
+    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
+      registerTestToRun(specText, tags, "in", testFun _)(pos)
     }
 
     /**
@@ -220,8 +219,8 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(specText, tags, "is", () => { testFun; succeed })(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerTestToRun(specText, tags, "is", () => { testFun; succeed })(pos)
     }
 
     /**
@@ -240,8 +239,8 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(specText, tags, "ignore", testFun _)(sourceInfo)
+    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
+      registerTestToIgnore(specText, tags, "ignore", testFun _)(pos)
     }
   }       
 
@@ -252,7 +251,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    *
    * @author Bill Venners
    */
-  protected final class FreeSpecStringWrapper(string: String, prettifier: Prettifier, sourceInfo: SourceInfo) {
+  protected final class FreeSpecStringWrapper(string: String, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * Register some text that may surround one or more tests. Thepassed function value may contain surrounding text
@@ -268,14 +267,14 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
       //SCALATESTJS-ONLY val stackDepth = 5
 
       try {
-        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None, Some(sourceInfo))
+        registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, "FreeSpecLike.scala", "-", stackDepth, -2, None, Some(pos))
       }
       catch {
-        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(sourceInfo))
-        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(sourceInfo))
+        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(pos))
+        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(pos))
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), getStackDepthFun(sourceInfo))
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), getStackDepthFun(sourceInfo))
+        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), getStackDepthFun(pos))
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), getStackDepthFun(pos))
         case other: Throwable => throw other
       }
     }
@@ -296,8 +295,8 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(f: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(string, List(), "in", f _)(sourceInfo)
+    def in(f: => Any /* Assertion */)(implicit pos: source.Position) {
+      registerTestToRun(string, List(), "in", f _)(pos)
     }
 
     /**
@@ -316,8 +315,8 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(f: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(string, List(), "ignore", f _)(sourceInfo)
+    def ignore(f: => Any /* Assertion */)(implicit pos: source.Position) {
+      registerTestToIgnore(string, List(), "ignore", f _)(pos)
     }
 
     /**
@@ -336,8 +335,8 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(string, List(), "is", () => { f; succeed })(sourceInfo)
+    def is(f: => PendingStatement)(implicit pos: source.Position) {
+      registerTestToRun(string, List(), "is", () => { f; succeed })(pos)
     }
 
     /**
@@ -369,7 +368,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
    * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) = new FreeSpecStringWrapper(s, prettifier, sourceInfo)
+  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit prettifier: Prettifier, pos: source.Position) = new FreeSpecStringWrapper(s, prettifier, pos)
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
@@ -414,7 +413,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
           val scopes = testData.scopes
           val text = testData.text
           val tags = testData.tags
-          val sourceInfo = testData.sourceInfo
+          val pos = testData.pos
         }
       )
     }

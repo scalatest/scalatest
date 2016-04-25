@@ -33,12 +33,13 @@ import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalactic._
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
-import scala.concurrent.ExecutionContext
-import org.scalactic.source.SourceInfo
+
 
 import scala.util.{Failure, Success}
+import scala.concurrent.ExecutionContext
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -68,7 +69,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testText: String, // The last portion of the test name that showed up on an inner most nested level
     testFun: T, 
     location: Option[Location],
-    sourceInfo: Option[SourceInfo],
+    pos: Option[source.Position],
     recordedDuration: Option[Long] = None
   ) extends Node(Some(parent))
 
@@ -673,21 +674,21 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     }
   } */
 
-  // TODO: we can remove sourceFile, methodName, stackDepth if we're sure that sourceInfo is always available here.
-  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: SourceInfo) {
+  // TODO: we can remove sourceFile, methodName, stackDepth if we're sure that pos is always available here.
+  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: source.Position) {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceInfo))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(pos))
 
     val branchLocation = 
       location match {
         case Some(loc) => Some(loc)
         case None =>
           val stackTraceElements = Thread.currentThread().getStackTrace
-          getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, sourceInfo))
+          getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, pos))
       }
     
     val oldBranch = currentBranch
@@ -713,19 +714,19 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   }
 
   // Used by FlatSpec, which doesn't nest. So this one just makes a new one off of the trunk
-  // TODO: we can remove sourceFile, methodName, stackDepth if we're sure that sourceInfo is always available here.
-  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, sourceInfo: SourceInfo) {
+  // TODO: we can remove sourceFile, methodName, stackDepth if we're sure that pos is always available here.
+  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, pos: source.Position) {
 
     val oldBundle = atomic.get
     val (_, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceInfo))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(pos))
 
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
     val stackTraceElements = Thread.currentThread().getStackTrace
-    val newBranch = DescriptionBranch(Trunk, description, None, getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, sourceInfo)))
+    val newBranch = DescriptionBranch(Trunk, description, None, getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, pos)))
     Trunk.subNodes ::= newBranch
 
     // Update atomic, making the current branch to the new branch
@@ -740,13 +741,13 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   }
 
   // Path traits need to register the message recording informer, so it can fire any info events later
-  // TODO: we can remove sourceFile, methodName, stackDepth if we're sure that sourceInfo is always available here.
-  def registerAsyncTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], sourceInfo: SourceInfo, testTags: Tag*): String = { // returns testName
+  // TODO: we can remove sourceFile, methodName, stackDepth if we're sure that pos is always available here.
+  def registerAsyncTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], pos: source.Position, testTags: Tag*): String = { // returns testName
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceInfo))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(pos))
 //    throw new TestRegistrationClosedException(Resources.testCannotAppearInsideAnotherTest, getStackDepth(sourceFileName, "test"))
 
     val oldBundle = atomic.get
@@ -759,17 +760,17 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       val duplicateTestNameAdjustment = 0
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val duplicateTestNameAdjustment = -1
-      throw new DuplicateTestNameException(testName, getStackDepthFun(sourceInfo))
+      throw new DuplicateTestNameException(testName, getStackDepthFun(pos))
     }
     val testLocation = 
       location match {
         case Some(loc) => Some(loc)
         case None =>
           val stackTraceElements = Thread.currentThread().getStackTrace
-          getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, sourceInfo))
+          getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, pos))
       }
 
-    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, Some(sourceInfo), duration)
+    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, Some(pos), duration)
     testsMap += (testName -> testLeaf)
     testNamesList ::= testName
     currentBranch.subNodes ::= testLeaf
@@ -783,7 +784,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testName
   }
 
-  def registerIgnoredAsyncTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], sourceInfo: SourceInfo, testTags: Tag*) {
+  def registerIgnoredAsyncTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: source.Position, testTags: Tag*) {
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -791,7 +792,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 //    if (atomic.get.registrationClosed)
 //      throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideATest, getStackDepth(sourceFileName, "ignore"))
 
-    val testName = registerAsyncTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location, sourceInfo) // Call test without passing the tags
+    val testName = registerAsyncTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location, pos) // Call test without passing the tags
 
     val oldBundle = atomic.get
     var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -854,7 +855,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       val scopes = testScopes(testName)
       val text = testText(testName)
       val tags = testTags(testName, theSuite)
-      val sourceInfo = theTest.sourceInfo
+      val pos = theTest.pos
     }
   }
   

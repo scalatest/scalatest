@@ -24,7 +24,7 @@ import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Implementation trait for class <code>AsyncFlatSpec</code>, which facilitates a
@@ -110,20 +110,20 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
   /**
@@ -145,7 +145,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
+  private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -159,17 +159,17 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, sourceInfo, testTags: _*)
+    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement)(implicit sourceInfo: SourceInfo) {
+  private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement)(implicit pos: source.Position) {
     //def transformPendingToOutcomeParam: PendingStatement = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, 4, -3, None, None, sourceInfo, testTags: _*)
+    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, 4, -3, None, None, pos, testTags: _*)
   }
 
   /**
@@ -210,12 +210,12 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def of(description: String)(implicit sourceInfo: SourceInfo) {
+    def of(description: String)(implicit pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
-      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "of", stackDepth, 0, sourceInfo)
+      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "of", stackDepth, 0, pos)
     }
   }
 
@@ -295,8 +295,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)(sourceInfo)
+    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)(pos)
     }
 
     /**
@@ -317,8 +317,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)(pos)
     }
 
     /**
@@ -339,8 +339,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)(sourceInfo)
+    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)(pos)
     }
   }
 
@@ -407,8 +407,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)(sourceInfo)
+    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)(pos)
     }
 
     /**
@@ -428,8 +428,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)(pos)
     }
 
     /**
@@ -449,8 +449,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)(sourceInfo)
+    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)(pos)
     }
 
     /**
@@ -701,8 +701,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _)(sourceInfo)
+    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun _)(pos)
     }
 
     /**
@@ -731,8 +731,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _)(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", testFun _)(pos)
     }
     // Note: no def ignore here, so you can't put two ignores in the same line
   }
@@ -798,8 +798,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _)(sourceInfo)
+    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun _)(pos)
     }
 
     /**
@@ -827,8 +827,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _)(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", testFun _)(pos)
     }
 
     /**
@@ -1010,8 +1010,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)(sourceInfo)
+    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToRun(verb.trim + " " + name.trim, "in", tags, testFun _)(pos)
     }
 
     /**
@@ -1032,8 +1032,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", tags, testFun _)(pos)
     }
 
     /**
@@ -1054,8 +1054,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * the <a href="FlatSpec.html#taggingTests">Tagging tests section</a> in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)(sourceInfo)
+    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun _)(pos)
     }
   }
 
@@ -1122,8 +1122,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)(sourceInfo)
+    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToRun(verb.trim + " " + name.trim, "in", List(), testFun _)(pos)
     }
 
     /**
@@ -1143,8 +1143,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerPendingTestToRun(verb.trim + " " + name.trim, "is", List(), testFun _)(pos)
     }
 
     /**
@@ -1164,8 +1164,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)(sourceInfo)
+    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun _)(pos)
     }
 
     /**
@@ -1423,8 +1423,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _)(sourceInfo)
+    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToRun(verb.trim + " " + rest.trim, "in", List(), testFun _)(pos)
     }
 
     /**
@@ -1444,8 +1444,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _)(sourceInfo)
+    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun _)(pos)
     }
   }
 
@@ -1521,8 +1521,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def in(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _)(sourceInfo)
+    def in(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToRun(verb.trim + " " + rest.trim, "in", tagsList, testFun _)(pos)
     }
 
     /**
@@ -1544,8 +1544,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * in the main documentation for trait <code>FlatSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _)(sourceInfo)
+    def ignore(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+      registerTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun _)(pos)
     }
   }
 
@@ -1579,17 +1579,17 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * the function, respectively).
    * </p>
    */
-  protected implicit val shorthandTestRegistrationFunction: (String, String, String, SourceInfo) => ResultOfStringPassedToVerb = {
-    (subject, verb, rest, sourceInfo) => {
+  protected implicit val shorthandTestRegistrationFunction: (String, String, String, source.Position) => ResultOfStringPassedToVerb = {
+    (subject, verb, rest, pos) => {
       // SKIP-SCALATESTJS-START
       val stackDepth = 6
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 8
-      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", stackDepth, 0, sourceInfo)
+      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", stackDepth, 0, pos)
       new ResultOfStringPassedToVerb(verb, rest) {
 
-        def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-          registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _)(sourceInfo)
+        def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+          registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _)(pos)
         }
         // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
         // to say is (fixture => pending), rather just say is (pending)
@@ -1598,8 +1598,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
           new ResultOfTaggedAsInvocation(verb, rest, tagList) {
             // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
             //                                               ^
-            def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-              registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _)(sourceInfo)
+            def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+              registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _)(pos)
             }
           }
         }
@@ -1627,9 +1627,9 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * subject description (the  parameter to the function) and returns a <code>BehaveWord</code>.
    * </p>
    */
-  protected implicit val shorthandSharedTestRegistrationFunction: (String, SourceInfo) => BehaveWord = {
-    (left, sourceInfo) => {
-      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", 5, 0, sourceInfo)
+  protected implicit val shorthandSharedTestRegistrationFunction: (String, source.Position) => BehaveWord = {
+    (left, pos) => {
+      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", 5, 0, pos)
       new BehaveWord
     }
   }
@@ -1658,7 +1658,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion])(sourceInfo: SourceInfo) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion])(pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -1666,17 +1666,17 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
-    engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement)(sourceInfo: SourceInfo) {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement)(pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, sourceInfo, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
   /**
@@ -1723,7 +1723,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
             val scopes = testData.scopes
             val text = testData.text
             val tags = testData.tags
-            val sourceInfo = testData.sourceInfo
+            val pos = testData.pos
           }
         ).underlying
       )

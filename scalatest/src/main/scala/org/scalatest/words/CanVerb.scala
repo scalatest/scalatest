@@ -16,8 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * Provides an implicit conversion that adds <code>can</code> methods to <code>String</code>
@@ -116,8 +115,8 @@ trait CanVerb {
      * <code>"can"</code>, and right, and returns the result.
      * </p>
      */
-    def can(right: String)(implicit fun: (String, String, String, SourceInfo) => ResultOfStringPassedToVerb, sourceInfo: SourceInfo): ResultOfStringPassedToVerb = {
-      fun(left, "can", right, sourceInfo)
+    def can(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb, pos: source.Position): ResultOfStringPassedToVerb = {
+      fun(left, "can", right, pos)
     }
 
     /**
@@ -139,8 +138,8 @@ trait CanVerb {
      * simply invokes this function, passing in left, and returns the result.
      * </p>
      */
-    def can(right: BehaveWord)(implicit fun: (String, SourceInfo) => BehaveWord, sourceInfo: SourceInfo): BehaveWord = {
-      fun(left, sourceInfo)
+    def can(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord, pos: source.Position): BehaveWord = {
+      fun(left, pos)
     }
 
     /**
@@ -165,8 +164,8 @@ trait CanVerb {
      * no-arg function.
      * </p>
      */
-    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, sourceInfo: SourceInfo) {
-      fun(left, "can", prettifier, sourceInfo, right _)
+    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, pos: source.Position) {
+      fun(left, "can", prettifier, pos, right _)
     }
 
     /**
@@ -192,8 +191,8 @@ trait CanVerb {
      * <code>"can"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>can</code>.
      * </p>
      */
-    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, SourceInfo) => Unit, sourceInfo: SourceInfo) {
-      fun(left, "can", resultOfAfterWordApplication, sourceInfo)
+    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, source.Position) => Unit, pos: source.Position) {
+      fun(left, "can", resultOfAfterWordApplication, pos)
     }
   }
 

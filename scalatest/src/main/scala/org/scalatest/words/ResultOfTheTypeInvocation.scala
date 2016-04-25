@@ -15,8 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.checkExpectedException
 
@@ -26,7 +25,7 @@ import org.scalatest.MatchersHelper.checkExpectedException
  *
  * @author Bill Venners
  */
-final class ResultOfTheTypeInvocation[T](clazz: Class[T], prettifier: Prettifier, sourceInfo: SourceInfo) {
+final class ResultOfTheTypeInvocation[T](clazz: Class[T], prettifier: Prettifier, pos: source.Position) {
   
   /**
    * This method enables the following syntax: 
@@ -35,9 +34,9 @@ final class ResultOfTheTypeInvocation[T](clazz: Class[T], prettifier: Prettifier
    * val e = the [FileNotFoundException] thrownBy { ... }
    *                                     ^
    * </pre>
-   */
+   **/
   def thrownBy(fun: => Any): T = {
-    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, sourceInfo)
+    checkExpectedException(fun, clazz, Resources.wrongException _, Resources.exceptionExpected _, pos)
   }
   
   override def toString: String = "the [" + clazz.getName + "]"

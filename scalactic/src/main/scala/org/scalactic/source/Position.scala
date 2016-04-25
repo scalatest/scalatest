@@ -15,12 +15,12 @@
  */
 package org.scalactic.source
 
-case class SourceInfo(fileName: String, path: String, lineNumber: Int)
+case class Position(fileName: String, path: String, lineNumber: Int)
 
-object SourceInfo {
+object Position {
 
   import scala.language.experimental.macros
 
-  implicit def sourceInfo: SourceInfo = macro SourceMacro.genSourceInfo
+  implicit def here: Position = macro PositionMacro.genPosition
 
 }

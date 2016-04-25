@@ -19,8 +19,7 @@ import org.scalatest.exceptions.StackDepthException
 
 import scala.collection.JavaConverters._
 import org.scalatest.exceptions._
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
@@ -149,7 +148,7 @@ trait Checkpoints {
      * whose detail message lists the failure messages and line numbers from each of the
      * failed checkpoints.
      */
-    def reportAll()(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+    def reportAll()(implicit prettifier: Prettifier, pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 1
       // SKIP-SCALATESTJS-END
@@ -158,7 +157,7 @@ trait Checkpoints {
         val failMessages =
           for (failure <- failures.asScala)
           yield failure.getMessage + " " + Resources.atCheckpointAt + " " + getFailLine(failure)
-        throw new TestFailedException((sde: StackDepthException) => Some(failMessages.mkString("\n")), None, getStackDepthFun(sourceInfo))
+        throw new TestFailedException((sde: StackDepthException) => Some(failMessages.mkString("\n")), None, getStackDepthFun(pos))
       }
     }
   }

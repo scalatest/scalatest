@@ -34,7 +34,7 @@ import Suite.getIndentedTextForTest
 import org.scalatest.events._
 import exceptions._
 import Suite.wrapReporterIfNecessary
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * A <code>Suite</code> that is also a <code>junit.framework.TestCase</code>. 
@@ -278,7 +278,7 @@ class JUnit3Suite extends TestCase with Suite with AssertionsForJUnit { thisSuit
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty[String]
-      val sourceInfo = None
+      val pos = None
     }
 }
 

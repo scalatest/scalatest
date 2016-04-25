@@ -17,7 +17,7 @@ package org.scalatest
 
 import org.scalatest.OutcomeOf._
 import scala.concurrent.Future
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Trait declaring methods that can be used to register by-name test functions that
@@ -32,7 +32,7 @@ trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo)
+  def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position)
 
   /**
    * Registers an ignored test.
@@ -41,5 +41,5 @@ trait AsyncTestRegistration { theSuite: AsyncTestSuite =>
    * @param testTags the test tags
    * @param testFun the test function
    */
-  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit sourceInfo: SourceInfo)
+  def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position)
 }

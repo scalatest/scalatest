@@ -21,7 +21,7 @@ import Inside._
 import OptionValues._
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 class InsideMixinSpec extends FunSpec {
 
@@ -96,7 +96,7 @@ class InsideMixinSpec extends FunSpec {
       //SCALATESTJS-ONLY val stackDepth = 8
       val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, address, age) =>
-          throw new TestFailedException(sde => None, None, getStackDepthFun(SourceInfo.sourceInfo))
+          throw new TestFailedException(sde => None, None, getStackDepthFun(source.Position.here))
         }
       }
       caught.message.value should be (Resources.insidePartialFunctionAppendNone("", rec))
@@ -112,7 +112,7 @@ class InsideMixinSpec extends FunSpec {
       val caught = the [TestFailedException] thrownBy {
         inside (rec) { case Record(name, _, _) =>
           inside (name) { case Name(first, _, _) =>
-            throw new TestFailedException(sde => None, None, getStackDepthFun(SourceInfo.sourceInfo))
+            throw new TestFailedException(sde => None, None, getStackDepthFun(source.Position.here))
           }
         }
       }

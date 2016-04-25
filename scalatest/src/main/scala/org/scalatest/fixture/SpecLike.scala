@@ -18,13 +18,13 @@ package org.scalatest.fixture
 import scala.collection.immutable.ListSet
 import org.scalatest.Suite.{IgnoreTagName, autoTagClassAnnotations}
 import org.scalatest._
+import org.scalatest.exceptions._
 import Spec._
 import Suite._
 import org.scalatest.events.{TopOfClass, TopOfMethod}
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * <strong>Trait <code>fixture.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use
@@ -130,10 +130,10 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
                 registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation), None)
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
-                case dtne: exceptions.DuplicateTestNameException => throw dtne
-                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
+                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
+                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e => 8)
+                case dtne: DuplicateTestNameException => throw dtne
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), e => 8)
                 case other: Throwable => throw other
               }
             }
@@ -303,7 +303,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
           val scopes = testData.scopes
           val text = testData.text
           val tags = testData.tags
-          val sourceInfo = testData.sourceInfo
+          val pos = testData.pos
         }
         //new TestFunAndConfigMap(testName, theTest.testFun, theConfigMap)
       )

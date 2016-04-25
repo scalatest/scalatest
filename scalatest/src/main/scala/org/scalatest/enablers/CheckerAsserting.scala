@@ -15,7 +15,6 @@
  */
 package org.scalatest.enablers
 
-import org.scalactic.source.SourceInfo
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
 import org.scalatest.Resources
@@ -30,11 +29,11 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.StackDepthException
-import org.scalactic.Prettifier
+import org.scalactic._
 
 trait CheckerAsserting[T] {
   type Result
-  def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, sourceInfo: SourceInfo, argNames: Option[List[String]] = None): Result
+  def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result
 }
 
 abstract class UnitCheckerAsserting {
@@ -43,7 +42,7 @@ abstract class UnitCheckerAsserting {
 
     import CheckerAsserting._
 
-    def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, sourceInfo: SourceInfo, argNames: Option[List[String]] = None): Result = {
+    def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
 
       val result = Test.check(prms, p)
       if (!result.passed) {
@@ -66,7 +65,7 @@ abstract class UnitCheckerAsserting {
               args,
               labels,
               None,
-              getStackDepthFun(sourceInfo)
+              getStackDepthFun(pos)
             )
 
           case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
@@ -92,7 +91,7 @@ abstract class UnitCheckerAsserting {
               scalaCheckArgs,
               scalaCheckLabels.toList,
               None,
-              getStackDepthFun(sourceInfo)
+              getStackDepthFun(pos)
             )
 
           case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
@@ -115,7 +114,7 @@ abstract class UnitCheckerAsserting {
               scalaCheckArgs,
               scalaCheckLabels.toList,
               Some(e),
-              getStackDepthFun(sourceInfo)
+              getStackDepthFun(pos)
             )
         }
       } else indicateSuccess(FailureMessages.propertyCheckSucceeded)

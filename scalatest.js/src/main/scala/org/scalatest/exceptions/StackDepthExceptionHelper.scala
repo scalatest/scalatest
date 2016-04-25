@@ -15,7 +15,7 @@
  */
 package org.scalatest.exceptions
 
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 private[scalatest] object StackDepthExceptionHelper {
 
@@ -43,13 +43,13 @@ private[scalatest] object StackDepthExceptionHelper {
     getStackDepth(sde.getStackTrace, fileName, methodName, adjustment)
   }
 
-  def getStackDepth(stackTrace: Array[StackTraceElement], sourceInfo: SourceInfo): Int = {
-    val idx = stackTrace.indexWhere (e => Option(e.getFileName).map(retrieveFileName) == Some(sourceInfo.fileName) && e.getLineNumber == sourceInfo.lineNumber)
+  def getStackDepth(stackTrace: Array[StackTraceElement], pos: source.Position): Int = {
+    val idx = stackTrace.indexWhere (e => Option(e.getFileName).map(retrieveFileName) == Some(pos.fileName) && e.getLineNumber == pos.lineNumber)
     if (idx >= 0)
       idx
     else {
       // Let's find the nearest for now, we could do better when we have SourceInfo into StackDepthException directly
-      val firstFileNameIdx = stackTrace.indexWhere(e => Option(e.getFileName).map(retrieveFileName) == Some(sourceInfo.fileName))
+      val firstFileNameIdx = stackTrace.indexWhere(e => Option(e.getFileName).map(retrieveFileName) == Some(pos.fileName))
       if (firstFileNameIdx >= 0)
         firstFileNameIdx
       else
@@ -57,8 +57,8 @@ private[scalatest] object StackDepthExceptionHelper {
     }
   }
 
-  def getStackDepthFun(sourceInfo: SourceInfo): (StackDepthException => Int) = { sde =>
-    getStackDepth(sde.getStackTrace, sourceInfo)
+  def getStackDepthFun(pos: source.Position): (StackDepthException => Int) = { sde =>
+    getStackDepth(sde.getStackTrace, pos)
   }
 
   def retrieveFileName(fileName: String): String = {

@@ -24,8 +24,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
 
 // For now, hard coding a size of 10. Later will need to do the size based on config
 private[prop] trait GeneratorChecks extends Configuration with Whenever {
@@ -37,7 +36,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
         config: PropertyCheckConfiguration,
         genA: org.scalatest.prop.Generator[A],
         prettifier: Prettifier,
-        sourceInfo: SourceInfo
+        pos: source.Position
       ): Unit = {
     val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
@@ -81,7 +80,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
               "  )" +
               "", // getLabelDisplay(scalaCheckLabels),
             Some(ex),
-            getStackDepthFun(sourceInfo),
+            getStackDepthFun(pos),
             None,
             FailureMessages.propertyFailed(prettifier, succeededCount),
             argsPassed,

@@ -16,7 +16,7 @@
 package org.scalatest.words
 
 import org.scalatest._
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Supports the registration of tagged tests in shorthand form in <code>FlatSpec</code>
@@ -80,5 +80,5 @@ abstract class ResultOfTaggedAsInvocation(val verb: String, val rest: String, va
    * in the main documentation for trait <code>FlatSpec</code>.
    * </p>
    */
-  def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo)
+  def is(testFun: => PendingStatement)(implicit pos: source.Position)
 }

@@ -17,15 +17,14 @@ package org.scalatest.words
 
 import org.scalatest._
 import Matchers._
-import org.scalactic.Prettifier
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 class ResultOfTheTypeInvocationSpec extends FunSpec {
   
   describe("ResultOfTheTypeInvocation ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfTheTypeInvocation(classOf[FunSpec], Prettifier.default, SourceInfo.sourceInfo)
+      val result = new ResultOfTheTypeInvocation(classOf[FunSpec], Prettifier.default, source.Position.here)
       result.toString should be ("the [org.scalatest.FunSpec]")
     }
   }

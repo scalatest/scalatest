@@ -15,7 +15,7 @@
  */
 package org.scalatest.words
 
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 import org.scalatest._
 
 /**
@@ -87,7 +87,7 @@ abstract class ResultOfStringPassedToVerb(val verb: String, val rest: String) {
    * for trait <code>FlatSpec</code>.
    * </p>
    */
-  def is(fun: => PendingStatement)(implicit sourceInfo: SourceInfo)
+  def is(fun: => PendingStatement)(implicit pos: source.Position)
 
   /**
    * Supports the registration of tagged tests in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.

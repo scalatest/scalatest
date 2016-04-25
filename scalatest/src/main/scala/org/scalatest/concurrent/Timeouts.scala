@@ -27,7 +27,7 @@ import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
 import org.scalatest.exceptions.TestCanceledException
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
@@ -242,13 +242,13 @@ trait Timeouts {
    * @param fun the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Interruptor, sourceInfo: SourceInfo = implicitly[SourceInfo]): T = {
+  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Interruptor, pos: source.Position = implicitly[source.Position]): T = {
     timeoutAfter(
       timeout,
       fun,
       interruptor,
       t => new TestFailedDueToTimeoutException(
-        sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)), t, getStackDepthFun(sourceInfo), None, timeout
+        sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)), t, getStackDepthFun(pos), None, timeout
       )
     )
   }
@@ -288,8 +288,8 @@ trait Timeouts {
    * @param f the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor, sourceInfo: SourceInfo = implicitly[SourceInfo]): T = {
-    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)), t, getStackDepthFun(sourceInfo), None))
+  def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor, pos: source.Position = implicitly[source.Position]): T = {
+    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException(sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)), t, getStackDepthFun(pos), None))
   }
 
   /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {

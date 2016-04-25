@@ -18,15 +18,14 @@ package org.scalatest
 import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
   MustVerb, StringVerbBlockRegistration}
 import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalatest.exceptions.TestRegistrationClosedException
+import org.scalatest.exceptions._
+import StackDepthExceptionHelper.getStackDepthFun
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalactic._
 
 /**
  * Implementation trait for class <code>WordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -93,20 +92,20 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
+    engine.registerTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+    engine.registerIgnoredTest(testText, Transformer(testFun _), Resources.testCannotBeNestedInsideAnotherTest, "WordSpecLike.scala", "registerIgnoredTest", 4, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   /**
@@ -128,14 +127,14 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, Some(sourceInfo), None, testTags: _*)
+    engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
   /**
@@ -157,14 +156,14 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+    engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, "WordSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
   private def exceptionWasThrownInClauseMessageFun(verb: String, className: UnquotedString, description: String, errorMessage: String, prettifier: Prettifier): String =
@@ -177,7 +176,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       case "can" => FailureMessages.exceptionWasThrownInCanClause(prettifier, className, description, errorMessage)
     }
 
-  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, prettifier: Prettifier, sourceInfo: SourceInfo, fun: () => Unit) {
+  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName:String, stackDepth: Int, adjustment: Int, prettifier: Prettifier, pos: source.Position, fun: () => Unit) {
 
     def registrationClosedMessageFun: String =
       verb match {
@@ -190,20 +189,20 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       }
 
     try {
-      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "WordSpecLike.scala", methodName, stackDepth, adjustment, None, Some(sourceInfo))
+      registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, "WordSpecLike.scala", methodName, stackDepth, adjustment, None, Some(pos))
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), getStackDepthFun(sourceInfo))
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), getStackDepthFun(sourceInfo))
-      case nae: exceptions.NotAllowedException => throw nae
+      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), getStackDepthFun(pos))
+      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), getStackDepthFun(pos))
+      case nae: NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage, prettifier), Some(e), getStackDepthFun(sourceInfo))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage, prettifier), Some(other), getStackDepthFun(sourceInfo))
+      case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage, prettifier), Some(e), getStackDepthFun(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage, prettifier), Some(other), getStackDepthFun(pos))
       case other: Throwable => throw other
     }
   }
   
-  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessage: => String, methodName:String, stackDepth: Int, adjustment: Int, prettifier: Prettifier, sourceInfo: SourceInfo, fun: () => Unit) {
+  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessage: => String, methodName:String, stackDepth: Int, adjustment: Int, prettifier: Prettifier, pos: source.Position, fun: () => Unit) {
 
     // Shorthand syntax only allow at top level, and only after "..." when, "..." should/can/must, or it should/can/must
     if (engine.currentBranchIsTrunk) {
@@ -224,27 +223,27 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
                   case "can" => Resources.canCannotAppearInsideAnIn
                 }
               try {
-                registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecLike.scala", methodName, stackDepth, adjustment, None, Some(sourceInfo))
+                registerNestedBranch(descriptionText, childPrefix, fun(), registrationClosedMessageFun, "WordSpecLike.scala", methodName, stackDepth, adjustment, None, Some(pos))
               }
               catch {
-                case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), getStackDepthFun(sourceInfo))
-                case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), getStackDepthFun(sourceInfo))
-                case nae: exceptions.NotAllowedException => throw nae
+                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), getStackDepthFun(pos))
+                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), getStackDepthFun(pos))
+                case nae: NotAllowedException => throw nae
                 case trce: TestRegistrationClosedException => throw trce
-                case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage, prettifier), Some(e), getStackDepthFun(sourceInfo))
-                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(other.getClass.getName), if (descriptionText.endsWith(" " + methodName)) descriptionText.substring(0, descriptionText.length - (" " + methodName).length) else descriptionText, other.getMessage, prettifier), Some(other), getStackDepthFun(sourceInfo))
+                case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage, prettifier), Some(e), getStackDepthFun(pos))
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(other.getClass.getName), if (descriptionText.endsWith(" " + methodName)) descriptionText.substring(0, descriptionText.length - (" " + methodName).length) else descriptionText, other.getMessage, prettifier), Some(other), getStackDepthFun(pos))
                 case other: Throwable => throw other
               }
 
             case _ => 
-              throw new exceptions.NotAllowedException(notAllowMessage, None, getStackDepthFun(sourceInfo))
+              throw new NotAllowedException(notAllowMessage, None, getStackDepthFun(pos))
           }
         case None => 
-          throw new exceptions.NotAllowedException(notAllowMessage, None, getStackDepthFun(sourceInfo))
+          throw new NotAllowedException(notAllowMessage, None, getStackDepthFun(pos))
       }
     }
     else
-      throw new exceptions.NotAllowedException(notAllowMessage, None, getStackDepthFun(sourceInfo))
+      throw new NotAllowedException(notAllowMessage, None, getStackDepthFun(pos))
   }
 
   /**
@@ -275,8 +274,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(specText, tags, "in", testFun _)(sourceInfo)
+    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
+      registerTestToRun(specText, tags, "in", testFun _)(pos)
     }
 
     /**
@@ -295,8 +294,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(specText, tags, "is", () => { testFun; succeed })(sourceInfo)
+    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+      registerTestToRun(specText, tags, "is", () => { testFun; succeed })(pos)
     }
 
     /**
@@ -315,8 +314,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(specText, tags, "ignore", testFun _)(sourceInfo)
+    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
+      registerTestToIgnore(specText, tags, "ignore", testFun _)(pos)
     }
   }       
 
@@ -353,8 +352,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def in(f: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(string, List(), "in", f _)(sourceInfo)
+    def in(f: => Any /* Assertion */)(implicit pos: source.Position) {
+      registerTestToRun(string, List(), "in", f _)(pos)
     }
 
     /**
@@ -373,8 +372,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def ignore(f: => Any /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      registerTestToIgnore(string, List(), "ignore", f _)(sourceInfo)
+    def ignore(f: => Any /* Assertion */)(implicit pos: source.Position) {
+      registerTestToIgnore(string, List(), "ignore", f _)(pos)
     }
 
     /**
@@ -393,8 +392,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def is(f: => PendingStatement)(implicit sourceInfo: SourceInfo) {
-      registerTestToRun(string, List(), "is", () => { f; succeed })(sourceInfo)
+    def is(f: => PendingStatement)(implicit pos: source.Position) {
+      registerTestToRun(string, List(), "is", () => { f; succeed })(pos)
     }
 
     /**
@@ -434,12 +433,12 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def when(f: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+    def when(f: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string, Some("when"), "when", "when", stackDepth, -2, prettifier, sourceInfo, f _)
+      registerBranch(string, Some("when"), "when", "when", stackDepth, -2, prettifier, pos, f _)
     }
 
     /**
@@ -460,8 +459,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, prettifier, sourceInfo, resultOfAfterWordApplication.f)
+    def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, prettifier, pos, resultOfAfterWordApplication.f)
     }
 
     /**
@@ -480,12 +479,12 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def that(f: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+    def that(f: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, prettifier, sourceInfo, f _)
+      registerBranch(string.trim + " that", None, "that", "that", stackDepth, -2, prettifier, pos, f _)
     }
 
     /**
@@ -504,12 +503,12 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def which(f: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+    def which(f: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 6
-      registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, prettifier, sourceInfo, f _)
+      registerBranch(string.trim + " which", None, "which", "which", stackDepth, -2, prettifier, pos, f _)
     }
 
     /**
@@ -530,8 +529,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, prettifier, sourceInfo, resultOfAfterWordApplication.f)
+    def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, prettifier, pos, resultOfAfterWordApplication.f)
     }
     
     /**
@@ -552,8 +551,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * For more information and examples of this method's use, see the <a href="WordSpec.html">main documentation</a> for trait <code>WordSpec</code>.
      * </p>
      */
-    def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, prettifier, sourceInfo, resultOfAfterWordApplication.f)
+    def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, prettifier, pos, resultOfAfterWordApplication.f)
     }
   }
 
@@ -716,8 +715,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for <code>WordSpec</code>.
      * </p>
      */
-    def should(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, prettifier, sourceInfo, right _)
+    def should(right: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, prettifier, pos, right _)
     }
     
     /**
@@ -739,8 +738,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for <code>WordSpec</code>.
      * </p>
      */
-    def must(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, prettifier, sourceInfo, right _)
+    def must(right: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, prettifier, pos, right _)
     }
     
     /**
@@ -762,8 +761,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for <code>WordSpec</code>.
      * </p>
      */
-    def can(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, prettifier, sourceInfo, right _)
+    def can(right: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, prettifier, pos, right _)
     }
     
     /**
@@ -785,8 +784,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for <code>WordSpec</code>.
      * </p>
      */
-    def when(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, prettifier, sourceInfo, right _)
+    def when(right: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, prettifier, pos, right _)
     }
   }
   
@@ -851,8 +850,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for <code>WordSpec</code>.
      * </p>
      */
-    def should(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, prettifier, sourceInfo, right _)
+    def should(right: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, prettifier, pos, right _)
     }
     
     /**
@@ -874,8 +873,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for <code>WordSpec</code>.
      * </p>
      */
-    def must(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, prettifier, sourceInfo, right _)
+    def must(right: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, prettifier, pos, right _)
     }
     
     /**
@@ -897,8 +896,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for <code>WordSpec</code>.
      * </p>
      */
-    def can(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, prettifier, sourceInfo, right _)
+    def can(right: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, prettifier, pos, right _)
     }
     
     /**
@@ -920,8 +919,8 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * for <code>WordSpec</code>.
      * </p>
      */
-    def when(right: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
-      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, prettifier, sourceInfo, right _)
+    def when(right: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+      registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, prettifier, pos, right _)
     }
   }
   
@@ -997,7 +996,7 @@ one error found
    */
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
-      def apply(left: String, verb: String, prettifier: Prettifier, sourceInfo: SourceInfo, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, prettifier, sourceInfo, f)
+      def apply(left: String, verb: String, prettifier: Prettifier, pos: source.Position, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, prettifier, pos, f)
     }
 
   /**
@@ -1022,21 +1021,21 @@ one error found
    * subject and executes the block.
    * </p>
    */
-  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication, Prettifier, SourceInfo) => Unit = {
-    (left, verb, resultOfAfterWordApplication, prettifier, sourceInfo) => {
+  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit = {
+    (left, verb, resultOfAfterWordApplication, prettifier, pos) => {
       val afterWordFunction =
         () => {
           // SKIP-SCALATESTJS-START
           val stackDepth = 10
           // SKIP-SCALATESTJS-END
           //SCALATESTJS-ONLY val stackDepth = 15
-          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, prettifier, sourceInfo, resultOfAfterWordApplication.f)
+          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, prettifier, pos, resultOfAfterWordApplication.f)
         }
       // SKIP-SCALATESTJS-START
       val stackDepth = 7
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 9
-      registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, prettifier, sourceInfo, afterWordFunction)
+      registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, prettifier, pos, afterWordFunction)
     }
   }
 
@@ -1083,7 +1082,7 @@ one error found
           val scopes = testData.scopes
           val text = testData.text
           val tags = testData.tags
-          val sourceInfo = testData.sourceInfo
+          val pos = testData.pos
         }
       )
     }

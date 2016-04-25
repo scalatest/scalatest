@@ -19,10 +19,10 @@ import org.scalatest.words.BehaveWord
 import scala.collection.immutable.ListSet
 import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest._
-import org.scalatest.Suite.autoTagClassAnnotations
-import org.scalactic.source.SourceInfo
-import org.scalactic.Prettifier
+import org.scalatest.exceptions._
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import Suite.autoTagClassAnnotations
+import org.scalactic._
 
 /**
  * Implementation trait for class <code>path.FunSpec</code>, which is
@@ -146,14 +146,14 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
+    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val stackDepth = 5
       //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.itCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
     
     /**
@@ -264,8 +264,8 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
-      handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, Some(sourceInfo), testTags: _*)
+    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position) {
+      handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*)
     }
  
     /**
@@ -349,7 +349,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit sourceInfo: SourceInfo) {
+  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -357,7 +357,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
     // Might not actually register it. Only will register it if it is its turn.
-    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(sourceInfo), testTags: _*)
+    handleIgnoredTest(testText, Transformer(testFun _), Resources.ignoreCannotAppearInsideAnItOrAThey, "FunSpecLike.scala", "ignore", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
   
   /**
@@ -373,20 +373,20 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <code>org.scalatest.path.FunSpec</code>.
    * </p>
    */
-  protected def describe(description: String)(fun: => Unit)(implicit prettifier: Prettifier, sourceInfo: SourceInfo) {
+  protected def describe(description: String)(fun: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
 
     try {
-      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None, Some(sourceInfo))
+      handleNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, "FunSpecLike.scala", "describe", stackDepth, -2, None, Some(pos))
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(sourceInfo))
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(sourceInfo))
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(sourceInfo))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(sourceInfo))
+      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(pos))
+      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(pos))
+      case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(pos))
       case other: Throwable => throw other
     }
   }

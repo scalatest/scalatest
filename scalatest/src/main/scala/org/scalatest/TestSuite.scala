@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * The base trait of ScalaTest's <em>synchronous testing styles</em>, which defines a 
@@ -163,7 +163,7 @@ trait TestSuite extends Suite { thisTestSuite =>
         val scopes: collection.immutable.IndexedSeq[String] = test.scopes
         val name: String = test.name
         val tags: Set[String] = test.tags
-        val sourceInfo: Option[SourceInfo] = test.sourceInfo
+        val pos: Option[source.Position] = test.pos
       }
     }
   }

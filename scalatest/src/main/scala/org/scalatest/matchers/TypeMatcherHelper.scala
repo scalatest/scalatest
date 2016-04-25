@@ -126,7 +126,7 @@ object TypeMatcherHelper {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, aType.sourceInfo)
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, aType.pos)
     }
     org.scalatest.Succeeded
   }
@@ -158,7 +158,7 @@ object TypeMatcherHelper {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, anType.sourceInfo)
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, anType.pos)
     }
     org.scalatest.Succeeded
   }
@@ -195,7 +195,7 @@ object TypeMatcherHelper {
         else
           FailureMessages.wasAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName)),
         None,
-        aType.sourceInfo
+        aType.pos
       )
     } else org.scalatest.Succeeded
   }
@@ -244,7 +244,7 @@ object TypeMatcherHelper {
         else
           FailureMessages.wasAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName)),
         None,
-        anType.sourceInfo
+        anType.pos
       )
     } else org.scalatest.Succeeded
   }

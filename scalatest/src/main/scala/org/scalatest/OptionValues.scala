@@ -18,7 +18,7 @@ package org.scalatest
 import java.util.NoSuchElementException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic.source.SourceInfo
+import org.scalactic._
 
 /**
  * Trait that provides an implicit conversion that adds a <code>value</code> method
@@ -105,13 +105,13 @@ trait OptionValues {
      * Returns the value contained in the wrapped <code>Option</code>, if defined, else throws <code>TestFailedException</code> with
      * a detail message indicating the option was not defined.
      */
-    def value(implicit sourceInfo: SourceInfo): T = {
+    def value(implicit pos: source.Position): T = {
       try {
         opt.get
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.optionValueNotDefined), Some(cause), getStackDepthFun(sourceInfo))
+          throw new TestFailedException(sde => Some(Resources.optionValueNotDefined), Some(cause), getStackDepthFun(pos))
       }
     }
   }
