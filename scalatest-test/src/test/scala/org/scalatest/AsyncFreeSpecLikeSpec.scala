@@ -20,10 +20,13 @@ import scala.concurrent.{Promise, ExecutionContext, Future}
 import org.scalatest.concurrent.SleepHelper
 import org.scalatest.events.{InfoProvided, MarkupProvided}
 import org.scalatest.exceptions.{DuplicateTestNameException, NotAllowedException}
+import org.scalactic.Prettifier
 
 import scala.util.Success
 
 class AsyncFreeSpecLikeSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("AsyncFreeSpecLike") {
 
@@ -859,11 +862,11 @@ class AsyncFreeSpecLikeSpec extends FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("a feature test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))
     }
 
   }

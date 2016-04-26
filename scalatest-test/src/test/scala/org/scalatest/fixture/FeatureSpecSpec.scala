@@ -31,8 +31,11 @@ import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.Prettifier
 
 class FeatureSpecSpec extends org.scalatest.FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("A fixture.FeatureSpec") {
     it("should return the test names in order of registration from testNames") {
@@ -1607,7 +1610,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         new TestSpec
       }
       assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
       assert(e.cause.isDefined)
@@ -1616,7 +1619,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("FeatureSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
@@ -1632,7 +1635,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         new TestSpec
       }
       assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause))
 
       assert(e.cause.isDefined)
@@ -1641,7 +1644,7 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("FeatureSpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 15)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
@@ -1656,10 +1659,10 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
         new TestSpec
       }
       assert("FeatureSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 8)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", "on purpose")))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]
@@ -1682,11 +1685,11 @@ class FeatureSpecSpec extends org.scalatest.FunSpec {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(UnquotedString("Feature: a feature Scenario: test 1")))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInFeatureClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("Feature: a feature Scenario: test 1")))))
 
       assert(causeThrowable.isInstanceOf[DuplicateTestNameException])
       val cause = causeThrowable.asInstanceOf[DuplicateTestNameException]
-      assert(cause.getMessage == FailureMessages.duplicateTestName(UnquotedString("Feature: a feature Scenario: test 1")))
+      assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("Feature: a feature Scenario: test 1")))
     }
 
     // SKIP-SCALATESTJS-START

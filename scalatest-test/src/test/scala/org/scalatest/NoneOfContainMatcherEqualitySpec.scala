@@ -17,11 +17,14 @@ package org.scalatest
 
 import org.scalactic.Equality
 import org.scalactic.Explicitly
+import org.scalactic.Prettifier
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
 class NoneOfContainMatcherEqualitySpec extends FunSpec with Explicitly {
+
+  private val prettifier = Prettifier.default
 
   class TrimEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -81,15 +84,15 @@ class NoneOfContainMatcherEqualitySpec extends FunSpec with Explicitly {
   describe("noneOf ") {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages.containedAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))))
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(FailureMessages.containedAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(left, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))))
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(FailureMessages.didNotContainAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))))
       e.failedCodeFileName should be (Some("NoneOfContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

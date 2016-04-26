@@ -128,6 +128,11 @@ trait Prettifier extends (Any => String)
  */
 object Prettifier {
 
+  def apply(fun: PartialFunction[Any, String]): Prettifier =
+    new Prettifier {
+      def apply(o: Any): String = fun(o)
+    }
+
   /**
    * A default <code>Prettifier</code>. 
    *
@@ -163,7 +168,7 @@ object Prettifier {
    * For anything else, it returns the result of invoking <code>toString</code>.
    * </p>
    */
-  val default: Prettifier =
+  implicit val default: Prettifier =
     new Prettifier {
       def apply(o: Any): String = {
         try {

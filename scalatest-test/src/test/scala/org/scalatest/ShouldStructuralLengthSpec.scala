@@ -23,20 +23,23 @@ import Arbitrary._
 import Prop._
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldStructuralLengthSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+
+  private val prettifier = Prettifier.default
   
   def hadLengthInsteadOfExpectedLength(left: Any, leftLength: Long, expectedLength: Long): String = 
-    FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, expectedLength)
+    FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, leftLength, expectedLength)
     
   def hadLength(left: Any, expectedLength: Int): String = 
-    FailureMessages.hadLength(left, expectedLength)
+    FailureMessages.hadLength(prettifier, left, expectedLength)
     
   def commaAnd(left: String, right: String): String = 
-    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(prettifier, UnquotedString(left), UnquotedString(right))
   
   def commaBut(left: String, right: String): String = 
-    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(prettifier, UnquotedString(left), UnquotedString(right))
     
   describe("The 'have length (Int)' syntax ") {
     

@@ -90,7 +90,7 @@ final class BeWord {
    * result should not (be &lt; (7))
    *                       ^
    * </pre>
-   */
+   **/
   def <[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
@@ -129,7 +129,7 @@ final class BeWord {
    * result should not (be &gt; (7))
    *                       ^
    * </pre>
-   */
+   **/
   def >[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
@@ -168,7 +168,7 @@ final class BeWord {
    * result should not (be &lt;= (7))
    *                       ^
    * </pre>
-   */
+   **/
   def <=[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
@@ -207,7 +207,7 @@ final class BeWord {
    * result should not (be &gt;= (7))
    *                       ^
    * </pre>
-   */
+   **/
   def >=[T : Ordering](right: T): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
@@ -235,9 +235,9 @@ final class BeWord {
    * </p>
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
-  def ===(right: Any): Matcher[Any] = {
+  def ===(right: Any)(implicit prettifier: Prettifier, pos: source.Position): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
-                                  getStackDepthFun("BeWord.scala", "$eq$eq$eq"))
+                                  getStackDepthFun(pos))
   }
 
   // SKIP-SCALATESTJS-START
@@ -248,11 +248,11 @@ final class BeWord {
    * fileMock should not { be a ('file) }
    *                          ^
    * </pre>
-   */
-  def a(right: Symbol): Matcher[AnyRef] =
+   **/
+  def a(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
-      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true)
-      override def toString: String = "be a " + Prettifier.default(right)
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, true, prettifier, pos)
+      override def toString: String = "be a " + prettifier(right)
     }
   // SKIP-SCALATESTJS-END
 
@@ -264,7 +264,7 @@ final class BeWord {
    * fileMock should not { be a (file) }
    *                          ^
    * </pre>
-   */
+   **/
   def a[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = {
@@ -286,7 +286,7 @@ final class BeWord {
    * 8 should not { be a (negativeNumber) }
    *                   ^
    * </pre>
-   */
+   **/
   def a[S](aMatcher: AMatcher[S]): Matcher[S] = 
     new Matcher[S] {
       def apply(left: S): MatchResult = aMatcher(left)
@@ -301,10 +301,10 @@ final class BeWord {
    * animal should not { be an ('elephant) }
    *                        ^
    * </pre>
-   */
-  def an(right: Symbol): Matcher[AnyRef] =
+   **/
+  def an(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
-      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false)
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, true, false, prettifier, pos)
       override def toString: String = "be an " + Prettifier.default(right)
     }
   // SKIP-SCALATESTJS-END
@@ -317,7 +317,7 @@ final class BeWord {
    * keyEvent should not { be an (actionKey) }
    *                          ^
    * </pre>
-   */
+   **/
   def an[S <: AnyRef](bePropertyMatcher: BePropertyMatcher[S]): Matcher[S] =
     new Matcher[S] {
       def apply(left: S): MatchResult = {
@@ -339,7 +339,7 @@ final class BeWord {
    * 8 should not { be an (oddNumber) }
    *                   ^
    * </pre>
-   */
+   **/
   def an[S](anMatcher: AnMatcher[S]): Matcher[S] = 
     new Matcher[S] {
       def apply(left: S): MatchResult = anMatcher(left)
@@ -353,7 +353,7 @@ final class BeWord {
    * sevenDotOh should be (7.1 +- 0.2)
    *                      ^
    * </pre>
-   */
+   **/
   def apply[U](spread: Spread[U]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult = {
@@ -374,7 +374,7 @@ final class BeWord {
    * result should be theSameInstancreAs (anotherObject)
    *                  ^
    * </pre>
-   */
+   **/
   def theSameInstanceAs(right: AnyRef): Matcher[AnyRef] =
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult =
@@ -394,7 +394,7 @@ final class BeWord {
    * result should be (true)
    *                  ^
    * </pre>
-   */
+   **/
   def apply(right: Boolean): Matcher[Boolean] = 
     new Matcher[Boolean] {
       def apply(left: Boolean): MatchResult =
@@ -414,7 +414,7 @@ final class BeWord {
    * result should be (null)
    *                  ^
    * </pre>
-   */
+   **/
   def apply(o: Null): Matcher[AnyRef] = 
     new Matcher[AnyRef] {
       def apply(left: AnyRef): MatchResult = {
@@ -443,9 +443,9 @@ final class BeWord {
       def apply(left: Any): MatchResult = 
         MatchResult(
           right.isAssignableFromClassOf(left),
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
           FailureMessages.wasAnInstanceOf, // TODO, missing the left, right.className here. Write a test and fix it.
-          FailureMessages.wasNotAnInstanceOf(left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(right.className), UnquotedString(left.getClass.getName)),
           FailureMessages.wasAnInstanceOf
         )
     }
@@ -459,10 +459,10 @@ final class BeWord {
    * set should be ('empty)
    *               ^
    * </pre>
-   */
-  def apply(right: Symbol): Matcher[AnyRef] =
+   **/
+  def apply(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[AnyRef] =
     new Matcher[AnyRef] {
-      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false)
+      def apply(left: AnyRef): MatchResult = matchSymbolToPredicateMethod(left, right, false, false, prettifier, pos)
       override def toString: String = "be (" + Prettifier.default(right) + ")"
     }
   // SKIP-SCALATESTJS-END
@@ -475,7 +475,7 @@ final class BeWord {
    * num should be (odd)
    *               ^
    * </pre>
-   */
+   **/
   def apply[T](right: BeMatcher[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = right(left)
@@ -489,7 +489,7 @@ final class BeWord {
    * door should be (open)
    *                ^
    * </pre>
-   */
+   **/
   def apply[T](bePropertyMatcher: BePropertyMatcher[T]): Matcher[T] =
     new Matcher[T] {
       def apply(left: T): MatchResult = {
@@ -519,7 +519,7 @@ final class BeWord {
    * sum should be (19)
    *               ^
    * </pre>
-   */
+   **/
   def apply(right: Any): Matcher[Any] =
     new Matcher[Any] {
       def apply(left: Any): MatchResult = {
@@ -542,7 +542,7 @@ final class BeWord {
    * List(1, 2, 3) should be (sorted)
    *                          ^
    * </pre>
-   */
+   **/
   def apply(right: SortedWord): MatcherFactory1[Any, Sortable] = 
     new MatcherFactory1[Any, Sortable] {
       def matcher[T <: Any : Sortable]: Matcher[T] = 
@@ -568,7 +568,7 @@ final class BeWord {
    * fraction should (be definedAt (6) and be definedAt (8))
    *                     ^
    * </pre>
-   */
+   **/
   def definedAt[A, U <: PartialFunction[A, _]](right: A): Matcher[U] = 
     new Matcher[U] {
       def apply(left: U): MatchResult =
@@ -588,7 +588,7 @@ final class BeWord {
    * a[Exception] should (be thrownBy { "hi".charAt(-1) })
    *                         ^
    * </pre>
-   */
+   **/
   def thrownBy(code: => Unit) = new ResultOfBeThrownBy(Vector(() => code))
   
   /**
@@ -598,7 +598,7 @@ final class BeWord {
    * fraction should (be (definedAt (6)) and be (definedAt (8)))
    *                  ^
    * </pre>
-   */
+   **/
   def apply[A, U <: PartialFunction[A, _]](resultOfDefinedAt: ResultOfDefinedAt[A]): Matcher[U] =
     new Matcher[U] {
       def apply(left: U): MatchResult =
@@ -620,7 +620,7 @@ final class BeWord {
    * result should be (a [Book])
    *               ^
    * </pre>
-   */
+   **/
   def apply(aType: ResultOfATypeInvocation[_]): Matcher[Any] = macro TypeMatcherMacro.aTypeMatcherImpl
   
   /**
@@ -630,7 +630,7 @@ final class BeWord {
    * result should be (an [Book])
    *               ^
    * </pre>
-   */
+   **/
   def apply(anType: ResultOfAnTypeInvocation[_]): Matcher[Any] = macro TypeMatcherMacro.anTypeMatcherImpl
   
   /**
@@ -640,7 +640,7 @@ final class BeWord {
    * file should be (readable)
    *                ^
    * </pre>
-   */
+   **/
   def apply(readable: ReadableWord): MatcherFactory1[Any, Readability] = 
     new MatcherFactory1[Any, Readability] {
       def matcher[T <: Any : Readability]: Matcher[T] = 
@@ -666,7 +666,7 @@ final class BeWord {
    * file should be (writable)
    *                 ^
    * </pre>
-   */
+   **/
   def apply(writable: WritableWord): MatcherFactory1[Any, Writability] = 
     new MatcherFactory1[Any, Writability] {
       def matcher[T <: Any : Writability]: Matcher[T] = 
@@ -692,7 +692,7 @@ final class BeWord {
    * array should be (empty)
    *                 ^
    * </pre>
-   */
+   **/
   def apply(empty: EmptyWord): MatcherFactory1[Any, Emptiness] = 
     new MatcherFactory1[Any, Emptiness] {
       def matcher[T <: Any : Emptiness]: Matcher[T] = 
@@ -718,7 +718,7 @@ final class BeWord {
    * array should be (defined)
    *                 ^
    * </pre>
-   */
+   **/
   def apply(defined: DefinedWord): MatcherFactory1[Any, Definition] = 
     new MatcherFactory1[Any, Definition] {
       def matcher[T <: Any : Definition]: Matcher[T] = 

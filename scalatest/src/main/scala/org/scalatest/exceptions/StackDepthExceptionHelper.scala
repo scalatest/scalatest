@@ -1,5 +1,7 @@
 package org.scalatest.exceptions
 
+import org.scalactic._
+
 /*
 For check methods in Checkers, passed fileName will be "Checkers.scala" and
 passed methodName will be "check":
@@ -137,6 +139,15 @@ private[scalatest] object StackDepthExceptionHelper {
 
   def getStackDepthFun(fileName: String, methodName: String, adjustment: Int = 0): (StackDepthException => Int) = { sde =>
     getStackDepth(sde.getStackTrace, fileName, methodName, adjustment)
+  }
+
+  def getStackDepth(stackTrace: Array[StackTraceElement], pos: source.Position): Int = {
+    val idx = stackTrace.indexWhere(e => e.getFileName == pos.fileName && e.getLineNumber == pos.lineNumber)
+    if (idx >= 0) idx else 0
+  }
+
+  def getStackDepthFun(pos: source.Position): (StackDepthException => Int) = { sde =>
+    getStackDepth(sde.getStackTrace, pos)
   }
 
   def getFailedCodeFileName(stackTraceElement: StackTraceElement): Option[String] = {

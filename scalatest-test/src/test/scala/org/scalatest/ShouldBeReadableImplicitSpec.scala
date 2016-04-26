@@ -19,8 +19,11 @@ import SharedHelpers.{createTempDirectory, thisLineNumber}
 import enablers.Readability
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeReadableImplicitSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   trait Thing {
     def canRead: Boolean
@@ -42,10 +45,10 @@ class ShouldBeReadableImplicitSpec extends FunSpec {
   val fileName: String = "ShouldBeReadableImplicitSpec.scala"
     
   def wasNotReadable(left: Any): String = 
-    FailureMessages.wasNotReadable(left)
+    FailureMessages.wasNotReadable(prettifier, left)
     
   def wasReadable(left: Any): String = 
-    FailureMessages.wasReadable(left)
+    FailureMessages.wasReadable(prettifier, left)
   
   it("book should be readable, stone should not be readable") {
     assert(book.canRead === true)
@@ -53,8 +56,8 @@ class ShouldBeReadableImplicitSpec extends FunSpec {
   }
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
   
   describe("Readable matcher") {

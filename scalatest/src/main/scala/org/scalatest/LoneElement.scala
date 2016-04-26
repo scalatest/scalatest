@@ -16,6 +16,9 @@
 package org.scalatest
 
 import enablers.Collecting
+import org.scalactic._
+import exceptions.StackDepthException
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which
@@ -77,11 +80,6 @@ trait LoneElement {
 
   import scala.language.higherKinds
 
-  // SKIP-SCALATESTJS-START
-  private[scalatest] val stackDepth = 1
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val stackDepth = 9
-
   /**
    * Wrapper class that adds a <code>loneElement</code> method to any collection type <code>C</code> for which 
    * an implicit <code>Collecting[C]</code> is available.
@@ -114,16 +112,16 @@ trait LoneElement {
      *      ^
      * </pre>
      */
-    def loneElement: E = {
+    def loneElement(implicit prettifier: Prettifier, pos: source.Position): E = {
       collecting.loneElementOf(collection) match {
         case Some(ele) => ele
         case None =>
           throw new exceptions.TestFailedException(
-            Some(FailureMessages.notLoneElement(
+            (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
                  collection,
-                 collecting.sizeOf(collection))), 
+                 collecting.sizeOf(collection))),
             None,
-            stackDepth
+            getStackDepthFun(pos)
           )
       }
     }
@@ -161,16 +159,16 @@ trait LoneElement {
    */
   final class LoneElementJavaMapWrapper[K, V, JMAP[_, _] <: java.util.Map[_, _]](jmap: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]) {
 
-    def loneElement: org.scalatest.Entry[K, V] = {
+    def loneElement(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Entry[K, V] = {
       collecting.loneElementOf(jmap) match {
         case Some(ele) => ele
         case None =>
           throw new exceptions.TestFailedException(
-            Some(FailureMessages.notLoneElement(
+            (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
                  jmap,
                  collecting.sizeOf(jmap))), 
             None,
-            stackDepth
+            getStackDepthFun(pos)
           )
       }
     }
@@ -198,16 +196,16 @@ trait LoneElement {
    */
   final class LoneElementStringWrapper(s: String)(implicit collecting: Collecting[Char, String]) {
 
-    def loneElement: Char = {
+    def loneElement(implicit prettifier: Prettifier, pos: source.Position): Char = {
       if (s.length == 1)
         s.charAt(0)
       else
         throw new exceptions.TestFailedException(
-          Some(FailureMessages.notLoneElement(
+          (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
             s,
             collecting.sizeOf(s))),
           None,
-          stackDepth
+          getStackDepthFun(pos)
         )
     }
 

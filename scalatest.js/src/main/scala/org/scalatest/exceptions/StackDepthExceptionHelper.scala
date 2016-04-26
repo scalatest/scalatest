@@ -15,6 +15,8 @@
  */
 package org.scalatest.exceptions
 
+import org.scalactic._
+
 private[scalatest] object StackDepthExceptionHelper {
 
   def getStackDepth(stackTraces: Array[StackTraceElement], fileName: String, methodName: String, adjustment: Int = 0): Int = {
@@ -41,15 +43,37 @@ private[scalatest] object StackDepthExceptionHelper {
     getStackDepth(sde.getStackTrace, fileName, methodName, adjustment)
   }
 
+  def getStackDepth(stackTrace: Array[StackTraceElement], pos: source.Position): Int = {
+    val idx = stackTrace.indexWhere (e => Option(e.getFileName).map(retrieveFileName) == Some(pos.fileName) && e.getLineNumber == pos.lineNumber)
+    if (idx >= 0)
+      idx
+    else {
+      // Let's find the nearest for now, we could do better when we have SourceInfo into StackDepthException directly
+      val firstFileNameIdx = stackTrace.indexWhere(e => Option(e.getFileName).map(retrieveFileName) == Some(pos.fileName))
+      if (firstFileNameIdx >= 0)
+        firstFileNameIdx
+      else
+        0
+    }
+  }
+
+  def getStackDepthFun(pos: source.Position): (StackDepthException => Int) = { sde =>
+    getStackDepth(sde.getStackTrace, pos)
+  }
+
+  def retrieveFileName(fileName: String): String = {
+    val lastPathSeparatorIdx = fileName.lastIndexOf("/")
+    if (lastPathSeparatorIdx >= 0)
+      fileName.substring(lastPathSeparatorIdx + 1)
+    else
+      fileName
+  }
+
   def getFailedCodeFileName(stackTraceElement: StackTraceElement): Option[String] = {
     val fileName = stackTraceElement.getFileName
-    if (fileName != null) {
-      val lastPathSeparatorIdx = fileName.lastIndexOf("/")
-      if (lastPathSeparatorIdx >= 0)
-        Some(fileName.substring(lastPathSeparatorIdx + 1))
-      else
-        Some(fileName)
-    }
-    else None
+    if (fileName != null)
+      Some(retrieveFileName(fileName))
+    else
+      None
   }
 }

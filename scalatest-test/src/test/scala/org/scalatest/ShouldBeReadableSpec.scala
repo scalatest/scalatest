@@ -20,8 +20,11 @@ import SharedHelpers.{createTempDirectory, thisLineNumber}
 import java.io.File
 // SKIP-SCALATESTJS-END
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeReadableSpec extends FunSpec with Matchers {
+
+  private val prettifier = Prettifier.default
 
   // SKIP-SCALATESTJS-START
   val tempDir = createTempDirectory()
@@ -39,10 +42,10 @@ class ShouldBeReadableSpec extends FunSpec with Matchers {
   val fileName: String = "ShouldBeReadableSpec.scala"
     
   def wasNotReadable(left: Any): String = 
-    FailureMessages.wasNotReadable(left)
+    FailureMessages.wasNotReadable(prettifier, left)
     
   def wasReadable(left: Any): String = 
-    FailureMessages.wasReadable(left)
+    FailureMessages.wasReadable(prettifier, left)
   
   it("readableFile should be readable, secretFile should not be readable") {
     // SKIP-SCALATESTJS-START
@@ -54,8 +57,8 @@ class ShouldBeReadableSpec extends FunSpec with Matchers {
   }
 
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
 
   describe("Readable matcher") {

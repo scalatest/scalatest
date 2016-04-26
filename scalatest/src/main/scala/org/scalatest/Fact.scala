@@ -15,8 +15,9 @@
  */
 package org.scalatest
 
-import org.scalactic.Prettifier
-import org.scalatest.exceptions.StackDepthExceptionHelper
+import org.scalactic._
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
 
@@ -44,29 +45,21 @@ private[scalatest] sealed abstract class Fact {
 
   final def toBoolean: Boolean = isYes
 
-  final def toAssertion: Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 5
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 10
+  final def toAssertion(implicit pos: source.Position): Assertion = {
     if (isYes) {
       if (!isVacuousYes) Succeeded
-      else throw new TestCanceledException(factMessage, stackDepth)
+      else throw new TestCanceledException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(pos), None)
     }
-    else throw new TestFailedException(factMessage, stackDepth)
+    else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(pos))
   }
 
   // This is called internally by implicit conversions, which has different stack depth
-  private[scalatest] final def internalToAssertion: Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 12
+  private[scalatest] final def internalToAssertion(implicit pos: source.Position): Assertion = {
     if (isYes) {
       if (!isVacuousYes) Succeeded
-      else throw new TestCanceledException(factMessage, stackDepth)
+      else throw new TestCanceledException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(pos), None)
     }
-    else throw new TestFailedException(factMessage, stackDepth)
+    else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(pos))
   }
 
   /**
@@ -121,7 +114,7 @@ private[scalatest] sealed abstract class Fact {
     else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs)
 
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
-    Resources.formatString(raw, args.map(Prettifier.default).toArray)
+    Resources.formatString(raw, args.map(prettifier).toArray)
 
   private[scalatest] val NEWLINE = scala.compat.Platform.EOL
 
@@ -153,9 +146,8 @@ private[scalatest] object Fact {
     midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
     isYes: Boolean,
     isVacuousYes: Boolean,
-    override val cause: Option[Throwable] = None,
-    prettifier: Prettifier = Prettifier.default
-  ) extends Fact {
+    override val cause: Option[Throwable] = None
+  )(val prettifier: Prettifier) extends Fact {
     require(!isVacuousYes || isYes)
     val isLeaf: Boolean = true
   }
@@ -203,9 +195,8 @@ private[scalatest] object Fact {
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
-      cause: Option[Throwable] = None,
-      prettifier: Prettifier = Prettifier.default
-    ): Leaf =
+      cause: Option[Throwable] = None
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -217,9 +208,8 @@ private[scalatest] object Fact {
         midSentenceSimplifiedFactMessageArgs,
         false,
         false,
-        cause,
-        prettifier
-      )
+        cause
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>factMessage</code>, 
@@ -237,7 +227,7 @@ private[scalatest] object Fact {
       rawFactMessage: String,
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -247,11 +237,10 @@ private[scalatest] object Fact {
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
-	false,
+	      false,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>factMessage</code>,
@@ -271,7 +260,7 @@ private[scalatest] object Fact {
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -283,9 +272,8 @@ private[scalatest] object Fact {
         midSentenceFactMessageArgs,
         false,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
   
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -300,7 +288,7 @@ private[scalatest] object Fact {
     def apply(
       rawFactMessage: String,
       rawMidSentenceFactMessage: String
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -312,9 +300,8 @@ private[scalatest] object Fact {
         Vector.empty,
         false,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -333,7 +320,7 @@ private[scalatest] object Fact {
       rawSimplifiedFactMessage: String,
       rawMidSentenceFactMessage: String,
       rawMidSentenceSimplifiedFactMessage: String
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -345,9 +332,8 @@ private[scalatest] object Fact {
         Vector.empty,
         false,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -370,7 +356,7 @@ private[scalatest] object Fact {
       rawMidSentenceSimplifiedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
       simplifiedFactMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -382,9 +368,8 @@ private[scalatest] object Fact {
         simplifiedFactMessageArgs,
         false,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -411,7 +396,7 @@ private[scalatest] object Fact {
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -423,9 +408,8 @@ private[scalatest] object Fact {
         midSentenceSimplifiedFactMessageArgs,
         false,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
   
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
@@ -440,7 +424,7 @@ private[scalatest] object Fact {
      */
     def apply(
       rawFactMessage: String
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -452,9 +436,8 @@ private[scalatest] object Fact {
         Vector.empty,
         false,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
   
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -475,7 +458,7 @@ private[scalatest] object Fact {
     def apply(
       rawFactMessage: String,
       factMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -487,9 +470,8 @@ private[scalatest] object Fact {
         factMessageArgs,
         false,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
@@ -505,7 +487,7 @@ private[scalatest] object Fact {
     def apply(
       rawFactMessage: String,
       cause: Throwable
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -517,9 +499,8 @@ private[scalatest] object Fact {
         Vector.empty,
         false,
         false,
-        Some(cause),
-        Prettifier.default
-      )
+        Some(cause)
+      )(prettifier)
   }
   
   /**
@@ -539,9 +520,8 @@ private[scalatest] object Fact {
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
       isVacuousYes: Boolean = false,
-      cause: Option[Throwable] = None,
-      prettifier: Prettifier = Prettifier.default
-    ): Leaf =
+      cause: Option[Throwable] = None
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -553,9 +533,8 @@ private[scalatest] object Fact {
         midSentenceSimplifiedFactMessageArgs,
         true,
         isVacuousYes,
-        cause,
-        prettifier
-      )
+        cause
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed code>factMessage</code>, 
@@ -573,7 +552,7 @@ private[scalatest] object Fact {
       rawFactMessage: String,
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -585,9 +564,8 @@ private[scalatest] object Fact {
         factMessageArgs,
         true,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed code>factMessage</code>,
@@ -607,7 +585,7 @@ private[scalatest] object Fact {
       rawMidSentenceFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -619,9 +597,8 @@ private[scalatest] object Fact {
         midSentenceFactMessageArgs,
         true,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
   
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -636,7 +613,7 @@ private[scalatest] object Fact {
     def apply(
       rawFactMessage: String,
       rawMidSentenceFactMessage: String
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -648,9 +625,8 @@ private[scalatest] object Fact {
         Vector.empty,
         true,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -670,7 +646,7 @@ private[scalatest] object Fact {
       rawSimplifiedFactMessage: String,
       rawMidSentenceFactMessage: String,
       rawMidSentenceSimplifiedFactMessage: String
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -682,9 +658,8 @@ private[scalatest] object Fact {
         Vector.empty,
         true,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -708,7 +683,7 @@ private[scalatest] object Fact {
       rawMidSentenceSimplifiedFactMessage: String,
       factMessageArgs: IndexedSeq[Any],
       simplifiedFactMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -720,9 +695,8 @@ private[scalatest] object Fact {
         simplifiedFactMessageArgs,
         true,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -750,7 +724,7 @@ private[scalatest] object Fact {
       simplifiedFactMessageArgs: IndexedSeq[Any],
       midSentenceFactMessageArgs: IndexedSeq[Any],
       midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawSimplifiedFactMessage,
@@ -762,9 +736,8 @@ private[scalatest] object Fact {
         midSentenceSimplifiedFactMessageArgs,
         true,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
   
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>, and
@@ -778,7 +751,7 @@ private[scalatest] object Fact {
      */
     def apply(
       rawFactMessage: String
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -790,9 +763,8 @@ private[scalatest] object Fact {
         Vector.empty,
         true,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
   
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -811,7 +783,7 @@ private[scalatest] object Fact {
     def apply(
       rawFactMessage: String,
       factMessageArgs: IndexedSeq[Any]
-    ): Leaf =
+    )(implicit prettifier: Prettifier): Leaf =
       new Leaf(
         rawFactMessage,
         rawFactMessage,
@@ -823,9 +795,8 @@ private[scalatest] object Fact {
         factMessageArgs,
         true,
         false,
-        None,
-        Prettifier.default
-      )
+        None
+      )(prettifier)
   }
 
   // The simplified Fact message is used when a Fact is negated, because
@@ -1109,8 +1080,8 @@ private[scalatest] object Fact {
     def apply(left: Fact, right: Fact): Fact = new IsEqvTo(left, right)
   }
 
-  private[scalatest] class MyLazyMessage(raw: String, args: IndexedSeq[Any]) {
-    override def toString: String = Resources.formatString(raw, args.map(Prettifier.default).toArray)
+  private[scalatest] class MyLazyMessage(raw: String, args: IndexedSeq[Any])(implicit prettifier: Prettifier) {
+    override def toString: String = Resources.formatString(raw, args.map(prettifier).toArray)
   }
 
   // Idea is to override toString each time it is used.

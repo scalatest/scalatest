@@ -23,7 +23,7 @@ object ScalatestBuild extends Build {
 
   val releaseVersion = "3.0.0-M16-SNAP4"
 
-  val scalacheckVersion = "1.13.0"
+  val scalacheckVersion = "1.13.1"
 
   val githubTag = "release-3.0.0-M16-SNAP4-for-scala-2.11-and-2.10" // for scaladoc source urls
 
@@ -184,7 +184,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.7"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.8"
     )
 
   def scalatestTestOptions =
@@ -317,7 +317,8 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.exceptions"
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -356,7 +357,8 @@ object ScalatestBuild extends Build {
       OsgiKeys.exportPackage := Seq(
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.exceptions"
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -390,7 +392,7 @@ object ScalatestBuild extends Build {
     .settings(
       projectTitle := "Scalactic Test.js",
       organization := "org.scalactic",
-      jsDependencies += RuntimeDOM % "test",
+      //jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
@@ -529,7 +531,7 @@ object ScalatestBuild extends Build {
       scalacOptions ++= Seq("-P:scalajs:mapSourceURI:" + scalatestApp.base.toURI + "->https://raw.githubusercontent.com/scalatest/scalatest/v" + version.value + "/"),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "optional",
-      jsDependencies += RuntimeDOM % "test",
+      //jsDependencies += RuntimeDOM % "test",
       sourceGenerators in Compile += {
         Def.task {
           GenScalaTestJS.genHtml((sourceManaged in Compile).value, version.value, scalaVersion.value)
@@ -609,8 +611,8 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestJSLibraryDependencies,
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
-      jsDependencies += RuntimeDOM % "test",
-      scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
+      //jsDependencies += RuntimeDOM % "test",
+      //scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
       //scalaJSStage in Global := FastOptStage,
@@ -683,7 +685,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.words",
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.exceptions"
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",
@@ -745,7 +748,8 @@ object ScalatestBuild extends Build {
         "org.scalatest.words",
         "org.scalactic",
         "org.scalactic.anyvals",
-        "org.scalactic.exceptions"
+        "org.scalactic.exceptions",
+        "org.scalactic.source"
       ),
       OsgiKeys.importPackage := Seq(
         "org.scalatest.*",

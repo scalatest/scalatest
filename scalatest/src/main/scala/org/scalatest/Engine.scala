@@ -18,7 +18,7 @@ package org.scalatest
 import exceptions.TestCanceledException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
 import Suite.IgnoreTagName
 import org.scalatest.Suite._
 import org.scalatest.events.LineInFile
@@ -32,7 +32,8 @@ import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalactic.Requirements._
+import org.scalactic._
+import Requirements._
 import org.scalactic.exceptions.NullArgumentException
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
@@ -67,6 +68,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     testText: String, // The last portion of the test name that showed up on an inner most nested level
     testFun: T, 
     location: Option[Location],
+    pos: Option[source.Position],
     recordedDuration: Option[Long] = None,
     recordedMessages: Option[PathMessageRecordingInformer] = None
   ) extends Node(Some(parent))
@@ -392,7 +394,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       branch.subNodes.reverse.foreach { node =>
         if (!stopper.stopRequested) {
           node match {
-            case testLeaf @ TestLeaf(_, testName, testText, _, _, _, _) =>
+            case testLeaf @ TestLeaf(_, testName, testText, _, _, _, _, _) =>
               val (filterTest, ignoreTest) = args.filter(testName, theSuite.tags, theSuite.suiteId)
               if (!filterTest)
                 if (ignoreTest) {
@@ -576,18 +578,20 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     }
   } */
 
-  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location]) {
+  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position]) {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFile, methodName, stackDepth + adjustment)))
 
     val branchLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None => getLineInFile(Thread.currentThread().getStackTrace, stackDepth)
+        case None =>
+          val stackTraceElements = Thread.currentThread().getStackTrace
+          getLineInFile(stackTraceElements, pos.map(si => getStackDepth(stackTraceElements, si)).getOrElse(stackDepth))
       }
     
     val oldBranch = currentBranch
@@ -613,17 +617,18 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   }
 
   // Used by FlatSpec, which doesn't nest. So this one just makes a new one off of the trunk
-  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int) {
+  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, pos: Option[source.Position]) {
 
     val oldBundle = atomic.get
     val (_, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFile, methodName, stackDepth + adjustment)))
 
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
-    val newBranch = DescriptionBranch(Trunk, description, None, getLineInFile(Thread.currentThread().getStackTrace, stackDepth))
+    val stackTraceElements = Thread.currentThread().getStackTrace
+    val newBranch = DescriptionBranch(Trunk, description, None, getLineInFile(stackTraceElements, pos.map(si => getStackDepth(stackTraceElements, si)).getOrElse(stackDepth)))
     Trunk.subNodes ::= newBranch
 
     // Update atomic, making the current branch to the new branch
@@ -638,12 +643,12 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   }
 
   // Path traits need to register the message recording informer, so it can fire any info events later
-  def registerTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], informer: Option[PathMessageRecordingInformer], testTags: Tag*): String = { // returns testName
+  def registerTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, duration: Option[Long], location: Option[Location], pos: Option[source.Position], informer: Option[PathMessageRecordingInformer], testTags: Tag*): String = { // returns testName
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
 //    throw new TestRegistrationClosedException(Resources.testCannotAppearInsideAnotherTest, getStackDepth(sourceFileName, "test"))
 
     val oldBundle = atomic.get
@@ -656,15 +661,17 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       val duplicateTestNameAdjustment = 0
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val duplicateTestNameAdjustment = -1
-      throw new DuplicateTestNameException(testName, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment))
+      throw new DuplicateTestNameException(testName, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment)))
     }
     val testLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None => getLineInFile(Thread.currentThread().getStackTrace, stackDepth)
+        case None =>
+          val stackTraceElements = Thread.currentThread().getStackTrace
+          getLineInFile(stackTraceElements, pos.map(si => getStackDepth(stackTraceElements, si)).getOrElse(stackDepth))
       }
 
-    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, duration, informer)
+    val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, pos, duration, informer)
     testsMap += (testName -> testLeaf)
     testNamesList ::= testName
     currentBranch.subNodes ::= testLeaf
@@ -678,7 +685,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     testName
   }
 
-  def registerIgnoredTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  def registerIgnoredTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*) {
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -686,7 +693,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 //    if (atomic.get.registrationClosed)
 //      throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideATest, getStackDepth(sourceFileName, "ignore"))
 
-    val testName = registerTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location, None) // Call test without passing the tags
+    val testName = registerTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, None, location, pos, None) // Call test without passing the tags
 
     val oldBundle = atomic.get
     var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -741,14 +748,17 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     }
   }
   
-  private[scalatest] def createTestDataFor(testName: String, theConfigMap: ConfigMap, theSuite: Suite) = 
+  private[scalatest] def createTestDataFor(testName: String, theConfigMap: ConfigMap, theSuite: Suite) = {
+    val theTest = atomic.get.testsMap(testName)
     new TestData {
-      val configMap = theConfigMap 
+      val configMap = theConfigMap
       val name = testName
       val scopes = testScopes(testName)
       val text = testText(testName)
       val tags = testTags(testName, theSuite)
+      val pos = theTest.pos
     }
+  }
   
   private[scalatest] def testTags(testName: String, theSuite: Suite): Set[String] = {
     // SKIP-SCALATESTJS-START
@@ -880,7 +890,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
  * 
  * 
  */
-  def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*) {
 
     if (insideAPathTest) 
       throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
@@ -960,7 +970,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
         val newTestFun = { () => outcome }
         // register with         informerForThisTest.fireRecordedMessages(testWasPending)
 
-        registerTest(testText, newTestFun, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, Some(durationOfRunningTest), location, Some(informerForThisTest), testTags: _*)
+        registerTest(testText, newTestFun, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, Some(durationOfRunningTest), location, pos, Some(informerForThisTest), testTags: _*)
         targetLeafHasBeenReached = true
       }
       else if (targetLeafHasBeenReached && nextTargetPath.isEmpty) {
@@ -972,10 +982,10 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     }
   }
 
-  def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location]) {
+  def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position]) {
 
     if (insideAPathTest)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
 
     val nextPath = getNextPath()
     // val nextPathZero = if (nextPath.length > 0) nextPath(0) else -1
@@ -997,7 +1007,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
         // Set this to true before executing the describe. If it has a test, then handleTest will be invoked
         // and it will set previousDescribeWasEmpty back to false
         describeRegisteredNoTests = true
-        registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, methodName, stackDepth + 1, adjustment, location)
+        registerNestedBranch(description, None, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, methodName, stackDepth + 1, adjustment, location, pos)
         registeredPathSet += nextPath
         if (describeRegisteredNoTests)
           targetLeafHasBeenReached = true
@@ -1128,7 +1138,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     }
   }
    
-  def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], testTags: Tag*) {
+  def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*) {
 
     if (insideAPathTest) 
       throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
@@ -1136,7 +1146,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     describeRegisteredNoTests = false
     val nextPath = getNextPath()
     if (isInTargetPath(nextPath, targetPath)) {
-      super.registerIgnoredTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, location, testTags: _*)
+      super.registerIgnoredTest(testText, f, testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth + 1, adjustment, location, pos, testTags: _*)
       targetLeafHasBeenReached = true
     }
     else if (targetLeafHasBeenReached && nextTargetPath.isEmpty) {

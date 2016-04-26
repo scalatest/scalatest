@@ -140,7 +140,7 @@ trait GenResourcesJVM extends GenResources {
        |
        |private[$packageName] object FailureMessages {
        |
-       |def decorateToStringValue(o: Any): String = org.scalactic.Prettifier.default(o)
+       |def decorateToStringValue(prettifier: org.scalactic.Prettifier, o: Any): String = prettifier.apply(o)
        |
        |$methods
        |
@@ -157,7 +157,7 @@ trait GenResourcesJVM extends GenResources {
     "def raw" + kv.key.capitalize + ": String = resourceBundle.getString(\"" + kv.key + "\")"
 
   def failureMessagesKeyValueTemplate(kv: KeyValue, paramCount: Int): String =
-    "def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(param$i)").mkString(", ") + ")"
+    "def " + kv.key + (if (paramCount == 0) "(" else "(prettifier: org.scalactic.Prettifier, ") + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"prettifier.apply(param$i)").mkString(", ") + ")"
 
 }
 
@@ -228,7 +228,7 @@ trait GenResourcesJSVM extends GenResources {
         |
         |private[$packageName] object FailureMessages {
         |
-        |def decorateToStringValue(o: Any): String = org.scalactic.Prettifier.default(o)
+        |def decorateToStringValue(prettifier: org.scalactic.Prettifier, o: Any): String = org.scalactic.Prettifier.default(o)
         |
         |$methods
         |
@@ -255,8 +255,8 @@ trait GenResourcesJSVM extends GenResources {
     if (paramCount == 0)
       "final val " + kv.key + " = Resources." + kv.key
     else
-      "object " + kv.key + " { \ndef apply(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
-      "  Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(param$i)").mkString(", ") + ")" + "\n" +
+      "object " + kv.key + " { \ndef apply(" + (if (paramCount == 0) "" else "prettifier: org.scalactic.Prettifier, ") + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = \n" +
+      "  Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(prettifier, param$i)").mkString(", ") + ")" + "\n" +
       "}"
       //"def " + kv.key + "(" + (for (i <- 0 until paramCount) yield s"param$i: Any").mkString(", ") + "): String = Resources." + kv.key + "(" + (for (i <- 0 until paramCount) yield s"decorateToStringValue(param$i)").mkString(", ") + ")"
 

@@ -23,20 +23,23 @@ import Arbitrary._
 import Prop._
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldStructuralSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
+
+  private val prettifier = Prettifier.default
   
   def hadSizeInsteadOfExpectedSize(left: Any, leftSize: Long, expectedSize: Long): String = 
-    FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, expectedSize)
+    FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, left, leftSize, expectedSize)
     
   def hadSize(left: Any, expectedSize: Int): String = 
-    FailureMessages.hadSize(left, expectedSize)
+    FailureMessages.hadSize(prettifier, left, expectedSize)
     
   def commaAnd(left: String, right: String): String = 
-    FailureMessages.commaAnd(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaAnd(prettifier, UnquotedString(left), UnquotedString(right))
   
   def commaBut(left: String, right: String): String = 
-    FailureMessages.commaBut(UnquotedString(left), UnquotedString(right))
+    FailureMessages.commaBut(prettifier, UnquotedString(left), UnquotedString(right))
   
   describe("The 'have size (Int)' syntax ") {
     

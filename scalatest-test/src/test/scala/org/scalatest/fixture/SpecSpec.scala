@@ -36,8 +36,11 @@ import java.awt.AWTError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
+import org.scalactic.Prettifier
 
 class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
+
+  private val prettifier = Prettifier.default
 
   describe("A fixture.Spec") {
     /*
@@ -2588,7 +2591,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       val cause = causeThrowable.asInstanceOf[TestFailedException]
       assert("SpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 17)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a TestCanceledException when assume fails in scope") {
@@ -2615,7 +2618,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       val cause = causeThrowable.asInstanceOf[TestCanceledException]
       assert("SpecSpec.scala" == cause.failedCodeFileName.get)
       assert(cause.failedCodeLineNumber.get == thisLineNumber - 17)
-      assert(cause.message == Some(FailureMessages.didNotEqual(1, 2)))
+      assert(cause.message == Some(FailureMessages.didNotEqual(prettifier, 1, 2)))
     }
 
     it("should generate NotAllowedException wrapping a non-fatal RuntimeException is thrown inside scope") {
@@ -2635,7 +2638,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
       assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
-      assert(e.message == Some(FailureMessages.exceptionWasThrownInObject(UnquotedString(causeThrowable.getClass.getName), UnquotedString("a feature"))))
+      assert(e.message == Some(FailureMessages.exceptionWasThrownInObject(prettifier, UnquotedString(causeThrowable.getClass.getName), UnquotedString("a feature"))))
 
       assert(causeThrowable.isInstanceOf[RuntimeException])
       val cause = causeThrowable.asInstanceOf[RuntimeException]

@@ -29,10 +29,11 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.StackDepthException
+import org.scalactic._
 
 trait CheckerAsserting[T] {
   type Result
-  def check(p: Prop, prms: Test.Parameters, argNames: Option[List[String]] = None): Result
+  def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result
 }
 
 abstract class UnitCheckerAsserting {
@@ -41,9 +42,7 @@ abstract class UnitCheckerAsserting {
 
     import CheckerAsserting._
 
-    private val sourceFileName: String = "CheckerAsserting.scala"
-
-    def check(p: Prop, prms: Test.Parameters, argNames: Option[List[String]] = None): Result = {
+    def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
 
       val result = Test.check(prms, p)
       if (!result.passed) {
@@ -56,9 +55,9 @@ abstract class UnitCheckerAsserting {
 
             val failureMsg =
               if (result.succeeded == 1)
-                FailureMessages.propCheckExhaustedAfterOne(result.discarded)
+                FailureMessages.propCheckExhaustedAfterOne(prettifier, result.discarded)
               else
-                FailureMessages.propCheckExhausted(result.succeeded, result.discarded)
+                FailureMessages.propCheckExhausted(prettifier, result.succeeded, result.discarded)
 
             indicateFailure(
               sde => failureMsg,
@@ -66,7 +65,7 @@ abstract class UnitCheckerAsserting {
               args,
               labels,
               None,
-              getStackDepthFun(sourceFileName, "check")
+              getStackDepthFun(pos)
             )
 
           case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
@@ -74,48 +73,48 @@ abstract class UnitCheckerAsserting {
             val stackDepth = 1
             
             indicateFailure(
-              sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+              sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-              "  " + FailureMessages.propertyFailed(result.succeeded) + "\n" +
+              "  " + FailureMessages.propertyFailed(prettifier, result.succeeded) + "\n" +
               (
                 sde match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
                 ) +
               "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs), prettifier) + "\n" +
               "  )" +
               getLabelDisplay(scalaCheckLabels),
-              FailureMessages.propertyFailed(result.succeeded),
+              FailureMessages.propertyFailed(prettifier, result.succeeded),
               scalaCheckArgs,
               scalaCheckLabels.toList,
               None,
-              getStackDepthFun(sourceFileName, "check", stackDepth)
+              getStackDepthFun(pos)
             )
 
           case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
 
             indicateFailure(
-              sde => FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" +
-              "  " + FailureMessages.thrownExceptionsMessage(if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
+              sde => FailureMessages.propertyException(prettifier, UnquotedString(e.getClass.getSimpleName)) + "\n" +
+              "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
               (
                 e match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
               ) +
               "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs)) + "\n" +
+              prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs), prettifier) + "\n" +
               "  )" +
               getLabelDisplay(scalaCheckLabels),
-              FailureMessages.propertyException(UnquotedString(e.getClass.getName)),
+              FailureMessages.propertyException(prettifier, UnquotedString(e.getClass.getName)),
               scalaCheckArgs,
               scalaCheckLabels.toList,
               Some(e),
-              getStackDepthFun(sourceFileName, "check")
+              getStackDepthFun(pos)
             )
         }
       } else indicateSuccess(FailureMessages.propertyCheckSucceeded)
@@ -211,23 +210,23 @@ object CheckerAsserting extends ExpectationCheckerAsserting {
   }
 
   // TODO: Internationalize these, and make them consistent with FailureMessages stuff (only strings get quotes around them, etc.)
-  private[enablers] def prettyTestStats(result: Test.Result) = result.status match {
+  private[enablers] def prettyTestStats(result: Test.Result, prettifier: Prettifier) = result.status match {
 
     case Test.Proved(args) =>
-      "OK, proved property:                   \n" + prettyArgs(args)
+      "OK, proved property:                   \n" + prettyArgs(args, prettifier)
 
     case Test.Passed =>
       "OK, passed " + result.succeeded + " tests."
 
     case Test.Failed(args, labels) =>
-      "Falsified after " + result.succeeded + " passed tests:\n" + prettyLabels(labels) + prettyArgs(args)
+      "Falsified after " + result.succeeded + " passed tests:\n" + prettyLabels(labels) + prettyArgs(args, prettifier)
 
     case Test.Exhausted =>
       "Gave up after only " + result.succeeded + " passed tests. " +
         result.discarded + " tests were discarded."
 
     case Test.PropException(args, e, labels) =>
-      FailureMessages.propertyException(UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args)
+      FailureMessages.propertyException(prettifier, UnquotedString(e.getClass.getSimpleName)) + "\n" + prettyLabels(labels) + prettyArgs(args, prettifier)
   }
 
   private[enablers] def prettyLabels(labels: Set[String]) = {
@@ -244,21 +243,21 @@ object CheckerAsserting extends ExpectationCheckerAsserting {
   //
   // Passes 0 as verbosity value to prettyArg function.
   //
-  private[enablers] def decorateArgToStringValue(arg: Arg[_]): String =
+  private[enablers] def decorateArgToStringValue(arg: Arg[_], prettifier: Prettifier): String =
     arg.arg match {
-      case null         => decorateToStringValue(arg.arg)
-      case _: Unit      => decorateToStringValue(arg.arg)
-      case _: String    => decorateToStringValue(arg.arg)
-      case _: Char      => decorateToStringValue(arg.arg)
-      case _: Array[_]  => decorateToStringValue(arg.arg)
+      case null         => decorateToStringValue(prettifier, arg.arg)
+      case _: Unit      => decorateToStringValue(prettifier, arg.arg)
+      case _: String    => decorateToStringValue(prettifier, arg.arg)
+      case _: Char      => decorateToStringValue(prettifier, arg.arg)
+      case _: Array[_]  => decorateToStringValue(prettifier, arg.arg)
       case _            => arg.prettyArg(new Pretty.Params(0))
     }
 
-  private[enablers] def prettyArgs(args: List[Arg[_]]) = {
+  private[enablers] def prettyArgs(args: List[Arg[_]], prettifier: Prettifier) = {
     val strs = for((a, i) <- args.zipWithIndex) yield (
       "    " +
         (if (a.label == "") "arg" + i else a.label) +
-        " = " + decorateArgToStringValue(a) + (if (i < args.length - 1) "," else "") +
+        " = " + decorateArgToStringValue(a, prettifier) + (if (i < args.length - 1) "," else "") +
         (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
       )
     strs.mkString("\n")

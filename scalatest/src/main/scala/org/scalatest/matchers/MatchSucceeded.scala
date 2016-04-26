@@ -15,6 +15,8 @@
  */
 package org.scalatest.matchers
 
+import org.scalactic.Prettifier
+
 /**
  * Singleton object that provides <code>unapply</code> method to extract negated failure message from <code>MatchResult</code>
  * having <code>matches</code> property value of <code>true</code>.
@@ -41,6 +43,6 @@ object MatchSucceeded {
    * @param matchResult the <code>MatchResult</code> to extract the negated failure message from.
    * @return a <code>Some</code> wrapping the contained negated failure message if <code>matchResult.matches</code> is equal to <code>true</code>, else <code>None</code>.
    */
-  def unapply(matchResult: MatchResult): Option[String] =
-    if (matchResult.matches) Some(matchResult.negatedFailureMessage) else None
+  def unapply(matchResult: MatchResult)(implicit prettifier: Prettifier): Option[String] =
+    if (matchResult.matches) Some(matchResult.negatedFailureMessage(prettifier)) else None
 }

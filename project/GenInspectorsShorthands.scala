@@ -33,14 +33,14 @@ trait GenInspectorsShorthandsBase {
   class DynamicFirstElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
       if (colType == "String")
-        "\" + decorateToStringValue(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ")) + \""
+        "\" + decorateToStringValue(prettifier, " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ")) + \""
       else
-        "\" + decorateToStringValue(" + errorFun + "(xs, " + errorValue + ")) + \""
+        "\" + decorateToStringValue(prettifier, " + errorFun + "(xs, " + errorValue + ")) + \""
   }
 
   class DynamicFirstArrayElementTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
     override def toString =
-      "\" + decorateToStringValue(" + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep) + \""
+      "\" + decorateToStringValue(prettifier, " + getErrorMessageValuesFunName(colType, errorFun) + "(xs, " + errorValue + ").deep) + \""
   }
 
   class DynamicFirstElementLengthTemplate(colType: String, errorFun: String, errorValue: String) extends Template {
@@ -310,7 +310,7 @@ trait GenInspectorsShorthandsBase {
         "val emptyMatcher = new EmptyBePropertyMatcher()\n" +
         "def plength(expectedValue: Int) = new StringLengthMatcher(expectedValue)\n" +
         "val theInstance = \"2\"\n" +
-        "def arrayToString(xs: GenTraversable[_]): String = FailureMessages.decorateToStringValue(xs)\n" +
+        "def arrayToString(xs: GenTraversable[_]): String = FailureMessages.decorateToStringValue(prettifier, xs)\n" +
         "def checkErrorAndCause(e: exceptions.TestFailedException, assertLineNumber: Int, fileName: String, errorMessage: String, causeErrorMessage: String) {\n" +
         "  assert(e.failedCodeFileName == Some(fileName), e.failedCodeFileName + \" did not equal \" + Some(fileName))\n" +
         "  assert(e.failedCodeLineNumber == Some(assertLineNumber), e.failedCodeLineNumber + \" did not equal \" + Some(assertLineNumber))\n" +

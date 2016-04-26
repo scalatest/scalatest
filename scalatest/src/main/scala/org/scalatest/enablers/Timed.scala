@@ -109,6 +109,7 @@ object Timed {
                         signaler: Signaler,
                         exceptionFun: (Option[Throwable], Int) => StackDepthException
                         ): Future[T] = {
+
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = 2
         // SKIP-SCALATESTJS-END
@@ -186,6 +187,7 @@ object Timed {
                         signaler: Signaler,
                         exceptionFun: (Option[Throwable], Int) => StackDepthException
                         ): FutureOutcome = {
+
         // SKIP-SCALATESTJS-START
         val stackDepthAdjustment = 2
         // SKIP-SCALATESTJS-END

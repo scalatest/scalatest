@@ -19,14 +19,17 @@ import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._
 import LoneElement._
+import org.scalactic.Prettifier
 
 class ListLoneElementSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   def wasNotGreaterThan(left: Any, right: Any): String = 
-    decorateToStringValue(left) + " was not greater than " + (right)
+    decorateToStringValue(prettifier, left) + " was not greater than " + (right)
     
   def notLoneElement(left: Any, size: Int): String = 
-    "Expected " + decorateToStringValue(left) + " to contain exactly 1 element, but it has size " + size
+    "Expected " + decorateToStringValue(prettifier, left) + " to contain exactly 1 element, but it has size " + size
 
   describe("The loneElement syntax") {
     

@@ -15,9 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.enablers.InspectorAsserting
-import org.scalatest.matchers._
 import org.scalatest.enablers._
+import org.scalatest.matchers._
 import org.scalatest.words.ResultOfNoElementsOfApplication
 import org.scalatest.words.ResultOfOneElementOfApplication
 import scala.util.matching.Regex
@@ -25,15 +24,10 @@ import scala.reflect.{classTag, ClassTag}
 import MatchersHelper.transformOperatorChars
 import Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
-import org.scalactic.Tolerance
-import org.scalactic.Explicitly
-import org.scalactic.TripleEqualsSupport.Spread
-import org.scalactic.TripleEqualsSupport.TripleEqualsInvocation
-import org.scalactic.Equality
-import org.scalactic.TripleEqualsSupport.TripleEqualsInvocationOnSpread
-import org.scalactic.CanEqual
-import org.scalactic.Prettifier
-import org.scalactic.Every
+import org.scalactic._
+import TripleEqualsSupport.Spread
+import TripleEqualsSupport.TripleEqualsInvocation
+import TripleEqualsSupport.TripleEqualsInvocationOnSpread
 import org.scalatest.words._
 // SKIP-SCALATESTJS-START
 import MatchersHelper.matchSymbolToPredicateMethod
@@ -1845,7 +1839,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class HavePropertyMatcherGenerator(symbol: Symbol) {
+  final class HavePropertyMatcherGenerator(symbol: Symbol, prettifer: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax:
@@ -1915,7 +1909,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               // methodNameToInvokeWithGet would be "getTitle"
               val methodNameToInvokeWithGet = "get"+ mangledPropertyName(0).toUpper + mangledPropertyName.substring(1)
 
-              throw newTestFailedException(Resources.propertyNotFound(methodNameToInvoke, expectedValue.toString, methodNameToInvokeWithGet))
+              throw newTestFailedException(Resources.propertyNotFound(methodNameToInvoke, expectedValue.toString, methodNameToInvokeWithGet), None, pos)
 
             case Some(result) =>
 
@@ -1939,7 +1933,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * This implicit conversion method converts a <code>Symbol</code> to a
    * <code>HavePropertyMatcherGenerator</code>, to enable the symbol to be used with the <code>have ('author ("Dickens"))</code> syntax.
    */
-  implicit def convertSymbolToHavePropertyMatcherGenerator(symbol: Symbol): HavePropertyMatcherGenerator = new HavePropertyMatcherGenerator(symbol)
+  implicit def convertSymbolToHavePropertyMatcherGenerator(symbol: Symbol)(implicit prettifier: Prettifier, pos: source.Position): HavePropertyMatcherGenerator = new HavePropertyMatcherGenerator(symbol, prettifier, pos)
   // SKIP-SCALATESTJS-END
 
   /**
@@ -1948,7 +1942,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  class ResultOfBeWordForAny[T](left: T, shouldBeTrue: Boolean) {
+  class ResultOfBeWordForAny[T](left: T, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax (positiveNumber is a <code>AMatcher</code>):
@@ -1961,8 +1955,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(aMatcher: AMatcher[T]): Assertion = {
       val matcherResult = aMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
-      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     
     /**
@@ -1976,8 +1970,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(anMatcher: AnMatcher[T]): Assertion = {
       val matcherResult = anMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
-      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
 
     /**
@@ -1990,8 +1984,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       if ((toAnyRef(left) eq right) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.wasNotSameInstanceAs(left, right), FailureMessages.wasSameInstanceAs(left, right))
-      else indicateSuccess(shouldBeTrue, FailureMessages.wasSameInstanceAs(left, right), FailureMessages.wasNotSameInstanceAs(left, right))
+        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSameInstanceAs(prettifier, left, right) else FailureMessages.wasSameInstanceAs(prettifier, left, right), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.wasSameInstanceAs(prettifier, left, right), FailureMessages.wasNotSameInstanceAs(prettifier, left, right))
     }
 
     /* *
@@ -2006,7 +2000,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       if (clazz.isAssignableFrom(left.getClass)) {
         throw newTestFailedException(
           if (shouldBeTrue)
-            FailureMessages.wasNotAnInstanceOf(left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+            FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
           else
             FailureMessages.wasAnInstanceOf
         )
@@ -2023,11 +2017,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true)
+    def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true, prettifier, pos)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
-      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     // SKIP-SCALATESTJS-END
 
@@ -2044,8 +2038,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
       val result = bePropertyMatcher(left)
       if (result.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, FailureMessages.wasNotA(left, UnquotedString(result.propertyName)), FailureMessages.wasA(left, UnquotedString(result.propertyName)))
-      } else indicateSuccess(shouldBeTrue, FailureMessages.wasA(left, UnquotedString(result.propertyName)), FailureMessages.wasNotA(left, UnquotedString(result.propertyName)))
+        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotA(prettifier, left, UnquotedString(result.propertyName)) else FailureMessages.wasA(prettifier, left, UnquotedString(result.propertyName)), None, pos)
+      } else indicateSuccess(shouldBeTrue, FailureMessages.wasA(prettifier, left, UnquotedString(result.propertyName)), FailureMessages.wasNotA(prettifier, left, UnquotedString(result.propertyName)))
     }
 
     // SKIP-SCALATESTJS-START
@@ -2058,11 +2052,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                 ^
      * </pre>
      */
-    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false)
+    def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false, prettifier, pos)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage)
-      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+      } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     // SKIP-SCALATESTJS-END
 
@@ -2078,8 +2072,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(beTrueMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
       val beTrueMatchResult = beTrueMatcher(left)
       if (beTrueMatchResult.matches != shouldBeTrue) {
-        indicateFailure(shouldBeTrue, FailureMessages.wasNotAn(left, UnquotedString(beTrueMatchResult.propertyName)), FailureMessages.wasAn(left, UnquotedString(beTrueMatchResult.propertyName)))
-      } else indicateSuccess(shouldBeTrue, FailureMessages.wasAn(left, UnquotedString(beTrueMatchResult.propertyName)), FailureMessages.wasNotAn(left, UnquotedString(beTrueMatchResult.propertyName)))
+        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotAn(prettifier, left, UnquotedString(beTrueMatchResult.propertyName)) else FailureMessages.wasAn(prettifier, left, UnquotedString(beTrueMatchResult.propertyName)), None, pos)
+      } else indicateSuccess(shouldBeTrue, FailureMessages.wasAn(prettifier, left, UnquotedString(beTrueMatchResult.propertyName)), FailureMessages.wasNotAn(prettifier, left, UnquotedString(beTrueMatchResult.propertyName)))
     }
 
     /**
@@ -2092,8 +2086,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
       if (left.isDefinedAt(right) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.wasNotDefinedAt(left, right), FailureMessages.wasDefinedAt(left, right))
-      else indicateSuccess(shouldBeTrue, FailureMessages.wasDefinedAt(left, right), FailureMessages.wasNotDefinedAt(left, right))
+        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefinedAt(prettifier, left, right) else FailureMessages.wasDefinedAt(prettifier, left, right), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.wasDefinedAt(prettifier, left, right), FailureMessages.wasNotDefinedAt(prettifier, left, right))
     }
 
     /**
@@ -2155,14 +2149,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfIncludeWordForString(left: String, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepth = 0
-    private[scalatest] val withGroupStackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
-    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+  final class ResultOfIncludeWordForString(left: String, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -2185,8 +2172,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
-      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
+      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
     /**
@@ -2199,8 +2186,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.findFirstIn(left).isDefined != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotIncludeRegex(left, rightRegex), FailureMessages.includedRegex(left, rightRegex), None, stackDepth)
-      else indicateSuccess(shouldBeTrue, FailureMessages.includedRegex(left, rightRegex), FailureMessages.didNotIncludeRegex(left, rightRegex))
+        indicateFailure(if (shouldBeTrue) FailureMessages.didNotIncludeRegex(prettifier, left, rightRegex) else FailureMessages.includedRegex(prettifier, left, rightRegex), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.includedRegex(prettifier, left, rightRegex), FailureMessages.didNotIncludeRegex(prettifier, left, rightRegex))
     }
 
     /**
@@ -2217,14 +2204,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfStartWithWordForString(left: String, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepth = 0
-    private[scalatest] val withGroupStackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
-    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+  final class ResultOfStartWithWordForString(left: String, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -2247,8 +2227,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
-      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
+      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
     /**
@@ -2261,8 +2241,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).lookingAt != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotStartWithRegex(left, rightRegex), FailureMessages.startedWithRegex(left, rightRegex), None, stackDepth)
-      else indicateSuccess(shouldBeTrue, FailureMessages.startedWithRegex(left, rightRegex), FailureMessages.didNotStartWithRegex(left, rightRegex))
+        indicateFailure(if (shouldBeTrue) FailureMessages.didNotStartWithRegex(prettifier, left, rightRegex) else FailureMessages.startedWithRegex(prettifier, left, rightRegex), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.startedWithRegex(prettifier, left, rightRegex), FailureMessages.didNotStartWithRegex(prettifier, left, rightRegex))
     }
 
     /**
@@ -2279,14 +2259,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfEndWithWordForString(left: String, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepth = 0
-    private[scalatest] val withGroupStackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
-    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+  final class ResultOfEndWithWordForString(left: String, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -2309,8 +2282,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
-      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
+      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
     /**
@@ -2324,8 +2297,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(rightRegex: Regex): Assertion = {
       val allMatches = rightRegex.findAllIn(left)
       if ((allMatches.hasNext && (allMatches.end == left.length)) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotEndWithRegex(left, rightRegex), FailureMessages.endedWithRegex(left, rightRegex), None, stackDepth)
-      else indicateSuccess(shouldBeTrue, FailureMessages.endedWithRegex(left, rightRegex), FailureMessages.didNotEndWithRegex(left, rightRegex))
+        indicateFailure(if (shouldBeTrue) FailureMessages.didNotEndWithRegex(prettifier, left, rightRegex) else FailureMessages.endedWithRegex(prettifier, left, rightRegex), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.endedWithRegex(prettifier, left, rightRegex), FailureMessages.didNotEndWithRegex(prettifier, left, rightRegex))
     }
 
     /**
@@ -2342,14 +2315,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfFullyMatchWordForString(left: String, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val stackDepth = 0
-    private[scalatest] val withGroupStackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val stackDepth = 11
-    //SCALATESTJS-ONLY private[scalatest] val withGroupStackDepth = 10
+  final class ResultOfFullyMatchWordForString(left: String, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -2372,8 +2338,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, withGroupStackDepth)
-      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
+      else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
     /**
@@ -2386,8 +2352,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).matches != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.didNotFullyMatchRegex(left, rightRegex), FailureMessages.fullyMatchedRegex(left, rightRegex), None, stackDepth)
-      else indicateSuccess(shouldBeTrue, FailureMessages.fullyMatchedRegex(left, rightRegex), FailureMessages.didNotFullyMatchRegex(left, rightRegex))
+        indicateFailure(if (shouldBeTrue) FailureMessages.didNotFullyMatchRegex(prettifier, left, rightRegex) else FailureMessages.fullyMatchedRegex(prettifier, left, rightRegex), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.fullyMatchedRegex(prettifier, left, rightRegex), FailureMessages.didNotFullyMatchRegex(prettifier, left, rightRegex))
     }
 
     /**
@@ -2406,8 +2372,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
           val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
           MatchResult(
             areEqualComparingArraysStructurally(left, right),
-            FailureMessages.didNotEqual(leftee, rightee),
-            FailureMessages.equaled(left, right)
+            FailureMessages.didNotEqual(prettifier, leftee, rightee),
+            FailureMessages.equaled(prettifier, left, right)
           )
         }
       }
@@ -2697,7 +2663,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForExtent[A](left: A, shouldBeTrue: Boolean) {
+  final class ResultOfHaveWordForExtent[A](left: A, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax:
@@ -2717,8 +2683,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
       val leftLength = len.lengthOf(left)
       if ((leftLength == expectedLength) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, expectedLength), FailureMessages.hadLength(left, expectedLength))
-      else indicateSuccess(shouldBeTrue, FailureMessages.hadLength(left, expectedLength), FailureMessages.hadLengthInsteadOfExpectedLength(left, leftLength, expectedLength))
+        indicateFailure(if (shouldBeTrue) FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, leftLength, expectedLength) else FailureMessages.hadLength(prettifier, left, expectedLength), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.hadLength(prettifier, left, expectedLength), FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, leftLength, expectedLength))
     }
 
     /**
@@ -2739,8 +2705,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
       val leftSize = sz.sizeOf(left)
       if ((leftSize == expectedSize) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, expectedSize), FailureMessages.hadSize(left, expectedSize))
-      else indicateSuccess(shouldBeTrue, FailureMessages.hadSize(left, expectedSize), FailureMessages.hadSizeInsteadOfExpectedSize(left, leftSize, expectedSize))
+        indicateFailure(if (shouldBeTrue) FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, left, leftSize, expectedSize) else FailureMessages.hadSize(prettifier, left, expectedSize), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.hadSize(prettifier, left, expectedSize), FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, left, leftSize, expectedSize))
     }
 
     /**
@@ -2754,8 +2720,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def message(expectedMessage: String)(implicit messaging: Messaging[A]): Assertion = {
       val actualMessage = messaging.messageOf(left)
       if ((actualMessage== expectedMessage) != shouldBeTrue)
-        indicateFailure(shouldBeTrue, FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, expectedMessage), FailureMessages.hadExpectedMessage(left, expectedMessage))
-      else indicateSuccess(shouldBeTrue, FailureMessages.hadExpectedMessage(left, expectedMessage), FailureMessages.hadMessageInsteadOfExpectedMessage(left, actualMessage, expectedMessage))
+        indicateFailure(if (shouldBeTrue) FailureMessages.hadMessageInsteadOfExpectedMessage(prettifier, left, actualMessage, expectedMessage) else FailureMessages.hadExpectedMessage(prettifier, left, expectedMessage), None, pos)
+      else indicateSuccess(shouldBeTrue, FailureMessages.hadExpectedMessage(prettifier, left, expectedMessage), FailureMessages.hadMessageInsteadOfExpectedMessage(prettifier, left, actualMessage, expectedMessage))
     }
 
     /**
@@ -2855,10 +2821,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+  def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.oneOfDuplicate, getStackDepthFun("Matchers.scala", "oneOf"))
+      throw new NotAllowedException(FailureMessages.oneOfDuplicate, getStackDepthFun(pos))
     new ResultOfOneOfApplication(xs)
   }
 
@@ -2883,10 +2849,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+  def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun("Matchers.scala", "atLeastOneOf"))
+      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun(pos))
     new ResultOfAtLeastOneOfApplication(xs)
   }
 
@@ -2911,10 +2877,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+  def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.noneOfDuplicate, getStackDepthFun("Matchers.scala", "noneOf"))
+      throw new NotAllowedException(FailureMessages.noneOfDuplicate, getStackDepthFun(pos))
     new ResultOfNoneOfApplication(xs)
   }
 
@@ -2959,11 +2925,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def only(xs: Any*) = {
+  def only(xs: Any*)(implicit prettifier: Prettifier, pos: source.Position) = {
     if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages.onlyEmpty, getStackDepthFun("Matchers.scala", "only"))
+      throw new NotAllowedException(FailureMessages.onlyEmpty, getStackDepthFun(pos))
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.onlyDuplicate, getStackDepthFun("Matchers.scala", "only"))
+      throw new NotAllowedException(FailureMessages.onlyDuplicate, getStackDepthFun(pos))
     new ResultOfOnlyApplication(xs)
   }
   
@@ -2975,10 +2941,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrderOnly[T](firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+  def inOrderOnly[T](firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, getStackDepthFun("Matchers.scala", "inOrderOnly"))
+      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, getStackDepthFun(pos))
     new ResultOfInOrderOnlyApplication(xs)
   }
   
@@ -2990,10 +2956,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+  def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun("Matchers.scala", "allOf"))
+      throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun(pos))
     new ResultOfAllOfApplication(xs)
   }
 
@@ -3018,10 +2984,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+  def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun("Matchers.scala", "inOrder"))
+      throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun(pos))
     new ResultOfInOrderApplication(xs)
   }
 
@@ -3046,10 +3012,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    *                               ^
    * </pre>
    */
-  def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*) = {
+  def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun("Matchers.scala", "atMostOneOf"))
+      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun(pos))
     new ResultOfAtMostOneOfApplication(xs)
   }
 
@@ -3133,37 +3099,37 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   private case object NoCollected extends Collected
   private case class ExactlyCollected(num: Int) extends Collected
   
-  private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, methodName: String, stackDepth: Int)(fun: T => Assertion): Assertion = {
+  private[scalatest] def doCollected[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, pos: source.Position)(fun: T => Assertion): Assertion = {
 
     val asserting = InspectorAsserting.assertingNatureOfAssertion
 
     collected match {
       case AllCollected =>
-        asserting.forAll(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forAll(xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
       case AtLeastCollected(num) =>
-        asserting.forAtLeast(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forAtLeast(num, xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
       case EveryCollected =>
-        asserting.forEvery(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forEvery(xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
       case ExactlyCollected(num) =>
-        asserting.forExactly(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forExactly(num, xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
       case NoCollected =>
-        asserting.forNo(xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forNo(xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
       case BetweenCollected(from, to) =>
-        asserting.forBetween(from, to, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forBetween(from, to, xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
       case AtMostCollected(num) =>
-        asserting.forAtMost(num, xs, original, true, "Matchers.scala", methodName, stackDepth) { e =>
+        asserting.forAtMost(num, xs, original, true, prettifier, pos) { e =>
           fun(e)
         }
     }
@@ -3176,16 +3142,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean) {
+  sealed class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     import org.scalatest.InspectorsHelper._
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val outerStackDepth = 1
-    private[scalatest] val innerStackDepth = 6
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
  
     /**
      * This method enables the following syntax:
@@ -3196,10 +3155,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def equal(right: Any)(implicit equality: Equality[T]): Assertion = {
-      doCollected(collected, xs, original, "equal", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((equality.areEqual(e, right)) != shouldBeTrue)
-          indicateFailure(shouldBeTrue, FailureMessages.didNotEqual(e, right), FailureMessages.equaled(e, right), None, innerStackDepth)
-        else indicateSuccess(shouldBeTrue, FailureMessages.equaled(e, right), FailureMessages.didNotEqual(e, right))
+          indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqual(prettifier, e, right) else FailureMessages.equaled(prettifier, e, right), None, pos)
+        else indicateSuccess(shouldBeTrue, FailureMessages.equaled(prettifier, e, right), FailureMessages.didNotEqual(prettifier, e, right))
       }
     }
 
@@ -3212,10 +3171,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(right: Any): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e == right) != shouldBeTrue)
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotEqualTo(e, right), FailureMessages.wasEqualTo(e, right), None, innerStackDepth)
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasEqualTo(e, right), FailureMessages.wasNotEqualTo(e, right))
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotEqualTo(prettifier, e, right) else FailureMessages.wasEqualTo(prettifier, e, right), None, pos)
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasEqualTo(prettifier, e, right), FailureMessages.wasNotEqualTo(prettifier, e, right))
       }
     }
 
@@ -3228,11 +3187,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotLessThanOrEqualTo(e, comparison.right), FailureMessages.wasLessThanOrEqualTo(e, comparison.right), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThanOrEqualTo(prettifier, e, comparison.right) else FailureMessages.wasLessThanOrEqualTo(prettifier, e, comparison.right), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasLessThanOrEqualTo(e, comparison.right), FailureMessages.wasNotLessThanOrEqualTo(e, comparison.right))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasLessThanOrEqualTo(prettifier, e, comparison.right), FailureMessages.wasNotLessThanOrEqualTo(prettifier, e, comparison.right))
       }
     }
 
@@ -3245,11 +3204,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotGreaterThanOrEqualTo(e, comparison.right), FailureMessages.wasGreaterThanOrEqualTo(e, comparison.right), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, e, comparison.right) else FailureMessages.wasGreaterThanOrEqualTo(prettifier, e, comparison.right), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThanOrEqualTo(e, comparison.right), FailureMessages.wasNotGreaterThanOrEqualTo(e, comparison.right))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThanOrEqualTo(prettifier, e, comparison.right), FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, e, comparison.right))
       }
     }
 
@@ -3262,11 +3221,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(comparison: ResultOfLessThanComparison[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotLessThan(e, comparison.right), FailureMessages.wasLessThan(e, comparison.right), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThan(prettifier, e, comparison.right) else FailureMessages.wasLessThan(prettifier, e, comparison.right), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasLessThan(e, comparison.right), FailureMessages.wasNotLessThan(e, comparison.right))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasLessThan(prettifier, e, comparison.right), FailureMessages.wasNotLessThan(prettifier, e, comparison.right))
       }
     }
 
@@ -3279,11 +3238,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotGreaterThan(e, comparison.right), FailureMessages.wasGreaterThan(e, comparison.right), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThan(prettifier, e, comparison.right) else FailureMessages.wasGreaterThan(prettifier, e, comparison.right), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThan(e, comparison.right), FailureMessages.wasNotGreaterThan(e, comparison.right))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThan(prettifier, e, comparison.right), FailureMessages.wasNotGreaterThan(prettifier, e, comparison.right))
       }
     }
 
@@ -3302,7 +3261,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
     def be(comparison: TripleEqualsInvocation[_]): Nothing = {
       throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
-                                    getStackDepthFun("Matchers.scala", "be")) 
+                                    getStackDepthFun(pos))
     }
 
     /**
@@ -3315,12 +3274,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(beMatcher: BeMatcher[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = beMatcher(e)
         if (result.matches != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, result.failureMessage, result.negatedFailureMessage, None, 10)
+          indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, result.negatedFailureMessage, result.failureMessage)
+        else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
       }
     }
     
@@ -3334,12 +3293,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(bePropertyMatcher: BePropertyMatcher[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = bePropertyMatcher(e)
         if (result.matches != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNot(e, UnquotedString(result.propertyName)), FailureMessages.was(e, UnquotedString(result.propertyName)), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNot(prettifier, e, UnquotedString(result.propertyName)) else FailureMessages.was(prettifier, e, UnquotedString(result.propertyName)), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.was(e, UnquotedString(result.propertyName)), FailureMessages.wasNot(e, UnquotedString(result.propertyName)))
+        else indicateSuccess(shouldBeTrue, FailureMessages.was(prettifier, e, UnquotedString(result.propertyName)), FailureMessages.wasNot(prettifier, e, UnquotedString(result.propertyName)))
       }
     }
     
@@ -3353,12 +3312,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = resultOfAWordApplication.bePropertyMatcher(e)
         if (result.matches != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotA(e, UnquotedString(result.propertyName)), FailureMessages.wasA(e, UnquotedString(result.propertyName)), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotA(prettifier, e, UnquotedString(result.propertyName)) else FailureMessages.wasA(prettifier, e, UnquotedString(result.propertyName)), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasA(e, UnquotedString(result.propertyName)), FailureMessages.wasNotA(e, UnquotedString(result.propertyName)))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasA(prettifier, e, UnquotedString(result.propertyName)), FailureMessages.wasNotA(prettifier, e, UnquotedString(result.propertyName)))
       }
     }
     
@@ -3372,12 +3331,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = resultOfAnWordApplication.bePropertyMatcher(e)
         if (result.matches != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotAn(e, UnquotedString(result.propertyName)), FailureMessages.wasAn(e, UnquotedString(result.propertyName)), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotAn(prettifier, e, UnquotedString(result.propertyName)) else FailureMessages.wasAn(prettifier, e, UnquotedString(result.propertyName)), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasAn(e, UnquotedString(result.propertyName)), FailureMessages.wasNotAn(e, UnquotedString(result.propertyName)))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasAn(prettifier, e, UnquotedString(result.propertyName)), FailureMessages.wasNotAn(prettifier, e, UnquotedString(result.propertyName)))
       }
     }
     
@@ -3390,13 +3349,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         e match {
           case ref: AnyRef =>
             if ((resultOfSameInstanceAsApplication.right eq ref) != shouldBeTrue) {
-              indicateFailure(shouldBeTrue, FailureMessages.wasNotSameInstanceAs(e, resultOfSameInstanceAsApplication.right), FailureMessages.wasSameInstanceAs(e, resultOfSameInstanceAsApplication.right), None, innerStackDepth)
+              indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSameInstanceAs(prettifier, e, resultOfSameInstanceAsApplication.right) else FailureMessages.wasSameInstanceAs(prettifier, e, resultOfSameInstanceAsApplication.right), None, pos)
             }
-            else indicateSuccess(shouldBeTrue, FailureMessages.wasSameInstanceAs(e, resultOfSameInstanceAsApplication.right), FailureMessages.wasNotSameInstanceAs(e, resultOfSameInstanceAsApplication.right))
+            else indicateSuccess(shouldBeTrue, FailureMessages.wasSameInstanceAs(prettifier, e, resultOfSameInstanceAsApplication.right), FailureMessages.wasNotSameInstanceAs(prettifier, e, resultOfSameInstanceAsApplication.right))
           case _ => 
             throw new IllegalArgumentException("theSameInstanceAs should only be used for AnyRef")
         }
@@ -3412,10 +3371,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be[U](resultOfDefinedAt: ResultOfDefinedAt[U])(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e.isDefinedAt(resultOfDefinedAt.right) != shouldBeTrue)
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotDefinedAt(e, resultOfDefinedAt.right), FailureMessages.wasDefinedAt(e, resultOfDefinedAt.right), None, innerStackDepth)
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasDefinedAt(e, resultOfDefinedAt.right), FailureMessages.wasNotDefinedAt(e, resultOfDefinedAt.right))
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefinedAt(prettifier, e, resultOfDefinedAt.right) else FailureMessages.wasDefinedAt(prettifier, e, resultOfDefinedAt.right), None, pos)
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasDefinedAt(prettifier, e, resultOfDefinedAt.right), FailureMessages.wasNotDefinedAt(prettifier, e, resultOfDefinedAt.right))
       }
     }
 
@@ -3434,13 +3393,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *
      */
     def have(resultOfLengthWordApplication: ResultOfLengthWordApplication)(implicit len: Length[T]): Assertion = {
-      doCollected(collected, xs, original, "have", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val right = resultOfLengthWordApplication.expectedLength
         val leftLength = len.lengthOf(e)
         if ((leftLength == right) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.hadLengthInsteadOfExpectedLength(e, leftLength, right), FailureMessages.hadLength(e, right), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, e, leftLength, right) else FailureMessages.hadLength(prettifier, e, right), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.hadLength(e, right), FailureMessages.hadLengthInsteadOfExpectedLength(e, leftLength, right))
+        else indicateSuccess(shouldBeTrue, FailureMessages.hadLength(prettifier, e, right), FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, e, leftLength, right))
       }
     }
 
@@ -3454,13 +3413,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *
      */
     def have(resultOfSizeWordApplication: ResultOfSizeWordApplication)(implicit sz: Size[T]): Assertion = {
-      doCollected(collected, xs, original, "have", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val right = resultOfSizeWordApplication.expectedSize
         val leftSize = sz.sizeOf(e)
         if ((leftSize == right) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.hadSizeInsteadOfExpectedSize(e, leftSize, right), FailureMessages.hadSize(e, right), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, e, leftSize, right) else FailureMessages.hadSize(prettifier, e, right), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.hadSize(e, right), FailureMessages.hadSizeInsteadOfExpectedSize(e, leftSize, right))
+        else indicateSuccess(shouldBeTrue, FailureMessages.hadSize(prettifier, e, right), FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, e, leftSize, right))
       }
     }
 
@@ -3474,7 +3433,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def have[U >: T](firstPropertyMatcher: HavePropertyMatcher[U, _], propertyMatchers: HavePropertyMatcher[U, _]*): Assertion = {
-      doCollected(collected, xs, original, "have", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
       
         val results =
           for (propertyVerifier <- firstPropertyMatcher :: propertyMatchers.toList) yield
@@ -3494,14 +3453,14 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               // 0 1 | 0 | 1
               // 1 0 | 0 | 1
               indicateFailure(
-                FailureMessages.propertyDidNotHaveExpectedValue(
+                FailureMessages.propertyDidNotHaveExpectedValue(prettifier,
                   UnquotedString(firstFailure.propertyName),
                   firstFailure.expectedValue,
                   firstFailure.actualValue,
                   e
                 ), 
                 None,
-                innerStackDepth
+                pos
               )
             case None =>
               // This is this cases, thus will only get here if shouldBeTrue is false
@@ -3509,25 +3468,25 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
               val failureMessage =
                 if (justOneProperty) {
                   val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
-                  FailureMessages.propertyHadExpectedValue(
+                  FailureMessages.propertyHadExpectedValue(prettifier,
                     UnquotedString(firstPropertyResult.propertyName),
                     firstPropertyResult.expectedValue,
                     e
                   )
                 }
-                else FailureMessages.allPropertiesHadExpectedValues(e)
+                else FailureMessages.allPropertiesHadExpectedValues(prettifier, e)
 
-              indicateFailure(failureMessage, None, innerStackDepth)
+              indicateFailure(failureMessage, None, pos)
           } 
         }
         else {
           if (shouldBeTrue)
-            indicateSuccess(FailureMessages.allPropertiesHadExpectedValues(e))
+            indicateSuccess(FailureMessages.allPropertiesHadExpectedValues(prettifier, e))
           else {
             firstFailureOption match {
               case Some(firstFailure) =>
                 indicateSuccess(
-                  FailureMessages.propertyDidNotHaveExpectedValue(
+                  FailureMessages.propertyDidNotHaveExpectedValue(prettifier,
                     UnquotedString(firstFailure.propertyName),
                     firstFailure.expectedValue,
                     firstFailure.actualValue,
@@ -3538,13 +3497,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
                 val message =
                   if (justOneProperty) {
                     val firstPropertyResult = results.head // know this will succeed, because firstPropertyMatcher was required
-                    FailureMessages.propertyHadExpectedValue(
+                    FailureMessages.propertyHadExpectedValue(prettifier,
                       UnquotedString(firstPropertyResult.propertyName),
                       firstPropertyResult.expectedValue,
                       e
                     )
                   }
-                  else FailureMessages.allPropertiesHadExpectedValues(e)
+                  else FailureMessages.allPropertiesHadExpectedValues(prettifier, e)
 
                 indicateSuccess(message)
             }
@@ -3562,11 +3521,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e == null) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotNull(e), FailureMessages.wasNull, None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotNull(prettifier, e) else FailureMessages.wasNull, None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasNull, FailureMessages.wasNotNull(e))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasNull, FailureMessages.wasNotNull(prettifier, e))
       }
     }
 
@@ -3579,13 +3538,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, false)
+    def be(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, false, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage, None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
     }
     
@@ -3597,13 +3556,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true)
+    def be(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage, None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
     }
     
@@ -3615,13 +3574,13 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                    ^
      * </pre>
      */
-    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false)
+    def be(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, matcherResult.failureMessage, matcherResult.negatedFailureMessage, None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage, matcherResult.failureMessage)
+        else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
     }
     // SKIP-SCALATESTJS-END
@@ -3635,11 +3594,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sortable.isSorted(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotSorted(e), FailureMessages.wasSorted(e), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSorted(prettifier, e) else FailureMessages.wasSorted(prettifier, e), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasSorted(e), FailureMessages.wasNotSorted(e))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasSorted(prettifier, e), FailureMessages.wasNotSorted(prettifier, e))
       }
     }
     
@@ -3652,11 +3611,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (readability.isReadable(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotReadable(e), FailureMessages.wasReadable(e), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotReadable(prettifier, e) else FailureMessages.wasReadable(prettifier, e), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasReadable(e), FailureMessages.wasNotReadable(e))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasReadable(prettifier, e), FailureMessages.wasNotReadable(prettifier, e))
       }
     }
     
@@ -3669,11 +3628,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (writability.isWritable(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotWritable(e), FailureMessages.wasWritable(e), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotWritable(prettifier, e) else FailureMessages.wasWritable(prettifier, e), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasWritable(e), FailureMessages.wasNotWritable(e))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasWritable(prettifier, e), FailureMessages.wasNotWritable(prettifier, e))
       }
     }
     
@@ -3686,11 +3645,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (emptiness.isEmpty(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotEmpty(e), FailureMessages.wasEmpty(e), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotEmpty(prettifier, e) else FailureMessages.wasEmpty(prettifier, e), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasEmpty(e), FailureMessages.wasNotEmpty(e))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasEmpty(prettifier, e), FailureMessages.wasNotEmpty(prettifier, e))
       }
     }
     
@@ -3703,11 +3662,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def be(definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
-      doCollected(collected, xs, original, "be", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (definition.isDefined(e) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.wasNotDefined(e), FailureMessages.wasDefined(e), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefined(prettifier, e) else FailureMessages.wasDefined(prettifier, e), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.wasDefined(e), FailureMessages.wasNotDefined(e))
+        else indicateSuccess(shouldBeTrue, FailureMessages.wasDefined(prettifier, e), FailureMessages.wasNotDefined(prettifier, e))
       }
     }
 
@@ -3720,11 +3679,11 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def contain(nullValue: Null)(implicit containing: Containing[T]): Assertion = {
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((containing.contains(e, null)) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.didNotContainNull(e), FailureMessages.containedNull(e), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainNull(prettifier, e) else FailureMessages.containedNull(prettifier, e), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.containedNull(e), FailureMessages.didNotContainNull(e))
+        else indicateSuccess(shouldBeTrue, FailureMessages.containedNull(prettifier, e), FailureMessages.didNotContainNull(prettifier, e))
       }
     }
 
@@ -3737,12 +3696,12 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def contain(expectedElement: Any)(implicit containing: Containing[T]): Assertion = {
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val right = expectedElement
         if ((containing.contains(e, right)) != shouldBeTrue) {
-          indicateFailure(shouldBeTrue, FailureMessages.didNotContainExpectedElement(e, right), FailureMessages.containedExpectedElement(e, right), None, innerStackDepth)
+          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainExpectedElement(prettifier, e, right) else FailureMessages.containedExpectedElement(prettifier, e, right), None, pos)
         }
-        else indicateSuccess(shouldBeTrue, FailureMessages.containedExpectedElement(e, right), FailureMessages.didNotContainExpectedElement(e, right))
+        else indicateSuccess(shouldBeTrue, FailureMessages.containedExpectedElement(prettifier, e, right), FailureMessages.didNotContainExpectedElement(prettifier, e, right))
       }
     }
 
@@ -3758,18 +3717,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = oneOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth)
+            pos)
         else indicateSuccess(
           shouldBeTrue,
-          FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-          FailureMessages.didNotContainOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+          FailureMessages.containedOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+          FailureMessages.didNotContainOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
         )
       }
     }
@@ -3786,10 +3746,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = oneElementOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(shouldBeTrue, FailureMessages.didNotContainOneElementOf(e, right), FailureMessages.containedOneElementOf(e, right), None, innerStackDepth)
-        else indicateSuccess(shouldBeTrue, FailureMessages.containedOneElementOf(e, right), FailureMessages.didNotContainOneElementOf(e, right))
+          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainOneElementOf(prettifier, e, right) else FailureMessages.containedOneElementOf(prettifier, e, right), None, pos)
+        else indicateSuccess(shouldBeTrue, FailureMessages.containedOneElementOf(prettifier, e, right), FailureMessages.didNotContainOneElementOf(prettifier, e, right))
       }
     }
 
@@ -3805,19 +3765,20 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = atLeastOneOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth)
+            pos)
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -3834,10 +3795,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = atLeastOneElementOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(e, right), FailureMessages.containedAtLeastOneElementOf(e, right), None, innerStackDepth)
-        else indicateSuccess(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(e, right), FailureMessages.didNotContainAtLeastOneElementOf(e, right))
+          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right) else FailureMessages.containedAtLeastOneElementOf(prettifier, e, right), None, pos)
+        else indicateSuccess(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(prettifier, e, right), FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right))
       }
     }
 
@@ -3853,19 +3814,20 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = noneOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else indicateSuccess(
           shouldBeTrue,
-          FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-          FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+          FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+          FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
         )
       }
     }
@@ -3882,10 +3844,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = noElementsOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsNoneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(e, right), FailureMessages.didNotContainAtLeastOneElementOf(e, right), None, innerStackDepth)
-        else indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(e, right), FailureMessages.containedAtLeastOneElementOf(e, right))
+          indicateFailure(if (shouldBeTrue) FailureMessages.containedAtLeastOneElementOf(prettifier, e, right) else FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right), None, pos)
+        else indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right), FailureMessages.containedAtLeastOneElementOf(prettifier, e, right))
       }
     }
 
@@ -3901,10 +3863,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = theSameElementsAs.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
-          indicateFailure(shouldBeTrue, FailureMessages.didNotContainSameElements(e, right), FailureMessages.containedSameElements(e, right), None, innerStackDepth)
-        else indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(e, right), FailureMessages.didNotContainSameElements(e, right))
+          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElements(prettifier, e, right) else FailureMessages.containedSameElements(prettifier, e, right), None, pos)
+        else indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(prettifier, e, right), FailureMessages.didNotContainSameElements(prettifier, e, right))
       }
     }
     
@@ -3920,10 +3882,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = theSameElementsInOrderAs.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
-          indicateFailure(shouldBeTrue, FailureMessages.didNotContainSameElementsInOrder(e, right), FailureMessages.containedSameElementsInOrder(e, right), None, innerStackDepth)
-        else indicateSuccess(shouldBeTrue, FailureMessages.containedSameElementsInOrder(e, right), FailureMessages.didNotContainSameElementsInOrder(e, right))
+          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElementsInOrder(prettifier, e, right) else FailureMessages.containedSameElementsInOrder(prettifier, e, right), None, pos)
+        else indicateSuccess(shouldBeTrue, FailureMessages.containedSameElementsInOrder(prettifier, e, right), FailureMessages.didNotContainSameElementsInOrder(prettifier, e, right))
       }
     }
 
@@ -3939,24 +3901,29 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = only.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
           val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
           indicateFailure(
-            shouldBeTrue,
-            withFriendlyReminder,
-            FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              if (withFriendlyReminder)
+                FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+              else
+                FailureMessages.didNotContainOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+
+            else
+              if (withFriendlyReminder)
+                FailureMessages.containedOnlyElementsWithFriendlyReminder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+              else
+                FailureMessages.containedOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         }
         else indicateSuccess(
           shouldBeTrue,
-          FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-          FailureMessages.didNotContainOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+          FailureMessages.containedOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+          FailureMessages.didNotContainOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
         )
       }
     }
@@ -3973,18 +3940,19 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = only.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth)
+            pos)
         else indicateSuccess(
           shouldBeTrue,
-          FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-          FailureMessages.didNotContainInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+          FailureMessages.containedInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+          FailureMessages.didNotContainInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
         )
       }
     }
@@ -4001,20 +3969,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = only.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4031,20 +4000,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = only.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsAllOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllElementsOf(e, right),
-            FailureMessages.containedAllElementsOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOf(prettifier, e, right)
+            else
+              FailureMessages.containedAllElementsOf(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAllElementsOf(e, right),
-            FailureMessages.didNotContainAllElementsOf(e, right)
+            FailureMessages.containedAllElementsOf(prettifier, e, right),
+            FailureMessages.didNotContainAllElementsOf(prettifier, e, right)
           )
       }
     }
@@ -4061,20 +4031,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = inOrder.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrder(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4091,20 +4062,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = inOrderElementsOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsInOrder(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllElementsOfInOrder(e, right),
-            FailureMessages.containedAllElementsOfInOrder(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOfInOrder(prettifier, e, right)
+            else
+              FailureMessages.containedAllElementsOfInOrder(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAllElementsOfInOrder(e, right),
-            FailureMessages.didNotContainAllElementsOfInOrder(e, right)
+            FailureMessages.containedAllElementsOfInOrder(prettifier, e, right),
+            FailureMessages.didNotContainAllElementsOfInOrder(prettifier, e, right)
           )
       }
     }
@@ -4121,20 +4093,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = atMostOneOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4151,20 +4124,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       val right = atMostOneElementOf.right
 
-      doCollected(collected, xs, original, "contain", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtMostOneElementOf(e, right),
-            FailureMessages.containedAtMostOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtMostOneElementOf(prettifier, e, right)
+            else
+              FailureMessages.containedAtMostOneElementOf(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAtMostOneElementOf(e, right),
-            FailureMessages.didNotContainAtMostOneElementOf(e, right)
+            FailureMessages.containedAtMostOneElementOf(prettifier, e, right),
+            FailureMessages.didNotContainAtMostOneElementOf(prettifier, e, right)
           )
       }
     }
@@ -4178,22 +4152,23 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def contain(resultOfKeyWordApplication: ResultOfKeyWordApplication)(implicit keyMapping: KeyMapping[T]): Assertion = {
-      doCollected(collected, xs, original, "contain", outerStackDepth) { map =>
+      doCollected(collected, xs, original, prettifier, pos) { map =>
         val expectedKey = resultOfKeyWordApplication.expectedKey
         if ((keyMapping.containsKey(map, expectedKey)) != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainKey(map, expectedKey),
-            FailureMessages.containedKey(map, expectedKey),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainKey(prettifier, map, expectedKey)
+            else
+              FailureMessages.containedKey(prettifier, map, expectedKey),
             None,
-            innerStackDepth
+            pos
           )
         }
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedKey(map, expectedKey),
-            FailureMessages.didNotContainKey(map, expectedKey)
+            FailureMessages.containedKey(prettifier, map, expectedKey),
+            FailureMessages.didNotContainKey(prettifier, map, expectedKey)
           )
       }
     }
@@ -4207,22 +4182,23 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def contain(resultOfValueWordApplication: ResultOfValueWordApplication)(implicit valueMapping: ValueMapping[T]): Assertion = {
-      doCollected(collected, xs, original, "contain", outerStackDepth) { map =>
+      doCollected(collected, xs, original, prettifier, pos) { map =>
         val expectedValue = resultOfValueWordApplication.expectedValue
         if ((valueMapping.containsValue(map, expectedValue)) != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainValue(map, expectedValue),
-            FailureMessages.containedValue(map, expectedValue),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainValue(prettifier, map, expectedValue)
+            else
+              FailureMessages.containedValue(prettifier, map, expectedValue),
             None,
-            innerStackDepth
+            pos
           )
         }
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedValue(map, expectedValue),
-            FailureMessages.didNotContainValue(map, expectedValue)
+            FailureMessages.containedValue(prettifier, map, expectedValue),
+            FailureMessages.didNotContainValue(prettifier, map, expectedValue)
           )
       }
     }
@@ -4236,20 +4212,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def startWith(right: String)(implicit ev: T <:< String): Assertion = {
-      doCollected(collected, xs, original, "startWith", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e.indexOf(right) == 0) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotStartWith(e, right),
-            FailureMessages.startedWith(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotStartWith(prettifier, e, right)
+            else
+              FailureMessages.startedWith(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.startedWith(e, right),
-            FailureMessages.didNotStartWith(e, right)
+            FailureMessages.startedWith(prettifier, e, right),
+            FailureMessages.didNotStartWith(prettifier, e, right)
           )
       }
     }
@@ -4268,21 +4245,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </p>
      */
     def startWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
-      doCollected(collected, xs, original, "startWith", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = startWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            result.failureMessage,
-            result.negatedFailureMessage,
+            if (shouldBeTrue)
+              result.failureMessage(prettifier)
+            else
+              result.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -4296,20 +4274,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def endWith(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
-      doCollected(collected, xs, original, "endWith", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e endsWith expectedSubstring) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotEndWith(e, expectedSubstring),
-            FailureMessages.endedWith(e, expectedSubstring),
+            if (shouldBeTrue)
+              FailureMessages.didNotEndWith(prettifier, e, expectedSubstring)
+            else
+              FailureMessages.endedWith(prettifier, e, expectedSubstring),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.endedWith(e, expectedSubstring),
-            FailureMessages.didNotEndWith(e, expectedSubstring)
+            FailureMessages.endedWith(prettifier, e, expectedSubstring),
+            FailureMessages.didNotEndWith(prettifier, e, expectedSubstring)
           )
       }
     }
@@ -4323,21 +4302,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def endWith(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
-      doCollected(collected, xs, original, "endWith", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = endWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            result.failureMessage,
-            result.negatedFailureMessage,
+            if (shouldBeTrue)
+              result.failureMessage(prettifier)
+            else
+              result.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -4356,21 +4336,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </p>
      */
     def include(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
-      doCollected(collected, xs, original, "include", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = includeRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            result.failureMessage,
-            result.negatedFailureMessage,
+            if (shouldBeTrue)
+              result.failureMessage(prettifier)
+            else
+              result.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -4384,20 +4365,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def include(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
-      doCollected(collected, xs, original, "include", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotIncludeSubstring(e, expectedSubstring),
-            FailureMessages.includedSubstring(e, expectedSubstring),
+            if (shouldBeTrue)
+              FailureMessages.didNotIncludeSubstring(prettifier, e, expectedSubstring)
+            else
+              FailureMessages.includedSubstring(prettifier, e, expectedSubstring),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.includedSubstring(e, expectedSubstring),
-            FailureMessages.didNotIncludeSubstring(e, expectedSubstring)
+            FailureMessages.includedSubstring(prettifier, e, expectedSubstring),
+            FailureMessages.didNotIncludeSubstring(prettifier, e, expectedSubstring)
           )
       }
     }
@@ -4416,21 +4398,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </p>
      */
     def fullyMatch(resultOfRegexWordApplication: ResultOfRegexWordApplication)(implicit ev: T <:< String): Assertion = {
-      doCollected(collected, xs, original, "fullyMatch", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = fullyMatchRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            result.failureMessage,
-            result.negatedFailureMessage,
+            if (shouldBeTrue)
+              result.failureMessage(prettifier)
+            else
+              result.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -4450,14 +4433,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val outerStackDepth = 1
-    private[scalatest] val innerStackDepth = 6
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
+  final class ResultOfContainWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -4470,21 +4446,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.oneOfDuplicate, getStackDepthFun("Matchers.scala", "oneOf"))
-      doCollected(collected, xs, original, "oneOf", outerStackDepth) { e =>
+        throw new NotAllowedException(FailureMessages.oneOfDuplicate, getStackDepthFun(pos))
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
         )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainOneOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4499,20 +4476,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
       val right = elements.toList
-      doCollected(collected, xs, original, "oneElementOf", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainOneElementOf(e, right),
-            FailureMessages.containedOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainOneElementOf(prettifier, e, right)
+            else
+              FailureMessages.containedOneElementOf(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedOneElementOf(e, right),
-            FailureMessages.didNotContainOneElementOf(e, right)
+            FailureMessages.containedOneElementOf(prettifier, e, right),
+            FailureMessages.didNotContainOneElementOf(prettifier, e, right)
           )
       }
     }
@@ -4528,21 +4506,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun("Matchers.scala", "atLeastOneOf"))
-      doCollected(collected, xs, original, "atLeastOneOf", outerStackDepth) { e =>
+        throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, getStackDepthFun(pos))
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
         )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4557,20 +4536,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
       val right = elements.toList
-      doCollected(collected, xs, original, "atLeastOneElementOf", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtLeastOneElementOf(e, right),
-            FailureMessages.containedAtLeastOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right)
+            else
+              FailureMessages.containedAtLeastOneElementOf(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAtLeastOneElementOf(e, right),
-            FailureMessages.didNotContainAtLeastOneElementOf(e, right)
+            FailureMessages.containedAtLeastOneElementOf(prettifier, e, right),
+            FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right)
           )
       }
     }
@@ -4586,21 +4566,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.noneOfDuplicate, getStackDepthFun("Matchers.scala", "noneOf"))
-      doCollected(collected, xs, original, "noneOf", outerStackDepth) { e =>
+        throw new NotAllowedException(FailureMessages.noneOfDuplicate, getStackDepthFun(pos))
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.didNotContainAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAtLeastOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4615,20 +4596,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[T]): Assertion = {
       val right = elements.toList
-      doCollected(collected, xs, original, "noElementsOf", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsNoneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.containedAtLeastOneElementOf(e, right),
-            FailureMessages.didNotContainAtLeastOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.containedAtLeastOneElementOf(prettifier, e, right)
+            else
+              FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.didNotContainAtLeastOneElementOf(e, right),
-            FailureMessages.containedAtLeastOneElementOf(e, right)
+            FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right),
+            FailureMessages.containedAtLeastOneElementOf(prettifier, e, right)
           )
       }
     }
@@ -4642,20 +4624,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]): Assertion = {
-      doCollected(collected, xs, original, "theSameElementsAs", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainSameElements(e, right),
-            FailureMessages.containedSameElements(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainSameElements(prettifier, e, right)
+            else
+              FailureMessages.containedSameElements(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedSameElements(e, right),
-            FailureMessages.didNotContainSameElements(e, right)
+            FailureMessages.containedSameElements(prettifier, e, right),
+            FailureMessages.didNotContainSameElements(prettifier, e, right)
           )
       }
     }
@@ -4669,20 +4652,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[T]): Assertion = {
-      doCollected(collected, xs, original, "theSameElementsInOrderAs", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainSameElementsInOrder(e, right),
-            FailureMessages.containedSameElementsInOrder(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainSameElementsInOrder(prettifier, e, right)
+            else
+              FailureMessages.containedSameElementsInOrder(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedSameElementsInOrder(e, right),
-            FailureMessages.didNotContainSameElementsInOrder(e, right)
+            FailureMessages.containedSameElementsInOrder(prettifier, e, right),
+            FailureMessages.didNotContainSameElementsInOrder(prettifier, e, right)
           )
       }
     }
@@ -4697,28 +4681,32 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def only(right: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
       if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages.onlyEmpty, getStackDepthFun("Matchers.scala", "only"))
+        throw new NotAllowedException(FailureMessages.onlyEmpty, getStackDepthFun(pos))
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.onlyDuplicate, getStackDepthFun("Matchers.scala", "only"))
-      doCollected(collected, xs, original, "only", outerStackDepth) { e =>
+        throw new NotAllowedException(FailureMessages.onlyDuplicate, getStackDepthFun(pos))
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
           val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
           indicateFailure(
-            shouldBeTrue,
-            withFriendlyReminder,
-            FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOnlyElementsWithFriendlyReminder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              if (withFriendlyReminder)
+                FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+              else
+                FailureMessages.didNotContainOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              if (withFriendlyReminder)
+                FailureMessages.containedOnlyElementsWithFriendlyReminder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+              else
+                FailureMessages.containedOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         }
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4734,21 +4722,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, getStackDepthFun("Matchers.scala", "inOrderOnly"))
-      doCollected(collected, xs, original, "inOrderOnly", outerStackDepth) { e =>
+        throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, getStackDepthFun(pos))
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainInOrderOnlyElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4764,21 +4753,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun("Matchers.scala", "allOf"))
-      doCollected(collected, xs, original, "allOf", outerStackDepth) { e =>
+        throw new NotAllowedException(FailureMessages.allOfDuplicate, getStackDepthFun(pos))
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAllOfElements(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4793,20 +4783,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def allElementsOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
       val right = elements.toList
-      doCollected(collected, xs, original, "allElementsOf", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAllOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllElementsOf(e, right),
-            FailureMessages.containedAllElementsOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOf(prettifier, e, right)
+            else
+              FailureMessages.containedAllElementsOf(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAllElementsOf(e, right),
-            FailureMessages.didNotContainAllElementsOf(e, right)
+            FailureMessages.containedAllElementsOf(prettifier, e, right),
+            FailureMessages.didNotContainAllElementsOf(prettifier, e, right)
           )
       }
     }
@@ -4822,21 +4813,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun("Matchers.scala", "inOrder"))
-      doCollected(collected, xs, original, "inOrder", outerStackDepth) { e =>
+        throw new NotAllowedException(FailureMessages.inOrderDuplicate, getStackDepthFun(pos))
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrder(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAllOfElementsInOrder(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4851,20 +4843,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def inOrderElementsOf(elements: GenTraversable[Any])(implicit sequencing: Sequencing[T]): Assertion = {
       val right = elements.toList
-      doCollected(collected, xs, original, "inOrderElementsOf", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrder(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAllElementsOfInOrder(e, right),
-            FailureMessages.containedAllElementsOfInOrder(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAllElementsOfInOrder(prettifier, e, right)
+            else
+              FailureMessages.containedAllElementsOfInOrder(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAllElementsOfInOrder(e, right),
-            FailureMessages.didNotContainAllElementsOfInOrder(e, right)
+            FailureMessages.containedAllElementsOfInOrder(prettifier, e, right),
+            FailureMessages.didNotContainAllElementsOfInOrder(prettifier, e, right)
           )
       }
     }
@@ -4880,21 +4873,22 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun("Matchers.scala", "atMostOneOf"))
-      doCollected(collected, xs, original, "atMostOneOf", outerStackDepth) { e =>
+        throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, getStackDepthFun(pos))
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+            else
+              FailureMessages.containedAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", "))),
-            FailureMessages.didNotContainAtMostOneOf(e, UnquotedString(right.map(FailureMessages.decorateToStringValue).mkString(", ")))
+            FailureMessages.containedAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
+            FailureMessages.didNotContainAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
           )
       }
     }
@@ -4909,20 +4903,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def atMostOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[T]): Assertion = {
       val right = elements.toList
-      doCollected(collected, xs, original, "atMostOneElementOf", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainAtMostOneElementOf(e, right),
-            FailureMessages.containedAtMostOneElementOf(e, right),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainAtMostOneElementOf(prettifier, e, right)
+            else
+              FailureMessages.containedAtMostOneElementOf(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedAtMostOneElementOf(e, right),
-            FailureMessages.didNotContainAtMostOneElementOf(e, right)
+            FailureMessages.containedAtMostOneElementOf(prettifier, e, right),
+            FailureMessages.didNotContainAtMostOneElementOf(prettifier, e, right)
           )
       }
     }
@@ -4936,20 +4931,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def key(expectedKey: Any)(implicit keyMapping: KeyMapping[T]): Assertion = {
-      doCollected(collected, xs, original, "key", outerStackDepth) { map =>
+      doCollected(collected, xs, original, prettifier, pos) { map =>
         if (keyMapping.containsKey(map, expectedKey) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainKey(map, expectedKey),
-            FailureMessages.containedKey(map, expectedKey),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainKey(prettifier, map, expectedKey)
+            else
+              FailureMessages.containedKey(prettifier, map, expectedKey),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedKey(map, expectedKey),
-            FailureMessages.didNotContainKey(map, expectedKey)
+            FailureMessages.containedKey(prettifier, map, expectedKey),
+            FailureMessages.didNotContainKey(prettifier, map, expectedKey)
           )
       }
     }
@@ -4963,24 +4959,24 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def value(expectedValue: Any)(implicit valueMapping: ValueMapping[T]): Assertion = {
-      doCollected(collected, xs, original, "value", outerStackDepth) { map =>
+      doCollected(collected, xs, original, prettifier, pos) { map =>
         if (valueMapping.containsValue(map, expectedValue) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.didNotContainValue(map, expectedValue),
-            FailureMessages.containedValue(map, expectedValue),
+            if (shouldBeTrue)
+              FailureMessages.didNotContainValue(prettifier, map, expectedValue)
+            else
+              FailureMessages.containedValue(prettifier, map, expectedValue),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.containedValue(map, expectedValue),
-            FailureMessages.didNotContainValue(map, expectedValue)
+            FailureMessages.containedValue(prettifier, map, expectedValue),
+            FailureMessages.didNotContainValue(prettifier, map, expectedValue)
           )
       }
     }
-
     /**
      * Overrides to return pretty toString.
      *
@@ -4996,14 +4992,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val outerStackDepth = 1
-    private[scalatest] val innerStackDepth = 6
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
+  sealed class ResultOfBeWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     // TODO: Missing should(AMatcher) and should(AnMatcher)
 
@@ -5016,20 +5005,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "theSameInstanceAs", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((toAnyRef(e) eq right) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.wasNotSameInstanceAs(e, right),
-            FailureMessages.wasSameInstanceAs(e, right),
+            if (shouldBeTrue)
+              FailureMessages.wasNotSameInstanceAs(prettifier, e, right)
+            else
+              FailureMessages.wasSameInstanceAs(prettifier, e, right),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.wasSameInstanceAs(e, right),
-            FailureMessages.wasNotSameInstanceAs(e, right)
+            FailureMessages.wasSameInstanceAs(prettifier, e, right),
+            FailureMessages.wasNotSameInstanceAs(prettifier, e, right)
           )
       }
     }
@@ -5044,22 +5034,23 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "a", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true)
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            matcherResult.failureMessage,
-            matcherResult.negatedFailureMessage,
+            if (shouldBeTrue)
+              matcherResult.failureMessage(prettifier)
+            else
+              matcherResult.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         }
         else
           indicateSuccess(
             shouldBeTrue,
-            matcherResult.negatedFailureMessage,
-            matcherResult.failureMessage
+            matcherResult.negatedFailureMessage(prettifier),
+            matcherResult.failureMessage(prettifier)
           )
       }
     }
@@ -5073,22 +5064,23 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "an", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false)
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            matcherResult.failureMessage,
-            matcherResult.negatedFailureMessage,
+            if (shouldBeTrue)
+              matcherResult.failureMessage(prettifier)
+            else
+              matcherResult.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         }
         else
           indicateSuccess(
             shouldBeTrue,
-            matcherResult.negatedFailureMessage,
-            matcherResult.failureMessage
+            matcherResult.negatedFailureMessage(prettifier),
+            matcherResult.failureMessage(prettifier)
           )
       }
     }
@@ -5104,22 +5096,23 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def a[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting 2.10 AnyVals
-      doCollected(collected, xs, original, "a", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (result.matches != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.wasNotA(e, UnquotedString(result.propertyName)),
-            FailureMessages.wasA(e, UnquotedString(result.propertyName)),
+            if (shouldBeTrue)
+              FailureMessages.wasNotA(prettifier, e, UnquotedString(result.propertyName))
+            else
+              FailureMessages.wasA(prettifier, e, UnquotedString(result.propertyName)),
             None,
-            innerStackDepth
+            pos
           )
         }
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.wasA(e, UnquotedString(result.propertyName)),
-            FailureMessages.wasNotA(e, UnquotedString(result.propertyName))
+            FailureMessages.wasA(prettifier, e, UnquotedString(result.propertyName)),
+            FailureMessages.wasNotA(prettifier, e, UnquotedString(result.propertyName))
           )
       }
     }
@@ -5134,22 +5127,23 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def an[U <: T](beTrueMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting 2.10 AnyVals
-      doCollected(collected, xs, original, "an", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val beTrueMatchResult = beTrueMatcher(e.asInstanceOf[U])
         if (beTrueMatchResult.matches != shouldBeTrue) {
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.wasNotAn(e, UnquotedString(beTrueMatchResult.propertyName)),
-            FailureMessages.wasAn(e, UnquotedString(beTrueMatchResult.propertyName)),
+            if (shouldBeTrue)
+              FailureMessages.wasNotAn(prettifier, e, UnquotedString(beTrueMatchResult.propertyName))
+            else
+              FailureMessages.wasAn(prettifier, e, UnquotedString(beTrueMatchResult.propertyName)),
             None,
-            innerStackDepth
+            pos
           )
         }
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.wasAn(e, UnquotedString(beTrueMatchResult.propertyName)),
-            FailureMessages.wasNotAn(e, UnquotedString(beTrueMatchResult.propertyName))
+            FailureMessages.wasAn(prettifier, e, UnquotedString(beTrueMatchResult.propertyName)),
+            FailureMessages.wasNotAn(prettifier, e, UnquotedString(beTrueMatchResult.propertyName))
           )
       }
     }
@@ -5163,20 +5157,21 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      * </pre>
      */
     def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
-      doCollected(collected, xs, xs, "definedAt", outerStackDepth) { e =>
+      doCollected(collected, xs, xs, prettifier, pos) { e =>
       if (e.isDefinedAt(right) != shouldBeTrue)
         indicateFailure(
-          shouldBeTrue,
-          FailureMessages.wasNotDefinedAt(e, right),
-          FailureMessages.wasDefinedAt(e, right),
+          if (shouldBeTrue)
+            FailureMessages.wasNotDefinedAt(prettifier, e, right)
+          else
+            FailureMessages.wasDefinedAt(prettifier, e, right),
           None,
-          innerStackDepth
+          pos
         )
         else
         indicateSuccess(
           shouldBeTrue,
-          FailureMessages.wasDefinedAt(e, right),
-          FailureMessages.wasNotDefinedAt(e, right)
+          FailureMessages.wasDefinedAt(prettifier, e, right),
+          FailureMessages.wasNotDefinedAt(prettifier, e, right)
         )
       }
     }
@@ -5197,8 +5192,8 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], original: Any, shouldBeTrue: Boolean)
-    extends ResultOfBeWordForCollectedAny(collected, xs, original, shouldBeTrue) {
+  final class ResultOfBeWordForCollectedArray[T](collected: Collected, xs: scala.collection.GenTraversable[Array[T]], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position)
+    extends ResultOfBeWordForCollectedAny(collected, xs, original, shouldBeTrue, prettifier, pos) {
   
     /**
      * This method enables the following syntax:
@@ -5208,9 +5203,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      *                           ^
      * </pre>
      */
-    def apply(right: Symbol): Matcher[Array[T]] =
+    def apply(right: Symbol)(implicit prettifier: Prettifier, pos: source.Position): Matcher[Array[T]] =
       new Matcher[Array[T]] {
-        def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false)
+        def apply(left: Array[T]): MatchResult = matchSymbolToPredicateMethod(left.deep, right, false, false, prettifier, pos)
       }
 
     /**
@@ -5229,14 +5224,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any) {
-
-    // SKIP-SCALATESTJS-START
-    private[scalatest] val outerStackDepth = 1
-    private[scalatest] val innerStackDepth = 6
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private[scalatest] val outerStackDepth = 0
-    //SCALATESTJS-ONLY private[scalatest] val innerStackDepth = 18
+  final class ResultOfCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, prettifier: Prettifier, pos: source.Position) {
 
 // TODO: shouldBe null works, b ut should be (null) does not when type is Any: 
 /*
@@ -5269,11 +5257,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(rightMatcher: Matcher[T]): Assertion = {
-      doCollected(collected, xs, original, "should", outerStackDepth) { e =>
-        rightMatcher(e) match {
-          case MatchFailed(failureMessage) =>
-            indicateFailure(failureMessage, None, innerStackDepth)
-          case result => indicateSuccess(result.negatedFailureMessage)
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val result = rightMatcher(e)
+        MatchFailed.unapply(result)(prettifier) match {
+          case Some(failureMessage) =>
+            indicateFailure(failureMessage, None, pos)
+          case None => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5287,12 +5276,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldEqual", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!equality.areEqual(e, right)) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-          indicateFailure(FailureMessages.didNotEqual(eee, rightee), None, innerStackDepth)
+          indicateFailure(FailureMessages.didNotEqual(prettifier, eee, rightee), None, pos)
         }
-        else indicateSuccess(FailureMessages.equaled(e, right))
+        else indicateSuccess(FailureMessages.equaled(prettifier, e, right))
       }
     }
 
@@ -5305,11 +5294,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldEqual(spread: Spread[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldEqual", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!spread.isWithin(e)) {
-          indicateFailure(FailureMessages.didNotEqualPlusOrMinus(e, spread.pivot, spread.tolerance), None, innerStackDepth)
+          indicateFailure(FailureMessages.didNotEqualPlusOrMinus(prettifier, e, spread.pivot, spread.tolerance), None, pos)
         }
-        else indicateSuccess(FailureMessages.equaledPlusOrMinus(e, spread.pivot, spread.tolerance))
+        else indicateSuccess(FailureMessages.equaledPlusOrMinus(prettifier, e, spread.pivot, spread.tolerance))
       }
     }
 
@@ -5322,10 +5311,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!sortable.isSorted(e))
-          indicateFailure(FailureMessages.wasNotSorted(e), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasSorted(e))
+          indicateFailure(FailureMessages.wasNotSorted(prettifier, e), None, pos)
+        else indicateSuccess(FailureMessages.wasSorted(prettifier, e))
       }
     }
     
@@ -5338,10 +5327,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!readability.isReadable(e))
-          indicateFailure(FailureMessages.wasNotReadable(e), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasReadable(e))
+          indicateFailure(FailureMessages.wasNotReadable(prettifier, e), None, pos)
+        else indicateSuccess(FailureMessages.wasReadable(prettifier, e))
       }
     }
  
@@ -5354,10 +5343,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!writability.isWritable(e))
-          indicateFailure(FailureMessages.wasNotWritable(e), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasWritable(e))
+          indicateFailure(FailureMessages.wasNotWritable(prettifier, e), None, pos)
+        else indicateSuccess(FailureMessages.wasWritable(prettifier, e))
       }
     }
 
@@ -5370,10 +5359,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!emptiness.isEmpty(e))
-          indicateFailure(FailureMessages.wasNotEmpty(e), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasEmpty(e))
+          indicateFailure(FailureMessages.wasNotEmpty(prettifier, e), None, pos)
+        else indicateSuccess(FailureMessages.wasEmpty(prettifier, e))
       }
     }
     
@@ -5386,10 +5375,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!definition.isDefined(e))
-          indicateFailure(FailureMessages.wasNotDefined(e), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasDefined(e))
+          indicateFailure(FailureMessages.wasNotDefined(prettifier, e), None, pos)
+        else indicateSuccess(FailureMessages.wasDefined(prettifier, e))
       }
     }
 
@@ -5402,10 +5391,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(aType: ResultOfATypeInvocation[_]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!aType.clazz.isAssignableFrom(e.getClass))
-          indicateFailure(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasAnInstanceOf(e, UnquotedString(aType.clazz.getName)))
+          indicateFailure(FailureMessages.wasNotAnInstanceOf(prettifier, e, UnquotedString(aType.clazz.getName), UnquotedString(e.getClass.getName)), None, pos)
+        else indicateSuccess(FailureMessages.wasAnInstanceOf(prettifier, e, UnquotedString(aType.clazz.getName)))
       }
     }
 
@@ -5418,10 +5407,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(anType: ResultOfAnTypeInvocation[_]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!anType.clazz.isAssignableFrom(e.getClass))
-          indicateFailure(FailureMessages.wasNotAnInstanceOf(e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasAnInstanceOf(e, UnquotedString(anType.clazz.getName)))
+          indicateFailure(FailureMessages.wasNotAnInstanceOf(prettifier, e, UnquotedString(anType.clazz.getName), UnquotedString(e.getClass.getName)), None, pos)
+        else indicateSuccess(FailureMessages.wasAnInstanceOf(prettifier, e, UnquotedString(anType.clazz.getName)))
       }
     }
 
@@ -5434,9 +5423,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldEqual(right: Null)(implicit ev: T <:< AnyRef): Assertion = { 
-      doCollected(collected, xs, original, "shouldEqual", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e != null) {
-          indicateFailure(FailureMessages.didNotEqualNull(e), None, innerStackDepth)
+          indicateFailure(FailureMessages.didNotEqualNull(prettifier, e), None, pos)
         }
         else indicateSuccess(FailureMessages.equaledNull)
       }
@@ -5452,11 +5441,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
       val rightMatcher = rightMatcherFactory1.matcher
-      doCollected(collected, xs, original, "should", outerStackDepth) { e =>
-        rightMatcher(e) match {
-          case MatchFailed(failureMessage) => 
-            indicateFailure(failureMessage, None, innerStackDepth)
-          case result => indicateSuccess(result.negatedFailureMessage)
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val result = rightMatcher(e)
+        MatchFailed.unapply(result)(prettifier) match {
+          case Some(failureMessage) =>
+            indicateFailure(failureMessage, None, pos)
+          case None => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5471,11 +5461,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
       val rightMatcher = rightMatcherFactory2.matcher
-      doCollected(collected, xs, original, "should", outerStackDepth) { e =>
-        rightMatcher(e) match {
-          case MatchFailed(failureMessage) => 
-            indicateFailure(failureMessage, None, innerStackDepth)
-          case result => indicateSuccess(result.negatedFailureMessage)
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val result = rightMatcher(e)
+        MatchFailed.unapply(result)(prettifier) match {
+          case Some(failureMessage) =>
+            indicateFailure(failureMessage, None, pos)
+          case None => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }
     }
@@ -5489,7 +5480,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
-      new ResultOfBeWordForCollectedAny[T](collected, xs, original, true)
+      new ResultOfBeWordForCollectedAny[T](collected, xs, original, true, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -5500,7 +5491,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(notWord: NotWord): ResultOfNotWordForCollectedAny[T] = 
-      new ResultOfNotWordForCollectedAny(collected, xs, original, false)
+      new ResultOfNotWordForCollectedAny(collected, xs, original, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -5513,7 +5504,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(haveWord: HaveWord): ResultOfHaveWordForCollectedExtent[T] =
-      new ResultOfHaveWordForCollectedExtent(collected, xs, original, true)
+      new ResultOfHaveWordForCollectedExtent(collected, xs, original, true, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -5524,12 +5515,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(right: Any): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e != right) {
           val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-          indicateFailure(FailureMessages.wasNot(eee, rightee), None, innerStackDepth)
+          indicateFailure(FailureMessages.wasNot(prettifier, eee, rightee), None, pos)
         }
-        else indicateSuccess(FailureMessages.was(e, right))
+        else indicateSuccess(FailureMessages.was(prettifier, e, right))
       }
     }
 
@@ -5542,18 +5533,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre> 
      */
     def shouldBe(comparison: ResultOfLessThanComparison[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!comparison(e)) {
           indicateFailure(
-            FailureMessages.wasNotLessThan(
+            FailureMessages.wasNotLessThan(prettifier,
               e,
               comparison.right
             ), 
             None,
-            innerStackDepth
+            pos
           ) 
         }
-        else indicateSuccess(FailureMessages.wasLessThan(e, comparison.right))
+        else indicateSuccess(FailureMessages.wasLessThan(prettifier, e, comparison.right))
       }
     }
 
@@ -5566,18 +5557,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre> 
      */
     def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!comparison(e)) {
           indicateFailure(
-            FailureMessages.wasNotLessThanOrEqualTo(
+            FailureMessages.wasNotLessThanOrEqualTo(prettifier,
               e,
               comparison.right
             ), 
             None,
-            innerStackDepth
+            pos
           ) 
         }
-        else indicateSuccess(FailureMessages.wasLessThanOrEqualTo(e, comparison.right))
+        else indicateSuccess(FailureMessages.wasLessThanOrEqualTo(prettifier, e, comparison.right))
       }
     }
 
@@ -5590,18 +5581,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre> 
      */
     def shouldBe(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!comparison(e)) {
           indicateFailure(
-            FailureMessages.wasNotGreaterThan(
+            FailureMessages.wasNotGreaterThan(prettifier,
               e,
               comparison.right
             ), 
             None,
-            innerStackDepth
+            pos
           ) 
         }
-        else indicateSuccess(FailureMessages.wasGreaterThan(e, comparison.right))
+        else indicateSuccess(FailureMessages.wasGreaterThan(prettifier, e, comparison.right))
       }
     }
 
@@ -5614,18 +5605,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre> 
      */
     def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!comparison(e)) {
           indicateFailure(
-            FailureMessages.wasNotGreaterThanOrEqualTo(
+            FailureMessages.wasNotGreaterThanOrEqualTo(prettifier,
               e,
               comparison.right
             ), 
             None,
-            innerStackDepth
+            pos
           ) 
         }
-        else indicateSuccess(FailureMessages.wasGreaterThanOrEqualTo(e, comparison.right))
+        else indicateSuccess(FailureMessages.wasGreaterThanOrEqualTo(prettifier, e, comparison.right))
       }
     }
 
@@ -5638,11 +5629,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(beMatcher: BeMatcher[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = beMatcher.apply(e)
         if (!result.matches)
-          indicateFailure(result.failureMessage, None, innerStackDepth)
-        else indicateSuccess(result.negatedFailureMessage)
+          indicateFailure(result.failureMessage(prettifier), None, pos)
+        else indicateSuccess(result.negatedFailureMessage(prettifier))
       }
     }
 
@@ -5655,10 +5646,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(spread: Spread[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!spread.isWithin(e))
-          indicateFailure(FailureMessages.wasNotPlusOrMinus(e, spread.pivot, spread.tolerance), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasPlusOrMinus(e, spread.pivot, spread.tolerance))
+          indicateFailure(FailureMessages.wasNotPlusOrMinus(prettifier, e, spread.pivot, spread.tolerance), None, pos)
+        else indicateSuccess(FailureMessages.wasPlusOrMinus(prettifier, e, spread.pivot, spread.tolerance))
       }
     }
 
@@ -5671,17 +5662,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (toAnyRef(e) ne resultOfSameInstanceAsApplication.right)
           indicateFailure(
-            FailureMessages.wasNotSameInstanceAs(
+            FailureMessages.wasNotSameInstanceAs(prettifier,
               e,
               resultOfSameInstanceAsApplication.right
             ),
             None,
-            innerStackDepth
+            pos
           )
-        else indicateSuccess(FailureMessages.wasSameInstanceAs(e, resultOfSameInstanceAsApplication.right))
+        else indicateSuccess(FailureMessages.wasSameInstanceAs(prettifier, e, resultOfSameInstanceAsApplication.right))
       }
     }
 
@@ -5694,12 +5685,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, 6)
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, true, prettifier, pos)
         if (!matcherResult.matches) 
-          indicateFailure(matcherResult.failureMessage, None, innerStackDepth)
-        else indicateSuccess(matcherResult.negatedFailureMessage)
+          indicateFailure(matcherResult.failureMessage(prettifier), None, pos)
+        else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
       }
     }
     
@@ -5711,13 +5702,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, 6)
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, prettifier, pos)
         if (!matcherResult.matches) {
-          indicateFailure(matcherResult.failureMessage, None, 6)
+          indicateFailure(matcherResult.failureMessage(prettifier), None, pos)
         }
-        else indicateSuccess(matcherResult.negatedFailureMessage)
+        else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
       }
     }
 
@@ -5729,13 +5720,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *         ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
-        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, 6)
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, prettifier, pos)
         if (!matcherResult.matches) {
-          indicateFailure(matcherResult.failureMessage, None, 6)
+          indicateFailure(matcherResult.failureMessage(prettifier), None, pos)
         }
-        else indicateSuccess(matcherResult.negatedFailureMessage)
+        else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
       }
     }
     // SKIP-SCALATESTJS-END
@@ -5749,9 +5740,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe(o: Null)(implicit ev: T <:< AnyRef): Assertion = {
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (e != null)
-         indicateFailure(FailureMessages.wasNotNull(e), None, innerStackDepth)
+         indicateFailure(FailureMessages.wasNotNull(prettifier, e), None, pos)
         else indicateSuccess(FailureMessages.wasNull)
       }
     }
@@ -5765,11 +5756,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe[U <: T](bePropertyMatcher: BePropertyMatcher[U])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try supporting this with 2.10 AnyVals
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches) 
-          indicateFailure(FailureMessages.wasNot(e, UnquotedString(result.propertyName)), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.was(e, UnquotedString(result.propertyName)))
+          indicateFailure(FailureMessages.wasNot(prettifier, e, UnquotedString(result.propertyName)), None, pos)
+        else indicateSuccess(FailureMessages.was(prettifier, e, UnquotedString(result.propertyName)))
       }
     }
 
@@ -5782,11 +5773,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe[U <: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = resultOfAWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
-          indicateFailure(FailureMessages.wasNotA(e, UnquotedString(result.propertyName)), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.was(e, UnquotedString(result.propertyName)))
+          indicateFailure(FailureMessages.wasNotA(prettifier, e, UnquotedString(result.propertyName)), None, pos)
+        else indicateSuccess(FailureMessages.was(prettifier, e, UnquotedString(result.propertyName)))
       }
     }
 
@@ -5799,11 +5790,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldBe[U <: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try supporting this with 2.10 AnyVals
-      doCollected(collected, xs, original, "shouldBe", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = resultOfAnWordApplication.bePropertyMatcher(e.asInstanceOf[U])
         if (!result.matches)
-          indicateFailure(FailureMessages.wasNotAn(e, UnquotedString(result.propertyName)), None, innerStackDepth)
-        else indicateSuccess(FailureMessages.wasAn(e, UnquotedString(result.propertyName)))
+          indicateFailure(FailureMessages.wasNotAn(prettifier, e, UnquotedString(result.propertyName)), None, pos)
+        else indicateSuccess(FailureMessages.wasAn(prettifier, e, UnquotedString(result.propertyName)))
       }
     }
 
@@ -5816,16 +5807,16 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot[U <: T](rightMatcherX1: Matcher[U]): Assertion = {
-      doCollected(collected, xs, original, "shouldNot", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         try  {
           val result = rightMatcherX1.apply(e.asInstanceOf[U])
           if (result.matches)
-            indicateFailure(result.negatedFailureMessage, None, innerStackDepth)
-          else indicateSuccess(result.failureMessage)
+            indicateFailure(result.negatedFailureMessage(prettifier), None, pos)
+          else indicateSuccess(result.failureMessage(prettifier))
         }
         catch {
           case tfe: TestFailedException =>
-            indicateFailure(tfe.getMessage, tfe.cause, innerStackDepth)
+            indicateFailure(tfe.getMessage, tfe.cause, pos)
         }
       }
     }
@@ -5840,11 +5831,12 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
       val rightMatcher = rightMatcherFactory1.matcher
-      doCollected(collected, xs, original, "shouldNot", outerStackDepth) { e =>
-        rightMatcher(e) match {
-          case MatchSucceeded(negatedFailureMessage) => 
-            indicateFailure(negatedFailureMessage, None, innerStackDepth)
-          case result => indicateSuccess(result.failureMessage)
+      doCollected(collected, xs, original, prettifier, pos) { e =>
+        val result = rightMatcher(e)
+        MatchSucceeded.unapply(result)(prettifier) match {
+          case Some(negatedFailureMessage) =>
+            indicateFailure(negatedFailureMessage, None, pos)
+          case None => indicateSuccess(result.failureMessage(prettifier))
         }
       }
     }
@@ -5858,17 +5850,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U): Assertion = {
-      doCollected(collected, xs, original, "should", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((constraint.areEqual(e, inv.right)) != inv.expectingEqual)
           indicateFailure(
             if (inv.expectingEqual)
-              FailureMessages.didNotEqual(e, inv.right)
+              FailureMessages.didNotEqual(prettifier, e, inv.right)
             else
-              FailureMessages.equaled(e, inv.right),
+              FailureMessages.equaled(prettifier, e, inv.right),
             None,
-            innerStackDepth
+            pos
           )
-        else indicateSuccess(inv.expectingEqual, FailureMessages.equaled(e, inv.right), FailureMessages.didNotEqual(e, inv.right))
+        else indicateSuccess(inv.expectingEqual, FailureMessages.equaled(prettifier, e, inv.right), FailureMessages.didNotEqual(prettifier, e, inv.right))
       }
     }
 
@@ -5881,17 +5873,17 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]): Assertion = {
-      doCollected(collected, xs, original, "should", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((inv.spread.isWithin(e)) != inv.expectingEqual)
           indicateFailure(
             if (inv.expectingEqual)
-              FailureMessages.didNotEqualPlusOrMinus(e, inv.spread.pivot, inv.spread.tolerance)
+              FailureMessages.didNotEqualPlusOrMinus(prettifier, e, inv.spread.pivot, inv.spread.tolerance)
             else
-              FailureMessages.equaledPlusOrMinus(e, inv.spread.pivot, inv.spread.tolerance),
+              FailureMessages.equaledPlusOrMinus(prettifier, e, inv.spread.pivot, inv.spread.tolerance),
             None,
-            innerStackDepth
+            pos
           )
-        else indicateSuccess(inv.expectingEqual, FailureMessages.equaledPlusOrMinus(e, inv.spread.pivot, inv.spread.tolerance), FailureMessages.didNotEqualPlusOrMinus(e, inv.spread.pivot, inv.spread.tolerance))
+        else indicateSuccess(inv.expectingEqual, FailureMessages.equaledPlusOrMinus(prettifier, e, inv.spread.pivot, inv.spread.tolerance), FailureMessages.didNotEqualPlusOrMinus(prettifier, e, inv.spread.pivot, inv.spread.tolerance))
       }
     }
 
@@ -5904,7 +5896,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(beWord: BeWord): ResultOfBeWordForCollectedAny[T] =
-      new ResultOfBeWordForCollectedAny[T](collected, xs, original, false)
+      new ResultOfBeWordForCollectedAny[T](collected, xs, original, false, prettifier, pos)
 
    /**
      * This method enables syntax such as the following:
@@ -5915,7 +5907,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
-      new ResultOfContainWordForCollectedAny(collected, xs, original, true)
+      new ResultOfContainWordForCollectedAny(collected, xs, original, true, prettifier, pos)
     }
     
     /**
@@ -5927,7 +5919,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(containWord: ContainWord): ResultOfContainWordForCollectedAny[T] = {
-      new ResultOfContainWordForCollectedAny(collected, xs, original, false)
+      new ResultOfContainWordForCollectedAny(collected, xs, original, false, prettifier, pos)
     }
     
     /**
@@ -5939,14 +5931,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
-      doCollected(collected, xs, original, "should", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (!existence.exists(e))
           indicateFailure(
-            FailureMessages.doesNotExist(e),
+            FailureMessages.doesNotExist(prettifier, e),
             None,
-            innerStackDepth
+            pos
           )
-        else indicateSuccess(FailureMessages.exists(e))
+        else indicateSuccess(FailureMessages.exists(prettifier, e))
       }
     }
     
@@ -5959,14 +5951,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
-      doCollected(collected, xs, original, "should", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (existence.exists(e))
           indicateFailure(
-            FailureMessages.exists(e),
+            FailureMessages.exists(prettifier, e),
             None,
-            innerStackDepth
+            pos
           )
-        else indicateSuccess(FailureMessages.doesNotExist(e))
+        else indicateSuccess(FailureMessages.doesNotExist(prettifier, e))
       }
     }
     
@@ -5979,14 +5971,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
-      doCollected(collected, xs, original, "shouldNot", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         if (existence.exists(e))
           indicateFailure(
-            FailureMessages.exists(e),
+            FailureMessages.exists(prettifier, e),
             None,
-            innerStackDepth
+            pos
           )
-        else indicateSuccess(FailureMessages.doesNotExist(e))
+        else indicateSuccess(FailureMessages.doesNotExist(prettifier, e))
       }
     }
 
@@ -5999,7 +5991,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString = 
-      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true)
+      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
     
     /**
      * This method enables syntax such as the following:
@@ -6010,7 +6002,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString = 
-      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true)
+      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
     
     /**
      * This method enables syntax such as the following:
@@ -6021,7 +6013,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString = 
-      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true)
+      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
     
     /**
      * This method enables syntax such as the following:
@@ -6032,7 +6024,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString = 
-      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true)
+      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, true, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6043,7 +6035,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(fullyMatchWord: FullyMatchWord)(implicit ev: T <:< String): ResultOfFullyMatchWordForCollectedString = 
-      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false)
+      new ResultOfFullyMatchWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6054,7 +6046,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForCollectedString = 
-      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false)
+      new ResultOfStartWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6065,7 +6057,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForCollectedString = 
-      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false)
+      new ResultOfEndWithWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -6076,7 +6068,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForCollectedString = 
-      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false)
+      new ResultOfIncludeWordForCollectedString(collected, xs.asInstanceOf[GenTraversable[String]], original, false, prettifier, pos)
 
     /**
      * Overrides to return pretty toString.
@@ -6092,14 +6084,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 1
-    private val innerStackDepth = 6
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
-    //SCALATESTJS-ONLY private val innerStackDepth = 18
+  final class ResultOfHaveWordForCollectedExtent[A](collected: Collected, xs: scala.collection.GenTraversable[A], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6110,21 +6095,22 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
-      doCollected(collected, xs, original, "length", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val eLength = len.lengthOf(e)
         if ((eLength == expectedLength) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.hadLengthInsteadOfExpectedLength(e, eLength, expectedLength),
-            FailureMessages.hadLength(e, expectedLength),
+            if (shouldBeTrue)
+              FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, e, eLength, expectedLength)
+            else
+              FailureMessages.hadLength(prettifier, e, expectedLength),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.hadLength(e, expectedLength),
-            FailureMessages.hadLengthInsteadOfExpectedLength(e, eLength, expectedLength)
+            FailureMessages.hadLength(prettifier, e, expectedLength),
+            FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, e, eLength, expectedLength)
           )
       }
     }
@@ -6138,21 +6124,22 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
-      doCollected(collected, xs, original, "size", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val eSize = sz.sizeOf(e)
         if ((eSize == expectedSize) != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            FailureMessages.hadSizeInsteadOfExpectedSize(e, eSize, expectedSize),
-            FailureMessages.hadSize(e, expectedSize),
+            if (shouldBeTrue)
+              FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, e, eSize, expectedSize)
+            else
+              FailureMessages.hadSize(prettifier, e, expectedSize),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            FailureMessages.hadSize(e, expectedSize),
-            FailureMessages.hadSizeInsteadOfExpectedSize(e, eSize, expectedSize)
+            FailureMessages.hadSize(prettifier, e, expectedSize),
+            FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, e, eSize, expectedSize)
           )
       }
     }
@@ -6171,14 +6158,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 2
-    private val innerStackDepth = 7
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
-    //SCALATESTJS-ONLY private val innerStackDepth = 19
+  final class ResultOfStartWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6211,21 +6191,22 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
-      doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = startWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            result.failureMessage,
-            result.negatedFailureMessage,
+            if (shouldBeTrue)
+              result.failureMessage(prettifier)
+            else
+              result.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -6245,14 +6226,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 2
-    private val innerStackDepth = 7
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
-    //SCALATESTJS-ONLY private val innerStackDepth = 19
+  final class ResultOfIncludeWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6285,21 +6259,22 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
-      doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = includeRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            result.failureMessage,
-            result.negatedFailureMessage,
+            if (shouldBeTrue)
+              result.failureMessage(prettifier)
+            else
+              result.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -6319,14 +6294,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 2
-    private val innerStackDepth = 7
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
-    //SCALATESTJS-ONLY private val innerStackDepth = 19
+  final class ResultOfEndWithWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6359,21 +6327,22 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
-      doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = endWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            result.failureMessage,
-            result.negatedFailureMessage,
+            if (shouldBeTrue)
+              result.failureMessage(prettifier)
+            else
+              result.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -6393,14 +6362,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * @author Bill Venners
    * @author Chee Seng
    */
-  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean) {
-
-    // SKIP-SCALATESTJS-START
-    private val outerStackDepth = 2
-    private val innerStackDepth = 7
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY private val outerStackDepth = 0
-    //SCALATESTJS-ONLY private val innerStackDepth = 19
+  final class ResultOfFullyMatchWordForCollectedString(collected: Collected, xs: scala.collection.GenTraversable[String], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
     /**
      * This method enables the following syntax: 
@@ -6433,21 +6395,22 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def regex(rightRegex: Regex): Assertion = { checkRegex(rightRegex) }
     
     private def checkRegex(rightRegex: Regex, groups: IndexedSeq[String] = IndexedSeq.empty): Assertion = {
-      doCollected(collected, xs, original, "regex", outerStackDepth) { e =>
+      doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = fullyMatchRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
           indicateFailure(
-            shouldBeTrue,
-            result.failureMessage,
-            result.negatedFailureMessage,
+            if (shouldBeTrue)
+              result.failureMessage(prettifier)
+            else
+              result.negatedFailureMessage(prettifier),
             None,
-            innerStackDepth
+            pos
           )
         else
           indicateSuccess(
             shouldBeTrue,
-            result.negatedFailureMessage,
-            result.failureMessage
+            result.negatedFailureMessage(prettifier),
+            result.failureMessage(prettifier)
           )
       }
     }
@@ -6468,8 +6431,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def all[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
+  def all[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -6479,8 +6442,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
+  def all[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -6490,8 +6453,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def all(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs)
+  def all(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(AllCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -6501,8 +6464,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
+  def atLeast[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -6512,8 +6475,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
+  def atLeast[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -6523,8 +6486,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atLeast(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs)
+  def atLeast(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(AtLeastCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -6534,8 +6497,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
+  def every[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -6545,8 +6508,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
+  def every[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -6556,8 +6519,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def every(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs)
+  def every(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(EveryCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -6567,8 +6530,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
+  def exactly[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -6578,8 +6541,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
+  def exactly[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -6589,8 +6552,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def exactly(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs)
+  def exactly(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(ExactlyCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -6600,8 +6563,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
+  def no[E, C[_]](xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -6611,8 +6574,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
+  def no[K, V, JMAP[k, v] <: java.util.Map[k, v]](xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -6622,8 +6585,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def no(xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs)
+  def no(xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(NoCollected, collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -6633,8 +6596,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
+  def between[E, C[_]](from: Int, upTo:Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -6644,8 +6607,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
+  def between[K, V, JMAP[k, v] <: java.util.Map[k, v]](from: Int, upTo:Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -6655,8 +6618,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def between(from: Int, upTo:Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs)
+  def between(from: Int, upTo:Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(BetweenCollected(from, upTo), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -6666,8 +6629,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]]): ResultOfCollectedAny[E] =
-    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
+  def atMost[E, C[_]](num: Int, xs: C[E])(implicit collecting: Collecting[E, C[E]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[E] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>java.util.Map</code>:
@@ -6677,8 +6640,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]]): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
-    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
+  def atMost[K, V, JMAP[k, v] <: java.util.Map[k, v]](num: Int, xs: JMAP[K, V])(implicit collecting: Collecting[org.scalatest.Entry[K, V], JMAP[K, V]], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[org.scalatest.Entry[K, V]] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax for <code>String</code>:
@@ -6688,8 +6651,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def atMost(num: Int, xs: String)(implicit collecting: Collecting[Char, String]): ResultOfCollectedAny[Char] =
-    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs)
+  def atMost(num: Int, xs: String)(implicit collecting: Collecting[Char, String], prettifier: Prettifier, pos: source.Position): ResultOfCollectedAny[Char] =
+    new ResultOfCollectedAny(AtMostCollected(num), collecting.genTraversableFrom(xs), xs, prettifier, pos)
 
   /**
    * This method enables the following syntax: 
@@ -6699,8 +6662,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T: ClassTag]: ResultOfATypeInvocation[T] =
-    new ResultOfATypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
+  def a[T: ClassTag](implicit prettifier: Prettifier, pos: source.Position): ResultOfATypeInvocation[T] =
+    new ResultOfATypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], prettifier, pos)
 
   /**
    * This method enables the following syntax: 
@@ -6710,8 +6673,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
-    new ResultOfAnTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
+  def an[T : ClassTag](implicit prettifier: Prettifier, pos: source.Position): ResultOfAnTypeInvocation[T] =
+    new ResultOfAnTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], prettifier, pos)
 
   /**
    * This method enables the following syntax: 
@@ -6721,28 +6684,26 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def the[T : ClassTag]: ResultOfTheTypeInvocation[T] =
-    new ResultOfTheTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
+  def the[T : ClassTag](implicit prettifier: Prettifier, pos: source.Position): ResultOfTheTypeInvocation[T] =
+    new ResultOfTheTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], prettifier, pos)
 
   // This is where ShouldMatchers.scala started 
 
   private object ShouldMethodHelper {
-    // SKIP-SCALATESTJS-START
-    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def shouldMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 11): Assertion = {
-      rightMatcher(left) match {
-        case MatchFailed(failureMessage) => indicateFailure(failureMessage, None, stackDepthAdjustment)
-        case result => indicateSuccess(result.negatedFailureMessage)
+
+    def shouldMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
+      val result = rightMatcher(left)
+      MatchFailed.unapply(result)(prettifier) match {
+        case Some(failureMessage) => indicateFailure(failureMessage, None, pos)
+        case None => indicateSuccess(result.negatedFailureMessage(prettifier))
       }
     }
-    // SKIP-SCALATESTJS-START
-    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 0): Assertion = {
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], stackDepthAdjustment: Int = 11): Assertion = {
-      rightMatcher(left) match {
-        case MatchSucceeded(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, stackDepthAdjustment)
-        case result => indicateSuccess(result.failureMessage)
+
+    def shouldNotMatcher[T](left: T, rightMatcher: Matcher[T], prettifier: Prettifier, pos: source.Position): Assertion = {
+      val result = rightMatcher(left)
+      MatchSucceeded.unapply(result)(prettifier) match {
+        case Some(negatedFailureMessage) => indicateFailure(negatedFailureMessage, None, pos)
+        case None => indicateSuccess(result.failureMessage(prettifier))
       }
     }
   }
@@ -6758,7 +6719,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  sealed class AnyShouldWrapper[T](val leftSideValue: T) {
+  sealed class AnyShouldWrapper[T](val leftSideValue: T, pos: source.Position, prettifier: Prettifier) {
 
     /**
      * This method enables syntax such as the following:
@@ -6769,7 +6730,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(rightMatcherX1: Matcher[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherX1, prettifier, pos)
     }
 
     /**
@@ -6781,7 +6742,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory1.matcher)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory1.matcher, prettifier, pos)
     }
 
     /**
@@ -6793,7 +6754,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should[TYPECLASS1[_], TYPECLASS2[_]](rightMatcherFactory2: MatcherFactory2[T, TYPECLASS1, TYPECLASS2])(implicit typeClass1: TYPECLASS1[T], typeClass2: TYPECLASS2[T]): Assertion = {
-      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory2.matcher)
+      ShouldMethodHelper.shouldMatcher(leftSideValue, rightMatcherFactory2.matcher, prettifier, pos)
     }
 
     /**
@@ -6807,9 +6768,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldEqual(right: Any)(implicit equality: Equality[T]): Assertion = {
       if (!equality.areEqual(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
-        indicateFailure(FailureMessages.didNotEqual(leftee, rightee))
+        indicateFailure(FailureMessages.didNotEqual(prettifier, leftee, rightee), None, pos)
       }
-      else indicateSuccess(FailureMessages.equaled(leftSideValue, right))
+      else indicateSuccess(FailureMessages.equaled(prettifier, leftSideValue, right))
     }
 
     /**
@@ -6822,9 +6783,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldEqual(spread: Spread[T]): Assertion = {
       if (!spread.isWithin(leftSideValue)) {
-        indicateFailure(FailureMessages.didNotEqualPlusOrMinus(leftSideValue, spread.pivot, spread.tolerance))
+        indicateFailure(FailureMessages.didNotEqualPlusOrMinus(prettifier, leftSideValue, spread.pivot, spread.tolerance), None, pos)
       }
-      else indicateSuccess(FailureMessages.equaledPlusOrMinus(leftSideValue, spread.pivot, spread.tolerance))
+      else indicateSuccess(FailureMessages.equaledPlusOrMinus(prettifier, leftSideValue, spread.pivot, spread.tolerance))
     }
 
     /**
@@ -6837,7 +6798,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldEqual(right: Null)(implicit ev: T <:< AnyRef): Assertion = { 
       if (leftSideValue != null) {
-        indicateFailure(FailureMessages.didNotEqualNull(leftSideValue))
+        indicateFailure(FailureMessages.didNotEqualNull(prettifier, leftSideValue), None, pos)
       }
       else indicateSuccess(FailureMessages.equaledNull)
     }
@@ -6850,7 +6811,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](leftSideValue, false)
+    def should(notWord: NotWord): ResultOfNotWordForAny[T] = new ResultOfNotWordForAny[T](leftSideValue, false, prettifier, pos)
 
     // In 2.10, will work with AnyVals. TODO: Also, Need to ensure Char works
     /**
@@ -6864,15 +6825,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should[U](inv: TripleEqualsInvocation[U])(implicit constraint: T CanEqual U): Assertion = {
       if ((constraint.areEqual(leftSideValue, inv.right)) != inv.expectingEqual)
         indicateFailure(
-          inv.expectingEqual,
-          FailureMessages.didNotEqual(leftSideValue, inv.right),
-          FailureMessages.equaled(leftSideValue, inv.right)
+          if (inv.expectingEqual)
+            FailureMessages.didNotEqual(prettifier, leftSideValue, inv.right)
+          else
+            FailureMessages.equaled(prettifier, leftSideValue, inv.right),
+          None,
+          pos
         )
       else
         indicateSuccess(
           inv.expectingEqual,
-          FailureMessages.equaled(leftSideValue, inv.right),
-          FailureMessages.didNotEqual(leftSideValue, inv.right)
+          FailureMessages.equaled(prettifier, leftSideValue, inv.right),
+          FailureMessages.didNotEqual(prettifier, leftSideValue, inv.right)
         )
     }
 
@@ -6887,15 +6851,18 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def should(inv: TripleEqualsInvocationOnSpread[T])(implicit ev: Numeric[T]): Assertion = {
       if ((inv.spread.isWithin(leftSideValue)) != inv.expectingEqual)
         indicateFailure(
-          inv.expectingEqual,
-          FailureMessages.didNotEqualPlusOrMinus(leftSideValue, inv.spread.pivot, inv.spread.tolerance),
-          FailureMessages.equaledPlusOrMinus(leftSideValue, inv.spread.pivot, inv.spread.tolerance)
+          if (inv.expectingEqual)
+            FailureMessages.didNotEqualPlusOrMinus(prettifier, leftSideValue, inv.spread.pivot, inv.spread.tolerance)
+          else
+            FailureMessages.equaledPlusOrMinus(prettifier, leftSideValue, inv.spread.pivot, inv.spread.tolerance),
+          None,
+          pos
         )
       else
         indicateSuccess(
           inv.expectingEqual,
-          FailureMessages.equaledPlusOrMinus(leftSideValue, inv.spread.pivot, inv.spread.tolerance),
-          FailureMessages.didNotEqualPlusOrMinus(leftSideValue, inv.spread.pivot, inv.spread.tolerance)
+          FailureMessages.equaledPlusOrMinus(prettifier, leftSideValue, inv.spread.pivot, inv.spread.tolerance),
+          FailureMessages.didNotEqualPlusOrMinus(prettifier, leftSideValue, inv.spread.pivot, inv.spread.tolerance)
         )
     }
 
@@ -6909,7 +6876,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, true)
+    def should(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, true, prettifier, pos)
   
     /**
      * This method enables syntax such as the following:
@@ -6922,9 +6889,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(right: Any): Assertion = {
       if (!areEqualComparingArraysStructurally(leftSideValue, right)) {
         val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
-        indicateFailure(FailureMessages.wasNotEqualTo(leftee, rightee))
+        indicateFailure(FailureMessages.wasNotEqualTo(prettifier, leftee, rightee), None, pos)
       }
-      else indicateSuccess(FailureMessages.wasEqualTo(leftSideValue, right))
+      else indicateSuccess(FailureMessages.wasEqualTo(prettifier, leftSideValue, right))
     }
 
     /**
@@ -6938,13 +6905,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(comparison: ResultOfLessThanComparison[T]): Assertion = {
       if (!comparison(leftSideValue)) {
         indicateFailure(
-          FailureMessages.wasNotLessThan(
+          FailureMessages.wasNotLessThan(prettifier,
             leftSideValue,
             comparison.right
-          )
+          ),
+          None,
+          pos
         ) 
       }
-      else indicateSuccess(FailureMessages.wasLessThan(leftSideValue, comparison.right))
+      else indicateSuccess(FailureMessages.wasLessThan(prettifier, leftSideValue, comparison.right))
     }
     
     /**
@@ -6958,13 +6927,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
       if (!comparison(leftSideValue)) {
         indicateFailure(
-          FailureMessages.wasNotGreaterThan(
+          FailureMessages.wasNotGreaterThan(prettifier,
             leftSideValue,
             comparison.right
-          )
+          ),
+          None,
+          pos
         ) 
       }
-      else indicateSuccess(FailureMessages.wasGreaterThan(leftSideValue, comparison.right))
+      else indicateSuccess(FailureMessages.wasGreaterThan(prettifier, leftSideValue, comparison.right))
     }
     
     /**
@@ -6978,13 +6949,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
       if (!comparison(leftSideValue)) {
         indicateFailure(
-          FailureMessages.wasNotLessThanOrEqualTo(
+          FailureMessages.wasNotLessThanOrEqualTo(prettifier,
             leftSideValue,
             comparison.right
-          )
+          ),
+          None,
+          pos
         ) 
       }
-      else indicateSuccess(FailureMessages.wasLessThanOrEqualTo(leftSideValue, comparison.right))
+      else indicateSuccess(FailureMessages.wasLessThanOrEqualTo(prettifier, leftSideValue, comparison.right))
     }
     
     /**
@@ -6998,13 +6971,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
       if (!comparison(leftSideValue)) {
         indicateFailure(
-          FailureMessages.wasNotGreaterThanOrEqualTo(
+          FailureMessages.wasNotGreaterThanOrEqualTo(prettifier,
             leftSideValue,
             comparison.right
-          )
+          ),
+          None,
+          pos
         ) 
       }
-      else indicateSuccess(FailureMessages.wasGreaterThanOrEqualTo(leftSideValue, comparison.right))
+      else indicateSuccess(FailureMessages.wasGreaterThanOrEqualTo(prettifier, leftSideValue, comparison.right))
     }
     
     /**
@@ -7018,8 +6993,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(beMatcher: BeMatcher[T]): Assertion = {
       val result = beMatcher.apply(leftSideValue)
       if (!result.matches)
-        indicateFailure(result.failureMessage)
-      else indicateSuccess(result.negatedFailureMessage)
+        indicateFailure(result.failureMessage(prettifier), None, pos)
+      else indicateSuccess(result.negatedFailureMessage(prettifier))
     }
 
     /**
@@ -7032,9 +7007,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(spread: Spread[T]): Assertion = {
       if (!spread.isWithin(leftSideValue)) {
-        indicateFailure(FailureMessages.wasNotPlusOrMinus(leftSideValue, spread.pivot, spread.tolerance))
+        indicateFailure(FailureMessages.wasNotPlusOrMinus(prettifier, leftSideValue, spread.pivot, spread.tolerance), None, pos)
       }
-      else indicateSuccess(FailureMessages.wasPlusOrMinus(leftSideValue, spread.pivot, spread.tolerance))
+      else indicateSuccess(FailureMessages.wasPlusOrMinus(prettifier, leftSideValue, spread.pivot, spread.tolerance))
     }
 
     /**
@@ -7047,8 +7022,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(right: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
       if (!sortable.isSorted(leftSideValue))
-        indicateFailure(FailureMessages.wasNotSorted(leftSideValue))
-      else indicateSuccess(FailureMessages.wasSorted(leftSideValue))
+        indicateFailure(FailureMessages.wasNotSorted(prettifier, leftSideValue), None, pos)
+      else indicateSuccess(FailureMessages.wasSorted(prettifier, leftSideValue))
     }
     
     /**
@@ -7081,8 +7056,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(right: ReadableWord)(implicit readability: Readability[T]): Assertion = {
       if (!readability.isReadable(leftSideValue))
-        indicateFailure(FailureMessages.wasNotReadable(leftSideValue))
-      else indicateSuccess(FailureMessages.wasReadable(leftSideValue))
+        indicateFailure(FailureMessages.wasNotReadable(prettifier, leftSideValue), None, pos)
+      else indicateSuccess(FailureMessages.wasReadable(prettifier, leftSideValue))
     }
     
     /**
@@ -7095,8 +7070,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(right: WritableWord)(implicit writability: Writability[T]): Assertion = {
       if (!writability.isWritable(leftSideValue))
-        indicateFailure(FailureMessages.wasNotWritable(leftSideValue))
-      else indicateSuccess(FailureMessages.wasWritable(leftSideValue))
+        indicateFailure(FailureMessages.wasNotWritable(prettifier, leftSideValue), None, pos)
+      else indicateSuccess(FailureMessages.wasWritable(prettifier, leftSideValue))
     }
     
     /**
@@ -7109,8 +7084,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(right: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
       if (!emptiness.isEmpty(leftSideValue))
-        indicateFailure(FailureMessages.wasNotEmpty(leftSideValue))
-      else indicateSuccess(FailureMessages.wasEmpty(leftSideValue))
+        indicateFailure(FailureMessages.wasNotEmpty(prettifier, leftSideValue), None, pos)
+      else indicateSuccess(FailureMessages.wasEmpty(prettifier, leftSideValue))
     }
     
     /**
@@ -7123,8 +7098,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(right: DefinedWord)(implicit definition: Definition[T]): Assertion = {
       if (!definition.isDefined(leftSideValue))
-        indicateFailure(FailureMessages.wasNotDefined(leftSideValue))
-      else indicateSuccess(FailureMessages.wasDefined(leftSideValue))
+        indicateFailure(FailureMessages.wasNotDefined(prettifier, leftSideValue), None, pos)
+      else indicateSuccess(FailureMessages.wasDefined(prettifier, leftSideValue))
     }
 
     /**
@@ -7135,7 +7110,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, false)
+    def shouldNot(beWord: BeWord): ResultOfBeWordForAny[T] = new ResultOfBeWordForAny(leftSideValue, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -7146,7 +7121,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(rightMatcherX1: Matcher[T]): Assertion = {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1)
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherX1, prettifier, pos)
     }
     
     /**
@@ -7158,7 +7133,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot[TYPECLASS1[_]](rightMatcherFactory1: MatcherFactory1[T, TYPECLASS1])(implicit typeClass1: TYPECLASS1[T]): Assertion = {
-      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory1.matcher)
+      ShouldMethodHelper.shouldNotMatcher(leftSideValue, rightMatcherFactory1.matcher, prettifier, pos)
     }
     
     /**
@@ -7174,7 +7149,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(haveWord: HaveWord): ResultOfHaveWordForExtent[T] =
-      new ResultOfHaveWordForExtent(leftSideValue, false)
+      new ResultOfHaveWordForExtent(leftSideValue, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -7187,7 +7162,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(haveWord: HaveWord): ResultOfHaveWordForExtent[T] =
-      new ResultOfHaveWordForExtent(leftSideValue, true)
+      new ResultOfHaveWordForExtent(leftSideValue, true, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -7199,7 +7174,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldBe(right: Null)(implicit ev: T <:< AnyRef): Assertion = {
       if (leftSideValue != null) {
-        indicateFailure(FailureMessages.wasNotNull(leftSideValue))
+        indicateFailure(FailureMessages.wasNotNull(prettifier, leftSideValue), None, pos)
       }
       else indicateSuccess(FailureMessages.wasNull)
     }
@@ -7215,13 +7190,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(resultOfSameInstanceAsApplication: ResultOfTheSameInstanceAsApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       if (resultOfSameInstanceAsApplication.right ne toAnyRef(leftSideValue)) {
         indicateFailure(
-          FailureMessages.wasNotSameInstanceAs(
+          FailureMessages.wasNotSameInstanceAs(prettifier,
             leftSideValue,
             resultOfSameInstanceAsApplication.right
-          )
+          ),
+          None,
+          pos
         )
       }
-      else indicateSuccess(FailureMessages.wasSameInstanceAs(leftSideValue, resultOfSameInstanceAsApplication.right))
+      else indicateSuccess(FailureMessages.wasSameInstanceAs(prettifier, leftSideValue, resultOfSameInstanceAsApplication.right))
     }
 
     // SKIP-SCALATESTJS-START
@@ -7234,11 +7211,11 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true)
+    def shouldBe(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), symbol, false, true, prettifier, pos)
       if (!matcherResult.matches) 
-        indicateFailure(matcherResult.failureMessage)
-      else indicateSuccess(matcherResult.negatedFailureMessage)
+        indicateFailure(matcherResult.failureMessage(prettifier), None, pos)
+      else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
     }
 
     /**
@@ -7249,14 +7226,16 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true)
+    def shouldBe(resultOfAWordApplication: ResultOfAWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAWordApplication.symbol, true, true, prettifier, pos)
       if (!matcherResult.matches) {
         indicateFailure(
-          matcherResult.failureMessage
+          matcherResult.failureMessage(prettifier),
+          None,
+          pos
         )
       }
-      else indicateSuccess(matcherResult.negatedFailureMessage)
+      else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
     }
 
     /**
@@ -7267,14 +7246,16 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *      ^
      * </pre>
      */
-    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef): Assertion = {
-      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false)
+    def shouldBe(resultOfAnWordApplication: ResultOfAnWordToSymbolApplication)(implicit toAnyRef: T <:< AnyRef, prettifier: Prettifier, pos: source.Position): Assertion = {
+      val matcherResult = matchSymbolToPredicateMethod(toAnyRef(leftSideValue), resultOfAnWordApplication.symbol, true, false, prettifier, pos)
       if (!matcherResult.matches) {
         indicateFailure(
-          matcherResult.failureMessage
+          matcherResult.failureMessage(prettifier),
+          None,
+          pos
         )
       }
-      else indicateSuccess(matcherResult.negatedFailureMessage)
+      else indicateSuccess(matcherResult.negatedFailureMessage(prettifier))
     }
     // SKIP-SCALATESTJS-END
     
@@ -7289,8 +7270,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVal
       val result = bePropertyMatcher(leftSideValue)
       if (!result.matches) 
-        indicateFailure(FailureMessages.wasNot(leftSideValue, UnquotedString(result.propertyName)))
-      else indicateSuccess(FailureMessages.was(leftSideValue, UnquotedString(result.propertyName)))
+        indicateFailure(FailureMessages.wasNot(prettifier, leftSideValue, UnquotedString(result.propertyName)), None, pos)
+      else indicateSuccess(FailureMessages.was(prettifier, leftSideValue, UnquotedString(result.propertyName)))
     }
     
     /**
@@ -7304,9 +7285,9 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe[U >: T](resultOfAWordApplication: ResultOfAWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try expanding this to 2.10 AnyVal
       val result = resultOfAWordApplication.bePropertyMatcher(leftSideValue)
       if (!result.matches) {
-        indicateFailure(FailureMessages.wasNotA(leftSideValue, UnquotedString(result.propertyName)))
+        indicateFailure(FailureMessages.wasNotA(prettifier, leftSideValue, UnquotedString(result.propertyName)), None, pos)
       }
-      else indicateSuccess(FailureMessages.wasA(leftSideValue, UnquotedString(result.propertyName)))
+      else indicateSuccess(FailureMessages.wasA(prettifier, leftSideValue, UnquotedString(result.propertyName)))
     }
     
     /**
@@ -7320,15 +7301,15 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
     def shouldBe[U >: T](resultOfAnWordApplication: ResultOfAnWordToBePropertyMatcherApplication[U])(implicit ev: T <:< AnyRef): Assertion = {// TODO: Try expanding this to 2.10 AnyVal
       val result = resultOfAnWordApplication.bePropertyMatcher(leftSideValue)
       if (!result.matches) {
-        indicateFailure(FailureMessages.wasNotAn(leftSideValue, UnquotedString(result.propertyName)))
+        indicateFailure(FailureMessages.wasNotAn(prettifier, leftSideValue, UnquotedString(result.propertyName)), None, pos)
       }
-      else indicateSuccess(FailureMessages.wasAn(leftSideValue, UnquotedString(result.propertyName)))
+      else indicateSuccess(FailureMessages.wasAn(prettifier, leftSideValue, UnquotedString(result.propertyName)))
     }
 
 /*
     def shouldBe[U](right: AType[U]) {
       if (!right.isAssignableFromClassOf(leftSideValue)) {
-        throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(leftSideValue, UnquotedString(right.className), UnquotedString(leftSideValue.getClass.getName)))
+        throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, leftSideValue, UnquotedString(right.className), UnquotedString(leftSideValue.getClass.getName)))
       }
     }
 */
@@ -7342,7 +7323,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(containWord: ContainWord): ResultOfContainWord[T] = {
-      new ResultOfContainWord(leftSideValue, true)
+      new ResultOfContainWord(leftSideValue, true, prettifier, pos)
     }
     
     /**
@@ -7354,7 +7335,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(contain: ContainWord): ResultOfContainWord[T] = 
-      new ResultOfContainWord(leftSideValue, false)
+      new ResultOfContainWord(leftSideValue, false, prettifier, pos)
     
     /**
      * This method enables syntax such as the following:
@@ -7366,8 +7347,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def should(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
       if (!existence.exists(leftSideValue))
-        indicateFailure(FailureMessages.doesNotExist(leftSideValue))
-      else indicateSuccess(FailureMessages.exists(leftSideValue))
+        indicateFailure(FailureMessages.doesNotExist(prettifier, leftSideValue), None, pos)
+      else indicateSuccess(FailureMessages.exists(prettifier, leftSideValue))
     }
     
     /**
@@ -7380,8 +7361,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def should(notExist: ResultOfNotExist)(implicit existence: Existence[T]): Assertion = {
       if (existence.exists(leftSideValue))
-        indicateFailure(FailureMessages.exists(leftSideValue))
-      else indicateSuccess(FailureMessages.doesNotExist(leftSideValue))
+        indicateFailure(FailureMessages.exists(prettifier, leftSideValue), None, pos)
+      else indicateSuccess(FailureMessages.doesNotExist(prettifier, leftSideValue))
     }
     
     /**
@@ -7394,8 +7375,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      */
     def shouldNot(existWord: ExistWord)(implicit existence: Existence[T]): Assertion = {
       if (existence.exists(leftSideValue))
-        indicateFailure(FailureMessages.exists(leftSideValue))
-      else indicateSuccess(FailureMessages.doesNotExist(leftSideValue))
+        indicateFailure(FailureMessages.exists(prettifier, leftSideValue), None, pos)
+      else indicateSuccess(FailureMessages.doesNotExist(prettifier, leftSideValue))
     }
 
     // From StringShouldWrapper
@@ -7408,7 +7389,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForString = {
-      new ResultOfIncludeWordForString(leftSideValue, true)
+      new ResultOfIncludeWordForString(leftSideValue, true, prettifier, pos)
     }
 
     /**
@@ -7420,7 +7401,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForString = {
-      new ResultOfStartWithWordForString(leftSideValue, true)
+      new ResultOfStartWithWordForString(leftSideValue, true, prettifier, pos)
     }
 
     /**
@@ -7432,7 +7413,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForString = {
-      new ResultOfEndWithWordForString(leftSideValue, true)
+      new ResultOfEndWithWordForString(leftSideValue, true, prettifier, pos)
     }
 
     /**
@@ -7444,7 +7425,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(startWithWord: StartWithWord)(implicit ev: T <:< String): ResultOfStartWithWordForString = 
-      new ResultOfStartWithWordForString(leftSideValue, false)
+      new ResultOfStartWithWordForString(leftSideValue, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -7455,7 +7436,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(endWithWord: EndWithWord)(implicit ev: T <:< String): ResultOfEndWithWordForString = 
-      new ResultOfEndWithWordForString(leftSideValue, false)
+      new ResultOfEndWithWordForString(leftSideValue, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -7466,7 +7447,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(includeWord: IncludeWord)(implicit ev: T <:< String): ResultOfIncludeWordForString = 
-      new ResultOfIncludeWordForString(leftSideValue, false)
+      new ResultOfIncludeWordForString(leftSideValue, false, prettifier, pos)
   }
 
   /**
@@ -7480,7 +7461,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class StringShouldWrapper(val leftSideString: String) extends AnyShouldWrapper(leftSideString) with StringShouldWrapperForVerb {
+  final class StringShouldWrapper(val leftSideString: String, pos: source.Position, prettifier: Prettifier) extends AnyShouldWrapper(leftSideString, pos, prettifier) with StringShouldWrapperForVerb {
 
     /**
      * This method enables syntax such as the following:
@@ -7513,7 +7494,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def should(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = {
-      new ResultOfFullyMatchWordForString(leftSideString, true)
+      new ResultOfFullyMatchWordForString(leftSideString, true, prettifier, pos)
     }
 
     /**
@@ -7525,7 +7506,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      * </pre>
      */
     def shouldNot(fullyMatchWord: FullyMatchWord): ResultOfFullyMatchWordForString = 
-      new ResultOfFullyMatchWordForString(leftSideString, false)
+      new ResultOfFullyMatchWordForString(leftSideString, false, prettifier, pos)
 
     /**
      * This method enables syntax such as the following:
@@ -7535,7 +7516,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(compileWord: CompileWord): Assertion = macro CompileMacro.shouldCompileImpl
+    def should(compileWord: CompileWord)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
 
     /**
      * This method enables syntax such as the following:
@@ -7545,7 +7526,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(compileWord: CompileWord): Assertion = macro CompileMacro.shouldNotCompileImpl
+    def shouldNot(compileWord: CompileWord)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
 
     /**
      * This method enables syntax such as the following:
@@ -7555,7 +7536,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(typeCheckWord: TypeCheckWord): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
+    def shouldNot(typeCheckWord: TypeCheckWord)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
 
 /*
     /**
@@ -7726,13 +7707,13 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * Implicitly converts an object of type <code>T</code> to a <code>AnyShouldWrapper[T]</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToAnyShouldWrapper[T](o: T): AnyShouldWrapper[T] = new AnyShouldWrapper(o)
+  implicit def convertToAnyShouldWrapper[T](o: T)(implicit pos: source.Position, prettifier: Prettifier): AnyShouldWrapper[T] = new AnyShouldWrapper(o, pos, prettifier)
 
   /**
    * Implicitly converts an object of type <code>java.lang.String</code> to a <code>StringShouldWrapper</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit override def convertToStringShouldWrapper(o: String): StringShouldWrapper = new StringShouldWrapper(o)
+  implicit def convertToStringShouldWrapper(o: String)(implicit pos: source.Position, prettifier: Prettifier): StringShouldWrapper = new StringShouldWrapper(o, pos, prettifier)
 
   /**
    * Implicitly converts an object of type <code>scala.util.matching.Regex</code> to a <code>RegexWrapper</code>,

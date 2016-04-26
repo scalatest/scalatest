@@ -22,22 +22,20 @@ import org.scalatest.{Exceptional, Timer, TimerTask, Resources}
 import org.scalatest.exceptions.{StackDepthException, TimeoutField, TestFailedDueToTimeoutException}
 import scala.util.{Failure, Success}
 import org.scalatest.exceptions.StackDepthExceptionHelper._
+import org.scalactic._
 
 trait AsyncTimeouts {
 
   private def timingOutAfter[T](
-    timeLimit: Span,
-    methodName: String,
-    exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T)(block: => Future[T])(implicit executionContext: ExecutionContext): Future[T] = {
+                                 timeLimit: Span,
+                                 pos: source.Position,
+                                 exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T)(block: => Future[T])(implicit executionContext: ExecutionContext): Future[T] = {
 
     class TimeoutTask[T](promise: Promise[T], span: Span, exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T) extends TimerTask {
 
       def run(): Unit = {
-        // SKIP-SCALATESTJS-START
         def stackDepthFun(sde: StackDepthException): Int =
-          getStackDepth(sde.getStackTrace, "AsyncTimeouts.scala", methodName) + 2
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY def stackDepthFun(sde: StackDepthException): Int = { sde.printStackTrace(); 15 }
+          getStackDepth(sde.getStackTrace, pos)
         if (!promise.isCompleted) {
           promise.complete(Success(exceptionFun(None, span, stackDepthFun)))
         }
@@ -45,11 +43,8 @@ trait AsyncTimeouts {
 
     }
 
-    // SKIP-SCALATESTJS-START
     def stackDepthFun(sde: StackDepthException): Int =
-      getStackDepth(sde.getStackTrace, "AsyncTimeouts.scala", methodName) + 2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY def stackDepthFun(sde: StackDepthException): Int = 15
+      getStackDepth(sde.getStackTrace, pos)
 
     val limit = timeLimit.totalNanos / 1000 / 1000
     val startTime = scala.compat.Platform.currentTime
@@ -61,11 +56,8 @@ trait AsyncTimeouts {
       val produceFutureDuration = endTime - startTime
 
       if (produceFutureDuration > limit) {
-        // SKIP-SCALATESTJS-START
         def stackDepthFun(sde: StackDepthException): Int =
-          getStackDepth(sde.getStackTrace, "AsyncTimeouts.scala", methodName) + 2
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY def stackDepthFun(sde: StackDepthException): Int = if (methodName == "cancelingAfter") 14 else 15
+          getStackDepth(sde.getStackTrace, pos)
         Future.successful(exceptionFun(None, timeLimit, stackDepthFun))
       }
       else {
@@ -118,11 +110,11 @@ trait AsyncTimeouts {
     }
   }
 
-  def failingAfter[T](timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimiting[T]): Future[T] =
-    timingOutAfter(timeLimit, "failingAfter", failing.fail)(block)
+  def failingAfter[T](timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimiting[T], pos: source.Position = implicitly[source.Position]): Future[T] =
+    timingOutAfter(timeLimit, pos, failing.fail)(block)
 
-  def cancelingAfter[T](timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimiting[T]): Future[T] =
-    timingOutAfter(timeLimit, "cancelingAfter", failing.cancel)(block)
+  def cancelingAfter[T](timeLimit: Span)(block: => Future[T])(implicit executionContext: ExecutionContext, failing: TimeLimiting[T], pos: source.Position = implicitly[source.Position]): Future[T] =
+    timingOutAfter(timeLimit, pos, failing.cancel)(block)
 }
 
 object AsyncTimeouts extends AsyncTimeouts

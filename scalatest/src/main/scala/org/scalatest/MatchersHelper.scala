@@ -15,6 +15,7 @@
  */
 package org.scalatest
 
+import org.scalatest.exceptions.StackDepthExceptionHelper
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.matchers._
 import java.lang.reflect.Method
@@ -22,6 +23,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import org.scalatest.exceptions.TestFailedException
+import org.scalactic._
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
 // TODO: mention on JUnit and TestNG docs that you can now mix in ShouldMatchers or MustMatchers
@@ -131,22 +133,8 @@ private[scalatest] object MatchersHelper {
     builder.toString
   }
 
-  // SKIP-SCALATESTJS-START
-  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Throwable = {
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 9): Throwable = {
-    val temp = new RuntimeException
-    // should not look for anything in the first 2 elements, caller stack element is at 3rd/4th
-    // also, it solves the problem when the suite file that mixin in Matchers has the [suiteFileName]:newTestFailedException appears in the top 2 elements
-    // this approach should be better than adding && _.getMethodName == newTestFailedException we used previously.
-    val elements = temp.getStackTrace.drop(2) 
-    // TODO: Perhaps we should add org.scalatest.enablers also here later?
-    // TODO: Probably need a MatchersHelper.scala here also
-    val stackDepth = elements.indexWhere(st => st.getFileName != "Matchers.scala" && st.getFileName != "MustMatchers.scala" && !st.getClassName.startsWith("org.scalatest.words.")) + 2 // the first 2 elements dropped previously
-    optionalCause match {
-      case Some(cause) => new TestFailedException(message, cause, stackDepth + stackDepthAdjustment)
-      case None => new TestFailedException(message, stackDepth + stackDepthAdjustment)
-    }
+  def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, pos: source.Position): Throwable = {
+    new TestFailedException(e => Some(message), optionalCause, StackDepthExceptionHelper.getStackDepthFun(pos))
   }
 
   def andMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
@@ -188,7 +176,7 @@ private[scalatest] object MatchersHelper {
   }
 
   // SKIP-SCALATESTJS-START
-  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, stackDepth: Int = 0): MatchResult = {
+  def matchSymbolToPredicateMethod(left: AnyRef, right: Symbol, hasArticle: Boolean, articleIsA: Boolean, prettifier: Prettifier, pos: source.Position): MatchResult = {
 
     // If 'empty passed, rightNoTick would be "empty"
     val propertyName = right.name
@@ -212,11 +200,11 @@ private[scalatest] object MatchersHelper {
 
         throw newTestFailedException(
           if (methodNameStartsWithVowel)
-            FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
+            FailureMessages.hasNeitherAnOrAnMethod(prettifier, left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
           else
-            FailureMessages.hasNeitherAOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
-          None, 
-          stackDepth
+            FailureMessages.hasNeitherAOrAnMethod(prettifier, left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
+          None,
+          pos
         )
 
       case Some(result) =>
@@ -305,7 +293,7 @@ private[scalatest] object MatchersHelper {
                                Resources.rawIncludedRegexButNotGroup, Resources.rawIncludedRegexAndGroup)
   }
 
-  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, stackDepth: Int): T = {
+  private[scalatest] def checkExpectedException[T](f: => Any, clazz: Class[T], wrongExceptionMessageFun: (Any, Any) => String, exceptionExpectedMessageFun: String => String, pos: source.Position): T = {
     val caught = try {
       f
       None
@@ -314,7 +302,7 @@ private[scalatest] object MatchersHelper {
       case u: Throwable => {
         if (!clazz.isAssignableFrom(u.getClass)) {
           val s = wrongExceptionMessageFun(clazz.getName, u.getClass.getName)
-          throw newTestFailedException(s, Some(u), stackDepth)
+          throw newTestFailedException(s, Some(u), pos)
         }
         else {
           Some(u)
@@ -324,12 +312,12 @@ private[scalatest] object MatchersHelper {
     caught match {
       case None =>
         val message = exceptionExpectedMessageFun(clazz.getName)
-        throw newTestFailedException(message, None, stackDepth)
+        throw newTestFailedException(message, None, pos)
       case Some(e) => e.asInstanceOf[T] // I know this cast will succeed, becuase iSAssignableFrom succeeded above
     }
   }
 
-  def checkNoException(fun: => Any): Assertion = {
+  def checkNoException(pos: source.Position)(fun: => Any): Assertion = {
     try {
       fun
       Succeeded
@@ -337,11 +325,7 @@ private[scalatest] object MatchersHelper {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        // SKIP-SCALATESTJS-START
-        val stackDepth = 0
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepth = 11
-        throw newTestFailedException(message, Some(u), stackDepth)
+        throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), Some(u), StackDepthExceptionHelper.getStackDepthFun(pos))
       }
     }
   }
@@ -350,58 +334,10 @@ private[scalatest] object MatchersHelper {
 
   def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
 
-  def indicateFailure(failureMessage: => String): Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 10
-    throw newTestFailedException(failureMessage, None, stackDepth)
+  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, StackDepthExceptionHelper.getStackDepthFun(pos))
   }
 
-  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String): Assertion = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 0
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 10
-    throw newTestFailedException(
-      if (shouldBeTrue) failureMessage else negatedFailureMessage,
-      None,
-      stackDepth
-    )
-  }
-
-  def indicateFailure(shouldBeTrue: Boolean, failureMessage: => String, negatedFailureMessage: => String, optionalCause: Option[Throwable] = None, stackDepthAdjustment: Int = 0): Assertion =
-    throw newTestFailedException(
-      if (shouldBeTrue) failureMessage else negatedFailureMessage,
-      None,
-      stackDepthAdjustment
-    )
-
-  def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], stackDepthAdjustment: Int): Assertion =
-    throw newTestFailedException(
-      failureMessage,
-      optionalCause,
-      stackDepthAdjustment
-    )
-
-  def indicateFailure(shouldBeTrue: Boolean, withFriendlyReminder: Boolean, failureMessageWithFriendlyReminder: => String, failureMessageWithoutFriendlyReminder: => String,
-                                         negatedFailureMessageWithFriendlyReminder: => String, negatedFailureMessageWithoutFriendlyReminder: => String, optionalCause: Option[Throwable],
-                                         stackDepthAdjustment: Int): Assertion =
-    throw newTestFailedException(
-      if (shouldBeTrue)
-        if (withFriendlyReminder)
-          failureMessageWithFriendlyReminder
-        else
-          failureMessageWithoutFriendlyReminder
-      else
-      if (withFriendlyReminder)
-        negatedFailureMessageWithFriendlyReminder
-      else
-        negatedFailureMessageWithoutFriendlyReminder,
-      None,
-      stackDepthAdjustment
-    )
-
-  def indicateFailure(e: TestFailedException): Assertion =
+  def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Assertion =
     throw e
 }

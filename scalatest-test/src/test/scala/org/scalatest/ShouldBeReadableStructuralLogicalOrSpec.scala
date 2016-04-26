@@ -17,28 +17,31 @@ package org.scalatest
 
 import SharedHelpers.thisLineNumber
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeReadableStructuralLogicalOrSpec extends FunSpec with Matchers {
+
+  private val prettifier = Prettifier.default
   
   val fileName: String = "ShouldBeReadableStructuralLogicalOrSpec.scala"
   
   def wasEqualTo(left: Any, right: Any): String = 
-    FailureMessages.wasEqualTo(left, right)
+    FailureMessages.wasEqualTo(prettifier, left, right)
     
   def wasNotEqualTo(left: Any, right: Any): String = 
-    FailureMessages.wasNotEqualTo(left, right)
+    FailureMessages.wasNotEqualTo(prettifier, left, right)
     
   def equaled(left: Any, right: Any): String = 
-    FailureMessages.equaled(left, right)
+    FailureMessages.equaled(prettifier, left, right)
     
   def didNotEqual(left: Any, right: Any): String =
-    FailureMessages.didNotEqual(left, right)
+    FailureMessages.didNotEqual(prettifier, left, right)
   
   def wasNotReadable(left: Any): String = 
-    FailureMessages.wasNotReadable(left)
+    FailureMessages.wasNotReadable(prettifier, left)
     
   def wasReadable(left: Any): String = 
-    FailureMessages.wasReadable(left)
+    FailureMessages.wasReadable(prettifier, left)
   
   describe("readable matcher") {
     describe("when work with arbitrary object with isReadable() method") {

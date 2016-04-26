@@ -23,6 +23,7 @@ import org.scalatest.time.Span
 import org.scalatest.exceptions.TimeoutField
 import org.scalatest.Outcome
 import org.scalatest.Exceptional
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Trait that when mixed into a suite class establishes a time limit for its tests.
@@ -131,9 +132,10 @@ trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
    */
   abstract override def withFixture(test: NoArgTest): Outcome = {
     try {
-      failAfter(timeLimit) {
+      // TODO: should pass in the prettifier also
+      failAfterImpl(timeLimit, defaultTestSignaler, org.scalactic.Prettifier.default, adj => test.pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun("TimeLimits.scala", "failAfter", adj))) {
         super.withFixture(test)
-      } (defaultTestSignaler)
+      }
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => 

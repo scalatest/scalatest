@@ -29,6 +29,7 @@ import PrivateMethodTester._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.refspec.{RefSpec, RefSpecLike}
+import org.scalactic.Prettifier
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException
@@ -36,19 +37,21 @@ import org.scalatest.exceptions.NotAllowedException
 
 class SuiteSuite extends RefSpec with SeveredStackTraces {
 
+  private val prettifier = Prettifier.default
+
   def `test prettify Array` = {
 
     // non arrays print just a toString
-    assert(FailureMessages.decorateToStringValue(1) === "1")
-    assert(FailureMessages.decorateToStringValue("hi") === "\"hi\"")
-    assert(FailureMessages.decorateToStringValue(List(1, 2, 3)) === "List(1, 2, 3)")
-    assert(FailureMessages.decorateToStringValue(Map("one" -> 1)) === "Map(\"one\" -> 1)")
+    assert(FailureMessages.decorateToStringValue(prettifier, 1) === "1")
+    assert(FailureMessages.decorateToStringValue(prettifier, "hi") === "\"hi\"")
+    assert(FailureMessages.decorateToStringValue(prettifier, List(1, 2, 3)) === "List(1, 2, 3)")
+    assert(FailureMessages.decorateToStringValue(prettifier, Map("one" -> 1)) === "Map(\"one\" -> 1)")
 
     // arrays print pretty
-    assert(FailureMessages.decorateToStringValue(Array(1, 2)) === "Array(1, 2)")
+    assert(FailureMessages.decorateToStringValue(prettifier, Array(1, 2)) === "Array(1, 2)")
 
     // arrays of arrays print pretty
-    assert(FailureMessages.decorateToStringValue(Array(Array(1, 2), Array(3, 4))) === "Array(Array(1, 2), Array(3, 4))")
+    assert(FailureMessages.decorateToStringValue(prettifier, Array(Array(1, 2), Array(3, 4))) === "Array(Array(1, 2), Array(3, 4))")
   }
 
   def `test: execute should use dynamic tagging to enable Doenitz wildcards for encoded test names` {

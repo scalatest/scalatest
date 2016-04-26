@@ -19,6 +19,7 @@ import org.scalatest.MatchersHelper.checkExpectedException
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
+import org.scalactic._
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of
@@ -26,13 +27,8 @@ import org.scalatest.MatchersHelper.indicateFailure
  *
  * @author Bill Venners
  */
-final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
+final class ResultOfATypeInvocation[T](val clazz: Class[T], val prettifier: Prettifier, val pos: source.Position) {
 
-  // SKIP-SCALATESTJS-START
-  private val stackDepth = 1
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private val stackDepth = 11
-  
   /**
    * This method enables the following syntax: 
    *
@@ -40,9 +36,9 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
    * a [RuntimeException] should be thrownBy { ... }
    *                      ^
    * </pre>
-   */
+   **/
   def should(beWord: BeWord): ResultOfBeWordForAType[T] = 
-    new ResultOfBeWordForAType[T](clazz)
+    new ResultOfBeWordForAType[T](clazz, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -64,7 +60,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
    * a [RuntimeException] shouldBe thrownBy { ... }
    *                      ^
    * </pre>
-   */
+   **/
   def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     val caught = try {
       thrownBy.execute()
@@ -75,12 +71,12 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
     }
     if (caught.isEmpty) {
       val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, stackDepth)
+      indicateFailure(message, None, pos)
     } else {
       val u = caught.get
       if (!clazz.isAssignableFrom(u.getClass)) {
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), stackDepth)
+        indicateFailure(s, Some(u), pos)
       } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
     }
   }
@@ -92,20 +88,20 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
    * a [IllegalArgumentException] should (be thrownBy { ... })
    *                              ^
    * </pre>
-   */
+   **/
   def should(beThrownBy: ResultOfBeThrownBy): org.scalatest.Assertion = {
     val throwables = beThrownBy.throwables
     val noThrowable = throwables.find(_.isEmpty)
     if (noThrowable.isDefined) {
       val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, stackDepth)
+      indicateFailure(message, None, pos)
     }
     else {
       val unmatch = throwables.map(_.get).find(t => !clazz.isAssignableFrom(t.getClass))
       if (unmatch.isDefined) {
         val u = unmatch.get
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), stackDepth)
+        indicateFailure(s, Some(u), pos)
       }
       else indicateSuccess(Resources.exceptionThrown(clazz.getClass.getName))
     }
@@ -118,9 +114,9 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
    * a [RuntimeException] must be thrownBy { ... }
    *                      ^
    * </pre>
-   */
+   **/
   def must(beWord: BeWord): ResultOfBeWordForAType[T] =
-    new ResultOfBeWordForAType[T](clazz)
+    new ResultOfBeWordForAType[T](clazz, prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -142,7 +138,7 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
    * a [RuntimeException] mustBe thrownBy { ... }
    *                      ^
    * </pre>
-   */
+   **/
   def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     val caught = try {
       thrownBy.execute()
@@ -153,12 +149,12 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
     }
     if (caught.isEmpty) {
       val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, stackDepth)
+      indicateFailure(message, None, pos)
     } else {
       val u = caught.get
       if (!clazz.isAssignableFrom(u.getClass)) {
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), stackDepth)
+        indicateFailure(s, Some(u), pos)
       } else indicateSuccess(Resources.exceptionThrown(u.getClass.getName))
     }
   }
@@ -170,20 +166,20 @@ final class ResultOfATypeInvocation[T](val clazz: Class[T]) {
    * a [IllegalArgumentException] must (be thrownBy { ... })
    *                              ^
    * </pre>
-   */
+   **/
   def must(beThrownBy: ResultOfBeThrownBy): org.scalatest.Assertion = {
     val throwables = beThrownBy.throwables
     val noThrowable = throwables.find(_.isEmpty)
     if (noThrowable.isDefined) {
       val message = Resources.exceptionExpected(clazz.getName)
-      indicateFailure(message, None, stackDepth)
+      indicateFailure(message, None, pos)
     }
     else {
       val unmatch = throwables.map(_.get).find(t => !clazz.isAssignableFrom(t.getClass))
       if (unmatch.isDefined) {
         val u = unmatch.get
         val s = Resources.wrongException(clazz.getName, u.getClass.getName)
-        indicateFailure(s, Some(u), stackDepth)
+        indicateFailure(s, Some(u), pos)
       }
       else indicateSuccess(Resources.exceptionThrown(clazz.getClass.getName))
     }

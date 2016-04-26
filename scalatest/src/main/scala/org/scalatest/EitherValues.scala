@@ -17,6 +17,7 @@ package org.scalatest
 
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
+import org.scalactic._
 
 /**
  * Trait that provides an implicit conversion that adds <code>left.value</code> and <code>right.value</code> methods
@@ -114,13 +115,13 @@ trait EitherValues {
      * Returns the <code>Left</code> value contained in the wrapped <code>LeftProjection</code>, if defined as a <code>Left</code>, else throws <code>TestFailedException</code> with
      * a detail message indicating the <code>Either</code> was defined as a <code>Right</code>, not a <code>Left</code>.
      */
-    def value: L = {
+    def value(implicit pos: source.Position): L = {
       try {
         leftProj.get
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.eitherLeftValueNotDefined), Some(cause), getStackDepthFun("EitherValues.scala", "value"))
+          throw new TestFailedException(sde => Some(Resources.eitherLeftValueNotDefined), Some(cause), getStackDepthFun(pos))
       }
     }
   }
@@ -142,13 +143,13 @@ trait EitherValues {
      * Returns the <code>Right</code> value contained in the wrapped <code>RightProjection</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
      * a detail message indicating the <code>Either</code> was defined as a <code>Right</code>, not a <code>Left</code>.
      */
-    def value: R = {
+    def value(implicit pos: source.Position): R = {
       try {
         rightProj.get
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.eitherRightValueNotDefined), Some(cause), getStackDepthFun("EitherValues.scala", "value"))
+          throw new TestFailedException(sde => Some(Resources.eitherRightValueNotDefined), Some(cause), getStackDepthFun(pos))
       }
     }
   }

@@ -18,8 +18,11 @@ package org.scalatest
 import java.io.File
 import SharedHelpers.{createTempDirectory, thisLineNumber}
 import Matchers._
+import org.scalactic.Prettifier
 
 class ShouldExistSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   // SKIP-SCALATESTJS-START
   val tempDir = createTempDirectory()
@@ -34,14 +37,14 @@ class ShouldExistSpec extends FunSpec {
   val fileName = "ShouldExistSpec.scala"
   
   def doesNotExist(left: Any): String = 
-    FailureMessages.doesNotExist(left)
+    FailureMessages.doesNotExist(prettifier, left)
     
   def exists(left: Any): String = 
-    FailureMessages.exists(left)
+    FailureMessages.exists(prettifier, left)
     
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
   
   describe("The exist syntax when used with File") {

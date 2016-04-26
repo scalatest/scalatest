@@ -25,6 +25,7 @@ import scala.collection.SortedSet
 import scala.collection.SortedMap
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.StackDepthException
+import org.scalactic.Prettifier
 
 object SharedHelpers extends Assertions with LineNumberHelper {
 
@@ -828,7 +829,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element))
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element))
   }
 
   def indexElementForJavaIterator[T](itr: java.util.Iterator[T], xs: java.util.Collection[T], errorFun: T => Boolean): Array[String] = {
@@ -838,13 +839,13 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element))
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element))
   }
 
   def indexElementForJavaIterator[K, V](itr: java.util.Iterator[java.util.Map.Entry[K, V]], xs: java.util.Map[K, V], errorFun: java.util.Map.Entry[K, V] => Boolean): Array[String] = {
     val element = getNextInJavaIterator[java.util.Map.Entry[K, V]](itr, errorFun)
     val indexOrKey = element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
-    Array(indexOrKey.toString, decorateToStringValue(element))
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element))
   }
 
   def indexLengthElement[T](itr: Iterator[String], xs: GenTraversable[String], errorFun: String => Boolean): Array[String] = {
@@ -874,7 +875,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.length.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.length.toString)
   }
 
   def indexElementLengthString[T](itr: java.util.Iterator[String], xs: java.util.Collection[String], errorFun: String => Boolean): Array[String] = {
@@ -884,7 +885,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.length.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.length.toString)
   }
 
   def indexElementLengthGenTraversable[T](itr: Iterator[GenTraversable[T]], xs: GenTraversable[GenTraversable[T]], errorFun: GenTraversable[T] => Boolean): Array[String] = {
@@ -894,7 +895,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.size.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.size.toString)
   }
 
   def indexElementLengthArray[T](itr: Iterator[Array[T]], xs: GenTraversable[Array[T]], errorFun: Array[T] => Boolean): Array[String] = {
@@ -904,7 +905,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: GenMap[_, _] => element.asInstanceOf[Tuple2[_, _]]._1
         case genTrv: GenTraversable[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.size.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.size.toString)
   }
 
   def indexElementLengthJavaCol[T, C[t] <: java.util.Collection[_]](itr: java.util.Iterator[C[T]], xs: java.util.Collection[C[T]], errorFun: java.util.Collection[T] => Boolean): Array[String] = {
@@ -914,7 +915,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.size.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.size.toString)
   }
 
   def indexElementLengthJavaMap[K, V, JMAP[k, v] <: java.util.Map[_, _]](itr: java.util.Iterator[JMAP[K, V]], xs: java.util.Collection[java.util.Map[K, V]], errorFun: java.util.Map[K, V] => Boolean): Array[String] = {
@@ -924,7 +925,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         case map: java.util.Map[_, _] => element.asInstanceOf[java.util.Map.Entry[_, _]].getKey
         case genTrv: java.util.Collection[_] => getIndex(xs, element)
       }
-    Array(indexOrKey.toString, decorateToStringValue(element), element.size.toString)
+    Array(indexOrKey.toString, decorateToStringValue(Prettifier.default, element), element.size.toString)
   }
 
   def indexElementEqual[T](itr: Iterator[T], xs: GenTraversable[T], right: T): Array[String] =

@@ -19,14 +19,17 @@ import collection.GenTraversable
 import collection.mutable.LinkedHashMap
 import SharedHelpers._
 import Matchers._
+import org.scalactic.Prettifier
 
 class InOrderElementsOfContainMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("inOrderElementsOf ") {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      val rightText = FailureMessages.decorateToStringValue(right)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " did not contain all elements of " + rightText + " in order"))
       e.failedCodeFileName should be (Some("InOrderElementsOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -247,8 +250,8 @@ class InOrderElementsOfContainMatcherSpec extends FunSpec {
   describe("not inOrderElementsOf ") {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      val rightText = FailureMessages.decorateToStringValue(right)
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " contained all elements of " + rightText + " in order"))
       e.failedCodeFileName should be (Some("InOrderElementsOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))

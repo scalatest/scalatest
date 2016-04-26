@@ -41,7 +41,8 @@ import annotation.tailrec
 import org.scalactic.Prettifier
 import scala.util.control.NonFatal
 import Suite.getTopOfMethod
-import org.scalactic.Requirements._
+import org.scalactic._
+import Requirements._
 
 // SKIP-SCALATESTJS-START
 import tools.SuiteDiscoveryHelper
@@ -1380,6 +1381,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       val scopes = Vector.empty
       val text = testName
       val tags = Set.empty[String]
+      val pos = None
     }
   }
 }

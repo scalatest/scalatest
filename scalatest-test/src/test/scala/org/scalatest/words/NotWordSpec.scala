@@ -32,8 +32,11 @@ import java.io.File
 // SKIP-SCALATESTJS-END
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.NotAllowedException
+import org.scalactic._
 
 class NotWordSpec extends FunSpec with FileMocks {
+
+  private val prettifier = Prettifier.default
   
   describe("NotWord ") {
     
@@ -1701,7 +1704,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(clazz)
+      val resultOfAType = new ResultOfATypeInvocation(clazz, Prettifier.default, source.Position.here)
       
       val mt = not be (resultOfAType)
       
@@ -1759,7 +1762,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
+      val resultOfAnType = new ResultOfAnTypeInvocation(clazz, Prettifier.default, source.Position.here)
       
       val mt = not be (resultOfAnType)
       
@@ -2208,10 +2211,10 @@ class NotWordSpec extends FunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
-        mr.negatedFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
-        mr.midSentenceFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
-        mr.midSentenceNegatedFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
+        mr.failureMessage shouldBe FailureMessages.containedOneOfElements(prettifier, lhs, UnquotedString("2, 8"))
+        mr.negatedFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(prettifier, lhs, UnquotedString("2, 8"))
+        mr.midSentenceFailureMessage shouldBe FailureMessages.containedOneOfElements(prettifier, lhs, UnquotedString("2, 8"))
+        mr.midSentenceNegatedFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(prettifier, lhs, UnquotedString("2, 8"))
         mr.rawFailureMessage shouldBe Resources.rawContainedOneOfElements
         mr.rawNegatedFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
         mr.rawMidSentenceFailureMessage shouldBe Resources.rawContainedOneOfElements
@@ -2227,10 +2230,10 @@ class NotWordSpec extends FunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
-        nmr.negatedFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
-        nmr.midSentenceFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(lhs, UnquotedString("2, 8"))
-        nmr.midSentenceNegatedFailureMessage shouldBe FailureMessages.containedOneOfElements(lhs, UnquotedString("2, 8"))
+        nmr.failureMessage shouldBe FailureMessages.didNotContainOneOfElements(prettifier, lhs, UnquotedString("2, 8"))
+        nmr.negatedFailureMessage shouldBe FailureMessages.containedOneOfElements(prettifier, lhs, UnquotedString("2, 8"))
+        nmr.midSentenceFailureMessage shouldBe FailureMessages.didNotContainOneOfElements(prettifier, lhs, UnquotedString("2, 8"))
+        nmr.midSentenceNegatedFailureMessage shouldBe FailureMessages.containedOneOfElements(prettifier, lhs, UnquotedString("2, 8"))
         nmr.rawFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
         nmr.rawNegatedFailureMessage shouldBe Resources.rawContainedOneOfElements
         nmr.rawMidSentenceFailureMessage shouldBe Resources.rawDidNotContainOneOfElements
@@ -2308,10 +2311,10 @@ class NotWordSpec extends FunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
-        mr.negatedFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
-        mr.midSentenceFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
-        mr.midSentenceNegatedFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        mr.failureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(prettifier, lhs, UnquotedString("1, 2"))
+        mr.negatedFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(prettifier, lhs, UnquotedString("1, 2"))
+        mr.midSentenceFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(prettifier, lhs, UnquotedString("1, 2"))
+        mr.midSentenceNegatedFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(prettifier, lhs, UnquotedString("1, 2"))
         mr.rawFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
         mr.rawNegatedFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
         mr.rawMidSentenceFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
@@ -2327,10 +2330,10 @@ class NotWordSpec extends FunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
-        nmr.negatedFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
-        nmr.midSentenceFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(lhs, UnquotedString("1, 2"))
-        nmr.midSentenceNegatedFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(lhs, UnquotedString("1, 2"))
+        nmr.failureMessage shouldBe FailureMessages.containedAtLeastOneOf(prettifier, lhs, UnquotedString("1, 2"))
+        nmr.negatedFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(prettifier, lhs, UnquotedString("1, 2"))
+        nmr.midSentenceFailureMessage shouldBe FailureMessages.containedAtLeastOneOf(prettifier, lhs, UnquotedString("1, 2"))
+        nmr.midSentenceNegatedFailureMessage shouldBe FailureMessages.didNotContainAtLeastOneOf(prettifier, lhs, UnquotedString("1, 2"))
         nmr.rawFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
         nmr.rawNegatedFailureMessage shouldBe Resources.rawDidNotContainAtLeastOneOf
         nmr.rawMidSentenceFailureMessage shouldBe Resources.rawContainedAtLeastOneOf
@@ -2709,10 +2712,10 @@ class NotWordSpec extends FunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
-        mr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
-        mr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
-        mr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
+        mr.failureMessage shouldBe decorateToStringValue(prettifier, lhs) + " contained key \"2\""
+        mr.negatedFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " did not contain key \"2\""
+        mr.midSentenceFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " contained key \"2\""
+        mr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " did not contain key \"2\""
         mr.rawFailureMessage shouldBe "{0} contained key {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} did not contain key {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} contained key {1}"
@@ -2728,10 +2731,10 @@ class NotWordSpec extends FunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
-        nmr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
-        nmr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain key \"2\""
-        nmr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained key \"2\""
+        nmr.failureMessage shouldBe decorateToStringValue(prettifier, lhs) + " did not contain key \"2\""
+        nmr.negatedFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " contained key \"2\""
+        nmr.midSentenceFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " did not contain key \"2\""
+        nmr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " contained key \"2\""
         nmr.rawFailureMessage shouldBe "{0} did not contain key {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} contained key {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain key {1}"
@@ -2758,10 +2761,10 @@ class NotWordSpec extends FunSpec with FileMocks {
       
       it("should have correct MatcherResult") {
         mr.matches shouldBe false
-        mr.failureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
-        mr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
-        mr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
-        mr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
+        mr.failureMessage shouldBe decorateToStringValue(prettifier, lhs) + " contained value \"two\""
+        mr.negatedFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " did not contain value \"two\""
+        mr.midSentenceFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " contained value \"two\""
+        mr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " did not contain value \"two\""
         mr.rawFailureMessage shouldBe "{0} contained value {1}"
         mr.rawNegatedFailureMessage shouldBe "{0} did not contain value {1}"
         mr.rawMidSentenceFailureMessage shouldBe "{0} contained value {1}"
@@ -2777,10 +2780,10 @@ class NotWordSpec extends FunSpec with FileMocks {
       
       it("should have correct negated MatcherResult") {
         nmr.matches shouldBe true
-        nmr.failureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
-        nmr.negatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
-        nmr.midSentenceFailureMessage shouldBe decorateToStringValue(lhs) + " did not contain value \"two\""
-        nmr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(lhs) + " contained value \"two\""
+        nmr.failureMessage shouldBe decorateToStringValue(prettifier, lhs) + " did not contain value \"two\""
+        nmr.negatedFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " contained value \"two\""
+        nmr.midSentenceFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " did not contain value \"two\""
+        nmr.midSentenceNegatedFailureMessage shouldBe decorateToStringValue(prettifier, lhs) + " contained value \"two\""
         nmr.rawFailureMessage shouldBe "{0} did not contain value {1}"
         nmr.rawNegatedFailureMessage shouldBe "{0} contained value {1}"
         nmr.rawMidSentenceFailureMessage shouldBe "{0} did not contain value {1}"

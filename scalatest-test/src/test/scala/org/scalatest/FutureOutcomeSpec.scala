@@ -419,6 +419,8 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+
+      // SKIP-SCALATESTJS-START
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
           class MyError extends VirtualMachineError("I meant to do that!")
@@ -444,6 +446,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-END
     }
     "when a function passed to its onFailedThen method" - {
       "completes abruptly with a TestFailedException" - {
@@ -540,6 +543,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-START
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
           class MyError extends VirtualMachineError("I meant to do that!")
@@ -565,6 +569,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-END
     }
     "when a function passed to its onCanceledThen method" - {
       "completes abruptly with a TestFailedException" - {
@@ -661,6 +666,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-START
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
           class MyError extends VirtualMachineError("I meant to do that!")
@@ -686,6 +692,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-END
     }
     "when a function passed to its onPendingThen method" - {
       "completes abruptly with a TestFailedException" - {
@@ -782,6 +789,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-START
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
           class MyError extends VirtualMachineError("I meant to do that!")
@@ -807,6 +815,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-END
     }
     "when a function passed to its onAbortedThen method" - {
       "completes abruptly with a TestFailedException" - {
@@ -907,6 +916,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-START
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
           class MyError(msg: String) extends VirtualMachineError(msg)
@@ -932,6 +942,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-END
     }
     import prop.TableDrivenPropertyChecks._
     "when a function passed to its onOutcomeThen method" - {
@@ -1097,6 +1108,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-START
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
           class MyError(msg: String) extends VirtualMachineError(msg)
@@ -1139,6 +1151,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-END
     }
     "when a function passed to its change method" - {
       "completes abruptly with a TestFailedException" - {
@@ -1304,6 +1317,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-START
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
           class MyError(msg: String) extends VirtualMachineError(msg)
@@ -1346,6 +1360,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-END
     }
     "when a function passed to its onCompletedThen method" - {
       "completes abruptly with a TestFailedException" - {
@@ -1531,6 +1546,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-START
       "completes abruptly with a suite-aborting exception" - {
         "should result in a Failed future wrapping that exception" in {
           class MyError(msg: String) extends VirtualMachineError(msg)
@@ -1577,6 +1593,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
           }
         }
       }
+      // SKIP-SCALATESTJS-END
     }
     "offer a factory apply method in its companion that takes a Future[Outcome]" in {
       val futureOfOutcome = Future(Succeeded)

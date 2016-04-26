@@ -18,6 +18,7 @@ package org.scalatest.words
 import org.scalatest.Resources
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
+import org.scalactic._
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of
@@ -25,12 +26,7 @@ import org.scalatest.MatchersHelper.indicateFailure
  *
  * @author Bill Venners
  */
-final class NoExceptionWord {
-
-  // SKIP-SCALATESTJS-START
-  private val stackDepth = 1
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private val stackDepth = 11
+final class NoExceptionWord(prettifier: Prettifier, pos: source.Position) {
   
   /**
    * This method enables the following syntax: 
@@ -39,9 +35,9 @@ final class NoExceptionWord {
    * noException should be thrownBy { ... }
    *             ^
    * </pre>
-   */
+   **/
   def should(beWord: BeWord): ResultOfBeWordForNoException = 
-    new ResultOfBeWordForNoException
+    new ResultOfBeWordForNoException(prettifier, pos)
   
   /**
    * This method enables the following syntax: 
@@ -50,7 +46,7 @@ final class NoExceptionWord {
    * noException shouldBe thrownBy { ... }
    *             ^
    * </pre>
-   */
+   **/
   def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
@@ -59,7 +55,7 @@ final class NoExceptionWord {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), stackDepth)
+        indicateFailure(message, Some(u), pos)
       }
     }
   }
@@ -71,9 +67,9 @@ final class NoExceptionWord {
    * noException must be thrownBy { ... }
    *             ^
    * </pre>
-   */
+   **/
   def must(beWord: BeWord): ResultOfBeWordForNoException =
-    new ResultOfBeWordForNoException
+    new ResultOfBeWordForNoException(prettifier, pos)
 
   /**
    * This method enables the following syntax:
@@ -82,7 +78,7 @@ final class NoExceptionWord {
    * noException mustBe thrownBy { ... }
    *             ^
    * </pre>
-   */
+   **/
   def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
     try {
       thrownBy.execute()
@@ -91,7 +87,7 @@ final class NoExceptionWord {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        indicateFailure(message, Some(u), stackDepth)
+        indicateFailure(message, Some(u), pos)
       }
     }
   }

@@ -19,9 +19,11 @@ import org.scalatest._
 import Matchers._
 import FailureMessages.decorateToStringValue
 import org.scalatest.matchers.MatchResult
-import org.scalactic.Prettifier
+import org.scalactic._
 
 class MatchersSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   describe("Matchers ") {
     
@@ -122,7 +124,7 @@ class MatchersSpec extends FunSpec {
       
       describe("apply(Any) returns HavePropertyMatcher") {
         
-        val generator = new HavePropertyMatcherGenerator('name)
+        val generator = new HavePropertyMatcherGenerator('name, Prettifier.default, source.Position.here)
         val havePropMatcher = generator("test")
         
         it("should have pretty toString") {
@@ -250,7 +252,7 @@ class MatchersSpec extends FunSpec {
         val a2 = Array("2")
         val a3 = Array("3")
         val word = all(List(a1, a2, a3)) should be
-          word.toString should be ("ResultOfBeWordForCollectedAny(AllCollected, List(" + decorateToStringValue(a1) + ", " + decorateToStringValue(a2) + ", " + decorateToStringValue(a3) + "), true)")
+          word.toString should be ("ResultOfBeWordForCollectedAny(AllCollected, List(" + decorateToStringValue(prettifier, a1) + ", " + decorateToStringValue(prettifier, a2) + ", " + decorateToStringValue(prettifier, a3) + "), true)")
       }
     }
 

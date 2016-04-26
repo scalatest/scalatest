@@ -21,6 +21,7 @@ import Arbitrary._
 import Prop._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
+import org.scalactic.Prettifier
 
 class ShouldBeAnySpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
@@ -202,6 +203,19 @@ class ShouldBeAnySpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
         1 should (not be (1) or not be (2 - 1))
       }
       assert(caught3.getMessage === "1 was equal to 1, and 1 was equal to 1")
+    }
+
+    it("should use custom implicit Prettifier when it is in scope") {
+      implicit val customPrettifier =
+        Prettifier {
+          case s: String => "!!! " + s + " !!!"
+          case other => Prettifier.default(other)
+        }
+
+      val e = intercept[TestFailedException] {
+      "test 1" should be ("test 2")
+      }
+      assert(e.message == Some("!!! test [1] !!! was not equal to !!! test [2] !!!"))
     }
   }
 }

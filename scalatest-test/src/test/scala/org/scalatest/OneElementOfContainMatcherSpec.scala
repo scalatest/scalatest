@@ -19,13 +19,16 @@ import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 import FailureMessages.decorateToStringValue
+import org.scalactic.Prettifier
 
 class OneElementOfContainMatcherSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
 
   describe("oneElementOf ") {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      e.message should be (Some(FailureMessages.didNotContainOneElementOf(left, right)))
+      e.message should be (Some(FailureMessages.didNotContainOneElementOf(prettifier, left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
@@ -270,8 +273,8 @@ class OneElementOfContainMatcherSpec extends FunSpec {
   describe("not oneElementOf ") {
 
     def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(FailureMessages.containedOneElementOf(left, right)))
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(FailureMessages.containedOneElementOf(prettifier, left, right)))
       e.failedCodeFileName should be (Some("OneElementOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

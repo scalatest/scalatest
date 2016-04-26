@@ -17,11 +17,14 @@ package org.scalatest
 
 import org.scalactic.Equality
 import org.scalactic.Explicitly
+import org.scalactic.Prettifier
 import collection.GenTraversable
 import SharedHelpers._
 import Matchers._
 
 class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
+
+  private val prettifier = Prettifier.default
 
   class TrimEquality extends Equality[String] {
     def areEqual(left: String, right: Any) = 
@@ -76,15 +79,15 @@ class OnlyContainMatcherEqualitySpec extends FunSpec with Explicitly {
   describe("only ") {
     
     def checkShouldContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(leftText + " did not contain only (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ")"))
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(leftText + " did not contain only (" + right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }
       
     def checkShouldNotContainStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
-      val leftText = FailureMessages.decorateToStringValue(left)
-      e.message should be (Some(leftText + " contained only (" + right.map(FailureMessages.decorateToStringValue).mkString(", ") + ")"))
+      val leftText = FailureMessages.decorateToStringValue(prettifier, left)
+      e.message should be (Some(leftText + " contained only (" + right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ") + ")"))
       e.failedCodeFileName should be (Some("OnlyContainMatcherEqualitySpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
     }

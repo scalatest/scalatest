@@ -19,8 +19,11 @@ import SharedHelpers.{createTempDirectory, thisLineNumber}
 import enablers.Writability
 import Matchers._
 import exceptions.TestFailedException
+import org.scalactic.Prettifier
 
 class ShouldBeWritableImplicitSpec extends FunSpec {
+
+  private val prettifier = Prettifier.default
   
   trait Thing {
     def canRead: Boolean
@@ -42,10 +45,10 @@ class ShouldBeWritableImplicitSpec extends FunSpec {
   val fileName: String = "ShouldBeWritableImplicitSpec.scala"
     
   def wasNotWritable(left: Any): String = 
-    FailureMessages.wasNotWritable(left)
+    FailureMessages.wasNotWritable(prettifier, left)
     
   def wasWritable(left: Any): String = 
-    FailureMessages.wasWritable(left)
+    FailureMessages.wasWritable(prettifier, left)
   
   it("book should be writable, stone should not be writable") {
     assert(book.canRead === true)
@@ -53,8 +56,8 @@ class ShouldBeWritableImplicitSpec extends FunSpec {
   }
   
   def allError(left: Any, message: String, lineNumber: Int): String = {
-    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
-    FailureMessages.allShorthandFailed(messageWithIndex, left)
+    val messageWithIndex = UnquotedString("  " + FailureMessages.forAssertionsGenTraversableMessageWithStackDepth(prettifier, 0, UnquotedString(message), UnquotedString(fileName + ":" + lineNumber)))
+    FailureMessages.allShorthandFailed(prettifier, messageWithIndex, left)
   }
   
   describe("Writable matcher") {

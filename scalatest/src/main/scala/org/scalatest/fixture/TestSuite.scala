@@ -17,6 +17,7 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import OutcomeOf.outcomeOf
+import org.scalactic._
 
 trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite { thisTestSuite =>
 
@@ -80,6 +81,7 @@ trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite
         val scopes = thisOneArgTest.scopes
         val text = thisOneArgTest.text
         val tags = thisOneArgTest.tags
+        val pos = thisOneArgTest.pos
       }
   }
 
@@ -103,6 +105,7 @@ trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite
         val scopes: collection.immutable.IndexedSeq[String] = test.scopes
         val name: String = test.name
         val tags: Set[String] = test.tags
+        val pos: Option[source.Position] = test.pos
       }
     }
   }
@@ -132,6 +135,7 @@ trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite
     val scopes = testData.scopes
     val text = testData.text
     val tags = testData.tags
+    val pos = testData.pos
   }
 
   private[fixture] class FixturelessTestFunAndConfigMap(override val name: String, test: () => Any, override val configMap: ConfigMap)
@@ -144,6 +148,7 @@ trait TestSuite extends org.scalatest.fixture.Suite with org.scalatest.TestSuite
     val scopes = testData.scopes
     val text = testData.text
     val tags = testData.tags
+    val pos = testData.pos
   }
 
 }

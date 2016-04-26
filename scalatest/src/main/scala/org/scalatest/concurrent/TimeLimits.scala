@@ -16,7 +16,7 @@
 package org.scalatest.concurrent
 
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import org.scalatest.Resources
+import org.scalatest.{FailureMessages, UnquotedString}
 import org.scalatest.exceptions.{StackDepthException, TestFailedDueToTimeoutException, TestCanceledException}
 import java.nio.channels.ClosedByInterruptException
 import java.nio.channels.Selector
@@ -24,6 +24,7 @@ import java.net.Socket
 import org.scalatest.Exceptional
 import org.scalatest.time.Span
 import org.scalatest.enablers.Timed
+import org.scalactic._
 
 /**
  * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
@@ -236,7 +237,11 @@ trait TimeLimits {
    * @param fun the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, timed: Timed[T] = implicitly[Timed[T]]): T = {
+  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
+    failAfterImpl(timeout, interruptor, prettifier, adj => getStackDepthFun(pos))(fun)(timed)
+  }
+
+  private[scalatest] def failAfterImpl[T](timeout: Span, interruptor: Signaler, prettifier: Prettifier, stackDepthFun: Int => (StackDepthException => Int))(fun: => T)(implicit timed: Timed[T]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
     timed.timeoutAfter(
       timeout,
@@ -244,9 +249,9 @@ trait TimeLimits {
       interruptor,
       (cause: Option[Throwable], stackDepthAdjustment: Int) => {
         val e = new TestFailedDueToTimeoutException(
-          sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)),
+          sde => Some(FailureMessages.timeoutFailedAfter(prettifier, UnquotedString(timeout.prettyString))),
           cause,
-          getStackDepthFun("TimeLimits.scala", "failAfter", stackDepthAdjustment),
+          stackDepthFun(stackDepthAdjustment),
           None,
           timeout
         )
@@ -291,7 +296,11 @@ trait TimeLimits {
    * @param f the operation on which to enforce the passed timeout
    * @param interruptor a strategy for interrupting the passed operation
    */
-  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, timed: Timed[T] = implicitly[Timed[T]]): T = {
+  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
+    cancelAfterImpl(timeout, interruptor, prettifier, adj => getStackDepthFun(pos))(fun)(timed)
+  }
+
+  private[scalatest] def cancelAfterImpl[T](timeout: Span, interruptor: Signaler, prettifier: Prettifier, stackDepthFun: Int => (StackDepthException => Int))(fun: => T)(implicit timed: Timed[T]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
     timed.timeoutAfter(
       timeout,
@@ -299,9 +308,9 @@ trait TimeLimits {
       interruptor,
       (cause: Option[Throwable], stackDepthAdjustment: Int) => {
         val e = new TestCanceledException(
-          sde => Some(Resources.timeoutCanceledAfter(timeout.prettyString)),
+          sde => Some(FailureMessages.timeoutCanceledAfter(prettifier, UnquotedString(timeout.prettyString))),
           cause,
-          getStackDepthFun("TimeLimits.scala", "cancelAfter", stackDepthAdjustment),
+          stackDepthFun(stackDepthAdjustment),
           None
         )
         e.setStackTrace(stackTraceElements)
@@ -309,33 +318,6 @@ trait TimeLimits {
       }
     )
   }
-
-  /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Signaler, exceptionFun: Option[Throwable] => StackDepthException): T = {
-    val timer = new Timer()
-    val task = new TimeoutTask(Thread.currentThread(), interruptor)
-    timer.schedule(task, timeout.totalNanos / 1000 / 1000)
-    try {
-      val result = f
-      timer.cancel()
-      if (task.timedOut) {
-        if (task.needToResetInterruptedStatus)
-          Thread.interrupted() // To reset the flag probably. He only does this if it was not set before and was set after, I think.
-        throw exceptionFun(None)
-      }
-      result
-    }
-    catch {
-      case t: Throwable => 
-        timer.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
-        if(task.timedOut) {
-          if (task.needToResetInterruptedStatus)
-            Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
-          throw exceptionFun(Some(t))
-        }
-        else
-          throw t
-    }
-  }*/
   
 }
 

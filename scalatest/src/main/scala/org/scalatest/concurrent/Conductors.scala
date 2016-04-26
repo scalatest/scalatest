@@ -23,6 +23,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.NotAllowedException
 import time.{Seconds, Millis, Span}
 import PatienceConfiguration._
+import org.scalactic._
 
 /**
  * Trait whose <code>Conductor</code> member facilitates the testing of classes, traits, and libraries designed
@@ -528,7 +529,7 @@ trait Conductors extends PatienceConfiguration {
      * <strong>The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.</strong>
      */
     @deprecated("The overloaded thread method that takes a String name has been deprecated and will be removed in a future version of ScalaTest. Please use threadNamed instead.")
-    def thread(name: String)(fun: => Any): Thread = {
+    def thread(name: String)(fun: => Any)(implicit pos: source.Position): Thread = {
       threadNamed(name)(fun)
     }
 
@@ -543,13 +544,13 @@ trait Conductors extends PatienceConfiguration {
      * @param fun the function to be executed by the newly created thread
      * @return the newly created thread
      */
-    def threadNamed(name: String)(fun: => Any): Thread = {
+    def threadNamed(name: String)(fun: => Any)(implicit pos: source.Position): Thread = {
       currentState.get match {
         case TestFinished =>
-          throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, getStackDepthFun("Conductors.scala", "thread"))
+          throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, getStackDepthFun(pos))
         case _ =>
           if (threadNames contains name)
-            throw new NotAllowedException(Resources.cantRegisterThreadsWithSameName(name), getStackDepthFun("Conductors.scala", "thread"))
+            throw new NotAllowedException(Resources.cantRegisterThreadsWithSameName(name), getStackDepthFun(pos))
           val t = TestThread(name, fun _)
           threads add t
           threadNames add name
@@ -642,13 +643,13 @@ trait Conductors extends PatienceConfiguration {
      *   instantiated this <code>Conductor</code>, or if <code>conduct</code> has already
      *    been invoked on this conductor.
      */
-    def whenFinished(fun: => Assertion): Assertion = {
+    def whenFinished(fun: => Assertion)(implicit pos: source.Position): Assertion = {
 
       if (Thread.currentThread != mainThread)
-        throw new NotAllowedException(Resources.whenFinishedCanOnlyBeCalledByMainThread, getStackDepthFun("Conductors.scala", "whenFinished"))
+        throw new NotAllowedException(Resources.whenFinishedCanOnlyBeCalledByMainThread, getStackDepthFun(pos))
 
       if (conductingHasBegun)
-        throw new NotAllowedException(Resources.cannotInvokeWhenFinishedAfterConduct, getStackDepthFun("Conductors.scala", "whenFinished"))
+        throw new NotAllowedException(Resources.cannotInvokeWhenFinishedAfterConduct, getStackDepthFun(pos))
 
       conduct()
 
@@ -662,11 +663,11 @@ trait Conductors extends PatienceConfiguration {
      * @param beat the tick value to wait for
      * @throws NotAllowedException if the a <code>beat</code> less than or equal to zero is passed
      */
-    def waitForBeat(beat: Int): Succeeded.type = {
+    def waitForBeat(beat: Int)(implicit pos: source.Position): Succeeded.type = {
       if (beat == 0)
-        throw new NotAllowedException(Resources.cannotWaitForBeatZero, getStackDepthFun("Conductors.scala", "waitForBeat"))
+        throw new NotAllowedException(Resources.cannotWaitForBeatZero, getStackDepthFun(pos))
       if (beat < 0)
-        throw new NotAllowedException(Resources.cannotWaitForNegativeBeat, getStackDepthFun("Conductors.scala", "waitForBeat"))
+        throw new NotAllowedException(Resources.cannotWaitForNegativeBeat, getStackDepthFun(pos))
       clock waitForBeat beat
     }
 
@@ -716,8 +717,8 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> and
      *          <code>interval</code> parameters used to configure the multi-threaded test
      */
-    def conduct()(implicit config: PatienceConfig): Assertion = {
-      conductImpl(config.timeout, config.interval)
+    def conduct()(implicit config: PatienceConfig, pos: source.Position): Assertion = {
+      conductImpl(config.timeout, config.interval, pos)
     }
 
     /**
@@ -734,8 +735,8 @@ trait Conductors extends PatienceConfiguration {
      * @param timeout the <code>Timeout</code> configuration parameter
      * @param interval the <code>Interval</code> configuration parameter
      */
-    def conduct(timeout: Timeout, interval: Interval): Assertion = {
-      conductImpl(timeout.value, interval. value)
+    def conduct(timeout: Timeout, interval: Interval)(implicit pos: source.Position): Assertion = {
+      conductImpl(timeout.value, interval. value, pos)
     }
 
     /**
@@ -753,8 +754,8 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the (unused) <code>timeout</code> and
      *          (used) <code>interval</code> parameters
      */
-    def conduct(timeout: Timeout)(implicit config: PatienceConfig): Assertion = {
-      conductImpl(timeout.value, config.interval)
+    def conduct(timeout: Timeout)(implicit config: PatienceConfig, pos: source.Position): Assertion = {
+      conductImpl(timeout.value, config.interval, pos)
     }
 
     /**
@@ -772,8 +773,8 @@ trait Conductors extends PatienceConfiguration {
      * @param config the <code>PatienceConfig</code> object containing the (used) <code>timeout</code> and
      *          (unused) <code>interval</code> parameters
      */
-    def conduct(interval: Interval)(implicit config: PatienceConfig): Assertion = {
-      conductImpl(config.timeout, interval.value)
+    def conduct(interval: Interval)(implicit config: PatienceConfig, pos: source.Position): Assertion = {
+      conductImpl(config.timeout, interval.value, pos)
     }
 
     private val currentState: AtomicReference[ConductorState] = new AtomicReference(Setup)
@@ -792,12 +793,12 @@ trait Conductors extends PatienceConfiguration {
      */
     def conductingHasBegun: Boolean = currentState.get.testWasStarted
 
-    private def conductImpl(timeout: Span, clockInterval: Span): Assertion = {
+    private def conductImpl(timeout: Span, clockInterval: Span, pos: source.Position): Assertion = {
 
       // if the test was started already, explode
       // otherwise, change state to TestStarted
       if (conductingHasBegun)
-        throw new NotAllowedException(Resources.cannotCallConductTwice, getStackDepthFun("Conductors.scala", "conduct"))
+        throw new NotAllowedException(Resources.cannotCallConductTwice, getStackDepthFun(pos))
       else
         currentState set TestStarted
 

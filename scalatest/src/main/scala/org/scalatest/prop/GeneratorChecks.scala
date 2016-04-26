@@ -24,6 +24,7 @@ import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
+import org.scalactic._
 
 // For now, hard coding a size of 10. Later will need to do the size based on config
 private[prop] trait GeneratorChecks extends Configuration with Whenever {
@@ -33,7 +34,9 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
   def forAll[A](fun: (A) => Unit)
       (implicit 
         config: PropertyCheckConfiguration,
-        genA: org.scalatest.prop.Generator[A]
+        genA: org.scalatest.prop.Generator[A],
+        prettifier: Prettifier,
+        pos: source.Position
       ): Unit = {
     val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
@@ -62,24 +65,24 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
           else throw new TestFailedException("too many discarded evaluations", 0)
         case Failure(ex) => 
           throw new GeneratorDrivenPropertyCheckFailedException(
-            sde => FailureMessages.propertyException(UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+            sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" + 
-              "  " + FailureMessages.propertyFailed(succeededCount) + "\n" +
+              "  " + FailureMessages.propertyFailed(prettifier, succeededCount) + "\n" +
               (
                 sde match {
                   case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                    "  " + FailureMessages.thrownExceptionsLocation(UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                    "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
                   case _ => ""
                 }
               ) +
               "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(argsPassed) + "\n" +
+              prettyArgs(argsPassed, prettifier) + "\n" +
               "  )" +
               "", // getLabelDisplay(scalaCheckLabels),
             Some(ex),
-            getStackDepthFun(stackDepthFileName, stackDepthMethodName),
+            getStackDepthFun(pos),
             None,
-            FailureMessages.propertyFailed(succeededCount),
+            FailureMessages.propertyFailed(prettifier, succeededCount),
             argsPassed,
             None,
             scalaCheckLabels.toList
@@ -166,11 +169,11 @@ private[prop] object GeneratorChecks extends GeneratorChecks {
   private val stackDepthFileName = "GeneratorChecks.scala"
   private val stackDepthMethodName = "apply"
   import FailureMessages.decorateToStringValue
-  private def prettyArgs(args: List[Any]) = {
+  private def prettyArgs(args: List[Any], prettifier: Prettifier) = {
     val strs = for((a, i) <- args.zipWithIndex) yield (
       "    " +
       ("arg" + i) +
-      " = " + decorateToStringValue(a) + (if (i < args.length - 1) "," else "") // +
+      " = " + decorateToStringValue(prettifier, a) + (if (i < args.length - 1) "," else "") // +
       // (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
     )
     strs.mkString("\n")
