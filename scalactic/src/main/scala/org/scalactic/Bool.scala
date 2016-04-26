@@ -32,7 +32,7 @@ trait Bool {
   val prettifier: Prettifier
 
   private def makeString(raw: String, args: Array[Any]): String =
-    Resources.formatString(raw, args.map(prettifier))
+    Resources.formatString(raw, args.map(prettifier.apply))
 
   /**
    * Construct and return failure message, by applying arguments returned from <code>failureMessageArgs</code> to

@@ -114,7 +114,7 @@ private[scalatest] sealed abstract class Fact {
     else makeString(rawMidSentenceSimplifiedFactMessage, midSentenceSimplifiedFactMessageArgs)
 
   private def makeString(raw: String, args: IndexedSeq[Any]): String =
-    Resources.formatString(raw, args.map(prettifier).toArray)
+    Resources.formatString(raw, args.map(prettifier.apply).toArray)
 
   private[scalatest] val NEWLINE = scala.compat.Platform.EOL
 
@@ -1081,7 +1081,7 @@ private[scalatest] object Fact {
   }
 
   private[scalatest] class MyLazyMessage(raw: String, args: IndexedSeq[Any])(implicit prettifier: Prettifier) {
-    override def toString: String = Resources.formatString(raw, args.map(prettifier).toArray)
+    override def toString: String = Resources.formatString(raw, args.map(prettifier.apply).toArray)
   }
 
   // Idea is to override toString each time it is used.

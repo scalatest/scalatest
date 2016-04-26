@@ -121,7 +121,12 @@ import scala.xml
  * custom one when a test actually fails.
  * </p>
  */
-trait Prettifier extends (Any => String)
+trait Prettifier { // I removed the extends (Any => String), now that we are making this implicit.
+  /**
+   * Prettifies the passed object.
+   */
+  def apply(o: Any): String
+}
 
 /**
  * Companion object for <code>Prettifier</code> that provides a default <code>Prettifier</code> implementation.
