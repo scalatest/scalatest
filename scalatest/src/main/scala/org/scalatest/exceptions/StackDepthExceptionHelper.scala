@@ -141,8 +141,11 @@ private[scalatest] object StackDepthExceptionHelper {
     getStackDepth(sde.getStackTrace, fileName, methodName, adjustment)
   }
 
+  def isMatch(ele: StackTraceElement, pos: source.Position): Boolean =
+    ele.getFileName == pos.fileName && ele.getLineNumber == pos.lineNumber
+
   def getStackDepth(stackTrace: Array[StackTraceElement], pos: source.Position): Int = {
-    val idx = stackTrace.indexWhere(e => e.getFileName == pos.fileName && e.getLineNumber == pos.lineNumber)
+    val idx = stackTrace.indexWhere(e => isMatch(e, pos))
     if (idx >= 0) idx else 0
   }
 
