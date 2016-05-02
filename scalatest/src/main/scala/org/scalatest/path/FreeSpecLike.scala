@@ -252,7 +252,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    *
    * @author Bill Venners
    */
-  protected final class FreeSpecStringWrapper(string: String, prettifier: Prettifier, pos: source.Position) {
+  protected final class FreeSpecStringWrapper(string: String, pos: source.Position) {
 
     /**
      * Register some text that may surround one or more tests. The passed
@@ -277,8 +277,8 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
         case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(pos))
         case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(pos))
         case tgce: TestRegistrationClosedException => throw tgce
-        case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), getStackDepthFun(pos))
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), getStackDepthFun(pos))
+        case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), getStackDepthFun(pos))
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), getStackDepthFun(pos))
         case other: Throwable => throw other
       }
     }
@@ -389,7 +389,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
    * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit prettifier: Prettifier, pos: source.Position) = new FreeSpecStringWrapper(s, prettifier, pos)
+  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position) = new FreeSpecStringWrapper(s, pos)
 
   /**
    * Supports shared test registration in <code>path.FreeSpec</code>s.
