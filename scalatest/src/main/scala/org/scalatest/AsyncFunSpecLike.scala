@@ -377,7 +377,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
-  protected def describe(description: String)(fun: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position) {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val errorStackDepth = 4
@@ -392,8 +392,8 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
     catch {
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(pos))
       case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause, Some(e), getStackDepthFun(pos))
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(pos))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(pos))
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDescribeClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(pos))
       case other: Throwable => throw other
     }
   }

@@ -251,7 +251,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    *
    * @author Bill Venners
    */
-  protected final class FreeSpecStringWrapper(string: String, prettifier: Prettifier, pos: source.Position) {
+  protected final class FreeSpecStringWrapper(string: String, pos: source.Position) {
 
     /**
      * Register some text that may surround one or more tests. Thepassed function value may contain surrounding text
@@ -273,8 +273,8 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
         case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(pos))
         case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), getStackDepthFun(pos))
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), getStackDepthFun(pos))
-        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(prettifier, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), getStackDepthFun(pos))
+        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), getStackDepthFun(pos))
+        case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), getStackDepthFun(pos))
         case other: Throwable => throw other
       }
     }
@@ -368,7 +368,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
    * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit prettifier: Prettifier, pos: source.Position) = new FreeSpecStringWrapper(s, prettifier, pos)
+  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position) = new FreeSpecStringWrapper(s, pos)
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are

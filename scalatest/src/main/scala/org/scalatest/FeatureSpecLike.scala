@@ -173,7 +173,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * (defined with <code>it</code>). This trait's implementation of this method will register the
    * description string and immediately invoke the passed function.
    */
-  protected def feature(description: String)(fun: => Unit)(implicit prettifier: Prettifier, pos: source.Position) {
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position) {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
@@ -192,8 +192,8 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
       case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), getStackDepthFun(pos))
       case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), getStackDepthFun(pos))
       case nae: exceptions.NotAllowedException => throw nae
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(prettifier, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(pos))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(prettifier, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(pos))
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(pos))
       case other: Throwable => throw other
     }
   }
