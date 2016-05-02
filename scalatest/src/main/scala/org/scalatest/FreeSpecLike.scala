@@ -181,7 +181,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    *
    * @author Bill Venners
    */
-  protected final class ResultOfTaggedAsInvocationOnString(specText: String, tags: List[Tag]) {
+  protected final class ResultOfTaggedAsInvocationOnString(specText: String, tags: List[Tag], pos: source.Position) {
 
     /**
      * Supports tagged test registration.
@@ -199,7 +199,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
+    def in(testFun: => Any /* Assertion */): Unit = {
       registerTestToRun(specText, tags, "in", testFun _)(pos)
     }
 
@@ -219,7 +219,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement): Unit = {
       registerTestToRun(specText, tags, "is", () => { testFun; succeed })(pos)
     }
 
@@ -239,7 +239,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position) {
+    def ignore(testFun: => Any /* Assertion */): Unit = {
       registerTestToIgnore(specText, tags, "ignore", testFun _)(pos)
     }
   }       
@@ -259,7 +259,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * implementation of this method will register the text (passed to the contructor of <code>FreeSpecStringWrapper</code>
      * and immediately invoke the passed function.
      */
-    def - (fun: => Unit) {
+    def -(fun: => Unit): Unit = {
 
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
@@ -295,7 +295,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def in(f: => Any /* Assertion */)(implicit pos: source.Position) {
+    def in(f: => Any /* Assertion */): Unit = {
       registerTestToRun(string, List(), "in", f _)(pos)
     }
 
@@ -315,7 +315,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def ignore(f: => Any /* Assertion */)(implicit pos: source.Position) {
+    def ignore(f: => Any /* Assertion */): Unit = {
       registerTestToIgnore(string, List(), "ignore", f _)(pos)
     }
 
@@ -335,7 +335,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingStatement)(implicit pos: source.Position) {
+    def is(f: => PendingStatement): Unit = {
       registerTestToRun(string, List(), "is", () => { f; succeed })(pos)
     }
 
@@ -355,9 +355,9 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * For more information and examples of this method's use, see the <a href="FreeSpec.html">main documentation</a> for trait <code>FreeSpec</code>.
      * </p>
      */
-    def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
+    def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = {
       val tagList = firstTestTag :: otherTestTags.toList
-      new ResultOfTaggedAsInvocationOnString(string, tagList)
+      new ResultOfTaggedAsInvocationOnString(string, tagList, pos)
     }
   }
 
@@ -368,7 +368,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
    * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position) = new FreeSpecStringWrapper(s, pos)
+  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> names of tagged tests and whose associated values are
