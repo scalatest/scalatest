@@ -88,7 +88,7 @@ trait PartialFunctionValues {
    *
    * @param pf the <code>PartialFunction</code> on which to add the <code>valueAt</code> method
    */
-  implicit def convertPartialFunctionToValuable[A, B](pf: PartialFunction[A, B]) = new Valuable(pf)
+  implicit def convertPartialFunctionToValuable[A, B](pf: PartialFunction[A, B])(implicit pos: source.Position) = new Valuable(pf, pos)
   
   /**
    * Wrapper class that adds a <code>valueAt</code> method to <code>PartialFunction</code>, allowing
@@ -100,13 +100,13 @@ trait PartialFunctionValues {
    *
    * @param pf An <code>PartialFunction</code> to convert to <code>Valuable</code>, which provides the <code>valueAt</code> method.
    */
-  class Valuable[A, B](pf: PartialFunction[A, B]) {
+  class Valuable[A, B](pf: PartialFunction[A, B], pos: source.Position) {
 
     /**
      * Returns the result of applying the wrapped <code>PartialFunction</code> to the passed input, if it is defined at that input, else
      * throws <code>TestFailedException</code> with a detail message indicating the <code>PartialFunction</code> was not defined at the given input.
      */
-    def valueAt(input: A)(implicit pos: source.Position): B = {
+    def valueAt(input: A): B = {
       if (pf.isDefinedAt(input)) {
         pf.apply(input)
       }
