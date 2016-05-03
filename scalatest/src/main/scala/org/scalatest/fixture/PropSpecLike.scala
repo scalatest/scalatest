@@ -93,7 +93,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -101,7 +101,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 4, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -110,7 +110,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
   }
 
   class ResultOfPropertyInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -119,7 +119,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
       //SCALATESTJS-ONLY val stackDepthAdjustment = -5
       engine.registerTest(testName, Transformer(testFun), Resources.propertyCannotAppearInsideAnotherProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position) {
+    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -148,7 +148,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
     new ResultOfPropertyInvocation(testName, testTags: _*)
 
   class ResultOfIgnoreInvocation(testName: String, testTags: Tag*) {
-    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
+    def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
@@ -157,7 +157,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
       //SCALATESTJS-ONLY val stackDepthAdjustment = -6
       engine.registerIgnoredTest(testName, Transformer(testFun), Resources.ignoreCannotAppearInsideAProperty, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
     }
-    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position) {
+    def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -3
