@@ -97,7 +97,7 @@ trait LoneElement {
    * @param collection a collection to wrap in a <code>LoneElementCollectionWrapper</code>, which provides the <code>loneElement</code> method.
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementCollectionWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]) {
+  final class LoneElementCollectionWrapper[E, CTC[_]](collection: CTC[E], collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position) {
 
     /**
      * Returns the value contained in the wrapped collection, if it contains one and only one element, else throws <code>TestFailedException</code> with
@@ -112,7 +112,7 @@ trait LoneElement {
      *      ^
      * </pre>
      */
-    def loneElement(implicit prettifier: Prettifier, pos: source.Position): E = {
+    def loneElement: E = {
       collecting.loneElementOf(collection) match {
         case Some(ele) => ele
         case None =>
@@ -128,7 +128,7 @@ trait LoneElement {
   }
 
   import scala.language.implicitConversions
-  
+
   /**
    * Implicit conversion that adds a <code>loneElement</code> method to any collection type <code>C</code> for which an
    * implicit <code>Collecting[C]</code> is available.
@@ -138,7 +138,7 @@ trait LoneElement {
    * @param collection the collection on which to add the <code>loneElement</code> method
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]]): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection)
+  implicit def convertToCollectionLoneElementWrapper[E, CTC[_]](collection: CTC[E])(implicit collecting: Collecting[E, CTC[E]], prettifier: Prettifier, pos: source.Position): LoneElementCollectionWrapper[E, CTC] = new LoneElementCollectionWrapper[E, CTC](collection, collecting, prettifier, pos)
 
   /**
    * Wrapper class that adds a <code>loneElement</code> method to Java Map for which
