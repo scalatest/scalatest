@@ -101,7 +101,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -109,7 +109,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 5, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = 0
     // SKIP-SCALATESTJS-END
@@ -143,7 +143,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
 
     class ResultOfItWordApplication(specText: String, testTags: Tag*) {
 
-      def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+      def apply(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
@@ -153,7 +153,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
         engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
       }
 
-      def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+      def apply(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
@@ -453,7 +453,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * @param description the description text
    * @param fun the function which makes up the body for the description
    */
-  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position) {
+  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     // SKIP-SCALATESTJS-END

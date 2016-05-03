@@ -146,7 +146,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position) {
+    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       val stackDepthAdjustment = -2
@@ -264,7 +264,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
      * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
      * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
      */
-    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position) {
+    def apply(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
       handleTest(thisSuite, testText, Transformer(testFun _), Resources.theyCannotAppearInsideAnotherItOrThey, "FunSpecLike.scala", "apply", 3, -2, None, Some(pos), testTags: _*)
     }
  
@@ -349,7 +349,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position) {
+  protected def ignore(testText: String, testTags: Tag*)(testFun: => Unit /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -2
@@ -373,7 +373,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    * <code>org.scalatest.path.FunSpec</code>.
    * </p>
    */
-  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position) {
+  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     // SKIP-SCALATESTJS-END

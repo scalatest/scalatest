@@ -100,7 +100,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
+  final def registerTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -108,7 +108,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
     engine.registerTest(testText, Transformer(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerTest", 5, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
+  final def registerIgnoredTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = 0
     // SKIP-SCALATESTJS-END
@@ -142,7 +142,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
 
     class ResultOfItWordApplication(specText: String, testTags: Tag*) {
 
-      def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position) {
+      def apply(testFun: FixtureParam => Any /* Assertion */)(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
@@ -152,7 +152,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
         engine.registerTest(specText, Transformer(testFun), Resources.itCannotAppearInsideAnotherItOrThey, sourceFileName, "apply", stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
       }
 
-      def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position) {
+      def apply(testFun: () => Any /* Assertion */)(implicit pos: source.Position): Unit = {
         // SKIP-SCALATESTJS-START
         val stackDepth = 3
         val stackDepthAdjustment = -2
@@ -456,7 +456,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * @param description the description text
    * @param fun the function which makes up the body for the description
    */
-  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position) {
+  protected def describe(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     // SKIP-SCALATESTJS-END
