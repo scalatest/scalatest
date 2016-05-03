@@ -19,23 +19,23 @@ import org.scalatest._
 import Matchers._
 
 class EndWithWordSpec extends FreeSpec with FileMocks {
-  
+
   "EndWithWord " - {
-    
+
     "should have pretty toString" in {
       endWith.toString should be ("endWith")
     }
-    
+
     "apply(String) method returns Matcher" - {
-      
+
       val mt = endWith ("er")
-      
+
       "should have pretty toString" in {
         mt.toString should be ("endWith (\"er\")")
       }
-      
+
       val mr = mt("Programmer")
-      
+
       "should have correct MatcherResult" in {
         mr should have (
           'matches (true),
@@ -50,12 +50,12 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
           'failureMessageArgs(Vector("Programmer", "er")),
           'negatedFailureMessageArgs(Vector("Programmer", "er")),
           'midSentenceFailureMessageArgs(Vector("Programmer", "er")),
-          'midSentenceNegatedFailureMessageArgs(Vector("Programmer", "er"))    
+          'midSentenceNegatedFailureMessageArgs(Vector("Programmer", "er"))
         )
       }
-      
+
       val nmr = mr.negated
-      
+
       "should have correct negated MatcherResult" in {
         nmr should have (
           'matches (false),
@@ -70,22 +70,22 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
           'failureMessageArgs(Vector("Programmer", "er")),
           'negatedFailureMessageArgs(Vector("Programmer", "er")),
           'midSentenceFailureMessageArgs(Vector("Programmer", "er")),
-          'midSentenceNegatedFailureMessageArgs(Vector("Programmer", "er"))    
+          'midSentenceNegatedFailureMessageArgs(Vector("Programmer", "er"))
         )
       }
     }
-    
+
     "regex(String) method returns Matcher" - {
-      
+
       val decimal = """(-)?(\d+)(\.\d*)?"""
       val mt = endWith regex decimal
-      
+
       "should have pretty toString" in {
         mt.toString should be ("endWith regex \"" + decimal + "\"")
       }
-      
+
       val mr = mt("b2.7")
-      
+
       "should have correct MatcherResult" in {
         mr should have (
           'matches (true),
@@ -100,12 +100,12 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
           'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
           'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
           'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
+          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))
         )
       }
-      
+
       val nmr = mr.negated
-      
+
       "should have correct negated MatcherResult" in {
         nmr should have (
           'matches (false),
@@ -120,75 +120,75 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
           'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
           'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
           'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
+          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))
         )
       }
     }
-    
+
     "regex(Regex) method returns Matcher" - {
-      
+
       val decimal = """(-)?(\d+)(\.\d*)?"""
       val mt = endWith regex decimal.r
-      
+
       "should have pretty toString" in {
         mt.toString should be ("endWith regex \"" + decimal + "\"")
       }
-      
-      val mr = mt("b2.7")
-      
+
+      val mr = mt("a1.6b2.7")
+
       "should have correct MatcherResult" in {
         mr should have (
           'matches (true),
-          'failureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
+          'failureMessage ("\"a1.6b2.7\" did not end with a substring that matched the regular expression " + decimal),
+          'negatedFailureMessage ("\"a1.6b2.7\" ended with a substring that matched the regular expression " + decimal),
+          'midSentenceFailureMessage ("\"a1.6b2.7\" did not end with a substring that matched the regular expression " + decimal),
+          'midSentenceNegatedFailureMessage ("\"a1.6b2.7\" ended with a substring that matched the regular expression " + decimal),
           'rawFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
           'rawNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
           'rawMidSentenceFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
           'rawMidSentenceNegatedFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
+          'failureMessageArgs(Vector("a1.6b2.7", UnquotedString(decimal))),
+          'negatedFailureMessageArgs(Vector("a1.6b2.7", UnquotedString(decimal))),
+          'midSentenceFailureMessageArgs(Vector("a1.6b2.7", UnquotedString(decimal))),
+          'midSentenceNegatedFailureMessageArgs(Vector("a1.6b2.7", UnquotedString(decimal)))
         )
       }
-      
+
       val nmr = mr.negated
-      
+
       "should have correct negated MatcherResult" in {
         nmr should have (
           'matches (false),
-          'failureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'negatedFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
-          'midSentenceFailureMessage ("\"b2.7\" ended with a substring that matched the regular expression " + decimal),
-          'midSentenceNegatedFailureMessage ("\"b2.7\" did not end with a substring that matched the regular expression " + decimal),
+          'failureMessage ("\"a1.6b2.7\" ended with a substring that matched the regular expression " + decimal),
+          'negatedFailureMessage ("\"a1.6b2.7\" did not end with a substring that matched the regular expression " + decimal),
+          'midSentenceFailureMessage ("\"a1.6b2.7\" ended with a substring that matched the regular expression " + decimal),
+          'midSentenceNegatedFailureMessage ("\"a1.6b2.7\" did not end with a substring that matched the regular expression " + decimal),
           'rawFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
           'rawNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
           'rawMidSentenceFailureMessage ("{0} ended with a substring that matched the regular expression {1}"),
           'rawMidSentenceNegatedFailureMessage ("{0} did not end with a substring that matched the regular expression {1}"),
-          'failureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'negatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceFailureMessageArgs(Vector("b2.7", UnquotedString(decimal))),
-          'midSentenceNegatedFailureMessageArgs(Vector("b2.7", UnquotedString(decimal)))    
+          'failureMessageArgs(Vector("a1.6b2.7", UnquotedString(decimal))),
+          'negatedFailureMessageArgs(Vector("a1.6b2.7", UnquotedString(decimal))),
+          'midSentenceFailureMessageArgs(Vector("a1.6b2.7", UnquotedString(decimal))),
+          'midSentenceNegatedFailureMessageArgs(Vector("a1.6b2.7", UnquotedString(decimal)))
         )
       }
     }
-    
+
     "regex(a(b*)c withGroup bb) method returns Matcher" - {
-      
+
       val bb = "bb"
-      
+
       val mt = endWith regex ("""a(b*)c""" withGroup bb)
-      
+
       "should have pretty toString" in {
         mt.toString should be ("endWith regex \"a(b*)c\" withGroup (\"" + bb + "\")")
       }
-      
+
       val mr1 = mt("abbc")
-      
+
       "when apply with \"abbc\"" - {
-      
+
         "should have correct MatcherResult" in {
           mr1 should have (
             'matches (true),
@@ -203,12 +203,12 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
             'failureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
             'negatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
             'midSentenceFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb")))    
+            'midSentenceNegatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb")))
           )
         }
-      
+
         val nmr = mr1.negated
-      
+
         "should have correct negated MatcherResult" in {
           nmr should have (
             'matches (false),
@@ -223,18 +223,18 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
             'failureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
             'negatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb"))),
             'midSentenceFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb")))    
+            'midSentenceNegatedFailureMessageArgs(Vector("abbc", UnquotedString("a(b*)c"), "bb", UnquotedString("bb")))
           )
         }
-        
+
       }
-      
+
       val mr2 = mt("abbbc")
-        
+
       "when apply with \"abbbc\"" - {
-          
+
         "should have correct MatcherResult" in {
-            
+
           mr2 should have (
             'matches (false),
             'failureMessage ("\"abbbc\" ended with a substring that matched the regular expression a(b*)c, but \"bbb\" did not match group bb"),
@@ -248,13 +248,13 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
             'failureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
             'negatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
             'midSentenceFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb")))    
+            'midSentenceNegatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb")))
           )
-            
+
         }
-          
+
         val nmr = mr2.negated
-      
+
         "should have correct negated MatcherResult" in {
           nmr should have (
             'matches (true),
@@ -269,16 +269,16 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
             'failureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
             'negatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb"))),
             'midSentenceFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), UnquotedString("bb"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb")))    
+            'midSentenceNegatedFailureMessageArgs(Vector("abbbc", UnquotedString("a(b*)c"), "bbb", UnquotedString("bb")))
           )
         }
-          
+
       }
-      
+
       val mr3 = mt("ABBC")
-      
+
       "when apply with \"ABBC\"" - {
-        
+
         "should have correct MatcherResult" in {
           mr3 should have (
             'matches (false),
@@ -293,12 +293,12 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
             'failureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
             'negatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
             'midSentenceFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c")))    
+            'midSentenceNegatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c")))
           )
         }
-        
+
         val nmr = mr3.negated
-      
+
         "should have correct negated MatcherResult" in {
           nmr should have (
             'matches (true),
@@ -313,24 +313,24 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
             'failureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
             'negatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
             'midSentenceFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c"))),
-            'midSentenceNegatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c")))    
+            'midSentenceNegatedFailureMessageArgs(Vector("ABBC", UnquotedString("a(b*)c")))
           )
         }
       }
     }
-    
+
     "regex(a(b*)(c*) withGroup bb) method returns Matcher" - {
       val bb = "bb"
       val cc = "cc"
-      
+
       val mt = endWith regex ("""a(b*)(c*)""" withGroups (bb, cc))
-      
+
       "should have pretty toString" in {
         mt.toString should be ("endWith regex \"a(b*)(c*)\" withGroups (\"" + bb + "\", \"" + cc + "\")")
       }
-      
+
       val mr = mt("abbccc")
-      
+
       "should have correct MatcherResult" in {
         mr should have (
           'matches (false),
@@ -345,12 +345,12 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
           'failureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
           'negatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
           'midSentenceFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
-          'midSentenceNegatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc")))    
+          'midSentenceNegatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc")))
         )
       }
-      
+
       val nmr = mr.negated
-      
+
       "should have correct negated MatcherResult" in {
         nmr should have (
           'matches (true),
@@ -365,7 +365,7 @@ class EndWithWordSpec extends FreeSpec with FileMocks {
           'failureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
           'negatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1)),
           'midSentenceFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), UnquotedString("bb, cc"))),
-          'midSentenceNegatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1))    
+          'midSentenceNegatedFailureMessageArgs(Vector("abbccc", UnquotedString("a(b*)(c*)"), "ccc", UnquotedString("cc"), 1))
         )
       }
     }
