@@ -16,10 +16,12 @@
 package org.scalatest.junit
 
 import org.scalatest._
+import org.scalactic.source
+import SharedHelpers.thisLineNumber
 
 class JUnitTestFailedErrorSpec extends FunSpec with Matchers with AssertionsForJUnit {
 
-  val baseLineNumber = 22
+  val baseLineNumber = thisLineNumber
 
   describe("The JUnitTestFailedError") {
 
@@ -205,14 +207,14 @@ class JUnitTestFailedErrorSpec extends FunSpec with Matchers with AssertionsForJ
 
     it("should return the cause in both cause and getCause") {
       val theCause = new IllegalArgumentException("howdy")
-      val tfe = new JUnitTestFailedError(Some("doody"), Some(theCause), 3, None)
+      val tfe = new JUnitTestFailedError(Some("doody"), Some(theCause), Some(source.Position.here), 3, None)
       assert(tfe.cause.isDefined)
       assert(tfe.cause.get === theCause)
       assert(tfe.getCause == theCause)
     }
 
     it("should return None in cause and null in getCause if no cause") {
-      val tfe = new JUnitTestFailedError(Some("doody"), None, 3, None)
+      val tfe = new JUnitTestFailedError(Some("doody"), None, Some(source.Position.here), 3, None)
       assert(tfe.cause.isEmpty)
       assert(tfe.getCause == null)
     }

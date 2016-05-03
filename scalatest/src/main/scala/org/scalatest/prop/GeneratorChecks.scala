@@ -22,6 +22,7 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
+import org.scalatest.exceptions.StackDepthException
 import org.scalatest.FailureMessages
 import org.scalatest.UnquotedString
 import org.scalactic._
@@ -62,7 +63,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, r, nextInitialSizes)
-          else throw new TestFailedException("too many discarded evaluations", 0)
+          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos), getStackDepthFun(pos), None)
         case Failure(ex) => 
           throw new GeneratorDrivenPropertyCheckFailedException(
             sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
@@ -80,6 +81,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
               "  )" +
               "", // getLabelDisplay(scalaCheckLabels),
             Some(ex),
+            Some(pos),
             getStackDepthFun(pos),
             None,
             FailureMessages.propertyFailed(prettifier, succeededCount),
@@ -111,7 +113,8 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
       (implicit 
         config: PropertyCheckConfiguration,
         genA: org.scalatest.prop.Generator[A],
-        genB: org.scalatest.prop.Generator[B]
+        genB: org.scalatest.prop.Generator[B],
+        pos: source.Position
       ): Unit = {
     val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     @tailrec
@@ -128,7 +131,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, br)
-          else throw new TestFailedException("too many discarded evaluations", 0)
+          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos), getStackDepthFun(pos))
         case Failure(ex) => throw ex
       }
     }
@@ -139,7 +142,8 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
         config: PropertyCheckConfiguration,
         genA: org.scalatest.prop.Generator[A],
         genB: org.scalatest.prop.Generator[B],
-        genC: org.scalatest.prop.Generator[C]
+        genC: org.scalatest.prop.Generator[C],
+        pos: source.Position
       ): Unit = {
     val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     @tailrec
@@ -157,7 +161,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, cr)
-          else throw new TestFailedException("too many discarded evaluations", 0)
+          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos), getStackDepthFun(pos))
         case Failure(ex) => throw ex
       }
     }

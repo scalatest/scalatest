@@ -111,7 +111,7 @@ trait PartialFunctionValues {
         pf.apply(input)
       }
       else
-        throw new TestFailedException(sde => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, getStackDepthFun(pos))
+        throw new TestFailedException(sde => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, Some(pos), getStackDepthFun(pos))
     }
   }
 }

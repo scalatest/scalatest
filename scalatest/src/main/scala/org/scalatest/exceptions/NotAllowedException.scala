@@ -17,6 +17,7 @@ package org.scalatest.exceptions
 
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.source
 
 /**
  * Exception that indicates something was attempted in test code that is not allowed.
@@ -33,7 +34,7 @@ import org.scalactic.exceptions.NullArgumentException
  *
  * @author Bill Venners
  */
-class NotAllowedException(message: String, cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int)
+class NotAllowedException(message: String, cause: Option[Throwable], val pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int)
     extends StackDepthException(Some(message), cause, failedCodeStackDepthFun) {
 
   requireNonNull(message, failedCodeStackDepthFun)
@@ -48,7 +49,7 @@ class NotAllowedException(message: String, cause: Option[Throwable], failedCodeS
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, failedCodeStackDepth: Int) = this(message, None, e => failedCodeStackDepth)
+  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) = this(message, None, pos, e => failedCodeStackDepth)
 
   /**
    * Construct a <code>NotAllowedException</code> with pre-determined <code>message</code> and
@@ -59,7 +60,7 @@ class NotAllowedException(message: String, cause: Option[Throwable], failedCodeS
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, failedCodeStackDepthFun: StackDepthException => Int) = this(message, None, failedCodeStackDepthFun)
+  def this(message: String, pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int) = this(message, None, pos, failedCodeStackDepthFun)
 
   /**
    * Returns an exception of class <code>NotAllowedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
@@ -69,7 +70,7 @@ class NotAllowedException(message: String, cause: Option[Throwable], failedCodeS
    */
   def severedAtStackDepth: NotAllowedException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new NotAllowedException(message, 0)
+    val e = new NotAllowedException(message, pos, 0)
     e.setStackTrace(truncated)
     e
   }

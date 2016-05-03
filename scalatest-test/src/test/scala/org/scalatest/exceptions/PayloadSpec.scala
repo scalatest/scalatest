@@ -22,6 +22,7 @@ import time.{Span, Second}
 // SKIP-SCALATESTJS-START
 import junit.JUnitTestFailedError
 // SKIP-SCALATESTJS-END
+import org.scalactic.source
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.TestFailedException
@@ -32,14 +33,14 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   def examples =  // TODO, also support payloads in JUnit errors
     Table(
       "exception",
-      new TestFailedException("message", 3),
+      new TestFailedException("message", Some(source.Position.here), 3),
       // SKIP-SCALATESTJS-START
-      new JUnitTestFailedError("message", 3),
+      new JUnitTestFailedError("message", Some(source.Position.here), 3),
       // SKIP-SCALATESTJS-END
-      new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
-      new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
-      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty), 
-      new TestCanceledException("message", 3)
+      new TestFailedDueToTimeoutException(e => Some("message"), None, Some(source.Position.here), e => 3, None, Span(1, Second)),
+      new TableDrivenPropertyCheckFailedException(e => "message", None, Some(source.Position.here), e => 3, None, "undecMsg", List.empty, List.empty, 3),
+      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, Some(source.Position.here), e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty),
+      new TestCanceledException("message", Some(source.Position.here), 3)
    )
 
   "The modifyPayload method on TFE" should "return the an exception with an equal message option if passed a function that returns the same option passed to it" in {
@@ -152,7 +153,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   }
   
   it should "return Failed that contains TestFailedException and added payload" in {
-    val failed = Failed(new TestFailedException("boom!", 3))
+    val failed = Failed(new TestFailedException("boom!", Some(source.Position.here), 3))
     val result = withPayload("a payload") { failed }
     result shouldBe a [Failed]
     result.exception shouldBe a [TestFailedException]
@@ -167,7 +168,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   }
   
   it should "return Canceled that contains TestCanceledException and added payload" in {
-    val canceled = Canceled(new TestCanceledException("rollback!", 3))
+    val canceled = Canceled(new TestCanceledException("rollback!", Some(source.Position.here), 3))
     val result = withPayload("a payload") { canceled }
     result shouldBe a [Canceled]
     result.exception shouldBe a [TestCanceledException]

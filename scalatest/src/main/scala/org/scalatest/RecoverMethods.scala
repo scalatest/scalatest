@@ -18,7 +18,13 @@ package org.scalatest
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 import org.scalatest.exceptions.TestFailedException
+
 import scala.reflect.ClassTag
+import org.scalactic.source
+import org.scalatest.exceptions.StackDepthException._
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+
+import org.scalactic.source
 
 /**
  * Offers two methods for transforming futures when exceptions are expected.
@@ -139,11 +145,6 @@ import scala.reflect.ClassTag
  */
 trait RecoverMethods {
 
-  // SKIP-SCALATESTJS-START
-  private[scalatest] val failStackDepthForRecover = 4
-  // SKIP-SCALATESTJS-END
-  //SCALATESTJS-ONLY private[scalatest] val failStackDepthForRecover = 13
-
   /**
    * Transforms a future of any type into a <code>Future[T]</code>, where <code>T</code> is a given
    * expected exception type, which succeeds if the given future
@@ -157,19 +158,19 @@ trait RecoverMethods {
    * @return a Future[T] containing on success the expected exception, or containing on failure
    *   a <code>TestFailedException</code>
    */
-  def recoverToExceptionIf[T <: AnyRef](future: Future[Any])(implicit classTag: ClassTag[T], exCtx: ExecutionContext): Future[T] = {
+  def recoverToExceptionIf[T <: AnyRef](future: Future[Any])(implicit classTag: ClassTag[T], exCtx: ExecutionContext, pos: source.Position): Future[T] = {
     val clazz = classTag.runtimeClass
     future.failed.transform(
       ex =>
         if (!clazz.isAssignableFrom(ex.getClass)) {
           val message = Resources.wrongException(clazz.getName, ex.getClass.getName)
-          throw newAssertionFailedExceptionForRecover(Some(message), Some(ex), failStackDepthForRecover)
+          throw newAssertionFailedExceptionForRecover(Some(message), Some(ex), pos)
         }
         else ex.asInstanceOf[T]
       ,
       ex => {
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedExceptionForRecover(Some(message), None, failStackDepthForRecover)
+        throw newAssertionFailedExceptionForRecover(Some(message), None, pos)
       }
     )
   }
@@ -186,30 +187,25 @@ trait RecoverMethods {
    * @return a Future[Assertion] containing on success the <code>Succeeded</code> singleton, or containing on failure
    *   a <code>TestFailedException</code>
    */
-  def recoverToSucceededIf[T <: AnyRef](future: Future[Any])(implicit classTag: ClassTag[T], exCtx: ExecutionContext): Future[Assertion] = {
+  def recoverToSucceededIf[T <: AnyRef](future: Future[Any])(implicit classTag: ClassTag[T], exCtx: ExecutionContext, pos: source.Position): Future[Assertion] = {
     val clazz = classTag.runtimeClass
     future.failed.transform(
       ex =>
         if (!clazz.isAssignableFrom(ex.getClass)) {
           val message = Resources.wrongException(clazz.getName, ex.getClass.getName)
-          throw newAssertionFailedExceptionForRecover(Some(message), Some(ex), failStackDepthForRecover)
+          throw newAssertionFailedExceptionForRecover(Some(message), Some(ex), pos)
         }
         else Succeeded
       ,
       ex => {
         val message = Resources.exceptionExpected(clazz.getName)
-        throw newAssertionFailedExceptionForRecover(Some(message), None, failStackDepthForRecover)
+        throw newAssertionFailedExceptionForRecover(Some(message), None, pos)
       }
     )
   }
 
-  private[scalatest] def newAssertionFailedExceptionForRecover(optionalMessage: Option[Any], optionalCause: Option[Throwable], stackDepth: Int): Throwable =
-    (optionalMessage, optionalCause) match {
-      case (None, None) => new TestFailedException(stackDepth)
-      case (None, Some(cause)) => new TestFailedException(cause, stackDepth)
-      case (Some(message), None) => new TestFailedException(message.toString, stackDepth)
-      case (Some(message), Some(cause)) => new TestFailedException(message.toString, cause, stackDepth)
-    }
+  private[scalatest] def newAssertionFailedExceptionForRecover(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
+    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Some(pos), getStackDepthFun(pos))
 }
 
 /**

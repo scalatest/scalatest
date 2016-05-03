@@ -681,7 +681,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(pos))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, Some(pos), getStackDepthFun(pos))
 
     val branchLocation = 
       location match {
@@ -721,7 +721,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val (_, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(pos))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, Some(pos), getStackDepthFun(pos))
 
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
@@ -747,7 +747,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(pos))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, Some(pos), getStackDepthFun(pos))
 //    throw new TestRegistrationClosedException(Resources.testCannotAppearInsideAnotherTest, getStackDepth(sourceFileName, "test"))
 
     val oldBundle = atomic.get
@@ -760,7 +760,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       val duplicateTestNameAdjustment = 0
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val duplicateTestNameAdjustment = -1
-      throw new DuplicateTestNameException(testName, getStackDepthFun(pos))
+      throw new DuplicateTestNameException(testName, Some(pos), getStackDepthFun(pos))
     }
     val testLocation = 
       location match {

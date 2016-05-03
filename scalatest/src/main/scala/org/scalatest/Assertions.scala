@@ -17,6 +17,7 @@ package org.scalatest
 
 import exceptions.TestCanceledException
 import exceptions.TestPendingException
+import exceptions.StackDepthException
 import scala.reflect.ClassTag
 import Assertions.areEqualComparingArraysStructurally
 import exceptions.StackDepthExceptionHelper.getStackDepthFun
@@ -526,10 +527,10 @@ trait Assertions extends TripleEquals  {
   val assertionsHelper = new AssertionsHelper
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(pos))
+    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Some(pos), getStackDepthFun(pos))
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, getStackDepthFun(pos), None)
+    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, Some(pos), getStackDepthFun(pos), None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -1312,7 +1313,7 @@ trait Assertions extends TripleEquals  {
    * @param f a block of code, which if it completes abruptly, should trigger a <code>TestPendingException</code> 
    * @throws TestPendingException if the passed block of code completes abruptly with an <code>Exception</code> or <code>AssertionError</code>
    */
-  def pendingUntilFixed(f: => Unit): Assertion with PendingStatement = {
+  def pendingUntilFixed(f: => Unit)(implicit pos: source.Position): Assertion with PendingStatement = {
     val isPending =
       try {
         f
@@ -1325,7 +1326,7 @@ trait Assertions extends TripleEquals  {
       if (isPending)
         throw new TestPendingException
       else
-        throw new TestFailedException(Resources.pendingUntilFixed, 2)
+        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, Some(pos), getStackDepthFun(pos))
   }
 
   /**

@@ -1706,6 +1706,7 @@ $columnsOfIndexes$
          |                        }.toIndexedSeq).mkString("\n") +
          |                        "  )"),
          |                      Some(ex),
+         |                      Some(pos),
          |                      getStackDepthFun(pos),
          |                      None,
          |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
@@ -1773,6 +1774,7 @@ $columnsOfIndexes$
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
+         |          Some(pos),
          |          stackDepthFun,
          |          payload,
          |          undecoratedMessage,
@@ -1784,6 +1786,7 @@ $columnsOfIndexes$
          |        throw new org.scalatest.exceptions.TestFailedException(
          |          sde => Some(message),
          |          optionalCause,
+         |          Some(pos),
          |          stackDepthFun
          |        )
          |
@@ -1811,6 +1814,7 @@ $columnsOfIndexes$
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
+         |          Some(pos),
          |          stackDepthFun,
          |          payload,
          |          undecoratedMessage,
@@ -1822,6 +1826,7 @@ $columnsOfIndexes$
          |        throw new org.scalatest.exceptions.TestFailedException(
          |          sde => Some(message),
          |          optionalCause,
+         |          Some(pos),
          |          stackDepthFun
          |        )
          |    }
