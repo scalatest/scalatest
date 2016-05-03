@@ -61,7 +61,7 @@ private[scalatest] object MatchersHelper {
   // 1           0            1                      Some(G)
   // 1           1            0                      Some(M)
   // 1           1            1                      Some(M) prefer a Scala style one of a Java style, such as when using BeanProperty annotation
-  // 
+  //
   def accessProperty(objectWithProperty: AnyRef, propertySymbol: Symbol, isBooleanProperty: Boolean): Option[Any] = {
 
     // If 'title passed, propertyName would be "title"
@@ -152,7 +152,7 @@ private[scalatest] object MatchersHelper {
     // should not look for anything in the first 2 elements, caller stack element is at 3rd/4th
     // also, it solves the problem when the suite file that mixin in Matchers has the [suiteFileName]:newTestFailedException appears in the top 2 elements
     // this approach should be better than adding && _.getMethodName == newTestFailedException we used previously.
-    val elements = temp.getStackTrace.drop(2) 
+    val elements = temp.getStackTrace.drop(2)
     // TODO: Perhaps we should add org.scalatest.enablers also here later?
     // TODO: Probably need a MatchersHelper.scala here also
     val stackDepth = elements.indexWhere(st => st.getFileName != "Matchers.scala" && st.getFileName != "MustMatchers.scala" && !st.getClassName.startsWith("org.scalatest.words.")) + 2 // the first 2 elements dropped previously
@@ -228,7 +228,7 @@ private[scalatest] object MatchersHelper {
             FailureMessages.hasNeitherAnOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs))
           else
             FailureMessages.hasNeitherAOrAnMethod(left, UnquotedString(methodNameToInvoke), UnquotedString(methodNameToInvokeWithIs)),
-          None, 
+          None,
           stackDepth
         )
 
@@ -250,12 +250,12 @@ private[scalatest] object MatchersHelper {
   }
   // SKIP-SCALATESTJS-END
 
-  def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String], 
+  def checkPatternMatchAndGroups(matches: Boolean, left: String, pMatcher: java.util.regex.Matcher, regex: Regex, groups: IndexedSeq[String],
                                  didNotMatchMessage: => String, matchMessage: => String, notGroupAtIndexMessage:  => String, notGroupMessage: => String,
                                  andGroupMessage: => String): MatchResult = {
     if (groups.size == 0 || !matches)
       MatchResult(
-        matches, 
+        matches,
         didNotMatchMessage,
         matchMessage,
         Vector(left, UnquotedString(regex.toString))
@@ -263,54 +263,55 @@ private[scalatest] object MatchersHelper {
     else {
       val count = pMatcher.groupCount
       val failed = // Find the first group that fails
-        groups.zipWithIndex.find { case (group, idx) => 
+        groups.zipWithIndex.find { case (group, idx) =>
           val groupIdx = idx + 1
           !(groupIdx <= count && pMatcher.group(groupIdx) == group)
         }
       failed match {
         case Some((group, idx)) =>
           MatchResult(
-            false, 
+            false,
             if (groups.size > 1) notGroupAtIndexMessage else notGroupMessage,
             andGroupMessage,
-            if (groups.size > 1) Vector(left, UnquotedString(regex.toString), pMatcher.group(idx + 1), UnquotedString(group), idx) else Vector(left, UnquotedString(regex.toString), pMatcher.group(1), UnquotedString(group)), 
+            if (groups.size > 1) Vector(left, UnquotedString(regex.toString), pMatcher.group(idx + 1), UnquotedString(group), idx) else Vector(left, UnquotedString(regex.toString), pMatcher.group(1), UnquotedString(group)),
             Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
           )
-        case None => 
+        case None =>
           // None of group failed
           MatchResult(
-            true, 
+            true,
             notGroupMessage,
             andGroupMessage,
-            Vector(left, UnquotedString(regex.toString), pMatcher.group(1),  UnquotedString(groups.mkString(", "))), 
+            Vector(left, UnquotedString(regex.toString), pMatcher.group(1),  UnquotedString(groups.mkString(", "))),
             Vector(left, UnquotedString(regex.toString), UnquotedString(groups.mkString(", ")))
           )
       }
     }
   }
-  
+
   def fullyMatchRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.matches
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotFullyMatchRegex, Resources.rawFullyMatchedRegex, Resources.rawFullyMatchedRegexButNotGroupAtIndex,
                                Resources.rawFullyMatchedRegexButNotGroup, Resources.rawFullyMatchedRegexAndGroup)
   }
-  
+
   def startWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.lookingAt
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotStartWithRegex, Resources.rawStartedWithRegex, Resources.rawStartedWithRegexButNotGroupAtIndex,
       Resources.rawStartedWithRegexButNotGroup, Resources.rawStartedWithRegexAndGroup)
   }
-  
+
   def endWithRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
-    val found = pMatcher.find
-    val matches = found && pMatcher.end == left.length
+    while (!pMatcher.hitEnd) { pMatcher.find }
+    val matches = pMatcher.hitEnd && (pMatcher.end == left.length)
+
     checkPatternMatchAndGroups(matches, left, pMatcher, regex, groups, Resources.rawDidNotEndWithRegex, Resources.rawEndedWithRegex, Resources.rawEndedWithRegexButNotGroupAtIndex,
                                Resources.rawEndedWithRegexButNotGroup, Resources.rawEndedWithRegexAndGroup)
   }
-  
+
   def includeRegexWithGroups(left: String, regex: Regex, groups: IndexedSeq[String]): MatchResult = {
     val pMatcher = regex.pattern.matcher(left)
     val matches = pMatcher.find

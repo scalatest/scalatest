@@ -61,18 +61,18 @@ final class EndWithWord {
    * </pre>
    */
   def regex[T <: String](right: T): Matcher[T] = regex(right.r)
-  
+
   /**
    * This method enables the following syntax:
    *
    * <pre class="stHighlight">
-   * string should not { endWith regex ("a(b*)c" withGroup "bb") } 
+   * string should not { endWith regex ("a(b*)c" withGroup "bb") }
    *                             ^
    * </pre>
-   */	
-  def regex(regexWithGroups: RegexWithGroups) = 
+   */
+  def regex(regexWithGroups: RegexWithGroups) =
     new Matcher[String] {
-      def apply(left: String): MatchResult = 
+      def apply(left: String): MatchResult =
         endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       override def toString: String = "endWith regex " + Prettifier.default(regexWithGroups)
     }
@@ -89,9 +89,10 @@ final class EndWithWord {
   def regex(rightRegex: Regex): Matcher[String] =
     new Matcher[String] {
       def apply(left: String): MatchResult = {
-        val allMatches = rightRegex.findAllIn(left)
+        val pMatcher = rightRegex.pattern.matcher(left)
+        while (!pMatcher.hitEnd) { pMatcher.find }
         MatchResult(
-          allMatches.hasNext && (allMatches.end == left.length),
+          pMatcher.hitEnd && (pMatcher.end == left.length),
           Resources.rawDidNotEndWithRegex,
           Resources.rawEndedWithRegex,
           Vector(left, UnquotedString(rightRegex.toString))
@@ -99,7 +100,7 @@ final class EndWithWord {
       }
       override def toString: String = "endWith regex \"" + Prettifier.default(rightRegex) + "\""
     }
-  
+
   /**
    * Overrides toString to return "endWith"
    */
