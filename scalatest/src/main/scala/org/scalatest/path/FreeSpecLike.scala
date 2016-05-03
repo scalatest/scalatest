@@ -167,7 +167,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    *
    * @author Bill Venners
    */
-  protected final class ResultOfTaggedAsInvocationOnString(specText: String, tags: List[Tag]) {
+  protected final class ResultOfTaggedAsInvocationOnString(specText: String, tags: List[Tag], pos: source.Position) {
 
     /**
      * Supports tagged test registration.
@@ -189,7 +189,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def in(testFun: => Unit /* Assertion */)(implicit pos: source.Position) {
+    def in(testFun: => Unit /* Assertion */): Unit = {
       registerTestToRun(specText, tags, "in", testFun _)(pos)
     }
 
@@ -216,7 +216,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def is(testFun: => PendingNothing)(implicit pos: source.Position) {
+    def is(testFun: => PendingNothing): Unit = {
       registerTestToRun(specText, tags, "is", testFun _)(pos)
     }
 
@@ -240,7 +240,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * be executed. Instead, a <code>TestIgnored</code> event will be fired.
      * </p>
      */
-    def ignore(testFun: => Unit /* Assertion */)(implicit pos: source.Position) {
+    def ignore(testFun: => Unit /* Assertion */): Unit = {
       registerTestToIgnore(specText, tags, "ignore", testFun _)(pos)
     }
   }       
@@ -263,7 +263,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * the <a href="#howItExecutes">How it executes</a> section of the main documentation for trait
      * <code>org.scalatest.path.FreeSpec</code>.
      */
-    def - (fun: => Unit)(implicit pos: source.Position) {
+    def -(fun: => Unit): Unit = {
 
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
@@ -303,7 +303,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def in(f: => Unit /* Assertion */)(implicit pos: source.Position) {
+    def in(f: => Unit /* Assertion */): Unit = {
       registerTestToRun(string, List(), "in", f _)(pos)
     }
 
@@ -327,7 +327,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * be executed. Instead, a <code>TestIgnored</code> event will be fired.
      * </p>
      */
-    def ignore(f: => Unit /* Assertion */)(implicit pos: source.Position) {
+    def ignore(f: => Unit /* Assertion */): Unit = {
       registerTestToIgnore(string, List(), "ignore", f _)(pos)
     }
 
@@ -354,7 +354,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.path.FreeSpec</code>.
      * </p>
      */
-    def is(f: => PendingNothing)(implicit pos: source.Position) {
+    def is(f: => PendingNothing): Unit = {
       registerTestToRun(string, List(), "is", f _)(pos)
     }
 
@@ -376,9 +376,9 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
      * trait <code>org.scalatest.FreeSpec</code>.
      * </p>
      */
-    def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
+    def taggedAs(firstTestTag: Tag, otherTestTags: Tag*): ResultOfTaggedAsInvocationOnString = {
       val tagList = firstTestTag :: otherTestTags.toList
-      new ResultOfTaggedAsInvocationOnString(string, tagList)
+      new ResultOfTaggedAsInvocationOnString(string, tagList, pos)
     }
   }
 

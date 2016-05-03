@@ -112,7 +112,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -120,7 +120,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FreeSpecRegistering.scala", "registerTest", 5, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -2
     // SKIP-SCALATESTJS-END
@@ -147,7 +147,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion])(pos: source.Position) {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion])(pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -158,7 +158,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
     engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement)(pos: source.Position) {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement)(pos: source.Position): Unit = {
     engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, "FreeSpecRegistering.scala", methodName, 4, -3, None, None, pos, testTags: _*)
   }
 
@@ -181,7 +181,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion])(pos: source.Position) {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion])(pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -192,7 +192,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, "FreeSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement)(pos: source.Position) {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement)(pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
