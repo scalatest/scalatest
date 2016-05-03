@@ -194,7 +194,7 @@ trait LoneElement {
    * @param s the <code>String</code> to wrap
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementStringWrapper(s: String)(implicit collecting: Collecting[Char, String]) {
+  final class LoneElementStringWrapper(s: String) {
 
     def loneElement(implicit prettifier: Prettifier, pos: source.Position): Char = {
       if (s.length == 1)
@@ -203,7 +203,7 @@ trait LoneElement {
         throw new exceptions.TestFailedException(
           (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
             s,
-            collecting.sizeOf(s))),
+            s.length)),
           None,
           getStackDepthFun(pos)
         )
@@ -218,8 +218,8 @@ trait LoneElement {
    * @param s the <code>String</code> to wrap
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  implicit def convertToStringLoneElementWrapper(s: String)(implicit collecting: Collecting[Char, String]): LoneElementStringWrapper =
-    new LoneElementStringWrapper(s)(collecting)
+  implicit def convertToStringLoneElementWrapper(s: String): LoneElementStringWrapper =
+    new LoneElementStringWrapper(s)
 }
 
 /**
