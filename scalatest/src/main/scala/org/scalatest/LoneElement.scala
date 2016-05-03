@@ -194,9 +194,9 @@ trait LoneElement {
    * @param s the <code>String</code> to wrap
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  final class LoneElementStringWrapper(s: String) {
+  final class LoneElementStringWrapper(s: String, prettifier: Prettifier, pos: source.Position) {
 
-    def loneElement(implicit prettifier: Prettifier, pos: source.Position): Char = {
+    def loneElement: Char = {
       if (s.length == 1)
         s.charAt(0)
       else
@@ -218,8 +218,8 @@ trait LoneElement {
    * @param s the <code>String</code> to wrap
    * @param collecting a typeclass that enables the <code>loneElement</code> syntax
    */
-  implicit def convertToStringLoneElementWrapper(s: String): LoneElementStringWrapper =
-    new LoneElementStringWrapper(s)
+  implicit def convertToStringLoneElementWrapper(s: String)(implicit prettifier: Prettifier, pos: source.Position): LoneElementStringWrapper =
+    new LoneElementStringWrapper(s, prettifier, pos)
 }
 
 /**
