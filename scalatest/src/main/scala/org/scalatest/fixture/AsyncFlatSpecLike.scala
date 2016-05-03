@@ -100,7 +100,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -108,7 +108,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerAsyncTest", 4, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -135,7 +135,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position) {
+  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position): Unit = {
 
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
@@ -153,7 +153,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(specText, transformToOutcome(testFun), testRegistrationClosedMessageFun, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position) {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position): Unit = {
     // TODO: This is what was being used before but it is wrong
     def testRegistrationClosedMessageFun: String =
       methodName match {
@@ -203,7 +203,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param description the description text
      */
-    def of(description: String)(implicit pos: source.Position) {
+    def of(description: String)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 3
       // SKIP-SCALATESTJS-END
@@ -294,7 +294,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper[FixtureParam, Future[compatible.Assertion]](testFun))(pos)
     }
 
@@ -317,7 +317,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun)(pos)
     }
 
@@ -341,7 +341,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)(pos)
     }
 
@@ -365,7 +365,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -390,7 +390,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun)(pos)
     }
   }
@@ -463,7 +463,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -486,7 +486,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun)(pos)
     }
 
@@ -509,7 +509,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)(pos)
     }
 
@@ -532,7 +532,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -555,7 +555,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun)(pos)
     }
 
@@ -829,7 +829,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -852,7 +852,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, tags, "in", testFun)(pos)
     }
 
@@ -876,7 +876,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)(pos)
     }
 
@@ -900,7 +900,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -925,7 +925,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, "ignore", testFun)(pos)
     }
   }
@@ -998,7 +998,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -1021,7 +1021,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + name.trim, List(), "in", testFun)(pos)
     }
 
@@ -1044,7 +1044,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)(pos)
     }
 
@@ -1067,7 +1067,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -1090,7 +1090,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      (implicit pos: source.Position)*/
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), "ignore", testFun)(pos)
     }
 
@@ -1364,7 +1364,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -1389,7 +1389,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, tags, "in", testFun)(pos)
     }
 
@@ -1421,7 +1421,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToIgnore(verb.trim + " " + name.trim, tags, "is", unusedFixtureParam => testFun)(pos)
     }
   }
@@ -1492,7 +1492,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -1516,7 +1516,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + name.trim, List(), "in", testFun)(pos)
     }
 
@@ -1547,7 +1547,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToIgnore(verb.trim + " " + name.trim, List(), "is", unusedFixtureParam => testFun)(pos)
     }
 
@@ -1744,7 +1744,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + rest.trim, List(), "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -1767,7 +1767,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -1790,7 +1790,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + rest.trim, List(), "in", testFun)(pos)
     }
 
@@ -1813,7 +1813,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + rest.trim, List(), "ignore", testFun)(pos)
     }
   }
@@ -1897,7 +1897,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + rest.trim, tagsList, "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -1922,7 +1922,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -1945,7 +1945,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(verb.trim + " " + rest.trim, tagsList, "in", testFun)(pos)
     }
 
@@ -1970,7 +1970,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(verb.trim + " " + rest.trim, tagsList, "ignore", testFun)(pos)
     }
   }
@@ -2015,7 +2015,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       //SCALATESTJS-ONLY val stackDepth = 8
       registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, pos)
       new ResultOfStringPassedToVerb(verb, rest) {
-        def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+        def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
           registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)(pos)
         }
         def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -2023,7 +2023,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
           new ResultOfTaggedAsInvocation(verb, rest, tagList) {
             // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
             //                                                            ^
-            def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+            def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
               registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun _))(pos)
             }
           }
@@ -2080,7 +2080,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position) {
+  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
@@ -2090,7 +2090,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position) {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, sourceFileName, methodName, 4, -4, None, pos, testTags: _*)
   }
 
