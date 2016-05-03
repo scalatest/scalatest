@@ -102,7 +102,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected def markup: Documenter = atomicDocumenter.get
 
-  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+  final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -1
     // SKIP-SCALATESTJS-END
@@ -110,7 +110,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, sourceFileName, "registerAsyncTest", 4, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+  final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepthAdjustment = -3
     // SKIP-SCALATESTJS-END
@@ -137,7 +137,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position) {
+  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -147,7 +147,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position) {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position): Unit = {
     engine.registerAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, pos, testTags: _*)
   }
 
@@ -170,7 +170,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position) {
+  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
@@ -180,7 +180,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position) {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, pos, testTags: _*)
   }
 
@@ -194,7 +194,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       case "can" => FailureMessages.exceptionWasThrownInCanClause(Prettifier.default, className, description, errorMessage)
     }
 
-  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, pos: source.Position, fun: () => Unit) {
+  private def registerBranch(description: String, childPrefix: Option[String], verb: String, methodName: String, stackDepth: Int, adjustment: Int, pos: source.Position, fun: () => Unit): Unit = {
     def registrationClosedMessageFun: String =
       verb match {
         case "should" => Resources.shouldCannotAppearInsideAnIn
@@ -219,7 +219,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     }
   }
 
-  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessageFun: => String, methodName:String, stackDepth: Int, adjustment: Int, pos: source.Position, fun: () => Unit) {
+  private def registerShorthandBranch(childPrefix: Option[String], notAllowMessageFun: => String, methodName:String, stackDepth: Int, adjustment: Int, pos: source.Position, fun: () => Unit): Unit = {
 
     // Shorthand syntax only allow at top level, and only after "..." when, "..." should/can/must, or it should/can/must
     if (engine.currentBranchIsTrunk) {
@@ -294,7 +294,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(specText, tags, "in", testFun)(pos)
     }
 
@@ -316,7 +316,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -338,7 +338,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)(pos)
     }
 
@@ -360,7 +360,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(specText, tags, "ignore", testFun)(pos)
     }
 
@@ -382,7 +382,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))(pos)
     }
   }
@@ -424,7 +424,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(string, List(), "in", testFun)(pos)
     }
 
@@ -446,7 +446,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def in(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))(pos)
     }
 
@@ -468,7 +468,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def is(testFun: => PendingStatement)(implicit pos: source.Position) {
+    def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
       registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)(pos)
     }
 
@@ -490,7 +490,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: FixtureParam => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(string, List(), "ignore", testFun)(pos)
     }
 
@@ -512,7 +512,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param testFun the test function
      */
-    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position) {
+    def ignore(testFun: () => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
       registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))(pos)
 
     }
@@ -560,7 +560,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param f the function which is the body of the scope
      */
-    def when(f: => Unit)(implicit pos: source.Position) {
+    def when(f: => Unit)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
@@ -588,7 +588,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
-    def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position) {
+    def when(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string, Some("when " + resultOfAfterWordApplication.text), "when", "when", 4, -2, pos, resultOfAfterWordApplication.f)
     }
 
@@ -610,7 +610,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param f the function which is the body of the scope
      */
-    def that(f: => Unit)(implicit pos: source.Position) {
+    def that(f: => Unit)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
@@ -636,7 +636,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param f the function which is the body of the scope
      */
-    def which(f: => Unit)(implicit pos: source.Position) {
+    def which(f: => Unit)(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 4
       // SKIP-SCALATESTJS-END
@@ -662,7 +662,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
-    def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position) {
+    def that(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string.trim + " that " + resultOfAfterWordApplication.text.trim, None, "that", "that", 4, -2, pos, resultOfAfterWordApplication.f)
     }
 
@@ -684,7 +684,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param resultOfAfterWordApplication a <code>ResultOfAfterWordApplication</code>
      */
-    def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position) {
+    def which(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit pos: source.Position): Unit = {
       registerBranch(string.trim + " which " + resultOfAfterWordApplication.text.trim, None, "which", "which", 4, -2, pos, resultOfAfterWordApplication.f)
     }
   }
@@ -860,7 +860,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param right the body function
      */
-    def should(right: => Unit)(implicit pos: source.Position) {
+    def should(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("should"), Resources.itMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, right _)
     }
 
@@ -885,7 +885,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param right the body function
      */
-    def must(right: => Unit)(implicit pos: source.Position) {
+    def must(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("must"), Resources.itMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, right _)
     }
 
@@ -910,7 +910,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param right the body function
      */
-    def can(right: => Unit)(implicit pos: source.Position) {
+    def can(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("can"), Resources.itMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, right _)
     }
 
@@ -935,7 +935,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param right the body function
      */
-    def when(right: => Unit)(implicit pos: source.Position) {
+    def when(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("when"), Resources.itMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, right _)
     }
   }
@@ -1003,7 +1003,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param right the body function
      */
-    def should(right: => Unit)(implicit pos: source.Position) {
+    def should(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("should"), Resources.theyMustAppearAfterTopLevelSubject, "should", stackDepth, -2, pos, right _)
     }
 
@@ -1028,7 +1028,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param right the body function
      */
-    def must(right: => Unit)(implicit pos: source.Position) {
+    def must(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("must"), Resources.theyMustAppearAfterTopLevelSubject, "must", stackDepth, -2, pos, right _)
     }
 
@@ -1053,7 +1053,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param right the body function
      */
-    def can(right: => Unit)(implicit pos: source.Position) {
+    def can(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("can"), Resources.theyMustAppearAfterTopLevelSubject, "can", stackDepth, -2, pos, right _)
     }
 
@@ -1078,7 +1078,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      *
      * @param right the body function
      */
-    def when(right: => Unit)(implicit pos: source.Position) {
+    def when(right: => Unit)(implicit pos: source.Position): Unit = {
       registerShorthandBranch(Some("when"), Resources.theyMustAppearAfterTopLevelSubject, "when", stackDepth, -2, pos, right _)
     }
   }
