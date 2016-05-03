@@ -148,7 +148,7 @@ trait Checkpoints {
      * whose detail message lists the failure messages and line numbers from each of the
      * failed checkpoints.
      */
-    def reportAll()(implicit prettifier: Prettifier, pos: source.Position) {
+    def reportAll()(implicit pos: source.Position) {
       // SKIP-SCALATESTJS-START
       val stackDepth = 1
       // SKIP-SCALATESTJS-END
