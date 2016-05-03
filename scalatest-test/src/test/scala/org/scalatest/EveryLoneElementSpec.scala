@@ -79,6 +79,10 @@ class EveryLoneElementSpec extends FunSpec {
         assert(e.failedCodeLineNumber === Some(thisLineNumber - 3))
         assert(e.message === Some(notLoneElement(xs, 2)))
       }
+      it("should allow parentheses to be immediately applied on the result") {
+        val one = One(List(1, 2, 3))
+        assert(one.loneElement(1) === 2)
+      }
     }
   }
 }
