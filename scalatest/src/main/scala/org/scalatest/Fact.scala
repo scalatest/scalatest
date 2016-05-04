@@ -146,8 +146,9 @@ private[scalatest] object Fact {
     midSentenceSimplifiedFactMessageArgs: IndexedSeq[Any],
     isYes: Boolean,
     isVacuousYes: Boolean,
+    prettifier: Prettifier,
     override val cause: Option[Throwable] = None
-  )(val prettifier: Prettifier) extends Fact {
+  ) extends Fact {
     require(!isVacuousYes || isYes)
     val isLeaf: Boolean = true
   }
@@ -208,8 +209,9 @@ private[scalatest] object Fact {
         midSentenceSimplifiedFactMessageArgs,
         false,
         false,
+        prettifier,
         cause
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>factMessage</code>, 
@@ -237,10 +239,11 @@ private[scalatest] object Fact {
         factMessageArgs,
         factMessageArgs,
         factMessageArgs,
-	      false,
+	false,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>factMessage</code>,
@@ -272,8 +275,9 @@ private[scalatest] object Fact {
         midSentenceFactMessageArgs,
         false,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
   
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -300,8 +304,9 @@ private[scalatest] object Fact {
         Vector.empty,
         false,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -332,8 +337,9 @@ private[scalatest] object Fact {
         Vector.empty,
         false,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -368,8 +374,9 @@ private[scalatest] object Fact {
         simplifiedFactMessageArgs,
         false,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -408,8 +415,9 @@ private[scalatest] object Fact {
         midSentenceSimplifiedFactMessageArgs,
         false,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
   
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
@@ -436,8 +444,9 @@ private[scalatest] object Fact {
         Vector.empty,
         false,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
   
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>,
@@ -470,8 +479,9 @@ private[scalatest] object Fact {
         factMessageArgs,
         false,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>No</code> with passed <code>rawFactMessage</code>, and
@@ -499,8 +509,9 @@ private[scalatest] object Fact {
         Vector.empty,
         false,
         false,
+        prettifier,
         Some(cause)
-      )(prettifier)
+      )
   }
   
   /**
@@ -533,8 +544,9 @@ private[scalatest] object Fact {
         midSentenceSimplifiedFactMessageArgs,
         true,
         isVacuousYes,
+        prettifier,
         cause
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed code>factMessage</code>, 
@@ -564,8 +576,9 @@ private[scalatest] object Fact {
         factMessageArgs,
         true,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed code>factMessage</code>,
@@ -597,8 +610,9 @@ private[scalatest] object Fact {
         midSentenceFactMessageArgs,
         true,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
   
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -625,8 +639,9 @@ private[scalatest] object Fact {
         Vector.empty,
         true,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -658,8 +673,9 @@ private[scalatest] object Fact {
         Vector.empty,
         true,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -695,8 +711,9 @@ private[scalatest] object Fact {
         simplifiedFactMessageArgs,
         true,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
 
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -736,8 +753,9 @@ private[scalatest] object Fact {
         midSentenceSimplifiedFactMessageArgs,
         true,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
   
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>, and
@@ -763,8 +781,9 @@ private[scalatest] object Fact {
         Vector.empty,
         true,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
   
     /**
      * Factory method that constructs a new <code>Yes</code> with passed <code>rawFactMessage</code>,
@@ -795,8 +814,9 @@ private[scalatest] object Fact {
         factMessageArgs,
         true,
         false,
+        prettifier,
         None
-      )(prettifier)
+      )
   }
 
   // The simplified Fact message is used when a Fact is negated, because
