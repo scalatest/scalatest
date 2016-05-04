@@ -54,7 +54,7 @@ private[scalatest] sealed abstract class Fact {
   }
 
   // This is called internally by implicit conversions, which has different stack depth
-  private[scalatest] final def internalToAssertion(implicit pos: source.Position): Assertion = {
+  private[scalatest] final def internalToAssertion(pos: source.Position): Assertion = {
     if (isYes) {
       if (!isVacuousYes) Succeeded
       else throw new TestCanceledException((e: StackDepthException) => Some(factMessage), None, getStackDepthFun(pos), None)
