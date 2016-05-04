@@ -102,5 +102,25 @@ class StreamlinedXmlNormMethodsSpec extends Spec with Matchers with StreamlinedX
       (Text("   "): NodeSeq).norm shouldBe Text("   ")
       (<div>{Text("My name is ")}{Text("Harry")}</div>: NodeSeq).norm shouldBe <div>My name is Harry</div>
     }
+
+     def `should keep the order of the nodes while merging adjacent Text` {
+      (<seasons>
+        <spring>
+          <day>One</day>
+          <day>Tow</day>
+        </spring>
+        <summer>
+          <day>Three</day>
+        </summer>
+        <fall>
+          <day>Four</day>
+        </fall>
+        <winter>
+          <day>Five</day>
+          <day>Six</day>
+          <day>Seven</day>
+        </winter>
+      </seasons>: NodeSeq).norm shouldBe <seasons><spring><day>One</day><day>Tow</day></spring><summer><day>Three</day></summer><fall><day>Four</day></fall><winter><day>Five</day><day>Six</day><day>Seven</day></winter></seasons>
+    }
   }
 }

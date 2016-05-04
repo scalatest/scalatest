@@ -133,33 +133,41 @@ trait StreamlinedXml {
   def streamlined[T <: NodeSeq]: Uniformity[T] = {
 
     def trimTextZappingEmpty(node: Node): Seq[Node] =
-      node match {
-        case Text(text) if (text.trim.isEmpty) => Nil
-        case Text(text) => List(Text(text.trim))
+      node.text.trim match {
+        case "" => NodeSeq.Empty
+        case trimmed => Text(trimmed)
+      }
+
+    def mergeAdjacentTextNodes(children: Seq[Node]) =
+      children.foldRight[List[Node]](Nil) { (ele, acc) =>
+        ele match {
+          case eleTxt if eleTxt.isAtom =>
+            acc match {
+              case accTxt :: tail if accTxt.isAtom =>
+                Text(eleTxt.text + accTxt.text) :: tail
+              case _ => eleTxt :: acc
+            }
+          case _ => ele :: acc
+        }
+      }
+
+    def normalizedXml(nodeSeq: NodeSeq): NodeSeq =
+      mergeAdjacentTextNodes(nodeSeq).flatMap {
         case Elem(pre, lab, md, scp, children @ _*) =>
-          Elem(pre, lab, md, scp, false, (children.flatMap(trimTextZappingEmpty)):_*)
-        case _ => List(node)
+          Elem(pre, lab, md, scp, false, normalizedXml(children): _*)
+        case textNode if textNode.isAtom =>
+          trimTextZappingEmpty(textNode)
+        case x => x
       }
 
     new Uniformity[T] {
-      def normalized(nodeSeq: T): T =
-        nodeSeq match {
-          case Elem(pre, lab, md, scp, children @ _*) =>
-            val mergedTextNodes = // Merge adjacent text nodes
-              children.foldLeft(Nil: List[Node]) { (acc, ele) =>
-                ele match {
-                  case eleTxt: Text =>
-                    acc.headOption match {
-                      case Some(accTxt: Text) =>
-                        Text(accTxt.text + eleTxt.text) :: acc.tail
-                      case _ => ele :: acc
-                    }
-                  case _ => ele :: acc
-                }
-              }
-            Elem(pre, lab, md, scp, false, (mergedTextNodes.flatMap(trimTextZappingEmpty)):_*).asInstanceOf[T]
-          case _ => nodeSeq
+      def normalized(nodeSeq: T): T = {
+        normalizedXml(nodeSeq) match {
+          case NodeSeq.Empty => nodeSeq
+          case normalized if nodeSeq.isInstanceOf[Node] => normalized.head
+          case normalized => normalized
         }
+      }.asInstanceOf[T]
 
       /**
        * Returns true if the passed <code>Any</code> is a <code>Elem</code>.
