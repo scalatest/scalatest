@@ -164,7 +164,7 @@ trait StreamlinedXml {
       def normalized(nodeSeq: T): T = {
         normalizedXml(nodeSeq) match {
           case NodeSeq.Empty => nodeSeq
-          case normalized if nodeSeq.isInstanceOf[Node] => normalized.head
+          case normalized if normalized.size == 1 => normalized.head
           case normalized => normalized
         }
       }.asInstanceOf[T]
