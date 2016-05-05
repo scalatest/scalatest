@@ -21,7 +21,7 @@ import scala.collection.GenSet
 import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
-import scala.xml.{Node, Text, NodeSeq}
+import scala.xml.{Node, Text, NodeSeq, PCData}
 
 class StreamlinedXmlEqualitySpec extends Spec with Matchers {
 
@@ -59,6 +59,7 @@ class StreamlinedXmlEqualitySpec extends Spec with Matchers {
       )
 
       <div>{Text("My name is ")}{Text("Harry")}</div> should equal (<div>My name is Harry</div>)
+      <div>My name is {PCData("Harry")}</div> should equal (<div>My name is Harry</div>)
     }
   }
 
@@ -99,6 +100,7 @@ class StreamlinedXmlEqualitySpec extends Spec with Matchers {
       (Text("   "): Node) should equal (Text("   "))
 
       (<div>{Text("My name is ")}{Text("Harry")}</div>: Node) should equal (<div>My name is Harry</div>)
+      (<div>My name is {PCData("Harry")}</div>: Node) should equal (<div>My name is Harry</div>)
     }
   }
 
@@ -139,6 +141,7 @@ class StreamlinedXmlEqualitySpec extends Spec with Matchers {
       (Text("   "): NodeSeq) should equal (Text("   "))
 
       (<div>{Text("My name is ")}{Text("Harry")}</div>: NodeSeq) should equal (<div>My name is Harry</div>)
+      (<div>My name is {PCData("Harry")}</div>: NodeSeq) should equal (<div>My name is Harry</div>)
     }
   }
 }
