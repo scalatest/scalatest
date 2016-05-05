@@ -191,7 +191,7 @@ trait ShouldVerb {
      * no-arg function.
      * </p>
      */
-    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, pos: source.Position) {
+    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier) {
       fun(leftSideString, "should", prettifier, pos, right _)
     }
 
@@ -218,7 +218,7 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier, pos: source.Position) {
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier) {
       fun(leftSideString, "should", resultOfAfterWordApplication, prettifier, pos)
     }
   }

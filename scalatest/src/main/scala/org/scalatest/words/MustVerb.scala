@@ -188,7 +188,7 @@ trait MustVerb {
      * no-arg function.
      * </p>
      */
-    def must(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, pos: source.Position) {
+    def must(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier) {
       fun(leftSideString, "must", prettifier, pos, right _)
     }
 
@@ -215,7 +215,7 @@ trait MustVerb {
      * <code>"must"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>must</code>.
      * </p>
      */
-    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier, pos: source.Position) {
+    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier) {
       fun(leftSideString, "must", resultOfAfterWordApplication, prettifier, pos)
     }
   }

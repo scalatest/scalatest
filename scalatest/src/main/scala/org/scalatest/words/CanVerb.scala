@@ -166,7 +166,7 @@ trait CanVerb {
      * no-arg function.
      * </p>
      */
-    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, pos: source.Position) {
+    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier) {
       fun(leftSideString, "can", prettifier, pos, right _)
     }
 
@@ -193,7 +193,7 @@ trait CanVerb {
      * <code>"can"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>can</code>.
      * </p>
      */
-    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, source.Position) => Unit, pos: source.Position) {
+    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, source.Position) => Unit) {
       fun(leftSideString, "can", resultOfAfterWordApplication, pos)
     }
   }
