@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import scala.xml.{Text, Node, Elem, NodeSeq}
+import scala.xml.{Text, Node, Elem, EntityRef, NodeSeq}
 import org.scalactic.Uniformity
 
 /**
@@ -132,8 +132,8 @@ trait StreamlinedXml {
    */
   def streamlined[T <: NodeSeq]: Uniformity[T] = {
 
-    def trimTextZappingEmpty(node: Node): Seq[Node] =
-      node.text.trim match {
+    def trimTextZappingEmpty(data: String): Seq[Node] =
+      data.trim match {
         case "" => NodeSeq.Empty
         case trimmed => Text(trimmed)
       }
@@ -141,11 +141,11 @@ trait StreamlinedXml {
     def mergeAdjacentTextNodes(children: Seq[Node]) =
       children.foldRight[List[Node]](Nil) { (ele, acc) =>
         ele match {
-          case eleTxt if eleTxt.isAtom =>
+          case eleTxt if eleTxt.isAtom || eleTxt.isInstanceOf[EntityRef] =>
             acc match {
-              case accTxt :: tail if accTxt.isAtom =>
-                Text(eleTxt.text + accTxt.text) :: tail
-              case _ => eleTxt :: acc
+              case Text(accTxt) :: tail =>
+                Text(eleTxt.text + accTxt) :: tail
+              case _ => Text(eleTxt.text) :: acc
             }
           case _ => ele :: acc
         }
@@ -155,8 +155,8 @@ trait StreamlinedXml {
       mergeAdjacentTextNodes(nodeSeq).flatMap {
         case Elem(pre, lab, md, scp, children @ _*) =>
           Elem(pre, lab, md, scp, false, normalizedXml(children): _*)
-        case textNode if textNode.isAtom =>
-          trimTextZappingEmpty(textNode)
+        case Text(data) =>
+          trimTextZappingEmpty(data)
         case x => x
       }
 

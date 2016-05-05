@@ -21,7 +21,7 @@ import scala.collection.GenSet
 import scala.collection.GenIterable
 import scala.collection.GenTraversable
 import scala.collection.GenTraversableOnce
-import scala.xml.{Elem, Node, Text, NodeSeq}
+import scala.xml.{Elem, Node, Text, NodeSeq, XML, PCData}
 
 class StreamlinedXmlSpec extends Spec with Matchers with StreamlinedXml {
 
@@ -57,6 +57,8 @@ class StreamlinedXmlSpec extends Spec with Matchers with StreamlinedXml {
       ) (after being streamlined[Elem])
 
       <div>{Text("My name is ")}{Text("Harry")}</div> should equal (<div>My name is Harry</div>) (after being streamlined[Elem])
+      <summer><day>{Text("Hello ")}{Text("Dude!")}</day></summer> should equal (<summer><day>Hello Dude!</day></summer>) (after being streamlined[Elem])
+      <div>My name is {PCData("Harry")}</div> should equal (<div>My name is Harry</div>) (after being streamlined[Elem])
     }
   }
 
@@ -97,6 +99,7 @@ class StreamlinedXmlSpec extends Spec with Matchers with StreamlinedXml {
       (Text("   "): Node) should equal (Text("   ")) (after being streamlined[Node])
 
       (<div>{Text("My name is ")}{Text("Harry")}</div>: Node) should equal (<div>My name is Harry</div>) (after being streamlined[Node])
+      (<div>My name is {PCData("Harry")}</div>: Node) should equal (<div>My name is Harry</div>) (after being streamlined[Node])
     }
   }
 
@@ -137,7 +140,17 @@ class StreamlinedXmlSpec extends Spec with Matchers with StreamlinedXml {
       (Text("   "): NodeSeq) should equal (Text("   ")) (after being streamlined[NodeSeq])
 
       (<div>{Text("My name is ")}{Text("Harry")}</div>: NodeSeq) should equal (<div>My name is Harry</div>) (after being streamlined[NodeSeq])
+      (<div>My name is {PCData("Harry")}</div>: NodeSeq) should equal (<div>My name is Harry</div>) (after being streamlined[NodeSeq])
     }
   }
+
+  def `should handle XML entities`(){
+    (<root>{">"}</root>) should equal (XML.loadString("""<root>&gt;</root>""")) (after being streamlined[Elem])
+    (<root>&gt;</root>) should equal (XML.loadString("""<root>&gt;</root>""").head) (after being streamlined[Elem])
+    (<root>foo&quot;</root>) should equal (<root>foo{"""""""}</root>) (after being streamlined[Elem])
+    (<root>foo&quot;</root>) should equal (XML.loadString("""<root>foo&quot;</root>""")) (after being streamlined[Elem])
+    (<root>foo&quot;</root>) should equal (XML.loadString("""<root>foo"</root>""").head) (after being streamlined[Elem])
+  }
+
 }
 
