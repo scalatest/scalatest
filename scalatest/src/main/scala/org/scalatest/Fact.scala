@@ -1100,10 +1100,6 @@ private[scalatest] object Fact {
     def apply(left: Fact, right: Fact): Fact = new IsEqvTo(left, right)
   }
 
-  private[scalatest] class MyLazyMessage(raw: String, args: IndexedSeq[Any])(implicit prettifier: Prettifier) {
-    override def toString: String = Resources.formatString(raw, args.map(prettifier.apply).toArray)
-  }
-
   // Idea is to override toString each time it is used.
   private[scalatest] sealed abstract class LazyMessage {
     val nestedArgs: IndexedSeq[Any]
