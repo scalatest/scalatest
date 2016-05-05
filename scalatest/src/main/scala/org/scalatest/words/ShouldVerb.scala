@@ -142,7 +142,7 @@ trait ShouldVerb {
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
-    def should(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb, pos: source.Position): ResultOfStringPassedToVerb = {
+    def should(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
       fun(leftSideString, "should", right, pos)
     }
 
@@ -165,7 +165,7 @@ trait ShouldVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def should(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord, pos: source.Position): BehaveWord = {
+    def should(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord): BehaveWord = {
       fun(leftSideString, pos)
     }
 

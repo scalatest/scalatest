@@ -139,7 +139,7 @@ trait MustVerb {
      * <code>"must"</code>, and right, and returns the result.
      * </p>
      */
-    def must(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb, pos: source.Position): ResultOfStringPassedToVerb = {
+    def must(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
       fun(leftSideString, "must", right, pos)
     }
 
@@ -162,7 +162,7 @@ trait MustVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def must(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord, pos: source.Position): BehaveWord = {
+    def must(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord): BehaveWord = {
       fun(leftSideString, pos)
     }
 
