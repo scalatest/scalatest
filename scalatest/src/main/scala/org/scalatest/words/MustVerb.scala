@@ -117,6 +117,8 @@ trait MustVerb {
 
     val leftSideString: String
 
+    val pos: source.Position
+
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
      *
@@ -224,8 +226,9 @@ trait MustVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringMustWrapper</code>,
    * to enable <code>must</code> methods to be invokable on that object.
    */
-  implicit def convertToStringMustWrapperForVerb(o: String)(implicit pos: source.Position): StringMustWrapperForVerb =
+  implicit def convertToStringMustWrapperForVerb(o: String)(implicit position: source.Position): StringMustWrapperForVerb =
     new StringMustWrapperForVerb {
       val leftSideString = o.trim
+      val pos = position
     }
 }

@@ -120,6 +120,8 @@ trait ShouldVerb {
     // Don't use "left" because that conflicts with Scalaz's left method on strings
     val leftSideString: String
 
+    val pos: source.Position
+
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
      *
@@ -227,8 +229,9 @@ trait ShouldVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringShouldWrapperForVerb</code>,
    * to enable <code>should</code> methods to be invokable on that object.
    */
-  implicit def convertToStringShouldWrapperForVerb(o: String)(implicit pos: source.Position): StringShouldWrapperForVerb =
+  implicit def convertToStringShouldWrapperForVerb(o: String)(implicit position: source.Position): StringShouldWrapperForVerb =
     new StringShouldWrapperForVerb {
       val leftSideString = o.trim
+      val pos = position
     }
 }

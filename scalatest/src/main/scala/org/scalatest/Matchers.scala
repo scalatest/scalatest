@@ -7461,7 +7461,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    *
    * @author Bill Venners
    */
-  final class StringShouldWrapper(val leftSideString: String, pos: source.Position, prettifier: Prettifier) extends AnyShouldWrapper(leftSideString, pos, prettifier) with StringShouldWrapperForVerb {
+  final class StringShouldWrapper(val leftSideString: String, val pos: source.Position, prettifier: Prettifier) extends AnyShouldWrapper(leftSideString, pos, prettifier) with StringShouldWrapperForVerb {
 
     /**
      * This method enables syntax such as the following:
