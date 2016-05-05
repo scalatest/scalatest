@@ -177,7 +177,7 @@ trait MatcherWords {
    * ^
    * </pre>
    **/
-  def noException(implicit prettiifier: Prettifier, pos: source.Position) = new NoExceptionWord(prettiifier, pos)
+  def noException(implicit pos: source.Position) = new NoExceptionWord(pos)
   
   /**
    * This field enables the following syntax: 

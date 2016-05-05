@@ -26,7 +26,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-final class NoExceptionWord(prettifier: Prettifier, pos: source.Position) {
+final class NoExceptionWord(pos: source.Position) {
   
   /**
    * This method enables the following syntax: 
@@ -37,7 +37,7 @@ final class NoExceptionWord(prettifier: Prettifier, pos: source.Position) {
    * </pre>
    **/
   def should(beWord: BeWord): ResultOfBeWordForNoException = 
-    new ResultOfBeWordForNoException(prettifier, pos)
+    new ResultOfBeWordForNoException(pos)
   
   /**
    * This method enables the following syntax: 
@@ -69,7 +69,7 @@ final class NoExceptionWord(prettifier: Prettifier, pos: source.Position) {
    * </pre>
    **/
   def must(beWord: BeWord): ResultOfBeWordForNoException =
-    new ResultOfBeWordForNoException(prettifier, pos)
+    new ResultOfBeWordForNoException(pos)
 
   /**
    * This method enables the following syntax:

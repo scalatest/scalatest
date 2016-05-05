@@ -25,7 +25,7 @@ import org.scalatest.MatchersHelper.checkExpectedException
  *
  * @author Bill Venners
  */
-final class ResultOfTheTypeInvocation[T](clazz: Class[T], prettifier: Prettifier, pos: source.Position) {
+final class ResultOfTheTypeInvocation[T](clazz: Class[T], pos: source.Position) {
   
   /**
    * This method enables the following syntax: 

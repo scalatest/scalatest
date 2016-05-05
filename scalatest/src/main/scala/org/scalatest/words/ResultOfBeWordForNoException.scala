@@ -25,7 +25,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-final class ResultOfBeWordForNoException(prettifier: Prettifier, pos: source.Position) {
+final class ResultOfBeWordForNoException(pos: source.Position) {
   
   /**
    * This method enables the following syntax: 

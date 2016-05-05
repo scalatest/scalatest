@@ -6684,8 +6684,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def the[T : ClassTag](implicit prettifier: Prettifier, pos: source.Position): ResultOfTheTypeInvocation[T] =
-    new ResultOfTheTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], prettifier, pos)
+  def the[T : ClassTag](implicit pos: source.Position): ResultOfTheTypeInvocation[T] =
+    new ResultOfTheTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], pos)
 
   // This is where ShouldMatchers.scala started 
 
