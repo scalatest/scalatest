@@ -187,6 +187,10 @@ private[scalatest] object Fact {
    */
   object No {
 
+    // TODO: Does the Prettifier really need to be curried and implicit? It seems to be only used
+    // explicitly by us. Possibly this is desired, though, so people can just say No(...). But then
+    // they would need to fill in all the fields, so that seems hard anyway. When the time comes to
+    // make this public, look into this question.
     def apply(
       rawFactMessage: String,
       rawSimplifiedFactMessage: String,
