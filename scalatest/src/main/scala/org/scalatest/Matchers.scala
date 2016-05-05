@@ -7516,7 +7516,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def should(compileWord: CompileWord)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
+    def should(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldCompileImpl
 
     /**
      * This method enables syntax such as the following:
@@ -7526,7 +7526,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(compileWord: CompileWord)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
+    def shouldNot(compileWord: CompileWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotCompileImpl
 
     /**
      * This method enables syntax such as the following:
@@ -7536,7 +7536,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
      *        ^
      * </pre>
      */
-    def shouldNot(typeCheckWord: TypeCheckWord)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
+    def shouldNot(typeCheckWord: TypeCheckWord)(implicit pos: source.Position): Assertion = macro CompileMacro.shouldNotTypeCheckImpl
 
 /*
     /**

@@ -712,7 +712,7 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  def assertTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.assertTypeErrorImpl
+  def assertTypeError(code: String)(implicit pos: source.Position): Assertion = macro CompileMacro.assertTypeErrorImpl
 
   /**
    * Asserts that a given string snippet of code does not pass either the Scala parser or type checker.
@@ -743,7 +743,7 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should not type check
    */
-  def assertDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.assertDoesNotCompileImpl
+  def assertDoesNotCompile(code: String)(implicit pos: source.Position): Assertion = macro CompileMacro.assertDoesNotCompileImpl
 
   /**
    * Asserts that a given string snippet of code passes both the Scala parser and type checker.
@@ -764,7 +764,7 @@ trait Assertions extends TripleEquals  {
    *
    * @param code the snippet of code that should compile
    */
-  def assertCompiles(code: String)(implicit prettifier: Prettifier, pos: source.Position): Assertion = macro CompileMacro.assertCompilesImpl
+  def assertCompiles(code: String)(implicit pos: source.Position): Assertion = macro CompileMacro.assertCompilesImpl
 
   /**
    * Intercept and return an exception that's expected to
@@ -800,7 +800,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier, pos: source.Position): T = {
+  def intercept[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): T = {
     val clazz = classTag.runtimeClass
     val caught = try {
       f
@@ -858,7 +858,7 @@ trait Assertions extends TripleEquals  {
    * @throws TestFailedException if the passed function does not complete abruptly with an exception
    *    that's an instance of the specified type.
    */
-  def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], prettifier: Prettifier, pos: source.Position): Assertion = {
+  def assertThrows[T <: AnyRef](f: => Any)(implicit classTag: ClassTag[T], pos: source.Position): Assertion = {
     val clazz = classTag.runtimeClass
     val threwExpectedException =
       try {
@@ -975,6 +975,7 @@ trait Assertions extends TripleEquals  {
    * Scala interpreter sessions by eliminating stack traces when executing assertion and matcher expressions.
    * </p>
    */
+  @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, and will be removed in a future version of ScalaTest")
   def trap[T](f: => T): Throwable = {
     try { new NormalResult(f) }
     catch {
@@ -1072,7 +1073,7 @@ trait Assertions extends TripleEquals  {
   /**
    * Throws <code>TestFailedException</code> to indicate a test failed.
    */
-  def fail()(implicit prettifier: Prettifier, pos: source.Position): Nothing = { throw newAssertionFailedException(None, None, pos) }
+  def fail()(implicit pos: source.Position): Nothing = { throw newAssertionFailedException(None, None, pos) }
 
   /**
    * Throws <code>TestFailedException</code>, with the passed
@@ -1082,7 +1083,7 @@ trait Assertions extends TripleEquals  {
    * @param message A message describing the failure.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def fail(message: String)(implicit prettifier: Prettifier, pos: source.Position): Nothing = {
+  def fail(message: String)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(message)
      
@@ -1098,7 +1099,7 @@ trait Assertions extends TripleEquals  {
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  def fail(message: String, cause: Throwable)(implicit prettifier: Prettifier, pos: source.Position): Nothing = {
+  def fail(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(message, cause)
 
@@ -1114,7 +1115,7 @@ trait Assertions extends TripleEquals  {
    * @param cause a <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  def fail(cause: Throwable)(implicit prettifier: Prettifier, pos: source.Position): Nothing = {
+  def fail(cause: Throwable)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(cause)
         
@@ -1124,7 +1125,7 @@ trait Assertions extends TripleEquals  {
   /**
    * Throws <code>TestCanceledException</code> to indicate a test was canceled.
    */
-  def cancel()(implicit prettifier: Prettifier, pos: source.Position): Nothing = { throw newTestCanceledException(None, None, pos) }
+  def cancel()(implicit pos: source.Position): Nothing = { throw newTestCanceledException(None, None, pos) }
 
   /**
    * Throws <code>TestCanceledException</code>, with the passed
@@ -1134,7 +1135,7 @@ trait Assertions extends TripleEquals  {
    * @param message A message describing the cancellation.
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def cancel(message: String)(implicit prettifier: Prettifier, pos: source.Position): Nothing = {
+  def cancel(message: String)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(message)
      
@@ -1150,7 +1151,7 @@ trait Assertions extends TripleEquals  {
    * @param cause A <code>Throwable</code> that indicates the cause of the failure.
    * @throws NullArgumentException if <code>message</code> or <code>cause</code> is <code>null</code>
    */
-  def cancel(message: String, cause: Throwable)(implicit prettifier: Prettifier, pos: source.Position): Nothing = {
+  def cancel(message: String, cause: Throwable)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(message, cause)
 
@@ -1166,7 +1167,7 @@ trait Assertions extends TripleEquals  {
    * @param cause a <code>Throwable</code> that indicates the cause of the cancellation.
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>
    */
-  def cancel(cause: Throwable)(implicit prettifier: Prettifier, pos: source.Position): Nothing = {
+  def cancel(cause: Throwable)(implicit pos: source.Position): Nothing = {
 
     requireNonNull(cause)
         
@@ -1386,6 +1387,7 @@ trait Assertions extends TripleEquals  {
  */
 object Assertions extends Assertions {
 
+  @deprecated("The trap method is no longer needed for demos in the REPL, which now abreviates stack traces, so NormalResult will be removed in a future version of ScalaTest")
   case class NormalResult(result: Any) extends Throwable {
     override def toString = if (result == ()) Resources.noExceptionWasThrown else Resources.resultWas(Prettifier.default(result))
   }
