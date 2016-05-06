@@ -130,8 +130,8 @@ class CheckersSpec extends FunSpec with Checkers {
 
     // Ensure a property that doesn't generate enough test cases throws an assertion error
     val propTrivial = forAll { (n: Int) =>
-      (n == 0) ==> {
-        n should equal (0)
+      (n == 8) ==> {
+        n should equal (8)
         true
       }
     }
