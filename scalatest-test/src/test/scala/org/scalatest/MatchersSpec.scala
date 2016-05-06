@@ -218,13 +218,6 @@ class MatchersSpec extends FunSpec {
       }
     }
 
-    describe("ResultOfProduceInvocation ") {
-      it("should have pretty toString") {
-        val word = produce [StringIndexOutOfBoundsException]
-        word.toString should be ("ResultOfProduceInvocation(classOf[java.lang.StringIndexOutOfBoundsException])")
-      }
-    }
-
     describe("ResultOfNotWordForCollectedAny ") {
       it("should have pretty toString") {
         val word = all(List(1, 2, 3)) should not
