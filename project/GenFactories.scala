@@ -1016,7 +1016,7 @@ $endif$
      * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation)(prettifier, pos))
+      thisMatcherFactory.and(MatcherWords.not.be(tripleEqualsInvocation)(pos))
 
     // SKIP-SCALATESTJS-START
     /**
@@ -2310,7 +2310,7 @@ $endif$
      * </p>
      */
     def be(tripleEqualsInvocation: TripleEqualsInvocation[_]): MatcherFactory$arity$[SC, $commaSeparatedTCNs$] =
-      thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation)(prettifier, pos))
+      thisMatcherFactory.or(MatcherWords.not.be(tripleEqualsInvocation)(pos))
 
     // SKIP-SCALATESTJS-START
     /**
