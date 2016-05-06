@@ -165,8 +165,8 @@ private[scalatest] trait WillVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def will(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord): BehaveWord = {
-      fun(leftSideString, pos)
+    def will(right: BehaveWord)(implicit svbli: StringVerbBehaveLikeInvocation): BehaveWord = {
+      svbli(leftSideString, pos)
     }
 
     /**

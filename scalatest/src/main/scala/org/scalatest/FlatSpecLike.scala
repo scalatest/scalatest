@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation}
+import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import java.util.concurrent.atomic.AtomicReference
@@ -1601,12 +1601,13 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * subject description (the  parameter to the function) and returns a <code>BehaveWord</code>.
    * </p>
    */
-  protected implicit val shorthandSharedTestRegistrationFunction: (String, source.Position) => BehaveWord = {
-    (left, pos) => {
-      registerFlatBranch(left, Resources.shouldCannotAppearInsideAnIn, "FlatSpecLike.scala", "apply", 5, 0, Some(pos))
-      new BehaveWord
+  protected implicit val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
+    new StringVerbBehaveLikeInvocation {
+      def apply(subject: String, pos: source.Position): BehaveWord = {
+        registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecLike.scala", "apply", 5, 0, Some(pos))
+        new BehaveWord
+      }
     }
-  }
 
 // TODO: I got a: 
 // runsuite:
