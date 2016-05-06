@@ -120,6 +120,8 @@ private[scalatest] trait WillVerb {
     // Don't use "left" because that conflicts with Scalaz's left method on strings
     val leftSideString: String
 
+    val pos: source.Position
+
     /**
      * Supports test registration in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.
      *
@@ -140,7 +142,7 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and right, and returns the result.
      * </p>
      */
-    def will(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb, pos: source.Position): ResultOfStringPassedToVerb = {
+    def will(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
       fun(leftSideString, "will", right, pos)
     }
 
@@ -163,7 +165,7 @@ private[scalatest] trait WillVerb {
      * simply invokes this function, passing in leftSideString, and returns the result.
      * </p>
      */
-    def will(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord, pos: source.Position): BehaveWord = {
+    def will(right: BehaveWord)(implicit fun: (String, source.Position) => BehaveWord): BehaveWord = {
       fun(leftSideString, pos)
     }
 
@@ -189,8 +191,8 @@ private[scalatest] trait WillVerb {
      * no-arg function.
      * </p>
      */
-    def will(right: => Unit)(implicit fun: StringVerbBlockRegistration, prettifier: Prettifier, pos: source.Position) {
-      fun(leftSideString, "will", prettifier, pos, right _)
+    def will(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
+      fun(leftSideString, "will", pos, right _)
     }
 
     /**
@@ -216,8 +218,8 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>will</code>.
      * </p>
      */
-    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, source.Position) => Unit, pos: source.Position) {
-      fun(leftSideString, "will", resultOfAfterWordApplication, pos)
+    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier) {
+      fun(leftSideString, "will", resultOfAfterWordApplication, prettifier, pos)
     }
   }
 
@@ -227,8 +229,10 @@ private[scalatest] trait WillVerb {
    * Implicitly converts an object of type <code>String</code> to a <code>StringWillWrapperForVerb</code>,
    * to enable <code>will</code> methods to be invokable on that object.
    */
-  implicit def convertToStringWillWrapperForVerb(o: String): StringWillWrapperForVerb =
+  implicit def convertToStringWillWrapperForVerb(o: String)(implicit position: source.Position): StringWillWrapperForVerb =
     new StringWillWrapperForVerb {
       val leftSideString = o.trim
+      val pos = position
     }
 }
+

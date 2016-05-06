@@ -44,7 +44,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-abstract class StringVerbBlockRegistration extends ((String, String, Prettifier, source.Position, () => Unit) => Unit) {
+abstract class StringVerbBlockRegistration extends ((String, String, source.Position, () => Unit) => Unit) {
 
   /**
    * Registers a subject description in <code>WordSpec</code> and <code>fixture.WordSpec</code>.
@@ -60,6 +60,6 @@ abstract class StringVerbBlockRegistration extends ((String, String, Prettifier,
    * </pre>
    *
    */
-  def apply(string: String, verb: String, prettifier: Prettifier, pos: source.Position, block: () => Unit)
+  def apply(string: String, verb: String, pos: source.Position, block: () => Unit)
 }
 
