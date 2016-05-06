@@ -1589,7 +1589,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", stackDepth, 0, pos)
         new ResultOfStringPassedToVerb(verb, rest) {
 
-          def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+          def is(testFun: => PendingStatement): Unit = {
             registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _)(pos)
           }
             // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
@@ -1599,7 +1599,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
             new ResultOfTaggedAsInvocation(verb, rest, tagList) {
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
-              def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+              def is(testFun: => PendingStatement): Unit = {
                 registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _)(pos)
               }
             }

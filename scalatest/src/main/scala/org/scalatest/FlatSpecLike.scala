@@ -1562,7 +1562,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecLike.scala", "apply", stackDepth, 0, Some(pos))
         new ResultOfStringPassedToVerb(verb, rest) {
 
-          def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+          def is(testFun: => PendingStatement): Unit = {
             registerTestToRun(verb.trim + " " + rest.trim, "is", List(), () => { testFun; succeed })(pos)
           }
           // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
@@ -1572,7 +1572,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
             new ResultOfTaggedAsInvocation(verb, rest, tagList) {
               // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
               //                                               ^
-              def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+              def is(testFun: => PendingStatement): Unit = {
                 registerTestToRun(verb.trim + " " + rest.trim, "is", tags, () => { testFun; succeed })(pos)
               }
             }

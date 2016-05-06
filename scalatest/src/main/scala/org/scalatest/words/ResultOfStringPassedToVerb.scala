@@ -87,7 +87,7 @@ abstract class ResultOfStringPassedToVerb(val verb: String, val rest: String) {
    * for trait <code>FlatSpec</code>.
    * </p>
    */
-  def is(fun: => PendingStatement)(implicit pos: source.Position)
+  def is(fun: => PendingStatement)
 
   /**
    * Supports the registration of tagged tests in <code>FlatSpec</code> and <code>fixture.FlatSpec</code>.

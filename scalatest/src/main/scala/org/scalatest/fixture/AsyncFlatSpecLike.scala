@@ -2016,7 +2016,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
         //SCALATESTJS-ONLY val stackDepth = 8
         registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, pos)
         new ResultOfStringPassedToVerb(verb, rest) {
-          def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+          def is(testFun: => PendingStatement): Unit = {
             registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)(pos)
           }
           def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
@@ -2024,7 +2024,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
             new ResultOfTaggedAsInvocation(verb, rest, tagList) {
               // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
               //                                                            ^
-              def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+              def is(testFun: => PendingStatement): Unit = {
                 registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun _))(pos)
               }
             }
