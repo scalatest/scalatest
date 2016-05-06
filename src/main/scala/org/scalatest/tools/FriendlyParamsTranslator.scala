@@ -172,22 +172,24 @@ private[scalatest] object FriendlyParamsTranslator {
 
     val newArgs = new ListBuffer[String]
     val it = args.iterator
+    var previousStartWithDash: Boolean = false
+
     while (it.hasNext) {
 
       val s = it.next
-      if (s.startsWith("include")) {
+      if (s.startsWith("include") && !previousStartWithDash) {
         println("WARNING: Argument 'include' has been deprecated and will be removed in a future version of ScalaTest.  Please use -n instead.")
         newArgs ++= List("-n", translateCompoundParams(s.substring("include".length()), it, "include(a, b, c)"))
       }
-      else if (s.startsWith("exclude")) { 
+      else if (s.startsWith("exclude") && !previousStartWithDash) {
         println("WARNING: Argument 'exclude' has been deprecated and will be removed in a future version of ScalaTest.  Please use -l instead.")
         newArgs ++= List("-l", translateCompoundParams(s.substring("exclude".length()), it, "exclude(a, b, c)"))
       }
-      else if (s.startsWith("stdout")) {
+      else if (s.startsWith("stdout") && !previousStartWithDash) {
         println("WARNING: Argument 'stdout' has been deprecated and will be removed in a future version of ScalaTest.  Please use -o instead.")
         newArgs += "-o" + getTranslatedConfig(parseParams(s.substring("stdout".length()), it, Set("config"), "stdout"))
       }
-      else if (s.startsWith("stderr")) {
+      else if (s.startsWith("stderr") && !previousStartWithDash) {
         println("WARNING: Argument 'stderr' has been deprecated and will be removed in a future version of ScalaTest.  Please use -e instead.")
         newArgs += "-e" + getTranslatedConfig(parseParams(s.substring("stderr".length()), it, Set("config"), "stderr"))
       }
@@ -205,15 +207,15 @@ private[scalatest] object FriendlyParamsTranslator {
           throw new IllegalArgumentException("Cannot specify an 'durations' (present all durations) configuration parameter for the graphic reporter (because it shows them all anyway)")
         newArgs += dashG
       }*/
-      else if (s.startsWith("file")) {
+      else if (s.startsWith("file") && !previousStartWithDash) {
         println("WARNING: Argument 'file' has been deprecated and will be removed in a future version of ScalaTest.  Please use -f instead.")
         newArgs ++= translateKeyValue(s, "file", "-f", List("filename"), List("config"), "file(directory=\"xxx\")", it)
       }
-      else if(s.startsWith("junitxml")) {
+      else if(s.startsWith("junitxml") && !previousStartWithDash) {
         println("WARNING: Argument 'junitxml' has been deprecated and will be removed in a future version of ScalaTest.  Please use -u instead.")
         newArgs ++= translateKeyValue(s, "junitxml", "-u", List("directory"), Nil, "junitxml(directory=\"xxx\")", it)
       }
-      else if (s.startsWith("html")) {
+      else if (s.startsWith("html") && !previousStartWithDash) {
         println("WARNING: Argument 'html' has been deprecated and will be removed in a future version of ScalaTest.  Please use -h instead.")
         newArgs += "-h"
         val paramsMap:Map[String, String] = parseParams(s.substring("html".length), it, Set("directory", "css"), "html(directory=\"xxx\", css=\"xxx\")")
@@ -232,7 +234,7 @@ private[scalatest] object FriendlyParamsTranslator {
           case None => 
         }
       }
-      else if (s.startsWith("reporterclass")) {
+      else if (s.startsWith("reporterclass") && !previousStartWithDash) {
         println("WARNING: Argument 'reporterclass' has been deprecated and will be removed in a future version of ScalaTest.  Please use -g instead.")
         val paramsMap:Map[String, String] = parseParams(s.substring("reporterclass".length()), it, Set("classname", "config"), "reporterclass(classname=\"xxx\")")
         val classnameOpt:Option[String] = paramsMap.get("classname")
@@ -252,12 +254,14 @@ private[scalatest] object FriendlyParamsTranslator {
         newArgs += dashR
         newArgs += classname
       }
-      else if(s.startsWith("membersonly")) 
+      else if(s.startsWith("membersonly") && !previousStartWithDash)
         newArgs ++= translateCompound(s, "membersonly", "-m", it)
-      else if(s.startsWith("wildcard")) 
+      else if(s.startsWith("wildcard") && !previousStartWithDash)
         newArgs ++= translateCompound(s, "wildcard", "-w", it)
       else
         newArgs += s
+
+      previousStartWithDash = s.startsWith("-")
     }
     
     newArgs.toArray
