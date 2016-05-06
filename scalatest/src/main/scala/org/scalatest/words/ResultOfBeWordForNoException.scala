@@ -36,11 +36,12 @@ final class ResultOfBeWordForNoException(pos: source.Position) {
    * </pre>
    **/
   def thrownBy(fun: => Any): Assertion = {
-    checkNoException(pos)(fun)
+    checkNoException(fun, pos)
   }
-  
+
   /**
    * Overrides toString to return pretty noException should/must be
    */
   override def toString: String = "ResultOfBeWordForNoException"
 }
+

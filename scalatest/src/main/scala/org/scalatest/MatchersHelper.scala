@@ -317,7 +317,7 @@ private[scalatest] object MatchersHelper {
     }
   }
 
-  def checkNoException(pos: source.Position)(fun: => Any): Assertion = {
+  def checkNoException(fun: => Any, pos: source.Position): Assertion = {
     try {
       fun
       Succeeded
@@ -338,6 +338,6 @@ private[scalatest] object MatchersHelper {
     throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, StackDepthExceptionHelper.getStackDepthFun(pos))
   }
 
-  def indicateFailure(e: TestFailedException)(implicit prettifier: Prettifier): Assertion =
+  def indicateFailure(e: TestFailedException): Assertion =
     throw e
 }
