@@ -117,8 +117,8 @@ trait CanVerb {
      * <code>"can"</code>, and right, and returns the result.
      * </p>
      */
-    def can(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "can", right, pos)
+    def can(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+      svsi(leftSideString, "can", right, pos)
     }
 
     /**

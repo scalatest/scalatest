@@ -142,8 +142,8 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and right, and returns the result.
      * </p>
      */
-    def will(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "will", right, pos)
+    def will(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+      svsi(leftSideString, "will", right, pos)
     }
 
     /**

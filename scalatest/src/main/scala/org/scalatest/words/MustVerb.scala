@@ -139,8 +139,8 @@ trait MustVerb {
      * <code>"must"</code>, and right, and returns the result.
      * </p>
      */
-    def must(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "must", right, pos)
+    def must(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+      svsi(leftSideString, "must", right, pos)
     }
 
     /**

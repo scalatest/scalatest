@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb}
+import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation}
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import java.util.concurrent.atomic.AtomicReference
@@ -1579,33 +1579,34 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * the function, respectively).
    * </p>
    */
-  protected implicit val shorthandTestRegistrationFunction: (String, String, String, source.Position) => ResultOfStringPassedToVerb = {
-    (subject, verb, rest, pos) => {
-      // SKIP-SCALATESTJS-START
-      val stackDepth = 6
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 8
-      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", stackDepth, 0, pos)
-      new ResultOfStringPassedToVerb(verb, rest) {
+  protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
+    new StringVerbStringInvocation {
+      def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
+        // SKIP-SCALATESTJS-START
+        val stackDepth = 6
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepth = 8
+        registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", stackDepth, 0, pos)
+        new ResultOfStringPassedToVerb(verb, rest) {
 
-        def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-          registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _)(pos)
-        }
-        // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
-        // to say is (fixture => pending), rather just say is (pending)
-        def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
-          val tagList = firstTestTag :: otherTestTags.toList
-          new ResultOfTaggedAsInvocation(verb, rest, tagList) {
-            // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
-            //                                               ^
-            def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-              registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _)(pos)
+          def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+            registerPendingTestToRun(verb.trim + " " + rest.trim, "is", List(), testFun _)(pos)
+          }
+            // Note, won't have an is method that takes fixture => PendingStatement one, because don't want
+          // to say is (fixture => pending), rather just say is (pending)
+          def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
+            val tagList = firstTestTag :: otherTestTags.toList
+            new ResultOfTaggedAsInvocation(verb, rest, tagList) {
+              // "A Stack" should "bla bla" taggedAs(SlowTest) is (pending)
+              //                                               ^
+              def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+                registerPendingTestToRun(verb.trim + " " + rest.trim, "is", tags, testFun _)(pos)
+              }
             }
           }
         }
       }
     }
-  }
 
   /**
    * Supports the shorthand form of shared test registration.

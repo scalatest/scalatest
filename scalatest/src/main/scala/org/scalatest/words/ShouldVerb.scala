@@ -136,14 +136,14 @@ trait ShouldVerb {
      * </pre>
      *
      * <p>
-     * <code>FlatSpec</code> passes in a function via the implicit parameter that takes
+     * <code>FlatSpec</code> passes in a StringVerbStringInvocation via the implicit parameter that takes
      * three strings and results in a <code>ResultOfStringPassedToVerb</code>. This method
      * simply invokes this function, passing in leftSideString, the verb string
      * <code>"should"</code>, and right, and returns the result.
      * </p>
      */
-    def should(right: String)(implicit fun: (String, String, String, source.Position) => ResultOfStringPassedToVerb): ResultOfStringPassedToVerb = {
-      fun(leftSideString, "should", right, pos)
+    def should(right: String)(implicit svsi: StringVerbStringInvocation): ResultOfStringPassedToVerb = {
+      svsi(leftSideString, "should", right, pos)
     }
 
     /**

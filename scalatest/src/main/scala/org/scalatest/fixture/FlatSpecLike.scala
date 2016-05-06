@@ -16,7 +16,7 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb}
+import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation}
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import java.util.concurrent.atomic.AtomicReference
@@ -2006,30 +2006,31 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * the function, respectively).
    * </p>
    */
-  protected implicit val shorthandTestRegistrationFunction: (String, String, String, source.Position) => ResultOfStringPassedToVerb = {
-    (subject, verb, rest, pos) => {
-      // SKIP-SCALATESTJS-START
-      val stackDepth = 6
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 8
-      registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, Some(pos))
-      new ResultOfStringPassedToVerb(verb, rest) {
-        def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-          registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)(pos)
-        }
-        def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
-          val tagList = firstTestTag :: otherTestTags.toList
-          new ResultOfTaggedAsInvocation(verb, rest, tagList) {
-            // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
-            //                                                            ^
-            def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-              registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun _))(pos)
+  protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
+    new StringVerbStringInvocation {
+      def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
+        // SKIP-SCALATESTJS-START
+        val stackDepth = 6
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepth = 8
+        registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, sourceFileName, "apply", stackDepth, 0, Some(pos))
+        new ResultOfStringPassedToVerb(verb, rest) {
+          def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+            registerPendingTestToRun(verb.trim + " " + rest.trim, List(), "is", unusedFixtureParam => testFun)(pos)
+          }
+          def taggedAs(firstTestTag: Tag, otherTestTags: Tag*) = {
+            val tagList = firstTestTag :: otherTestTags.toList
+            new ResultOfTaggedAsInvocation(verb, rest, tagList) {
+              // "A Stack" must "test this" taggedAs(mytags.SlowAsMolasses) is (pending)
+              //                                                            ^
+              def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
+                registerPendingTestToRun(verb.trim + " " + rest.trim, tags, "is", new NoArgTestWrapper(testFun _))(pos)
+              }
             }
           }
         }
       }
     }
-  }
 
   // TODO: Get rid of unusedfixture, and use NoArgTestFunction instead
 
