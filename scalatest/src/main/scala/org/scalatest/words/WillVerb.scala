@@ -218,8 +218,8 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>will</code>.
      * </p>
      */
-    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier) {
-      fun(leftSideString, "will", resultOfAfterWordApplication, prettifier, pos)
+    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration) {
+      swawr(leftSideString, "will", resultOfAfterWordApplication, pos)
     }
   }
 

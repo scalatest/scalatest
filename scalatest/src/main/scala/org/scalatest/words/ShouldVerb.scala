@@ -218,8 +218,8 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier) {
-      fun(leftSideString, "should", resultOfAfterWordApplication, prettifier, pos)
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration) {
+      swawr(leftSideString, "should", resultOfAfterWordApplication, pos)
     }
   }
 

@@ -215,8 +215,8 @@ trait MustVerb {
      * <code>"must"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>must</code>.
      * </p>
      */
-    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit, prettifier: Prettifier) {
-      fun(leftSideString, "must", resultOfAfterWordApplication, prettifier, pos)
+    def must(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration) {
+      swawr(leftSideString, "must", resultOfAfterWordApplication, pos)
     }
   }
 

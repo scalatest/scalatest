@@ -16,7 +16,7 @@
 package org.scalatest
 
 import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
-MustVerb, StringVerbBlockRegistration}
+MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepth, getStackDepthFun}
 import org.scalatest.exceptions.TestRegistrationClosedException
@@ -1050,8 +1050,9 @@ one error found
    * subject and executes the block.
    * </p>
    */
-  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit = {
-    (left, verb, resultOfAfterWordApplication, _, pos) => {
+  protected implicit val subjectWithAfterWordRegistrationFunction: SubjectWithAfterWordRegistration =
+    new SubjectWithAfterWordRegistration {
+      def apply(left: String, verb: String, resultOfAfterWordApplication: ResultOfAfterWordApplication, pos: source.Position): Unit = {
       val afterWordFunction =
         () => {
           // SKIP-SCALATESTJS-START

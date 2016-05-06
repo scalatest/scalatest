@@ -17,7 +17,7 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord, MustVerb,
-StringVerbBlockRegistration}
+StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions._
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
@@ -1163,23 +1163,24 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * subject and executes the block.
    * </p>
    */
-  protected implicit val subjectWithAfterWordRegistrationFunction: (String, String, ResultOfAfterWordApplication, Prettifier, source.Position) => Unit = {
-    (left, verb, resultOfAfterWordApplication, _, pos) => {
-      val afterWordFunction =
-        () => {
-          // SKIP-SCALATESTJS-START
-          val stackDepth = 10
-          // SKIP-SCALATESTJS-END
-          //SCALATESTJS-ONLY val stackDepth = 15
-          registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, pos, resultOfAfterWordApplication.f)
-        }
-      // SKIP-SCALATESTJS-START
-      val stackDepth = 7
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 9
-      registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, pos, afterWordFunction)
+  protected implicit val subjectWithAfterWordRegistrationFunction: SubjectWithAfterWordRegistration =
+    new SubjectWithAfterWordRegistration {
+      def apply(left: String, verb: String, resultOfAfterWordApplication: ResultOfAfterWordApplication, pos: source.Position): Unit = {
+        val afterWordFunction =
+          () => {
+            // SKIP-SCALATESTJS-START
+            val stackDepth = 10
+            // SKIP-SCALATESTJS-END
+            //SCALATESTJS-ONLY val stackDepth = 15
+            registerBranch(resultOfAfterWordApplication.text, None, verb, "apply", stackDepth, -2, pos, resultOfAfterWordApplication.f)
+          }
+        // SKIP-SCALATESTJS-START
+        val stackDepth = 7
+        // SKIP-SCALATESTJS-END
+        //SCALATESTJS-ONLY val stackDepth = 9
+        registerBranch(left, Some(verb), verb, "apply", stackDepth, -2, pos, afterWordFunction)
+      }
     }
-  }
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>WordSpec</code> belong, and values

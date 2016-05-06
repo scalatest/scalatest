@@ -193,8 +193,8 @@ trait CanVerb {
      * <code>"can"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>can</code>.
      * </p>
      */
-    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit fun: (String, String, ResultOfAfterWordApplication, source.Position) => Unit) {
-      fun(leftSideString, "can", resultOfAfterWordApplication, pos)
+    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration) {
+      swawr(leftSideString, "can", resultOfAfterWordApplication, pos)
     }
   }
 
