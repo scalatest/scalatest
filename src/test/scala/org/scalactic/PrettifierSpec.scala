@@ -16,7 +16,7 @@
 package org.scalactic
 
 import org.scalatest._
-import scala.collection.mutable.WrappedArray
+import scala.collection.mutable.{ArrayOps, WrappedArray}
 import scala.util.Success
 import SharedHelpers.{javaList, javaSortedMap}
 import scala.xml.NodeSeq
@@ -209,6 +209,9 @@ class PrettifierSpec extends Spec with Matchers {
     }
     def `should pretty print wrapped string arrays` {
       Prettifier.default(WrappedArray.make(Array("1", "2", "3"))) should be ("Array(\"1\", \"2\", \"3\")")
+    }
+    def `should pretty print array ops` {
+      Prettifier.default(new ArrayOps.ofInt(Array(1, 2, 3))) should be ("Array(1, 2, 3)")
     }
     def `should show null as "null"` {
       Prettifier.default(null) should be ("null")
