@@ -25,7 +25,7 @@ import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 
 /**
  * Implementation trait for class <code>fixture.FunSpec</code>, which is

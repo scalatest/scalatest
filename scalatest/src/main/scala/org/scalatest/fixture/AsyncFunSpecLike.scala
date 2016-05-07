@@ -26,7 +26,7 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import words.BehaveWord
 import scala.concurrent.Future
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 
 /**
  * Implementation trait for class <code>fixture.AsyncFunSpec</code>, which is

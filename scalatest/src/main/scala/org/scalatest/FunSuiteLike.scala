@@ -17,7 +17,7 @@ package org.scalatest
 
 import scala.collection.immutable.ListSet
 import Suite.autoTagClassAnnotations
-import org.scalactic._
+import org.scalactic.source
 
 /**
  * Implementation trait for class <code>FunSuite</code>, which represents

@@ -26,7 +26,7 @@ import java.util.ConcurrentModificationException
 import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 
 /**
  * Implementation trait for class <code>fixture.FreeSpec</code>, which is

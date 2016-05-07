@@ -21,7 +21,7 @@ import org.scalatest._
 import org.scalatest.exceptions._
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import Suite.autoTagClassAnnotations
-import org.scalactic._
+import org.scalactic.{source, Prettifier}
 
 /**
  * Implementation trait for class <code>path.FreeSpec</code>, which is

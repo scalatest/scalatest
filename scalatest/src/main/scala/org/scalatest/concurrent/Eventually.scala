@@ -22,7 +22,7 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import scala.annotation.tailrec
 import time.{Nanosecond, Span, Nanoseconds}
 import PatienceConfiguration._
-import org.scalactic._
+import org.scalactic.source
 
 /**
  * Trait that provides the <code>eventually</code> construct, which periodically retries executing

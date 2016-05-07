@@ -22,7 +22,7 @@ import scala.annotation.tailrec
 import org.scalatest.time.Span
 import exceptions.{TestCanceledException, TestFailedException, TestPendingException, TimeoutField}
 import PatienceConfiguration._
-import org.scalactic._
+import org.scalactic.source
 
 /**
  * Trait that facilitates testing with futures.

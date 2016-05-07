@@ -24,8 +24,8 @@ import RefSpec.equalIfRequiredCompactify
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
-import org.scalactic._
-import Requirements._
+import org.scalactic.{source, Prettifier}
+import org.scalactic.Requirements._
 
 /**
  * Implementation trait for class <code>RefSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
