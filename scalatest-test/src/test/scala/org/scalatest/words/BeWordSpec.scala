@@ -25,6 +25,7 @@ import matchers.{BePropertyMatcher,
                  BeMatcher, 
                  MatchResult}
 import org.scalactic._
+import org.scalatest.UnquotedString
 
 class BeWordSpec extends FunSpec with FileMocks {
   

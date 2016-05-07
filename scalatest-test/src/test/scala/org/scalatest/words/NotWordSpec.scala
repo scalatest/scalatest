@@ -33,6 +33,9 @@ import java.io.File
 import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.NotAllowedException
 import org.scalactic._
+import org.scalatest.UnquotedString
+import org.scalatest.Resources
+import org.scalatest.FailureMessages
 
 class NotWordSpec extends FunSpec with FileMocks {
 
