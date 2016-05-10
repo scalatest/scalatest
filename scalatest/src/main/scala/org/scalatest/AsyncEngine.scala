@@ -674,7 +674,6 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     }
   } */
 
-  // TODO: we can remove sourceFile, methodName, stackDepth if we're sure that pos is always available here.
   def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, location: Option[Location], pos: source.Position) {
 
     val oldBundle = atomic.get
@@ -740,14 +739,12 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   }
 
   // Path traits need to register the message recording informer, so it can fire any info events later
-  // TODO: we can remove sourceFile, methodName, stackDepth if we're sure that pos is always available here.
   def registerAsyncTest(testText: String, testFun: T, testRegistrationClosedMessageFun: => String, duration: Option[Long], location: Option[Location], pos: source.Position, testTags: Tag*): String = { // returns testName
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
     if (atomic.get.registrationClosed)
       throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, Some(pos), getStackDepthFun(pos))
-//    throw new TestRegistrationClosedException(Resources.testCannotAppearInsideAnotherTest, getStackDepth(sourceFileName, "test"))
 
     val oldBundle = atomic.get
     var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
