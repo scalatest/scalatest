@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference
 import MessageRecorder.RecordedMessageEventFun
 import MessageRecorder.ConcurrentMessageFiringFun
 import org.scalatest.events.Location
-import org.scalatest.Suite.getLineInFile
+import org.scalatest.events.LineInFile
 import org.scalatest.events.Event
 import org.scalatest.events.RecordableEvent
 import org.scalatest.events.NoteProvided
@@ -82,7 +82,7 @@ private[scalatest] class ConcurrentMessageSender(fire: ConcurrentMessageFiringFu
 private[scalatest] class ConcurrentInformer(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Informer {
   def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
     requireNonNull(message, payload)
-    fire(message, payload, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2))
+    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
     Reported
   }
 }
@@ -94,7 +94,7 @@ private[scalatest] object ConcurrentInformer {
 private[scalatest] class ConcurrentNotifier(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Notifier {
   def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
     requireNonNull(message, payload)
-    fire(message, payload, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2))
+    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
     Reported
   }
 }
@@ -106,7 +106,7 @@ private[scalatest] object ConcurrentNotifier {
 private[scalatest] class ConcurrentAlerter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Alerter {
   def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
     requireNonNull(message, payload)
-    fire(message, payload, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2))
+    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
     Reported
   }
 }
@@ -118,7 +118,7 @@ private[scalatest] object ConcurrentAlerter {
 private[scalatest] class ConcurrentDocumenter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Documenter {
   def apply(text: String)(implicit pos: source.Position): Provided = {
     requireNonNull(text)
-    fire(text, None, isConstructingThread, getLineInFile(Thread.currentThread.getStackTrace, 2)) // Fire the info provided event using the passed function
+    fire(text, None, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName))) // Fire the info provided event using the passed function
     Reported
   }
 }
@@ -171,7 +171,7 @@ private[scalatest] class MessageRecordingInformer(recorder: MessageRecorder, eve
     val stackDepth = 2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 4
-    recorder.apply(message, payload, eventFun, getLineInFile(Thread.currentThread.getStackTrace, stackDepth))
+    recorder.apply(message, payload, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName)))
     Recorded
   }
 }
@@ -182,7 +182,7 @@ private[scalatest] object MessageRecordingInformer {
 
 private[scalatest] class MessageRecordingDocumenter(recorder: MessageRecorder, eventFun: RecordedMessageEventFun) extends Documenter {
   def apply(message: String)(implicit pos: source.Position): Provided = {
-    recorder.apply(message, None, eventFun, getLineInFile(Thread.currentThread.getStackTrace, 2))
+    recorder.apply(message, None, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName)))
     Recorded
   }
 }

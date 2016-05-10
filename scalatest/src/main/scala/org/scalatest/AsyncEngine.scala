@@ -129,7 +129,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
       Recorded
     }
@@ -141,7 +141,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
       Recorded
     }
@@ -153,7 +153,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
       Recorded
     }
@@ -164,7 +164,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       requireNonNull(message)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, Some(LineInFile(pos.lineNumber, pos.fileName)))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
       Recorded
     }
@@ -685,9 +685,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val branchLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None =>
-          val stackTraceElements = Thread.currentThread().getStackTrace
-          getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, pos))
+        case None => Some(LineInFile(pos.lineNumber, pos.fileName))
       }
     
     val oldBranch = currentBranch
@@ -723,8 +721,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
-    val stackTraceElements = Thread.currentThread().getStackTrace
-    val newBranch = DescriptionBranch(Trunk, description, None, getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, pos)))
+    val newBranch = DescriptionBranch(Trunk, description, None, Some(LineInFile(pos.lineNumber, pos.fileName)))
     Trunk.subNodes ::= newBranch
 
     // Update atomic, making the current branch to the new branch
@@ -756,9 +753,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val testLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None =>
-          val stackTraceElements = Thread.currentThread().getStackTrace
-          getLineInFile(stackTraceElements, getStackDepth(stackTraceElements, pos))
+        case None => Some(LineInFile(pos.lineNumber, pos.fileName))
       }
 
     val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, Some(pos), duration)
