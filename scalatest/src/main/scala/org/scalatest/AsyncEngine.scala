@@ -125,7 +125,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   class RegistrationInformer extends Informer {
 
-    def apply(message: String, payload: Option[Any] = None): Provided = {
+    def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -137,7 +137,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   class RegistrationNotifier extends Notifier {
 
-    def apply(message: String, payload: Option[Any] = None): Provided = {
+    def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -149,7 +149,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   class RegistrationAlerter extends Alerter {
 
-    def apply(message: String, payload: Option[Any] = None): Provided = {
+    def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -160,7 +160,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   }
 
   class RegistrationDocumenter extends Documenter {
-    def apply(message: String): Provided = {
+    def apply(message: String)(implicit pos: source.Position): Provided = {
       requireNonNull(message)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -183,7 +183,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   final val zombieInformer =
     new Informer {
-      def apply(message: String, payload: Option[Any] = None): Provided = {
+      def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
         requireNonNull(message, payload)
         println(Resources.infoProvided(message))
         payload match {
@@ -196,7 +196,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   final val zombieNotifier =
     new Notifier {
-      def apply(message: String, payload: Option[Any] = None): Provided = {
+      def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
         requireNonNull(message, payload)
         println(Resources.noteProvided(message))
         payload match {
@@ -209,7 +209,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   final val zombieAlerter =
     new Alerter {
-      def apply(message: String, payload: Option[Any] = None): Provided = {
+      def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
         requireNonNull(message, payload)
         println(Resources.alertProvided(message))
         payload match {
@@ -222,7 +222,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   final val zombieDocumenter =
     new Documenter {
-      def apply(message: String): Provided = {
+      def apply(message: String)(implicit pos: source.Position): Provided = {
         requireNonNull(message)
         println(Resources.markupProvided(message))
         Reported

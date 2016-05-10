@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.source
+
 /**
  * Trait to which custom information about a running suite of tests can be reported.
  * 
@@ -91,5 +93,5 @@ trait Informer {
    *
    * @throws NullArgumentException if <code>message</code> or <code>payload</code> reference is <code>null</code>
    */
-  def apply(message: String, payload: Option[Any] = None): Provided
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided
 }

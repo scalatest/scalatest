@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.source
+
 /**
  * Trait that contains methods named <code>given</code>, <code>when</code>, <code>then</code>, and <code>and</code>,
  * which take a string message and implicit <a href="Informer.html"><code>Informer</code></a>, and forward the message to the informer.
@@ -73,8 +75,8 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def Given(message: String): Provided = {
-    info(Resources.givenMessage(message))
+  def Given(message: String)(implicit pos: source.Position): Provided = {
+    info(Resources.givenMessage(message))(pos)
   }
   
   /**
@@ -82,8 +84,8 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def When(message: String): Provided = {
-    info(Resources.whenMessage(message))
+  def When(message: String)(implicit pos: source.Position): Provided = {
+    info(Resources.whenMessage(message))(pos)
   }
   
   /**
@@ -91,8 +93,8 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def Then(message: String): Provided = {
-    info(Resources.thenMessage(message))
+  def Then(message: String)(implicit pos: source.Position): Provided = {
+    info(Resources.thenMessage(message))(pos)
   }
   
    /**
@@ -100,7 +102,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def And(message: String): Provided = {
-    info(Resources.andMessage(message))
+  def And(message: String)(implicit pos: source.Position): Provided = {
+    info(Resources.andMessage(message))(pos)
   }
 }
