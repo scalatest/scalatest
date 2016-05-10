@@ -111,19 +111,11 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -1
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FlatSpecRegistering.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(testText, transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
   /**
@@ -146,20 +138,13 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   private def registerTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion])(pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -6
-
     def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
     def testRegistrationClosedMessageFun: String =
       methodName match {
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
   private def registerPendingTestToRun(specText: String, methodName: String, testTags: List[Tag], testFun: () => PendingStatement)(pos: source.Position): Unit = {
@@ -169,7 +154,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
         case "in" => Resources.inCannotAppearInsideAnotherInOrIs
         case "is" => Resources.isCannotAppearInsideAnotherInOrIs
       }
-    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, "AsyncFlatSpecLike.scala", methodName, 4, -3, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), testRegistrationClosedMessageFun, None, None, pos, testTags: _*)
   }
 
   /**
@@ -211,11 +196,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
      * </p>
      */
     def of(description: String)(implicit pos: source.Position): Unit = {
-      // SKIP-SCALATESTJS-START
-      val stackDepth = 3
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY val stackDepth = 5
-      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "of", stackDepth, 0, pos)
+      registerFlatBranch(description, Resources.behaviorOfCannotAppearInsideAnIn, pos)
     }
   }
 
@@ -1582,11 +1563,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   protected implicit val shorthandTestRegistrationFunction: StringVerbStringInvocation =
     new StringVerbStringInvocation {
       def apply(subject: String, verb: String, rest: String, pos: source.Position): ResultOfStringPassedToVerb = {
-        // SKIP-SCALATESTJS-START
-        val stackDepth = 6
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepth = 8
-        registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", stackDepth, 0, pos)
+        registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
         new ResultOfStringPassedToVerb(verb, rest) {
 
           def is(testFun: => PendingStatement): Unit = {
@@ -1631,7 +1608,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
   protected implicit val shorthandSharedTestRegistrationFunction: StringVerbBehaveLikeInvocation =
     new StringVerbBehaveLikeInvocation {
       def apply(subject: String, pos: source.Position): BehaveWord = {
-        registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, "FlatSpecRegistering.scala", "apply", 5, 0, pos)
+        registerFlatBranch(subject, Resources.shouldCannotAppearInsideAnIn, pos)
         new BehaveWord
       }
     }
@@ -1668,7 +1645,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
-    engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
   private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement)(pos: source.Position): Unit = {
@@ -1678,7 +1655,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, "FlatSpecRegistering.scala", methodName, stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnInOrAnIs, None, pos, testTags: _*)
   }
 
   /**

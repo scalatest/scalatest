@@ -19,6 +19,7 @@ import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.prop._
+import org.scalactic.source
 /* Uncomment this after removing the deprecated type aliases in the org.scalatest.prop package object
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
 */
@@ -77,20 +78,20 @@ class TableDrivenPropertyCheckFailedExceptionSpec extends FunSpec with Matchers 
 
     it("should return the cause in both cause and getCause") {
       val theCause = new IllegalArgumentException("howdy")
-      val tfe = new TableDrivenPropertyCheckFailedException(sde => "doody", Some(theCause), sde => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
+      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", Some(theCause), Some(source.Position.here), (sde: StackDepthException) => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
       assert(tfe.cause.isDefined)
       assert(tfe.cause.get === theCause)
       assert(tfe.getCause == theCause)
     }
 
     it("should return None in cause and null in getCause if no cause") {
-      val tfe = new TableDrivenPropertyCheckFailedException(sde => "doody", None, sde => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
+      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", None, Some(source.Position.here), (sde: StackDepthException) => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
       assert(tfe.cause.isEmpty)
       assert(tfe.getCause == null)
     }
 
     it("should be equal to itself") {
-      val tfe = new TableDrivenPropertyCheckFailedException(sde => "doody", None, sde => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
+      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", None, Some(source.Position.here), (sde: StackDepthException) => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
       assert(tfe == tfe)
     }
   }

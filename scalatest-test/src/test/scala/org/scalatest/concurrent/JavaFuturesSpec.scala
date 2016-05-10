@@ -22,6 +22,7 @@ import java.util.concurrent.{ExecutionException, Callable, ExecutorService, Exec
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestCanceledException
+import org.scalactic.source
 
 class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaFutures with SeveredStackTraces {
 
@@ -405,7 +406,7 @@ class JavaFuturesSpec extends FunSpec with Matchers with OptionValues with JavaF
       }
       
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
-        val task = new ThrowingTask(new TestCanceledException(sde => None, None, sde => 0, None))
+        val task = new ThrowingTask(new TestCanceledException(sde => None, None, Some(source.Position.here), sde => 0, None))
         intercept[TestCanceledException] {
           whenReady(task) { s =>
             s should be ("hi")

@@ -125,11 +125,11 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   class RegistrationInformer extends Informer {
 
-    def apply(message: String, payload: Option[Any] = None): Provided = {
+    def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
       Recorded
     }
@@ -137,11 +137,11 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   class RegistrationNotifier extends Notifier {
 
-    def apply(message: String, payload: Option[Any] = None): Provided = {
+    def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
       Recorded
     }
@@ -149,22 +149,22 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   class RegistrationAlerter extends Alerter {
 
-    def apply(message: String, payload: Option[Any] = None): Provided = {
+    def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
       Recorded
     }
   }
 
   class RegistrationDocumenter extends Documenter {
-    def apply(message: String): Provided = {
+    def apply(message: String)(implicit pos: source.Position): Provided = {
       requireNonNull(message)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, getLineInFile(Thread.currentThread().getStackTrace, 2))
+      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, Some(LineInFile(pos.lineNumber, pos.fileName)))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
       Recorded
     }
@@ -183,7 +183,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   final val zombieInformer =
     new Informer {
-      def apply(message: String, payload: Option[Any] = None): Provided = {
+      def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
         requireNonNull(message, payload)
         println(Resources.infoProvided(message))
         payload match {
@@ -196,7 +196,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   final val zombieNotifier =
     new Notifier {
-      def apply(message: String, payload: Option[Any] = None): Provided = {
+      def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
         requireNonNull(message, payload)
         println(Resources.noteProvided(message))
         payload match {
@@ -209,7 +209,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   final val zombieAlerter =
     new Alerter {
-      def apply(message: String, payload: Option[Any] = None): Provided = {
+      def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
         requireNonNull(message, payload)
         println(Resources.alertProvided(message))
         payload match {
@@ -222,7 +222,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   final val zombieDocumenter =
     new Documenter {
-      def apply(message: String): Provided = {
+      def apply(message: String)(implicit pos: source.Position): Provided = {
         requireNonNull(message)
         println(Resources.markupProvided(message))
         Reported
@@ -584,14 +584,18 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFile, methodName, stackDepth + adjustment)))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFile, methodName, stackDepth + adjustment)))
 
     val branchLocation = 
       location match {
         case Some(loc) => Some(loc)
         case None =>
-          val stackTraceElements = Thread.currentThread().getStackTrace
-          getLineInFile(stackTraceElements, pos.map(si => getStackDepth(stackTraceElements, si)).getOrElse(stackDepth))
+          if (pos.isDefined)
+            Some(LineInFile(pos.get.lineNumber, pos.get.fileName))
+          else {
+            val stackTraceElements = Thread.currentThread().getStackTrace
+            getLineInFile(stackTraceElements, stackDepth)
+          }
       }
     
     val oldBranch = currentBranch
@@ -623,12 +627,18 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     val (_, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFile, methodName, stackDepth + adjustment)))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFile, methodName, stackDepth + adjustment)))
 
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
-    val stackTraceElements = Thread.currentThread().getStackTrace
-    val newBranch = DescriptionBranch(Trunk, description, None, getLineInFile(stackTraceElements, pos.map(si => getStackDepth(stackTraceElements, si)).getOrElse(stackDepth)))
+    val lineInFile =
+      if (pos.isDefined)
+        Some(LineInFile(pos.get.lineNumber, pos.get.fileName))
+      else {
+        val stackTraceElements = Thread.currentThread().getStackTrace
+        getLineInFile(stackTraceElements, stackDepth)
+      }
+    val newBranch = DescriptionBranch(Trunk, description, None, lineInFile)
     Trunk.subNodes ::= newBranch
 
     // Update atomic, making the current branch to the new branch
@@ -648,7 +658,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, pos, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
 //    throw new TestRegistrationClosedException(Resources.testCannotAppearInsideAnotherTest, getStackDepth(sourceFileName, "test"))
 
     val oldBundle = atomic.get
@@ -661,14 +671,18 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       val duplicateTestNameAdjustment = 0
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val duplicateTestNameAdjustment = -1
-      throw new DuplicateTestNameException(testName, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment)))
+      throw new DuplicateTestNameException(testName, pos, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment)))
     }
     val testLocation = 
       location match {
         case Some(loc) => Some(loc)
         case None =>
-          val stackTraceElements = Thread.currentThread().getStackTrace
-          getLineInFile(stackTraceElements, pos.map(si => getStackDepth(stackTraceElements, si)).getOrElse(stackDepth))
+          if (pos.isDefined)
+            Some(LineInFile(pos.get.lineNumber, pos.get.fileName))
+          else {
+            val stackTraceElements = Thread.currentThread().getStackTrace
+            getLineInFile(stackTraceElements, stackDepth)
+          }
       }
 
     val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, pos, duration, informer)
@@ -893,7 +907,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
   def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*) {
 
     if (insideAPathTest) 
-      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, pos, pos.map(getStackDepthFun).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
     
     insideAPathTest = true
     
@@ -985,7 +999,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
   def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position]) {
 
     if (insideAPathTest)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
 
     val nextPath = getNextPath()
     // val nextPathZero = if (nextPath.length > 0) nextPath(0) else -1
@@ -1013,19 +1027,19 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
           targetLeafHasBeenReached = true
       }
       else {
-        navigateToNestedBranch(nextPath, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, methodName, stackDepth + 1, adjustment)
+        navigateToNestedBranch(nextPath, fun, Resources.describeCannotAppearInsideAnIt, sourceFileName, methodName, stackDepth + 1, adjustment, pos)
       }
       currentPath = oldCurrentPath
     }
   }
 
- def navigateToNestedBranch(path: List[Int], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int) {
+ def navigateToNestedBranch(path: List[Int], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, pos: Option[source.Position]) {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, getStackDepthFun(sourceFile, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos, pos.map(getStackDepthFun).getOrElse(getStackDepthFun(sourceFile, methodName, stackDepth + adjustment)))
 
     // First look in current branch's subnodes for another branch
     def getBranch(b: Branch, path: List[Int]): Branch = {
@@ -1141,7 +1155,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
   def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*) {
 
     if (insideAPathTest) 
-      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, pos, pos.map(getStackDepthFun).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
     
     describeRegisteredNoTests = false
     val nextPath = getNextPath()

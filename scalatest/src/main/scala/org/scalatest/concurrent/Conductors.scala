@@ -547,10 +547,10 @@ trait Conductors extends PatienceConfiguration {
     def threadNamed(name: String)(fun: => Any)(implicit pos: source.Position): Thread = {
       currentState.get match {
         case TestFinished =>
-          throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, getStackDepthFun(pos))
+          throw new NotAllowedException(Resources.threadCalledAfterConductingHasCompleted, Some(pos), getStackDepthFun(pos))
         case _ =>
           if (threadNames contains name)
-            throw new NotAllowedException(Resources.cantRegisterThreadsWithSameName(name), getStackDepthFun(pos))
+            throw new NotAllowedException(Resources.cantRegisterThreadsWithSameName(name), Some(pos), getStackDepthFun(pos))
           val t = TestThread(name, fun _)
           threads add t
           threadNames add name
@@ -646,10 +646,10 @@ trait Conductors extends PatienceConfiguration {
     def whenFinished(fun: => Assertion)(implicit pos: source.Position): Assertion = {
 
       if (Thread.currentThread != mainThread)
-        throw new NotAllowedException(Resources.whenFinishedCanOnlyBeCalledByMainThread, getStackDepthFun(pos))
+        throw new NotAllowedException(Resources.whenFinishedCanOnlyBeCalledByMainThread, Some(pos), getStackDepthFun(pos))
 
       if (conductingHasBegun)
-        throw new NotAllowedException(Resources.cannotInvokeWhenFinishedAfterConduct, getStackDepthFun(pos))
+        throw new NotAllowedException(Resources.cannotInvokeWhenFinishedAfterConduct, Some(pos), getStackDepthFun(pos))
 
       conduct()
 
@@ -665,9 +665,9 @@ trait Conductors extends PatienceConfiguration {
      */
     def waitForBeat(beat: Int)(implicit pos: source.Position): Succeeded.type = {
       if (beat == 0)
-        throw new NotAllowedException(Resources.cannotWaitForBeatZero, getStackDepthFun(pos))
+        throw new NotAllowedException(Resources.cannotWaitForBeatZero, Some(pos), getStackDepthFun(pos))
       if (beat < 0)
-        throw new NotAllowedException(Resources.cannotWaitForNegativeBeat, getStackDepthFun(pos))
+        throw new NotAllowedException(Resources.cannotWaitForNegativeBeat, Some(pos), getStackDepthFun(pos))
       clock waitForBeat beat
     }
 
@@ -798,7 +798,7 @@ trait Conductors extends PatienceConfiguration {
       // if the test was started already, explode
       // otherwise, change state to TestStarted
       if (conductingHasBegun)
-        throw new NotAllowedException(Resources.cannotCallConductTwice, getStackDepthFun(pos))
+        throw new NotAllowedException(Resources.cannotCallConductTwice, Some(pos), getStackDepthFun(pos))
       else
         currentState set TestStarted
 

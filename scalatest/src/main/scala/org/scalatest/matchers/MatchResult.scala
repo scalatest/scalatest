@@ -266,7 +266,7 @@ final case class MatchResult(
   def negated: MatchResult = MatchResult(!matches, rawNegatedFailureMessage, rawFailureMessage, rawMidSentenceNegatedFailureMessage, rawMidSentenceFailureMessage, negatedFailureMessageArgs, failureMessageArgs, midSentenceNegatedFailureMessageArgs, midSentenceFailureMessageArgs)
 
   private def makeString(rawString: String, args: IndexedSeq[Any], prettifier: Prettifier): String =
-    Resources.formatString(rawString, args.map(prettifier.apply).toArray)
+    Resources.formatString(rawString, args.map(arg => if (arg.isInstanceOf[LazyMessage]) arg.asInstanceOf[LazyMessage].message(prettifier) else prettifier(arg)).toArray)
 }
 
 /**

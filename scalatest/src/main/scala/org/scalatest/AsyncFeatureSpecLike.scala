@@ -98,19 +98,11 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
   protected def markup: Documenter = atomicDocumenter.get
 
   final def registerAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -1
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecRegistering.scala", "registerTest", 4, stackDepthAdjustment, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, None, pos, testTags: _*)
   }
 
   final def registerIgnoredAsyncTest(testText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, "FeatureSpecRegistering.scala", "registerIgnoredAsyncTest", 4, stackDepthAdjustment, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(Resources.scenario(testText.trim), transformToOutcome(testFun), Resources.testCannotBeNestedInsideAnotherTest, None, pos, testTags: _*)
   }
 
   /**
@@ -132,13 +124,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def scenario(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, "FeatureSpecRegistering.scala", "scenario", stackDepth, stackDepthAdjustment, None, None, pos, testTags: _*)
+    engine.registerAsyncTest(Resources.scenario(specText.trim), transformToOutcome(testFun), Resources.scenarioCannotAppearInsideAnotherScenario, None, None, pos, testTags: _*)
   }
 
   /**
@@ -160,13 +146,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
   protected def ignore(specText: String, testTags: Tag*)(testFun: => Future[compatible.Assertion])(implicit pos: source.Position): Unit = {
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -5
-    engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, "FeatureSpecRegistering.scala", "ignore", stackDepth, stackDepthAdjustment, None, pos, testTags: _*)
+    engine.registerIgnoredAsyncTest(Resources.scenario(specText), transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAScenario, None, pos, testTags: _*)
   }
 
   /**
@@ -176,30 +156,18 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * description string and immediately invoke the passed function.
    */
   protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
-
-    // SKIP-SCALATESTJS-START
-    val stackDepth = 4
-    val stackDepthAdjustment = -2
-    val scopeErrorStackDepth = 4
-    val duplicateErrorStackDepth = 2
-    // SKIP-SCALATESTJS-END
-    //SCALATESTJS-ONLY val stackDepth = 6
-    //SCALATESTJS-ONLY val stackDepthAdjustment = -4
-    //SCALATESTJS-ONLY val scopeErrorStackDepth = 11
-    //SCALATESTJS-ONLY val duplicateErrorStackDepth = 10
-
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources.cantNestFeatureClauses, getStackDepthFun(pos))
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, Some(pos), getStackDepthFun(pos))
 
     try {
-      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, "FeatureSpecRegistering.scala", "feature", stackDepth, stackDepthAdjustment, None, pos)
+      registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, None, pos)
     }
     catch {
-      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), getStackDepthFun(pos))
-      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), getStackDepthFun(pos))
+      case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), Some(pos), getStackDepthFun(pos))
+      case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), Some(pos), getStackDepthFun(pos))
       case nae: exceptions.NotAllowedException => throw nae
-      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), getStackDepthFun(pos))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), getStackDepthFun(pos))
+      case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), Some(pos), getStackDepthFun(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), Some(pos), getStackDepthFun(pos))
       case other: Throwable => throw other
     }
   }

@@ -427,6 +427,7 @@ trait Eventually extends PatienceConfiguration {
                     Resources.didNotEventuallySucceedBecause(attempt.toString, durationSpan.prettyString, e.getMessage)
                 ),
               Some(e),
+              Some(pos),
               getStackDepthFun(pos),
               None,
               config.timeout

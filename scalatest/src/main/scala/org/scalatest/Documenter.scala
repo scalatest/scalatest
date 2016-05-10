@@ -15,6 +15,8 @@
  */
 package org.scalatest
 
+import org.scalactic.source
+
  /*
  * <p>
  * A <code>Documenter</code> is essentially
@@ -141,5 +143,5 @@ trait Documenter {
    *
    * @throws NullArgumentException if <code>message</code> reference is <code>null</code>
    */
-  def apply(text: String): Provided
+  def apply(text: String)(implicit pos: source.Position): Provided
 }

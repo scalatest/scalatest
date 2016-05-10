@@ -17,6 +17,8 @@ package org.scalatest.exceptions
 
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.source
+import StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Exception that indicates an action that is only allowed during a suite's test registration phase,
@@ -53,7 +55,7 @@ import org.scalactic.exceptions.NullArgumentException
  *
  * @author Bill Venners
  */
-class TestRegistrationClosedException(message: String, failedCodeStackDepthFun: StackDepthException => Int)
+class TestRegistrationClosedException(message: String, val pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int)
     extends StackDepthException(Some(message), None, failedCodeStackDepthFun) {
 
   requireNonNull(message, failedCodeStackDepthFun)
@@ -67,7 +69,7 @@ class TestRegistrationClosedException(message: String, failedCodeStackDepthFun: 
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, failedCodeStackDepth: Int) = this(message, e => failedCodeStackDepth)
+  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) = this(message, pos, (e: StackDepthException) => failedCodeStackDepth)
 
   /**
    * Returns an exception of class <code>TestRegistrationClosedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
@@ -77,7 +79,7 @@ class TestRegistrationClosedException(message: String, failedCodeStackDepthFun: 
    */
   def severedAtStackDepth: TestRegistrationClosedException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new TestRegistrationClosedException(message, 0)
+    val e = new TestRegistrationClosedException(message, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
     e.setStackTrace(truncated)
     e
   }

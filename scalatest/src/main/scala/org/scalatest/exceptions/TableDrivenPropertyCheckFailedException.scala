@@ -16,6 +16,8 @@
 package org.scalatest
 package exceptions
 
+import org.scalactic.source
+
 /**
  * Exception that indicates a table-driven property check failed.
  *
@@ -40,6 +42,7 @@ package exceptions
 class TableDrivenPropertyCheckFailedException(
   messageFun: StackDepthException => String,
   cause: Option[Throwable],
+  pos: Option[source.Position],
   failedCodeStackDepthFun: StackDepthException => Int,
   payload: Option[Any],
   undecoratedMessage: String,
@@ -47,7 +50,7 @@ class TableDrivenPropertyCheckFailedException(
   namesOfArgs: List[String],
   val row: Int
 ) extends PropertyCheckFailedException(
-  messageFun, cause, failedCodeStackDepthFun, payload, undecoratedMessage, args, Some(namesOfArgs)
+  messageFun, cause, pos, failedCodeStackDepthFun, payload, undecoratedMessage, args, Some(namesOfArgs)
 ) {
 
   /**
@@ -63,6 +66,7 @@ class TableDrivenPropertyCheckFailedException(
       new TableDrivenPropertyCheckFailedException(
         sde => fun(message).getOrElse(messageFun(this)),
         cause,
+        pos,
         failedCodeStackDepthFun,
         payload,
         undecoratedMessage,
@@ -88,6 +92,7 @@ class TableDrivenPropertyCheckFailedException(
       new TableDrivenPropertyCheckFailedException(
         messageFun,
         cause,
+        pos,
         failedCodeStackDepthFun,
         fun(currentPayload),
         undecoratedMessage,

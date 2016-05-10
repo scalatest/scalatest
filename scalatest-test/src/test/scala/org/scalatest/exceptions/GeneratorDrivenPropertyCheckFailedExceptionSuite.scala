@@ -17,6 +17,7 @@ package org.scalatest
 package exceptions
 
 import org.scalatest.prop._
+import org.scalactic.source
 /* Uncomment this after removing the deprecated type aliases in the org.scalatest.prop package object
 import org.scalatest.exceptions.PropertyCheckFailedException
 */
@@ -29,6 +30,7 @@ class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Mat
       new GeneratorDrivenPropertyCheckFailedException(
         sde => "msg",
         None,
+        Some(source.Position.here),
         sde => 7,
         None,
         "msg",
@@ -46,6 +48,7 @@ class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Mat
       new GeneratorDrivenPropertyCheckFailedException(
         sde => "msg",
         None,
+        Some(source.Position.here),
         sde => 7,
         None,
         "msg",

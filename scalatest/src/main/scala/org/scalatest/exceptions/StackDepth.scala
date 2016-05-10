@@ -15,6 +15,8 @@
  */
 package org.scalatest.exceptions
 
+import org.scalactic.source
+
 /**
  * Trait that encapsulates the information required of an exception thrown by ScalaTest's assertions
  * and matchers, which includes a stack depth at which the failing line of test code resides.
@@ -43,6 +45,8 @@ trait StackDepth { this: Throwable =>
    */
   val failedCodeStackDepth: Int
 
+  val pos: Option[source.Position]
+
   /**
    * A string that provides the filename and line number of the line of code that failed, suitable
    * for presenting to a user, which is taken from this exception's <code>StackTraceElement</code> at the depth specified
@@ -62,8 +66,12 @@ trait StackDepth { this: Throwable =>
 
   private def stackTraceElement: Option[StackTraceElement] = {
     val stackTrace = getStackTrace()
-    if (stackTrace.length <= failedCodeStackDepth) None
-    else Some(stackTrace(failedCodeStackDepth))
+    if (pos.isDefined)
+      stackTrace.find(e => StackDepthExceptionHelper.isMatch(e, pos.get))
+    else {
+      if (stackTrace.length <= failedCodeStackDepth) None
+      else Some(stackTrace(failedCodeStackDepth))
+    }
   }
 
   /**
@@ -79,9 +87,12 @@ trait StackDepth { this: Throwable =>
    * @return a string containing the filename that caused the failed test
    */
   def failedCodeFileName: Option[String] = {
-    stackTraceElement flatMap { ele =>
-      StackDepthExceptionHelper.getFailedCodeFileName(ele)
-    }
+    if (pos.isDefined)
+      pos.map(_.fileName)
+    else
+      stackTraceElement flatMap { ele =>
+        StackDepthExceptionHelper.getFailedCodeFileName(ele)
+      }
   }
 
   /**
@@ -97,10 +108,13 @@ trait StackDepth { this: Throwable =>
    * @return a string containing the line number that caused the failed test
    */
   def failedCodeLineNumber: Option[Int] = {
-    stackTraceElement flatMap { ele =>
-      val lineNum = ele.getLineNumber
-      if (lineNum > 0) Some(lineNum) else None
-    }
+    if (pos.isDefined)
+      pos.map(_.lineNumber)
+    else
+      stackTraceElement flatMap { ele =>
+        val lineNum = ele.getLineNumber
+        if (lineNum > 0) Some(lineNum) else None
+      }
   }
 
   /**

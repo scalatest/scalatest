@@ -17,6 +17,8 @@ package org.scalatest
 
 import java.util.concurrent.atomic.AtomicReference
 import exceptions.NotAllowedException
+import exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalactic.source
 
 /**
  * Trait that can be mixed into suites that need code executed before and after running each test.
@@ -133,12 +135,12 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
    * @throws NotAllowedException if invoked more than once on the same <code>Suite</code> or if
    *                             invoked after <code>run</code> has been invoked on the <code>Suite</code>
    */
-  protected def before(fun: => Any) {
+  protected def before(fun: => Any)(implicit pos: source.Position) {
     if (runHasBeenInvoked)
-      throw new NotAllowedException("You cannot call before after run has been invoked (such as, from within a test). It is probably best to move it to the top level of the Suite class so it is executed during object construction.", 0)
+      throw new NotAllowedException("You cannot call before after run has been invoked (such as, from within a test). It is probably best to move it to the top level of the Suite class so it is executed during object construction.", Some(pos), getStackDepthFun(pos))
     val success = beforeFunctionAtomic.compareAndSet(None, Some(() => fun))
     if (!success)
-      throw new NotAllowedException("You are only allowed to call before once in each Suite that mixes in BeforeAndAfter.", 0)
+      throw new NotAllowedException("You are only allowed to call before once in each Suite that mixes in BeforeAndAfter.", Some(pos), getStackDepthFun(pos))
   }
 
   /**
@@ -153,12 +155,12 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
    * @throws NotAllowedException if invoked more than once on the same <code>Suite</code> or if
    *                             invoked after <code>run</code> has been invoked on the <code>Suite</code>
    */
-  protected def after(fun: => Any) {
+  protected def after(fun: => Any)(implicit pos: source.Position) {
     if (runHasBeenInvoked)
-      throw new NotAllowedException("You cannot call after after run has been invoked (such as, from within a test. It is probably best to move it to the top level of the Suite class so it is executed during object construction.", 0)
+      throw new NotAllowedException("You cannot call after after run has been invoked (such as, from within a test. It is probably best to move it to the top level of the Suite class so it is executed during object construction.", Some(pos), getStackDepthFun(pos))
     val success = afterFunctionAtomic.compareAndSet(None, Some(() => fun))
     if (!success)
-      throw new NotAllowedException("You are only allowed to call after once in each Suite that mixes in BeforeAndAfter.", 0)
+      throw new NotAllowedException("You are only allowed to call after once in each Suite that mixes in BeforeAndAfter.", Some(pos), getStackDepthFun(pos))
   }
 
   /**
