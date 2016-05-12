@@ -133,7 +133,7 @@ trait TimeLimitedTests extends TestSuiteMixin { this: TestSuite =>
   abstract override def withFixture(test: NoArgTest): Outcome = {
     try {
       // TODO: should pass in the prettifier also
-      failAfterImpl(timeLimit, defaultTestSignaler, org.scalactic.Prettifier.default, test.pos, adj => test.pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun("TimeLimits.scala", "failAfter", adj))) {
+      failAfterImpl(timeLimit, defaultTestSignaler, org.scalactic.Prettifier.default, test.pos, test.pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun("TimeLimits.scala", "failAfter", 2))) {
         super.withFixture(test)
       }
     }
