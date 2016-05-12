@@ -26,7 +26,7 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-final class ResultOfAnTypeInvocation[T](val clazz: Class[T], val prettifier: Prettifier, val pos: source.Position) {
+final class ResultOfAnTypeInvocation[T](val clazz: Class[T]) {
 
   /**
    * This method enables the following syntax: 
@@ -36,7 +36,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T], val prettifier: Pre
    *                ^
    * </pre>
    **/
-  def should(beWord: BeWord): ResultOfBeWordForAnType[T] = 
+  def should(beWord: BeWord)(implicit prettifier: Prettifier, pos: source.Position): ResultOfBeWordForAnType[T] =
     new ResultOfBeWordForAnType[T](clazz, prettifier, pos)
 
   /**
@@ -60,7 +60,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T], val prettifier: Pre
    *                       ^
    * </pre>
    **/
-  def shouldBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
+  def shouldBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     
     val caught = try {
       thrownBy.execute()
@@ -90,7 +90,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T], val prettifier: Pre
    *                       ^
    * </pre>
    **/
-  def should(beThrownBy: ResultOfBeThrownBy): org.scalatest.Assertion = {
+  def should(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val throwables = beThrownBy.throwables
     val noThrowable = throwables.find(_.isEmpty)
     if (noThrowable.isDefined) {
@@ -116,7 +116,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T], val prettifier: Pre
    *                ^
    * </pre>
    **/
-  def must(beWord: BeWord): ResultOfBeWordForAnType[T] =
+  def must(beWord: BeWord)(implicit prettifier: Prettifier, pos: source.Position): ResultOfBeWordForAnType[T] =
     new ResultOfBeWordForAnType[T](clazz, prettifier, pos)
 
   /**
@@ -140,7 +140,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T], val prettifier: Pre
    *                       ^
    * </pre>
    **/
-  def mustBe(thrownBy: ResultOfThrownByApplication): org.scalatest.Assertion = {
+  def mustBe(thrownBy: ResultOfThrownByApplication)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
 
     val caught = try {
       thrownBy.execute()
@@ -170,7 +170,7 @@ final class ResultOfAnTypeInvocation[T](val clazz: Class[T], val prettifier: Pre
    *                       ^
    * </pre>
    **/
-  def must(beThrownBy: ResultOfBeThrownBy): org.scalatest.Assertion = {
+  def must(beThrownBy: ResultOfBeThrownBy)(implicit prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val throwables = beThrownBy.throwables
     val noThrowable = throwables.find(_.isEmpty)
     if (noThrowable.isDefined) {

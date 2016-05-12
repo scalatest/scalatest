@@ -6636,8 +6636,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def a[T: ClassTag](implicit prettifier: Prettifier, pos: source.Position): ResultOfATypeInvocation[T] =
-    new ResultOfATypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], prettifier, pos)
+  def a[T: ClassTag]: ResultOfATypeInvocation[T] =
+    new ResultOfATypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 
@@ -6647,8 +6647,8 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
    * ^
    * </pre>
    */
-  def an[T : ClassTag](implicit prettifier: Prettifier, pos: source.Position): ResultOfAnTypeInvocation[T] =
-    new ResultOfAnTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]], prettifier, pos)
+  def an[T : ClassTag]: ResultOfAnTypeInvocation[T] =
+    new ResultOfAnTypeInvocation(classTag.runtimeClass.asInstanceOf[Class[T]])
 
   /**
    * This method enables the following syntax: 

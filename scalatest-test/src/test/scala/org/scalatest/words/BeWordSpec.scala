@@ -1142,7 +1142,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(clazz, Prettifier.default, source.Position.here)
+      val resultOfAType = new ResultOfATypeInvocation(clazz)
       
       val mt = be (resultOfAType)
       
@@ -1200,7 +1200,7 @@ class BeWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(clazz, Prettifier.default, source.Position.here)
+      val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
       
       val mt = be (resultOfAnType)
       
