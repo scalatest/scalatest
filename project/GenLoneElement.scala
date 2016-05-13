@@ -63,7 +63,8 @@ object GenLoneElement {
       
     val setMapping = 
       List(
-        "List" -> "Set"
+        "List" -> "Set",
+        "xs.loneElement\\(1\\) === 2" -> "xs.loneElement(1) === true"
       )
       
     val mapMapping = 
@@ -71,7 +72,8 @@ object GenLoneElement {
         "List\\(10\\).loneElement" -> "Map(10 -> 10).loneElement._1", 
         "List\\(8\\).loneElement" -> "Map(8 -> 8).loneElement._1", 
         "List\\(10, 12\\)" -> "Map(10 -> 10, 12 -> 12)", 
-        "List.empty\\[Int\\]" -> "Map.empty[Int, Int]", 
+        "List.empty\\[Int\\]" -> "Map.empty[Int, Int]",
+        "List\\(List\\(1, 2, 3\\)\\)" -> "Map(Map(1 -> 2, 2 -> 3, 3 -> 4) -> 0)",
         "xs.loneElement" -> "xs.loneElement._1", 
         "List" -> "Map"
       )
@@ -79,7 +81,8 @@ object GenLoneElement {
     val javaColMapping = 
       List(
         "ListLoneElementSpec" -> "JavaColLoneElementSpec", 
-        "List" -> "javaList", 
+        "List" -> "javaList",
+        "xs.loneElement\\(1\\)" -> "xs.loneElement.get\\(1\\)",
         "javaList.empty\\[Int\\]" -> "javaList[Int]()" // as List has been replaced with javaList above
       )
       
@@ -88,8 +91,10 @@ object GenLoneElement {
         "List\\(10\\).loneElement" -> "javaMap(Entry(10, 10)).loneElement.getKey", 
         "List\\(8\\).loneElement" -> "javaMap(Entry(8, 8)).loneElement.getKey", 
         "List\\(10, 12\\)" -> "javaMap(Entry(10, 10), Entry(12, 12))", 
-        "List.empty\\[Int\\]" -> "javaMap[Int, Int]()", 
-        "xs.loneElement" -> "xs.loneElement.getKey", 
+        "List.empty\\[Int\\]" -> "javaMap[Int, Int]()",
+        "List\\(List\\(1, 2, 3\\)\\)" -> "javaMap(Entry(javaMap(Entry(1, 2), Entry(2, 3), Entry(3, 4)), 0))",
+        "xs.loneElement" -> "xs.loneElement.getKey",
+        "xs.loneElement.getKey\\(1\\)" -> "xs.loneElement.getKey.get(1)",
         "List" -> "JavaMap"
       )
       
