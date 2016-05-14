@@ -17,8 +17,14 @@ package org.scalactic.source
 
 import scala.reflect.macros.Context
 
+/**
+ * Helper class for Position macro. (Will be removed from the public API if possible in a subsequent 3.0.0-RCx release.)
+ */
 object PositionMacro {
 
+  /**
+   * Helper method for Position macro.
+   */
   def genPosition(context: Context) = {
     import context.universe._
 
@@ -49,6 +55,9 @@ object PositionMacro {
     )
   }
 
+  /**
+   * Helper method for Position macro.
+   */
   def genPositionExplicit(context: Context) = {
     import context.universe._
 
