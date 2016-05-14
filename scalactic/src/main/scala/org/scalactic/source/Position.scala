@@ -24,6 +24,10 @@ package org.scalactic.source
  * and testing styles to provide locations for failures in test results.
  * </p>
  *
+ * <p>
+ * <em>Note: Class <code>Position</code> is in part inspired by the <a href="https://github.com/lihaoyi/sourcecode" target="_blank"><code>sourcecode</code></a> library designed by Li Haoyi.</a></em>
+ * </p>
+ *
  * @param fileName the simple name of a source file
  * @param path the path to a source file
  * @param lineNumber a line number inside the source file with given path and fileName
