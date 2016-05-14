@@ -82,10 +82,10 @@ import scala.concurrent.Future
  *
  * <p>
  * The recommended way to ensure cleanup is performed after a test body finishes execution is
- * to use the <code>withCleanup</code> helper method, defined in supertrait
- * <a href="../AsyncTestSuite.html"><code>org.scalatest.AsyncTestSuite</code></a>, which will ensure that
+ * to use the <code>complete</code>-<code>lastly</code> syntax, defined in supertrait
+ * <a href="../CompleteLastly.html"><code>org.scalatest.CompleteLastly</code></a>, which will ensure that
  * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
- * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
+ * normally yielding a future. In the latter case, <code>complete</code>-<code>lastly</code> will register the cleanup code
  * to execute asynchronously when the future completes.
  * </p>
  *

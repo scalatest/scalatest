@@ -1164,10 +1164,10 @@ package org.scalatest
  * <p>
  * You can, therefore, override <code>withFixture</code> to perform setup before invoking the test function,
  * and/or perform cleanup after the test completes. The recommended way to ensure cleanup is performed after a test completes is
- * to use the <code>withCleanup</code> helper method, defined in supertrait <a href="AsyncTestSuite.html"><code>AsyncTestSuite</code></a>.
- * The <code>withCleanup</code> method will ensure that
+ * to use the <code>complete</code>-<code>lastly</code> syntax, defined in supertrait <a href="CompleteLastly.html"><code>CompleteLastly</code></a>.
+ * The <code>complete</code>-<code>lastly</code> syntax will ensure that
  * cleanup will occur whether future-producing code completes abruptly by throwing an exception, or returns
- * normally yielding a future. In the latter case, <code>withCleanup</code> will register the cleanup code
+ * normally yielding a future. In the latter case, <code>complete</code>-<code>lastly</code> will register the cleanup code
  * to execute asynchronously when the future completes.
  * </p>
  *
