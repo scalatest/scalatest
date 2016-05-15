@@ -878,6 +878,7 @@ import Suite.autoTagClassAnnotations
  * appropriate if you don't need to clean up the fixtures after using them.
  * </p>
  *
+ * <p>
  * To use this technique, you define instance variables intialized with fixture objects in traits and/or classes, then in each test instantiate an object that
  * contains just the fixture objects needed by the test. Traits allow you to mix together just the fixture objects needed by each test, whereas classes
  * allow you to pass data in via a constructor to configure the fixture objects. Here's an example in which fixture objects are partitioned into two traits

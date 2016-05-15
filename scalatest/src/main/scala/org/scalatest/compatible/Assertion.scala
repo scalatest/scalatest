@@ -15,4 +15,15 @@
  */
 package org.scalatest.compatible
 
+/**
+ * Marker trait for ScalaTest-compatible assertion types.
+ *
+ * <p>
+ * This will eventually be released as a module, so that third-party libraries
+ * can depend just on a module that has just this one thing in it. Since it
+ * compiles down to a simple Java interface, there should be no binary compatibility
+ * worries. It allows third party libraries to define things that can appear
+ * last in a ScalaTest test body that requires type compatible.Assertion.
+ * </p>
+ */
 trait Assertion
