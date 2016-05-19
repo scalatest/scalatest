@@ -79,17 +79,17 @@ You can build examples project using this command:
 
 You can package the ScalaTest JAR file using this command:
 
-  `$ sbt package`
+  `$ sbt scalatest/package` (or `$ sbt scalactic/package` for Scalatic)
 
-The resulting JAR file will be produced in target/scala-2.11/.
+The resulting JAR file will be produced in scalatest/target/scala-2.11/.
 
 You can also publish it to your local Ivy repository using this command:
 
-  `$ sbt publishLocal`
+  `$ sbt scalatest/publishLocal`
 
 Or publish it to local maven repository using this command:
 
-  `$ sbt publishM2`
+  `$ sbt scalatest/publishM2`
 
 ### Publishing
 
