@@ -16,11 +16,11 @@
 package org.scalatest.concurrent
 
 /**
- * Strategy for interrupting an operation in which <code>interrupt</code> is called on the <code>Thread</code> passed
+ * Strategy for signaling an operation in which <code>interrupt</code> is called on the <code>Thread</code> passed
  * to <code>apply</code>.
  *
  * <p>
- * This object can be used for configuration when using traits <a href="Timeouts.html"><code>Timeouts</code></a>
+ * This object can be used for configuration when using traits <a href="TimeLimits.html"><code>TimeLimits</code></a>
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */

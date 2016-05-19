@@ -16,10 +16,10 @@
 package org.scalatest.concurrent
 
 /**
- * Interruption strategy in which nothing is done to try and interrupt an operation.
+ * Signaling strategy in which nothing is done to try and signal or interrupt an operation.
  *
  * <p>
- * This object can be used for configuration when using traits <a href="Timeouts.html"><code>Timeouts</code></a>
+ * This object can be used for configuration when using traits <a href="TimeLimits.html"><code>TimeLimits</code></a>
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */

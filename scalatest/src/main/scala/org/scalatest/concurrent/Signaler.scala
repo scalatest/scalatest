@@ -16,21 +16,21 @@
 package org.scalatest.concurrent
 
 /**
- * Strategy for interrupting an operation after a timeout expires.
+ * Strategy for signaling an operation after a timeout expires.
  *
  * <p>
  * An instance of this trait is used for configuration when using traits
- * <a href="Timeouts.html"><code>Timeouts</code></a> and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
+ * <a href="TimeLimits.html"><code>TimeLimits</code></a> and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * </p>
  */
 trait Signaler {
 
   /**
-   * Interrupts an operation.
+   * Signals an operation.
    *
    * <p>
-   * This method may do anything to attempt to interrupt an operation, or even do nothing.
-   * When called by <code>failAfter</code> method of trait <a href="Timeouts.html"><code>Timeouts</code></a>, the passed
+   * This method may do anything to attempt to signal or interrupt an operation, or even do nothing.
+   * When called by <code>failAfter</code> method of trait <a href="TimeLimits.html"><code>TimeLimits</code></a>, the passed
    * <code>Thread</code> will represent the main test thread. This <code>Thread</code> is
    * passed in case it is useful, but need not be used by implementations of this method.
    * </p>
@@ -39,19 +39,19 @@ trait Signaler {
 }
 
 /**
- * Companion object that provides a factory method for an <code>Interruptor</code> defined
+ * Companion object that provides a factory method for a <code>Singlaer</code> defined
  * in terms of a function from a function of type <code>Thread</code> to </code>Unit</code>.
  */
 object Signaler {
 
   /**
-   * Factory method for an <code>Interruptor</code> defined in terms of a function from a function of
+   * Factory method for a <code>Signaller</code> defined in terms of a function from a function of
    * type <code>Thread</code> to </code>Unit</code>.
    *
    * When this <code>apply</code> method is invoked, it will invoke the passed function's <code>apply</code>
    * method, forwarding along the passed <code>Thread</code>.
    *
-   * @param fun the function representing the interruption strategy
+   * @param fun the function representing the signaling strategy
    */
   def apply(fun: Thread => Unit) =
     new Signaler {
@@ -59,7 +59,8 @@ object Signaler {
     }
 
   /**
-   * Implicit <code>Interruptor</code> value defining a default interruption strategy for the <code>failAfter</code> and <code>cancelAfter</code> method.
+   * Implicit <code>Signaler</code> value defining a default signaling strategy for the <code>failAfter</code> and <code>cancelAfter</code> method
+   * of trait [[org.scalatest.concurrent.TimeLimits]].
    */
   implicit def default: Signaler = DoNotSignal
 }
