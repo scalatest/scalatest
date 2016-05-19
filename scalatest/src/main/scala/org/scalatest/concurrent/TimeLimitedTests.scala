@@ -84,26 +84,26 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  * </p>
  * 
  * <p>
- * The <code>failAfter</code> method uses an <code>Interruptor</code> to attempt to interrupt the main test thread if the timeout
- * expires. The default <code>Interruptor</code> returned by the <code>defaultTestInterruptor</code> method is a
- * <a href="ThreadInterruptor$.html"><code>ThreadInterruptor</code></a>, which calls <code>interrupt</code> on the main test thread. If you wish to change this
- * interruption strategy, override <code>defaultTestInterruptor</code> to return a different <code>Interruptor</code>. For example,
- * here's how you'd change the default to <a href="DoNotInterrupt$.html"><code>DoNotInterrupt</code></a>, a very patient interruption strategy that does nothing to
- * interrupt the main test thread:
+ * The <code>failAfter</code> method uses an <code>Signaler</code> to attempt to signal the main test thread if the timeout
+ * expires. The default <code>Signaler</code> returned by the <code>defaultTestSignaler</code> method is a
+ * <a href="DoNotSignal$.html"><code>DoNotSignal</code></a>, which does not signal the main test thread to stop. If you wish to change this
+ * signaling strategy, override <code>defaultTestSignaler</code> to return a different <code>Signaler</code>. For example,
+ * here's how you'd change the default to <a href="ThreadSignaler$.html"><code>ThreadSignaler</code></a>, which will
+ * interrupt the main test thread when time is up:
  * </p>
  * 
  * <pre class="stHighlight">
  * import org.scalatest.FunSpec
- * import org.scalatest.concurrent.TimeLimitedTests
+ * import org.scalatest.concurrent.{ThreadSignaler, TimeLimitedTests}
  * import org.scalatest.time.SpanSugar._
- * 
- * class ExampleSpec extends FunSpec with TimeLimitedTests {
- * 
- *   val timeLimit = 200 millis
- * 
- *   override val defaultTestInterruptor = DoNotInterrupt
- * 
- *   describe("A time-limited test") {
+ *
+ * class ExampleSignalerSpec extends FunSpec with TimeLimitedTests {
+ *
+ * val timeLimit = 200 millis
+ *
+ * override val defaultTestSignaler = ThreadSignaler
+ *
+ * describe("A time-limited test") {
  *     it("should succeed if it completes within the time limit") {
  *       Thread.sleep(100)
  *     }
