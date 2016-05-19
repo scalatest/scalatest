@@ -227,7 +227,7 @@ trait AsyncTimeouts {
     * <li>If the function completes abruptly with an exception, this method will complete the <code>Future</code> with a <code>TestFailedDueToTimeoutException</code> that includes the exception thrown by the function as its cause.</li>
     * </ul>
     *
-    * @param timeLimit the maximimum amount of time allowed for the passed function
+    * @param timeLimit the maximum amount of time allowed for the passed function
     * @param block the function on which to enforce the passed timeout
     * @param executionContext a <code>ExecutionContext</code> for execution of the returned <code>Future</code>
     * @param failing a <code>TimeLimiting</code> type class that contains the code to call when time limit is exceeded.
@@ -258,7 +258,7 @@ trait AsyncTimeouts {
     * <li>If the function completes abruptly with an exception, this method will complete the <code>Future</code> with a <code>TestCanceledException</code> that includes the exception thrown by the function as its cause.</li>
     * </ul>
     *
-    * @param timeLimit the maximimum amount of time allowed for the passed function
+    * @param timeLimit the maximum amount of time allowed for the passed function
     * @param block the function on which to enforce the passed timeout
     * @param executionContext a <code>ExecutionContext</code> for execution of the returned <code>Future</code>
     * @param failing a <code>TimeLimiting</code> type class that contains the code to call when time limit is exceeded.
