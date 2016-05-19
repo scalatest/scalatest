@@ -21,6 +21,9 @@ import org.scalatest.exceptions.{StackDepthException, TestCanceledException, Tes
 import org.scalatest.time.Span
 import org.scalatest.{Failed, Canceled}
 
+/**
+ * <strong>This trait was accidentally included in 3.0.0-RC1 and will be removed in 3.0.0-RC2.</strong>
+ */
 trait TimeLimiting[T] {
 
   def fail(cause: Option[Throwable], timeLimit: Span, stackDepthFun: StackDepthException => Int): T
@@ -29,6 +32,9 @@ trait TimeLimiting[T] {
 
 }
 
+/**
+ * <strong>This object was accidentally included in 3.0.0-RC1 and will be removed in 3.0.0-RC2.</strong>
+ */
 object TimeLimiting {
 
   implicit def timeLimitFailingBehaviorOfOutcome[OUTCOME <: org.scalatest.Outcome]: TimeLimiting[OUTCOME] =
