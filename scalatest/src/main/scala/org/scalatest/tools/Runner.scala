@@ -1416,11 +1416,7 @@ object Runner {
   private[tools] def genSuiteConfig(suiteParam: SuiteParam, loader: ClassLoader): SuiteConfig = {
     val suiteClassName = suiteParam.className
     val clazz = loader.loadClass(suiteClassName)
-    val wrapWithAnnotation = clazz.getAnnotation(classOf[WrapWith])
-    val suiteInstance = 
-      if (wrapWithAnnotation == null) 
-        clazz.newInstance.asInstanceOf[Suite]
-      else {
+    val suiteInstance = AnnotationHelper.findWrapWith(clazz).map(wrapWithAnnotation => {
         val suiteClazz = wrapWithAnnotation.value
         val constructorList = suiteClazz.getDeclaredConstructors()
         val constructor = constructorList.find { c => 
@@ -1428,7 +1424,7 @@ object Runner {
           types.length == 1 && types(0) == classOf[java.lang.Class[_]]
         }
         constructor.get.newInstance(clazz).asInstanceOf[Suite]
-      }
+      }).getOrElse(clazz.newInstance.asInstanceOf[Suite])
     
     if (suiteParam.testNames.length == 0 && suiteParam.wildcardTestNames.length == 0 && suiteParam.nestedSuites.length == 0)
       SuiteConfig(suiteInstance, new DynaTags(Map.empty, Map.empty), false, false) // -s suiteClass, no dynamic tagging required.
