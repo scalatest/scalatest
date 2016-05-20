@@ -61,10 +61,7 @@ private[scalatest] object DiscoverySuite {
   private[scalatest] def getSuiteInstance(suiteClassName: String, loader: ClassLoader): Suite = {
     try {
       val clazz = loader.loadClass(suiteClassName)
-      val wrapWithAnnotation = clazz.getAnnotation(classOf[WrapWith])
-      if (wrapWithAnnotation == null)
-        clazz.newInstance.asInstanceOf[Suite]
-      else {
+      AnnotationHelper.findWrapWith(clazz).map(wrapWithAnnotation => {
         val suiteClazz = wrapWithAnnotation.value
         val constructorList = suiteClazz.getDeclaredConstructors()
         val constructor = constructorList.find { c => 
@@ -72,7 +69,7 @@ private[scalatest] object DiscoverySuite {
           types.length == 1 && types(0) == classOf[java.lang.Class[_]]
         }
         constructor.get.newInstance(clazz).asInstanceOf[Suite]
-      }
+      }).getOrElse(clazz.newInstance.asInstanceOf[Suite])
     }
     catch {
       case t: Throwable => { // TODO: Maybe include the e.getClass.getName and the message for e in the message cannotLoadDiscoveredSuite, because Jess had the problem

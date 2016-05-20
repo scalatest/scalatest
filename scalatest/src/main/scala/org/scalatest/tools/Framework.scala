@@ -431,10 +431,7 @@ class Framework extends SbtFramework {
       if (accessible || runnable) {
         val suite =
           try {
-            if (accessible)
-              suiteClass.newInstance.asInstanceOf[Suite]
-            else {
-              val wrapWithAnnotation = suiteClass.getAnnotation(classOf[WrapWith])
+            AnnotationHelper.find(classOf[WrapWith], suiteClass).map(wrapWithAnnotation => {
               val suiteClazz = wrapWithAnnotation.value
               val constructorList = suiteClazz.getDeclaredConstructors()
               val constructor = constructorList.find { c =>
@@ -442,7 +439,7 @@ class Framework extends SbtFramework {
                 types.length == 1 && types(0) == classOf[java.lang.Class[_]]
               }
               constructor.get.newInstance(suiteClass).asInstanceOf[Suite]
-            }
+            }).getOrElse(suiteClass.newInstance.asInstanceOf[Suite])
           } catch {
             case t: Throwable => new DeferredAbortedSuite(suiteClass.getName, t)
           }
