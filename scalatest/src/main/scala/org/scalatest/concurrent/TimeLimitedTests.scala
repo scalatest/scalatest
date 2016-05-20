@@ -28,6 +28,23 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 /**
  * Trait that when mixed into a suite class establishes a time limit for its tests.
  *
+ * <strong>
+ * Unfortunately this trait experienced a potentially breaking change in 3.0: previously
+ * this trait declared a <code>defaultTestInterruptor</code> <code>val</code> of type
+ * <code>Interruptor</code>, in 3.0 that was renamed to <code>defaultTestSignaler</code>
+ * and given type <code>Signaler</code>. The reason is that the default <code>Interruptor</code>, <code>ThreadInterruptor</code>,
+ * did not make sense on Scala.js&#8212;in fact, the entire notion of interruption did not make
+ * sense on Scala.js. <code>Signaler</code>'s default is <code>DoNotSignal</code>, which is a better
+ * default on Scala.js, and works fine as a default on the JVM.
+ * <code>Timeouts</code> was left the same in 3.0, so existing code using it would
+ * continue to work as before, but after a deprecation period <code>Timeouts</code> will be
+ * supplanted by <code>TimeLimits</code>, which uses <code>Signaler</code>. <code>TimeLimitedTests</code>
+ * now uses <code>TimeLimits</code> instead of <code>Timeouts</code>, so if you overrode the default
+ * <code>Interruptor</code> before, you'll need to change it to the equivalent <code>Signaler</code>.
+ * And if you were depending on the default being a <code>ThreadInterruptor</code>, you'll need to
+ * override <code>defaultTestSignaler</code> and set it to <code>ThreadSignaler</code>.
+ * </strong>
+ *
  * <p>
  * This trait overrides <code>withFixture</code>, wrapping a <code>super.withFixture(test)</code> call
  * in a <code>failAfter</code> invocation, specifying a time limit obtained by invoking <code>timeLimit</code>
