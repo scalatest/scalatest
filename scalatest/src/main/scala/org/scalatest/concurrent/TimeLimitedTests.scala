@@ -30,21 +30,21 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
  *
  * <p>
  * This trait overrides <code>withFixture</code>, wrapping a <code>super.withFixture(test)</code> call
- * in a <code>failAfter</code> invocation, specifying a timeout obtained by invoking <code>timeLimit</code>
- * and an <a href="Interruptor.html"><code>Interruptor</code></a> by invoking <code>defaultTestInterruptor</code>:
+ * in a <code>failAfter</code> invocation, specifying a time limit obtained by invoking <code>timeLimit</code>
+ * and a <a href="Signaler.html"><code>Signaler</code></a> by invoking <code>defaultTestSignaler</code>:
  * </p>
  * 
  * <pre class="stHighlight">
  * failAfter(timeLimit) {
  *   super.withFixture(test)
- * } (defaultTestInterruptor)
+ * } (defaultTestSignaler)
  * </pre>
  *
  * <p>
  * Note that the <code>failAfter</code> method executes the body of the by-name passed to it using the same
  * thread that invoked <code>failAfter</code>. This means that the same thread will run the <code>withFixture</code> method
  * as well as each test, so no extra synchronization is required. A second thread is used to run a timer, and if the timeout
- * expires, that second thread will attempt to interrupt the main test thread via the <code>defaultTestInterruptor</code>.
+ * expires, that second thread will attempt to signal the main test thread via the <code>defaultTestSignaler</code>.
  * </p>
  * 
  * <p>
