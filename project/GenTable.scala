@@ -1309,7 +1309,11 @@ $columnsOfIndexes$
   def genTableAsserting(targetDir: File, scalaJS: Boolean): Unit = {
 
     val doForAllMethodTemplate: String =
-      "def forAll[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result"
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>forAll</code> syntax.
+        | */
+        |def forAll[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
+      """.stripMargin
 
     def doForAllMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1428,7 +1432,11 @@ $columnsOfIndexes$
     }
 
     val doForEveryMethodTemplate: String =
-      "def forEvery[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result"
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>forEvery</code> syntax.
+        | */
+        |def forEvery[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
+        |""".stripMargin
 
     def doForEveryMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1523,7 +1531,11 @@ $columnsOfIndexes$
     }
 
     val doExistsMethodTemplate: String =
-      "def exists[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result"
+      """/**
+        | * Implementation method for [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>exists</code> syntax.
+        | */
+        |def exists[$alphaUpper$](heading: ($strings$), rows: ($alphaUpper$)*)(fun: ($alphaUpper$) => ASSERTION)(implicit prettifier: Prettifier, pos: source.Position): Result
+      """.stripMargin
 
     def doExistsMethod(i: Int): String = {
       val alpha = "abcdefghijklmnopqrstuv"
@@ -1647,15 +1659,34 @@ $columnsOfIndexes$
          |import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
          |import org.scalactic._
          |
+         |/**
+         | * Supertrait for <code>TableAsserting</code> typeclasses, which are used to implement and determine the result
+         | * type of [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]]'s <code>forAll</code>, <code>forEvery</code> and <code>exists</code> method.
+         | *
+         | * <p>
+         | * Currently, an [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]] expression will have result type <code>Assertion</code>, if the function passed has result type <code>Assertion</code>,
+         | * else it will have result type <code>Unit</code>.
+         | * </p>
+         | */
          |trait TableAsserting[ASSERTION] {
+         |  /**
+         |   * Return type of <code>forAll</code>, <code>forEvery</code> and <code>exists</code> method.
+         |   */
          |  type Result
          |  $forAllMethods$
          |  $forEveryMethods$
          |  $existsMethods$
          |}
          |
+         |/**
+         |  * Class holding lowest priority <code>TableAsserting</code> implicit, which enables [[org.scalatest.prop.TableDrivenPropertyChecks TableDrivenPropertyChecks]] expressions that have result type <code>Unit</code>.
+         |  */
          |abstract class UnitTableAsserting {
          |
+         |  /**
+         |   * Abstract subclass of <code>TableAsserting</code> that provides the bulk of the implementations of <code>TableAsserting</code>'s
+         |   * <code>forAll</code>, <code>forEvery</code> and <code>exists</code>.
+         |   */
          |  abstract class TableAssertingImpl[ASSERTION] extends TableAsserting[ASSERTION] {
          |
          |    $forAllMethodImpls$
@@ -1765,6 +1796,11 @@ $columnsOfIndexes$
          |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position): Result
          |  }
          |
+         |  /**
+         |   * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Unit.  Do nothing when the check succeeds,
+         |   * but throw [[org.scalatest.exceptions.TableDrivenPropertyCheckFailedException TableDrivenPropertyCheckFailedException]]
+         |   * when check fails.
+         |   */
          |  implicit def assertingNatureOfT[T]: TableAsserting[T] { type Result = Unit } = {
          |    new TableAssertingImpl[T] {
          |      type Result = Unit
@@ -1791,6 +1827,10 @@ $columnsOfIndexes$
          |  }
          |}
          |
+         | /**
+         |  * Abstract class that in the future will hold an intermediate priority <code>TableAsserting</code> implicit, which will enable inspector expressions
+         |  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
+         |  */
          |abstract class ExpectationTableAsserting extends UnitTableAsserting {
          |/*
          |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
@@ -1801,8 +1841,17 @@ $columnsOfIndexes$
          |*/
          |}
          |
-         |object TableAsserting extends ExpectationTableAsserting {
+         |/**
+         | * Companion object to <code>TableAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
+         | * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
+         | */
+         |object TableAsserting extends /*UnitTableAsserting*/ ExpectationTableAsserting {
          |
+         |  /**
+         |    * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Assertion.  Returns [[org.scalatest.Succeeded Succeeded]] when the check succeeds,
+         |    * but throw [[org.scalatest.exceptions.TableDrivenPropertyCheckFailedException TableDrivenPropertyCheckFailedException]]
+         |    * when check fails.
+         |    */
          |  implicit def assertingNatureOfAssertion: TableAsserting[Assertion] { type Result = Assertion } = {
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion

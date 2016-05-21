@@ -31,17 +31,59 @@ import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.StackDepthException
 import org.scalactic._
 
+/**
+ * Supertrait for <code>CheckerAsserting</code> typeclasses, which are used to implement and determine the result
+ * type of [[org.scalatest.prop.GeneratorDrivenPropertyChecks GeneratorDrivenPropertyChecks]]'s <code>apply</code> and <code>forAll</code> method.
+ *
+ * <p>
+ * Currently, an [[org.scalatest.prop.GeneratorDrivenPropertyChecks GeneratorDrivenPropertyChecks]] expression will have result type <code>Assertion</code>, if the function passed has result type <code>Assertion</code>,
+ * else it will have result type <code>Unit</code>.
+ * </p>
+ */
 trait CheckerAsserting[T] {
+  /**
+   * The result type of the <code>check</code> method.
+   */
   type Result
+
+  /**
+   * Perform the property check using the given <code>Prop</code> and <code>Test.Parameters</code>.
+   *
+   * @param p the <code>Prop</code> to be used to check
+   * @param prms the <code>Test.Parameters</code> to be used to check
+   * @param prettifier the <code>Prettifier</code> to be used to prettify error message
+   * @param pos the <code>Position</code> of the caller site
+   * @param argNames the list of argument names
+   * @return the <code>Result</code> of the property check.
+   */
   def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result
 }
 
+/**
+  * Class holding lowest priority <code>CheckerAsserting</code> implicit, which enables [[org.scalatest.prop.GeneratorDrivenPropertyChecks GeneratorDrivenPropertyChecks]] expressions that have result type <code>Unit</code>.
+  */
 abstract class UnitCheckerAsserting {
 
-  abstract class CheckerAssertingImpl[T] extends CheckerAsserting[T] {
+  /**
+   * Abstract subclass of <code>CheckerAsserting</code> that provides the bulk of the implementations of <code>CheckerAsserting</code>
+   * <code>check</code> method.
+   */
+  /* protected[scalatest]*/ abstract class CheckerAssertingImpl[T] extends CheckerAsserting[T] {
 
     import CheckerAsserting._
 
+    /**
+     * Check the given <code>Prop</code> and <code>Test.Parameters</code> by calling [[http://www.scalacheck.org ScalaCheck]]'s <code>Test.check</code>.
+     * If the check succeeds, call <code>indicateSuccess</code>, else call <code>indicateFailure</code>.
+     *
+     *
+     * @param p the <code>Prop</code> to be used to check
+     * @param prms the <code>Test.Parameters</code> to be used to check
+     * @param prettifier the <code>Prettifier</code> to be used to prettify error message
+     * @param pos the <code>Position</code> of the caller site
+     * @param argNames the list of argument names
+     * @return the <code>Result</code> of the property check.
+     */
     def check(p: Prop, prms: Test.Parameters, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
 
       val result = Test.check(prms, p)
@@ -125,6 +167,11 @@ abstract class UnitCheckerAsserting {
     private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
   }
 
+  /**
+   * Provides support of [[org.scalatest.enablers.CheckerAsserting CheckerAsserting]] for Unit.  Do nothing when the check succeeds,
+   * but throw [[org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException GeneratorDrivenPropertyCheckFailedException]]
+   * when check fails.
+   */
   implicit def assertingNatureOfT[T]: CheckerAsserting[T] { type Result = Unit } =
     new CheckerAssertingImpl[T] {
       type Result = Unit
@@ -144,6 +191,10 @@ abstract class UnitCheckerAsserting {
     }
 }
 
+/**
+ * Abstract class that in the future will hold an intermediate priority <code>CheckerAsserting</code> implicit, which will enable inspector expressions
+ * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
+ */
 abstract class ExpectationCheckerAsserting extends UnitCheckerAsserting {
 /*
   implicit def assertingNatureOfExpectation: CheckerAsserting[Expectation] { type Result = Expectation } = {
@@ -154,8 +205,17 @@ abstract class ExpectationCheckerAsserting extends UnitCheckerAsserting {
 */
 }
 
-object CheckerAsserting extends ExpectationCheckerAsserting {
+/**
+ * Companion object to <code>CheckerAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
+ * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
+ */
+object CheckerAsserting extends /*UnitCheckerAsserting*/ ExpectationCheckerAsserting {
 
+  /**
+    * Provides support of [[org.scalatest.enablers.CheckerAsserting CheckerAsserting]] for Assertion.  Returns [[org.scalatest.Succeeded Succeeded]] when the check succeeds,
+    * but throw [[org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException GeneratorDrivenPropertyCheckFailedException]]
+    * when check fails.
+    */
   implicit def assertingNatureOfAssertion: CheckerAsserting[Assertion] { type Result = Assertion } = {
     new CheckerAssertingImpl[Assertion] {
       type Result = Assertion

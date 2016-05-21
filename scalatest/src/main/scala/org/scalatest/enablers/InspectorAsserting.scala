@@ -24,7 +24,7 @@ import scala.collection.GenTraversable
 import Suite.indentLines
 import org.scalatest.FailureMessages.decorateToStringValue
 
-/*
+/**
  * Supertrait for <code>InspectorAsserting</code> typeclasses, which are used to implement and determine the result
  * type of <a href="../Inspectors.html"><code>Inspectors</code></a> methods such as <code>forAll</code>, <code>forBetween</code>, <em>etc</em>.
  *
