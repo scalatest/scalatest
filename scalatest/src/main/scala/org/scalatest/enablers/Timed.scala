@@ -57,7 +57,37 @@ trait Timed[T] {
   ): T
 }
 
+/**
+ * Companion object for <code>Timed</code> typeclass that offers three implicit providers: one for <code>FutureOutcome</code>,
+ * one for <code>Future</code> of any type, and one for any other type.
+ *
+ * <p>
+ * The details are in the documentation for the implicit providers themselves (methods <code>timed</code>, <code>timedFutureOf</code>,
+ * and <code>timedFutureOutcome</code>), but in short if a time limit is exceeded:
+ * </p>
+ *
+ * <ul>
+ * <li>if the type <code>T</code> in <code>Timed[T]</code> is <code>FutureOutcome</code>
+ * the <code>FutureOutcome</code> returned by <code>timeoutAfter</code> will result in either <code>Failed</code> or <code>Canceled</code></li>
+ * <li>if the type is <code>Future[U]</code>, the <code>Future[U]</code> returned by <code>timeoutAfter</code> will fail with either a
+ * <code>TestFailedDueToTimeoutException</code> or a <code>TestCanceledException</code>.</li>
+ * <li>otherwise, the <code>timeoutAfter</code> method will itself complete abruptly with either <code>TestFailedDueToTimeoutException</code>
+ * or <code>TestCanceledException.</li>
+ * </p>
+ */
 object Timed {
+
+/*
+TODO: See if this bit of documentation from the old Timeouts is still relevant, and if so, insert it
+below:
+   <p>
+   If the interrupted status of the main test thread (the thread that invoked <code>failAfter</code>) was not invoked
+   when <code>failAfter</code> was invoked, but is set after the operation times out, it is reset by this method before
+   it completes abruptly with a <code>TestFailedDueToTimeoutException</code>. The interrupted status will be set by
+   <code>ThreadSignaler</code>, the default <code>Signaler</code> implementation.
+   </p>
+   
+*/
 
   /**
    * Implicit method that provides <code>Timed</code> implementation for any <code>T</code>.
@@ -236,7 +266,7 @@ object Timed {
   I believe this is what you did in AsyncTimeouts.
   */
   /**
-    * Implicit method that provides <code>Timed</code> implementation for <code>Future[FutureOutcome]</code>.
+    * Implicit method that provides <code>Timed</code> implementation for <code>FutureOutcome</code>.
     *
     * <p>
     * If the asynchronous function completes <em>before</em> the timeout expires:

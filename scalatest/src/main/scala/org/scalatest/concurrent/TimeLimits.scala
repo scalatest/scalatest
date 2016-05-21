@@ -27,12 +27,12 @@ import org.scalatest.enablers.Timed
 import org.scalactic._
 
 /**
- * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
- * operation passed as a by-name parameter, as well as a way to interrupt it if the operation exceeds its time limit.
+ * Trait that provides <code>failAfter</code> and <code>cancelAfter</code> methods, which allow you to specify a time limit for an
+ * operation passed as a by-name parameter, as well as a way to signal it if the operation exceeds its time limit.
  *
  * <p>
  * The time limit is passed as the first parameter, as a <a href="../time/Span.html"><code>Span</code></a>. The operation is
- * passed as the second parameter. And an <a href="Signaler.html"><code>Signaler</code></a>, a strategy for interrupting the operation, is
+ * passed as the second parameter. A <a href="Signaler.html"><code>Signaler</code></a>, a strategy for interrupting the operation, is
  * passed as an implicit third parameter.  Here's a simple example of its use:
  * </p>
  *
@@ -43,8 +43,8 @@ import org.scalactic._
  * </pre>
  *
  * <p>
- * The above code, after 100 milliseconds, will produce a <a href="../exceptions/TestFailedDueToTimeoutException.html"><code>TestFailedDueToTimeoutException</code></a> with a message
- * that indicates a timeout expired:
+ * The above code will eventually produce a <a href="../exceptions/TestFailedDueToTimeoutException.html"><code>TestFailedDueToTimeoutException</code></a> with a message
+ * that indicates a time limit has been exceeded:
  * </p>
  *
  * <p>
@@ -52,8 +52,8 @@ import org.scalactic._
  * </p>
  *
  * <p>
- * If you use <code>cancelAfter</code> in place of <code>failAfter</code>, a <a href="../exceptions/TestCanceledException.html"><code>TestCanceledException</code></a> with a message
- * that indicates a timeout expired:
+ * If you use <code>cancelAfter</code> in place of <code>failAfter</code>, a <a href="../exceptions/TestCanceledException.html"><code>TestCanceledException</code></a> will be thrown
+ * instead, also with a message that indicates a time limit has been exceeded:
  * </p>
  *
  * <p>
@@ -92,25 +92,25 @@ import org.scalactic._
  *
  * <p>
  * The <code>failAfter</code> or <code>cancelAfter</code> method will create a timer that runs on a different thread than the thread that
- * invoked <code>failAfter</code> or <code>cancelAfter</code>, so that it can detect when the timeout has expired and attempt to <em>interrupt</em>
- * the main thread. Because different operations can require different interruption strategies, the <code>failAfter</code> or <code>cancelAfter</code>
- * method accepts an implicit third parameter of type <code>Signaler</code> that is responsible for interrupting
+ * invoked <code>failAfter</code> or <code>cancelAfter</code>, so that it can detect when the time limit has been exceeded and attempt to <em>signal</em>
+ * the main thread. Because different operations can require different signaling strategies, the <code>failAfter</code> and <code>cancelAfter</code>
+ * methods accept an implicit third parameter of type <code>Signaler</code> that is responsible for signaling
  * the main thread.
  * </p>
  *
- * <a name="interruptorConfig"></a><h2>Configuring <code>failAfter</code> or <code>cancelAfter</code> with an <code>Signaler</code></h2>
+ * <a name="interruptorConfig"></a><h2>Configuring <code>failAfter</code> or <code>cancelAfter</code> with a <code>Signaler</code></h2>
  *
  * <p>
- * This trait declares an implicit <code>val</code> named <code>defaultSignaler</code>,
- * initialized with a <a href="ThreadSignaler$.html"><code>ThreadSignaler</code></a>, which attempts to interrupt the main thread by invoking
- * <code>Thread.interrupt</code>. If you wish to use a different strategy, you can override this <code>val</code> (or hide
- * it, for example if you imported the members of <code>Timeouts</code> rather than mixing it in). Here's an example
- * in which the default interruption method is changed to <a href="DoNotInterrupt$.html"><code>DoNotInterrupt</code></a>, which does not attempt to
+ * The <code>Signaler</code> companion object declares an implicit <code>val</code> of type <code>Signaler</code> that returns
+ * a <code>DoNotSignal</code>. This serves as the default signaling strategy.
+ * If you wish to use a different strategy, you can declare an implicit <code>val</code> that establishes a different <code>Signaler</code>
+ * as the policy.  Here's an example
+ * in which the default signaling strategy is changed to <a href="ThreadSignaler.html"><code>ThreadSignaler</code></a>, which does not attempt to
  * interrupt the main thread in any way:
  * </p>
  *
  * <pre class="stHighlight">
- * override val defaultSignaler = DoNotInterrupt
+ * override val signaler: Signaler = ThreadSignaler
  * failAfter(100 millis) {
  *   Thread.sleep(500)
  * }
@@ -119,7 +119,7 @@ import org.scalactic._
  * <p>
  * As with the default <code>Signaler</code>, the above code will eventually produce a 
  * <code>TestFailedDueToTimeoutException</code> with a message that indicates a timeout expired. However, instead
- * of throwing the exception after approximately 100 milliseconds, it will throw it after approximately 500 milliseconds.
+ * of throwing the exception after approximately 500 milliseconds, it will throw it after approximately 100 milliseconds.
  * </p>
  *
  * <p>
@@ -155,7 +155,7 @@ import org.scalactic._
  * </tr>
  * <tr>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
- * <a href="DoNotInterrupt$.html">DoNotInterrupt</a>
+ * <a href="DoNotSignal$.html">DoNotSignal</a>
  * </td>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
  * Does not attempt to interrupt the main test thread in any way
@@ -186,7 +186,7 @@ import org.scalactic._
  *
  * <p>
  * You may wish to create your own <code>Signaler</code> in some situations. For example, if your operation is performing
- * a loop and can check a volatile flag each pass through the loop. You could in that case write an <code>Signaler</code> that
+ * a loop and can check a volatile flag each pass through the loop, you could write a <code>Signaler</code> that
  * sets that flag so that the next time around, the loop would exit.
  * </p>
  * 
@@ -204,38 +204,26 @@ trait TimeLimits {
   // implicit val defaultSignaler: Signaler = ThreadSignaler
 
   /**
-   * Executes the passed function, enforcing the passed time limit by attempting to interrupt the function if the
-   * time limit is exceeded, and throwing <code>TestFailedDueToTimeoutException</code> if the time limit has been 
-   * exceeded after the function completes.
+   * Executes the passed function, enforcing the passed time limit by attempting to signal the operation if the
+   * time limit is exceeded, and "failing" if the time limit has been 
+   * exceeded after the function completes, where what it means to "fail" is determined by the implicitly passed <code>Timed[T]</code>
+   * instance.
    *
    * <p>
-   * If the function completes <em>before</em> the timeout expires:
-   * </p>
-   *
-   * <ul>
-   * <li>If the function returns normally, this method will return normally.</li>
-   * <li>If the function completes abruptly with an exception, this method will complete abruptly with that same exception.</li>
-   * </ul>
-   *
-   * <p>
-   * If the function completes <em>after</em> the timeout expires:
-   * </p>
-   *
-   * <ul>
-   * <li>If the function returns normally, this method will complete abruptly with a <code>TestFailedDueToTimeoutException</code>.</li>
-   * <li>If the function completes abruptly with an exception, this method will complete abruptly with a <code>TestFailedDueToTimeoutException</code> that includes the exception thrown by the function as its cause.</li>
-   * </ul>
-   *
-   * <p>
-   * If the interrupted status of the main test thread (the thread that invoked <code>failAfter</code>) was not invoked
-   * when <code>failAfter</code> was invoked, but is set after the operation times out, it is reset by this method before
-   * it completes abruptly with a <code>TestFailedDueToTimeoutException</code>. The interrupted status will be set by
-   * <code>ThreadSignaler</code>, the default <code>Signaler</code> implementation.
+   * The <a href= "../enablers/Timed$.html"><code>Timed</code></a> companion object offers three implicits, one for <code>FutureOutcome</code>, one for <code>Future[U]</code>
+   * and one for any other type. The implicit <code>Timed[FutureOutcome]</code> defines failure as failing the <code>FutureOutcome</code> with a <code>TestFailedDueToTimeoutException</code>:
+   * no exception will be thrown. The implicit <code>Timed[Future[U]]</code> defines failure as failing the <code>Future[U]</code> with a <code>TestFailedDueToTimeoutException</code>:
+   * no exception will be thrown. The implicit for any other type defines failure as throwing
+   * <code>TestFailedDueToTimeoutException</code>. For the details, see the Scaladoc of the implicit <code>Timed</code> providers
+   * in the <a href= "../enablers/Timed$.html"><code>Timed</code></a> companion object.
    * </p>
    *
    * @param timeout the maximimum amount of time allowed for the passed operation
    * @param fun the operation on which to enforce the passed timeout
-   * @param interruptor a strategy for interrupting the passed operation
+   * @param interruptor a strategy for signaling the passed operation
+   * @param prettifier a <code>Prettifier</code> for prettifying error messages
+   * @param pos the <code>Position</code> of the caller site
+   * @param timed the <code>Timed</code> type class that provides the behavior implementation of the timing restriction.
    */
   def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
     failAfterImpl(timeout, interruptor, prettifier, adj => getStackDepthFun(pos))(fun)(timed)
@@ -263,38 +251,26 @@ trait TimeLimits {
 
   // TODO: Consider creating a TestCanceledDueToTimeoutException
   /**
-   * Executes the passed function, enforcing the passed time limit by attempting to interrupt the function if the
-   * time limit is exceeded, and throwing <code>TestCanceledException</code> if the time limit has been
-   * exceeded after the function completes.
+   * Executes the passed function, enforcing the passed time limit by attempting to signal the operation if the
+   * time limit is exceeded, and "canceling" if the time limit has been 
+   * exceeded after the function completes, where what it means to "cancel" is determined by the implicitly passed <code>Timed[T]</code>
+   * instance.
    *
    * <p>
-   * If the function completes <em>before</em> the timeout expires:
-   * </p>
-   *
-   * <ul>
-   * <li>If the function returns normally, this method will return normally.</li>
-   * <li>If the function completes abruptly with an exception, this method will complete abruptly with that same exception.</li>
-   * </ul>
-   *
-   * <p>
-   * If the function completes <em>after</em> the timeout expires:
-   * </p>
-   *
-   * <ul>
-   * <li>If the function returns normally, this method will complete abruptly with a <code>TestCanceledException</code>.</li>
-   * <li>If the function completes abruptly with an exception, this method will complete abruptly with a <code>TestCanceledException</code> that includes the exception thrown by the function as its cause.</li>
-   * </ul>
-   *
-   * <p>
-   * If the interrupted status of the main test thread (the thread that invoked <code>cancelAfter</code>) was not invoked
-   * when <code>cancelAfter</code> was invoked, but is set after the operation times out, it is reset by this method before
-   * it completes abruptly with a <code>TestCanceledException</code>. The interrupted status will be set by
-   * <code>ThreadSignaler</code>, the default <code>Signaler</code> implementation.
+   * The <a href= "../enablers/Timed$.html"><code>Timed</code></a> companion object offers three implicits, one for <code>FutureOutcome</code>, one for <code>Future[U]</code>
+   * and one for any other type. The implicit <code>Timed[FutureOutcome]</code> defines cancelation as canceling the <code>FutureOutcome</code>:
+   * no exception will be thrown. The implicit <code>Timed[Future[U]]</code> defines canceling as failing the <code>Future[U]</code> with a <code>TestCanceledException</code>:
+   * no exception will be thrown. The implicit for any other type defines failure as throwing
+   * <code>TestCanceledException</code>. For the details, see the Scaladoc of the implicit <code>Timed</code> providers
+   * in the <a href= "../enablers/Timed$.html"><code>Timed</code></a> companion object.
    * </p>
    *
    * @param timeout the maximimum amount of time allowed for the passed operation
    * @param f the operation on which to enforce the passed timeout
-   * @param interruptor a strategy for interrupting the passed operation
+   * @param interruptor a strategy for signaling the passed operation
+   * @param prettifier a <code>Prettifier</code> for prettifying error messages
+   * @param pos the <code>Position</code> of the caller site
+   * @param timed the <code>Timed</code> type class that provides the behavior implementation of the timing restriction.
    */
   def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
     cancelAfterImpl(timeout, interruptor, prettifier, adj => getStackDepthFun(pos))(fun)(timed)
