@@ -783,7 +783,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
   /**
    * Generate AST for the following code:
    *
-   * {helperName}.{methodName}($org_scalatest_assert_macro_expr, clue)
+   * {helperName}.{methodName}($org_scalatest_assert_macro_expr, clue, prettifier, pos)
    */
   def callHelper(methodName: String, clueTree: Tree, prettifierTree: Tree, posTree: Tree): Apply =
     Apply(
@@ -792,6 +792,20 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
         newTermName(methodName)
       ),
       List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree, prettifierTree, posTree)
+    )
+
+  /**
+    * Generate AST for the following code:
+    *
+    * {helperName}.{methodName}($org_scalatest_assert_macro_expr, clue)
+    */
+  def callHelper(methodName: String, clueTree: Tree): Apply =
+    Apply(
+      Select(
+        Ident(newTermName(helperName)),
+        newTermName(methodName)
+      ),
+      List(Ident(newTermName("$org_scalatest_assert_macro_expr")), clueTree)
     )
 
   /**
@@ -809,6 +823,26 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
         Block(
           valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
           callHelper(methodName, clueExpr.tree, prettifierExpr.tree, posExpr.tree)
+        )
+      )
+    ownerRepair.repairOwners(expandedCode)
+  }
+
+  /**
+    * Generate AST for the following code:
+    *
+    * {
+    *   val $org_scalatest_assert_macro_expr = [code generated from transformAst]
+    *   [code generated from callHelper]
+    * }
+    */
+  def genMacro[T](booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any]): Expr[T] = {
+    val ownerRepair = new MacroOwnerRepair[context.type](context)
+    val expandedCode =
+      context.Expr(
+        Block(
+          valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
+          callHelper(methodName, clueExpr.tree)
         )
       )
     ownerRepair.repairOwners(expandedCode)

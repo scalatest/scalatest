@@ -17,6 +17,7 @@ package org.scalatest.exceptions
 
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.Requirements._
+import org.scalactic.source
 
 /**
  * Exception that indicates a test failed.
@@ -47,6 +48,7 @@ import org.scalactic.Requirements._
 class TestFailedException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
+  val pos: Option[source.Position],
   failedCodeStackDepthFun: StackDepthException => Int,
   val payload: Option[Any]
 ) extends StackDepthException(messageFun, cause, failedCodeStackDepthFun) with ModifiableMessage[TestFailedException] with PayloadField with ModifiablePayload[TestFailedException] {
@@ -61,8 +63,8 @@ class TestFailedException(
    *
    * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
-  def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
-    this(messageFun, cause, failedCodeStackDepthFun, None)
+  def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], pos: Option[source.Position],failedCodeStackDepthFun: StackDepthException => Int) =
+    this(messageFun, cause, pos, failedCodeStackDepthFun, None)
 
   /**
    * Constructs a <code>TestFailedException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -74,10 +76,11 @@ class TestFailedException(
    *
    * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
-  def this(message: Option[String], cause: Option[Throwable], failedCodeStackDepth: Int) =
+  def this(message: Option[String], cause: Option[Throwable], pos: Option[source.Position],failedCodeStackDepth: Int) =
     this(
       StackDepthException.toExceptionFunction(message),
       cause,
+      pos,
       e => failedCodeStackDepth,
       None
     )
@@ -88,7 +91,7 @@ class TestFailedException(
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    */
-  def this(failedCodeStackDepth: Int) = this(None, None, failedCodeStackDepth)
+  def this(pos: Option[source.Position],failedCodeStackDepth: Int) = this(None, None, pos, failedCodeStackDepth)
 
   /**
    * Create a <code>TestFailedException</code> with a specified stack depth and detail message.
@@ -98,13 +101,14 @@ class TestFailedException(
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  def this(message: String, failedCodeStackDepth: Int) =
+  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(message)
         Some(message)
       },
       None,
+      pos,
       failedCodeStackDepth
     )
 
@@ -118,13 +122,14 @@ class TestFailedException(
    *
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>.
    */
-  def this(cause: Throwable, failedCodeStackDepth: Int) =
+  def this(cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(cause)
         if (cause.getMessage == null) None else Some(cause.getMessage)
       },
       Some(cause),
+      pos,
       failedCodeStackDepth
     )
 
@@ -142,7 +147,7 @@ class TestFailedException(
    *
    * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>.
    */
-  def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
+  def this(message: String, cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(message)
@@ -152,6 +157,7 @@ class TestFailedException(
         requireNonNull(cause)
         Some(cause)
       },
+      pos,
       failedCodeStackDepth
     )
 
@@ -163,7 +169,7 @@ class TestFailedException(
    */
   def severedAtStackDepth: TestFailedException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new TestFailedException(message, cause, 0)
+    val e = new TestFailedException(message, cause, pos, 0)
     e.setStackTrace(truncated)
     e
   }
@@ -177,7 +183,7 @@ class TestFailedException(
    * the modified optional detail message for the result instance of <code>TestFailedException</code>.
    */
   def modifyMessage(fun: Option[String] => Option[String]): TestFailedException = {
-    val mod = new TestFailedException(fun(message), cause, failedCodeStackDepth) // TODO: Seems like here I could just compose the message functions and not evaluate them, in case it is never used
+    val mod = new TestFailedException(fun(message), cause, pos, failedCodeStackDepth) // TODO: Seems like here I could just compose the message functions and not evaluate them, in case it is never used
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -192,7 +198,7 @@ class TestFailedException(
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): TestFailedException = {
     val currentPayload = payload
-    val mod = new TestFailedException(messageFun, cause, failedCodeStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
+    val mod = new TestFailedException(messageFun, cause, pos, failedCodeStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
     mod.setStackTrace(getStackTrace)
     mod
   }

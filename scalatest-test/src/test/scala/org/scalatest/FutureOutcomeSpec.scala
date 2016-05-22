@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-import org.scalactic.{Or, Good, Bad}
+import org.scalactic.{Or, Good, Bad, source}
 import scala.util.{Try, Success, Failure}
 import scala.concurrent.Future
 import scala.concurrent.Promise
@@ -188,7 +188,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
         assert(onPendingThenFunctionWasInvoked == false)
         assert(paramPassedToOnAbortedThen == None)
         assert(paramPassedToMap == None)
-        case object MyException extends TestCanceledException(0)
+        case object MyException extends TestCanceledException(Some(source.Position.here), 0)
         promise.success(Canceled(MyException))
         fo2.underlying map { _ =>
           assert(fo2.isCompleted)
@@ -584,7 +584,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             }
           assert(!fo2.isCompleted)
           assert(fo2.value == None)
-          promise.success(Canceled(new TestCanceledException("the original one", 0)))
+          promise.success(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)))
           fo2.underlying map { outcome =>
             assert(fo2.isCompleted)
             outcome match {
@@ -608,7 +608,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             }
           assert(!fo2.isCompleted)
           assert(fo2.value == None)
-          promise.success(Canceled(new TestCanceledException("the original one", 0)))
+          promise.success(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)))
           fo2.underlying map { outcome =>
             assert(fo2.isCompleted)
             outcome match {
@@ -632,7 +632,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             }
           assert(!fo2.isCompleted)
           assert(fo2.value == None)
-          promise.success(Canceled(new TestCanceledException("the original one", 0)))
+          promise.success(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)))
           fo2.underlying map { outcome =>
             assert(fo2.isCompleted)
             outcome match {
@@ -656,7 +656,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             }
           assert(!fo2.isCompleted)
           assert(fo2.value == None)
-          promise.success(Canceled(new TestCanceledException("the original one", 0)))
+          promise.success(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)))
           fo2.underlying map { outcome =>
             assert(fo2.isCompleted)
             outcome match {
@@ -680,7 +680,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
             }
           assert(!fo2.isCompleted)
           assert(fo2.value == None)
-          promise.success(Canceled(new TestCanceledException("the original one", 0)))
+          promise.success(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)))
           fo2.underlying.failed map { ex =>
             assert(fo2.isCompleted)
             ex match {
@@ -953,7 +953,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -994,7 +994,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1035,7 +1035,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1076,7 +1076,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1117,7 +1117,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1161,7 +1161,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1202,7 +1202,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1243,7 +1243,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1284,7 +1284,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1326,7 +1326,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "outcome",
               Succeeded,
               Failed(new IllegalArgumentException("the original one")),
-              Canceled(new TestCanceledException("the original one", 0)),
+              Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0)),
               Pending
             )
           val futures: Seq[Future[Assertion]] =
@@ -1371,7 +1371,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "optional outcome",
               Some(Succeeded),
               Some(Failed(new IllegalArgumentException("the original one"))),
-              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0))),
               Some(Pending),
               None
             )
@@ -1417,7 +1417,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "optional outcome",
               Some(Succeeded),
               Some(Failed(new IllegalArgumentException("the original one"))),
-              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0))),
               Some(Pending),
               None
             )
@@ -1463,7 +1463,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "optional outcome",
               Some(Succeeded),
               Some(Failed(new IllegalArgumentException("the original one"))),
-              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0))),
               Some(Pending),
               None
             )
@@ -1509,7 +1509,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "optional outcome",
               Some(Succeeded),
               Some(Failed(new IllegalArgumentException("the original one"))),
-              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0))),
               Some(Pending),
               None
             )
@@ -1555,7 +1555,7 @@ class FutureOutcomeSpec extends AsyncFreeSpec with DiagrammedAssertions {
               "optional outcome",
               Some(Succeeded),
               Some(Failed(new IllegalArgumentException("the original one"))),
-              Some(Canceled(new TestCanceledException("the original one", 0))),
+              Some(Canceled(new TestCanceledException("the original one", Some(source.Position.here), 0))),
               Some(Pending),
               None
             )

@@ -100,10 +100,10 @@ trait AssertionsForJUnit extends Assertions {
     val e = new Exception
     val stackDepth = getStackDepth(e.getStackTrace, pos)
     (optionalMessage, optionalCause) match {
-      case (None, None) => new JUnitTestFailedError(stackDepth)
-      case (None, Some(cause)) => new JUnitTestFailedError(cause, stackDepth)
-      case (Some(message), None) => new JUnitTestFailedError(message.toString, stackDepth)
-      case (Some(message), Some(cause)) => new JUnitTestFailedError(message.toString, cause, stackDepth)
+      case (None, None) => new JUnitTestFailedError(Some(pos), stackDepth)
+      case (None, Some(cause)) => new JUnitTestFailedError(cause, Some(pos), stackDepth)
+      case (Some(message), None) => new JUnitTestFailedError(message.toString, Some(pos), stackDepth)
+      case (Some(message), Some(cause)) => new JUnitTestFailedError(message.toString, cause, Some(pos), stackDepth)
     }
   }
   

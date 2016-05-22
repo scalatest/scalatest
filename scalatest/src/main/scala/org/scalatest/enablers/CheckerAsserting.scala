@@ -107,7 +107,7 @@ abstract class UnitCheckerAsserting {
               args,
               labels,
               None,
-              getStackDepthFun(pos)
+              pos
             )
 
           case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
@@ -133,7 +133,7 @@ abstract class UnitCheckerAsserting {
               scalaCheckArgs,
               scalaCheckLabels.toList,
               None,
-              getStackDepthFun(pos)
+              pos
             )
 
           case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
@@ -156,7 +156,7 @@ abstract class UnitCheckerAsserting {
               scalaCheckArgs,
               scalaCheckLabels.toList,
               Some(e),
-              getStackDepthFun(pos)
+              pos
             )
         }
       } else indicateSuccess(FailureMessages.propertyCheckSucceeded)
@@ -164,7 +164,7 @@ abstract class UnitCheckerAsserting {
 
     private[scalatest] def indicateSuccess(message: => String): Result
 
-    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
+    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Result
   }
 
   /**
@@ -176,11 +176,12 @@ abstract class UnitCheckerAsserting {
     new CheckerAssertingImpl[T] {
       type Result = Unit
       private[scalatest] def indicateSuccess(message: => String): Unit = ()
-      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Unit = {
         throw new GeneratorDrivenPropertyCheckFailedException(
           messageFun,
           optionalCause,
-          stackDepthFun,
+          Some(pos),
+          getStackDepthFun(pos),
           None,
           undecoratedMessage,
           scalaCheckArgs,
@@ -220,11 +221,12 @@ object CheckerAsserting extends /*UnitCheckerAsserting*/ ExpectationCheckerAsser
     new CheckerAssertingImpl[Assertion] {
       type Result = Assertion
       private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
-      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion = {
         throw new GeneratorDrivenPropertyCheckFailedException(
           messageFun,
           optionalCause,
-          stackDepthFun,
+          Some(pos),
+          getStackDepthFun(pos),
           None,
           undecoratedMessage,
           scalaCheckArgs,

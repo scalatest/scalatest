@@ -97,7 +97,7 @@ abstract class UnitInspectorAsserting {
           else
             Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
           Some(result.failedElements(0)._3),
-          getStackDepthFun(pos)
+          pos
         )
       else indicateSuccess("forAll succeeded")
     }
@@ -148,7 +148,7 @@ abstract class UnitInspectorAsserting {
             else
               Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
           None,
-          getStackDepthFun(pos)
+          pos
         )
       else indicateSuccess("forAtLeast succeeded")
     }
@@ -167,7 +167,7 @@ abstract class UnitInspectorAsserting {
           else
             Resources.forAtMostFailed(max.toString, result.passedCount.toString, keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original)),
           None,
-          getStackDepthFun(pos)
+          pos
         )
       else indicateSuccess("forAtMost succeeded")
     }
@@ -200,7 +200,7 @@ abstract class UnitInspectorAsserting {
                 Resources.forExactlyFailedMore(succeededCount.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
             },
           None,
-          getStackDepthFun(pos)
+          pos
         )
       else indicateSuccess("forExactly succeeded")
     }
@@ -216,7 +216,7 @@ abstract class UnitInspectorAsserting {
           else
             Resources.forNoFailed(keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original)),
           None,
-          getStackDepthFun(pos)
+          pos
         )
       else indicateSuccess("forNo succeeded")
     }
@@ -253,7 +253,7 @@ abstract class UnitInspectorAsserting {
                 Resources.forBetweenFailedMore(from.toString, upTo.toString, elementLabel(result.passedCount), keyOrIndexLabel(original, result.passedElements), decorateToStringValue(prettifier, original))
             },
           None,
-          getStackDepthFun(pos)
+          pos
         )
       else indicateSuccess("forBetween succeeded")
     }
@@ -292,7 +292,7 @@ abstract class UnitInspectorAsserting {
           else
             Resources.forEveryFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(prettifier, original)),
           None,
-          getStackDepthFun(pos)
+          pos
         )
       else indicateSuccess("forEvery succeeded")
     }
@@ -302,7 +302,7 @@ abstract class UnitInspectorAsserting {
     // CS: because we want to construct the message lazily.
     private[scalatest] def indicateSuccess(message: => String): Result
 
-    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Result
+    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Result
   }
 
   /**
@@ -313,11 +313,12 @@ abstract class UnitInspectorAsserting {
     new InspectorAssertingImpl[T] {
       type Result = Unit
       def indicateSuccess(message: => String): Unit = ()
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Unit = {
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Unit = {
         throw new TestFailedException(
           sde => Some(message),
           optionalCause,
-          stackDepthFun
+          Some(pos),
+          getStackDepthFun(pos)
         )
       }
     }
@@ -333,7 +334,7 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
     new InspectorAssertingImpl[Expectation] {
       type Result = Expectation
       def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Expectation = Fact.No(message)(prettifier)
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Expectation = Fact.No(message)(prettifier)
     }
   }
 }
@@ -352,11 +353,12 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
     new InspectorAssertingImpl[Assertion] {
       type Result = Assertion
       def indicateSuccess(message: => String): Assertion = Succeeded
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int): Assertion = {
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
         throw new TestFailedException(
           sde => Some(message),
           optionalCause,
-          stackDepthFun
+          Some(pos),
+          getStackDepthFun(pos)
         )
       }
     }

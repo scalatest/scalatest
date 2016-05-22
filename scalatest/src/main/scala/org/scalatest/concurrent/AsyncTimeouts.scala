@@ -32,25 +32,22 @@ trait AsyncTimeouts {
   private def timingOutAfter[T](
                                  timeLimit: Span,
                                  pos: source.Position,
-                                 exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T)(block: => Future[T])(implicit executionContext: ExecutionContext): Future[T] = {
+                                 exceptionFun: (Option[Throwable], Span, source.Position) => T)(block: => Future[T])(implicit executionContext: ExecutionContext): Future[T] = {
 
     /**
      * <strong>This class was accidentally included in 3.0.0-RC1 and will be removed in 3.0.0-RC2.</strong>
      */
-    class TimeoutTask[T](promise: Promise[T], span: Span, exceptionFun: (Option[Throwable], Span, StackDepthException => Int) => T) extends TimerTask {
+    class TimeoutTask[T](promise: Promise[T], span: Span, exceptionFun: (Option[Throwable], Span, source.Position) => T) extends TimerTask {
 
       def run(): Unit = {
         def stackDepthFun(sde: StackDepthException): Int =
           getStackDepth(sde.getStackTrace, pos)
         if (!promise.isCompleted) {
-          promise.complete(Success(exceptionFun(None, span, stackDepthFun)))
+          promise.complete(Success(exceptionFun(None, span, pos)))
         }
       }
 
     }
-
-    def stackDepthFun(sde: StackDepthException): Int =
-      getStackDepth(sde.getStackTrace, pos)
 
     val limit = timeLimit.totalNanos / 1000 / 1000
     val startTime = scala.compat.Platform.currentTime
@@ -61,11 +58,8 @@ trait AsyncTimeouts {
       val endTime = scala.compat.Platform.currentTime
       val produceFutureDuration = endTime - startTime
 
-      if (produceFutureDuration > limit) {
-        def stackDepthFun(sde: StackDepthException): Int =
-          getStackDepth(sde.getStackTrace, pos)
-        Future.successful(exceptionFun(None, timeLimit, stackDepthFun))
-      }
+      if (produceFutureDuration > limit)
+        Future.successful(exceptionFun(None, timeLimit, pos))
       else {
         val promise = Promise[T]
         val task = new TimeoutTask(promise, timeLimit, exceptionFun)
@@ -80,7 +74,7 @@ trait AsyncTimeouts {
               val endTime = scala.compat.Platform.currentTime
                 val duration = endTime - startTime
                 if (duration > limit)
-                  promise.complete(Success(exceptionFun(None, timeLimit, stackDepthFun)))
+                  promise.complete(Success(exceptionFun(None, timeLimit, pos)))
                 else
                   promise.success(r)
               }
@@ -91,7 +85,7 @@ trait AsyncTimeouts {
               val endTime = scala.compat.Platform.currentTime
                 val duration = endTime - startTime
                 if (duration > limit)
-                  promise.complete(Success(exceptionFun(Some(e), timeLimit, stackDepthFun)))
+                  promise.complete(Success(exceptionFun(Some(e), timeLimit, pos)))
                 else
                   promise.failure(e) // Chee Seng: I wonder if in this case should we use this exception instead of the other one? Not sure.
               }
@@ -103,14 +97,14 @@ trait AsyncTimeouts {
     }
     catch {
       case e: org.scalatest.exceptions.ModifiableMessage[_] with TimeoutField => // Chee Seng: how can this happen? Oh, is it when producing the Future?
-        Future.successful(exceptionFun(Some(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString)))), timeLimit, stackDepthFun))
+        Future.successful(exceptionFun(Some(e.modifyMessage(opts => Some(Resources.testTimeLimitExceeded(e.timeout.prettyString)))), timeLimit, pos))
 
       case t: Throwable =>
         val endTime = scala.compat.Platform.currentTime
         val produceFutureDuration = endTime - startTime
 
         if (produceFutureDuration > limit)  // if the test block blows up after the time limit, we'll still fail with timeout, setting the the thrown exception as cause.
-          Future.successful(exceptionFun(Some(t), timeLimit, stackDepthFun))
+          Future.successful(exceptionFun(Some(t), timeLimit, pos))
         else
           throw t
     }

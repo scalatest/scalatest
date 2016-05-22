@@ -32,6 +32,7 @@ import scala.util.{Failure, Success}
 import org.scalatest.time.Span
 import org.scalatest.concurrent.SignalerTimeoutTask
 import scala.concurrent.{Promise, Future, ExecutionContext}
+import org.scalactic.source
 
 /**
  * Trait that provides a <code>timeoutAfter</code> construct, which allows you to specify a timeout for an
@@ -53,7 +54,7 @@ trait Timed[T] {
     timeout: Span,
     f: => T,
     signaler: Signaler,
-    exceptionFun: (Option[Throwable], Int) => StackDepthException
+    exceptionFun: Option[Throwable] => StackDepthException
   ): T
 }
 
@@ -120,13 +121,8 @@ below:
         timeout: Span,
         f: => T,
         signaler: Signaler,
-        exceptionFun: (Option[Throwable], Int) => StackDepthException
+        exceptionFun: Option[Throwable] => StackDepthException
       ): T = {
-        // SKIP-SCALATESTJS-START
-        val stackDepthAdjustment = 2
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
-
         val timer = new Timer
         val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
         val maxDuration = timeout.totalNanos / 1000 / 1000
@@ -142,7 +138,7 @@ below:
               if (task.timedOut || (endTime - startTime) > maxDuration) {
                 if (task.needToResetInterruptedStatus)
                   Thread.interrupted() // To reset the flag probably. He only does this if it was not set before and was set after, I think.
-                throw exceptionFun(None, stackDepthAdjustment)
+                throw exceptionFun(None)
               }
           }
           result
@@ -154,7 +150,7 @@ below:
             if(task.timedOut || (endTime - startTime) > maxDuration) {
               if (task.needToResetInterruptedStatus)
                 Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
-              throw exceptionFun(Some(t), stackDepthAdjustment)
+              throw exceptionFun(Some(t))
             }
             else
               throw t
@@ -193,14 +189,8 @@ below:
                         timeout: Span,
                         f: => Future[T],
                         signaler: Signaler,
-                        exceptionFun: (Option[Throwable], Int) => StackDepthException
+                        exceptionFun: Option[Throwable] => StackDepthException
                         ): Future[T] = {
-
-        // SKIP-SCALATESTJS-START
-        val stackDepthAdjustment = 2
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
-
         val timer = new Timer
         val maxDuration = timeout.totalNanos / 1000 / 1000
         val startTime = scala.compat.Platform.currentTime
@@ -209,7 +199,7 @@ below:
           val endTime = scala.compat.Platform.currentTime
 
           if ((endTime - startTime) > maxDuration) {
-            throw exceptionFun(None, stackDepthAdjustment)
+            throw exceptionFun(None)
           }
 
           val promise = Promise[T]
@@ -225,7 +215,7 @@ below:
                 val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
                   if (duration > maxDuration)
-                    promise.complete(Failure(exceptionFun(None, stackDepthAdjustment)))
+                    promise.complete(Failure(exceptionFun(None)))
                   else
                     promise.success(r)
                 }
@@ -236,7 +226,7 @@ below:
                 val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
                   if (duration > maxDuration)
-                    promise.complete(Failure(exceptionFun(Some(e), stackDepthAdjustment)))
+                    promise.complete(Failure(exceptionFun(Some(e))))
                   else
                     promise.failure(e) // Chee Seng: I wonder if in this case should we use this exception instead of the other one? Not sure.
                 }
@@ -250,7 +240,7 @@ below:
           case t: Throwable =>
             val endTime = scala.compat.Platform.currentTime
             if((endTime - startTime) > maxDuration) {
-              throw exceptionFun(Some(t), stackDepthAdjustment)
+              throw exceptionFun(Some(t))
             }
             else
               throw t
@@ -299,14 +289,8 @@ below:
                         timeout: Span,
                         f: => FutureOutcome,
                         signaler: Signaler,
-                        exceptionFun: (Option[Throwable], Int) => StackDepthException
+                        exceptionFun: Option[Throwable] => StackDepthException
                         ): FutureOutcome = {
-
-        // SKIP-SCALATESTJS-START
-        val stackDepthAdjustment = 2
-        // SKIP-SCALATESTJS-END
-        //SCALATESTJS-ONLY val stackDepthAdjustment = 0
-
         val timer = new Timer
         val maxDuration = timeout.totalNanos / 1000 / 1000
         val startTime = scala.compat.Platform.currentTime
@@ -315,7 +299,7 @@ below:
         val endTime = scala.compat.Platform.currentTime
 
         if ((endTime - startTime) > maxDuration)
-          throw exceptionFun(None, stackDepthAdjustment)
+          throw exceptionFun(None)
 
         val task = new SignalerTimeoutTask(Thread.currentThread(), signaler)
         val delay = maxDuration - (scala.compat.Platform.currentTime - startTime)
@@ -328,7 +312,7 @@ below:
               val duration = endTime - startTime
               try {
                 if (duration > maxDuration) {
-                  throw exceptionFun(None, stackDepthAdjustment)
+                  throw exceptionFun(None)
                 }
               }
               catch {
@@ -341,7 +325,7 @@ below:
               val endTime = scala.compat.Platform.currentTime
               val duration = endTime - startTime
               if (duration > maxDuration)
-                throw exceptionFun(None, stackDepthAdjustment)
+                throw exceptionFun(None)
               else
                 throw e
           }

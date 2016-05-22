@@ -28,19 +28,20 @@ import org.scalatest.exceptions.ModifiableMessage
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.source
 
 class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
   def examples: TableFor1[Throwable with ModifiableMessage[_ <: StackDepth]] =
     Table(
       "exception",
-      new TestFailedException("message", 3),
+      new TestFailedException("message", Some(source.Position.here), 3),
       // SKIP-SCALATESTJS-START
-      new JUnitTestFailedError("message", 3),
+      new JUnitTestFailedError("message", Some(source.Position.here), 3),
       // SKIP-SCALATESTJS-END
-      new TestFailedDueToTimeoutException(e => Some("message"), None, e => 3, None, Span(1, Second)),
-      new TableDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, List.empty, 3),
-      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty)
+      new TestFailedDueToTimeoutException(e => Some("message"), None, Some(source.Position.here), e => 3, None, Span(1, Second)),
+      new TableDrivenPropertyCheckFailedException(e => "message", None, Some(source.Position.here), e => 3, None, "undecMsg", List.empty, List.empty, 3),
+      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, Some(source.Position.here), e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty)
    )
 
   // TOTEST: clue object with toString. clue object with null toString. all-whitespace clue string
@@ -203,7 +204,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
   }
 
   it should "return Failed that contains TestFailedException and with prepended clue" in {
-    val failed = Failed(new TestFailedException("message", 3))
+    val failed = Failed(new TestFailedException("message", Some(source.Position.here), 3))
     val result = withClue("a clue") { failed }
     result shouldBe a [Failed]
     result.exception shouldBe a [TestFailedException]
@@ -218,7 +219,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
   }
 
   it should "return Canceled that contains TestCanceledException and with prepended clue" in {
-    val canceled = Canceled(new TestCanceledException("message", 3))
+    val canceled = Canceled(new TestCanceledException("message", Some(source.Position.here), 3))
     val result = withClue("a clue") { canceled }
     result shouldBe a [Canceled]
     result.exception shouldBe a [TestCanceledException]

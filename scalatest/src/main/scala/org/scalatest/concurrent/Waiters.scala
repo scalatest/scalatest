@@ -19,8 +19,11 @@ import org.scalatest._
 import Assertions.fail
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import time.{Nanoseconds, Second, Span}
 import PatienceConfiguration._
+import org.scalactic.source
 
 /**
  * Trait that facilitates performing assertions outside the main test thread, such as assertions in callback methods
@@ -377,9 +380,9 @@ trait Waiters extends PatienceConfiguration {
      * @param timeout the number of milliseconds timeout, or -1 to indicate no timeout (default is -1)
      * @param dismissals the number of dismissals to wait for (default is 1)
      */
-    private def awaitImpl(timeout: Span, dismissals: Int = 1) {
+    private def awaitImpl(timeout: Span, pos: source.Position, dismissals: Int = 1) {
       if (Thread.currentThread != creatingThread)
-        throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, 2)
+        throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, None, Some(pos), getStackDepthFun(pos))
 
       val startTime: Long = System.nanoTime
       val endTime: Long = startTime + timeout.totalNanos
@@ -401,7 +404,7 @@ trait Waiters extends PatienceConfiguration {
         else if (dismissedCount >= dismissals)
           dismissedCount = 0 // reset the dismissed count to support multiple await calls        
         else if (timedOut)
-          throw new TestFailedException(Resources.awaitTimedOut, 2)
+          throw new TestFailedException((sde: StackDepthException) => Some(Resources.awaitTimedOut), None, Some(pos), getStackDepthFun(pos), None)
         else throw new Exception("Should never happen: thrown was not defined; dismissedCount was not greater than dismissals; and timedOut was false")
       }
     }
@@ -434,8 +437,8 @@ trait Waiters extends PatienceConfiguration {
      *
      * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> parameter
      */
-    def await()(implicit config: PatienceConfig) {
-      awaitImpl(config.timeout)
+    def await()(implicit config: PatienceConfig, pos: source.Position) {
+      awaitImpl(config.timeout, pos)
     }
 
     /**
@@ -466,8 +469,8 @@ trait Waiters extends PatienceConfiguration {
      *
      * @param timeout:  the <code>Timeout</code> configuration parameter containing the specified timeout
      */
-    def await(timeout: Timeout) {
-      awaitImpl(timeout.value)
+    def await(timeout: Timeout)(implicit pos: source.Position) {
+      awaitImpl(timeout.value, pos)
     }
 
     /**
@@ -500,8 +503,8 @@ trait Waiters extends PatienceConfiguration {
      *    dismissals for which to wait
      * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> parameter
      */
-    def await(dismissals: Dismissals)(implicit config: PatienceConfig) {
-      awaitImpl(config.timeout, dismissals.value)
+    def await(dismissals: Dismissals)(implicit config: PatienceConfig, pos: source.Position) {
+      awaitImpl(config.timeout, pos, dismissals.value)
     }
 
     /**
@@ -534,8 +537,8 @@ trait Waiters extends PatienceConfiguration {
      * @param dismissals:  the <code>Dismissals</code> configuration parameter containing the number of
      *    dismissals for which to wait
      */
-    def await(timeout: Timeout, dismissals: Dismissals) {
-      awaitImpl(timeout.value, dismissals.value)
+    def await(timeout: Timeout, dismissals: Dismissals)(implicit pos: source.Position) {
+      awaitImpl(timeout.value, pos, dismissals.value)
     }
 
     /**

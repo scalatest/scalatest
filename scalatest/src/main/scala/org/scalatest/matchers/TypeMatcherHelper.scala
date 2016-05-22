@@ -15,6 +15,7 @@
  */
 package org.scalatest.matchers
 
+import org.scalactic.source
 import org.scalatest.{UnquotedString, Suite, FailureMessages, Resources}
 import org.scalactic.Prettifier
 import org.scalatest.MatchersHelper._
@@ -122,11 +123,11 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param aType an instance of <code>ResultOfATypeInvocation</code>
    */
-  def assertAType(left: Any, aType: ResultOfATypeInvocation[_]): org.scalatest.Assertion = {
+  def assertAType(left: Any, aType: ResultOfATypeInvocation[_], prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, aType.pos)
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, pos)
     }
     org.scalatest.Succeeded
   }
@@ -138,14 +139,14 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param aType an instance of <code>ResultOfATypeInvocation</code>
    */
-  private[scalatest] def expectAType(left: Any, aType: ResultOfATypeInvocation[_]): org.scalatest.Fact = {
+  /*private[scalatest] def expectAType(left: Any, aType: ResultOfATypeInvocation[_], prettifier: Prettifier): org.scalatest.Fact = {
     val clazz = aType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(aType.prettifier)
     }
     else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName)))(aType.prettifier)
-  }
+  }*/
 
   /**
    * Check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfAnTypeInvocation</code>.
@@ -154,11 +155,11 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
    */
-  def assertAnType(left: Any, anType: ResultOfAnTypeInvocation[_]): org.scalatest.Assertion = {
+  def assertAnType(left: Any, anType: ResultOfAnTypeInvocation[_], prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
-      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, anType.pos)
+      throw newTestFailedException(FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)), None, pos)
     }
     org.scalatest.Succeeded
   }
@@ -170,13 +171,13 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
    */
-  private[scalatest] def expectAnType(left: Any, anType: ResultOfAnTypeInvocation[_]): org.scalatest.Fact = {
+  /*private[scalatest] def expectAnType(left: Any, anType: ResultOfAnTypeInvocation[_]): org.scalatest.Fact = {
     val clazz = anType.clazz
     if (!clazz.isAssignableFrom(left.getClass)) {
       val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, clazz.getName)
       org.scalatest.Fact.No(FailureMessages.wasNotAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName)))(anType.prettifier)
     } else org.scalatest.Fact.Yes(FailureMessages.wasAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName)))(anType.prettifier)
-  }
+  }*/
 
   /**
    * Based on <code>shouldBeTrue</code> value, check if the given <code>left</code> is an instance of the type as described in the given <code>ResultOfATypeInvocation</code>.
@@ -186,16 +187,16 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param aType an instance of <code>ResultOfATypeInvocation</code>
    */
-  def assertATypeShouldBeTrue(left: Any, aType: ResultOfATypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Assertion = {
+  def assertATypeShouldBeTrue(left: Any, aType: ResultOfATypeInvocation[_], shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = aType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(aType.prettifier, left, UnquotedString(clazz.getName)),
+          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName)),
         None,
-        aType.pos
+        pos
       )
     } else org.scalatest.Succeeded
   }
@@ -235,16 +236,16 @@ object TypeMatcherHelper {
    * @param left the left-hand-side (LHS) to be checked for the type
    * @param anType an instance of <code>ResultOfAnTypeInvocation</code>
    */
-  def assertAnTypeShouldBeTrue(left: Any, anType: ResultOfAnTypeInvocation[_], shouldBeTrue: Boolean): org.scalatest.Assertion = {
+  def assertAnTypeShouldBeTrue(left: Any, anType: ResultOfAnTypeInvocation[_], shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position): org.scalatest.Assertion = {
     val clazz = anType.clazz
     if (clazz.isAssignableFrom(left.getClass) != shouldBeTrue) {
       throw newTestFailedException(
         if (shouldBeTrue)
-          FailureMessages.wasNotAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
+          FailureMessages.wasNotAnInstanceOf(prettifier, left, UnquotedString(clazz.getName), UnquotedString(left.getClass.getName))
         else
-          FailureMessages.wasAnInstanceOf(anType.prettifier, left, UnquotedString(clazz.getName)),
+          FailureMessages.wasAnInstanceOf(prettifier, left, UnquotedString(clazz.getName)),
         None,
-        anType.pos
+        pos
       )
     } else org.scalatest.Succeeded
   }

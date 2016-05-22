@@ -326,6 +326,14 @@ private[scalatest] object TypeMatcherMacro {
   def assertTypeImpl(context: Context)(tree: context.Tree, beMethodName: String, assertMethodName: String): context.Expr[org.scalatest.Assertion] = {
     import context.universe._
 
+    def valDef(name: String, rhs: Tree): ValDef =
+      ValDef(
+        Modifiers(),
+        newTermName(name),
+        TypeTree(),
+        rhs
+      )
+
     // check type parameter
     checkTypeParameter(context)(tree, "a")
 
@@ -337,21 +345,24 @@ private[scalatest] object TypeMatcherMacro {
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
-          Apply(
-            Select(
+          Block(
+            valDef("$org_scalatest_type_matcher_macro_left", qualifier.duplicate),
+            Apply(
               Select(
                 Select(
                   Select(
-                    Ident(newTermName("org")),
-                    newTermName("scalatest")
+                    Select(
+                      Ident(newTermName("org")),
+                      newTermName("scalatest")
+                    ),
+                    newTermName("matchers")
                   ),
-                  newTermName("matchers")
+                  newTermName("TypeMatcherHelper")
                 ),
-                newTermName("TypeMatcherHelper")
+                newTermName(assertMethodName)
               ),
-              newTermName(assertMethodName)
-            ),
-            List(Select(qualifier, newTermName("leftSideValue")), tree)
+              List(Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("leftSideValue")), tree, Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("prettifier")), Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("pos")))
+            )
           )
 
         case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")
@@ -422,6 +433,14 @@ private[scalatest] object TypeMatcherMacro {
   def assertTypeShouldBeTrueImpl(context: Context)(tree: context.Tree, beMethodName: String, assertMethodName: String): context.Expr[org.scalatest.Assertion] = {
     import context.universe._
 
+    def valDef(name: String, rhs: Tree): ValDef =
+      ValDef(
+        Modifiers(),
+        newTermName(name),
+        TypeTree(),
+        rhs
+      )
+
     // check type parameter
     checkTypeParameter(context)(tree, "a")
 
@@ -433,21 +452,24 @@ private[scalatest] object TypeMatcherMacro {
     val callHelper =
       context.macroApplication match {
         case Apply(Select(qualifier, _), _) =>
-          Apply(
-            Select(
+          Block(
+            valDef("$org_scalatest_type_matcher_macro_left", qualifier.duplicate),
+            Apply(
               Select(
                 Select(
                   Select(
-                    Ident(newTermName("org")),
-                    newTermName("scalatest")
+                    Select(
+                      Ident(newTermName("org")),
+                      newTermName("scalatest")
+                    ),
+                    newTermName("matchers")
                   ),
-                  newTermName("matchers")
+                  newTermName("TypeMatcherHelper")
                 ),
-                newTermName("TypeMatcherHelper")
+                newTermName(assertMethodName)
               ),
-              newTermName(assertMethodName)
-            ),
-            List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")))
+              List(Select(qualifier, newTermName("left")), tree, Select(qualifier, newTermName("shouldBeTrue")), Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("prettifier")), Select(Ident(newTermName("$org_scalatest_type_matcher_macro_left")), newTermName("pos")))
+            )
           )
 
         case _ => context.abort(context.macroApplication.pos, s"This macro should be used with $beMethodName [Type] syntax only.")

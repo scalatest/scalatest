@@ -121,6 +121,7 @@ trait LoneElement {
                  collection,
                  collecting.sizeOf(collection))),
             None,
+            Some(pos),
             getStackDepthFun(pos)
           )
       }
@@ -168,6 +169,7 @@ trait LoneElement {
                  jmap,
                  collecting.sizeOf(jmap))), 
             None,
+            Some(pos),
             getStackDepthFun(pos)
           )
       }
@@ -205,6 +207,7 @@ trait LoneElement {
             s,
             s.length)),
           None,
+          Some(pos),
           getStackDepthFun(pos)
         )
     }

@@ -1525,7 +1525,7 @@ val generatorSuiteTemplate = """
       var i = 0
       forAll (maxDiscarded(5)) { ($namesAndTypes$) =>
         i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
+        whenever (i > 7) { assert(1 + 1 === (2)) }
       }
     }
   }
@@ -1547,7 +1547,7 @@ val generatorSuiteTemplate = """
       var i = 0
       forAll ($argNames$, maxDiscarded(5)) { ($namesAndTypes$) =>
         i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
+        whenever (i > 7) { assert(1 + 1 === (2)) }
       }
     }
   }
@@ -1569,7 +1569,7 @@ val generatorSuiteTemplate = """
       var i = 0
       forAll ($famousArgs$, maxDiscarded(5)) { ($namesAndTypes$) =>
         i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
+        whenever (i > 7) { assert(1 + 1 === (2)) }
       }
     }
   }
@@ -1591,7 +1591,7 @@ val generatorSuiteTemplate = """
       var i = 0
       forAll ($nameGenTuples$, maxDiscarded(5)) { ($namesAndTypes$) =>
         i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
+        whenever (i > 7) { assert(1 + 1 === (2)) }
       }
     }
   }
@@ -1618,7 +1618,7 @@ val generatorSuiteTemplate = """
       var i = 0
       forAll { ($namesAndTypes$) =>
         i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
+        whenever (i > 7) { assert(1 + 1 === (2)) }
       }
     }
   }
@@ -1644,7 +1644,7 @@ val generatorSuiteTemplate = """
       var i = 0
       forAll ($argNames$) { ($namesAndTypes$) =>
         i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
+        whenever (i > 7) { assert(1 + 1 === (2)) }
       }
     }
   }
@@ -1670,7 +1670,7 @@ val generatorSuiteTemplate = """
       var i = 0
       forAll ($famousArgs$) { ($namesAndTypes$) =>
         i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
+        whenever (i > 7) { assert(1 + 1 === (2)) }
       }
     }
   }
@@ -1696,7 +1696,7 @@ val generatorSuiteTemplate = """
       var i = 0
       forAll ($nameGenTuples$) { ($namesAndTypes$) =>
         i += 1
-        whenever (i > 6) { assert(1 + 1 === (2)) }
+        whenever (i > 7) { assert(1 + 1 === (2)) }
       }
     }
   }
@@ -2238,7 +2238,7 @@ val checkersSuiteTemplate = """
       check(
         ($namesAndTypes$) => {
           i += 1
-          (i > 6) ==> { 1 + 1 == (2) }
+          (i > 7) ==> { 1 + 1 == (2) }
         },
         maxDiscarded(5)
       ) 
@@ -2263,7 +2263,7 @@ val checkersSuiteTemplate = """
       var i = 0
       val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
         i += 1
-        (i > 6) ==> { 1 + 1 == (2) }
+        (i > 7) ==> { 1 + 1 == (2) }
       }
       check(prop, maxDiscarded(5))
     }
@@ -2291,7 +2291,7 @@ val checkersSuiteTemplate = """
       var i = 0
       check { ($namesAndTypes$) =>
         i += 1
-        (i > 6) ==> { 1 + 1 == (2) }
+        (i > 7) ==> { 1 + 1 == (2) }
       }
     }
   }
@@ -2318,7 +2318,7 @@ val checkersSuiteTemplate = """
       var i = 0
       val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
         i += 1
-        (i > 6) ==> { 1 + 1 == (2) }
+        (i > 7) ==> { 1 + 1 == (2) }
       }
       check(prop)
     }

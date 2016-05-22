@@ -24,7 +24,7 @@ class ResultOfAnTypeInvocationSpec extends FunSpec {
   describe("ResultOfAnTypeInvocation ") {
     
     it("should have pretty toString") {
-      val result = new ResultOfAnTypeInvocation(classOf[Inspectors], Prettifier.default, source.Position.here)
+      val result = new ResultOfAnTypeInvocation(classOf[Inspectors])
       result.toString should be ("an [org.scalatest.Inspectors]")
     }
   }

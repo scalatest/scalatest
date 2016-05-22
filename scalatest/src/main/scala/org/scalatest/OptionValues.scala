@@ -111,7 +111,7 @@ trait OptionValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.optionValueNotDefined), Some(cause), getStackDepthFun(pos))
+          throw new TestFailedException(sde => Some(Resources.optionValueNotDefined), Some(cause), Some(pos), getStackDepthFun(pos))
       }
     }
   }

@@ -17,6 +17,8 @@ package org.scalatest.exceptions
 
 import org.scalatest.Resources
 import org.scalactic.Requirements._
+import org.scalactic.source
+import StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Exception that indicates an attempt was made to register a test that had the same name as a test
@@ -33,7 +35,7 @@ import org.scalactic.Requirements._
  *
  * @author Bill Venners
  */
-class   DuplicateTestNameException(testName: String, failedCodeStackDepthFun: StackDepthException => Int)
+class DuplicateTestNameException(testName: String, val pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int)
     extends StackDepthException(
       Some(Resources.duplicateTestName(testName)),
       None,
@@ -51,7 +53,7 @@ class   DuplicateTestNameException(testName: String, failedCodeStackDepthFun: St
    *
    * @throws NullArgumentException if <code>testName</code> is <code>null</code>
    */
-  def this(testName: String, failedCodeStackDepth: Int) = this(testName, e => failedCodeStackDepth)
+  def this(testName: String, pos: Option[source.Position], failedCodeStackDepth: Int) = this(testName, pos, (e: StackDepthException) => failedCodeStackDepth)
 
   /**
    * Returns an exception of class <code>DuplicateTestNameException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
@@ -61,7 +63,7 @@ class   DuplicateTestNameException(testName: String, failedCodeStackDepthFun: St
    */
   def severedAtStackDepth: DuplicateTestNameException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new DuplicateTestNameException(testName, 0)
+    val e = new DuplicateTestNameException(testName, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
     e.setStackTrace(truncated)
     e
   }

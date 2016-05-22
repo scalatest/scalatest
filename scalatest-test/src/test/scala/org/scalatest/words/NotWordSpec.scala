@@ -1707,7 +1707,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAType = new ResultOfATypeInvocation(clazz, Prettifier.default, source.Position.here)
+      val resultOfAType = new ResultOfATypeInvocation(clazz)
       
       val mt = not be (resultOfAType)
       
@@ -1765,7 +1765,7 @@ class NotWordSpec extends FunSpec with FileMocks {
       )
       
       val clazz = classOf[MyFile]
-      val resultOfAnType = new ResultOfAnTypeInvocation(clazz, Prettifier.default, source.Position.here)
+      val resultOfAnType = new ResultOfAnTypeInvocation(clazz)
       
       val mt = not be (resultOfAnType)
       
