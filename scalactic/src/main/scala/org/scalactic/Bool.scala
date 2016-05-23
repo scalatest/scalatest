@@ -166,7 +166,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a negated version of the given <code>Bool</code>
    */
-  def notBool(bool: Bool)(implicit prettifier: Prettifier): Bool = new NotBool(bool, prettifier)
+  def notBool(bool: Bool, prettifier: Prettifier): Bool = new NotBool(bool, prettifier)
 
   /**
    * Create simple macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap an unrecognized <code>Boolean</code> expression.
@@ -176,7 +176,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a simple macro <code>Bool</code>
    */
-  def simpleMacroBool(expression: Boolean, expressionText: String)(implicit prettifier: Prettifier): Bool = new SimpleMacroBool(expression, expressionText, prettifier)
+  def simpleMacroBool(expression: Boolean, expressionText: String, prettifier: Prettifier): Bool = new SimpleMacroBool(expression, expressionText, prettifier)
 
   /**
    * Create binary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression, which includes <code>Boolean</code> expression that
@@ -190,7 +190,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a binary macro <code>Bool</code>
    */
-  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean)(implicit prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, expression, prettifier)
+  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, expression, prettifier)
 
   /**
    * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new binary macro <code>Bool</code>.
@@ -202,7 +202,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a binary macro <code>Bool</code>
    */
-  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool)(implicit prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, bool, prettifier)
+  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, bool, prettifier)
 
   /**
    * Create unary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression represented by a unary method call,
@@ -214,7 +214,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a unary macro <code>Bool</code>
    */
-  def unaryMacroBool(left: Any, operator: String, expression: Boolean)(implicit prettifier: Prettifier): Bool =
+  def unaryMacroBool(left: Any, operator: String, expression: Boolean, prettifier: Prettifier): Bool =
     new UnaryMacroBool(left, operator, expression, prettifier)
 
   /**
@@ -226,7 +226,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a binary macro <code>Bool</code>
    */
-  def unaryMacroBool(left: Any, operator: String, bool: Bool)(implicit prettifier: Prettifier): Bool =
+  def unaryMacroBool(left: Any, operator: String, bool: Bool, prettifier: Prettifier): Bool =
     new UnaryMacroBool(left, operator, bool.value, prettifier)
 
   /**
@@ -240,7 +240,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a <code>Bool</code> instance that represents a <code>isInstanceOf</code> method call
    */
-  def isInstanceOfMacroBool(left: Any, operator: String, className: String, expression: Boolean)(implicit prettifier: Prettifier): Bool =
+  def isInstanceOfMacroBool(left: Any, operator: String, className: String, expression: Boolean, prettifier: Prettifier): Bool =
     new IsInstanceOfMacroBool(left, operator, className, expression, prettifier)
 
   /**
@@ -254,7 +254,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a <code>Bool</code> instance that represents a <code>isInstanceOf</code> method call
    */
-  def isInstanceOfMacroBool(left: Any, operator: String, className: String, bool: Bool)(implicit prettifier: Prettifier): Bool =
+  def isInstanceOfMacroBool(left: Any, operator: String, className: String, bool: Bool, prettifier: Prettifier): Bool =
     new IsInstanceOfMacroBool(left, operator, className, bool.value, prettifier)
 
   /**
@@ -268,7 +268,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a <code>Bool</code> instance that represents a <code>length</code> or <code>size</code> method call
    */
-  def lengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any)(implicit prettifier: Prettifier): Bool =
+  def lengthSizeMacroBool(left: Any, operator: String, actual: Any, expected: Any, prettifier: Prettifier): Bool =
     new LengthSizeMacroBool(left, operator, actual, expected, prettifier)
 
   /**
@@ -281,7 +281,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a exists macro <code>Bool</code>
    */
-  def existsMacroBool(left: Any, right: Any, expression: Boolean)(implicit prettifier: Prettifier): Bool =
+  def existsMacroBool(left: Any, right: Any, expression: Boolean, prettifier: Prettifier): Bool =
     new ExistsMacroBool(left, right, expression, prettifier)
 
   /**
