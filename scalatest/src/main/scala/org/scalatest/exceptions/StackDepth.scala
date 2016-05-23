@@ -66,11 +66,11 @@ trait StackDepth { this: Throwable =>
 
   private def stackTraceElement: Option[StackTraceElement] = {
     val stackTrace = getStackTrace()
-    if (pos.isDefined)
-      stackTrace.find(e => StackDepthExceptionHelper.isMatch(e, pos.get))
-    else {
-      if (stackTrace.length <= failedCodeStackDepth) None
-      else Some(stackTrace(failedCodeStackDepth))
+    pos match {
+      case Some(pos) => stackTrace.find(e => StackDepthExceptionHelper.isMatch(e, pos))
+      case None =>
+        if (stackTrace.length <= failedCodeStackDepth) None
+        else Some(stackTrace(failedCodeStackDepth))
     }
   }
 
@@ -87,12 +87,13 @@ trait StackDepth { this: Throwable =>
    * @return a string containing the filename that caused the failed test
    */
   def failedCodeFileName: Option[String] = {
-    if (pos.isDefined)
-      pos.map(_.fileName)
-    else
-      stackTraceElement flatMap { ele =>
-        StackDepthExceptionHelper.getFailedCodeFileName(ele)
-      }
+    pos match {
+      case Some(pos) => Some(pos.fileName)
+      case None =>
+        stackTraceElement flatMap { ele =>
+          StackDepthExceptionHelper.getFailedCodeFileName(ele)
+        }
+    }
   }
 
   /**
@@ -108,13 +109,14 @@ trait StackDepth { this: Throwable =>
    * @return a string containing the line number that caused the failed test
    */
   def failedCodeLineNumber: Option[Int] = {
-    if (pos.isDefined)
-      pos.map(_.lineNumber)
-    else
-      stackTraceElement flatMap { ele =>
-        val lineNum = ele.getLineNumber
-        if (lineNum > 0) Some(lineNum) else None
-      }
+    pos match {
+      case Some(pos) => Some(pos.lineNumber)
+      case None =>
+        stackTraceElement flatMap { ele =>
+          val lineNum = ele.getLineNumber
+          if (lineNum > 0) Some(lineNum) else None
+        }
+    }
   }
 
   /**

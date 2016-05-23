@@ -590,11 +590,11 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       location match {
         case Some(loc) => Some(loc)
         case None =>
-          if (pos.isDefined)
-            Some(LineInFile(pos.get.lineNumber, pos.get.fileName))
-          else {
-            val stackTraceElements = Thread.currentThread().getStackTrace
-            getLineInFile(stackTraceElements, stackDepth)
+          pos match {
+            case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName))
+            case None =>
+              val stackTraceElements = Thread.currentThread().getStackTrace
+              getLineInFile(stackTraceElements, stackDepth)
           }
       }
     
@@ -632,11 +632,11 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
     val lineInFile =
-      if (pos.isDefined)
-        Some(LineInFile(pos.get.lineNumber, pos.get.fileName))
-      else {
-        val stackTraceElements = Thread.currentThread().getStackTrace
-        getLineInFile(stackTraceElements, stackDepth)
+      pos match {
+        case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName))
+        case None =>
+          val stackTraceElements = Thread.currentThread().getStackTrace
+          getLineInFile(stackTraceElements, stackDepth)
       }
     val newBranch = DescriptionBranch(Trunk, description, None, lineInFile)
     Trunk.subNodes ::= newBranch
@@ -677,11 +677,11 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       location match {
         case Some(loc) => Some(loc)
         case None =>
-          if (pos.isDefined)
-            Some(LineInFile(pos.get.lineNumber, pos.get.fileName))
-          else {
-            val stackTraceElements = Thread.currentThread().getStackTrace
-            getLineInFile(stackTraceElements, stackDepth)
+          pos match {
+            case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName))
+            case None =>
+              val stackTraceElements = Thread.currentThread().getStackTrace
+              getLineInFile(stackTraceElements, stackDepth)
           }
       }
 
