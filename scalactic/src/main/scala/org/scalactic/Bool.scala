@@ -166,7 +166,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a negated version of the given <code>Bool</code>
    */
-  def notBool(bool: Bool)(implicit prettifier: Prettifier): Bool = new NotBool(bool, prettifier)
+  def notBool(bool: Bool, prettifier: Prettifier): Bool = new NotBool(bool, prettifier)
 
   /**
    * Create simple macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap an unrecognized <code>Boolean</code> expression.

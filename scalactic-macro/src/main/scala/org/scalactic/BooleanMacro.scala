@@ -250,9 +250,9 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
   /**
    * For !a unary_! call, it'll generate the AST for the following code:
    *
-   * org.scalactic.Bool.notBool(a)
+   * org.scalactic.Bool.notBool(a, prettifier)
    */
-  def notBool(target: Tree): Apply =
+  def notBool(target: Tree, prettifierTree: Tree): Apply =
     Apply(
       Select(
         Select(
@@ -268,7 +268,8 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
         newTermName("notBool")
       ),
       List(
-        target.duplicate
+        target.duplicate,
+        prettifierTree.duplicate
       )
     )
 
@@ -757,7 +758,7 @@ private[org] class BooleanMacro[C <: Context](val context: C, helperName: String
                 case selectTypeApply: TypeApply => transformAst(selectTypeApply.duplicate, prettifierTree)
                 case _ => simpleMacroBool(select.qualifier.duplicate, getText(select.qualifier))
               }
-            notBool(leftTree.duplicate)
+            notBool(leftTree.duplicate, prettifierTree)
           }
           else {
             /**
