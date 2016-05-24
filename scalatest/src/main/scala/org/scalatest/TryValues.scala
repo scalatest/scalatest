@@ -98,7 +98,7 @@ trait TryValues {
    *
    * @param theTry the <code>Try</code> to which to add the <code>success</code> and <code>failure</code> methods
    */
-  implicit def convertTryToSuccessOrFailure[T](theTry: Try[T])(implicit pos: source.Position) = new SuccessOrFailure(theTry, pos)
+  implicit def convertTryToSuccessOrFailure[T](theTry: Try[T])(implicit pos: source.Position): SuccessOrFailure[T] = new SuccessOrFailure(theTry, pos)
 
   /**
    * Wrapper class that adds <code>success</code> and <code>failure</code> methods to <code>scala.util.Try</code>, allowing

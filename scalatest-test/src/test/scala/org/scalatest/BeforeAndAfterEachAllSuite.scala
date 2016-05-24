@@ -26,7 +26,7 @@ import scala.concurrent.Promise
 class BeforeAndAfterEachAllSuite extends FunSuite {
 
   // SKIP-SCALATESTJS-START
-  implicit def executionContext = scala.concurrent.ExecutionContext.Implicits.global
+  implicit def executionContext: scala.concurrent.ExecutionContextExecutor = scala.concurrent.ExecutionContext.Implicits.global
   // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY implicit def executionContext = scala.scalajs.concurrent.JSExecutionContext.Implicits.queue
 

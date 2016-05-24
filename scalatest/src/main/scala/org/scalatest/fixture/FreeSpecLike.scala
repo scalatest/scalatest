@@ -503,7 +503,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * methods <code>when</code>, <code>that</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
    * and <code>ignore</code> to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position) = new FreeSpecStringWrapper(s, pos)
+  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
 
   /**
    * A <code>Map</code> whose keys are <code>String</code> tag names to which tests in this <code>FreeSpec</code> belong, and values

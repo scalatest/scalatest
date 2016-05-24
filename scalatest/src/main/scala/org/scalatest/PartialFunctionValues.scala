@@ -88,7 +88,7 @@ trait PartialFunctionValues {
    *
    * @param pf the <code>PartialFunction</code> on which to add the <code>valueAt</code> method
    */
-  implicit def convertPartialFunctionToValuable[A, B](pf: PartialFunction[A, B])(implicit pos: source.Position) = new Valuable(pf, pos)
+  implicit def convertPartialFunctionToValuable[A, B](pf: PartialFunction[A, B])(implicit pos: source.Position): Valuable[A, B] = new Valuable(pf, pos)
   
   /**
    * Wrapper class that adds a <code>valueAt</code> method to <code>PartialFunction</code>, allowing

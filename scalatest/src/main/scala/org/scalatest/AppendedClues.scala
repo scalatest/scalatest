@@ -172,7 +172,7 @@ trait AppendedClues {
   /**
    * Implicit conversion that allows clues to be place after a block of code.
    */
-  implicit def convertToClueful[T](fun: => T) = new Clueful(fun)
+  implicit def convertToClueful[T](fun: => T): Clueful[T] = new Clueful(fun)
 }
 
 /**

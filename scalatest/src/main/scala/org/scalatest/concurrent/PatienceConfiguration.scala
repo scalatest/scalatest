@@ -92,7 +92,7 @@ trait PatienceConfiguration extends AbstractPatienceConfiguration {
    * <code>PatienceConfig</code> containing your desired default configuration values.
    * </p>
    */
-  implicit def patienceConfig = defaultPatienceConfig
+  implicit def patienceConfig: PatienceConfig = defaultPatienceConfig
 
   /**
    * Returns a <code>Timeout</code> configuration parameter containing the passed value, which

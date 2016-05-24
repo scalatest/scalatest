@@ -87,7 +87,7 @@ trait OptionValues {
    *
    * @param opt the <code>Option</code> on which to add the <code>value</code> method
    */
-  implicit def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position) = new Valuable(opt, pos)
+  implicit def convertOptionToValuable[T](opt: Option[T])(implicit pos: source.Position): Valuable[T] = new Valuable(opt, pos)
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>Option</code>, allowing

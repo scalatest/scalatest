@@ -389,7 +389,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    * methods <code>in</code>, <code>is</code>, <code>taggedAs</code> and <code>ignore</code>,
    * as well as the dash operator (<code>-</code>), to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position) = new FreeSpecStringWrapper(s, pos)
+  protected implicit def convertToFreeSpecStringWrapper(s: String)(implicit pos: source.Position): FreeSpecStringWrapper = new FreeSpecStringWrapper(s, pos)
 
   /**
    * Supports shared test registration in <code>path.FreeSpec</code>s.

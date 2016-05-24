@@ -1806,7 +1806,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * @param resultOfStringPassedToVerb an <code>ResultOfStringPassedToVerb</code> instance
    */
-  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) =
+  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
 
   /**
@@ -1961,7 +1961,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    *
    * @param resultOfTaggedAsInvocation an <code>ResultOfTaggedAsInvocation</code> instance
    */
-  protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) =
+  protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
     new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation)
 
   /**

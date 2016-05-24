@@ -1429,7 +1429,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * <code>InAndIgnoreMethods</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
-  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) =
+  protected implicit def convertToInAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb): InAndIgnoreMethods =
     new InAndIgnoreMethods(resultOfStringPassedToVerb)
   
   /**
@@ -1527,7 +1527,7 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * <code>InAndIgnoreMethodsAfterTaggedAs</code>, to enable <code>in</code> and <code>ignore</code>
    * methods to be invokable on that object.
    */
-  protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation) =
+  protected implicit def convertToInAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation: ResultOfTaggedAsInvocation): InAndIgnoreMethodsAfterTaggedAs =
     new InAndIgnoreMethodsAfterTaggedAs(resultOfTaggedAsInvocation)
 
   /**

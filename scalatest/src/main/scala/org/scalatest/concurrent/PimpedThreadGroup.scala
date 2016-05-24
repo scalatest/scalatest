@@ -42,7 +42,7 @@ private[scalatest] object PimpedThreadGroup {
   /**
    * Converts a ThreadGroup into a PimpedThreadGroup
    */
-  implicit def threadGroupToPimpedThreadGroup(tg: ThreadGroup) = new PimpedThreadGroup(tg)
+  implicit def threadGroupToPimpedThreadGroup(tg: ThreadGroup): PimpedThreadGroup = new PimpedThreadGroup(tg)
 
   /**
    * Get all the Threads in the current ThreadGroup

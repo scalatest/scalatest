@@ -1074,7 +1074,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * @param s <code>String</code> to be wrapped
    * @return an instance of <code>WordSpecStringWrapper</code>
    */
-  protected implicit def convertToWordSpecStringWrapper(s: String) = new WordSpecStringWrapper(s)
+  protected implicit def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
 
   /**
    * Supports the registration of subjects.

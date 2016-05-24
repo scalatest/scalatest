@@ -89,14 +89,14 @@ trait EitherValues {
    *
    * @param either the <code>LeftProjection</code> on which to add the <code>value</code> method
    */
-  implicit def convertLeftProjectionToValuable[L, R](leftProj: Either.LeftProjection[L, R])(implicit pos: source.Position) = new LeftValuable(leftProj, pos)
+  implicit def convertLeftProjectionToValuable[L, R](leftProj: Either.LeftProjection[L, R])(implicit pos: source.Position): LeftValuable[L, R] = new LeftValuable(leftProj, pos)
 
   /**
    * Implicit conversion that adds a <code>value</code> method to <code>RightProjection</code>.
    *
    * @param either the <code>RightProjection</code> on which to add the <code>value</code> method
    */
-  implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position) = new RightValuable(rightProj, pos)
+  implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
 
   /**
    * Wrapper class that adds a <code>value</code> method to <code>LeftProjection</code>, allowing

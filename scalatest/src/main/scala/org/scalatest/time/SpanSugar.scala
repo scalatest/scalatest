@@ -517,7 +517,7 @@ trait SpanSugar {
    * @param i: the <code>Int</code> to which to add time units methods
    * @return a <code>GrainOfTime</code> wrapping the passed <code>Int</code>
    */
-  implicit def convertIntToGrainOfTime(i: Int) = new GrainOfTime(i)
+  implicit def convertIntToGrainOfTime(i: Int): GrainOfTime = new GrainOfTime(i)
   
   /**
    * Implicit conversion that adds time units methods to <code>Long</code>s.
@@ -525,7 +525,7 @@ trait SpanSugar {
    * @param i: the <code>Long</code> to which to add time units methods
    * @return a <code>GrainOfTime</code> wrapping the passed <code>Long</code>
    */
-  implicit def convertLongToGrainOfTime(i: Long) = new GrainOfTime(i)
+  implicit def convertLongToGrainOfTime(i: Long): GrainOfTime = new GrainOfTime(i)
 
 
   /**
@@ -534,7 +534,7 @@ trait SpanSugar {
    * @param f: the <code>Float</code> to which to add time units methods
    * @return a <code>FloatingGrainOfTime</code> wrapping the passed <code>Float</code>
    */
-  implicit def convertFloatToGrainOfTime(f: Float) = new FloatingGrainOfTime(f)
+  implicit def convertFloatToGrainOfTime(f: Float): FloatingGrainOfTime = new FloatingGrainOfTime(f)
 
   /**
    * Implicit conversion that adds time units methods to <code>Double</code>s.
@@ -542,7 +542,7 @@ trait SpanSugar {
    * @param d: the <code>Double</code> to which to add time units methods
    * @return a <code>FloatingGrainOfTime</code> wrapping the passed <code>Double</code>
    */
-  implicit def convertDoubleToGrainOfTime(d: Double) = new FloatingGrainOfTime(d)
+  implicit def convertDoubleToGrainOfTime(d: Double): FloatingGrainOfTime = new FloatingGrainOfTime(d)
 }
 
 /**

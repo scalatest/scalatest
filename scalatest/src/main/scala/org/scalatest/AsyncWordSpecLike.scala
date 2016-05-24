@@ -944,7 +944,7 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    * methods <code>when</code>, <code>which</code>, <code>in</code>, <code>is</code>, <code>taggedAs</code>
    * and <code>ignore</code> to be invoked on <code>String</code>s.
    */
-  protected implicit def convertToWordSpecStringWrapper(s: String) = new WordSpecStringWrapper(s)
+  protected implicit def convertToWordSpecStringWrapper(s: String): WordSpecStringWrapper = new WordSpecStringWrapper(s)
 
   // Used to enable should/can/must to take a block (except one that results in type string. May
   // want to mention this as a gotcha.)
