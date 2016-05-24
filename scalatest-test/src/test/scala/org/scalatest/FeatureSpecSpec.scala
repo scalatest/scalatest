@@ -95,7 +95,7 @@ class FeatureSpecSpec extends FunSpec {
 
     it("should run tests registered via the scenariosFor syntax") {
       trait SharedFeatureSpecTests { this: FeatureSpec =>
-        def nonEmptyStack(s: String)(i: Int) {
+        def nonEmptyStack(s: String)(i: Int): Unit = {
           scenario("I am shared") {/* ASSERTION_SUCCEED */}
         }
       }

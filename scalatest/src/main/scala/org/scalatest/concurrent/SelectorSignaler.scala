@@ -32,7 +32,7 @@ class SelectorSignaler(selector: Selector) extends Signaler {
    *
    * @param testThread unused by this strategy
    */
-  def apply(testThread: Thread) {
+  def apply(testThread: Thread): Unit = {
     selector.wakeup()
   }
 }

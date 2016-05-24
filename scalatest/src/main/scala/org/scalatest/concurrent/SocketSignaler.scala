@@ -33,7 +33,7 @@ class SocketSignaler(socket: Socket) extends Signaler {
    *
    * @param testThread unused by this strategy
    */
-  def apply(testThread: Thread) {
+  def apply(testThread: Thread): Unit = {
     socket.close()
   }
 }

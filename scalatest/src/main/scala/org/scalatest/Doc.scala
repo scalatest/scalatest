@@ -77,7 +77,7 @@ private[scalatest] trait Doc extends Suite { thisDoc =>
 
   private final val atomic = new AtomicReference[Bundle](Bundle(None, Map()))
 
-  private def updateAtomic(oldBundle: Bundle, newBundle: Bundle) {
+  private def updateAtomic(oldBundle: Bundle, newBundle: Bundle): Unit = {
     val shouldBeOldBundle = atomic.getAndSet(newBundle)
     if (!(shouldBeOldBundle eq oldBundle))
       throw new ConcurrentModificationException("concurrentDocSpecMod")
@@ -87,7 +87,7 @@ private[scalatest] trait Doc extends Suite { thisDoc =>
   // TODO: A test that throws NotAllowedE if it is called twice
   // TODO: A test that throws TestRegistrationClosedE if it is called after run has been called
   private var bodyText: Option[String] = None
-  def body(elem: Elem) {
+  def body(elem: Elem): Unit = {
     bodyText = Some(elem.text)
   }
 

@@ -21,7 +21,7 @@ import org.scalatest.WordSpec
 
 trait AssertionsForJUnit3SharedTests { this: WordSpec =>
 
-  def fromAssertExpectInterceptAndFail() {
+  def fromAssertExpectInterceptAndFail(): Unit = {
 
     "from failed assert expressions" in {
 

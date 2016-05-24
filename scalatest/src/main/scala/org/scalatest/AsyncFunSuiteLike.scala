@@ -237,7 +237,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    * <a href="#sharedTests">Shared tests section</a> in the main documentation for this trait.
    * </p>
    */
-  protected def testsFor(unit: Unit) {}
+  protected def testsFor(unit: Unit): Unit = {}
 
   /**
    * Suite style name.

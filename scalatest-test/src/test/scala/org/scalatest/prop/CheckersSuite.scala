@@ -200,7 +200,7 @@ class CheckersSpec extends FunSpec with Checkers {
     }
   }
   
-  def expectFileNameLineNumber(ex: GeneratorDrivenPropertyCheckFailedException, expectedFileName: String, expectedLineNumber: Int) {
+  def expectFileNameLineNumber(ex: GeneratorDrivenPropertyCheckFailedException, expectedFileName: String, expectedLineNumber: Int): Unit = {
       assertResult(expectedFileName)(ex.failedCodeFileName.getOrElse(null))
       assertResult(expectedLineNumber)(ex.failedCodeLineNumber.getOrElse(-1))
   }

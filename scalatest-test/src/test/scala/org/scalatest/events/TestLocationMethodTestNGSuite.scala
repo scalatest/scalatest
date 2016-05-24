@@ -28,11 +28,11 @@ class TestLocationMethodTestNGSuite extends TestNGSuite with TestLocationMethodS
   val expectedScopeClosedList = Nil
   
   @Test
-  def succeeds() { 
+  def succeeds(): Unit = { 
       
   }
   @Test(enabled=false) 
-  def ignore() {
+  def ignore(): Unit = {
     
   }
 }

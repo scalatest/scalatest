@@ -42,22 +42,22 @@ private[scalatest] class ColorBar extends JPanel {
 
   setBackground(SENSIBLE_GRAY)
 
-  def setGreen() {
+  def setGreen(): Unit = {
     barColor = HANDSOME_GREEN
     repaint()
   }
 
-  def setRed() {
+  def setRed(): Unit = {
     barColor = DEEP_RED
     repaint()
   }
 
-  def setGray() {
+  def setGray(): Unit = {
     barColor = SENSIBLE_GRAY
     repaint()
   }
 
-  def setValue(value: Int) {
+  def setValue(value: Int): Unit = {
 
     if (value < 0) 
       throw new IllegalArgumentException()
@@ -70,7 +70,7 @@ private[scalatest] class ColorBar extends JPanel {
     repaint()
   }
 
-  def setMax(max: Int) {
+  def setMax(max: Int): Unit = {
 
     if (max < 0)
       throw new IllegalArgumentException()
@@ -83,11 +83,11 @@ private[scalatest] class ColorBar extends JPanel {
     repaint()
   }
 
-  override def update(g: Graphics) {
+  override def update(g: Graphics): Unit = {
     paint(g)
   }
 
-  override def paint(g: Graphics) {
+  override def paint(g: Graphics): Unit = {
 
     val dim: Dimension = getSize()
 

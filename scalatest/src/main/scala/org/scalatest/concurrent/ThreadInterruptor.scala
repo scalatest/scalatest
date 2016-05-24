@@ -31,7 +31,7 @@ object ThreadInterruptor extends Interruptor {
    *
    * @param testThread the <code>Thread</code> to interrupt
    */
-  def apply(testThread: Thread) {
+  def apply(testThread: Thread): Unit = {
     testThread.interrupt()
   }
 }

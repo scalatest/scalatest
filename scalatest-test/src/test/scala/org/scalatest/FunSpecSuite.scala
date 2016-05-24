@@ -149,7 +149,7 @@ class FunSpecSuite extends FunSuite {
     var reportHadCorrectSpecText = false
     var reportHadCorrectFormattedSpecText = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("must start with proper words") != -1)
@@ -181,7 +181,7 @@ class FunSpecSuite extends FunSuite {
     var reportHadCorrectSpecText = false
     var reportHadCorrectFormattedSpecText = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("must start with proper words") != -1)
@@ -213,7 +213,7 @@ class FunSpecSuite extends FunSuite {
     var reportHadCorrectSpecText = false
     var reportHadCorrectFormattedSpecText = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: TestFailed =>
             if (event.testName.indexOf("must start with proper words") != -1)
@@ -251,7 +251,7 @@ class FunSpecSuite extends FunSuite {
     var scopeOpenedHasBeenInvoked = false
     var theOtherMethodHasBeenInvoked = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
             // scopeOpened should be invoked before the other method
@@ -310,7 +310,7 @@ class FunSpecSuite extends FunSuite {
     var scopeOpenedHasBeenInvoked = false
     var theOtherMethodHasBeenInvoked = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
             // scopeOpened should be invoked before the other method
@@ -369,7 +369,7 @@ class FunSpecSuite extends FunSuite {
     var scopeOpenedHasBeenInvoked = false
     var theOtherMethodHasBeenInvoked = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
             // scopeOpened should be invoked before the other method
@@ -431,7 +431,7 @@ class FunSpecSuite extends FunSuite {
     var scopeOpenedHasBeenInvokedTwice = false
     var theOtherMethodHasBeenInvoked = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
             // scopeOpened should be invoked before the other method
@@ -508,7 +508,7 @@ class FunSpecSuite extends FunSuite {
     var scopeOpenedHasBeenInvokedTwice = false
     var theOtherMethodHasBeenInvoked = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
             // scopeOpened should be invoked before the other method
@@ -580,7 +580,7 @@ class FunSpecSuite extends FunSuite {
     var reportHadCorrectSpecText = false
     var reportHadCorrectFormattedSpecText = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("it should start with proper words") != -1)
@@ -598,7 +598,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec {
-      def myBehavior(i: Int) {
+      def myBehavior(i: Int): Unit = {
         it("it should start with proper words") {/* ASSERTION_SUCCEED */}
       }
       it should behave like myBehavior(1)
@@ -615,7 +615,7 @@ class FunSpecSuite extends FunSuite {
     var reportHadCorrectSpecText = false
     var reportHadCorrectFormattedSpecText = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("must start with proper words") != -1)
@@ -633,7 +633,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec {
-      def myBehavior(i: Int) {
+      def myBehavior(i: Int): Unit = {
         it("must start with proper words") {/* ASSERTION_SUCCEED */}
       }
       it should behave like myBehavior(1)
@@ -650,7 +650,7 @@ class FunSpecSuite extends FunSuite {
     var reportHadCorrectSpecText = false
     var reportHadCorrectFormattedSpecText = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("must start with proper words") != -1)
@@ -668,7 +668,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec {
-      def myBehavior(i: Int) {
+      def myBehavior(i: Int): Unit = {
         it("must start with proper words") {/* ASSERTION_SUCCEED */}
       }
       it should behave like myBehavior(1)
@@ -685,7 +685,7 @@ class FunSpecSuite extends FunSuite {
     var reportHadCorrectSpecText = false
     var reportHadCorrectFormattedSpecText = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: TestFailed =>
             if (event.testName.indexOf("must start with proper words") != -1)
@@ -703,7 +703,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec {
-      def myBehavior(i: Int) {
+      def myBehavior(i: Int): Unit = {
         it("must start with proper words") { fail() }
       }
       it should behave like myBehavior(1)
@@ -726,7 +726,7 @@ class FunSpecSuite extends FunSuite {
     var scopeOpenedHasBeenInvoked = false
     var theOtherMethodHasBeenInvoked = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
             // scopeOpened should be invoked before the other method
@@ -761,7 +761,7 @@ class FunSpecSuite extends FunSuite {
       }
     }
     class MySpec extends FunSpec {
-      def myBehavior(i: Int) {
+      def myBehavior(i: Int): Unit = {
         it("should start with proper words") {/* ASSERTION_SUCCEED */}
       }
       describe("My Spec") {
@@ -824,7 +824,7 @@ class FunSpecSuite extends FunSuite {
   test("In a TestSucceeded report, the example name should start with '<description> should' if nested two levels inside describe clauses") {
     var testSucceededReportHadCorrectTestName = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("A Stack (when working right) should push and pop properly") != -1) {
@@ -864,7 +864,7 @@ class FunSpecSuite extends FunSuite {
   test("In a TestSucceeded report, the example name should be verbatim if top level if example registered with it") {
     var testSucceededReportHadCorrectTestName = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("this thing must start with proper words") != -1) {
@@ -885,7 +885,7 @@ class FunSpecSuite extends FunSuite {
   test("In a testSucceeded report, the example name should be verbatim if top level if example registered with it") {
     var testSucceededReportHadCorrectTestName = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("this thing must start with proper words") != -1) {
@@ -906,7 +906,7 @@ class FunSpecSuite extends FunSuite {
   test("In a TestFailed report, the example name should be verbatim if top level if example registered with it") {
     var testFailedReportHadCorrectTestName = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: TestFailed =>
             if (event.testName.indexOf("this thing must start with proper words") != -1)
@@ -927,7 +927,7 @@ class FunSpecSuite extends FunSuite {
         "inside a describe clause and registered with it") {
     var testSucceededReportHadCorrectTestName = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestStarting(_, _, _, _, testName, _, _, _, _, _, _, _) =>
             if (testName == "A Stack needs to push and pop properly") {
@@ -953,14 +953,14 @@ class FunSpecSuite extends FunSuite {
       var gotAnUndefinedFormatter = false
       var lastEventWithUndefinedFormatter: Option[Event] = None
 
-      private def ensureFormatterIsDefined(event: Event) {
+      private def ensureFormatterIsDefined(event: Event): Unit = {
         if (!event.formatter.isDefined) {
           gotAnUndefinedFormatter = true
           lastEventWithUndefinedFormatter = Some(event)
         }
       }
 
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: RunAborted => ensureFormatterIsDefined(event)
           case event: SuiteAborted => ensureFormatterIsDefined(event)
@@ -994,7 +994,7 @@ class FunSpecSuite extends FunSuite {
     var testSucceededReportHadCorrectSpecText = false
     var lastSpecText: Option[String] = None
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             formatter match {
@@ -1021,7 +1021,7 @@ class FunSpecSuite extends FunSuite {
     var testSucceededReportHadCorrectSpecText = false
     var lastSpecText: Option[String] = None
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             formatter match {
@@ -1050,7 +1050,7 @@ class FunSpecSuite extends FunSuite {
     var testSucceededReportHadCorrectSpecText = false
     var lastSpecText: Option[String] = None
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             formatter match {
@@ -1084,7 +1084,7 @@ class FunSpecSuite extends FunSuite {
     class MyReporter extends Reporter {
       var scopeOpenedCalled = false
       var expectedMessageReceived = false
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: ScopeOpened =>
             event.formatter match {
@@ -1117,7 +1117,7 @@ class FunSpecSuite extends FunSuite {
   test("a shared specifier invoked with 'should behave like a' should get invoked") {
     class MySpec extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       var sharedExampleInvoked = false
-      def invocationVerifier(i: Int) {
+      def invocationVerifier(i: Int): Unit = {
         it("should be invoked") {
           sharedExampleInvoked = true
           /* ASSERTION_SUCCEED */
@@ -1142,7 +1142,7 @@ class FunSpecSuite extends FunSuite {
     class MySpec extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       var sharedExampleInvoked = false
       var sharedExampleAlsoInvoked = false
-      def invocationVerifier(i: Int) {
+      def invocationVerifier(i: Int): Unit = {
         it("should be invoked") {
           sharedExampleInvoked = true
           /* ASSERTION_SUCCEED */
@@ -1173,7 +1173,7 @@ class FunSpecSuite extends FunSuite {
       var example1WasInvoked = false
       var example2WasInvokedAfterExample1 = false
       var example3WasInvokedAfterExample2 = false
-      def invocationVerifier(i: Int) {
+      def invocationVerifier(i: Int): Unit = {
         it("should get invoked") {
           example1WasInvoked = true
           /* ASSERTION_SUCCEED */
@@ -1203,7 +1203,7 @@ class FunSpecSuite extends FunSuite {
       var example1WasInvoked = false
       var example2WasInvokedAfterExample1 = false
       var example3WasInvokedAfterExample2 = false
-      def invocationVerifier(i: Int) {
+      def invocationVerifier(i: Int): Unit = {
         it("should get invoked") {
           example1WasInvoked = true
           /* ASSERTION_SUCCEED */
@@ -1233,7 +1233,7 @@ class FunSpecSuite extends FunSuite {
     var testSucceededReportHadCorrectTestName = false
     class MyReporter extends Reporter {
 
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("it should be invoked") != -1) {
@@ -1245,7 +1245,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
       var sharedExampleInvoked = false
-      def invocationVerifier(i: Int) {
+      def invocationVerifier(i: Int): Unit = {
         it("it should be invoked") {
           sharedExampleInvoked = true
           /* ASSERTION_SUCCEED */
@@ -1262,7 +1262,7 @@ class FunSpecSuite extends FunSuite {
     var testSucceededReportHadCorrectTestName = false
     class MyReporter extends Reporter {
 
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case TestSucceeded(ordinal, suiteName, suiteId, suiteClassName, testName, testText, testEvents, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
             if (testName.indexOf("A Stack should pop properly") != -1) {
@@ -1274,7 +1274,7 @@ class FunSpecSuite extends FunSuite {
     }
     class MySpec extends FunSpec {
       var sharedExampleInvoked = false
-      def invocationVerifier(i: Int) {
+      def invocationVerifier(i: Int): Unit = {
         it("should pop properly") {
           sharedExampleInvoked = true
           /* ASSERTION_SUCCEED */
@@ -1309,7 +1309,7 @@ class FunSpecSuite extends FunSuite {
 
   test("expectedTestCount should include tests in a share that is called") {
     class MySpec extends FunSpec {
-      def misbehavior(i: Int) {
+      def misbehavior(i: Int): Unit = {
         it("should six") {/* ASSERTION_SUCCEED */}
         it("should seven") {/* ASSERTION_SUCCEED */}
       }
@@ -1328,7 +1328,7 @@ class FunSpecSuite extends FunSuite {
 
   test("expectedTestCount should include tests in a share that is called twice") {
     class MySpec extends FunSpec {
-      def misbehavior(i: Int) {
+      def misbehavior(i: Int): Unit = {
         it("should six") {/* ASSERTION_SUCCEED */}
         it("should seven") {/* ASSERTION_SUCCEED */}
       }
@@ -1370,7 +1370,7 @@ class FunSpecSuite extends FunSuite {
       var infoProvidedCalled = false
       var expectedMessageReceived = false
 
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: InfoProvided =>
             infoProvidedCalled = true

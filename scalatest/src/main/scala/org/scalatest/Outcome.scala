@@ -128,7 +128,7 @@ sealed abstract class Outcome {
   // Used internally to resuse the old code that was catching these exceptions when running tests. Eventually I would
   // like to rewrite that old code to use the result type, but it will still needs to catch and handle these exceptions
   // in the same way in case they come back from a user's withFixture implementation.
-  private[scalatest] def toUnit {
+  private[scalatest] def toUnit: Unit = {
     this match {
       case Succeeded =>
       case Exceptional(e) => throw e

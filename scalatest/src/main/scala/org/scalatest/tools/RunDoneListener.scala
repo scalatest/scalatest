@@ -23,5 +23,5 @@ import org.scalatest._
  * @author Bill Venners
  */
 private[scalatest] trait RunDoneListener {
-    def done() = ()
+    def done(): Unit = ()
 }

@@ -1137,7 +1137,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    */
   protected implicit val subjectRegistrationFunction: StringVerbBlockRegistration =
     new StringVerbBlockRegistration {
-      def apply(left: String, verb: String, pos: source.Position, f: () => Unit) = registerBranch(left, Some(verb), verb, "apply", 6, -2, pos, f)
+      def apply(left: String, verb: String, pos: source.Position, f: () => Unit): Unit = registerBranch(left, Some(verb), verb, "apply", 6, -2, pos, f)
     }
 
   /**

@@ -166,7 +166,7 @@ trait CanVerb {
      * no-arg function.
      * </p>
      */
-    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
+    def can(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
       fun(leftSideString, "can", pos, right _)
     }
 
@@ -193,7 +193,7 @@ trait CanVerb {
      * <code>"can"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>can</code>.
      * </p>
      */
-    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration) {
+    def can(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
       swawr(leftSideString, "can", resultOfAfterWordApplication, pos)
     }
   }

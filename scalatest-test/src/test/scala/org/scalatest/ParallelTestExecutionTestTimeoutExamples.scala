@@ -81,15 +81,15 @@ object ParallelTestExecutionTestTimeoutExamples extends Tables {
 class TestHoldingReporter(dispatch: Reporter, holdingTestSucceededName: String) extends CatchReporter {
   val out = System.err
   private var holdEvent: Option[Event] = None
-  override protected def doApply(event: Event) {
+  override protected def doApply(event: Event): Unit = {
     event match {
       case testSucceeded: TestSucceeded if testSucceeded.testName == holdingTestSucceededName =>
         holdEvent = Some(testSucceeded)
       case _ => dispatch(event)
     }
   }
-  protected def doDispose() {}
-  def fireHoldEvent() {
+  protected def doDispose(): Unit = {}
+  def fireHoldEvent(): Unit = {
     holdEvent match {
       case Some(event) => dispatch(event)
       case None =>
@@ -100,9 +100,9 @@ class TestHoldingReporter(dispatch: Reporter, holdingTestSucceededName: String) 
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
 class ExampleParallelTestExecutionTestTimeoutSpec extends RefSpec with ParallelTestExecution with TestTimeoutExpectedResults {
-  def `test 1` {}
-  def `test 2` {}
-  def `test 3` {}
+  def `test 1`: Unit = {}
+  def `test 2`: Unit = {}
+  def `test 3`: Unit = {}
   
   val holdTestSucceededName = "test 2"
   val holdUntilEventCount = 5
@@ -112,7 +112,7 @@ class ExampleParallelTestExecutionTestTimeoutSpec extends RefSpec with ParallelT
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 6)
     checkTestStarting(events(0), "test 1")
     checkTestSucceeded(events(1), "test 1")
@@ -126,9 +126,9 @@ class ExampleParallelTestExecutionTestTimeoutSpec extends RefSpec with ParallelT
 
 @DoNotDiscover
 class ExampleParallelTestExecutionTestTimeoutFixtureSpec extends fixture.Spec with ParallelTestExecution with TestTimeoutExpectedResults with StringFixture {
-  def `test 1`(fixture: String) {}
-  def `test 2`(fixture: String) {}
-  def `test 3`(fixture: String) {}
+  def `test 1`(fixture: String): Unit = {}
+  def `test 2`(fixture: String): Unit = {}
+  def `test 3`(fixture: String): Unit = {}
   
   val holdTestSucceededName = "test 2"
   val holdUntilEventCount = 5
@@ -138,7 +138,7 @@ class ExampleParallelTestExecutionTestTimeoutFixtureSpec extends fixture.Spec wi
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 6)
     checkTestStarting(events(0), "test 1")
     checkTestSucceeded(events(1), "test 1")
@@ -165,7 +165,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSuite exten
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 6)
     checkTestStarting(events(0), "Test 1")
     checkTestSucceeded(events(1), "Test 1")
@@ -192,7 +192,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSuit
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 6)
     checkTestStarting(events(0), "Test 1")
     checkTestSucceeded(events(1), "Test 1")
@@ -224,7 +224,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFunSpec extend
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Scope 1")
     checkTestStarting(events(1), "Scope 1 Test 1")
@@ -262,7 +262,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFunSpec
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Scope 1")
     checkTestStarting(events(1), "Scope 1 Test 1")
@@ -300,7 +300,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFeatureSpec ex
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Feature: Scope 1")
     checkTestStarting(events(1), "Feature: Scope 1 Scenario: Test 1")
@@ -338,7 +338,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFeature
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Feature: Scope 1")
     checkTestStarting(events(1), "Feature: Scope 1 Scenario: Test 1")
@@ -375,7 +375,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFlatSpec exten
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Scope 1")
     checkTestStarting(events(1), "Scope 1 should Test 1")
@@ -412,7 +412,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFlatSpe
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Scope 1")
     checkTestStarting(events(1), "Scope 1 should Test 1")
@@ -451,7 +451,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFreeSpec exten
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Scope 1")
     checkTestStarting(events(1), "Scope 1 Test 1")
@@ -490,7 +490,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureFreeSpe
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Scope 1")
     checkTestStarting(events(1), "Scope 1 Test 1")
@@ -523,7 +523,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutPropSpec exten
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 6)
     checkTestStarting(events(0), "Test 1")
     checkTestSucceeded(events(1), "Test 1")
@@ -550,7 +550,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixturePropSpe
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 6)
     checkTestStarting(events(0), "Test 1")
     checkTestSucceeded(events(1), "Test 1")
@@ -583,7 +583,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutWordSpec exten
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Scope 1")
     checkTestStarting(events(1), "Scope 1 should Test 1")
@@ -622,7 +622,7 @@ protected[scalatest] class ExampleParallelTestExecutionTestTimeoutFixtureWordSpe
     holdingReporter
   }
   
-  def assertTestTimeoutTest(events: List[Event]) {
+  def assertTestTimeoutTest(events: List[Event]): Unit = {
     assert(events.size === 12)
     checkScopeOpened(events(0), "Scope 1")
     checkTestStarting(events(1), "Scope 1 should Test 1")

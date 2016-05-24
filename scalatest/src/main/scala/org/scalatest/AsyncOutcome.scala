@@ -18,7 +18,7 @@ private[scalatest] trait AsyncOutcome {
 
 private[scalatest] case class PastOutcome(past: Outcome) extends AsyncOutcome {
 
-  def onComplete(f: Try[Outcome] => Unit) = {
+  def onComplete(f: Try[Outcome] => Unit): Unit = {
     f(new Success(past))
   }
   def toStatus: Status =
@@ -51,7 +51,7 @@ private[scalatest] case class InternalFutureOutcome(future: Future[Outcome])(imp
       status.setCompleted()
   } /* fills in ctx here */
 
-  def onComplete(f: Try[Outcome] => Unit) = {
+  def onComplete(f: Try[Outcome] => Unit): Unit = {
     var executeLocally = false
     synchronized {
       if (!future.isCompleted)

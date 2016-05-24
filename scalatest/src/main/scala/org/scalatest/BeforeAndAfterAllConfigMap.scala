@@ -186,7 +186,7 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
    * needed by the entire suite. This trait's implementation of this method does nothing.
    * </p>
    */
-  protected def beforeAll(configMap: ConfigMap) {
+  protected def beforeAll(configMap: ConfigMap): Unit = {
   }
 
   /**
@@ -201,7 +201,7 @@ trait BeforeAndAfterAllConfigMap  extends SuiteMixin { this: Suite =>
    * needed by the entire suite. This trait's implementation of this method does nothing.
    * </p>
    */
-  protected def afterAll(configMap: ConfigMap) {
+  protected def afterAll(configMap: ConfigMap): Unit = {
   }
 
   /**

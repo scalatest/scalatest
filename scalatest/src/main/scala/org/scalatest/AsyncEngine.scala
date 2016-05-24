@@ -117,7 +117,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
   final val atomic = new AtomicReference[Bundle](Bundle(Trunk, List(), Map(), Map(), false))
 
-  def updateAtomic(oldBundle: Bundle, newBundle: Bundle) {
+  def updateAtomic(oldBundle: Bundle, newBundle: Bundle): Unit = {
     val shouldBeOldBundle = atomic.getAndSet(newBundle)
     if (!(shouldBeOldBundle eq oldBundle))
       throw new ConcurrentModificationException(concurrentBundleModMessageFun)
@@ -229,7 +229,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       }
     }
 
-  private def checkTestOrIgnoreParamsForNull(testName: String, testTags: Tag*) {
+  private def checkTestOrIgnoreParamsForNull(testName: String, testTags: Tag*): Unit = {
     requireNonNull(testName)
     if (testTags.exists(_ == null))
       throw new NullArgumentException("a test tag was null")
@@ -447,7 +447,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
         traverseSubNodes()
     }
 
-    def traverseSubNodes() {
+    def traverseSubNodes(): Unit = {
       branch.subNodes.reverse.foreach { node =>
         if (!stopper.stopRequested) {
           node match {
@@ -674,7 +674,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     }
   } */
 
-  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, location: Option[Location], pos: source.Position) {
+  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, location: Option[Location], pos: source.Position): Unit = {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -711,7 +711,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   }
 
   // Used by FlatSpec, which doesn't nest. So this one just makes a new one off of the trunk
-  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, pos: source.Position) {
+  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, pos: source.Position): Unit = {
 
     val oldBundle = atomic.get
     val (_, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -770,7 +770,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     testName
   }
 
-  def registerIgnoredAsyncTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, location: Option[Location], pos: source.Position, testTags: Tag*) {
+  def registerIgnoredAsyncTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, location: Option[Location], pos: source.Position, testTags: Tag*): Unit = {
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -806,7 +806,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
   private[scalatest] def getTestName(testText: String, parent: Branch): String =
     Resources.prefixSuffix(getTestNamePrefix(parent), testText.trim).trim
 
-  private def checkRegisterTestParamsForNull(testText: String, testTags: Tag*) {
+  private def checkRegisterTestParamsForNull(testText: String, testTags: Tag*): Unit = {
     requireNonNull(testText)
     if (testTags.exists(_ == null))
       throw new NullArgumentException("a test tag was null")

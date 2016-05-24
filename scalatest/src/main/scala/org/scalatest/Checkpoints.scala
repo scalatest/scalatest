@@ -129,7 +129,7 @@ trait Checkpoints {
      *
      * @param f the block of code, likely containing one or more assertions, to execute
      */
-    def apply(f: => Unit) {
+    def apply(f: => Unit): Unit = {
       try {
         f
       }
@@ -148,7 +148,7 @@ trait Checkpoints {
      * whose detail message lists the failure messages and line numbers from each of the
      * failed checkpoints.
      */
-    def reportAll()(implicit pos: source.Position) {
+    def reportAll()(implicit pos: source.Position): Unit = {
       // SKIP-SCALATESTJS-START
       val stackDepth = 1
       // SKIP-SCALATESTJS-END

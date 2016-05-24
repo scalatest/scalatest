@@ -150,7 +150,7 @@ trait Requirements {
      * @param bool the <code>Bool</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalArgumentException</code>'s error message when the requirement failed
      */
-    def macroRequire(bool: Bool, clue: Any) {
+    def macroRequire(bool: Bool, clue: Any): Unit = {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
@@ -165,7 +165,7 @@ trait Requirements {
      * @param bool the <code>Bool</code> to check as requirement
      * @param clue optional clue to be included in <code>IllegalStateException</code>'s error message when the requirement failed
      */
-    def macroRequireState(bool: Bool, clue: Any) {
+    def macroRequireState(bool: Bool, clue: Any): Unit = {
       if (clue == null)
         throw new NullPointerException("clue was null")
       if (!bool.value) {
@@ -180,7 +180,7 @@ trait Requirements {
      * @param variableNames names of variable passed as appear in source
      * @param arguments arguments to check for <code>null</code> value
      */
-    def macroRequireNonNull(variableNames: Array[String], arguments: Array[Any], prettifier: Prettifier, pos: source.Position) {
+    def macroRequireNonNull(variableNames: Array[String], arguments: Array[Any], prettifier: Prettifier, pos: source.Position): Unit = {
       val nullList = arguments.zipWithIndex.filter { case (e, idx) =>
         e == null
       }

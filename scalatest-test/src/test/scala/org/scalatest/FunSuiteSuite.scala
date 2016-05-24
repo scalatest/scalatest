@@ -75,7 +75,7 @@ class YeOldeFunSuiteSpec extends RefSpec {
       test("from constructor") {
         fromConstructorTestExecuted = true
       }
-      def registerOne() {
+      def registerOne(): Unit = {
         test("from method") {
           fromMethodTestExecuted = true
         }
@@ -114,7 +114,7 @@ class YeOldeFunSuiteSpec extends RefSpec {
     class MyReporter extends Reporter {
       var infoProvidedReceived = false
       var lastEvent: InfoProvided = null
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: InfoProvided =>
             infoProvidedReceived = true
@@ -140,7 +140,7 @@ class YeOldeFunSuiteSpec extends RefSpec {
     var infoProvidedReceived = false
     var infoProvidedReceivedBeforeTest = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: InfoProvided =>
             infoProvidedReceived = true
@@ -166,7 +166,7 @@ class YeOldeFunSuiteSpec extends RefSpec {
     var infoProvidedReceived = false
     var infoProvidedReceivedAfterTest = true
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: InfoProvided =>
             infoProvidedReceived = true
@@ -189,11 +189,11 @@ class YeOldeFunSuiteSpec extends RefSpec {
     assert(infoProvidedReceived)
   }
 
-  def callingTestFromWithinATestClauseResultsInATestFailedErrorAtRuntime() {
+  def callingTestFromWithinATestClauseResultsInATestFailedErrorAtRuntime(): Unit = {
 
     var testFailedAsExpected = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: TestFailed =>
             if (event.testName.indexOf("this test should blow up") != -1)
@@ -216,11 +216,11 @@ class YeOldeFunSuiteSpec extends RefSpec {
     assert(testFailedAsExpected)
   }
 
-  def callingTestFromWithinATestWithTagsClauseResultsInATestFailedErrorAtRuntime() {
+  def callingTestFromWithinATestWithTagsClauseResultsInATestFailedErrorAtRuntime(): Unit = {
     
     var testFailedAsExpected = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: TestFailed =>
           if (event.testName.indexOf("this test should blow up") != -1)
@@ -243,11 +243,11 @@ class YeOldeFunSuiteSpec extends RefSpec {
     assert(testFailedAsExpected)
   }
 
-  def callingIgnoreFromWithinATestClauseResultsInATestFailedErrorAtRuntime() {
+  def callingIgnoreFromWithinATestClauseResultsInATestFailedErrorAtRuntime(): Unit = {
 
     var testFailedAsExpected = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: TestFailed =>
             if (event.testName.indexOf("this test should blow up") != -1)
@@ -270,11 +270,11 @@ class YeOldeFunSuiteSpec extends RefSpec {
     assert(testFailedAsExpected)
   }
 
-  def callingIgnoreWithTagsFromWithinATestClauseResultsInATestFailedErrorAtRuntime() {
+  def callingIgnoreWithTagsFromWithinATestClauseResultsInATestFailedErrorAtRuntime(): Unit = {
     
     var testFailedAsExpected = false
     class MyReporter extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case event: TestFailed =>
             if (event.testName.indexOf("this test should blow up") != -1)

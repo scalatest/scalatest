@@ -71,33 +71,33 @@ trait ClassTaggingFixtureServices {
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingSuite extends Suite with ClassTaggingFixtureServices {
-  def testMethod1() {}
-  def testMethod2() {}
-  def testMethod3() {}
+  def testMethod1(): Unit = {}
+  def testMethod2(): Unit = {}
+  def testMethod3(): Unit = {}
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFixtureSuite extends fixture.TestSuite with ClassTaggingFixtureServices with StringFixture {
-  def testMethod1() {}
-  def testMethod2() {}
-  def testMethod3() {}
+  def testMethod1(): Unit = {}
+  def testMethod2(): Unit = {}
+  def testMethod3(): Unit = {}
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingSpec extends RefSpec with ClassTaggingFixtureServices {
-  def `test 1` {}
-  def `test 2` {}
-  def `test 3` {}
+  def `test 1`: Unit = {}
+  def `test 2`: Unit = {}
+  def `test 3`: Unit = {}
 }
 
 @DoNotDiscover
 @Ignore
 class ExampleClassTaggingFixtureSpec extends fixture.Spec with ClassTaggingFixtureServices with StringFixture {
-  def `test 1`(fixture: String) {}
-  def `test 2`(fixture: String) {}
-  def `test 3`(fixture: String) {}
+  def `test 1`(fixture: String): Unit = {}
+  def `test 2`(fixture: String): Unit = {}
+  def `test 3`(fixture: String): Unit = {}
 }
 
 @DoNotDiscover
@@ -108,11 +108,11 @@ class ExampleClassTaggingJUnit3Suite extends JUnit3Suite with ClassTaggingFixtur
 @Ignore
 class ExampleClassTaggingJUnitSuite extends JUnitSuite with ClassTaggingFixtureServices {
   @Test
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
   @Test 
-  def testMethod2() {}
+  def testMethod2(): Unit = {}
   @Test 
-  def testMethod3() {}
+  def testMethod3(): Unit = {}
 }
 
 import org.testng.annotations.{Test => TestNG }
@@ -121,11 +121,11 @@ import org.testng.annotations.{Test => TestNG }
 @Ignore
 class ExampleClassTaggingTestNGSuite extends TestNGSuite with ClassTaggingFixtureServices {
   @TestNG
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
   @TestNG
-  def testMethod2() {}
+  def testMethod2(): Unit = {}
   @TestNG
-  def testMethod3() {}
+  def testMethod3(): Unit = {}
 }
 
 @DoNotDiscover

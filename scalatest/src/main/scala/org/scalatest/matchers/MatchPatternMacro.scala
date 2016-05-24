@@ -23,7 +23,7 @@ private[scalatest] object MatchPatternMacro {
   /**
    * Check the case definition AST, raise an compiler error if the body is not empty.
    */
-  def checkCaseDefinitions(context: Context)(tree: context.Tree) {
+  def checkCaseDefinitions(context: Context)(tree: context.Tree): Unit = {
     import context.universe._
 
     // Check if it is a default case

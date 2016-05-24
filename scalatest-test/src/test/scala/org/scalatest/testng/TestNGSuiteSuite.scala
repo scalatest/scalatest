@@ -175,25 +175,25 @@ package org.scalatest.testng {
     import org.testng.annotations._
     
     class FailureTestNGSuite extends TestNGSuite {
-      @Test def testThatFails() { throw new Exception("fail") }
+      @Test def testThatFails(): Unit = { throw new Exception("fail") }
     }
     
     class SuccessTestNGSuite extends TestNGSuite {
-      @Test def testThatPasses() {}
+      @Test def testThatPasses(): Unit = {}
     }
     
     class TestNGSuiteWithInvocationCount extends TestNGSuite {
-      @Test(invocationCount = 10) def testThatPassesTenTimes() {}
+      @Test(invocationCount = 10) def testThatPassesTenTimes(): Unit = {}
     }
     
     class SuiteWithSkippedTest extends TestNGSuite {
-      @Test(groups = Array("run")) def dependeeThatFails() { throw new Exception("fail") }
-      @Test(dependsOnGroups = Array("run")) def depender() {}
+      @Test(groups = Array("run")) def dependeeThatFails(): Unit = { throw new Exception("fail") }
+      @Test(dependsOnGroups = Array("run")) def depender(): Unit = {}
     } 
 
     class SuiteWithTwoTests extends TestNGSuite {
-      @Test def testThatPasses() {}
-      @Test def anotherTestThatPasses() {}
+      @Test def testThatPasses(): Unit = {}
+      @Test def anotherTestThatPasses(): Unit = {}
     }      
     
     class SuiteWithBeforeAndAfterAnnotations extends TestNGSuite {

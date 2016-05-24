@@ -29,7 +29,7 @@ private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTest
 
   import args.stopper
 
-  def run() {
+  def run(): Unit = {
 
     if (!stopper.stopRequested) {
       val rawString = Resources.suiteExecutionStarting

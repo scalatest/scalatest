@@ -27,7 +27,7 @@ class InOrderContainMatcherSpec extends FunSpec {
 
   describe("inOrder ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " did not contain all of (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherSpec.scala"))
@@ -258,7 +258,7 @@ class InOrderContainMatcherSpec extends FunSpec {
   
   describe("not inOrder ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(leftText + " contained all of (" + right.mkString(", ") + ") in order"))
       e.failedCodeFileName should be (Some("InOrderContainMatcherSpec.scala"))

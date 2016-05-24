@@ -445,13 +445,13 @@ object SucceededStatus extends Status with Serializable {
   /**
    * Always returns immediately.
    */
-  def waitUntilCompleted() {}
+  def waitUntilCompleted(): Unit = {}
   // SKIP-SCALATESTJS-END
 
   /**
    * Executes the passed function immediately on the calling thread.
    */
-  def whenCompleted(f: Try[Boolean] => Unit) { f(Success(true)) }
+  def whenCompleted(f: Try[Boolean] => Unit): Unit = { f(Success(true)) }
 }
 
 /**
@@ -488,13 +488,13 @@ object FailedStatus extends Status with Serializable {
   /**
    * Always returns immediately.
    */
-  def waitUntilCompleted() {}
+  def waitUntilCompleted(): Unit = {}
   // SKIP-SCALATESTJS-END
 
   /**
    * Executes the passed function immediately on the calling thread.
    */
-  def whenCompleted(f: Try[Boolean] => Unit) { f(Success(false)) }
+  def whenCompleted(f: Try[Boolean] => Unit): Unit = { f(Success(false)) }
 }
 
 /** TODO: Indicate this is by definition complet when it is constructed. Search also where it is used
@@ -530,7 +530,7 @@ case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisA
   /**
    * Executes the passed function immediately on the calling thread.
    */
-  def whenCompleted(f: Try[Boolean] => Unit) { f(Failure(unreportedException.get)) }
+  def whenCompleted(f: Try[Boolean] => Unit): Unit = { f(Failure(unreportedException.get)) }
 
   override val unreportedException: Option[Throwable] = Some(ex)
 }
@@ -564,7 +564,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   def isCompleted = synchronized { latch.getCount == 0L }
 
   // SKIP-SCALATESTJS-START
-  def waitUntilCompleted() {
+  def waitUntilCompleted(): Unit = {
     synchronized { latch }.await()
     unreportedException match {
       case Some(ue) => throw ue
@@ -573,7 +573,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   }
   // SKIP-SCALATESTJS-END
 
-  def setFailed() {
+  def setFailed(): Unit = {
     synchronized {
       if (isCompleted)
         throw new IllegalStateException("status is already completed")
@@ -592,7 +592,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     }
   }
 
-  def setCompleted() {
+  def setCompleted(): Unit = {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
     val it =
@@ -612,7 +612,7 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
       f(tri)
   }
 
-  def whenCompleted(f: Try[Boolean] => Unit) {
+  def whenCompleted(f: Try[Boolean] => Unit): Unit = {
     var executeLocally = false
     synchronized {
       if (!isCompleted)
@@ -682,7 +682,7 @@ final class StatefulStatus extends Status with Serializable {
   /**
    * Blocking call that returns only after <code>setCompleted</code> has been invoked on this <code>StatefulStatus</code> instance.
    */
-  def waitUntilCompleted() {
+  def waitUntilCompleted(): Unit = {
     synchronized { latch }.await()
     unreportedException match {
       case Some(ue) => throw ue
@@ -702,7 +702,7 @@ final class StatefulStatus extends Status with Serializable {
    *
    * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
    */
-  def setFailed() {
+  def setFailed(): Unit = {
     synchronized {
       if (isCompleted)
         throw new IllegalStateException("status is already completed")
@@ -733,7 +733,7 @@ final class StatefulStatus extends Status with Serializable {
    * such that the Status has completed.</strong>
    * </p>
    */
-  def setCompleted() {
+  def setCompleted(): Unit = {
     // Moved the for loop after the countdown, to avoid what I think is a race condition whereby we register a call back while
     // we are iterating through the list of callbacks prior to adding the last one.
     val it =
@@ -761,7 +761,7 @@ final class StatefulStatus extends Status with Serializable {
    * order.
    * </p>
    */
-  def whenCompleted(f: Try[Boolean] => Unit) {
+  def whenCompleted(f: Try[Boolean] => Unit): Unit = {
     var executeLocally = false
     synchronized {
       if (!isCompleted)
@@ -860,7 +860,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
   /**
    * Blocking call that returns only after all composite <code>Status</code>s have completed.
    */
-  def waitUntilCompleted() {
+  def waitUntilCompleted(): Unit = {
     // statuses.foreach(_.waitUntilCompleted())
     synchronized { latch }.await()
   }
@@ -874,7 +874,7 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
    * order.
    * </p>
    */
-  def whenCompleted(f: Try[Boolean] => Unit) {
+  def whenCompleted(f: Try[Boolean] => Unit): Unit = {
     var executeLocally = false
     synchronized {
       if (!isCompleted)

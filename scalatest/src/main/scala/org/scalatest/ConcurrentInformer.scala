@@ -142,7 +142,7 @@ private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAware
   // Should only be called by the thread that constructed this
   // ConcurrentInformer, because don't want to worry about synchronization here. Just send stuff from
   // other threads whenever they come in. So only call record after first checking isConstructingThread
-  private def record(message: String, payload: Option[Any], eventFun: RecordedMessageEventFun, location: Option[Location]) {
+  private def record(message: String, payload: Option[Any], eventFun: RecordedMessageEventFun, location: Option[Location]): Unit = {
     require(isConstructingThread)
     messages ::= (message, payload, eventFun, location)
   }
@@ -150,7 +150,7 @@ private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAware
   // Returns them in order recorded
   private def recordedMessages: List[(String, Option[Any], RecordedMessageEventFun, Option[Location])] = messages.reverse
 
-  def apply(message: String, payload: Option[Any], eventFun: RecordedMessageEventFun, location: Option[Location]) {
+  def apply(message: String, payload: Option[Any], eventFun: RecordedMessageEventFun, location: Option[Location]): Unit = {
     requireNonNull(message, payload)
     if (isConstructingThread)
       record(message, payload, eventFun, location)
@@ -215,7 +215,7 @@ private[scalatest] class PathMessageRecordingInformer(eventFun: (String, Option[
   // ConcurrentInformer, because don't want to worry about synchronization here. Just send stuff from
   // other threads whenever they come in. So only call record after first checking isConstructingThread
   // So now do have to worry about concurrency
-  private def record(message: String, payload: Option[Any]) {
+  private def record(message: String, payload: Option[Any]): Unit = {
     messages += ((message, payload, Thread.currentThread, isConstructingThread))
   }
 

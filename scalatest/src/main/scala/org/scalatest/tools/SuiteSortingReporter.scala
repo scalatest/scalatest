@@ -38,7 +38,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   
   // Passed slot will always be the head of waitingBuffer
   class TimeoutTask(val slot: Slot) extends TimerTask {
-    override def run() {
+    override def run(): Unit = {
       timeout()
     }
   }
@@ -46,7 +46,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   private val timer = new Timer
   private var timeoutTask: Option[TimeoutTask] = None
 
-  def doApply(event: Event) {
+  def doApply(event: Event): Unit = {
     synchronized {
       event match {
         case suiteStarting: SuiteStarting =>
@@ -129,7 +129,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
 
   // Handles just SuiteCompleted and SuiteAborted
-  private def handleSuiteEvents(suiteId: String, event: Event) {
+  private def handleSuiteEvents(suiteId: String, event: Event): Unit = {
     val slot = slotMap(suiteId)
     val newSlot = slot.copy(doneEvent = Some(event), ready = (if (slot.includesDistributedTests) slot.testsCompleted else true))  // Assuming here that a done event hasn't already arrived
     slotMap.put(suiteId, newSlot)                     // Probably should fail on the second one
@@ -143,7 +143,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   }
   // Handles SuiteStarting, TestStarting, TestIgnored, TestSucceeded, TestFailed, TestPending,
   // TestCanceled, InfoProvided, AlertProvided, NoteProvided, MarkupProvided, ScopeOpened, ScopeClosed, ScopePending
-  private def handleTestEvents(suiteId: String, event: Event) {
+  private def handleTestEvents(suiteId: String, event: Event): Unit = {
     val slot = slotMap(suiteId)
     val slotIdx = slotListBuf.indexOf(slot)
     if (slotIdx >= 0) {
@@ -162,7 +162,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   }
 
   // Only called within synchronized
-  private def fireReadyEvents() {
+  private def fireReadyEvents(): Unit = {
     if (slotListBuf.size > 0) {
       val head = slotListBuf.head
       fireSuiteEvents(head.suiteId)
@@ -180,7 +180,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
 
   // suiteId must exist in the suiteEventMap
   @tailrec
-  private def fireSuiteEvents(suiteId: String) {
+  private def fireSuiteEvents(suiteId: String): Unit = {
     // Fire all of them and empty it out. The done event is stored elsewhere
     suiteEventMap.get(suiteId) match {
       case Some(eventList) =>
@@ -213,7 +213,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     undone
   }
   
-  def completedTests(suiteId: String) {
+  def completedTests(suiteId: String): Unit = {
     synchronized {
       val slot = slotMap(suiteId)
       val newSlot = slot.copy(testsCompleted = true, ready = slot.doneEvent.isDefined)
@@ -229,7 +229,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   // suite's timeout to be 20% longer than the -T one. If an overridden sortingTimeout timeout is shorter, then
   // that's no prob. But if it is longer, then the suiteTimeout will timeout first. I think that's fine. I'll
   // just document that behavior.
-  def distributingTests(suiteId: String) {
+  def distributingTests(suiteId: String): Unit = {
     synchronized {
       slotMap.get(suiteId) match {
         case Some(slot) => 
@@ -244,12 +244,12 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
   }
 
-  override def doDispose() = {
+  override def doDispose(): Unit = {
     fireReadyEvents()
   }
   
   // Also happening inside synchronized block
-  private def scheduleTimeoutTask() {
+  private def scheduleTimeoutTask(): Unit = {
     val head = slotListBuf.head  // Assumes waitingBuffer is non-empty. Put a require there to make that obvious.
     timeoutTask match {
         case Some(task) => 
@@ -264,7 +264,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       }
   }
   
-  private def timeout() {
+  private def timeout(): Unit = {
     synchronized {
       if (slotListBuf.size > 0) {
         val head = slotListBuf.head

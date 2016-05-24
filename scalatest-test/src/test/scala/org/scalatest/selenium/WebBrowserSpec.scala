@@ -43,7 +43,7 @@ import scala.reflect.ClassTag
 
 
 trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit {
-  def inputField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String, lineNumber: Int) = {
+  def inputField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String, lineNumber: Int): Unit = {
     it("should throw TFE with valid stack depth if specified item not found") {
       go to (host + file)
       val caught = intercept[TestFailedException] {
@@ -75,7 +75,7 @@ trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with We
     }
   }
 
-  def findField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit classTag: ClassTag[T]) = {
+  def findField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit classTag: ClassTag[T]): Unit = {
     it("should return a defined Option[Element] containing an instance of " + typeDescription + " if specified item is found to be a " + description + " field") {
       go to (host + file)
       find("secret1") match {
@@ -85,7 +85,7 @@ trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with We
     }
   }
 
-  def iteratorField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit classTag: ClassTag[T]) = {
+  def iteratorField[T <: ValueElement](file: String, typeDescription: String, description: String, value: String)(implicit classTag: ClassTag[T]): Unit = {
     it("should return a defined Iterator[Element] containing an instance of " + typeDescription + " if specified item is found to be a " + description + " field") {
       go to (host + file)
       val secret1 = findAll("secret1")
@@ -99,7 +99,7 @@ trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with We
     }
   }
 
-  def valueField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String) = {
+  def valueField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String, value2: String): Unit = {
     it("should get and set " + description + " field value correctly.") {
       go to (host + file)
       pageTitle should be (typeDescription)
@@ -119,7 +119,7 @@ trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with We
     }
   }
 
-  def clearField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String) = {
+  def clearField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String, value1: String): Unit = {
     it("should clear a " + description + " field.") {
       go to (host + file)
       pageTitle should be (typeDescription)
@@ -135,7 +135,7 @@ trait InputFieldBehaviour extends JettySpec with Matchers with SpanSugar with We
     }
   }
 
-  def enterField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String) = {
+  def enterField[T <: ValueElement](file: String, fn: (String) => T, typeDescription: String, description: String): Unit = {
     it("should allow text to be entered in the active element if it is a " + description + " field.") {
       go to (host + file)
       pageTitle should be (typeDescription)

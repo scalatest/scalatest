@@ -318,7 +318,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    *
    * @param unit a <code>Unit</code>
    */
-  protected def propertiesFor(unit: Unit) {}
+  protected def propertiesFor(unit: Unit): Unit = {}
 
   import scala.language.implicitConversions
 

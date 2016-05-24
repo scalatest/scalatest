@@ -135,7 +135,7 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
    * @throws NotAllowedException if invoked more than once on the same <code>Suite</code> or if
    *                             invoked after <code>run</code> has been invoked on the <code>Suite</code>
    */
-  protected def before(fun: => Any)(implicit pos: source.Position) {
+  protected def before(fun: => Any)(implicit pos: source.Position): Unit = {
     if (runHasBeenInvoked)
       throw new NotAllowedException("You cannot call before after run has been invoked (such as, from within a test). It is probably best to move it to the top level of the Suite class so it is executed during object construction.", Some(pos), getStackDepthFun(pos))
     val success = beforeFunctionAtomic.compareAndSet(None, Some(() => fun))
@@ -155,7 +155,7 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
    * @throws NotAllowedException if invoked more than once on the same <code>Suite</code> or if
    *                             invoked after <code>run</code> has been invoked on the <code>Suite</code>
    */
-  protected def after(fun: => Any)(implicit pos: source.Position) {
+  protected def after(fun: => Any)(implicit pos: source.Position): Unit = {
     if (runHasBeenInvoked)
       throw new NotAllowedException("You cannot call after after run has been invoked (such as, from within a test. It is probably best to move it to the top level of the Suite class so it is executed during object construction.", Some(pos), getStackDepthFun(pos))
     val success = afterFunctionAtomic.compareAndSet(None, Some(() => fun))

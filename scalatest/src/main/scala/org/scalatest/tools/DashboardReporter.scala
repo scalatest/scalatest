@@ -69,7 +69,7 @@ private[scalatest] class DashboardReporter(directory: String,
   //
   // Ignores info and markup events.
   //
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     event match {
       case _: DiscoveryStarting  =>
       case _: DiscoveryCompleted =>
@@ -112,7 +112,7 @@ private[scalatest] class DashboardReporter(directory: String,
   //
   // Throws exception for specified unexpected event.
   //
-  def unexpectedEvent(e: Event) {
+  def unexpectedEvent(e: Event): Unit = {
     throw new RuntimeException("unexpected event [" + e + "]")
   }
 
@@ -156,7 +156,7 @@ private[scalatest] class DashboardReporter(directory: String,
   //
   // Ditto for the durations.xml file.
   //
-  def archiveOldFiles(oldRunsXml: NodeSeq) {
+  def archiveOldFiles(oldRunsXml: NodeSeq): Unit = {
     val previousRunTimestamp = 
       if (oldRunsXml.size > 0) Some("" + oldRunsXml(0) \ "@id")
       else None
@@ -185,7 +185,7 @@ private[scalatest] class DashboardReporter(directory: String,
   // oldest archived files from those directories to maintain a specified
   // maximum number of archived copies.
   //
-  def purgeDir(directory: File, prefix: String) {
+  def purgeDir(directory: File, prefix: String): Unit = {
     directory.
       listFiles().
       filter(_.getName.matches(prefix + TimestampPattern + """\.xml""")).
@@ -199,7 +199,7 @@ private[scalatest] class DashboardReporter(directory: String,
   // of a run.  Archives old copies of summary and duration files into
   // summaries/ and durations/ subdirectories.
   //
-  def writeFiles(terminatingEvent: Event) {
+  def writeFiles(terminatingEvent: Event): Unit = {
     val durations     = Durations(durationsFile)
     val oldSummaryXml = getOldSummaryXml
     val oldRunsXml    = oldSummaryXml \\ "run"
@@ -221,7 +221,7 @@ private[scalatest] class DashboardReporter(directory: String,
   //
   // Writes the durations.xml file.
   //
-  def writeDurationsFile(durations: Durations) {
+  def writeDurationsFile(durations: Durations): Unit = {
     writeFile("durations.xml", durations.toXml)
   }
 
@@ -230,7 +230,7 @@ private[scalatest] class DashboardReporter(directory: String,
   //
   def writeSummaryFile(terminatingEvent: Event, oldSummaryXml: NodeSeq,
                        oldRunsXml: NodeSeq, thisRunXml: NodeSeq,
-                       durations: Durations)
+                       durations: Durations): Unit =
   {
     val SummaryTemplate =
       """|<summary>
@@ -497,7 +497,7 @@ private[scalatest] class DashboardReporter(directory: String,
   //
   // Writes specified text to specified file in output directory.
   //
-  def writeFile(filename: String, text: String) {
+  def writeFile(filename: String, text: String): Unit = {
     val out = new PrintWriter(directory + "/" + filename)
     out.print(text)
     out.close()
@@ -511,7 +511,7 @@ private[scalatest] class DashboardReporter(directory: String,
   // We write the file piece-by-piece directly, instead of creating a string
   // and writing that, 
   //
-  def writeRunFile(event: Event, thisRunFile: File) {
+  def writeRunFile(event: Event, thisRunFile: File): Unit = {
     index = 0
     var suiteRecord: SuiteRecord = null
     val stack = new Stack[SuiteRecord]
@@ -556,7 +556,7 @@ private[scalatest] class DashboardReporter(directory: String,
     // completed record is added to the record of the suite it is nested
     // in.  Otherwise its xml is written to the output file.
     //
-    def endSuite(e: Event) {
+    def endSuite(e: Event): Unit = {
       suiteRecord.addEndEvent(e)
 
       val prevRecord = stack.pop()
@@ -652,7 +652,7 @@ private[scalatest] class DashboardReporter(directory: String,
     // Adds either an Event or a nested SuiteRecord to this object's
     // list of elements.
     //
-    def addNestedElement(element: Any) {
+    def addNestedElement(element: Any): Unit = {
       nestedElements ::= element
     }
 
@@ -660,7 +660,7 @@ private[scalatest] class DashboardReporter(directory: String,
     // Adds suite closing event (SuiteCompleted or SuiteAborted) to the
     // object.
     //
-    def addEndEvent(event: Event) {
+    def addEndEvent(event: Event): Unit = {
       def isEndEvent(e: Event): Boolean = {
         e match {
           case _: SuiteCompleted => true
@@ -761,7 +761,7 @@ private[scalatest] class DashboardReporter(directory: String,
     //
     // Adds specified event to object's list of nested events.
     //
-    def addEvent(event: Event) {
+    def addEvent(event: Event): Unit = {
       def isEndEvent: Boolean = {
         event match {
           case _: TestSucceeded => true

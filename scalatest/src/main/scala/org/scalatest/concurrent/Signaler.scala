@@ -55,7 +55,7 @@ object Signaler {
    */
   def apply(fun: Thread => Unit) =
     new Signaler {
-      def apply(testThread: Thread) { fun(testThread) }
+      def apply(testThread: Thread): Unit = { fun(testThread) }
     }
 
   /**

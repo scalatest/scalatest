@@ -110,7 +110,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     var markupProvidedList = new ListBuffer[Elem]
     def markupProvidedEvents = markupProvidedList.toArray
     
-    def run() {
+    def run(): Unit = {
       try {
         connection = socket.accept
         val inputStream = connection.getInputStream
@@ -167,7 +167,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     }
   }
   
-  def checkStringOption(value: String, expectedValueOpt: Option[String]) {
+  def checkStringOption(value: String, expectedValueOpt: Option[String]): Unit = {
     expectedValueOpt match {
       case Some(expectedValue) => 
         assert(value === expectedValue)
@@ -176,7 +176,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     }
   }
   
-  def checkLongOption(value: Long, expectedValueOpt: Option[Long]) {
+  def checkLongOption(value: Long, expectedValueOpt: Option[Long]): Unit = {
     expectedValueOpt match {
       case Some(expectedValue) => 
         assert(value === expectedValue)
@@ -185,7 +185,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     }
   }
   
-  def checkScopeEvents(scopeOpened: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], fileName: String, lineNumber: Int) {
+  def checkScopeEvents(scopeOpened: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], fileName: String, lineNumber: Int): Unit = {
     assert((scopeOpened \ "message").text === message )
     assert((scopeOpened \ "nameInfo" \ "suiteName").text === suiteName )
     assert((scopeOpened \ "nameInfo" \ "suiteId").text === suiteId)
@@ -196,7 +196,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   
   def checkTestStarting(testStarting:Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
                         testName: String, testText: String, fileName: String, lineNumber: Int, 
-                        rerunner: Option[String]) {
+                        rerunner: Option[String]): Unit = {
     assert((testStarting \ "suiteName").text === suiteName)
     assert((testStarting \ "suiteId").text === suiteId)
     checkStringOption((testStarting \ "suiteClassName").text, suiteClassName)
@@ -208,7 +208,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkTestSucceeded(testSucceeded: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                         testName: String, testText: String, fileName: String, lineNumber: Int, rerunner: Option[String] = None) {
+                         testName: String, testText: String, fileName: String, lineNumber: Int, rerunner: Option[String] = None): Unit = {
     assert((testSucceeded \ "suiteName").text === suiteName)
     assert((testSucceeded \ "suiteId").text === suiteId)
     checkStringOption((testSucceeded \ "suiteClassName").text, suiteClassName)
@@ -220,7 +220,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkTestFailed(testFailed: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                      testName: String, testText: String, rerunner: Option[String]) {
+                      testName: String, testText: String, rerunner: Option[String]): Unit = {
     assert((testFailed \ "message").text === message)
     assert((testFailed \ "suiteName").text === suiteName)
     assert((testFailed \ "suiteId").text === suiteId)
@@ -232,7 +232,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   
   def checkTestPending(testPending: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
                        testName: String, testText: String, fileName: String, lineNumber: Int, 
-                       rerunner: Option[String]) {
+                       rerunner: Option[String]): Unit = {
     assert((testPending \ "suiteName").text === suiteName)
     assert((testPending \ "suiteId").text === suiteId)
     checkStringOption((testPending \ "suiteClassName").text, suiteClassName)
@@ -244,7 +244,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkTestIgnored(testIgnored: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                       testName: String, testText: String, fileName: String, lineNumber: Int) {
+                       testName: String, testText: String, fileName: String, lineNumber: Int): Unit = {
     assert((testIgnored \ "suiteName").text === suiteName)
     assert((testIgnored \ "suiteId").text === suiteId)
     checkStringOption((testIgnored \ "suiteClassName").text, suiteClassName)
@@ -255,7 +255,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkTestCanceled(testCanceled: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                        testName: String, testText: String, fileName: String, lineNumber: Int) {
+                        testName: String, testText: String, fileName: String, lineNumber: Int): Unit = {
     assert((testCanceled \ "message").text === message)
     assert((testCanceled \ "suiteName").text === suiteName)
     assert((testCanceled \ "suiteId").text === suiteId)
@@ -267,7 +267,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkSuiteStarting(suiteStarting: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                         topOfClassName: String, rerunner: Option[String] = None, threadName: String, timeStamp: Long) {
+                         topOfClassName: String, rerunner: Option[String] = None, threadName: String, timeStamp: Long): Unit = {
     assert((suiteStarting \ "suiteName").text === suiteName)
     assert((suiteStarting \ "suiteId").text === suiteId)
     checkStringOption((suiteStarting \ "suiteClassName").text, suiteClassName)
@@ -278,7 +278,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkSuiteCompleted(suiteCompleted: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
-                          duration: Option[Long], topOfClassName: String, rerunner: Option[String], threadName: String, timeStamp: Long) {
+                          duration: Option[Long], topOfClassName: String, rerunner: Option[String], threadName: String, timeStamp: Long): Unit = {
     assert((suiteCompleted \ "suiteName").text === suiteName)
     assert((suiteCompleted \ "suiteId").text === suiteId)
     checkStringOption((suiteCompleted \ "suiteClassName").text, suiteClassName)
@@ -290,7 +290,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
   }
   
   def checkSuiteAborted(suiteAborted: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String],  
-                        duration: Option[Long], topOfClassName: String, rerunner: Option[String], threadName: String, timeStamp: Long) {
+                        duration: Option[Long], topOfClassName: String, rerunner: Option[String], threadName: String, timeStamp: Long): Unit = {
     assert((suiteAborted \ "message").text === message)
     assert((suiteAborted \ "suiteName").text === suiteName)
     assert((suiteAborted \ "suiteId").text === suiteId)

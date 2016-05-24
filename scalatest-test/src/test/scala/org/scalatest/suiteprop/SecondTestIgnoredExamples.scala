@@ -54,14 +54,14 @@ class SecondTestIgnoredExamples extends SuiteExamples {
 
   // SKIP-SCALATESTJS-START
   class SpecExample extends RefSpec with Services {
-    def `test first` = {}
-    @Ignore def `test second` = {}
+    def `test first`: Unit = {}
+    @Ignore def `test second`: Unit = {}
     override val theTestNames = Vector("test first", "test second")
   }
 
   class FixtureSpecExample extends StringFixtureSpec with Services {
-    def `test first`(s: String) = {}
-    @Ignore def `test second`(s: String) = {}
+    def `test first`(s: String): Unit = {}
+    @Ignore def `test second`(s: String): Unit = {}
     override val theTestNames = Vector("test first", "test second")
   }
   // SKIP-SCALATESTJS-END

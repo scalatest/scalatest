@@ -166,7 +166,7 @@ trait DiagrammedAssertions extends Assertions {
       line.slice(anchor, anchor + str.length + 1).forall(_.isWhitespace)
 
     // this is taken from expecty
-    private[this] def placeString(line: StringBuilder, str: String, anchor: Int) {
+    private[this] def placeString(line: StringBuilder, str: String, anchor: Int): Unit = {
       val diff = anchor - line.length
       for (i <- 1 to diff) line.append(' ')
       if (line.length == anchor)
@@ -185,7 +185,7 @@ trait DiagrammedAssertions extends Assertions {
     }
 
     // this is taken from expecty
-    private[this] def placeValue(lines: ListBuffer[StringBuilder], value: Any, col: Int) {
+    private[this] def placeValue(lines: ListBuffer[StringBuilder], value: Any, col: Int): Unit = {
       val str = renderValue(value)
 
       placeString(lines(0), "|", col)

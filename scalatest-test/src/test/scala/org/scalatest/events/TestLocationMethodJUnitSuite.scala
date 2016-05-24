@@ -29,11 +29,11 @@ class TestLocationMethodJUnitSuite extends JUnitSuite with TestLocationMethodSer
   val expectedScopeClosedList = Nil
   
   @Test
-  def succeeds() { 
+  def succeeds(): Unit = { 
       
   }
   @Ignore 
-  def ignore() {
+  def ignore(): Unit = {
       
   }
 }

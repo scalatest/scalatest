@@ -188,7 +188,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
       "should print to stdout when info is called by a method invoked after the suite has been executed" in {
         class MySpec extends PathFunSpec {
           callInfo() // This should work fine
-          def callInfo() {
+          def callInfo(): Unit = {
             info("howdy")
           }
           it("howdy also") {
@@ -320,7 +320,7 @@ class FunSpecSpec extends org.scalatest.FreeSpec with GivenWhenThen {
 
     "should run tests registered via the 'it should behave like' syntax" in {
       trait SharedSpecTests { this: PathFunSpec =>
-        def nonEmptyStack(s: String)(i: Int) {
+        def nonEmptyStack(s: String)(i: Int): Unit = {
           it("should be that I am shared") {}
         }
       }

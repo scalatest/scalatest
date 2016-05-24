@@ -22,22 +22,22 @@ import org.scalatest.events._
 
 trait SuiteExpectations {
 
-  def expectSingleTestToPass(expectations: Expectations, reporter: Reporter) = expectNTestsToPass(expectations, 1, reporter)
-  def expectSingleTestToFail(expectations: Expectations, reporter: Reporter) = expectNTestsToFail(expectations, 1, reporter)
+  def expectSingleTestToPass(expectations: Expectations, reporter: Reporter): Unit = expectNTestsToPass(expectations, 1, reporter)
+  def expectSingleTestToFail(expectations: Expectations, reporter: Reporter): Unit = expectNTestsToFail(expectations, 1, reporter)
   
-  def expectNTestsToPass(expectations: Expectations, n: Int, reporter: Reporter) = {
+  def expectNTestsToPass(expectations: Expectations, n: Int, reporter: Reporter): Unit = {
     expectNTestsToRun(expectations, n, reporter) { 
       expectations.one(reporter).apply(expectations.`with`(new IsAnything[TestSucceeded]))
     }
   }
   
-  def expectNTestsToFail(expectations: Expectations, n: Int, reporter: Reporter) = {
+  def expectNTestsToFail(expectations: Expectations, n: Int, reporter: Reporter): Unit = {
     expectNTestsToRun(expectations, n, reporter) { 
       expectations.one(reporter).apply(expectations.`with`(new IsAnything[TestFailed]))
     }
   }
 
-  def expectNTestsToRun(expectations: Expectations, n: Int, reporter: Reporter)(f: => Unit) = {
+  def expectNTestsToRun(expectations: Expectations, n: Int, reporter: Reporter)(f: => Unit): Unit = {
     expectations.never(reporter).apply(expectations.`with`(new IsAnything[SuiteStarting]))
     for( i <- 1 to n ){
       expectations.one(reporter).apply(expectations.`with`(new IsAnything[TestStarting]))

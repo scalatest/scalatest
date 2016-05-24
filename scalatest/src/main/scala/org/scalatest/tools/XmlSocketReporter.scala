@@ -26,12 +26,12 @@ private[scalatest] class XmlSocketReporter(host: String, port: Int) extends Reso
   private val socket = new Socket(host, port)
   private val out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream))
   
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     out.println(event.toXml.toString)
     out.flush()
   }
 
-  def dispose() {
+  def dispose(): Unit = {
     out.flush()
     out.close()
     socket.close()

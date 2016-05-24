@@ -343,7 +343,7 @@ class FreeSpecSpec extends FunSpec with GivenWhenThen {
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MySpec extends FreeSpec {
           callInfo() // This should work fine
-          def callInfo() {
+          def callInfo(): Unit = {
             info("howdy")
           }
           "howdy also" in {

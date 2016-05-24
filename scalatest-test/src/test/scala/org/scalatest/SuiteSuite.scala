@@ -54,7 +54,7 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
     assert(FailureMessages.decorateToStringValue(prettifier, Array(Array(1, 2), Array(3, 4))) === "Array(Array(1, 2), Array(3, 4))")
   }
 
-  def `test: execute should use dynamic tagging to enable Doenitz wildcards for encoded test names` {
+  def `test: execute should use dynamic tagging to enable Doenitz wildcards for encoded test names`: Unit = {
 
     class TestWasCalledSpec extends RefSpec {
       var theTestThisCalled = false
@@ -73,9 +73,9 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
           }
         test()
       }
-      def `test this` = { theTestThisCalled = true }
-      def `test that` = { theTestThatCalled = true }
-      def `test the other` = { theTestTheOtherCalled = true }
+      def `test this`: Unit = { theTestThisCalled = true }
+      def `test that`: Unit = { theTestThatCalled = true }
+      def `test the other`: Unit = { theTestTheOtherCalled = true }
     }
 
     val s1 = new TestWasCalledSpec
@@ -135,9 +135,9 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
 
   def `test test tags` = {
     class TagSpec extends RefSpec {
-      def `test no tag method` = {}
+      def `test no tag method`: Unit = {}
       @SlowAsMolasses
-      def `test tag method` = {}
+      def `test tag method`: Unit = {}
     }
     val testTags = new TagSpec().tags
     assert(testTags.size === 1)
@@ -152,9 +152,9 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
     class NoTagSpec extends RefSpec
     @Ignore
     class IgnoreSpec extends RefSpec {
-      def `test method 1` = {}
-      def `test method 2` = {}
-      def `test method 3` = {}
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
+      def `test method 3`: Unit = {}
     }
     @SlowAsMolasses
     class SlowAsMolassesSpec extends RefSpec
@@ -174,7 +174,7 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
         count += 1
         SucceededStatus
       }
-      def apply(suite: Suite, tracker: Tracker) {
+      def apply(suite: Suite, tracker: Tracker): Unit = {
         count += 1
       }
     }
@@ -214,27 +214,27 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
   
   def `test expectedTestCount` = {
     class NoTagSpec extends RefSpec {
-      def `test method 1` = {}
-      def `test method 2` = {}
-      def `test method 3` = {}
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
+      def `test method 3`: Unit = {}
     }
     @Ignore
     class IgnoreSpec extends RefSpec {
-      def `test method 1` = {}
-      def `test method 2` = {}
-      def `test method 3` = {}
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
+      def `test method 3`: Unit = {}
     }
     @SlowAsMolasses
     class SlowAsMolassesSpec extends RefSpec {
-      def `test method 1` = {}
-      def `test method 2` = {}
-      def `test method 3` = {}
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
+      def `test method 3`: Unit = {}
     }
     @FastAsLight
     class FastAsLightSpec extends RefSpec {
-      def `test method 1` = {}
-      def `test method 2` = {}
-      def `test method 3` = {}
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
+      def `test method 3`: Unit = {}
     }
     
     class MasterSpec extends RefSpec {
@@ -260,9 +260,9 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
   
   def `test check chosenStyles` = {
     class SimpleSpec extends RefSpec {
-      def `test method 1` = {}
-      def `test method 2` = {}
-      def `test method 3` = {}
+      def `test method 1`: Unit = {}
+      def `test method 2`: Unit = {}
+      def `test method 3`: Unit = {}
     }
     
     val simpleSuite = new SimpleSpec()
@@ -338,12 +338,12 @@ class SuiteSuite extends RefSpec with SeveredStackTraces {
     val emptySuiteContainingNestedSuites =
       new Suites(emptySuite, new NormalSuite)
 
-    val nonEmptySuite = new RefSpec { def `test foo` = {} }
+    val nonEmptySuite = new RefSpec { def `test foo`: Unit = {} }
 
     val nonEmptySuiteContainingNestedSuites =
       new Suites(emptySuite, new NormalSuite) with RefSpecLike
       {
-        def `test foo` = {}
+        def `test foo`: Unit = {}
       }
 
     assert(

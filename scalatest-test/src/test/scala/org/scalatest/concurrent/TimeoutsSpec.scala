@@ -110,7 +110,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
@@ -141,7 +141,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
@@ -187,7 +187,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           selector.select()
           val it = selector.selectedKeys.iterator
           while (it.hasNext) {
@@ -291,7 +291,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
@@ -322,7 +322,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           val clientSocket = serverSocket.accept()
           while(drag) {
             try {
@@ -368,7 +368,7 @@ class TimeoutsSpec extends FunSpec with Matchers with SeveredStackTraces {
       @volatile
       var drag = true
       val serverThread = new Thread() {
-        override def run() {
+        override def run(): Unit = {
           selector.select()
           val it = selector.selectedKeys.iterator
           while (it.hasNext) {

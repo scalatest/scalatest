@@ -102,15 +102,15 @@ trait BeforeAndAfterAllPropFixtureServices {
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends RefSpec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with ParallelTestExecution {
   object `Scope 1` {
-    def `Test 1` { Thread.sleep(10) }
-    def `Test 2` { Thread.sleep(10) }
-    def `Test 3` { Thread.sleep(10) }
+    def `Test 1`: Unit = { Thread.sleep(10) }
+    def `Test 2`: Unit = { Thread.sleep(10) }
+    def `Test 3`: Unit = { Thread.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -118,15 +118,15 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropSpec extends RefSpec with
 @DoNotDiscover
 protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureSpec extends fixture.Spec with BeforeAndAfterAll with BeforeAndAfterAllPropFixtureServices with StringFixture with ParallelTestExecution {
   object `Scope 1` {
-    def `Test 1`(fixture: String) { Thread.sleep(10) }
-    def `Test 2`(fixture: String) { Thread.sleep(10) }
-    def `Test 3`(fixture: String) { Thread.sleep(10) }
+    def `Test 1`(fixture: String): Unit = { Thread.sleep(10) }
+    def `Test 2`(fixture: String): Unit = { Thread.sleep(10) }
+    def `Test 3`(fixture: String): Unit = { Thread.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = System.currentTimeMillis
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = System.currentTimeMillis
   }
 }
@@ -150,10 +150,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFunSuite extends FunSuite
   test("Test 2") { SleepHelper.sleep(10) }
   test("Test 3") { SleepHelper.sleep(10) }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -166,10 +166,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSuite extends f
   test("Test 2") { s => SleepHelper.sleep(10) }
   test("Test 3") { s => SleepHelper.sleep(10) }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -184,10 +184,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFunSpec extends FunSpec w
     it("Test 3") { SleepHelper.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -202,10 +202,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFunSpec extends fi
     it("Test 3") { s => SleepHelper.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -220,10 +220,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFeatureSpec extends Featu
     scenario("Scenario 3") { SleepHelper.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -238,10 +238,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFeatureSpec extend
     scenario("Scenario 3") { s => SleepHelper.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -254,10 +254,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFlatSpec extends FlatSpec
   it should "do thing 2" in { SleepHelper.sleep(10) }
   it should "do thing 3" in { SleepHelper.sleep(10) }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -270,10 +270,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFlatSpec extends f
   it should "do thing 2" in { s => SleepHelper.sleep(10) }
   it should "do thing 3" in { s => SleepHelper.sleep(10) }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -288,10 +288,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFreeSpec extends FreeSpec
     "Test 3" in { SleepHelper.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -306,10 +306,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureFreeSpec extends f
     "Test 3" in { s => SleepHelper.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -322,10 +322,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropPropSpec extends PropSpec
   property("Test 2") { SleepHelper.sleep(10) }
   property("Test 3") { SleepHelper.sleep(10) }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -338,10 +338,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixturePropSpec extends f
   property("Test 2") { s => SleepHelper.sleep(10) }
   property("Test 3") { s => SleepHelper.sleep(10) }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -356,10 +356,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropWordSpec extends WordSpec
     "Test 3" in { SleepHelper.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 
@@ -374,10 +374,10 @@ protected[scalatest] class ExampleBeforeAndAfterAllPropFixtureWordSpec extends f
     "Test 3" in { s => SleepHelper.sleep(10) }
   }
   
-  override protected def beforeAll() {
+  override protected def beforeAll(): Unit = {
     beforeAllTime = Platform.currentTime
   }
-  override protected def afterAll() {
+  override protected def afterAll(): Unit = {
     afterAllTime = Platform.currentTime
   }
 

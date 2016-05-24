@@ -54,14 +54,14 @@ class TwoSlowAndOneWeakTestExamples extends SuiteExamples {
 
   // SKIP-SCALATESTJS-START
   class SpecExample extends RefSpec with Services {
-    @SlowAsMolasses @WeakAsAKitten def `test first` = {}
-    @SlowAsMolasses def `test second` = {}
+    @SlowAsMolasses @WeakAsAKitten def `test first`: Unit = {}
+    @SlowAsMolasses def `test second`: Unit = {}
     override val theTestNames = Vector("test first", "test second")
   }
 
   class FixtureSpecExample extends StringFixtureSpec with Services {
-    @SlowAsMolasses @WeakAsAKitten def `test first`(s: String) = {}
-    @SlowAsMolasses def `test second`(s: String) = {}
+    @SlowAsMolasses @WeakAsAKitten def `test first`(s: String): Unit = {}
+    @SlowAsMolasses def `test second`(s: String): Unit = {}
     override val theTestNames = Vector("test first", "test second")
   }
   // SKIP-SCALATESTJS-END

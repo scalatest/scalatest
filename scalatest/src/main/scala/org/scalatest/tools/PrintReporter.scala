@@ -132,11 +132,11 @@ private[scalatest] abstract class PrintReporter(
 
   // SKIP-SCALATESTJS-END
 
-  protected def printPossiblyInColor(fragment: Fragment) {
+  protected def printPossiblyInColor(fragment: Fragment): Unit = {
     pw.println(fragment.toPossiblyColoredText(presentInColor))
   }
 
-  override def apply(event: Event) {
+  override def apply(event: Event): Unit = {
 
     super.apply(event)
 
@@ -145,7 +145,7 @@ private[scalatest] abstract class PrintReporter(
 
   // Closes the print writer. Subclasses StandardOutReporter and StandardErrReporter override dispose to do nothing
   // so that those aren't closed.
-  override def dispose() {
+  override def dispose(): Unit = {
     pw.close()
   }
 

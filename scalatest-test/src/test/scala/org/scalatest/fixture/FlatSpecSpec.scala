@@ -176,7 +176,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
 
     it("should run tests registered via the 'it can behave like' syntax") {
       trait SharedFlatSpecTests { this: FlatSpec =>
-        def nonEmptyStack(s: String)(i: Int) {
+        def nonEmptyStack(s: String)(i: Int): Unit = {
           it can "I am shared" in { fixture => /* ASSERTION_SUCCEED */ }
         }
       }
@@ -1458,7 +1458,7 @@ class FlatSpecSpec extends org.scalatest.FunSpec {
         class MySpec extends FlatSpec {
           type FixtureParam = String
           def withFixture(test: OneArgTest): Outcome = { test("hi") }
-          def aTest {}
+          def aTest: Unit = {}
           it should "blow up" in { fixture =>
             "in the wrong place, at the wrong time" should behave like aTest
             /* ASSERTION_SUCCEED */

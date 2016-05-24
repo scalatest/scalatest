@@ -26,7 +26,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
   
   describe("theSameElementsAs ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " did not contain the same elements as " + rightText))
@@ -380,7 +380,7 @@ class TheSameElementsAsContainMatcherSpec extends FunSpec {
   
   describe("not theSameElementsAs ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: Any, lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       val rightText = FailureMessages.decorateToStringValue(prettifier, right)
       e.message should be (Some(leftText + " contained the same elements as " + rightText))

@@ -32,7 +32,7 @@ class SelectorInterruptor(selector: Selector) extends Interruptor {
    *
    * @param testThread unused by this strategy
    */
-  def apply(testThread: Thread) {
+  def apply(testThread: Thread): Unit = {
     selector.wakeup()
   }
 }

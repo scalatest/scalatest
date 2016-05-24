@@ -224,7 +224,7 @@ class ConductorSuite extends FunSuite with Matchers with Conductors with Severed
   }
 
   class Forevermore {
-    def waitForever() {
+    def waitForever(): Unit = {
       synchronized {
         wait()
       }

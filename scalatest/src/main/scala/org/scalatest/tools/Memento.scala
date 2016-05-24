@@ -123,7 +123,7 @@ private[tools] object Memento {
   // Writes Mementos to a file as single-line strings, sorted
   // alphabetically.
   //
-  def writeToFile(fileName: String, mementos: Set[Memento]) {
+  def writeToFile(fileName: String, mementos: Set[Memento]): Unit = {
     val out = new PrintWriter(fileName, "UTF-8")
     try {
       val lines = mementos.map(_.singleLine).toList.sortWith(_<_)

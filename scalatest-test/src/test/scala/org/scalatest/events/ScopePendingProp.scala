@@ -95,16 +95,16 @@ class ExampleScopePendingFixtureSuite extends fixture.TestSuite with ScopePendin
 @DoNotDiscover
 class ExampleScopePendingSpec extends RefSpec with ScopePendingFixtureServices {
   object `scope 1` {
-    def `test 1` {}
-    def `test 2` {}
-    def `test 3` {}
+    def `test 1`: Unit = {}
+    def `test 2`: Unit = {}
+    def `test 3`: Unit = {}
   }
   
   object `scope 2` {
-    def `test 1` {}
+    def `test 1`: Unit = {}
     pending
-    def `test 2` {}
-    def `test 3` {}
+    def `test 2`: Unit = {}
+    def `test 3`: Unit = {}
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 test 1", 
@@ -115,16 +115,16 @@ class ExampleScopePendingSpec extends RefSpec with ScopePendingFixtureServices {
 @DoNotDiscover
 class ExampleScopePendingFixtureSpec extends fixture.Spec with ScopePendingFixtureServices with StringFixture {
   object `scope 1` {
-    def `test 1`(fixture: String) {}
-    def `test 2`(fixture: String) {}
-    def `test 3`(fixture: String) {}
+    def `test 1`(fixture: String): Unit = {}
+    def `test 2`(fixture: String): Unit = {}
+    def `test 3`(fixture: String): Unit = {}
   }
   
   object `scope 2` {
-    def `test 1`(fixture: String) {}
+    def `test 1`(fixture: String): Unit = {}
     pending
-    def `test 2`(fixture: String) {}
-    def `test 3`(fixture: String) {}
+    def `test 2`(fixture: String): Unit = {}
+    def `test 3`(fixture: String): Unit = {}
   }
   
   override val expectedTestNames: Set[String] = Set("scope 1 test 1", 

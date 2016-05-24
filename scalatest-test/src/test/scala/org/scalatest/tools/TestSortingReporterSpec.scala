@@ -320,10 +320,10 @@ class TestSortingReporterSpec extends FunSpec with Matchers {
       val distributingTestsList = new ListBuffer[String]()
       val completedTestsList = new ListBuffer[String]()
       
-      def distributingTests(suiteId: String) {
+      def distributingTests(suiteId: String): Unit = {
         distributingTestsList += suiteId
       }
-      def completedTests(suiteId: String) {
+      def completedTests(suiteId: String): Unit = {
         completedTestsList += suiteId
       }
     }

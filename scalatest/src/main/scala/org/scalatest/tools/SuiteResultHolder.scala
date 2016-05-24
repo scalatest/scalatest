@@ -22,7 +22,7 @@ private[scalatest] class SuiteResultHolder {
 
   val suiteList = new ListBuffer[SuiteResult]()
   
-  def +=(result: SuiteResult) {
+  def +=(result: SuiteResult): Unit = {
     suiteList += result
   }
   

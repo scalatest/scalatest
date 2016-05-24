@@ -102,7 +102,7 @@ private[scalatest] class DispatchReporter(
 
   class Propagator extends Runnable {
 
-    def run() {
+    def run(): Unit = {
 
       var alive = true // local variable. Only used by the Propagator's thread, so no need for synchronization
 
@@ -119,7 +119,7 @@ private[scalatest] class DispatchReporter(
   
       val counterMap = scala.collection.mutable.Map[Int, Counter]()
   
-      def incrementCount(event: Event, f: (Counter) => Unit) {
+      def incrementCount(event: Event, f: (Counter) => Unit): Unit = {
         val runStamp = event.ordinal.runStamp
         if (counterMap.contains(runStamp)) {
           val counter = counterMap(runStamp)
@@ -281,7 +281,7 @@ private[scalatest] class DispatchReporter(
   //
   // This method will not return until the propagator's thread has exited.
   //
-  def dispatchDisposeAndWaitUntilDone() {
+  def dispatchDisposeAndWaitUntilDone(): Unit = {
     queue.put(Dispose)
     latch.await()
     slowpokeItems match {
@@ -290,13 +290,13 @@ private[scalatest] class DispatchReporter(
     }
   }
 
-  override def apply(event: Event) {
+  override def apply(event: Event): Unit = {
     queue.put(event)
   }
 
-  def doApply(event: Event) {}
+  def doApply(event: Event): Unit = {}
 
-  def doDispose() {
+  def doDispose(): Unit = {
     dispatchDisposeAndWaitUntilDone()
   }
 

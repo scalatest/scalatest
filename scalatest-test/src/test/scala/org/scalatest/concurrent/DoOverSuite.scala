@@ -40,7 +40,7 @@ class DoOverSuite extends FunSuite with Matchers {
 
   class UnreliableFun(private var successList: List[Boolean]) extends Function0[Unit] {
     var invocationCount = 0
-    def apply() {
+    def apply(): Unit = {
       invocationCount += 1
       val shouldSucceed = successList.head
       successList = successList.tail

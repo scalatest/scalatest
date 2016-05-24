@@ -48,6 +48,6 @@ private[scalatest] class StandardOutReporter(
   /**
    * Does nothing, because don't want to dispose the standard output stream.
    */
-  override def dispose() {
+  override def dispose(): Unit = {
   }
 }

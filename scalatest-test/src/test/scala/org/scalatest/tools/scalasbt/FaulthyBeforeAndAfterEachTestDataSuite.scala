@@ -21,7 +21,7 @@ class FaulthyBeforeAndAfterEachTestDataSuite extends FunSuite with BeforeAndAfte
 
   test("test 1") {}
 
-  override protected def afterEach(testData: TestData) {
+  override protected def afterEach(testData: TestData): Unit = {
     throw new RuntimeException("oops!")
   }
 

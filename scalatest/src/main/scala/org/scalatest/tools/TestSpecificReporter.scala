@@ -19,7 +19,7 @@ import org.scalatest.events.Event
 import org.scalatest.{Reporter, DistributedTestSorter}
 
 private[scalatest] class TestSpecificReporter(testSorter: DistributedTestSorter, testName: String) extends Reporter {
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     testSorter.apply(testName, event)
   }
 }

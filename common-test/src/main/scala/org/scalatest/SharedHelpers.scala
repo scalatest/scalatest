@@ -30,7 +30,7 @@ import org.scalactic.Prettifier
 object SharedHelpers extends Assertions with LineNumberHelper {
 
   object SilentReporter extends Reporter {
-    def apply(event: Event) = ()
+    def apply(event: Event): Unit = ()
   }
 
   object NoisyReporter extends Reporter {
@@ -40,7 +40,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   class TestDurationReporter extends Reporter {
     var testSucceededWasFiredAndHadADuration = false
     var testFailedWasFiredAndHadADuration = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case event: TestSucceeded => testSucceededWasFiredAndHadADuration = event.duration.isDefined
         case event: TestFailed => testFailedWasFiredAndHadADuration = event.duration.isDefined
@@ -52,7 +52,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   class SuiteDurationReporter extends Reporter {
     var suiteCompletedWasFiredAndHadADuration = false
     var suiteAbortedWasFiredAndHadADuration = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case event: SuiteCompleted => suiteCompletedWasFiredAndHadADuration = event.duration.isDefined
         case event: SuiteAborted => suiteAbortedWasFiredAndHadADuration = event.duration.isDefined
@@ -63,7 +63,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   class PendingReporter extends Reporter {
     var testPendingWasFired = false
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case _: TestPending => testPendingWasFired = true
         case _ =>
@@ -254,7 +254,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
         }
       }
     }
-    def apply(event: Event) {
+    def apply(event: Event): Unit = {
       synchronized {
         eventList ::= event
       }
@@ -383,7 +383,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     }
   }
 
-  def ensureTestFailedEventReceived(suite: Suite, testName: String) {
+  def ensureTestFailedEventReceived(suite: Suite, testName: String): Unit = {
     val reporter = new EventRecordingReporter
     suite.run(None, Args(reporter))
     val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
@@ -391,7 +391,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     assert(testFailedEvent.get.asInstanceOf[TestFailed].testName === testName)
   }
 
-  def ensureTestFailedEventReceivedWithCorrectMessage(suite: Suite, testName: String, expectedMessage: String) {
+  def ensureTestFailedEventReceivedWithCorrectMessage(suite: Suite, testName: String, expectedMessage: String): Unit = {
     val reporter = new EventRecordingReporter
     suite.run(None, Args(reporter))
     val testFailedEvent = reporter.eventsReceived.find(_.isInstanceOf[TestFailed])
@@ -403,7 +403,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   class TestIgnoredTrackingReporter extends Reporter {
     var testIgnoredReceived = false
     var lastEvent: Option[TestIgnored] = None
-    def apply(event: Event) {
+    def apply(event: Event): Unit = {
       event match {
         case event: TestIgnored =>
           testIgnoredReceived = true
@@ -1843,7 +1843,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
   }
   // SKIP-SCALATESTJS-END
 
-  def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int) {
+  def checkMessageStackDepth(exception: StackDepthException, message: String, fileName: String, lineNumber: Int): Unit = {
     assert(exception.message === Some(message))
     assert(exception.failedCodeFileName === Some(fileName))
     assert(exception.failedCodeLineNumber === Some(lineNumber))
@@ -1884,7 +1884,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
     }
 
     @tailrec
-    def transform(itr: BufferedIterator[Char], openBracket: Int, builder: StringBuilder, multilineBracket: Boolean = false) {
+    def transform(itr: BufferedIterator[Char], openBracket: Int, builder: StringBuilder, multilineBracket: Boolean = false): Unit = {
       if (itr.hasNext) {
         val next = itr.next
         val (newOpenBracket, newMultilineBracket) =

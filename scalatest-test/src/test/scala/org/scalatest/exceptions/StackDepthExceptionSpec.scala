@@ -86,7 +86,7 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
   def aStackDepthExceptionWhenGivenNulls(
     newSDE: (Option[String], Option[Throwable], Int) => StackDepthException,
     newFunSDE: (StackDepthException => Option[String], Option[Throwable], StackDepthException => Int) => StackDepthException
-  ) {
+  ): Unit = {
 
     it("should throw NPE if passed nulls or Some(null)s") {
 

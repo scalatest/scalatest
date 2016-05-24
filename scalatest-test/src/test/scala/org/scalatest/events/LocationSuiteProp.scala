@@ -513,7 +513,7 @@ class LocationSuiteProp extends SuiteProp
     val expectedInfoProvidedList = List(LineInFilePair("test info", "LocationSuiteProp.scala", thisLineNumber + 4))
 
     class NestedSpec extends RefSpec {
-      def `test info` {
+      def `test info`: Unit = {
         info("test info")
       }
     }
@@ -523,7 +523,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSpec extends RefSpec {
-      def `test fail` { fail }
+      def `test fail`: Unit = { fail }
     }
     override def nestedSuites = Vector(new NestedSpec, new AbortNestedSpec, new FailNestedSpec)
   }
@@ -543,7 +543,7 @@ class LocationSuiteProp extends SuiteProp
     val expectedInfoProvidedList = List(LineInFilePair("test info", "LocationSuiteProp.scala", thisLineNumber + 4))
 
     class NestedSpec extends StringFixtureSpec {
-      def `test info` {
+      def `test info`: Unit = {
         info("test info")
       }
     }
@@ -553,7 +553,7 @@ class LocationSuiteProp extends SuiteProp
       }
     }
     class FailNestedSpec extends StringFixtureSpec {
-      def `test fail` { fail }
+      def `test fail`: Unit = { fail }
     }
     override def nestedSuites = Vector(new NestedSpec, new AbortNestedSpec, new FailNestedSpec)
   }

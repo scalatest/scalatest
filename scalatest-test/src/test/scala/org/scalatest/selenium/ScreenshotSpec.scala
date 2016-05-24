@@ -47,7 +47,7 @@ class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       
     it("should by default save the file in the system's default temp dir") {
       class MySuite extends TestSuite with Firefox with ScreenshotOnFailure { // TODO: How are these working? They should fail.
-        def `test: screenshot should be saved` {
+        def `test: screenshot should be saved`: Unit = {
           go to "http://www.artima.com"
           assert(1 + 1 === 3)
         }    
@@ -60,7 +60,7 @@ class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     
     it("should not create a temp file if a test succeeds") {
       class MySuite extends TestSuite with Firefox with ScreenshotOnFailure {
-        def `test: no screenshot needed for this one` {
+        def `test: no screenshot needed for this one`: Unit = {
           assert(1 + 1 === 2)
         }    
       }
@@ -73,7 +73,7 @@ class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     it("should create a temp file in a user-chosen directory") {
       class MySuite extends TestSuite with Firefox with ScreenshotOnFailure {
         override val screenshotDir = "myTmpDir"
-        def `test: screenshot should be saved` {
+        def `test: screenshot should be saved`: Unit = {
           go to "http://www.artima.com"
           assert(1 + 1 === 3)
         }    

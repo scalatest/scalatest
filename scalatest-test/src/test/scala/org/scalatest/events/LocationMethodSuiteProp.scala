@@ -46,7 +46,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeOpenedList = Nil
     val expectedScopeClosedList = Nil
     
-    def `test succeed` = {
+    def `test succeed`: Unit = {
       
     }
     def `test pending` = {
@@ -56,7 +56,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
       cancel
     }
     @Ignore
-    def `test ignore` = {
+    def `test ignore`: Unit = {
       
     }
   }
@@ -74,7 +74,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeOpenedList = Nil
     val expectedScopeClosedList = Nil
     
-    def `test succeed` = {
+    def `test succeed`: Unit = {
       
     }
     def `test pending` = {
@@ -84,7 +84,7 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
       cancel
     }
     @Ignore
-    def `test ignore` = {
+    def `test ignore`: Unit = {
       
     }
   }
@@ -103,17 +103,17 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("A Spec", "org.scalatest.events.LocationMethodSuiteProp$TestLocationSpec$A$u0020Spec$"))
     
     object `A Spec` {
-      def `test succeed` {
+      def `test succeed`: Unit = {
         
       }
-      def `test pending` {
+      def `test pending`: Unit = {
         pending
       }
-      def `test cancel` {
+      def `test cancel`: Unit = {
         cancel
       }
       @Ignore
-      def `test ignore` {
+      def `test ignore`: Unit = {
         
       }
     }
@@ -133,17 +133,17 @@ class LocationMethodSuiteProp extends MethodSuiteProp {
     val expectedScopeClosedList = List(ScopeClosedPair("A Spec", "org.scalatest.events.LocationMethodSuiteProp$TestLocationFixtureSpec$A$u0020Spec$"))
     
     object `A Spec` {
-      def `test succeed`(fixture: String) {
+      def `test succeed`(fixture: String): Unit = {
         
       }
-      def `test pending`(fixture: String) {
+      def `test pending`(fixture: String): Unit = {
         pending
       }
-      def `test cancel`(fixture: String) {
+      def `test cancel`(fixture: String): Unit = {
         cancel
       }
       @Ignore
-      def `test ignore`(fixture: String) {
+      def `test ignore`(fixture: String): Unit = {
         
       }
     }

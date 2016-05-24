@@ -43,7 +43,7 @@ private[scalatest] abstract class StringReporter(
 
   val reminderEventsBuf = new ListBuffer[ExceptionalEvent]
 
-  protected def printPossiblyInColor(fragment: Fragment)
+  protected def printPossiblyInColor(fragment: Fragment): Unit
 
 /*
 I either want to print the full stack trace, like this:
@@ -145,7 +145,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
 [scalatest]   )
 */
 
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     event match {
       case ee: ExceptionalEvent if presentReminder =>
         if (!presentReminderWithoutCanceledTests || event.isInstanceOf[TestFailed]) {

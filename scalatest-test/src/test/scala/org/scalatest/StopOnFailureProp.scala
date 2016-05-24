@@ -101,31 +101,31 @@ trait StopOnFailureFixtureServices {
 // SKIP-SCALATESTJS-START
 @DoNotDiscover
 class ExampleStopOnFailureSpec extends RefSpec with StopOnFailure with StopOnFailureFixtureServices {
-  def `test 1` {}
-  def `test 2` { pending }
-  def `test 3` { cancel }
-  @Ignore def `test 4` {}
-  def `test 5` { fail }
-  def `test 6` {}
+  def `test 1`: Unit = {}
+  def `test 2`: Unit = { pending }
+  def `test 3`: Unit = { cancel }
+  @Ignore def `test 4`: Unit = {}
+  def `test 5`: Unit = { fail }
+  def `test 6`: Unit = {}
 }
 
 @DoNotDiscover
 class ExampleStopOnFailureFixtureSpec extends fixture.Spec with StopOnFailure with StopOnFailureFixtureServices with StringFixture {
-  def `test 1`(fixture: String) {}
-  def `test 2`(fixture: String) { pending }
-  def `test 3`(fixture: String) { cancel }
-  @Ignore def `test 4`(fixture: String) {}
-  def `test 5`(fixture: String) { fail }
-  def `test 6`(fixture: String) {}
+  def `test 1`(fixture: String): Unit = {}
+  def `test 2`(fixture: String): Unit = { pending }
+  def `test 3`(fixture: String): Unit = { cancel }
+  @Ignore def `test 4`(fixture: String): Unit = {}
+  def `test 5`(fixture: String): Unit = { fail }
+  def `test 6`(fixture: String): Unit = {}
 }
 
 @DoNotDiscover
 class ExampleStopOnFailureJUnit3Suite extends JUnit3Suite with StopOnFailure with StopOnFailureFixtureServices {
-  def testMethod1() {}
-  def testMethod2() { pending }
-  def testMethod3() { cancel }
-  def testMethod4() { fail }
-  def testMethod5() {}
+  def testMethod1(): Unit = {}
+  def testMethod2(): Unit = { pending }
+  def testMethod3(): Unit = { cancel }
+  def testMethod4(): Unit = { fail }
+  def testMethod5(): Unit = {}
   
   override val supportStopTest: Boolean = false
 }
@@ -133,18 +133,18 @@ class ExampleStopOnFailureJUnit3Suite extends JUnit3Suite with StopOnFailure wit
 @DoNotDiscover
 class ExampleStopOnFailureJUnitSuite extends JUnitSuite with StopOnFailure with StopOnFailureFixtureServices {
   @Test
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
   @Test 
-  def testMethod2() { pending }
+  def testMethod2(): Unit = { pending }
   @Test 
-  def testMethod3() { cancel }
+  def testMethod3(): Unit = { cancel }
   @Test
   @org.junit.Ignore
-  def testMethod4() {}
+  def testMethod4(): Unit = {}
   @Test
-  def testMethod5() { fail }
+  def testMethod5(): Unit = { fail }
   @Test
-  def testMethod6() {}
+  def testMethod6(): Unit = {}
   
   override val supportStopTest: Boolean = false
 }
@@ -152,18 +152,18 @@ class ExampleStopOnFailureJUnitSuite extends JUnitSuite with StopOnFailure with 
 @DoNotDiscover
 class ExampleStopOnFailureTestNGSuite extends TestNGSuite with StopOnFailure with StopOnFailureFixtureServices {
   @TestNG
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
   @TestNG
-  def testMethod2() { pending }
+  def testMethod2(): Unit = { pending }
   @TestNG
-  def testMethod3() { cancel }
+  def testMethod3(): Unit = { cancel }
   @TestNG
   @Ignore
-  def testMethod4() {}
+  def testMethod4(): Unit = {}
   @TestNG
-  def testMethod5() { fail }
+  def testMethod5(): Unit = { fail }
   @TestNG
-  def testMethod6() {}
+  def testMethod6(): Unit = {}
   
   override val supportStopTest: Boolean = false
 }

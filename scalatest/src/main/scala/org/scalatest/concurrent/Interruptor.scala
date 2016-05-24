@@ -62,7 +62,7 @@ object Interruptor {
    */
   def apply(fun: Thread => Unit) =
     new Interruptor {
-      def apply(testThread: Thread) { fun(testThread) }
+      def apply(testThread: Thread): Unit = { fun(testThread) }
     }
 }
 

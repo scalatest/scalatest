@@ -45,7 +45,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
 
   // Passed slot will always be the head of waitingBuffer
   class TimeoutTask(val slot: Slot) extends TimerTask {
-    override def run() {
+    override def run(): Unit = {
       timeout()
     }
   }
@@ -59,7 +59,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
    *
    * @param testName the name of the test being distributed
    */
-  def distributingTest(testName: String) {
+  def distributingTest(testName: String): Unit = {
     requireNonNull(testName)
     synchronized {
       if (slotMap.contains(testName))
@@ -74,7 +74,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     }
   }
 
-  def apply(testName: String, event: Event) {
+  def apply(testName: String, event: Event): Unit = {
     requireNonNull(testName, event)
     synchronized {
       event match { // TODO: Maybe it doesn't make sense to have AlertProvided and NoteProvided here, after enhancing to let them through immediately
@@ -93,7 +93,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   // output an error message somewhere? Could fire an InfoProvided out the door. Actually
   // maybe not. It should really throw an exception, such as a NotAllowedException? No,
   // this is an IllegalArgumentException.
-  def completedTest(testName: String) {
+  def completedTest(testName: String): Unit = {
     requireNonNull(testName)
     synchronized {
       if (!slotMap.contains(testName))
@@ -113,7 +113,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     }
   }
   
-  private def checkCompletedTests() {
+  private def checkCompletedTests(): Unit = {
     if (completedTestCount == testCount) {
       suiteSorter match {
         case Some(suiteSorter) => 
@@ -123,7 +123,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     }
   }
 
-  def doApply(event: Event) {
+  def doApply(event: Event): Unit = {
     synchronized {
       event match {
         case testStarting: TestStarting => 
@@ -185,7 +185,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
 
   // This is either ScopeOpened, ScopeClosed, ScopePending, InfoProvided, or MarkupProvided
   // Called within synchronized
-  private def handleSuiteEvent(event: Event) {
+  private def handleSuiteEvent(event: Event): Unit = {
     val listBuffer = new ListBuffer[Event]()
     listBuffer += event
     val slot = Slot(UUID.randomUUID, listBuffer, true, true, true)  // Already ready already!
@@ -196,7 +196,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
 
 
   // Also called within synchronized
-  private def handleTestCompleted(event: Event, testName: String) {
+  private def handleTestCompleted(event: Event, testName: String): Unit = {
     slotMap.get(testName) match {
       case Some(slot) =>
         val slotIdx = waitingBuffer.indexOf(slot)
@@ -213,7 +213,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   }
   
   @tailrec
-  private def fireSlotEvents(slot: Slot) {
+  private def fireSlotEvents(slot: Slot): Unit = {
     if (slot.eventList.length > 1) {
       val head = slot.eventList.head
       slot.eventList.remove(0)
@@ -230,7 +230,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   // I see that slots are appended to the waitingBuffer, so first come first served here.
   // By the way, this must be called within synchronized only
   @tailrec
-  private def fireReadyEvents() {
+  private def fireReadyEvents(): Unit = {
     // Again, dispatching inside a synchronized.
     if (waitingBuffer.size > 1) {
       val head = waitingBuffer.head
@@ -256,7 +256,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   }
 
   // Also happening inside synchronized block
-  private def scheduleTimeoutTask() {
+  private def scheduleTimeoutTask(): Unit = {
     val head = waitingBuffer.head  // Assumes waitingBuffer is non-empty. Put a require there to make that obvious.
     timeoutTask match {
         case Some(task) => 
@@ -272,7 +272,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
   }
   
   // Also happening inside synchronized block
-  private def cancelTimeoutTask() {
+  private def cancelTimeoutTask(): Unit = {
     timeoutTask match { // Waiting buffer is zero, so no timeout needed
       case Some(task) => 
         task.cancel()
@@ -281,7 +281,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     }
   }
   
-  private def timeout() {
+  private def timeout(): Unit = {
     synchronized {
       if (waitingBuffer.size > 0) {
         val head = waitingBuffer.head
@@ -294,7 +294,7 @@ private[scalatest] class TestSortingReporter(suiteId: String, dispatch: Reporter
     }
   }
   
-  def doDispose() = {
+  def doDispose(): Unit = {
     fireReadyEvents()
     propagateDispose(dispatch)
   }

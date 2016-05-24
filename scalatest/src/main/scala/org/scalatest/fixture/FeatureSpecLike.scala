@@ -369,7 +369,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * trait <code>FeatureSpec</code>.
    * </p>
    */
-  protected def scenariosFor(unit: Unit) {}
+  protected def scenariosFor(unit: Unit): Unit = {}
 
   import scala.language.implicitConversions
 

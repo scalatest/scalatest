@@ -369,7 +369,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    * <a href="#sharedScenarios">Shared scenarios section</a> in the main documentation for this trait.
    * </p>
    */
-  protected def scenariosFor(unit: Unit) {}
+  protected def scenariosFor(unit: Unit): Unit = {}
   
   /**
    * Suite style name.

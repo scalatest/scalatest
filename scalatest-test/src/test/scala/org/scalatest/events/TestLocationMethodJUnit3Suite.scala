@@ -26,7 +26,7 @@ class TestLocationMethodJUnit3Suite extends JUnit3Suite with TestLocationMethodS
   val expectedScopeOpenedList = Nil
   val expectedScopeClosedList = Nil
   
-  def testSucceed() { 
+  def testSucceed(): Unit = { 
     
   }
 }

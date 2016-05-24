@@ -206,7 +206,7 @@ trait RandomTestOrder extends OneInstancePerTest { this: Suite =>
 
   private[scalatest] def createTestSpecificReporter(testSorter: DistributedTestSorter, testName: String): Reporter = {
     class TestSpecificReporter(testSorter: DistributedTestSorter, testName: String) extends Reporter {
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         testSorter.apply(testName, event)
       }
     }

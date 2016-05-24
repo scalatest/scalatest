@@ -31,13 +31,13 @@ class RandomTestOrderSpec extends FunSpec {
 
   // SKIP-SCALATESTJS-START
   class ExampleSpec(listBuffer: ListBuffer[Int]) extends RefSpec with RandomTestOrder {
-    def `test 1` {
+    def `test 1`: Unit = {
       listBuffer += 0
     }
-    def `test 2` {
+    def `test 2`: Unit = {
       listBuffer += 1
     }
-    def `test 3` {
+    def `test 3`: Unit = {
       listBuffer += 2
     }
 
@@ -45,13 +45,13 @@ class RandomTestOrderSpec extends FunSpec {
   }
 
   class ExampleFixtureSpec(listBuffer: ListBuffer[Int]) extends fixture.Spec with StringFixture with RandomTestOrder {
-    def `test 1` {
+    def `test 1`: Unit = {
       listBuffer += 0
     }
-    def `test 2` {
+    def `test 2`: Unit = {
       listBuffer += 1
     }
-    def `test 3` {
+    def `test 3`: Unit = {
       listBuffer += 2
     }
 

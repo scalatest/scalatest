@@ -338,7 +338,7 @@ class ExpectationsSpec extends FunSpec with Expectations {
           } && {
             // Try with a trait
             trait MyTrait {
-              def someRandomMethod() {}
+              def someRandomMethod(): Unit = {}
             }
             class AnotherException extends RuntimeException with MyTrait
             expectThrows[MyTrait] {

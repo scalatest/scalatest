@@ -51,7 +51,7 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false
   
-  private def ensureScopesAndTestsRegistered() {
+  private def ensureScopesAndTestsRegistered(): Unit = {
     
     thisSuite.synchronized {
       if (!scopesRegistered) {
@@ -99,14 +99,14 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
           }
         }
         
-        def register(o: AnyRef) {
+        def register(o: AnyRef): Unit = {
           val testMethods = o.getClass.getMethods.filter(isTestMethod(_)).sorted(MethodNameEncodedOrdering)
           
           testMethods.foreach { m =>
             val scope = isScopeMethod(o, m)
             if (scope) {
               val scopeDesc = getScopeDesc(m)
-              def scopeFun = {
+              def scopeFun: Unit = {
                 try {
                   val scopeObj = m.invoke(o)
                   register(scopeObj)

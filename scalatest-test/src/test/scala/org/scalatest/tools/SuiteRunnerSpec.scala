@@ -49,7 +49,7 @@ class SuiteRunnerSpec extends FunSpec {
 
         test("test 1") {}
 
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           throw new RuntimeException("oops!")
         }
 
@@ -70,7 +70,7 @@ class SuiteRunnerSpec extends FunSpec {
 
         test("test 1") {}
 
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           throw new RuntimeException("oops!")
         }
 
@@ -91,7 +91,7 @@ class SuiteRunnerSpec extends FunSpec {
 
         test("test 1") {}
 
-        override protected def afterEach() {
+        override protected def afterEach(): Unit = {
           throw new RuntimeException("oops!")
         }
 
@@ -112,7 +112,7 @@ class SuiteRunnerSpec extends FunSpec {
 
         test("test 1") {}
 
-        override protected def afterEach(testData: TestData) {
+        override protected def afterEach(testData: TestData): Unit = {
           throw new RuntimeException("oops!")
         }
 

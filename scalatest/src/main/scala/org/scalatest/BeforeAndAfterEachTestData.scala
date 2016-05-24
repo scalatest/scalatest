@@ -140,7 +140,7 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
    * needed by each test. This trait's implementation of this method does nothing.
    * </p>
    */
-  protected def beforeEach(testData: TestData) {
+  protected def beforeEach(testData: TestData): Unit = {
   }
 
   /**
@@ -155,7 +155,7 @@ trait BeforeAndAfterEachTestData extends SuiteMixin {
    * needed by each test. This trait's implementation of this method does nothing.
    * </p>
    */
-  protected def afterEach(testData: TestData) {
+  protected def afterEach(testData: TestData): Unit = {
   }
 
   /**

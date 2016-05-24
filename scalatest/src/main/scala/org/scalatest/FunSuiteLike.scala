@@ -254,7 +254,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
    * <a href="#sharedTests">Shared tests section</a> in the main documentation for this trait.
    * </p>
    */
-  protected def testsFor(unit: Unit) {}
+  protected def testsFor(unit: Unit): Unit = {}
   
   /**
    * Suite style name.

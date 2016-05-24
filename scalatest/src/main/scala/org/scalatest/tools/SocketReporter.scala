@@ -26,14 +26,14 @@ private[scalatest] class SocketReporter(host: String, port: Int) extends Resourc
   private val socket = new Socket(host, port)
   private val out = new ObjectOutputStream(socket.getOutputStream)
   
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     synchronized {
       out.writeObject(event)
       out.flush()
     }
   }
 
-  def dispose() {
+  def dispose(): Unit = {
     out.flush()
     out.close()
     socket.close()

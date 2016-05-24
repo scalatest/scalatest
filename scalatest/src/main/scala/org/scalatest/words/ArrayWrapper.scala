@@ -22,7 +22,7 @@ import org.scalactic.Prettifier
  * This wrapper gives better toString (Array(x, x, x)) as compared to Scala default one (WrappedArray(x, x, x)).
  */
 private[scalatest] class ArrayWrapper[T](underlying: Array[T]) extends Traversable[T] {
-  def foreach[U](f: (T) => U) {
+  def foreach[U](f: (T) => U): Unit = {
     var index = 0
     while (index < underlying.length) {
       index += 1

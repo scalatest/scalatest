@@ -273,7 +273,7 @@ final class JMockCycle {
    * @param fun a function that sets expectations on the passed <code>JMockExpectations</code>
    *    object
    */
-  def expecting(fun: JMockExpectations => Unit) {
+  def expecting(fun: JMockExpectations => Unit): Unit = {
     val e = new JMockExpectations
     fun(e)
     context.checking(e)
@@ -318,7 +318,7 @@ final class JMockCycle {
    * @param fun the code to execute under previously set expectations
    * @throws org.mock.ExpectationError if an expectation is not met
    */
-  def whenExecuting(fun: => Unit) = {
+  def whenExecuting(fun: => Unit): Unit = {
     fun
     context.assertIsSatisfied()
   }

@@ -51,7 +51,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   // Records events in 'events' set.  Generates xml from events upon receipt
   // of SuiteCompleted or SuiteAborted events.
   //
-  def apply(event: Event) {
+  def apply(event: Event): Unit = {
     events += event
 
     event match {
@@ -69,7 +69,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   // Writes the xml file for a single test suite.  Removes processed
   // events from the events Set as they are used.
   //
-  private def writeSuiteFile(endEvent: Event, suiteId: String) {
+  private def writeSuiteFile(endEvent: Event, suiteId: String): Unit = {
     require(endEvent.isInstanceOf[SuiteCompleted] ||
             endEvent.isInstanceOf[SuiteAborted])
 
@@ -491,7 +491,7 @@ private[scalatest] class JUnitXmlReporter(directory: String) extends Reporter {
   //
   // Throws an exception if an unexpected Event is encountered.
   //
-  def unexpected(event: Event) {
+  def unexpected(event: Event): Unit = {
     throw new RuntimeException("unexpected event [" + event + "]")
   }
 

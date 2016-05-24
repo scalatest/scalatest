@@ -37,7 +37,7 @@ import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 
 private[scalatest] class JavaCollectionWrapper[T](underlying: java.util.Collection[T]) extends Traversable[T] {
-  def foreach[U](f: (T) => U) {
+  def foreach[U](f: (T) => U): Unit = {
     val javaIterator = underlying.iterator
     while (javaIterator.hasNext)
       f(javaIterator.next)

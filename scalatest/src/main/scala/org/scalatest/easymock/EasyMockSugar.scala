@@ -354,7 +354,7 @@ trait EasyMockSugar {
    * <code>expecting</code> invoke <code>replay</code> last.
    * </p>
    */
-  def expecting(unused: Any) = ()
+  def expecting(unused: Any): Unit = ()
 
   /**
    * Invokes <code>replay</code> on the passed mock object or objects, executes the passed function, then invokes
@@ -413,7 +413,7 @@ trait EasyMockSugar {
    * @param mocks one or more mock objects to invoke <code>replay</code> before using and <code>verify</code> after using.
    * @throws IllegalArgumentException if no mocks are passed
    */
-  def whenExecuting(mocks: AnyRef*)(fun: => Unit) = {
+  def whenExecuting(mocks: AnyRef*)(fun: => Unit): Unit = {
 
     require(mocks.length > 0, "Must pass at least one mock to whenExecuting, but mocks.length was 0.") 
 
@@ -493,7 +493,7 @@ trait EasyMockSugar {
    * that same exception without executing verify on any of the mocks.
    * </p>
    */
-  def whenExecuting(fun: => Unit)(implicit mocks: MockObjects) {
+  def whenExecuting(fun: => Unit)(implicit mocks: MockObjects): Unit = {
     whenExecuting(mocks.mocks: _*)(fun)
   }
 }

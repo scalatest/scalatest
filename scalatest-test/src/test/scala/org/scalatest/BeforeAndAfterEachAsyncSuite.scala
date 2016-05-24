@@ -46,12 +46,12 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
 
     test("test something") { succeed }
 
-    override def beforeEach() {
+    override def beforeEach(): Unit = {
       if (!runTestWasCalled)
         beforeEachCalledBeforeRunTest = true
       super.beforeEach()
     }
-    override def afterEach() {
+    override def afterEach(): Unit = {
       if (runTestWasCalled)
         afterEachCalledAfterRunTest = true
       super.afterEach()
@@ -91,7 +91,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     "will complete abruptly with the same exception.") {
     
     class MySuite extends Suite with BeforeAndAfterEach {
-      override def beforeEach() { throw new NumberFormatException } 
+      override def beforeEach(): Unit = { throw new NumberFormatException } 
     }
     assertThrows[NumberFormatException] {
       val a = new MySuite
@@ -108,7 +108,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach {
       var afterEachCalled = false
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterEachCalled = true
       }
     }
@@ -128,7 +128,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach {
       var afterEachCalled = false
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterEachCalled = true
         throw new IllegalArgumentException
       }
@@ -145,7 +145,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
        
     class MySuite extends AsyncFunSuite with BeforeAndAfterEach {
 
-      override def afterEach() { throw new NumberFormatException }
+      override def afterEach(): Unit = { throw new NumberFormatException }
       test("test October") { succeed }
     }
     val a = new MySuite
@@ -167,7 +167,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.annotation.AnnotationFormatError("test")
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -187,7 +187,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.nio.charset.CoderMalfunctionError(new RuntimeException("test"))
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -207,7 +207,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new javax.xml.parsers.FactoryConfigurationError()
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -227,7 +227,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.LinkageError()
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -247,7 +247,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new javax.xml.transform.TransformerFactoryConfigurationError()
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -267,7 +267,7 @@ class BeforeAndAfterEachAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.VirtualMachineError() {}
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }

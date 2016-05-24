@@ -191,7 +191,7 @@ trait ShouldVerb {
      * no-arg function.
      * </p>
      */
-    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
+    def should(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
       fun(leftSideString, "should", pos, right _)
     }
 
@@ -218,7 +218,7 @@ trait ShouldVerb {
      * <code>"should"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>should</code>.
      * </p>
      */
-    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration) {
+    def should(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
       swawr(leftSideString, "should", resultOfAfterWordApplication, pos)
     }
   }

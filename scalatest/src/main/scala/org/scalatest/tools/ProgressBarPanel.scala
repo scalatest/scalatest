@@ -56,7 +56,7 @@ private[scalatest] class ProgressBarPanel() extends JPanel {
   //
   // Replaces progress bar with discovery message.
   //
-  def discoveryStarting() {
+  def discoveryStarting(): Unit = {
     remove(progressBar)
     add(discoPanel, BorderLayout.WEST)
 
@@ -65,40 +65,40 @@ private[scalatest] class ProgressBarPanel() extends JPanel {
     discoJLabel.setText(Resources.doingDiscovery)
   }
 
-  private def showProgressBar() {
+  private def showProgressBar(): Unit = {
     remove(discoPanel)
     add(progressBar, BorderLayout.CENTER)
   }
 
-  def runAborted() {
+  def runAborted(): Unit = {
     showProgressBar()
     progressBar.setRed()
   }
 
-  def discoveryCompleted() {
+  def discoveryCompleted(): Unit = {
     showProgressBar()
   }
 
-  def runStarting(testCount: Int) {
+  def runStarting(testCount: Int): Unit = {
      progressBar.setMax(testCount)
      progressBar.setValue(0)
      progressBar.setGreen()
   }
 
-  def setTestsRun(testsCompletedCount: Int) {
+  def setTestsRun(testsCompletedCount: Int): Unit = {
     progressBar.setValue(testsCompletedCount)
   }
 
-  def suiteAborted() {
+  def suiteAborted(): Unit = {
     progressBar.setRed()
   }
 
-  def testFailed(testsCompletedCount: Int) {
+  def testFailed(testsCompletedCount: Int): Unit = {
     progressBar.setRed()
     setTestsRun(testsCompletedCount)
   }
 
-  def reset() {
+  def reset(): Unit = {
     showProgressBar()
     progressBar.setGray()
   }

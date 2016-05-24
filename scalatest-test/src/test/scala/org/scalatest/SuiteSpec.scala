@@ -345,8 +345,8 @@ class SuiteSpec extends FunSpec {
       
       class IgnoreStopRequestStopper extends Stopper {
         def stopRequested: Boolean = false
-        def requestStop() {}
-        def reset() {}
+        def requestStop(): Unit = {}
+        def reset(): Unit = {}
       }
 
       val x = Suites(a, b, c, d, e, f, g)
@@ -496,7 +496,7 @@ class SuiteSpec extends FunSpec {
 
         test("test 1") {}
 
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           throw new RuntimeException("oops!")
         }
 
@@ -521,7 +521,7 @@ class SuiteSpec extends FunSpec {
 
         test("test 1") {}
 
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           throw new RuntimeException("oops!")
         }
 
@@ -546,7 +546,7 @@ class SuiteSpec extends FunSpec {
 
         test("test 1") {}
 
-        override protected def afterEach() {
+        override protected def afterEach(): Unit = {
           throw new RuntimeException("oops!")
         }
 
@@ -571,7 +571,7 @@ class SuiteSpec extends FunSpec {
 
         test("test 1") {}
 
-        override protected def afterEach(test: TestData) {
+        override protected def afterEach(test: TestData): Unit = {
           throw new RuntimeException("oops!")
         }
 

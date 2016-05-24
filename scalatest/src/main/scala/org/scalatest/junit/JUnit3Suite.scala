@@ -306,13 +306,13 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
   // test.asInstanceOf[TestCase].getName gives you the name of the test method, without any parens
   // Calling test.toSring gives you testError(org.scalatestexamples.junit.JUnit3ExampleSuite)
   // So that's that old JUnit-style test name thing.
-  def startTest(testCase: Test) {
+  def startTest(testCase: Test): Unit = {
     requireNonNull(testCase)
     val suiteName = getSuiteNameForTestCase(testCase)
     report(TestStarting(tracker.nextOrdinal(), suiteName, testCase.getClass.getName, Some(testCase.getClass.getName), testCase.toString, testCase.toString, Some(MotionToSuppress), getTopOfMethod(testCase.getClass.getName, testCase.asInstanceOf[TestCase].getName)))
   }
   
-  def addError(testCase: Test, throwable: Throwable) {
+  def addError(testCase: Test, throwable: Throwable): Unit = {
 
     requireNonNull(testCase, throwable)
 
@@ -330,7 +330,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
     failedTestsSet += testCase
   }
 
-  def addFailure(testCase: Test, assertionFailedError: AssertionFailedError) {
+  def addFailure(testCase: Test, assertionFailedError: AssertionFailedError): Unit = {
 
     requireNonNull(testCase, assertionFailedError)
 
@@ -341,7 +341,7 @@ private[scalatest] class MyTestListener(report: Reporter, tracker: Tracker, stat
     failedTestsSet += testCase
   }
 
-  def endTest(testCase: Test) {
+  def endTest(testCase: Test): Unit = {
 
     val testHadFailed = failedTestsSet.contains(testCase)
 

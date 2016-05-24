@@ -80,7 +80,7 @@ class TestNGWrapperSuite(xmlSuiteFilenames: List[String]) extends TestNGSuite {
    * Runs all tests in the xml suites.
    * @param   reporter   the reporter to be notified of test events (success, failure, etc)
    */
-  override private[testng] def runTestNG(reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus) {
+  override private[testng] def runTestNG(reporter: Reporter, tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     runTestNG(reporter, Set[String](), Set[String](), tracker, status)
   }
 
@@ -97,7 +97,7 @@ class TestNGWrapperSuite(xmlSuiteFilenames: List[String]) extends TestNGSuite {
    * @param   status   Run status.
    */ 
   private[testng] def runTestNG(reporter: Reporter, groupsToInclude: Set[String], 
-      groupsToExclude: Set[String], tracker: Tracker, status: ScalaTestStatefulStatus) {
+      groupsToExclude: Set[String], tracker: Tracker, status: ScalaTestStatefulStatus): Unit = {
     
     val testng = new TestNG
     handleGroups(groupsToInclude, groupsToExclude, testng)
@@ -120,7 +120,7 @@ class TestNGWrapperSuite(xmlSuiteFilenames: List[String]) extends TestNGSuite {
    * @throws FileNotFoundException if a file in xmlSuitesPropertyName does not exist.
    *
    */
-  private def addXmlSuitesToTestNG(testng: TestNG) {
+  private def addXmlSuitesToTestNG(testng: TestNG): Unit = {
     import java.io.File
     import java.io.FileNotFoundException
     

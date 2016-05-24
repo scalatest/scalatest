@@ -52,7 +52,7 @@ private[org] class MacroOwnerRepair[C <: reflect.macros.Context with Singleton](
     class ChangeOwnerAndModuleClassTraverser(oldowner: Symbol, newowner: Symbol)
       extends ChangeOwnerTraverser(oldowner, newowner) {
 
-      override def traverse(tree: Tree) {
+      override def traverse(tree: Tree): Unit = {
         tree match {
           case _: DefTree => change(tree.symbol.moduleClass)
           case _          =>

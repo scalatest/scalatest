@@ -29,7 +29,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     @volatile var beforeAllTime: Long = 0
     @volatile var afterAllTime: Long = 0
     
-    override protected def beforeAll() {
+    override protected def beforeAll(): Unit = {
       beforeAllTime = Platform.currentTime
     }
     
@@ -39,7 +39,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     
     override def newInstance: Suite with ParallelTestExecution = new ExampleSuite
     
-    override protected def afterAll() {
+    override protected def afterAll(): Unit = {
       afterAllTime = Platform.currentTime
     }
   }
@@ -64,10 +64,10 @@ class BeforeAndAfterAllSpec extends FunSpec {
   ) with BeforeAndAfterAll { 
     @volatile var beforeAllTime: Long = 0
     @volatile var afterAllTime: Long = 0
-    override protected def beforeAll() {
+    override protected def beforeAll(): Unit = {
       beforeAllTime = Platform.currentTime
     } 
-    override protected def afterAll() {
+    override protected def afterAll(): Unit = {
       afterAllTime = Platform.currentTime
     }
   }
@@ -77,11 +77,11 @@ class BeforeAndAfterAllSpec extends FunSpec {
     @volatile var beforeAll = new AtomicInteger
     @volatile var afterAll = new AtomicInteger
     
-    def incrementBeforeAllCount() {
+    def incrementBeforeAllCount(): Unit = {
       beforeAll.incrementAndGet()
     }
     
-    def incrementAfterAllCount() {
+    def incrementAfterAllCount(): Unit = {
       afterAll.incrementAndGet()
     }
     
@@ -92,10 +92,10 @@ class BeforeAndAfterAllSpec extends FunSpec {
   class ExampleBeforeAndAfterAllWithParallelTestExecutionSuite(counter: BeforeAfterAllCounter) extends FunSuite with BeforeAndAfterAll 
     with OneInstancePerTest {
     
-    override protected def beforeAll() {
+    override protected def beforeAll(): Unit = {
       counter.incrementBeforeAllCount()
     } 
-    override protected def afterAll() {
+    override protected def afterAll(): Unit = {
       counter.incrementAfterAllCount()
     }
     
@@ -172,13 +172,13 @@ class BeforeAndAfterAllSpec extends FunSpec {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll() {
+        override protected def beforeAll(): Unit = {
           beforeAllCount.incrementAndGet()
         }
         it("test 1") {}
         it("test 2") {}
         it("test 3") {}
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -192,13 +192,13 @@ class BeforeAndAfterAllSpec extends FunSpec {
       class ExampleSpec extends FunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll() {
+        override protected def beforeAll(): Unit = {
           beforeAllCount.incrementAndGet()
         }
         it("test 1") {}
         it("test 2") {}
         it("test 3") {}
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -213,7 +213,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll() {
+        override protected def beforeAll(): Unit = {
           beforeAllCount.incrementAndGet()
         }
         override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
@@ -222,7 +222,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
             new ExampleNestedSuite, 
             new ExampleNestedSuite
           )
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -236,7 +236,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
       class ExampleSpec extends FunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll() {
+        override protected def beforeAll(): Unit = {
           beforeAllCount.incrementAndGet()
         }
         override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
@@ -245,7 +245,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
             new ExampleNestedSuite, 
             new ExampleNestedSuite
           )
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -261,13 +261,13 @@ class BeforeAndAfterAllSpec extends FunSpec {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll() {
+        override protected def beforeAll(): Unit = {
           beforeAllCount.incrementAndGet()
         }
         it("test 1") {}
         it("test 2") {}
         it("test 3") {}
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -284,13 +284,13 @@ class BeforeAndAfterAllSpec extends FunSpec {
       class ExampleSpec extends FunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll() {
+        override protected def beforeAll(): Unit = {
           beforeAllCount.incrementAndGet()
         }
         it("test 1") {}
         it("test 2") {}
         it("test 3") {}
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -307,7 +307,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll() {
+        override protected def beforeAll(): Unit = {
           beforeAllCount.incrementAndGet()
         }
         override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
@@ -316,7 +316,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
             new ExampleIgnoreNestedSuite, 
             new ExampleIgnoreNestedSuite
           )
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -332,7 +332,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
       class ExampleSpec extends FunSpec with BeforeAndAfterAll {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll() {
+        override protected def beforeAll(): Unit = {
           beforeAllCount.incrementAndGet()
         }
         override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
@@ -341,7 +341,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
             new ExampleIgnoreNestedSuite, 
             new ExampleIgnoreNestedSuite
           )
-        override protected def afterAll() {
+        override protected def afterAll(): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -358,7 +358,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
       "will complete abruptly with the same exception.") {
       var testIsCalled = false
       class MySuite extends FunSuite with BeforeAndAfterAll {
-        override def beforeAll() {
+        override def beforeAll(): Unit = {
           throw new NumberFormatException
         }
         test("test 1") { testIsCalled = true }
@@ -374,7 +374,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
       "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
       var afterAllIsCalled = false
       class MySuite extends FunSuite with BeforeAndAfterAll {
-        override def afterAll() {
+        override def afterAll(): Unit = {
           afterAllIsCalled = true
         }
         override def run(testName: Option[String], args: Args): Status = {
@@ -393,7 +393,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     it("should, if both super.run and afterAll complete abruptly with an exception, run " +
       "will complete abruptly with the exception thrown by super.run.") {
       class MySuite extends FunSuite with BeforeAndAfterAll {
-        override def afterAll() { throw new NumberFormatException }
+        override def afterAll(): Unit = { throw new NumberFormatException }
         override def run(testName: Option[String], args: Args): Status = {
           throw new IllegalArgumentException
         }
@@ -407,7 +407,7 @@ class BeforeAndAfterAllSpec extends FunSpec {
     it("should, if super.run returns normally, but afterEach completes abruptly with an " +
       "exception, the status returned by run will contain that exception as its unreportedException.") {
       class MySuite extends FunSuite with BeforeAndAfterAll {
-        override def afterAll() { throw new NumberFormatException }
+        override def afterAll(): Unit = { throw new NumberFormatException }
         test("test July") {}
       }
       val a = new MySuite

@@ -24,7 +24,7 @@ private[scalatest] class SbtCommandParser extends StandardTokenParsers {
   lexical.reserved ++= List("st", "include", "exclude", "membersonly", "wildcard", "suite", "junit", "testng", "dashboard", "file", "filename",
       "config", "directory", "stdout", "stderr", "graphic", "junitxml", "dashboard", "html", "reporterclass", "dashboard", "concurrent")
 
-  def parseCommand(command: String) {
+  def parseCommand(command: String): Unit = {
     val tokens = new lexical.Scanner(command)
     val result = phrase(cmd)(tokens)
     result match {
@@ -111,7 +111,7 @@ private[scalatest] class SbtCommandParser extends StandardTokenParsers {
 }
 
 private[scalatest] object SbtCommandParser {
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     
     (new SbtCommandParser).parseCommand("""st""")
 /*

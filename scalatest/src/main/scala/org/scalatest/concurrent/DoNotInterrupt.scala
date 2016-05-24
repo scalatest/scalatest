@@ -29,6 +29,6 @@ object DoNotInterrupt extends Interruptor {
    *
    * @param testThread unused by this strategy
    */
-  def apply(testThread: Thread) {} // Don't do nuthin
+  def apply(testThread: Thread): Unit = {} // Don't do nuthin
 }
 

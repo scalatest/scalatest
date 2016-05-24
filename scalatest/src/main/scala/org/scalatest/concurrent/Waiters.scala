@@ -320,7 +320,7 @@ trait Waiters extends PatienceConfiguration {
     /* @volatile */ private var dismissedCount = 0
     /* @volatile */ private var thrown: Option[Throwable] = None
 
-    private def setThrownIfEmpty(t: Throwable) {
+    private def setThrownIfEmpty(t: Throwable): Unit = {
       /*
        * synchronized to serialize access to `thrown` which is used in the wait condition, 
        * and to ensure the compare and set is atomic.
@@ -347,7 +347,7 @@ trait Waiters extends PatienceConfiguration {
      *
      * @param fun the by-name function to execute
      */
-    def apply(fun: => Unit) {
+    def apply(fun: => Unit): Unit = {
       try {
         fun
       } catch { // Exceptions after the first are swallowed (need to get to dismissals later)
@@ -380,7 +380,7 @@ trait Waiters extends PatienceConfiguration {
      * @param timeout the number of milliseconds timeout, or -1 to indicate no timeout (default is -1)
      * @param dismissals the number of dismissals to wait for (default is 1)
      */
-    private def awaitImpl(timeout: Span, pos: source.Position, dismissals: Int = 1) {
+    private def awaitImpl(timeout: Span, pos: source.Position, dismissals: Int = 1): Unit = {
       if (Thread.currentThread != creatingThread)
         throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, None, Some(pos), getStackDepthFun(pos))
 
@@ -437,7 +437,7 @@ trait Waiters extends PatienceConfiguration {
      *
      * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> parameter
      */
-    def await()(implicit config: PatienceConfig, pos: source.Position) {
+    def await()(implicit config: PatienceConfig, pos: source.Position): Unit = {
       awaitImpl(config.timeout, pos)
     }
 
@@ -469,7 +469,7 @@ trait Waiters extends PatienceConfiguration {
      *
      * @param timeout:  the <code>Timeout</code> configuration parameter containing the specified timeout
      */
-    def await(timeout: Timeout)(implicit pos: source.Position) {
+    def await(timeout: Timeout)(implicit pos: source.Position): Unit = {
       awaitImpl(timeout.value, pos)
     }
 
@@ -503,7 +503,7 @@ trait Waiters extends PatienceConfiguration {
      *    dismissals for which to wait
      * @param config the <code>PatienceConfig</code> object containing the <code>timeout</code> parameter
      */
-    def await(dismissals: Dismissals)(implicit config: PatienceConfig, pos: source.Position) {
+    def await(dismissals: Dismissals)(implicit config: PatienceConfig, pos: source.Position): Unit = {
       awaitImpl(config.timeout, pos, dismissals.value)
     }
 
@@ -537,7 +537,7 @@ trait Waiters extends PatienceConfiguration {
      * @param dismissals:  the <code>Dismissals</code> configuration parameter containing the number of
      *    dismissals for which to wait
      */
-    def await(timeout: Timeout, dismissals: Dismissals)(implicit pos: source.Position) {
+    def await(timeout: Timeout, dismissals: Dismissals)(implicit pos: source.Position): Unit = {
       awaitImpl(timeout.value, pos, dismissals.value)
     }
 
@@ -549,7 +549,7 @@ trait Waiters extends PatienceConfiguration {
      * produced an exception), <code>await</code> will return normally.
      * </p>
      */
-    def dismiss() {
+    def dismiss(): Unit = {
       /*
        * Synchronized to serialize access to `dismissedCount` used in the wait condition,
        * and to make the increment atomic. 

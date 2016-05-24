@@ -48,6 +48,6 @@ private[scalatest] class StandardErrReporter(
   /**
    * Does nothing, because don't want to dispose the standard error stream.
    */
-  override def dispose() {
+  override def dispose(): Unit = {
   }
 }

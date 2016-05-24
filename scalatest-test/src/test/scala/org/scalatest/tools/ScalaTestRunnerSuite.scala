@@ -244,7 +244,7 @@ import java.io.File
       val framework = new ScalaTestFramework()
       val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
       val listener = new EventHandler {
-        def handle(event: Event) {}
+        def handle(event: Event): Unit = {}
       }
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
@@ -263,7 +263,7 @@ import java.io.File
       val framework = new ScalaTestFramework()
       val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
       val listener = new EventHandler {
-        def handle(event: Event) {}
+        def handle(event: Event): Unit = {}
       }
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSuite", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
@@ -283,7 +283,7 @@ import java.io.File
       val framework = new ScalaTestFramework()
       val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
       val listener = new EventHandler {
-        def handle(event: Event) {}
+        def handle(event: Event): Unit = {}
       }
       runner.run("org.scalatest.tools.scalasbt.SampleSuite", fingerprint, listener, Array("-y", "org.scalatest.FunSpec", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
@@ -309,7 +309,7 @@ import java.io.File
       val framework = new ScalaTestFramework()
       val runner: TestingRunner = framework.testRunner(Thread.currentThread.getContextClassLoader, Array(new TestLogger))
       val listener = new EventHandler {
-        def handle(event: Event) {}
+        def handle(event: Event): Unit = {}
       }
       runner.run("org.scalatest.tools.scalasbt.SlowSampleSuite", fingerprint, listener, Array("-W", "1", "1", "-C", classOf[EventRecordingReporter].getName))
       framework.RunConfig.reporter.get match {
@@ -432,7 +432,7 @@ import java.io.File
       // val buf = scala.collection.mutable.ArrayBuffer[Event]() // Only worked under 2.8
       val buf = new scala.collection.mutable.ArrayBuffer[Event]
       val listener = new EventHandler {
-        def handle(event: Event) {
+        def handle(event: Event): Unit = {
           buf += event
         }
       }
@@ -443,7 +443,7 @@ import java.io.File
       dispose(framework)
       buf.toArray
     }
-    private def dispose(framework: ScalaTestFramework) {
+    private def dispose(framework: ScalaTestFramework): Unit = {
       framework.RunConfig.reporter.get match {
         case Some(dispatchRep: DispatchReporter) => 
           dispatchRep.doDispose()
@@ -452,11 +452,11 @@ import java.io.File
     }
 
     class TestLogger extends Logger {
-      def trace(t:Throwable) {}
-      def error(msg: String) {}
-      def warn(msg: String) {}
-      def info(msg: String) {}
-      def debug(msg: String) {}
+      def trace(t:Throwable): Unit = {}
+      def error(msg: String): Unit = {}
+      def warn(msg: String): Unit = {}
+      def info(msg: String): Unit = {}
+      def debug(msg: String): Unit = {}
       def ansiCodesSupported = false
     }
   }
@@ -514,8 +514,8 @@ import java.io.File
     import org.scalatest.testng.TestNGSuite
     private class SuiteWithSkippedTest extends TestNGSuite {
       import org.testng.annotations.Test
-      @Test(groups = Array("run")) def dependeeThatFails() { throw new Exception("fail") }
-      @Test(dependsOnGroups = Array("run")) def depender() {}
+      @Test(groups = Array("run")) def dependeeThatFails(): Unit = { throw new Exception("fail") }
+      @Test(dependsOnGroups = Array("run")) def depender(): Unit = {}
     }
   }
 }

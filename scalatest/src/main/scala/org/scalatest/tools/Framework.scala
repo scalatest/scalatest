@@ -508,39 +508,39 @@ class Framework extends SbtFramework {
     val testsSucceededCount, testsFailedCount, testsIgnoredCount, testsPendingCount, testsCanceledCount, suitesCompletedCount, suitesAbortedCount, scopesPendingCount = new AtomicInteger
     val reminderEventsQueue = new LinkedBlockingQueue[ExceptionalEvent]
     
-    def incrementTestsSucceededCount() { 
+    def incrementTestsSucceededCount(): Unit = { 
       testsSucceededCount.incrementAndGet() 
     }
     
-    def incrementTestsFailedCount() {
+    def incrementTestsFailedCount(): Unit = {
       testsFailedCount.incrementAndGet()
     }
     
-    def incrementTestsIgnoredCount() {
+    def incrementTestsIgnoredCount(): Unit = {
       testsIgnoredCount.incrementAndGet()
     }
     
-    def incrementTestsPendingCount() {
+    def incrementTestsPendingCount(): Unit = {
       testsPendingCount.incrementAndGet()
     }
     
-    def incrementTestsCanceledCount() {
+    def incrementTestsCanceledCount(): Unit = {
       testsCanceledCount.incrementAndGet()
     }
     
-    def incrementSuitesCompletedCount() {
+    def incrementSuitesCompletedCount(): Unit = {
       suitesCompletedCount.incrementAndGet()
     }
     
-    def incrementSuitesAbortedCount() {
+    def incrementSuitesAbortedCount(): Unit = {
       suitesAbortedCount.incrementAndGet()
     }
     
-    def incrementScopesPendingCount() {
+    def incrementScopesPendingCount(): Unit = {
       scopesPendingCount.incrementAndGet()
     }
     
-    def recordReminderEvents(events: ExceptionalEvent) {
+    def recordReminderEvents(events: ExceptionalEvent): Unit = {
       reminderEventsQueue.put(events)
     }
   }
@@ -569,13 +569,13 @@ class Framework extends SbtFramework {
     presentReminderWithoutCanceledTests
   ) {
 
-    protected def printPossiblyInColor(fragment: Fragment) {
+    protected def printPossiblyInColor(fragment: Fragment): Unit = {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
       }
     }
     
-    override def apply(event: Event) {
+    override def apply(event: Event): Unit = {
       event match {
         case ee: ExceptionalEvent if presentReminder =>
           if (!presentReminderWithoutCanceledTests || event.isInstanceOf[TestFailed]) {
@@ -597,7 +597,7 @@ class Framework extends SbtFramework {
       ) foreach printPossiblyInColor
     }
 
-    def dispose() = ()
+    def dispose(): Unit = ()
   }
   
   private[scalatest] class ScalaTestRunner(
@@ -771,7 +771,7 @@ class Framework extends SbtFramework {
         
         val server = new ServerSocket(0)
         
-        def run() {
+        def run(): Unit = {
           val socket = server.accept()
           val is = new SkeletonObjectInputStream(socket.getInputStream, getClass.getClassLoader)
 
@@ -786,7 +786,7 @@ class Framework extends SbtFramework {
         
         class React(is: ObjectInputStream) {
           @annotation.tailrec 
-          final def react() { 
+          final def react(): Unit = { 
             val event = is.readObject
             event match {
               case e: TestStarting =>
@@ -1085,7 +1085,7 @@ class Framework extends SbtFramework {
           case None => new OptionalThrowable
         }
       
-      override def apply(event: Event) {
+      override def apply(event: Event): Unit = {
         report(event)
         event match {
           // the results of running an actual test

@@ -27,7 +27,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
     @volatile var beforeAllTime: Long = 0
     @volatile var afterAllTime: Long = 0
     
-    override protected def beforeAll(configMap: ConfigMap) {
+    override protected def beforeAll(configMap: ConfigMap): Unit = {
       beforeAllTime = System.currentTimeMillis
     }
     
@@ -37,7 +37,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
     
     override def newInstance: Suite with ParallelTestExecution = new ExampleSuite
     
-    override protected def afterAll(configMap: ConfigMap) {
+    override protected def afterAll(configMap: ConfigMap): Unit = {
       afterAllTime = System.currentTimeMillis
     }
   }
@@ -62,10 +62,10 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
   ) with BeforeAndAfterAllConfigMap { 
     @volatile var beforeAllTime: Long = 0
     @volatile var afterAllTime: Long = 0
-    override protected def beforeAll(configMap: ConfigMap) {
+    override protected def beforeAll(configMap: ConfigMap): Unit = {
       beforeAllTime = System.currentTimeMillis
     } 
-    override protected def afterAll(configMap: ConfigMap) {
+    override protected def afterAll(configMap: ConfigMap): Unit = {
       afterAllTime = System.currentTimeMillis
     }
   }
@@ -75,11 +75,11 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
     @volatile var beforeAll = new AtomicInteger
     @volatile var afterAll = new AtomicInteger
     
-    def incrementBeforeAllCount() {
+    def incrementBeforeAllCount(): Unit = {
       beforeAll.incrementAndGet()
     }
     
-    def incrementAfterAllCount() {
+    def incrementAfterAllCount(): Unit = {
       afterAll.incrementAndGet()
     }
     
@@ -90,10 +90,10 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
   class ExampleBeforeAndAfterAllWithParallelTestExecutionSuite(counter: BeforeAfterAllCounter) extends FunSuite with BeforeAndAfterAllConfigMap 
     with OneInstancePerTest {
     
-    override protected def beforeAll(configMap: ConfigMap) {
+    override protected def beforeAll(configMap: ConfigMap): Unit = {
       counter.incrementBeforeAllCount()
     } 
-    override protected def afterAll(configMap: ConfigMap) {
+    override protected def afterAll(configMap: ConfigMap): Unit = {
       counter.incrementAfterAllCount()
     }
     
@@ -170,13 +170,13 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll(configMap: ConfigMap) {
+        override protected def beforeAll(configMap: ConfigMap): Unit = {
           beforeAllCount.incrementAndGet()
         }
         it("test 1") {}
         it("test 2") {}
         it("test 3") {}
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -190,13 +190,13 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll(configMap: ConfigMap) {
+        override protected def beforeAll(configMap: ConfigMap): Unit = {
           beforeAllCount.incrementAndGet()
         }
         it("test 1") {}
         it("test 2") {}
         it("test 3") {}
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -211,7 +211,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll(configMap: ConfigMap) {
+        override protected def beforeAll(configMap: ConfigMap): Unit = {
           beforeAllCount.incrementAndGet()
         }
         override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
@@ -220,7 +220,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
             new ExampleNestedSuite, 
             new ExampleNestedSuite
           )
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -234,7 +234,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll(configMap: ConfigMap) {
+        override protected def beforeAll(configMap: ConfigMap): Unit = {
           beforeAllCount.incrementAndGet()
         }
         override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
@@ -243,7 +243,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
             new ExampleNestedSuite, 
             new ExampleNestedSuite
           )
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -259,13 +259,13 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll(configMap: ConfigMap) {
+        override protected def beforeAll(configMap: ConfigMap): Unit = {
           beforeAllCount.incrementAndGet()
         }
         it("test 1") {}
         it("test 2") {}
         it("test 3") {}
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -281,13 +281,13 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll(configMap: ConfigMap) {
+        override protected def beforeAll(configMap: ConfigMap): Unit = {
           beforeAllCount.incrementAndGet()
         }
         it("test 1") {}
         it("test 2") {}
         it("test 3") {}
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -303,7 +303,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         override val invokeBeforeAllAndAfterAllEvenIfNoTestsAreExpected = true
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll(configMap: ConfigMap) {
+        override protected def beforeAll(configMap: ConfigMap): Unit = {
           beforeAllCount.incrementAndGet()
         }
         override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
@@ -312,7 +312,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
             new ExampleIgnoreNestedSuite, 
             new ExampleIgnoreNestedSuite
           )
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -327,7 +327,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       class ExampleSpec extends FunSpec with BeforeAndAfterAllConfigMap {
         val beforeAllCount = new AtomicInteger
         val afterAllCount = new AtomicInteger
-        override protected def beforeAll(configMap: ConfigMap) {
+        override protected def beforeAll(configMap: ConfigMap): Unit = {
           beforeAllCount.incrementAndGet()
         }
         override def nestedSuites: collection.immutable.IndexedSeq[Suite] = 
@@ -336,7 +336,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
             new ExampleIgnoreNestedSuite, 
             new ExampleIgnoreNestedSuite
           )
-        override protected def afterAll(configMap: ConfigMap) {
+        override protected def afterAll(configMap: ConfigMap): Unit = {
           afterAllCount.incrementAndGet()
         }
       }
@@ -353,7 +353,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       "will complete abruptly with the same exception.") {
       var testIsCalled = false
       class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
-        override def beforeAll(configMap: ConfigMap) {
+        override def beforeAll(configMap: ConfigMap): Unit = {
           throw new NumberFormatException
         }
         test("test 1") { testIsCalled = true }
@@ -369,7 +369,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
       "will complete abruptly with the same exception, however, before doing so, it will invoke afterAll") {
       var afterAllIsCalled = false
       class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
-        override def afterAll(configMap: ConfigMap) {
+        override def afterAll(configMap: ConfigMap): Unit = {
           afterAllIsCalled = true
         }
         override def run(testName: Option[String], args: Args): Status = {
@@ -388,7 +388,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
     it("should, if both super.run and afterAll complete abruptly with an exception, run " +
       "will complete abruptly with the exception thrown by super.run.") {
       class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
-        override def afterAll(configMap: ConfigMap) { throw new NumberFormatException }
+        override def afterAll(configMap: ConfigMap): Unit = { throw new NumberFormatException }
         override def run(testName: Option[String], args: Args): Status = {
           throw new IllegalArgumentException
         }
@@ -402,7 +402,7 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
     it("should, if super.run returns normally, but afterEach completes abruptly with an " +
       "exception, the status returned by run will contain that exception as its unreportedException.") {
       class MySuite extends FunSuite with BeforeAndAfterAllConfigMap {
-        override def afterAll(configMap: ConfigMap) { throw new NumberFormatException }
+        override def afterAll(configMap: ConfigMap): Unit = { throw new NumberFormatException }
         test("test July") {}
       }
       val a = new MySuite
@@ -420,8 +420,8 @@ class BeforeAndAfterAllConfigMapSpec extends FunSpec {
         var test2IsCalled = false
         var test3IsCalled = false
 
-        override def beforeAll(configMap: ConfigMap) { throw new NumberFormatException }
-        override def afterAll(configMap: ConfigMap) { afterAllIsCalled = true }
+        override def beforeAll(configMap: ConfigMap): Unit = { throw new NumberFormatException }
+        override def afterAll(configMap: ConfigMap): Unit = { afterAllIsCalled = true }
 
         it("test 1") { test1IsCalled = true }
         it("test 2") { test2IsCalled = true }

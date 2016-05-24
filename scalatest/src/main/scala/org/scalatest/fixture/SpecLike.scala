@@ -58,7 +58,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
   // Sychronized on thisSuite, only accessed from ensureScopesAndTestsRegistered
   private var scopesRegistered = false
 
-  private def ensureScopesAndTestsRegistered() {
+  private def ensureScopesAndTestsRegistered(): Unit = {
 
     thisSuite.synchronized {
       if (!scopesRegistered) {
@@ -107,7 +107,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
           }
         }
         
-        def register(o: AnyRef) {
+        def register(o: AnyRef): Unit = {
           val testMethods = o.getClass.getMethods.filter(isTestMethod(_)).sorted(MethodNameEncodedOrdering)
           
 // TODO: Detect duplicate test names, one with fixture param and one without.
@@ -115,7 +115,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
             val scope = isScopeMethod(o, m)
             if (scope) {
               val scopeDesc = getScopeDesc(m)
-              def scopeFun = {
+              def scopeFun: Unit = {
                 try {
                   val scopeObj = m.invoke(o)
                   register(scopeObj)

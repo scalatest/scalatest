@@ -98,11 +98,11 @@ package org.scalatest.testng {
     import org.testng.annotations._
   
     class LegacySuite extends TestNGSuite {
-      @Test def legacyTestThatPasses() {}
+      @Test def legacyTestThatPasses(): Unit = {}
     }
     class LegacySuiteWithTwoTests extends TestNGSuite {
-      @Test def anotherLegacyTestThatPasses() {}
-      @Test def anotherLegacyTestThatPasses2() {}
+      @Test def anotherLegacyTestThatPasses(): Unit = {}
+      @Test def anotherLegacyTestThatPasses2(): Unit = {}
     }
   }
 }

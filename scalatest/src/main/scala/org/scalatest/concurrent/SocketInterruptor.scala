@@ -33,7 +33,7 @@ class SocketInterruptor(socket: Socket) extends Interruptor {
    *
    * @param testThread unused by this strategy
    */
-  def apply(testThread: Thread) {
+  def apply(testThread: Thread): Unit = {
     socket.close()
   }
 }

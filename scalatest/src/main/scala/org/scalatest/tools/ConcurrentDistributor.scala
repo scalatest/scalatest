@@ -30,7 +30,7 @@ private[scalatest] class ConcurrentDistributor(args: Args, execSvc: ExecutorServ
 
   private val futureQueue = new LinkedBlockingQueue[Future[T] forSome { type T }]
 
-  def apply(suite: Suite, tracker: Tracker) {
+  def apply(suite: Suite, tracker: Tracker): Unit = {
     apply(suite, args.copy(tracker = tracker))
   }
  
@@ -45,7 +45,7 @@ private[scalatest] class ConcurrentDistributor(args: Args, execSvc: ExecutorServ
 
   def poll() = None
 
-  def waitUntilDone() {
+  def waitUntilDone(): Unit = {
     while (futureQueue.peek != null)
       futureQueue.poll().get()
   }

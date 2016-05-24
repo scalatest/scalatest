@@ -23,13 +23,13 @@ import org.junit.Ignore
 // This needs to be top level, not nested, because JUnit3 can't instantiate it
 // to run each test in its own instance if it is nested (no no-arg construtor).
 class TestWasCalledSuite extends JUnitSuite {
-  @Test def doThis() { TestWasCalledSuite.theDoThisCalled = true }
-  @Test def doThat() { TestWasCalledSuite.theDoThatCalled = true }
+  @Test def doThis(): Unit = { TestWasCalledSuite.theDoThisCalled = true }
+  @Test def doThat(): Unit = { TestWasCalledSuite.theDoThatCalled = true }
 }
 
 object TestWasCalledSuite {
 
-  def reinitialize() {
+  def reinitialize(): Unit = {
     theDoThisCalled = false
     theDoThatCalled = false
   }
@@ -41,47 +41,47 @@ object TestWasCalledSuite {
 }
 
 class TestWithNonUnitMethod extends JUnitSuite {
-  @Test def doThis() {}
-  @Test def doThat() {}
+  @Test def doThis(): Unit = {}
+  @Test def doThat(): Unit = {}
   // JUnit will not discover or run this, because its return type
   // is not Unit
   @Test def doTheOtherThing(): String = "hi"
 }
 
 class TestWithMethodNamedTest extends JUnitSuite {
-  @Test def doThis() {}
-  @Test def doThat() {}
+  @Test def doThis(): Unit = {}
+  @Test def doThat(): Unit = {}
   // JUnit will discover and run this method:
-  @Test def doIt() {}
+  @Test def doIt(): Unit = {}
 }
 
 class ASuite extends JUnitSuite {
-  @Test def doThis() = ()
-  @Test def doThat(info: Informer) = ()
+  @Test def doThis(): Unit = ()
+  @Test def doThat(info: Informer): Unit = ()
 }
 
 class BSuite extends JUnitSuite {
   @Ignore
-  @Test def doThis() = ()
-  @Test def doThat(info: Informer) = ()
+  @Test def doThis(): Unit = ()
+  @Test def doThat(info: Informer): Unit = ()
 }
 
 class CSuite extends JUnitSuite {
   @FastAsLight
-  @Test def doThis() = ()
-  @Test def doThat(info: Informer) = ()
+  @Test def doThis(): Unit = ()
+  @Test def doThat(info: Informer): Unit = ()
 }
 
 class DSuite extends JUnitSuite {
   @FastAsLight
   @SlowAsMolasses
-  @Test def doThis() = ()
+  @Test def doThis(): Unit = ()
   @SlowAsMolasses
-  @Test def doThat(info: Informer) = ()
-  @Test def doTheOtherThing(info: Informer) = ()
-  @Test def doOne() = ()
-  @Test def doTwo() = ()
-  @Test def doIt() = ()
+  @Test def doThat(info: Informer): Unit = ()
+  @Test def doTheOtherThing(info: Informer): Unit = ()
+  @Test def doOne(): Unit = ()
+  @Test def doTwo(): Unit = ()
+  @Test def doIt(): Unit = ()
   @Test def doFour(): String = "hi" // JUnit will not run these two because they don't
   @Test def doFive(): Int = 5       // have result type Unit.
 }
@@ -89,15 +89,15 @@ class DSuite extends JUnitSuite {
 class ESuite extends JUnitSuite {
   @FastAsLight
   @SlowAsMolasses
-  @Test def doThis() = ()
+  @Test def doThis(): Unit = ()
   @SlowAsMolasses
-  @Test def doThat(info: Informer) = ()
+  @Test def doThat(info: Informer): Unit = ()
   @Ignore
-  @Test def doTheOtherThing(info: Informer) = ()
+  @Test def doTheOtherThing(info: Informer): Unit = ()
 }
 
 class ShouldFailSuite extends JUnitSuite {
-  @Test def doThrowsAssertionError() { throw new AssertionError }
-  @Test def doThrowsPlainOldError() { throw new Error }
-  @Test def doThrowsThrowable() { throw new Throwable }
+  @Test def doThrowsAssertionError(): Unit = { throw new AssertionError }
+  @Test def doThrowsPlainOldError(): Unit = { throw new Error }
+  @Test def doThrowsThrowable(): Unit = { throw new Throwable }
 }

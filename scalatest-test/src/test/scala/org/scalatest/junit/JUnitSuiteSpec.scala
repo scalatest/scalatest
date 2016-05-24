@@ -27,8 +27,8 @@ class JUnitSuiteSpec extends FunSpec {
   describe("A JUnitSuite") {
     it("should return the test names in alphabetical order from testNames") {
       val a = new JUnitSuite {
-        @Test def doThis() {}
-        @Test def doThat() {}
+        @Test def doThis(): Unit = {}
+        @Test def doThat(): Unit = {}
       }
 
       assertResult(List("doThat", "doThis")) {
@@ -42,8 +42,8 @@ class JUnitSuiteSpec extends FunSpec {
       }
 
       val c = new JUnitSuite {
-        @Test def doThat() {}
-        @Test def doThis() {}
+        @Test def doThat(): Unit = {}
+        @Test def doThis(): Unit = {}
       }
 
       assertResult(List("doThat", "doThis")) {
@@ -54,8 +54,8 @@ class JUnitSuiteSpec extends FunSpec {
     it("should return the proper testNames for test methods whether or not they take an Informer") {
 
       val a = new JUnitSuite {
-        @Test def doThis() = ()
-        @Test def doThat(info: Informer) = ()
+        @Test def doThis(): Unit = ()
+        @Test def doThat(info: Informer): Unit = ()
       }
       assert(a.testNames === TreeSet("doThis"))
 
@@ -74,35 +74,35 @@ class JUnitSuiteSpec extends FunSpec {
 
       val a = new JUnitSuite {
         @Ignore
-        @Test def testThis() = ()
-        @Test def testThat() = ()
+        @Test def testThis(): Unit = ()
+        @Test def testThat(): Unit = ()
       }
 
       assert(a.tags === Map("testThis" -> Set("org.scalatest.Ignore")))
 
       val b = new JUnitSuite {
-        @Test def testThis() = ()
+        @Test def testThis(): Unit = ()
         @Ignore
-        @Test def testThat() = ()
+        @Test def testThat(): Unit = ()
       }
 
       assert(b.tags === Map("testThat" -> Set("org.scalatest.Ignore")))
 
       val c = new JUnitSuite {
         @Ignore
-        @Test def testThis() = ()
+        @Test def testThis(): Unit = ()
         @Ignore
-        @Test def testThat() = ()
+        @Test def testThat(): Unit = ()
       }
 
       assert(c.tags === Map("testThis" -> Set("org.scalatest.Ignore"), "testThat" -> Set("org.scalatest.Ignore")))
 
       val d = new JUnitSuite {
         @SlowAsMolasses
-        @Test def testThis() = ()
+        @Test def testThis(): Unit = ()
         @SlowAsMolasses
         @Ignore
-        @Test def testThat() = ()
+        @Test def testThat(): Unit = ()
       }
 
       assert(d.tags === Map("testThat" -> Set("org.scalatest.Ignore")))

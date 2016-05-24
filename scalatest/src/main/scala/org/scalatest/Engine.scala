@@ -117,7 +117,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
   final val atomic = new AtomicReference[Bundle](Bundle(Trunk, List(), Map(), Map(), false))
 
-  def updateAtomic(oldBundle: Bundle, newBundle: Bundle) {
+  def updateAtomic(oldBundle: Bundle, newBundle: Bundle): Unit = {
     val shouldBeOldBundle = atomic.getAndSet(newBundle)
     if (!(shouldBeOldBundle eq oldBundle))
       throw new ConcurrentModificationException(concurrentBundleModMessageFun)
@@ -229,7 +229,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       }
     }
 
-  private def checkTestOrIgnoreParamsForNull(testName: String, testTags: Tag*) {
+  private def checkTestOrIgnoreParamsForNull(testName: String, testTags: Tag*): Unit = {
     requireNonNull(testName)
     if (testTags.exists(_ == null))
       throw new NullArgumentException("a test tag was null")
@@ -390,7 +390,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     }
 
 
-    def traverseSubNodes() {
+    def traverseSubNodes(): Unit = {
       branch.subNodes.reverse.foreach { node =>
         if (!stopper.stopRequested) {
           node match {
@@ -578,7 +578,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     }
   } */
 
-  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position]) {
+  def registerNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position]): Unit = {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -621,7 +621,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   }
 
   // Used by FlatSpec, which doesn't nest. So this one just makes a new one off of the trunk
-  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, pos: Option[source.Position]) {
+  def registerFlatBranch(description: String, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, pos: Option[source.Position]): Unit = {
 
     val oldBundle = atomic.get
     val (_, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -699,7 +699,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     testName
   }
 
-  def registerIgnoredTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*) {
+  def registerIgnoredTest(testText: String, f: T, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*): Unit = {
 
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
@@ -735,7 +735,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
   private[scalatest] def getTestName(testText: String, parent: Branch): String =
     Resources.prefixSuffix(getTestNamePrefix(parent), testText.trim).trim
 
-  private def checkRegisterTestParamsForNull(testText: String, testTags: Tag*) {
+  private def checkRegisterTestParamsForNull(testText: String, testTags: Tag*): Unit = {
     requireNonNull(testText)
     if (testTags.exists(_ == null))
       throw new NullArgumentException("a test tag was null")
@@ -878,7 +878,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
   @volatile private var targetLeafHasBeenReached = false
   @volatile private var nextTargetPath: Option[List[Int]] = None
   @volatile private var testResultsRegistered = false
-  def ensureTestResultsRegistered(callingInstance: Suite with OneInstancePerTest) {
+  def ensureTestResultsRegistered(callingInstance: Suite with OneInstancePerTest): Unit = {
     synchronized {
       val isAnInitialInstance = targetPath.isEmpty
       // Only register tests if this is an initial instance (and only if they haven't
@@ -904,7 +904,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
  * 
  * 
  */
-  def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*) {
+  def handleTest(handlingSuite: Suite, testText: String, testFun: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*): Unit = {
 
     if (insideAPathTest) 
       throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, pos, pos.map(getStackDepthFun).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
@@ -996,7 +996,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     }
   }
 
-  def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position]) {
+  def handleNestedBranch(description: String, childPrefix: Option[String], fun: => Unit, registrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position]): Unit = {
 
     if (insideAPathTest)
       throw new TestRegistrationClosedException(registrationClosedMessageFun, pos, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
@@ -1033,7 +1033,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     }
   }
 
- def navigateToNestedBranch(path: List[Int], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, pos: Option[source.Position]) {
+ def navigateToNestedBranch(path: List[Int], fun: => Unit, registrationClosedMessageFun: => String, sourceFile: String, methodName: String, stackDepth: Int, adjustment: Int, pos: Option[source.Position]): Unit = {
 
     val oldBundle = atomic.get
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
@@ -1152,7 +1152,7 @@ private[scalatest] class PathEngine(concurrentBundleModMessageFun: => String, si
     }
   }
    
-  def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*) {
+  def handleIgnoredTest(testText: String, f: () => Outcome, testRegistrationClosedMessageFun: => String, sourceFileName: String, methodName: String, stackDepth: Int, adjustment: Int, location: Option[Location], pos: Option[source.Position], testTags: Tag*): Unit = {
 
     if (insideAPathTest) 
       throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, pos, pos.map(getStackDepthFun).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment)))
@@ -1173,7 +1173,7 @@ private[scalatest] object PathEngine {
   
    private[this] val engine = new ThreadLocal[PathEngine]
 
-   def setEngine(en: PathEngine) {
+   def setEngine(en: PathEngine): Unit = {
      if (engine.get != null)
        throw new IllegalStateException("Engine was already defined when setEngine was called")
      engine.set(en)

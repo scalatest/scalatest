@@ -29,6 +29,6 @@ object DoNotSignal extends Signaler {
    *
    * @param testThread unused by this strategy
    */
-  def apply(testThread: Thread) {} // Don't do nuthin
+  def apply(testThread: Thread): Unit = {} // Don't do nuthin
 }
 

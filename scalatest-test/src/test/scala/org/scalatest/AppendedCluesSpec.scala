@@ -43,7 +43,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
     )
 
 
-  def failWith(e: Throwable) { throw e }
+  def failWith(e: Throwable): Unit = { throw e }
 
   "The withClue construct" should "return the new exception with the clue string appended, separated by a space char if passed a function that does that" in {
     forAll (examples) { e =>

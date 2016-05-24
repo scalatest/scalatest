@@ -21,7 +21,7 @@ class FaulthyBeforeAndAfterAllConfigMapSuite extends FunSuite with BeforeAndAfte
 
   test("test 1") {}
 
-  override protected def afterAll(configMap: ConfigMap) {
+  override protected def afterAll(configMap: ConfigMap): Unit = {
     throw new RuntimeException("oops!")
   }
 

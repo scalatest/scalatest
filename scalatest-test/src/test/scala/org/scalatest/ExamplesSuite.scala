@@ -24,14 +24,14 @@ class ExamplesSuite extends FunSuite {
 
     class MySpec extends FunSpec {
 
-      def myOtherExamples() {
+      def myOtherExamples(): Unit = {
         it("should lead the whole game") {}
         it("should lead just part of the game") {}
       }
 
       myOtherExamples()
 
-      def myExamples() {
+      def myExamples(): Unit = {
         it("should lead the whole game") {}
         it("should lead the whole game") {}
       }
@@ -46,7 +46,7 @@ class ExamplesSuite extends FunSuite {
 
   test("duplicate testNames should result in an exception when one is in the Examples and the other in the Spec") {
     class MySpec extends FunSpec {
-      def myOtherExamples() {
+      def myOtherExamples(): Unit = {
         it("should lead the whole game") {}
         it("should lead just part of the game") {}
       }
@@ -57,7 +57,7 @@ class ExamplesSuite extends FunSuite {
       new MySpec  
     }
     class MyOtherSpec extends FunSpec {
-      def myOtherExamples() {
+      def myOtherExamples(): Unit = {
         it("should lead the whole game") {}
         it("should lead just part of the game") {}
       }
@@ -73,7 +73,7 @@ class ExamplesSuite extends FunSuite {
 
     class MySpec extends FunSpec {
 
-      def examples() {
+      def examples(): Unit = {
         it(null) {}
       }
       intercept[NullArgumentException] {
@@ -86,7 +86,7 @@ class ExamplesSuite extends FunSuite {
   test("tags work correctly in Examples") {
 
     val a = new FunSpec {
-      def aExamples() {
+      def aExamples(): Unit = {
         it("test this", mytags.SlowAsMolasses) {}
         ignore("test that", mytags.SlowAsMolasses) {}
       }
@@ -97,7 +97,7 @@ class ExamplesSuite extends FunSuite {
     }
 
     val b = new FunSpec {
-      def bExamples() {}
+      def bExamples(): Unit = {}
       bExamples()
     }
     assertResult(Map()) {
@@ -105,7 +105,7 @@ class ExamplesSuite extends FunSuite {
     }
 
     val c = new FunSpec {
-      def cExamples() {
+      def cExamples(): Unit = {
         it("test this", mytags.SlowAsMolasses, mytags.WeakAsAKitten) {}
         it("test that", mytags.SlowAsMolasses) {}
       }

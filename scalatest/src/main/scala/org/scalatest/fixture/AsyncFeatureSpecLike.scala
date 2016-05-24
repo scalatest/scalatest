@@ -174,7 +174,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    *
    * @param description the description text
    */
-  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position) {
+  protected def feature(description: String)(fun: => Unit)(implicit pos: source.Position): Unit = {
     if (!currentBranchIsTrunk)
       throw new NotAllowedException(Resources.cantNestFeatureClauses, None, Some(pos), getStackDepthFun(pos))
 
@@ -329,7 +329,7 @@ trait AsyncFeatureSpecLike extends AsyncTestSuite with AsyncTestRegistration wit
    * trait <code>FeatureSpec</code>.
    * </p>
    */
-  protected def scenariosFor(unit: Unit) {}
+  protected def scenariosFor(unit: Unit): Unit = {}
 
   import scala.language.implicitConversions
 

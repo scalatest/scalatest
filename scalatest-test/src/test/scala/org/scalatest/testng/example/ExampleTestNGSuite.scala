@@ -29,26 +29,26 @@ import org.testng.annotations.DataProvider
 class ExampleTestNGSuite extends TestNGSuite {
 
   @AfterSuite
-  def failAfterSuite(){ throw new Exception("fail in before method") }
+  def failAfterSuite(): Unit ={ throw new Exception("fail in before method") }
 
-  @BeforeMethod def passBeforeMethod(){}
-  @BeforeClass def passBeforeClass(){}
-  @BeforeSuite def passBeforeSuite(){}
+  @BeforeMethod def passBeforeMethod(): Unit ={}
+  @BeforeClass def passBeforeClass(): Unit ={}
+  @BeforeSuite def passBeforeSuite(): Unit ={}
   
-  @AfterMethod def passAfterMethod(){}
-  @AfterClass def passAfterClass(){}
-  @AfterSuite def passAfterSuite(){}
+  @AfterMethod def passAfterMethod(): Unit ={}
+  @AfterClass def passAfterClass(): Unit ={}
+  @AfterSuite def passAfterSuite(): Unit ={}
   
- @Test(invocationCount = 10) def thisTestRunsTenTimes = {}
+ @Test(invocationCount = 10) def thisTestRunsTenTimes: Unit = {}
  
   @Test(groups = Array("runMe"))
-  def testWithException(){
+  def testWithException(): Unit ={
     throw new Exception("exception!!!")
   }
  
   @Test(groups = Array("runMe")) def testWithAssertFail = assert( 1 === 2, "assert fail!!!" )
 
-  @Test(dependsOnMethods = Array("testWithException")) def testToGetSkipped = {}
+  @Test(dependsOnMethods = Array("testWithException")) def testToGetSkipped: Unit = {}
 
   @DataProvider(name = "andValues")
   def andValues = {
@@ -57,7 +57,7 @@ class ExampleTestNGSuite extends TestNGSuite {
   }
  
   @Test(dataProvider = "andValues")
-  def testAndStates(a: String, b: String){
+  def testAndStates(a: String, b: String): Unit ={
     println("a=" + a + ", b=" + b)
   }
 }

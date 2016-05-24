@@ -144,7 +144,7 @@ private[scalatest] object Reporter {
   // its list of reporters, this would end up being an infinite loop. But
   // That first part, a DispatchReporter getting itself in there would be the real
   // bug.
-  def propagateDispose(reporter: Reporter) {
+  def propagateDispose(reporter: Reporter): Unit = {
     reporter match {
       // SKIP-SCALATESTJS-START
       case dispatchReporter: DispatchReporter => dispatchReporter.dispatchDisposeAndWaitUntilDone()

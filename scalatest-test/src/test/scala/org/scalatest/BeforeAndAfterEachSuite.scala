@@ -43,12 +43,12 @@ class BeforeAndAfterEachSuite extends FunSuite {
 
     test("test something") {}
 
-    override def beforeEach() {
+    override def beforeEach(): Unit = {
       if (!runTestWasCalled)
         beforeEachCalledBeforeRunTest = true
       super.beforeEach()
     }
-    override def afterEach() {
+    override def afterEach(): Unit = {
       if (runTestWasCalled)
         afterEachCalledAfterRunTest = true
       super.afterEach()
@@ -84,7 +84,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     "will complete abruptly with the same exception.") {
     
     class MySuite extends Suite with BeforeAndAfterEach {
-      override def beforeEach() { throw new NumberFormatException } 
+      override def beforeEach(): Unit = { throw new NumberFormatException } 
     }
     assertThrows[NumberFormatException] {
       val a = new MySuite
@@ -101,7 +101,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach {
       var afterEachCalled = false
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterEachCalled = true
       }
     }
@@ -121,7 +121,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach {
       var afterEachCalled = false
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterEachCalled = true
         throw new IllegalArgumentException
       }
@@ -137,7 +137,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
     "exception, the status returned by runTest will contain that exception as its unreportedException.") {
        
     class MySuite extends FunSuite with BeforeAndAfterEach {
-      override def afterEach() { throw new NumberFormatException }
+      override def afterEach(): Unit = { throw new NumberFormatException }
       test("test July") {}
     }
     val a = new MySuite
@@ -155,7 +155,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
       test("test 1") {
         throw new java.lang.annotation.AnnotationFormatError("test")
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -174,7 +174,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
       test("test 1") {
         throw new java.nio.charset.CoderMalfunctionError(new RuntimeException("test"))
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -194,7 +194,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
       test("test 1") {
         throw new javax.xml.parsers.FactoryConfigurationError()
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -213,7 +213,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
       test("test 1") {
         throw new java.lang.LinkageError()
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -232,7 +232,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
       test("test 1") {
         throw new javax.xml.transform.TransformerFactoryConfigurationError()
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -251,7 +251,7 @@ class BeforeAndAfterEachSuite extends FunSuite {
       test("test 1") {
         throw new java.lang.VirtualMachineError() {}
       }
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterAllCalled = true
       }
     }
@@ -269,8 +269,8 @@ class BeforeAndAfterEachSuite extends FunSuite {
     class MySuite extends FunSpec with BeforeAndAfterEach {
       var afterIsCalled = false
       var testIsCalled = false
-      override def beforeEach() { throw new NumberFormatException }
-      override def afterEach() {
+      override def beforeEach(): Unit = { throw new NumberFormatException }
+      override def afterEach(): Unit = {
         afterIsCalled = true
       }
       it("test July") {

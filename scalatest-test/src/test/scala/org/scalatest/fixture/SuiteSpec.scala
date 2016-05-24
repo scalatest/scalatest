@@ -135,10 +135,10 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         def withFixture(test: OneArgTest): Outcome = {
           test(hello)
         }
-        def testThis(fixture: String) {
+        def testThis(fixture: String): Unit = {
           assert(fixture === hello)
         }
-        def testThat(fixture: String, info: Informer) {
+        def testThat(fixture: String, info: Informer): Unit = {
           assert(fixture === hello)
         }
       }
@@ -159,7 +159,7 @@ class SuiteSpec extends org.scalatest.FunSpec with PrivateMethodTester {
           aNoArgTestWasPassed = true
           Succeeded
         }
-        def testSomething(fixture: FixtureParam) {
+        def testSomething(fixture: FixtureParam): Unit = {
           assert(1 + 1 === 2)
         }
       }

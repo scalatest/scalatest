@@ -91,7 +91,7 @@ class FunSuiteSpec extends FunSpec {
           fromConstructorTestExecuted = true
           /* ASSERTION_SUCCEED */
         }
-        def tryToRegisterATest() {
+        def tryToRegisterATest(): Unit = {
           test("from method") {
             fromMethodTestExecuted = true
             /* ASSERTION_SUCCEED */
@@ -207,7 +207,7 @@ class FunSuiteSpec extends FunSpec {
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MySuite extends FunSuite {
           callInfo() // This should work fine
-          def callInfo() {
+          def callInfo(): Unit = {
             info("howdy")
           }
           test("howdy also") {
@@ -223,7 +223,7 @@ class FunSuiteSpec extends FunSpec {
     }
     it("should run tests registered via the testsFor syntax") {
       trait SharedFunSuiteTests { this: FunSuite =>
-        def nonEmptyStack(s: String)(i: Int) {
+        def nonEmptyStack(s: String)(i: Int): Unit = {
           test("I am shared") { /* ASSERTION_SUCCEED */ }
         }
       }

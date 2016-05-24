@@ -254,7 +254,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
    * <a href="#sharedTests">Shared tests section</a> in the main documentation for this trait.
    * </p>
    */
-  protected def propertiesFor(unit: Unit) {}
+  protected def propertiesFor(unit: Unit): Unit = {}
   
   /**
    * Suite style name.

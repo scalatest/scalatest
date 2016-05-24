@@ -48,12 +48,12 @@ class ShouldThrowSpec extends FunSpec {
 
     it("succeed if a subtype of the expected exception is thrown, where the expected type is a trait") {
       trait Excitement
-      def kaboom() { throw new Exception with Excitement }
+      def kaboom(): Unit = { throw new Exception with Excitement }
       a [Excitement] should be thrownBy { kaboom() }
     }
     
     it("return the caught exception") {
-      def kaboom() { throw new Exception("howdy") }
+      def kaboom(): Unit = { throw new Exception("howdy") }
       val thrown = the [Exception] thrownBy { kaboom() }
       thrown.getMessage should === ("howdy")
     }  

@@ -53,28 +53,28 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
 
     test("test something") { succeed }
 
-    override def beforeAll(config: ConfigMap) {
+    override def beforeAll(config: ConfigMap): Unit = {
       if (!runWasCalled)
         beforeAllConfigCalledBeforeExecute = true
       if (config.contains("hi") && config("hi") == "there")
         beforeAllConfigGotTheGreeting = true
       super.beforeAll(config)
     }
-    override def beforeEach(td: TestData) {
+    override def beforeEach(td: TestData): Unit = {
       if (!runTestWasCalled)
         beforeEachTestDataCalledBeforeRunTest = true
       if (td.configMap.contains("hi") && td.configMap("hi") == "there")
         beforeEachTestDataGotTheGreeting = true
       super.beforeEach(td)
     }
-    override def afterEach(td: TestData) {
+    override def afterEach(td: TestData): Unit = {
       if (runTestWasCalled)
         afterEachTestDataCalledAfterRunTest = true
       if (td.configMap.contains("hi") && td.configMap("hi") == "there")
         afterEachTestDataGotTheGreeting = true
       super.afterEach(td)
     }
-    override def afterAll(config: ConfigMap) {
+    override def afterAll(config: ConfigMap): Unit = {
       if (runWasCalled)
         afterAllConfigCalledAfterExecute = true
       if (config.contains("hi") && config("hi") == "there")
@@ -164,7 +164,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     "will complete abruptly with the same exception.") {
     
     class MySuite extends Suite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
-      override def beforeEach(td: TestData) { throw new NumberFormatException } 
+      override def beforeEach(td: TestData): Unit = { throw new NumberFormatException } 
     }
     assertThrows[NumberFormatException] {
       val a = new MySuite
@@ -181,7 +181,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterEachCalled = false
-      override def afterEach(td: TestData) {
+      override def afterEach(td: TestData): Unit = {
         afterEachCalled = true
       }
     }
@@ -201,7 +201,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
       var afterEachCalled = false
-      override def afterEach(td: TestData) {
+      override def afterEach(td: TestData): Unit = {
         afterEachCalled = true
         throw new IllegalArgumentException
       }
@@ -218,7 +218,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
        
     class MySuite extends AsyncFunSuite with BeforeAndAfterEachTestData {
 
-      override def afterEach(td: TestData) { throw new NumberFormatException }
+      override def afterEach(td: TestData): Unit = { throw new NumberFormatException }
       test("test October") { succeed }
     }
     val a = new MySuite
@@ -236,7 +236,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
     "will complete abruptly with the same exception.") {
     
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
-      override def beforeAll(cm: ConfigMap) { throw new NumberFormatException }
+      override def beforeAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       test("test July") {}
     }
     assertThrows[NumberFormatException] {
@@ -257,7 +257,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       test("test 1") {}
       test("test 2") {}
       test("test 3") {}
-      override def afterAll(cm: ConfigMap) {
+      override def afterAll(cm: ConfigMap): Unit = {
         afterAllCalled = true
       }
     }
@@ -280,7 +280,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       test("test 1") {}
       test("test 2") {}
       test("test 3") {}
-      override def afterAll(cm: ConfigMap) {
+      override def afterAll(cm: ConfigMap): Unit = {
         afterAllCalled = true
         throw new IllegalArgumentException
       }
@@ -295,7 +295,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
   test("If super.run returns normally, but afterAll completes abruptly with an " +
     "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
     class MySuite extends FunSuite with BeforeAndAfterEachTestData with BeforeAndAfterAllConfigMap {
-      override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
+      override def afterAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       test("test July") {}
     }
     val a = new MySuite
@@ -314,7 +314,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.annotation.AnnotationFormatError("test")
       }
-      override def afterEach(testData: TestData) {
+      override def afterEach(testData: TestData): Unit = {
         afterAllCalled = true
       }
     }
@@ -334,7 +334,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.nio.charset.CoderMalfunctionError(new RuntimeException("test"))
       }
-      override def afterEach(testData: TestData) {
+      override def afterEach(testData: TestData): Unit = {
         afterAllCalled = true
       }
     }
@@ -354,7 +354,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new javax.xml.parsers.FactoryConfigurationError()
       }
-      override def afterEach(testData: TestData) {
+      override def afterEach(testData: TestData): Unit = {
         afterAllCalled = true
       }
     }
@@ -374,7 +374,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.LinkageError()
       }
-      override def afterEach(testData: TestData) {
+      override def afterEach(testData: TestData): Unit = {
         afterAllCalled = true
       }
     }
@@ -394,7 +394,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new javax.xml.transform.TransformerFactoryConfigurationError()
       }
-      override def afterEach(testData: TestData) {
+      override def afterEach(testData: TestData): Unit = {
         afterAllCalled = true
       }
     }
@@ -414,7 +414,7 @@ class BeforeAndAfterEachTestDataAsyncSuite extends AsyncFunSuite {
       test("test 1") {
         throw new java.lang.VirtualMachineError() {}
       }
-      override def afterEach(testData: TestData) {
+      override def afterEach(testData: TestData): Unit = {
         afterAllCalled = true
       }
     }

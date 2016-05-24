@@ -89,7 +89,7 @@ class PropSpecSpec extends FunSpec {
           fromConstructorTestExecuted = true
           /* ASSERTION_SUCCEED */
         }
-        def tryToRegisterATest() {
+        def tryToRegisterATest(): Unit = {
           property("from method") {
             fromMethodTestExecuted = true
             /* ASSERTION_SUCCEED */
@@ -205,7 +205,7 @@ class PropSpecSpec extends FunSpec {
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MySuite extends PropSpec {
           callInfo() // This should work fine
-          def callInfo() {
+          def callInfo(): Unit = {
             info("howdy")
           }
           property("howdy also") {
@@ -221,7 +221,7 @@ class PropSpecSpec extends FunSpec {
     }
     it("should run tests registered via the propertiesFor syntax") {
       trait SharedPropSpecTests { this: PropSpec =>
-        def nonEmptyStack(s: String)(i: Int) {
+        def nonEmptyStack(s: String)(i: Int): Unit = {
           property("I am shared") {/* ASSERTION_SUCCEED */}
         }
       }

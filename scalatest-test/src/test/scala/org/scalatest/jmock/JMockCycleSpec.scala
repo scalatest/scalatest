@@ -25,13 +25,13 @@ class JMockCycleSpec extends FlatSpec with Matchers {
   "The JMockCycle trait" should "work with multiple mocks" in {
 
     val a = new fixture.Spec with JMockCycleFixture {
-      def `test that should fail`(cycle: JMockCycle) = {
+      def `test that should fail`(cycle: JMockCycle): Unit = {
         import cycle._
         trait OneFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         trait TwoFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         val oneFishMock = mock[OneFish]
         val twoFishMock = mock[TwoFish]
@@ -47,13 +47,13 @@ class JMockCycleSpec extends FlatSpec with Matchers {
         }
       }
 
-      def `test that should succeed`(cycle: JMockCycle) = {
+      def `test that should succeed`(cycle: JMockCycle): Unit = {
         import cycle._
         trait OneFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         trait TwoFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         val oneFishMock = mock[OneFish]
         val twoFishMock = mock[TwoFish]
@@ -69,13 +69,13 @@ class JMockCycleSpec extends FlatSpec with Matchers {
         }
       }
 
-      def `test that should succeed with class`(cycle: JMockCycle) = {
+      def `test that should succeed with class`(cycle: JMockCycle): Unit = {
         import cycle._
         class OneFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         class TwoFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         val oneFishMock = mock[OneFish]
         val twoFishMock = mock[TwoFish]
@@ -101,18 +101,18 @@ class JMockCycleSpec extends FlatSpec with Matchers {
 
   it should "provide sugar for invoking with methods that take matchers" in {
     val a = new fixture.Spec with JMockCycleFixture {
-      def `test that should succeed`(cycle: JMockCycle) = {
+      def `test that should succeed`(cycle: JMockCycle): Unit = {
         import cycle._
         trait OneFish {
-          def doString(food: String) = ()
-          def doInt(food: Int) = ()
-          def doShort(food: Short) = ()
-          def doByte(food: Byte) = ()
-          def doLong(food: Long) = ()
-          def doBoolean(food: Boolean) = ()
-          def doFloat(food: Float) = ()
-          def doDouble(food: Double) = ()
-          def doChar(food: Char) = ()
+          def doString(food: String): Unit = ()
+          def doInt(food: Int): Unit = ()
+          def doShort(food: Short): Unit = ()
+          def doByte(food: Byte): Unit = ()
+          def doLong(food: Long): Unit = ()
+          def doBoolean(food: Boolean): Unit = ()
+          def doFloat(food: Float): Unit = ()
+          def doDouble(food: Double): Unit = ()
+          def doChar(food: Char): Unit = ()
         }
         val oneFishMock = mock[OneFish]
 
@@ -149,18 +149,18 @@ class JMockCycleSpec extends FlatSpec with Matchers {
 
   it should "provide sugar for invoking with methods that take non-matcher values" in {
     val a = new fixture.Spec with JMockCycleFixture {
-      def `test that should succeed`(cycle: JMockCycle) = {
+      def `test that should succeed`(cycle: JMockCycle): Unit = {
         import cycle._
         trait OneFish {
-          def doString(food: String) = ()
-          def doInt(food: Int) = ()
-          def doShort(food: Short) = ()
-          def doByte(food: Byte) = ()
-          def doLong(food: Long) = ()
-          def doBoolean(food: Boolean) = ()
-          def doFloat(food: Float) = ()
-          def doDouble(food: Double) = ()
-          def doChar(food: Char) = ()
+          def doString(food: String): Unit = ()
+          def doInt(food: Int): Unit = ()
+          def doShort(food: Short): Unit = ()
+          def doByte(food: Byte): Unit = ()
+          def doLong(food: Long): Unit = ()
+          def doBoolean(food: Boolean): Unit = ()
+          def doFloat(food: Float): Unit = ()
+          def doDouble(food: Double): Unit = ()
+          def doChar(food: Char): Unit = ()
         }
         val oneFishMock = mock[OneFish]
 

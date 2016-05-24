@@ -338,7 +338,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
    * trait <code>FunSuite</code>.
    * </p>
    */
-  protected def testsFor(unit: Unit) {}
+  protected def testsFor(unit: Unit): Unit = {}
 
   import scala.language.implicitConversions
 

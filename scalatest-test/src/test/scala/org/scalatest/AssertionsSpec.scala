@@ -106,7 +106,7 @@ class AssertionsSpec extends FunSpec {
       }
       // Try with a trait
       trait MyTrait {
-        def someRandomMethod() {}
+        def someRandomMethod(): Unit = {}
       }
       class AnotherException extends RuntimeException with MyTrait
       val caught = intercept[MyTrait] {
@@ -156,7 +156,7 @@ class AssertionsSpec extends FunSpec {
       }
       // Try with a trait
       trait MyTrait {
-        def someRandomMethod() {}
+        def someRandomMethod(): Unit = {}
       }
       class AnotherException extends RuntimeException with MyTrait
       assertThrows[MyTrait] {

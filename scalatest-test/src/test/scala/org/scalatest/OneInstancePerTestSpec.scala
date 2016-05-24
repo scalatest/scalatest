@@ -164,7 +164,7 @@ class OneInstancePerTestSpec extends FunSpec {
         "test this" ignore { }
         "test that" in { }
         override def newInstance = new ASpec
-        def invokeRunTests() {
+        def invokeRunTests(): Unit = {
           this.runTests(None, Args(SilentReporter, runTestInNewInstance = true))
         }
       }
@@ -180,7 +180,7 @@ class OneInstancePerTestSpec extends FunSpec {
         "test this" ignore { }
         "test that" in { }
         override def newInstance = new ASpec
-        def invokeRunTests(testName: Option[String], args: Args) {
+        def invokeRunTests(testName: Option[String], args: Args): Unit = {
           this.runTests(testName, args)
         }
       }
@@ -293,13 +293,13 @@ class OneInstancePerTestSpec extends FunSpec {
       val afterCountFoo = new AtomicInteger(0)
 
       class FooSuite extends FunSuite with BeforeAndAfterEach with OneInstancePerTest {
-        override def beforeEach() = {
+        override def beforeEach(): Unit = {
           beforeCountFoo.incrementAndGet()
         }
         test("foo") {
           testCountFoo.incrementAndGet()
         }
-        override def afterEach() = {
+        override def afterEach(): Unit = {
           afterCountFoo.incrementAndGet()
         }
         override def newInstance = new FooSuite
@@ -321,13 +321,13 @@ class OneInstancePerTestSpec extends FunSpec {
       val afterCountBar = new AtomicInteger(0)
 
       class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterEach {
-        override def beforeEach() = {
+        override def beforeEach(): Unit = {
           beforeCountBar.incrementAndGet()
         }
         test("bar") {
           testCountBar.incrementAndGet()
         }
-        override def afterEach() = {
+        override def afterEach(): Unit = {
           afterCountBar.incrementAndGet()
         }
         override def newInstance = new BarSuite
@@ -348,13 +348,13 @@ class OneInstancePerTestSpec extends FunSpec {
       val afterCountFoo = new AtomicInteger(0)
 
       class FooSuite extends FunSuite with BeforeAndAfterEachTestData with OneInstancePerTest {
-        override def beforeEach(td: TestData) = {
+        override def beforeEach(td: TestData): Unit = {
           beforeCountFoo.incrementAndGet()
         }
         test("foo") {
           testCountFoo.incrementAndGet()
         }
-        override def afterEach(td: TestData) = {
+        override def afterEach(td: TestData): Unit = {
           afterCountFoo.incrementAndGet()
         }
         override def newInstance = new FooSuite
@@ -376,13 +376,13 @@ class OneInstancePerTestSpec extends FunSpec {
       val afterCountBar = new AtomicInteger(0)
 
       class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterEachTestData {
-        override def beforeEach(td: TestData) = {
+        override def beforeEach(td: TestData): Unit = {
           beforeCountBar.incrementAndGet()
         }
         test("bar") {
           testCountBar.incrementAndGet()
         }
-        override def afterEach(td: TestData) = {
+        override def afterEach(td: TestData): Unit = {
           afterCountBar.incrementAndGet()
         }
         override def newInstance = new BarSuite
@@ -403,13 +403,13 @@ class OneInstancePerTestSpec extends FunSpec {
       val afterCountFoo = new AtomicInteger(0)
 
       class FooSuite extends FunSuite with BeforeAndAfterAll with OneInstancePerTest {
-        override def beforeAll() = {
+        override def beforeAll(): Unit = {
           beforeCountFoo.incrementAndGet()
         }
         test("foo") {
           testCountFoo.incrementAndGet()
         }
-        override def afterAll() = {
+        override def afterAll(): Unit = {
           afterCountFoo.incrementAndGet()
         }
         override def newInstance = new FooSuite
@@ -431,13 +431,13 @@ class OneInstancePerTestSpec extends FunSpec {
       val afterCountBar = new AtomicInteger(0)
 
       class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterAll {
-        override def beforeAll() = {
+        override def beforeAll(): Unit = {
           beforeCountBar.incrementAndGet()
         }
         test("bar") {
           testCountBar.incrementAndGet()
         }
-        override def afterAll() {
+        override def afterAll(): Unit = {
           afterCountBar.incrementAndGet()
         }
         override def newInstance = new BarSuite
@@ -458,13 +458,13 @@ class OneInstancePerTestSpec extends FunSpec {
       val afterCountFoo = new AtomicInteger(0)
 
       class FooSuite extends FunSuite with BeforeAndAfterAllConfigMap with OneInstancePerTest {
-        override def beforeAll(cm: ConfigMap) = {
+        override def beforeAll(cm: ConfigMap): Unit = {
           beforeCountFoo.incrementAndGet()
         }
         test("foo") {
           testCountFoo.incrementAndGet()
         }
-        override def afterAll(cm: ConfigMap) = {
+        override def afterAll(cm: ConfigMap): Unit = {
           afterCountFoo.incrementAndGet()
         }
         override def newInstance = new FooSuite
@@ -486,13 +486,13 @@ class OneInstancePerTestSpec extends FunSpec {
       val afterCountBar = new AtomicInteger(0)
 
       class BarSuite extends FunSuite with OneInstancePerTest with BeforeAndAfterAllConfigMap {
-        override def beforeAll(cm: ConfigMap) = {
+        override def beforeAll(cm: ConfigMap): Unit = {
           beforeCountBar.incrementAndGet()
         }
         test("bar") {
           testCountBar.incrementAndGet()
         }
-        override def afterAll(cm: ConfigMap) {
+        override def afterAll(cm: ConfigMap): Unit = {
           afterCountBar.incrementAndGet()
         }
         override def newInstance = new BarSuite

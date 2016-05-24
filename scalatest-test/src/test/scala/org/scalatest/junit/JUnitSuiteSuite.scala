@@ -27,19 +27,19 @@ package org.scalatest.junit {
 
     class HappySuite extends JUnitSuite {
 
-      @Test def verifySomething() = () // Don't do nothin'
+      @Test def verifySomething(): Unit = () // Don't do nothin'
     }
 
     class BitterSuite extends JUnitSuite {
 
-      @Test def verifySomething() {
+      @Test def verifySomething(): Unit = {
         assert(1 === 2) // This will fail
       }
     }
 
     class IgnoredSuite extends JUnitSuite {
 
-      @Ignore @Test def verifySomething() {
+      @Ignore @Test def verifySomething(): Unit = {
         assert(1 === 2) // This would fail if it were not ignored
       }
     }
@@ -47,8 +47,8 @@ package org.scalatest.junit {
     // Used to make sure TestStarting gets fired twice
     class ManySuite extends JUnitSuite {
 
-      @Test def verifySomething() = ()
-      @Test def verifySomethingElse() = ()
+      @Test def verifySomething(): Unit = ()
+      @Test def verifySomethingElse(): Unit = ()
     }
   }
 
@@ -60,7 +60,7 @@ package org.scalatest.junit {
 
       var runStartingCount = 0
       var runCompletedCount = 0
-      def apply(event: Event) {
+      def apply(event: Event): Unit = {
         event match {
           case RunStarting(_, testCount, _, _, _, _, _, _) =>
             runStartingCount += 1

@@ -194,11 +194,11 @@ class ScalaTestFrameworkSuite extends FunSuite{
   }
 
   class TestLogger extends Logger{
-    def trace(t:Throwable){}
-    def error(msg:String){}
-    def warn(msg:String){}
-    def info(msg:String){}
-    def debug(msg:String){}
+    def trace(t:Throwable): Unit ={}
+    def error(msg:String): Unit ={}
+    def warn(msg:String): Unit ={}
+    def info(msg:String): Unit ={}
+    def debug(msg:String): Unit ={}
     def ansiCodesSupported = false
   }
 

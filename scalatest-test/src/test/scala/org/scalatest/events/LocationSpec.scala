@@ -70,19 +70,19 @@ class LocationSpec extends FunSpec with Checkers {
 
   // SKIP-SCALATESTJS-START
   class TestLocationSpec extends RefSpec {
-    def `test succeed` {
+    def `test succeed`: Unit = {
     }
 
-    def `test fail` {
+    def `test fail`: Unit = {
       fail
     }
 
-    def `test pending` {
+    def `test pending`: Unit = {
       pending
     }
 
     @Ignore
-    def `test ignore` {
+    def `test ignore`: Unit = {
     }
   }
   

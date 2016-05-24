@@ -26,7 +26,7 @@ class OneOfContainMatcherSpec extends FunSpec {
 
   describe("oneOf ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
       e.message should be (Some(FailureMessages.didNotContainOneOfElements(prettifier, left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("OneOfContainMatcherSpec.scala"))
       e.failedCodeLineNumber should be (Some(lineNumber))
@@ -321,7 +321,7 @@ class OneOfContainMatcherSpec extends FunSpec {
   
   describe("not oneOf ") {
     
-    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int) {
+    def checkStackDepth(e: exceptions.StackDepthException, left: Any, right: GenTraversable[Any], lineNumber: Int): Unit = {
       val leftText = FailureMessages.decorateToStringValue(prettifier, left)
       e.message should be (Some(FailureMessages.containedOneOfElements(prettifier, left, UnquotedString(right.mkString(", ")))))
       e.failedCodeFileName should be (Some("OneOfContainMatcherSpec.scala"))

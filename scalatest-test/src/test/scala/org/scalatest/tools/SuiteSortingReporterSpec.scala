@@ -47,7 +47,7 @@ class SuiteSortingReporterSpec extends FunSpec with Matchers with EventHelpers {
     }
   }
 
-  def runSuites(reporter: Reporter, dss: Option[DistributedSuiteSorter]) {
+  def runSuites(reporter: Reporter, dss: Option[DistributedSuiteSorter]): Unit = {
     val spec1 = new RunInSpurtsSpec1
     val spec2 = new RunInSpurtsSpec2
 

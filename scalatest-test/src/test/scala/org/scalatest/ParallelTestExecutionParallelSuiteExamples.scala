@@ -47,7 +47,7 @@ class ExampleParallelTestExecutionParallelSpecPair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderSpec
   def suite2 = new ExampleParallelTestExecutionOrderFixtureSpec
   
-  def assertParallelSuites(events: List[Event]) {
+  def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 16)
     
     checkSuiteStarting(events(0), suite1.suiteId)
@@ -75,7 +75,7 @@ class ExampleParallelTestExecutionParallelFunSuitePair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderFunSuite
   def suite2 = new ExampleParallelTestExecutionOrderFixtureFunSuite
   
-  def assertParallelSuites(events: List[Event]) {
+  def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 16)
     
     checkSuiteStarting(events(0), suite1.suiteId)
@@ -102,7 +102,7 @@ class ExampleParallelTestExecutionParallelFunSpecPair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderFunSpec
   def suite2 = new ExampleParallelTestExecutionOrderFixtureFunSpec
   
-  def assertParallelSuites(events: List[Event]) {
+  def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 28)
     
     checkSuiteStarting(events(0), suite1.suiteId)
@@ -141,7 +141,7 @@ class ExampleParallelTestExecutionParallelFeatureSpecPair extends ParallelSuites
   def suite1 = new ExampleParallelTestExecutionOrderFeatureSpec
   def suite2 = new ExampleParallelTestExecutionOrderFixtureFeatureSpec
   
-  def assertParallelSuites(events: List[Event]) {
+  def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 28)
     
     checkSuiteStarting(events(0), suite1.suiteId)
@@ -180,7 +180,7 @@ class ExampleParallelTestExecutionParallelFlatSpecPair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderFlatSpec
   def suite2 = new ExampleParallelTestExecutionOrderFixtureFlatSpec
   
-  def assertParallelSuites(events: List[Event]) {
+  def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 28)
     
     checkSuiteStarting(events(0), suite1.suiteId)
@@ -219,7 +219,7 @@ class ExampleParallelTestExecutionParallelFreeSpecPair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderFreeSpec
   def suite2 = new ExampleParallelTestExecutionOrderFixtureFreeSpec
   
-  def assertParallelSuites(events: List[Event]) {
+  def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 28)
     
     checkSuiteStarting(events(0), suite1.suiteId)
@@ -258,7 +258,7 @@ class ExampleParallelTestExecutionParallelPropSpecPair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderPropSpec
   def suite2 = new ExampleParallelTestExecutionOrderFixturePropSpec
   
-  def assertParallelSuites(events: List[Event]) {
+  def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 16)
     
     checkSuiteStarting(events(0), suite1.suiteId)
@@ -285,7 +285,7 @@ class ExampleParallelTestExecutionParallelWordSpecPair extends ParallelSuites {
   def suite1 = new ExampleParallelTestExecutionOrderWordSpec
   def suite2 = new ExampleParallelTestExecutionOrderFixtureWordSpec
   
-  def assertParallelSuites(events: List[Event]) {
+  def assertParallelSuites(events: List[Event]): Unit = {
     assert(events.size === 28)
     
     checkSuiteStarting(events(0), suite1.suiteId)

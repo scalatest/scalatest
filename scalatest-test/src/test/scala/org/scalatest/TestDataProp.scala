@@ -96,7 +96,7 @@ class ExampleTestDataSpec extends RefSpec with TestDataFixtureServices {
   object `Scope 1` {
     object `Scope 2` {
       @SlowAsMolasses
-      def `test 1` {}
+      def `test 1`: Unit = {}
     }
   }
 }
@@ -120,7 +120,7 @@ class ExampleTestDataFixtureSpec extends fixture.Spec with TestDataFixtureServic
   object `Scope 1` {
     object `Scope 2` {
       @SlowAsMolasses
-      def `test 1`(fixture: String) { }
+      def `test 1`(fixture: String): Unit = { }
     }
   }
 }
@@ -137,7 +137,7 @@ class ExampleTestDataJUnit3Suite extends JUnit3Suite with TestDataFixtureService
   }
   var testData: TestData = this.testDataFor("testMethod1", ConfigMap("key1" -> "value1"))
   
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
 }
 
 @DoNotDiscover
@@ -153,7 +153,7 @@ class ExampleTestDataJUnitSuite extends JUnitSuite with TestDataFixtureServices 
   var testData: TestData = this.testDataFor("testMethod1", ConfigMap("key1" -> "value1"))
 
   @org.junit.Ignore
-  @Test def testMethod1() = ()
+  @Test def testMethod1(): Unit = ()
 }
 
 
@@ -171,7 +171,7 @@ class ExampleTestDataTestNGSuite extends TestNGSuite with TestDataFixtureService
   var testData: TestData = this.testDataFor("testMethod1", ConfigMap("key1" -> "value1"))
   @TestNG
   @Ignore
-  def testMethod1() {}
+  def testMethod1(): Unit = {}
 }
 // SKIP-SCALATESTJS-END
 

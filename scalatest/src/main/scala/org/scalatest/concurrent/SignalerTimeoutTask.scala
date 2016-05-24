@@ -31,7 +31,7 @@ import org.scalatest.exceptions.TestFailedDueToTimeoutException
 private[scalatest] class SignalerTimeoutTask(testThread: Thread, interrupt: Signaler) extends TimerTask {
   @volatile var timedOut = false
   @volatile var needToResetInterruptedStatus = false
-  override def run() {
+  override def run(): Unit = {
     timedOut = true
     val beforeIsInterrupted = testThread.isInterrupted()
     interrupt(testThread)

@@ -211,7 +211,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       it("should print to stdout when info is called by a method invoked after the suite has been executed") {
         class MyFlatSpec extends FlatSpec {
           callInfo() // This should work fine
-          def callInfo() {
+          def callInfo(): Unit = {
             info("howdy")
           }
           it should "howdy also" in {
@@ -277,7 +277,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
       it("should, if they call a should behave from within an it clause, result in a TestFailedException when running the test") {
 
         class MySpec extends FlatSpec {
-          def aTest {}
+          def aTest: Unit = {}
           it should "blow up" in {
             "in the wrong place, at the wrong time" should behave like aTest
             /* ASSERTION_SUCCEED */
@@ -420,7 +420,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     }
     it("should run tests registered via the 'it should behave like' syntax") {
       trait SharedFlatSpecTests { this: FlatSpec =>
-        def nonEmptyStack(s: String)(i: Int) {
+        def nonEmptyStack(s: String)(i: Int): Unit = {
           it should "I am shared" in {/* ASSERTION_SUCCEED */}
         }
       }
@@ -439,7 +439,7 @@ class FlatSpecSpec extends FunSpec with GivenWhenThen {
     }
     it("should run tests registered via the 'it can behave like' syntax") {
       trait SharedFlatSpecTests { this: FlatSpec =>
-        def nonEmptyStack(s: String)(i: Int) {
+        def nonEmptyStack(s: String)(i: Int): Unit = {
           it can "I am shared" in {/* ASSERTION_SUCCEED */}
         }
       }

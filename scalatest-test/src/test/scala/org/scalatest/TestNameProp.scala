@@ -60,7 +60,7 @@ class TestNameProp  extends AllSuiteProp {
 trait TestNameFixtureServices { suite: Suite =>
   val expectedTestNames: Set[String]
   
-  def assertTestNames() {
+  def assertTestNames(): Unit = {
     val expectedSet = expectedTestNames
     val testNameSet = testNames
     assert(expectedSet.size === testNameSet.size)
@@ -88,55 +88,55 @@ class ExampleTestNameSpec extends RefSpec with TestNameFixtureServices {
   
   object `Testing 1` { 
     object `Scala code` {
-      def `should be fun` {}
+      def `should be fun`: Unit = {}
     }
   }
 
   object `Testing 2 ` { 
     object `Scala code` {
-      def `should be fun` {}
+      def `should be fun`: Unit = {}
     }
   }
 
   object `Testing 3` { 
     object ` Scala code` {
-      def `should be fun` {}
+      def `should be fun`: Unit = {}
     }
   }
 
   object `Testing 4` { 
     object `Scala code ` {
-      def `should be fun` {}
+      def `should be fun`: Unit = {}
     }
   }
 
   object `Testing 5` { 
     object `Scala code` {
-      def ` should be fun` {}
+      def ` should be fun`: Unit = {}
     }
   }
 
   object ` Testing 6` { 
     object `Scala code` {
-      def `should be fun` {}
+      def `should be fun`: Unit = {}
     }
   }
 
   object `Testing 7` { 
     object `Scala code` {
-      def `should be fun ` {}
+      def `should be fun `: Unit = {}
     }
   }
 
   object `Testing 8 ` { 
     object ` Scala code` {
-      def `should be fun` {}
+      def `should be fun`: Unit = {}
     }
   }
 
   object `Testing 9  ` { 
     object `Scala code` {
-      def `should be fun` {}
+      def `should be fun`: Unit = {}
     }
   }
 }
@@ -159,55 +159,55 @@ class ExampleTestNameFixtureSpec extends fixture.Spec with TestNameFixtureServic
   
   object `Testing 1` { 
     object `Scala code` {
-      def `should be fun`(fixture: String) {}
+      def `should be fun`(fixture: String): Unit = {}
     }
   }
 
   object `Testing 2 ` { 
     object `Scala code` {
-      def `should be fun`(fixture: String) {}
+      def `should be fun`(fixture: String): Unit = {}
     }
   }
 
   object `Testing 3` { 
     object ` Scala code` {
-      def `should be fun`(fixture: String) {}
+      def `should be fun`(fixture: String): Unit = {}
     }
   }
 
   object `Testing 4` { 
     object `Scala code ` {
-      def `should be fun`(fixture: String) {}
+      def `should be fun`(fixture: String): Unit = {}
     }
   }
 
   object `Testing 5` { 
     object `Scala code` {
-      def ` should be fun`(fixture: String) {}
+      def ` should be fun`(fixture: String): Unit = {}
     }
   }
 
   object ` Testing 6` { 
     object `Scala code` {
-      def `should be fun`(fixture: String) {}
+      def `should be fun`(fixture: String): Unit = {}
     }
   }
 
   object `Testing 7` { 
     object `Scala code` {
-      def `should be fun `(fixture: String) {}
+      def `should be fun `(fixture: String): Unit = {}
     }
   }
 
   object `Testing 8 ` {  
     object ` Scala code` {
-      def `should be fun`(fixture: String) {}
+      def `should be fun`(fixture: String): Unit = {}
     }
   }
 
   object `Testing 9  ` {  
     object `Scala code` {
-      def `should be fun`(fixture: String) {}
+      def `should be fun`(fixture: String): Unit = {}
     }
   }
 }
@@ -220,7 +220,7 @@ class ExampleTestNameJUnit3Suite extends JUnit3Suite with TestNameFixtureService
      "testingShouldBeFun"     
     )
     
-  def testingShouldBeFun() { }
+  def testingShouldBeFun(): Unit = { }
 }
 
 @DoNotDiscover
@@ -232,7 +232,7 @@ class ExampleTestNameJUnitSuite extends JUnitSuite with TestNameFixtureServices 
     )
   
   @Test
-  def testingShouldBeFun() {}
+  def testingShouldBeFun(): Unit = {}
 }
 
 @DoNotDiscover
@@ -244,7 +244,7 @@ class ExampleTestNameTestNGSuite extends TestNGSuite with TestNameFixtureService
     )
   
   @TestNG
-  def testingShouldBeFun() {}
+  def testingShouldBeFun(): Unit = {}
 }
 // SKIP-SCALATESTJS-END
 

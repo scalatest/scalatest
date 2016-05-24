@@ -260,11 +260,11 @@ class ScalaTestFramework extends SbtFramework {
     
     private val atomicCount = new AtomicInteger(0)
   
-    def increaseLatch() {
+    def increaseLatch(): Unit = {
       atomicCount.incrementAndGet()
     }
   
-    def decreaseLatch() {
+    def decreaseLatch(): Unit = {
       if (atomicCount.decrementAndGet() == 0) 
         reporter.get match {
           case Some(r) => r.dispatchDisposeAndWaitUntilDone()
@@ -319,13 +319,13 @@ class ScalaTestFramework extends SbtFramework {
     presentReminderWithoutCanceledTests
   ) {
 
-    protected def printPossiblyInColor(fragment: Fragment) {
+    protected def printPossiblyInColor(fragment: Fragment): Unit = {
       loggers.foreach { logger =>
         logger.info(fragment.toPossiblyColoredText(logger.ansiCodesSupported && presentInColor))
       }
     }
 
-    def dispose() = ()
+    def dispose(): Unit = ()
   }
 
   /**The test runner for ScalaTest suites. It is compiled in a second step after the rest of sbt.*/
@@ -377,7 +377,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
     private def filterMembersOnly(paths: List[String], testClassName: String): Boolean =
       paths.exists(path => testClassName.startsWith(path) && testClassName.substring(path.length ).lastIndexOf('.') <= 0)
       
-    def run(testClassName: String, fingerprint: Fingerprint, eventHandler: EventHandler, args: Array[String]) {
+    def run(testClassName: String, fingerprint: Fingerprint, eventHandler: EventHandler, args: Array[String]): Unit = {
       try {
         RunConfig.increaseLatch()
         val suiteClass = Class.forName(testClassName, true, testLoader)
@@ -460,7 +460,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
       
       import org.scalatest.events._
 
-      def fireEvent(tn: String, r: Result, e: Option[Throwable]) = {
+      def fireEvent(tn: String, r: Result, e: Option[Throwable]): Unit = {
         eventHandler.handle(
           new org.scalatools.testing.Event {
             def testName = tn
@@ -471,7 +471,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
         )
       }
       
-      override def apply(event: Event) {
+      override def apply(event: Event): Unit = {
         report match {
           case Some(report) => report(event)
           case None =>
@@ -488,7 +488,7 @@ Tags to include and exclude: -n "CheckinTests FunctionalTests" -l "SlowTests Net
         }
       }
       
-      def dispose() {
+      def dispose(): Unit = {
         report match {
           case Some(report: DispatchReporter) => 
             report.dispatchDisposeAndWaitUntilDone()

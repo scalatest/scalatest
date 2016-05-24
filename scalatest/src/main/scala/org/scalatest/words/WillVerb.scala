@@ -191,7 +191,7 @@ private[scalatest] trait WillVerb {
      * no-arg function.
      * </p>
      */
-    def will(right: => Unit)(implicit fun: StringVerbBlockRegistration) {
+    def will(right: => Unit)(implicit fun: StringVerbBlockRegistration): Unit = {
       fun(leftSideString, "will", pos, right _)
     }
 
@@ -218,7 +218,7 @@ private[scalatest] trait WillVerb {
      * <code>"will"</code>, and the <code>ResultOfAfterWordApplication</code> passed to <code>will</code>.
      * </p>
      */
-    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration) {
+    def will(resultOfAfterWordApplication: ResultOfAfterWordApplication)(implicit swawr: SubjectWithAfterWordRegistration): Unit = {
       swawr(leftSideString, "will", resultOfAfterWordApplication, pos)
     }
   }

@@ -24,7 +24,7 @@ import org.scalactic.Prettifier
 private[scalatest] object TypeMatcherMacro {
 
   // Check that no type parameter is specified, if any does, give a friendly compiler warning.
-  def checkTypeParameter(context: Context)(tree: context.Tree, methodName: String) {
+  def checkTypeParameter(context: Context)(tree: context.Tree, methodName: String): Unit = {
 
     import context.universe._
 

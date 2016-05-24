@@ -308,7 +308,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    * trait <code>FunSuite</code>.
    * </p>
    */
-  protected def testsFor(unit: Unit) {}
+  protected def testsFor(unit: Unit): Unit = {}
 
   import scala.language.implicitConversions
 

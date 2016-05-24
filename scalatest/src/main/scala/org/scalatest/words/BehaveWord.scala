@@ -81,7 +81,7 @@ final class BehaveWord {
    * <a href="../FlatSpec.html#SharedTests"><code>FlatSpec</code></a>, or <a href="../WordSpec.html#SharedTests"><code>WordSpec</code></a>.
    * </p>
    */
-  def like(unit: Unit) = ()
+  def like(unit: Unit): Unit = ()
   
   /**
    * Overrides toString to return "behave"

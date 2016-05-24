@@ -49,20 +49,20 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     var beforeAllCalledBeforeExecute = false
     var afterAllCalledAfterExecute = false
 
-    override def beforeAll() {
+    override def beforeAll(): Unit = {
       if (!runWasCalled)
         beforeAllCalledBeforeExecute = true
     }
-    override def beforeEach() {
+    override def beforeEach(): Unit = {
       if (!runTestWasCalled)
         beforeEachCalledBeforeRunTest = true
     }
     it("test something") {}
-    override def afterEach() {
+    override def afterEach(): Unit = {
       if (runTestWasCalled)
         afterEachCalledAfterRunTest = true
     }
-    override def afterAll() {
+    override def afterAll(): Unit = {
       if (runWasCalled)
         afterAllCalledAfterExecute = true
     }
@@ -109,7 +109,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     "will complete abruptly with the same exception.") {
     
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
-      override def beforeEach() { throw new NumberFormatException } 
+      override def beforeEach(): Unit = { throw new NumberFormatException } 
     }
     assertThrows[NumberFormatException] {
       val a = new MySuite
@@ -126,7 +126,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterEachCalled = false
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterEachCalled = true
       }
     }
@@ -146,7 +146,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     }
     class MySuite extends FunkySuite with BeforeAndAfterEach with BeforeAndAfterAll {
       var afterEachCalled = false
-      override def afterEach() {
+      override def afterEach(): Unit = {
         afterEachCalled = true
         throw new IllegalArgumentException
       }
@@ -162,7 +162,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     "exception, runTest will return a status that contains that exception as an unreportedException.") {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
-      override def afterEach() { throw new NumberFormatException }
+      override def afterEach(): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
     val a = new MySuite
@@ -176,7 +176,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     "exception, runTest will return a status that contains that exception as an unreportedException (using BeforeAndAfterAllConfigMap).") {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
-      override def afterEach() { throw new NumberFormatException }
+      override def afterEach(): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
     val a = new MySuite
@@ -191,7 +191,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     "will complete abruptly with the same exception.") {
     
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
-      override def beforeAll() { throw new NumberFormatException }
+      override def beforeAll(): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
     assertThrows[NumberFormatException] {
@@ -212,7 +212,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
       it("test 1") {}
       it("test 2") {}
       it("test 3") {}
-      override def afterAll() {
+      override def afterAll(): Unit = {
         afterAllCalled = true
       }
     }
@@ -235,7 +235,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
       it("test 1") {}
       it("test 2") {}
       it("test 3") {}
-      override def afterAll() {
+      override def afterAll(): Unit = {
         afterAllCalled = true
         throw new IllegalArgumentException
       }
@@ -251,7 +251,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     "exception, the status returned by run will contain that exception as its unreportedException.") {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAll {
-      override def afterAll() { throw new NumberFormatException }
+      override def afterAll(): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
     val a = new MySuite
@@ -265,7 +265,7 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
     "exception, the status returned by run will contain that exception as its unreportedException (using BeforeAndAfterAllConfigMap).") {
 
     class MySuite extends FunSpec with BeforeAndAfterEach with BeforeAndAfterAllConfigMap {
-      override def afterAll(cm: ConfigMap) { throw new NumberFormatException }
+      override def afterAll(cm: ConfigMap): Unit = { throw new NumberFormatException }
       it("test July") {}
     }
     val a = new MySuite
@@ -283,8 +283,8 @@ class BeforeAndAfterEachAllSuite extends FunSuite {
       var test2IsCalled = false
       var test3IsCalled = false
 
-      override def beforeAll() { throw new NumberFormatException }
-      override def afterAll() { afterAllIsCalled = true }
+      override def beforeAll(): Unit = { throw new NumberFormatException }
+      override def afterAll(): Unit = { afterAllIsCalled = true }
 
       it("test 1") { test1IsCalled = true }
       it("test 2") { test2IsCalled = true }
@@ -306,7 +306,7 @@ class BeforeAndAfterEachAllExtendingSuite extends FunSpec with BeforeAndAfterEac
   var sb: StringBuilder = _
   val lb = new ListBuffer[String]
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     sb = new StringBuilder("ScalaTest is ")
     lb.clear()
   }
@@ -330,7 +330,7 @@ class BeforeAndAfterEachAllExtendingFunSuite extends FunSuite with BeforeAndAfte
   var sb: StringBuilder = _
   val lb = new ListBuffer[String]
 
-  override def beforeEach() {
+  override def beforeEach(): Unit = {
     sb = new StringBuilder("ScalaTest is ")
     lb.clear()
   }

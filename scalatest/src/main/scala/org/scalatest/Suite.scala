@@ -733,7 +733,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
     shortstacks: Boolean = false,
     fullstacks: Boolean = false,
     stats: Boolean = false
-  ) {
+  ): Unit = {
     requireNonNull(configMap)
     val SelectedTag = "Selected"
     val SelectedSet = Set(SelectedTag)
@@ -764,7 +764,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
       dispatch(RunStarting(tracker.nextOrdinal(), expectedTestCount(filter), configMap))
 
     val suiteStartTime = System.currentTimeMillis
-    def dispatchSuiteAborted(e: Throwable) {
+    def dispatchSuiteAborted(e: Throwable): Unit = {
       val eMessage = e.getMessage
       val rawString = 
         if (eMessage != null && eMessage.length > 0)
@@ -851,7 +851,7 @@ trait Suite extends Assertions with Serializable { thisSuite =>
    * </pre>
    */
     @deprecated("The parameterless execute method has been deprecated and will be removed in a future version of ScalaTest. Please invoke execute with empty parens instead: execute().")
-   final def execute { execute() }
+   final def execute: Unit = { execute() }
 
   // SKIP-SCALATESTJS-END
 
@@ -1682,7 +1682,7 @@ used for test events like succeeded/failed, etc.
   def xmlContent(value: String) = unparsedXml(substituteHtmlSpace(value))
 
   def reportTestFailed(theSuite: Suite, report: Reporter, throwable: Throwable, testName: String, testText: String,
-                       recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]) {
+                       recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]): Unit = {
 
     val message = getMessageForException(throwable)
     //val formatter = getEscapedIndentedTextForTest(testText, level, includeIcon)
@@ -1698,12 +1698,12 @@ used for test events like succeeded/failed, etc.
 
   // TODO: Possibly separate these out from method tests and function tests, because locations are different
   // Update: Doesn't seems to need separation, to be confirmed with Bill.
-  def reportTestStarting(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, rerunnable: Option[String], location: Option[Location]) {
+  def reportTestStarting(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, rerunnable: Option[String], location: Option[Location]): Unit = {
     report(TestStarting(tracker.nextOrdinal(), theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, Some(MotionToSuppress),
       location, rerunnable))
   }
 
-  def reportTestPending(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], duration: Long, formatter: Formatter, location: Option[Location]) {
+  def reportTestPending(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], duration: Long, formatter: Formatter, location: Option[Location]): Unit = {
     report(TestPending(tracker.nextOrdinal(), theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, recordedEvents, Some(duration), Some(formatter),
       location))
   }
@@ -1717,7 +1717,7 @@ used for test events like succeeded/failed, etc.
 */
 
   def reportTestCanceled(theSuite: Suite, report: Reporter, throwable: Throwable, testName: String, testText: String,
-      recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]) {
+      recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]): Unit = {
 
     val message = getMessageForException(throwable)
     val payload = 
@@ -1731,12 +1731,12 @@ used for test events like succeeded/failed, etc.
     report(TestCanceled(tracker.nextOrdinal(), message, theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, recordedEvents, Some(throwable), Some(duration), Some(formatter), location, rerunnable, payload))
   }
 
-  def reportTestSucceeded(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], duration: Long, formatter: Formatter, rerunnable: Option[String], location: Option[Location]) {
+  def reportTestSucceeded(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], duration: Long, formatter: Formatter, rerunnable: Option[String], location: Option[Location]): Unit = {
     report(TestSucceeded(tracker.nextOrdinal(), theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, recordedEvents, Some(duration), Some(formatter),
       location, rerunnable))
   }
 
-  def reportTestIgnored(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, formatter: Formatter, location: Option[Location]) {
+  def reportTestIgnored(theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, testText: String, formatter: Formatter, location: Option[Location]): Unit = {
     val testSucceededIcon = Resources.testSucceededIconChar
     report(TestIgnored(tracker.nextOrdinal(), theSuite.suiteName, theSuite.suiteId, Some(theSuite.getClass.getName), testName, testText, Some(formatter),
       location))
@@ -1826,7 +1826,7 @@ used for test events like succeeded/failed, etc.
     location: Option[Location],
     includeNameInfo: Boolean,
     includeIcon: Boolean = true
-  ) {
+  ): Unit = {
     report(
       createInfoProvided(
         theSuite,
@@ -1854,7 +1854,7 @@ used for test events like succeeded/failed, etc.
     location: Option[Location],
     includeNameInfo: Boolean,
     includeIcon: Boolean = true
-  ) {
+  ): Unit = {
     report(
       createNoteProvided(
         theSuite,
@@ -1882,7 +1882,7 @@ used for test events like succeeded/failed, etc.
     location: Option[Location],
     includeNameInfo: Boolean,
     includeIcon: Boolean = true
-  ) {
+  ): Unit = {
     report(
       createAlertProvided(
         theSuite,
@@ -1934,7 +1934,7 @@ used for test events like succeeded/failed, etc.
     location: Option[Location],
     includeNameInfo: Boolean,
     includeIcon: Boolean = true
-  ) {
+  ): Unit = {
     report(
       createMarkupProvided(
         theSuite,
@@ -1958,7 +1958,7 @@ used for test events like succeeded/failed, etc.
     level: Int,
     includeIcon: Boolean = true,
     location: Option[Location]
-  ) {
+  ): Unit = {
     report(
       ScopeOpened(
         tracker.nextOrdinal(),
@@ -1979,7 +1979,7 @@ used for test events like succeeded/failed, etc.
     level: Int,
     includeIcon: Boolean = true,
     location: Option[Location]
-  ) {
+  ): Unit = {
     report(
       ScopeClosed(
         tracker.nextOrdinal(),
@@ -1999,7 +1999,7 @@ used for test events like succeeded/failed, etc.
     level: Int,
     includeIcon: Boolean = true,
     location: Option[Location]
-  ) {
+  ): Unit = {
     report(
       ScopePending(
         tracker.nextOrdinal(),
@@ -2032,7 +2032,7 @@ used for test events like succeeded/failed, etc.
       None
   }
 
-  def checkChosenStyles(configMap: ConfigMap, styleName: String) {
+  def checkChosenStyles(configMap: ConfigMap, styleName: String): Unit = {
     val chosenStyleSet = 
         if (configMap.isDefinedAt(Suite.CHOSEN_STYLES))
           configMap(Suite.CHOSEN_STYLES).asInstanceOf[Set[String]]
@@ -2094,7 +2094,7 @@ used for test events like succeeded/failed, etc.
     tracker: Tracker,
     formatter: Formatter,
     duration: Long
-  ) {
+  ): Unit = {
     val message = getMessageForException(throwable)
     //val formatter = getEscapedIndentedTextForTest(testName, 1, true)
     val payload = 

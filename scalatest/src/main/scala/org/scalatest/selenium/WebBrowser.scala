@@ -1775,7 +1775,7 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String) {
+    def value_=(value: String): Unit = {
       underlying.clear()
       underlying.sendKeys(value)
     }
@@ -1783,7 +1783,7 @@ trait WebBrowser {
     /**
      * Clears this text field.
      */
-    def clear() { underlying.clear() }
+    def clear(): Unit = { underlying.clear() }
   }
 
   /**
@@ -1826,7 +1826,7 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String) {
+    def value_=(value: String): Unit = {
       underlying.clear()
       underlying.sendKeys(value)
     }
@@ -1834,7 +1834,7 @@ trait WebBrowser {
     /**
      * Clears this text area.
      */
-    def clear() { underlying.clear() }
+    def clear(): Unit = { underlying.clear() }
   }
   
   /**
@@ -1878,7 +1878,7 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String) {
+    def value_=(value: String): Unit = {
       underlying.clear()
       underlying.sendKeys(value)
     }
@@ -1886,13 +1886,13 @@ trait WebBrowser {
     /**
      * Clears this text field.
      */
-    def clear() { underlying.clear() }
+    def clear(): Unit = { underlying.clear() }
   }
   
   trait ValueElement extends Element {
     val underlying: WebElement
 
-    def checkCorrectType(isA: (WebElement) => Boolean, typeDescription: String)(implicit pos: source.Position) = {
+    def checkCorrectType(isA: (WebElement) => Boolean, typeDescription: String)(implicit pos: source.Position): Unit = {
       if(!isA(underlying))
         throw new TestFailedException(
                      sde => Some("Element " + underlying + " is not " + typeDescription + " field."),
@@ -1918,7 +1918,7 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String) {
+    def value_=(value: String): Unit = {
       underlying.clear()
       underlying.sendKeys(value)
     }
@@ -1926,7 +1926,7 @@ trait WebBrowser {
     /**
      * Clears this field.
      */
-    def clear() { underlying.clear() }
+    def clear(): Unit = { underlying.clear() }
   }
 
   /**
@@ -2276,7 +2276,7 @@ trait WebBrowser {
      * @param the value of the radio button to select
      * @throws TestFailedExeption if the passed string is not the value of any radio button in this group
      */
-    def value_=(value: String)(implicit pos: source.Position) {
+    def value_=(value: String)(implicit pos: source.Position): Unit = {
       groupElements.find(_.getAttribute("value") == value) match {
         case Some(radio) => 
           radio.click()
@@ -2318,7 +2318,7 @@ trait WebBrowser {
     /**
      * Selects this checkbox.
      */
-    def select() {
+    def select(): Unit = {
       if (!underlying.isSelected)
         underlying.click()
     }
@@ -2326,7 +2326,7 @@ trait WebBrowser {
     /**
      * Clears this checkbox
      */
-    def clear() {
+    def clear(): Unit = {
       if (underlying.isSelected())
         underlying.click()
     }
@@ -2523,7 +2523,7 @@ trait WebBrowser {
      * @param value the new value
      * @throws TestFailedException if the passed value does not match not one of the single selection list's values
      */
-    def value_=(value : String)(implicit pos: source.Position) {
+    def value_=(value : String)(implicit pos: source.Position): Unit = {
       try {
         select.selectByValue(value)
       }
@@ -2578,7 +2578,7 @@ trait WebBrowser {
      *
      * @param value the value to clear
      */
-    def clear(value: String) {
+    def clear(value: String): Unit = {
       select.deselectByValue(value)
     }
   
@@ -2609,7 +2609,7 @@ trait WebBrowser {
      * @throws TestFailedException if a value contained in the passed <code>Seq[String]</code> is not
      *         among this multiple selection list's values.
      */
-    def values_=(values: collection.Seq[String])(implicit pos: source.Position) {
+    def values_=(values: collection.Seq[String])(implicit pos: source.Position): Unit = {
       try {
         clearAll()
         values.foreach(select.selectByValue(_))
@@ -2630,7 +2630,7 @@ trait WebBrowser {
      *
      * @param value the value to clear
      */
-    def clearAll() {
+    def clearAll(): Unit = {
       select.deselectAll()
     }
   }
@@ -2665,7 +2665,7 @@ trait WebBrowser {
      * @param url the URL to which to send the browser
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def to(url: String)(implicit driver: WebDriver) {
+    def to(url: String)(implicit driver: WebDriver): Unit = {
       driver.get(url)
     }
 
@@ -2684,7 +2684,7 @@ trait WebBrowser {
      * @param page the <code>Page</code> object containing the URL to which to send the browser
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def to(page: Page)(implicit driver: WebDriver) {
+    def to(page: Page)(implicit driver: WebDriver): Unit = {
       driver.get(page.url)
     }
   }
@@ -2703,7 +2703,7 @@ trait WebBrowser {
    * @param url the URL to which to send the browser
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def goTo(url: String)(implicit driver: WebDriver) {
+  def goTo(url: String)(implicit driver: WebDriver): Unit = {
     go to url
   }
   
@@ -2721,7 +2721,7 @@ trait WebBrowser {
    * @param page the <code>Page</code> object containing the URL to which to send the browser
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def goTo(page: Page)(implicit driver: WebDriver) {
+  def goTo(page: Page)(implicit driver: WebDriver): Unit = {
     go to page
   }
   
@@ -2730,7 +2730,7 @@ trait WebBrowser {
    *
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def close()(implicit driver: WebDriver) {
+  def close()(implicit driver: WebDriver): Unit = {
     driver.close()
   }
   
@@ -3794,7 +3794,7 @@ trait WebBrowser {
      * 
      * @param element the <code>WebElement</code> to click on
      */
-    def on(element: WebElement) {
+    def on(element: WebElement): Unit = {
       element.click()
     }
     
@@ -3804,7 +3804,7 @@ trait WebBrowser {
      * @param query the <code>Query</code> with which to search
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def on(query: Query)(implicit driver: WebDriver) {
+    def on(query: Query)(implicit driver: WebDriver): Unit = {
       query.webElement.click()
     }
   
@@ -3814,7 +3814,7 @@ trait WebBrowser {
      * @param queryString the string with which to search, first by ID then by name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def on(queryString: String)(implicit driver: WebDriver) {
+    def on(queryString: String)(implicit driver: WebDriver): Unit = {
       // stack depth is not correct if just call the button("...") directly.
       val target = tryQueries(queryString)(q => q.webElement)
       on(target)
@@ -3825,7 +3825,7 @@ trait WebBrowser {
      * 
      * @param element the <code>Element</code> to click on
      */
-    def on(element: Element) {
+    def on(element: Element): Unit = {
       element.underlying.click()
     }
   }
@@ -3835,7 +3835,7 @@ trait WebBrowser {
    * 
    * @param element the <code>WebElement</code> to click on
    */
-  def clickOn(element: WebElement) {
+  def clickOn(element: WebElement): Unit = {
     click on element
   }
   
@@ -3845,7 +3845,7 @@ trait WebBrowser {
    * @param query the <code>Query</code> with which to search
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def clickOn(query: Query)(implicit driver: WebDriver) {
+  def clickOn(query: Query)(implicit driver: WebDriver): Unit = {
     click on query
   }
   
@@ -3855,7 +3855,7 @@ trait WebBrowser {
    * @param queryString the string with which to search, first by ID then by name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def clickOn(queryString: String)(implicit driver: WebDriver) {
+  def clickOn(queryString: String)(implicit driver: WebDriver): Unit = {
     click on queryString
   }
   
@@ -3864,7 +3864,7 @@ trait WebBrowser {
    * 
    * @param element the <code>Element</code> to click on
    */
-  def clickOn(element: Element) {
+  def clickOn(element: Element): Unit = {
     click on element
   }
   
@@ -3876,7 +3876,7 @@ trait WebBrowser {
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @throws TestFailedException if current active element is not in a form or underlying WebDriver encounters problem when submitting the form.
    */
-  def submit()(implicit driver: WebDriver, pos: source.Position) {
+  def submit()(implicit driver: WebDriver, pos: source.Position): Unit = {
     try {
       (switch to activeElement).underlying.submit()
     }
@@ -3921,7 +3921,7 @@ trait WebBrowser {
    * @param timeout the time span to implicitly wait
    * @param driver the <code>WebDriver</code> on which to set the implicit wait
    */
-  def implicitlyWait(timeout: Span)(implicit driver: WebDriver) {
+  def implicitlyWait(timeout: Span)(implicit driver: WebDriver): Unit = {
     driver.manage.timeouts.implicitlyWait(timeout.totalNanos, TimeUnit.NANOSECONDS)
   }
 
@@ -3930,7 +3930,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> on which to quit. 
    */
-  def quit()(implicit driver: WebDriver) {
+  def quit()(implicit driver: WebDriver): Unit = {
     driver.quit()
   }
   
@@ -4114,7 +4114,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def goBack()(implicit driver: WebDriver) {
+  def goBack()(implicit driver: WebDriver): Unit = {
     driver.navigate.back()
   }
   
@@ -4123,7 +4123,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def goForward()(implicit driver: WebDriver) {
+  def goForward()(implicit driver: WebDriver): Unit = {
     driver.navigate.forward()
   }
   
@@ -4132,7 +4132,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def reloadPage()(implicit driver: WebDriver) {
+  def reloadPage()(implicit driver: WebDriver): Unit = {
     driver.navigate.refresh()
   }
   
@@ -4150,7 +4150,7 @@ trait WebBrowser {
    * </pre>
    */
   object add {
-    private def addCookie(cookie: Cookie)(implicit driver: WebDriver) {
+    private def addCookie(cookie: Cookie)(implicit driver: WebDriver): Unit = {
       driver.manage.addCookie(cookie)
     }
     
@@ -4166,7 +4166,7 @@ trait WebBrowser {
      * @param secure whether this cookie is secured.
      * @param driver the <code>WebDriver</code> with which to drive the browser 
      */
-    def cookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver) { 
+    def cookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver): Unit = { 
       addCookie(new Cookie(name, value, domain, path, expiry, secure))
     }
   }
@@ -4212,7 +4212,7 @@ trait WebBrowser {
    * </pre>
    */
   object delete {
-    private def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position) {
+    private def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position): Unit = {
       val cookie = getCookie(name)
       if (cookie == null) 
         throw new TestFailedException(
@@ -4230,7 +4230,7 @@ trait WebBrowser {
      * @param name cookie's name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def cookie(name: String)(implicit driver: WebDriver, pos: source.Position) {
+    def cookie(name: String)(implicit driver: WebDriver, pos: source.Position): Unit = {
       deleteCookie(name)
     }
     
@@ -4239,7 +4239,7 @@ trait WebBrowser {
      * 
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def all(cookies: CookiesNoun)(implicit driver: WebDriver, pos: source.Position) {
+    def all(cookies: CookiesNoun)(implicit driver: WebDriver, pos: source.Position): Unit = {
       driver.manage.deleteAllCookies()
     }
   }
@@ -4255,7 +4255,7 @@ trait WebBrowser {
      * @param secure whether this cookie is secured.
      * @param driver the <code>WebDriver</code> with which to drive the browser 
      */
-  def addCookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver) {
+  def addCookie(name: String, value: String, path: String = "/", expiry: Date = null, domain: String = null, secure: Boolean = false)(implicit driver: WebDriver): Unit = {
     add cookie (name, value, path, expiry, domain, secure)
   }
   
@@ -4265,7 +4265,7 @@ trait WebBrowser {
    * @param name cookie's name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position) {
+  def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position): Unit = {
     delete cookie name
   }
   
@@ -4274,7 +4274,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def deleteAllCookies()(implicit driver: WebDriver, pos: source.Position) {
+  def deleteAllCookies()(implicit driver: WebDriver, pos: source.Position): Unit = {
     delete all cookies
   }
   
@@ -4310,7 +4310,7 @@ trait WebBrowser {
      * 
      * @param fileName screenshot file name, if does not end with .png, it will be extended automatically
      */
-    def to(fileName: String)(implicit driver: WebDriver) {
+    def to(fileName: String)(implicit driver: WebDriver): Unit = {
       driver match {
         case takesScreenshot: TakesScreenshot => 
           val tmpFile = takesScreenshot.getScreenshotAs(OutputType.FILE)
@@ -4347,7 +4347,7 @@ trait WebBrowser {
    * 
    * @param fileName screenshot file name, if does not end with .png, it will be extended automatically
    */
-  def captureTo(fileName: String)(implicit driver: WebDriver) {
+  def captureTo(fileName: String)(implicit driver: WebDriver): Unit = {
     capture to fileName
   }
   
@@ -4359,7 +4359,7 @@ trait WebBrowser {
    * 
    * @param targetDirPath the path of capture directory
    */
-  def setCaptureDir(targetDirPath: String) {
+  def setCaptureDir(targetDirPath: String): Unit = {
       targetDir = 
         if (targetDirPath.endsWith(File.separator))
           new File(targetDirPath)
@@ -4475,7 +4475,7 @@ trait WebBrowser {
    * 
    * @param timeout the amount of time to wait for an asynchronous script to finish execution before throwing exception
    */
-  def setScriptTimeout(timeout: Span)(implicit driver: WebDriver) {
+  def setScriptTimeout(timeout: Span)(implicit driver: WebDriver): Unit = {
     driver.manage().timeouts().setScriptTimeout(timeout.totalNanos, TimeUnit.NANOSECONDS);
   }
 
@@ -4486,7 +4486,7 @@ trait WebBrowser {
    * 
    * @param value keys to press in current active <code>TextField</code> or <code>TextArea</code>
    */
-  def enter(value: String)(implicit driver: WebDriver, pos: source.Position) {
+  def enter(value: String)(implicit driver: WebDriver, pos: source.Position): Unit = {
     val ae = switch to activeElement
     ae match {
       case tf: TextField => tf.value = value
@@ -4511,7 +4511,7 @@ trait WebBrowser {
    * 
    * @param value keys to press in current active element
    */
-  def pressKeys(value: String)(implicit driver: WebDriver) {
+  def pressKeys(value: String)(implicit driver: WebDriver): Unit = {
     val ae: WebElement = driver.switchTo.activeElement
     ae.sendKeys(value)
   }
@@ -4594,7 +4594,7 @@ trait HtmlUnit extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }
@@ -4640,7 +4640,7 @@ trait Firefox extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }
@@ -4664,7 +4664,7 @@ trait Safari extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }
@@ -4688,7 +4688,7 @@ trait Chrome extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }
@@ -4712,7 +4712,7 @@ trait InternetExplorer extends WebBrowser with Driver with ScreenshotCapturer {
   /**
    * Captures a screenshot and saves it as a file in the specified directory.
    */
-  def captureScreenshot(directory: String) {
+  def captureScreenshot(directory: String): Unit = {
     capture to directory
   }
 }

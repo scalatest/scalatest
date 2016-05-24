@@ -28,10 +28,10 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
       test("test that should fail") { cycle =>
         import cycle._
         trait OneFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         trait TwoFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         val oneFishMock = mock[OneFish]
         val twoFishMock = mock[TwoFish]
@@ -52,10 +52,10 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
       test("test that should succeed") { cycle =>
         import cycle._
         trait OneFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         trait TwoFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         val oneFishMock = mock[OneFish]
         val twoFishMock = mock[TwoFish]
@@ -76,10 +76,10 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
       test("test that should succeed with class") { cycle =>
         import cycle._
         class OneFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         class TwoFish {
-          def eat(food: String) = ()
+          def eat(food: String): Unit = ()
         }
         val oneFishMock = mock[OneFish]
         val twoFishMock = mock[TwoFish]
@@ -110,15 +110,15 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
       test("test that should succeed") { cycle =>
         import cycle._
         trait OneFish {
-          def doString(food: String) = ()
-          def doInt(food: Int) = ()
-          def doShort(food: Short) = ()
-          def doByte(food: Byte) = ()
-          def doLong(food: Long) = ()
-          def doBoolean(food: Boolean) = ()
-          def doFloat(food: Float) = ()
-          def doDouble(food: Double) = ()
-          def doChar(food: Char) = ()
+          def doString(food: String): Unit = ()
+          def doInt(food: Int): Unit = ()
+          def doShort(food: Short): Unit = ()
+          def doByte(food: Byte): Unit = ()
+          def doLong(food: Long): Unit = ()
+          def doBoolean(food: Boolean): Unit = ()
+          def doFloat(food: Float): Unit = ()
+          def doDouble(food: Double): Unit = ()
+          def doChar(food: Char): Unit = ()
         }
         val oneFishMock = mock[OneFish]
 
@@ -160,15 +160,15 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
       test("test that should succeed") { cycle =>
         import cycle._
         trait OneFish {
-          def doString(food: String) = ()
-          def doInt(food: Int) = ()
-          def doShort(food: Short) = ()
-          def doByte(food: Byte) = ()
-          def doLong(food: Long) = ()
-          def doBoolean(food: Boolean) = ()
-          def doFloat(food: Float) = ()
-          def doDouble(food: Double) = ()
-          def doChar(food: Char) = ()
+          def doString(food: String): Unit = ()
+          def doInt(food: Int): Unit = ()
+          def doShort(food: Short): Unit = ()
+          def doByte(food: Byte): Unit = ()
+          def doLong(food: Long): Unit = ()
+          def doBoolean(food: Boolean): Unit = ()
+          def doFloat(food: Float): Unit = ()
+          def doDouble(food: Double): Unit = ()
+          def doChar(food: Char): Unit = ()
         }
         val oneFishMock = mock[OneFish]
 
