@@ -132,7 +132,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(pos: source.Position): Unit = {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -161,7 +161,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(pos: source.Position): Unit = {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
@@ -200,7 +200,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </p>
      */
     def in(testFun: => Any /* Assertion */): Unit = {
-      registerTestToRun(specText, tags, "in", testFun _)(pos)
+      registerTestToRun(specText, tags, "in", testFun _, pos)
     }
 
     /**
@@ -220,7 +220,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </p>
      */
     def is(testFun: => PendingStatement): Unit = {
-      registerTestToRun(specText, tags, "is", () => { testFun; succeed })(pos)
+      registerTestToRun(specText, tags, "is", () => { testFun; succeed }, pos)
     }
 
     /**
@@ -240,7 +240,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", testFun _)(pos)
+      registerTestToIgnore(specText, tags, "ignore", testFun _, pos)
     }
   }       
 
@@ -296,7 +296,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </p>
      */
     def in(f: => Any /* Assertion */): Unit = {
-      registerTestToRun(string, List(), "in", f _)(pos)
+      registerTestToRun(string, List(), "in", f _, pos)
     }
 
     /**
@@ -316,7 +316,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </p>
      */
     def ignore(f: => Any /* Assertion */): Unit = {
-      registerTestToIgnore(string, List(), "ignore", f _)(pos)
+      registerTestToIgnore(string, List(), "ignore", f _, pos)
     }
 
     /**
@@ -336,7 +336,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * </p>
      */
     def is(f: => PendingStatement): Unit = {
-      registerTestToRun(string, List(), "is", () => { f; succeed })(pos)
+      registerTestToRun(string, List(), "is", () => { f; succeed }, pos)
     }
 
     /**

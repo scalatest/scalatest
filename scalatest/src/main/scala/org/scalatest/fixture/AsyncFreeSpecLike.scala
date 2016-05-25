@@ -127,11 +127,11 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position): Unit = {
+  private def registerAsyncTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerAsyncTest(specText, transformToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position): Unit = {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement, pos: source.Position): Unit = {
     engine.registerAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
   }
 
@@ -154,11 +154,11 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion])(pos: source.Position): Unit = {
+  private def registerAsyncTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Future[compatible.Assertion], pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position): Unit = {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement, pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(specText, AsyncPendingTransformer(testFun), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
   }
   /*
@@ -203,7 +203,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToRun(specText, tags, "in", testFun)(pos)
+      registerAsyncTestToRun(specText, tags, "in", testFun, pos)
     }
 
     /**
@@ -225,7 +225,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def in(testFun: () => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))(pos)
+      registerAsyncTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -247,7 +247,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def is(testFun: => PendingStatement): Unit = {
-      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)(pos)
+      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun, pos)
     }
 
     /**
@@ -269,7 +269,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToIgnore(specText, tags, "ignore", testFun)(pos)
+      registerAsyncTestToIgnore(specText, tags, "ignore", testFun, pos)
     }
 
     /**
@@ -291,7 +291,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))(pos)
+      registerAsyncTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun), pos)
     }
   }
 
@@ -353,7 +353,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def in(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToRun(string, List(), "in", testFun)(pos)
+      registerAsyncTestToRun(string, List(), "in", testFun, pos)
     }
 
     /**
@@ -375,7 +375,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def in(testFun: () => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))(pos)
+      registerAsyncTestToRun(string, List(), "in", new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -397,7 +397,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def is(testFun: => PendingStatement): Unit = {
-      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)(pos)
+      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun, pos)
     }
 
     /**
@@ -419,7 +419,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToIgnore(string, List(), "ignore", testFun)(pos)
+      registerAsyncTestToIgnore(string, List(), "ignore", testFun, pos)
     }
 
     /**
@@ -441,7 +441,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * @param testFun the test function
      */
     def ignore(testFun: () => Future[compatible.Assertion]): Unit = {
-      registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))(pos)
+      registerAsyncTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun), pos)
     }
 
     /**

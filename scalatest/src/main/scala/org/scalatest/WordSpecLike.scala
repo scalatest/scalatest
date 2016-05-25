@@ -127,7 +127,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(pos: source.Position): Unit = {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -156,7 +156,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */)(pos: source.Position): Unit = {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
@@ -275,7 +275,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def in(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(specText, tags, "in", testFun _)(pos)
+      registerTestToRun(specText, tags, "in", testFun _, pos)
     }
 
     /**
@@ -295,7 +295,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def is(testFun: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerTestToRun(specText, tags, "is", () => { testFun; succeed })(pos)
+      registerTestToRun(specText, tags, "is", () => { testFun; succeed }, pos)
     }
 
     /**
@@ -315,7 +315,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def ignore(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", testFun _)(pos)
+      registerTestToIgnore(specText, tags, "ignore", testFun _, pos)
     }
   }       
 
@@ -353,7 +353,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def in(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToRun(string, List(), "in", f _)(pos)
+      registerTestToRun(string, List(), "in", f _, pos)
     }
 
     /**
@@ -373,7 +373,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def ignore(f: => Any /* Assertion */)(implicit pos: source.Position): Unit = {
-      registerTestToIgnore(string, List(), "ignore", f _)(pos)
+      registerTestToIgnore(string, List(), "ignore", f _, pos)
     }
 
     /**
@@ -393,7 +393,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
      * </p>
      */
     def is(f: => PendingStatement)(implicit pos: source.Position): Unit = {
-      registerTestToRun(string, List(), "is", () => { f; succeed })(pos)
+      registerTestToRun(string, List(), "is", () => { f; succeed }, pos)
     }
 
     /**
