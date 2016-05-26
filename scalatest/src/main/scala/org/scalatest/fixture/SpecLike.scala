@@ -19,6 +19,7 @@ import scala.collection.immutable.ListSet
 import org.scalatest.Suite.{IgnoreTagName, autoTagClassAnnotations}
 import org.scalatest._
 import org.scalatest.exceptions._
+import StackDepthExceptionHelper.getStackDepthFun
 import Spec._
 import Suite._
 import org.scalatest.events.{TopOfClass, TopOfMethod}
@@ -130,8 +131,8 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
                 registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation), None)
               }
               catch {
-                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), None, e => 8)
-                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), None, e => 8)
+                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(e => 8))
+                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(e => 8))
                 case dtne: DuplicateTestNameException => throw dtne
                 case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), None, e => 8)
                 case other: Throwable => throw other
