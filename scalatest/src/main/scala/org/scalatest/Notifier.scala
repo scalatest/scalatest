@@ -41,5 +41,5 @@ trait Notifier {
   /**
    * Send a status update via an <code>NoteProvided</code> event to the reporter.
    */
-  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit
 }
