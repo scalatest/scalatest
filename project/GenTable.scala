@@ -1834,21 +1834,20 @@ $columnsOfIndexes$
          |  * Abstract class that in the future will hold an intermediate priority <code>TableAsserting</code> implicit, which will enable inspector expressions
          |  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
          |  */
-         |abstract class ExpectationTableAsserting extends UnitTableAsserting {
-         |/*
+         |/*abstract class ExpectationTableAsserting extends UnitTableAsserting {
+         |
          |  implicit def assertingNatureOfExpectation: TableAsserting[Expectation] { type Result = Expectation } = {
          |    new TableAsserting[Expectation] {
          |      type Result = Expectation
          |    }
          |  }
-         |*/
-         |}
+         |}*/
          |
          |/**
          | * Companion object to <code>TableAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
          | * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
          | */
-         |object TableAsserting extends /*UnitTableAsserting*/ ExpectationTableAsserting {
+         |object TableAsserting extends UnitTableAsserting /*ExpectationTableAsserting*/ {
          |
          |  /**
          |    * Provides support of [[org.scalatest.enablers.TableAsserting TableAsserting]] for Assertion.  Returns [[org.scalatest.Succeeded Succeeded]] when the check succeeds,
