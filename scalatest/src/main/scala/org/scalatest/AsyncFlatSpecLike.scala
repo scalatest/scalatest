@@ -1641,7 +1641,7 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
-    // SKIP-SCALATESTJS-ENDpos:
+    // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 6
     //SCALATESTJS-ONLY val stackDepthAdjustment = -5
     def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
