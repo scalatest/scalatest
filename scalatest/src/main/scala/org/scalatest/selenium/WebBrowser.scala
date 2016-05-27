@@ -2813,7 +2813,7 @@ trait WebBrowser {
      * @return the <code>Element</code> selected by this query
      * @throws TestFailedException if nothing is selected by this query
      */
-    def element(implicit driver: WebDriver, pos: source.Position): Element = {
+    def element(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Element = {
       try {
         createTypedElement(driver.findElement(by), pos)
       }
@@ -2844,7 +2844,7 @@ trait WebBrowser {
      * @return the <code>Element</code> selected by this query, wrapped in a <code>Some</code>, or <code>None</code> if
      *   no <code>Element</code> is selected
      */
-    def findElement(implicit driver: WebDriver, pos: source.Position): Option[Element] =
+    def findElement(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Option[Element] =
       try {
         Some(createTypedElement(driver.findElement(by), pos))
       }
@@ -2869,7 +2869,7 @@ trait WebBrowser {
      * @param driver the <code>WebDriver</code> with which to drive the browser
      * @return the <code>Iterator</code> over all <code>Element</code>s selected by this query
      */
-    def findAllElements(implicit driver: WebDriver, pos: source.Position): Iterator[Element] = driver.findElements(by).asScala.toIterator.map { e => createTypedElement(e, pos) }
+    def findAllElements(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Iterator[Element] = driver.findElements(by).asScala.toIterator.map { e => createTypedElement(e, pos) }
     
     /**
      * Returns the first <code>WebElement</code> selected by this query, or throws <code>TestFailedException</code>
@@ -2879,7 +2879,7 @@ trait WebBrowser {
      * @return the <code>WebElement</code> selected by this query
      * @throws TestFailedException if nothing is selected by this query
      */
-    def webElement(implicit driver: WebDriver, pos: source.Position): WebElement = {
+    def webElement(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WebElement = {
       try {
         driver.findElement(by)
       }
@@ -3154,7 +3154,7 @@ trait WebBrowser {
    */
   def tagName(tagName: String): TagNameQuery = new TagNameQuery(tagName)
 
-  private def createTypedElement(element: WebElement, pos: source.Position): Element = {
+  private def createTypedElement(element: WebElement, pos: source.Position = implicitly[source.Position]): Element = {
     if (isTextField(element))
       new TextField(element)(pos)
     else if (isTextArea(element))
@@ -3324,7 +3324,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TextField</code>
    * @return the <code>TextField</code> selected by this query
    */
-  def textField(queryString: String)(implicit driver: WebDriver, pos: source.Position): TextField =
+  def textField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TextField =
     tryQueries(queryString)(q => new TextField(q.webElement)(pos))
   
   /**
@@ -3347,7 +3347,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TextArea</code>
    * @return the <code>TextArea</code> selected by this query
    */
-  def textArea(queryString: String)(implicit driver: WebDriver, pos: source.Position): TextArea =
+  def textArea(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TextArea =
     tryQueries(queryString)(q => new TextArea(q.webElement)(pos))
     
   /**
@@ -3370,7 +3370,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>PasswordField</code>
    * @return the <code>PasswordField</code> selected by this query
    */
-  def pwdField(queryString: String)(implicit driver: WebDriver, pos: source.Position): PasswordField =
+  def pwdField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): PasswordField =
     tryQueries(queryString)(q => new PasswordField(q.webElement)(pos))
   
   /**
@@ -3393,7 +3393,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>EmailField</code>
    * @return the <code>EmailField</code> selected by this query
    */
-  def emailField(queryString: String)(implicit driver: WebDriver, pos: source.Position): EmailField =
+  def emailField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): EmailField =
     tryQueries(queryString)(q => new EmailField(q.webElement)(pos))
   
   /**
@@ -3416,7 +3416,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>ColorField</code>
    * @return the <code>ColorField</code> selected by this query
    */
-  def colorField(queryString: String)(implicit driver: WebDriver, pos: source.Position): ColorField =
+  def colorField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): ColorField =
     tryQueries(queryString)(q => new ColorField(q.webElement)(pos))
   
   /**
@@ -3439,7 +3439,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateField</code>
    * @return the <code>DateField</code> selected by this query
    */
-  def dateField(queryString: String)(implicit driver: WebDriver, pos: source.Position): DateField =
+  def dateField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): DateField =
     tryQueries(queryString)(q => new DateField(q.webElement)(pos))
   
   /**
@@ -3462,7 +3462,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateTimeField</code>
    * @return the <code>DateTimeField</code> selected by this query
    */
-  def dateTimeField(queryString: String)(implicit driver: WebDriver, pos: source.Position): DateTimeField =
+  def dateTimeField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): DateTimeField =
     tryQueries(queryString)(q => new DateTimeField(q.webElement)(pos))
 
   /**
@@ -3485,7 +3485,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>DateTimeLocalField</code>
    * @return the <code>DateTimeLocalField</code> selected by this query
    */
-  def dateTimeLocalField(queryString: String)(implicit driver: WebDriver, pos: source.Position): DateTimeLocalField =
+  def dateTimeLocalField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): DateTimeLocalField =
     tryQueries(queryString)(q => new DateTimeLocalField(q.webElement)(pos))
 
   /**
@@ -3508,7 +3508,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>MonthField</code>
    * @return the <code>MonthField</code> selected by this query
    */
-  def monthField(queryString: String)(implicit driver: WebDriver, pos: source.Position): MonthField =
+  def monthField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): MonthField =
     tryQueries(queryString)(q => new MonthField(q.webElement)(pos))
   
   /**
@@ -3531,7 +3531,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>NumberField</code>
    * @return the <code>NumberField</code> selected by this query
    */
-  def numberField(queryString: String)(implicit driver: WebDriver, pos: source.Position): NumberField =
+  def numberField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): NumberField =
     tryQueries(queryString)(q => new NumberField(q.webElement)(pos))
   
   /**
@@ -3554,7 +3554,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>RangeField</code>
    * @return the <code>RangeField</code> selected by this query
    */
-  def rangeField(queryString: String)(implicit driver: WebDriver, pos: source.Position): RangeField =
+  def rangeField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): RangeField =
     tryQueries(queryString)(q => new RangeField(q.webElement)(pos))
   
   /**
@@ -3577,7 +3577,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>SearchField</code>
    * @return the <code>SearchField</code> selected by this query
    */
-  def searchField(queryString: String)(implicit driver: WebDriver, pos: source.Position): SearchField =
+  def searchField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): SearchField =
     tryQueries(queryString)(q => new SearchField(q.webElement)(pos))
   
   /**
@@ -3600,7 +3600,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TelField</code>
    * @return the <code>TelField</code> selected by this query
    */
-  def telField(queryString: String)(implicit driver: WebDriver, pos: source.Position): TelField =
+  def telField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TelField =
     tryQueries(queryString)(q => new TelField(q.webElement)(pos))
   
   /**
@@ -3623,7 +3623,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>TimeField</code>
    * @return the <code>TimeField</code> selected by this query
    */
-  def timeField(queryString: String)(implicit driver: WebDriver, pos: source.Position): TimeField =
+  def timeField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): TimeField =
     tryQueries(queryString)(q => new TimeField(q.webElement)(pos))
 
   /**
@@ -3646,7 +3646,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>UrlField</code>
    * @return the <code>UrlField</code> selected by this query
    */
-  def urlField(queryString: String)(implicit driver: WebDriver, pos: source.Position): UrlField =
+  def urlField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): UrlField =
     tryQueries(queryString)(q => new UrlField(q.webElement)(pos))
 
   /**
@@ -3669,7 +3669,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>WeekField</code>
    * @return the <code>WeekField</code> selected by this query
    */
-  def weekField(queryString: String)(implicit driver: WebDriver, pos: source.Position): WeekField =
+  def weekField(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WeekField =
     tryQueries(queryString)(q => new WeekField(q.webElement)(pos))
 
   /**
@@ -3681,7 +3681,7 @@ trait WebBrowser {
    * @throws TestFailedException if no element with the specified group name is found, or found any element with the specified group name but not a <code>RadioButton</code>
    * @return the <code>RadioButtonGroup</code> selected by this query
    */
-  def radioButtonGroup(groupName: String)(implicit driver: WebDriver, pos: source.Position) = new RadioButtonGroup(groupName, driver)(pos)
+  def radioButtonGroup(groupName: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]) = new RadioButtonGroup(groupName, driver)(pos)
   
   /**
    * Finds and returns the first <code>RadioButton</code> selected by the specified <code>Query</code>, throws <code>TestFailedException</code> 
@@ -3703,7 +3703,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>RadioButton</code>
    * @return the <code>RadioButton</code> selected by this query
    */
-  def radioButton(queryString: String)(implicit driver: WebDriver, pos: source.Position): RadioButton =
+  def radioButton(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): RadioButton =
     tryQueries(queryString)(q => new RadioButton(q.webElement)(pos))
   
   /**
@@ -3726,7 +3726,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>Checkbox</code>
    * @return the <code>Checkbox</code> selected by this query
    */
-  def checkbox(queryString: String)(implicit driver: WebDriver, pos: source.Position): Checkbox =
+  def checkbox(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Checkbox =
     tryQueries(queryString)(q => new Checkbox(q.webElement)(pos))
   
   /**
@@ -3749,7 +3749,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>SingleSel</code>
    * @return the <code>SingleSel</code> selected by this query
    */
-  def singleSel(queryString: String)(implicit driver: WebDriver, pos: source.Position): SingleSel =
+  def singleSel(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): SingleSel =
     tryQueries(queryString)(q => new SingleSel(q.webElement)(pos))
   
   /**
@@ -3772,7 +3772,7 @@ trait WebBrowser {
    * @throws TestFailedException if element not found or found element is not a <code>MultiSel</code>
    * @return the <code>MultiSel</code> selected by this query
    */
-  def multiSel(queryString: String)(implicit driver: WebDriver, pos: source.Position): MultiSel =
+  def multiSel(queryString: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): MultiSel =
     tryQueries(queryString)(q => new MultiSel(q.webElement)(pos))
     
   /**
@@ -3876,7 +3876,7 @@ trait WebBrowser {
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @throws TestFailedException if current active element is not in a form or underlying WebDriver encounters problem when submitting the form.
    */
-  def submit()(implicit driver: WebDriver, pos: source.Position): Unit = {
+  def submit()(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     try {
       (switch to activeElement).underlying.submit()
     }
@@ -3969,7 +3969,7 @@ trait WebBrowser {
      * @param driver the <code>WebDriver</code> with which to drive the browser
      * @return instance of specified <code>SwitchTarget</code>'s type parameter
      */
-    def to[T](target: SwitchTarget[T])(implicit driver: WebDriver, pos: source.Position): T = {
+    def to[T](target: SwitchTarget[T])(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): T = {
       target.switch(driver)(pos)
     }
   }
@@ -4107,7 +4107,7 @@ trait WebBrowser {
    * @param driver the <code>WebDriver</code> with which to drive the browser
    * @return instance of specified <code>SwitchTarget</code>'s type parameter
    */
-  def switchTo[T](target: SwitchTarget[T])(implicit driver: WebDriver, pos: source.Position): T = switch to target
+  def switchTo[T](target: SwitchTarget[T])(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): T = switch to target
   
   /**
    * Go back to previous page.
@@ -4177,11 +4177,11 @@ trait WebBrowser {
    * @param name cookie's name
    * @return a WrappedCookie instance
    */
-  def cookie(name: String)(implicit driver: WebDriver, pos: source.Position): WrappedCookie = {
+  def cookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WrappedCookie = {
     getCookie(name)(driver, pos)
   }
   
-  private def getCookie(name: String)(implicit driver: WebDriver, pos: source.Position): WrappedCookie = {
+  private def getCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): WrappedCookie = {
     driver.manage.getCookies.asScala.toList.find(_.getName == name) match {
       case Some(cookie) => 
         new WrappedCookie(cookie)
@@ -4212,7 +4212,7 @@ trait WebBrowser {
    * </pre>
    */
   object delete {
-    private def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position): Unit = {
+    private def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       val cookie = getCookie(name)
       if (cookie == null) 
         throw new TestFailedException(
@@ -4230,7 +4230,7 @@ trait WebBrowser {
      * @param name cookie's name
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def cookie(name: String)(implicit driver: WebDriver, pos: source.Position): Unit = {
+    def cookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       deleteCookie(name)
     }
     
@@ -4239,7 +4239,7 @@ trait WebBrowser {
      * 
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
-    def all(cookies: CookiesNoun)(implicit driver: WebDriver, pos: source.Position): Unit = {
+    def all(cookies: CookiesNoun)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
       driver.manage.deleteAllCookies()
     }
   }
@@ -4265,7 +4265,7 @@ trait WebBrowser {
    * @param name cookie's name
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position): Unit = {
+  def deleteCookie(name: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     delete cookie name
   }
   
@@ -4274,7 +4274,7 @@ trait WebBrowser {
    * 
    * @param driver the <code>WebDriver</code> with which to drive the browser
    */
-  def deleteAllCookies()(implicit driver: WebDriver, pos: source.Position): Unit = {
+  def deleteAllCookies()(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     delete all cookies
   }
   
@@ -4486,7 +4486,7 @@ trait WebBrowser {
    * 
    * @param value keys to press in current active <code>TextField</code> or <code>TextArea</code>
    */
-  def enter(value: String)(implicit driver: WebDriver, pos: source.Position): Unit = {
+  def enter(value: String)(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Unit = {
     val ae = switch to activeElement
     ae match {
       case tf: TextField => tf.value = value
