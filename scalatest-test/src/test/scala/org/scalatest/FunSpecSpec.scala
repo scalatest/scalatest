@@ -1387,7 +1387,7 @@ class FunSpecSpec extends FreeSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
       assert(e.cause.isDefined)
@@ -1410,7 +1410,7 @@ class FunSpecSpec extends FreeSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotDescribeClause))
 
       assert(e.cause.isDefined)
@@ -1453,7 +1453,7 @@ class FunSpecSpec extends FreeSpec with GivenWhenThen {
         new TestSpec
       }
       assert("FunSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInDescribeClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature test 1")))))

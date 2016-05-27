@@ -2582,7 +2582,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       }
       assert("SpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideDefNotObject))
 
       assert(e.cause.isDefined)
@@ -2609,7 +2609,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
         spec.run(None, Args(rep, Stopper.default, Filter(), ConfigMap.empty, None, new Tracker, Set.empty))
       }
       assert("SpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 3)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
       assert(e.message == Some(FailureMessages.assertionShouldBePutInsideDefNotObject))
 
       assert(e.cause.isDefined)

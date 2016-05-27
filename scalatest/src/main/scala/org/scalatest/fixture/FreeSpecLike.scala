@@ -136,7 +136,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */)(pos: source.Position): Unit = {
+  private def registerTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -3
@@ -146,7 +146,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
     engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, None, Some(pos), None, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position): Unit = {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement, pos: source.Position): Unit = {
     engine.registerTest(specText, Transformer(testFun), Resources.inCannotAppearInsideAnotherIn, sourceFileName, methodName, 4, -3, None, None, Some(pos), None, testTags: _*)
   }
 
@@ -169,7 +169,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */)(pos: source.Position): Unit = {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => Any /* Assertion */, pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 4
     val stackDepthAdjustment = -4
@@ -179,7 +179,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, stackDepth, stackDepthAdjustment, None, Some(pos), testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement)(pos: source.Position): Unit = {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: FixtureParam => PendingStatement, pos: source.Position): Unit = {
     engine.registerIgnoredTest(specText, Transformer(testFun), Resources.ignoreCannotAppearInsideAnIn, sourceFileName, methodName, 4, -4, None, Some(pos), testTags: _*)
   }
   /*
@@ -224,7 +224,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
-      registerTestToRun(specText, tags, "in", testFun)(pos)
+      registerTestToRun(specText, tags, "in", testFun, pos)
     }
 
     /**
@@ -246,7 +246,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def in(testFun: () => Any /* Assertion */): Unit = {
-      registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun))(pos)
+      registerTestToRun(specText, tags, "in", new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -268,7 +268,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def is(testFun: => PendingStatement): Unit = {
-      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun)(pos)
+      registerPendingTestToRun(specText, tags, "is", unusedFixtureParam => testFun, pos)
     }
 
     /**
@@ -290,7 +290,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", testFun)(pos)
+      registerTestToIgnore(specText, tags, "ignore", testFun, pos)
     }
 
     /**
@@ -312,7 +312,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def ignore(testFun: () => Any /* Assertion */): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun))(pos)
+      registerTestToIgnore(specText, tags, "ignore", new NoArgTestWrapper(testFun), pos)
     }
   }
 
@@ -380,7 +380,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def in(testFun: FixtureParam => Any /* Assertion */): Unit = {
-      registerTestToRun(string, List(), "in", testFun)(pos)
+      registerTestToRun(string, List(), "in", testFun, pos)
     }
 
     /**
@@ -402,7 +402,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def in(testFun: () => Any /* Assertion */): Unit = {
-      registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun))(pos)
+      registerTestToRun(string, List(), "in", new NoArgTestWrapper(testFun), pos)
     }
 
     /**
@@ -424,7 +424,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def is(testFun: => PendingStatement): Unit = {
-      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun)(pos)
+      registerPendingTestToRun(string, List(), "is", unusedFixtureParam => testFun, pos)
     }
 
     /**
@@ -446,7 +446,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def ignore(testFun: FixtureParam => Any /* Assertion */): Unit = {
-      registerTestToIgnore(string, List(), "ignore", testFun)(pos)
+      registerTestToIgnore(string, List(), "ignore", testFun, pos)
     }
 
     /**
@@ -468,7 +468,7 @@ trait FreeSpecLike extends TestSuite with TestRegistration with Informing with N
      * @param testFun the test function
      */
     def ignore(testFun: () => Any /* Assertion */): Unit = {
-      registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun))(pos)
+      registerTestToIgnore(string, List(), "ignore", new NoArgTestWrapper(testFun), pos)
     }
 
     /**

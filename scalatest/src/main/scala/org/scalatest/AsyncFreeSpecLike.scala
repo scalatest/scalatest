@@ -139,12 +139,12 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToRun(specText: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion])(pos: source.Position): Unit = {
+  private def registerTestToRun(specText: String, testTags: List[Tag], testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
     def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
     engine.registerAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToRun(specText: String, testTags: List[Tag], testFun: () => PendingStatement)(pos: source.Position): Unit = {
+  private def registerPendingTestToRun(specText: String, testTags: List[Tag], testFun: () => PendingStatement, pos: source.Position): Unit = {
     engine.registerAsyncTest(specText, transformPendingToOutcome(testFun), Resources.inCannotAppearInsideAnotherIn, None, None, pos, testTags: _*)
   }
 
@@ -167,12 +167,12 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion])(pos: source.Position): Unit = {
+  private def registerTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => Future[compatible.Assertion], pos: source.Position): Unit = {
     def transformToOutcomeParam: Future[compatible.Assertion] = testFun()
     engine.registerIgnoredAsyncTest(specText, transformToOutcome(transformToOutcomeParam), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
   }
 
-  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement)(pos: source.Position): Unit = {
+  private def registerPendingTestToIgnore(specText: String, testTags: List[Tag], methodName: String, testFun: () => PendingStatement, pos: source.Position): Unit = {
     engine.registerIgnoredAsyncTest(specText, transformPendingToOutcome(testFun), Resources.ignoreCannotAppearInsideAnIn, None, pos, testTags: _*)
   }
 
@@ -205,7 +205,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def in(testFun: => Future[compatible.Assertion]): Unit = {
-      registerTestToRun(specText, tags, testFun _)(pos)
+      registerTestToRun(specText, tags, testFun _, pos)
     }
 
     /**
@@ -225,7 +225,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def is(testFun: => PendingStatement): Unit = {
-      registerPendingTestToRun(specText, tags, testFun _)(pos)
+      registerPendingTestToRun(specText, tags, testFun _, pos)
     }
 
     /**
@@ -245,7 +245,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def ignore(testFun: => Future[compatible.Assertion]): Unit = {
-      registerTestToIgnore(specText, tags, "ignore", testFun _)(pos)
+      registerTestToIgnore(specText, tags, "ignore", testFun _, pos)
     }
   }
 
@@ -270,10 +270,10 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
         registerNestedBranch(string, None, fun, Resources.dashCannotAppearInsideAnIn, None, pos)
       }
       catch {
-        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), Some(pos), getStackDepthFun(pos))
-        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), Some(pos), getStackDepthFun(pos))
+        case e: exceptions.TestFailedException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
+        case e: exceptions.TestCanceledException => throw new exceptions.NotAllowedException(FailureMessages.assertionShouldBePutInsideInClauseNotDashClause, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
         case tgce: exceptions.TestRegistrationClosedException => throw tgce
-        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), Some(pos), getStackDepthFun(pos))
+        case e: exceptions.DuplicateTestNameException => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(e.getClass.getName), string, e.getMessage), Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
         case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new exceptions.NotAllowedException(FailureMessages.exceptionWasThrownInDashClause(Prettifier.default, UnquotedString(other.getClass.getName), string, other.getMessage), Some(other), Some(pos), getStackDepthFun(pos))
         case other: Throwable => throw other
       }
@@ -296,7 +296,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def in(f: => Future[compatible.Assertion]): Unit = {
-      registerTestToRun(string, List(), f _)(pos)
+      registerTestToRun(string, List(), f _, pos)
     }
 
     /**
@@ -316,7 +316,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def ignore(f: => Future[compatible.Assertion]): Unit = {
-      registerTestToIgnore(string, List(), "ignore", f _)(pos)
+      registerTestToIgnore(string, List(), "ignore", f _, pos)
     }
 
     /**
@@ -336,7 +336,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
      * </p>
      */
     def is(f: => PendingStatement): Unit = {
-      registerPendingTestToRun(string, List(), f _)(pos)
+      registerPendingTestToRun(string, List(), f _, pos)
     }
 
     /**
