@@ -32,7 +32,8 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
   describe("The whenever construct") {
     describe("when the result type of the block is Expectation") {
       describe("when the Boolean condition is true") {
-        it("should pass the result of the block through") {
+        // TODO: Re-enable this when we bring in Expectations.
+        /*it("should pass the result of the block through") {
 
           import Expectations._
           val x = 1
@@ -51,7 +52,7 @@ class WheneverSpec extends FunSpec with Matchers with Whenever {
             whenever (true) { "hi".charAt(-1); expect(x == 1) }
           }
           // SKIP-SCALATESTJS-END
-        }
+        }*/
       }
       describe("when the Boolean condition is false") {
         it("should throw DiscardedEvaluationException") {

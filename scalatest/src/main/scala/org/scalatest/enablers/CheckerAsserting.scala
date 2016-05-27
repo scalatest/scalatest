@@ -196,21 +196,21 @@ abstract class UnitCheckerAsserting {
  * Abstract class that in the future will hold an intermediate priority <code>CheckerAsserting</code> implicit, which will enable inspector expressions
  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
  */
-abstract class ExpectationCheckerAsserting extends UnitCheckerAsserting {
-/*
+/*abstract class ExpectationCheckerAsserting extends UnitCheckerAsserting {
+
   implicit def assertingNatureOfExpectation: CheckerAsserting[Expectation] { type Result = Expectation } = {
     new CheckerAsserting[Expectation] {
       type Result = Expectation
     }
   }
-*/
-}
+
+}*/
 
 /**
  * Companion object to <code>CheckerAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
  * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
  */
-object CheckerAsserting extends /*UnitCheckerAsserting*/ ExpectationCheckerAsserting {
+object CheckerAsserting extends UnitCheckerAsserting /*ExpectationCheckerAsserting*/ {
 
   /**
     * Provides support of [[org.scalatest.enablers.CheckerAsserting CheckerAsserting]] for Assertion.  Returns [[org.scalatest.Succeeded Succeeded]] when the check succeeds,
