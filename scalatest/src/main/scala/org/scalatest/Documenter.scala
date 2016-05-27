@@ -143,5 +143,5 @@ trait Documenter {
    *
    * @throws NullArgumentException if <code>message</code> reference is <code>null</code>
    */
-  def apply(text: String)(implicit pos: source.Position): Provided
+  def apply(text: String)(implicit pos: source.Position): Unit
 }

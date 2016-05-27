@@ -75,7 +75,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def Given(message: String)(implicit pos: source.Position): Provided = {
+  def Given(message: String)(implicit pos: source.Position): Unit = {
     info(Resources.givenMessage(message))(pos)
   }
   
@@ -84,7 +84,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def When(message: String)(implicit pos: source.Position): Provided = {
+  def When(message: String)(implicit pos: source.Position): Unit = {
     info(Resources.whenMessage(message))(pos)
   }
   
@@ -93,7 +93,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def Then(message: String)(implicit pos: source.Position): Provided = {
+  def Then(message: String)(implicit pos: source.Position): Unit = {
     info(Resources.thenMessage(message))(pos)
   }
   
@@ -102,7 +102,7 @@ trait GivenWhenThen { this: Informing =>
    *
    * @param message the message to forward to the passed informer
    */
-  def And(message: String)(implicit pos: source.Position): Provided = {
+  def And(message: String)(implicit pos: source.Position): Unit = {
     info(Resources.andMessage(message))(pos)
   }
 }

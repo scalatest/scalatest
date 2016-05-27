@@ -80,51 +80,47 @@ private[scalatest] class ConcurrentMessageSender(fire: ConcurrentMessageFiringFu
 */
 
 private[scalatest] class ConcurrentInformer(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Informer {
-  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
     fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
-    Reported
   }
 }
 
 private[scalatest] object ConcurrentInformer {
-  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Provided) = new ConcurrentInformer(fire)
+  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentInformer(fire)
 }
 
 private[scalatest] class ConcurrentNotifier(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Notifier {
-  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
     fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
-    Reported
   }
 }
 
 private[scalatest] object ConcurrentNotifier {
-  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Provided) = new ConcurrentNotifier(fire)
+  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentNotifier(fire)
 }
 
 private[scalatest] class ConcurrentAlerter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Alerter {
-  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
     fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
-    Reported
   }
 }
 
 private[scalatest] object ConcurrentAlerter {
-  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Provided) = new ConcurrentAlerter(fire)
+  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentAlerter(fire)
 }
 
 private[scalatest] class ConcurrentDocumenter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Documenter {
-  def apply(text: String)(implicit pos: source.Position): Provided = {
+  def apply(text: String)(implicit pos: source.Position): Unit = {
     requireNonNull(text)
     fire(text, None, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName))) // Fire the info provided event using the passed function
-    Reported
   }
 }
 
 private[scalatest] object ConcurrentDocumenter {
-  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Provided) = new ConcurrentDocumenter(fire)
+  def apply(fire: (String, Option[Any], Boolean, Option[Location]) => Unit) = new ConcurrentDocumenter(fire)
 }
 
 //
@@ -166,13 +162,12 @@ private[scalatest] class MessageRecorder(dispatch: Reporter) extends ThreadAware
 }
 
 private[scalatest] class MessageRecordingInformer(recorder: MessageRecorder, eventFun: RecordedMessageEventFun) extends Informer {
-  def apply(message: String, payload: Option[Any])(implicit pos: source.Position): Provided = {
+  def apply(message: String, payload: Option[Any])(implicit pos: source.Position): Unit = {
     // SKIP-SCALATESTJS-START
     val stackDepth = 2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 4
     recorder.apply(message, payload, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName)))
-    Recorded
   }
 }
 
@@ -181,9 +176,8 @@ private[scalatest] object MessageRecordingInformer {
 }
 
 private[scalatest] class MessageRecordingDocumenter(recorder: MessageRecorder, eventFun: RecordedMessageEventFun) extends Documenter {
-  def apply(message: String)(implicit pos: source.Position): Provided = {
+  def apply(message: String)(implicit pos: source.Position): Unit = {
     recorder.apply(message, None, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName)))
-    Recorded
   }
 }
 
@@ -199,7 +193,7 @@ private[scalatest] object MessageRecorder {
 
   // First two params of function are the string message and a boolean indicating this was from the current thread, 
   // and an optional location.
-  type ConcurrentMessageFiringFun = (String, Option[Any], Boolean, Option[Location]) => Provided
+  type ConcurrentMessageFiringFun = (String, Option[Any], Boolean, Option[Location]) => Unit
 }
 
 // For path traits, need a message recording informer that only later gets 
@@ -219,10 +213,9 @@ private[scalatest] class PathMessageRecordingInformer(eventFun: (String, Option[
     messages += ((message, payload, Thread.currentThread, isConstructingThread))
   }
 
-  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
     record(message, payload) // have to record all because of eager execution of tests in path traits
-    Recorded
   }
 
   def recordedEvents(testWasPending: Boolean, theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, indentation: Int, includeIcon: Boolean): collection.immutable.IndexedSeq[RecordableEvent] = {
@@ -251,10 +244,9 @@ private[scalatest] class PathMessageRecordingNotifier(eventFun: (String, Option[
     messages += ((message, payload, Thread.currentThread, isConstructingThread))
   }
 
-  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
     record(message, payload) // have to record all because of eager execution of tests in path traits
-    Recorded
   }
 
   def recordedEvents(testWasPending: Boolean, theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, indentation: Int, includeIcon: Boolean): collection.immutable.IndexedSeq[NotificationEvent] = {
@@ -283,10 +275,9 @@ private[scalatest] class PathMessageRecordingAlerter(eventFun: (String, Option[A
     messages += ((message, payload, Thread.currentThread, isConstructingThread))
   }
 
-  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Provided = {
+  def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
     record(message, payload) // have to record all because of eager execution of tests in path traits
-    Recorded
   }
 
   def recordedEvents(testWasPending: Boolean, theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, indentation: Int, includeIcon: Boolean): collection.immutable.IndexedSeq[NotificationEvent] = {
@@ -315,10 +306,9 @@ private[scalatest] class PathMessageRecordingDocumenter(eventFun: (String, Boole
     messages += ((message, Thread.currentThread, isConstructingThread))
   }
 
-  def apply(message: String)(implicit pos: source.Position): Provided = {
+  def apply(message: String)(implicit pos: source.Position): Unit = {
     requireNonNull(message)
     record(message) // have to record all because of eager execution of tests in path traits
-    Recorded
   }
 
   def recordedEvents(testWasPending: Boolean, theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, indentation: Int, includeIcon: Boolean): collection.immutable.IndexedSeq[RecordableEvent] = {
