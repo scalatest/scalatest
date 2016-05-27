@@ -86,7 +86,7 @@ package object scalatest {
    * trait <code>Assertions</code>, which return its only instance, the <code>Succeeded</code> singleton, or throw
    * an exception that indicates a failed, canceled, or pending test.
    */
-  type Assertion = Succeeded.type
+  type Assertion = compatible.Assertion
 
   // SKIP-SCALATESTJS-START
   /**
