@@ -24,6 +24,7 @@ package org.scalatest.concurrent
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */
+@deprecated("Please use org.scalatest.concurrent.Signaler instead.")
 object ThreadInterruptor extends Interruptor {
 
   /**

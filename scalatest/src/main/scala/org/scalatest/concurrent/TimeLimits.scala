@@ -98,7 +98,7 @@ import org.scalactic._
  * the main thread.
  * </p>
  *
- * <a name="interruptorConfig"></a><h2>Configuring <code>failAfter</code> or <code>cancelAfter</code> with a <code>Signaler</code></h2>
+ * <a name="signalerConfig"></a><h2>Configuring <code>failAfter</code> or <code>cancelAfter</code> with a <code>Signaler</code></h2>
  *
  * <p>
  * The <code>Signaler</code> companion object declares an implicit <code>val</code> of type <code>Signaler</code> that returns
@@ -144,21 +144,21 @@ import org.scalactic._
  * </tr>
  * <tr>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
- * <a href="ThreadSignaler$.html">ThreadSignaler</a>
+ * <a href="DoNotSignal$.html">DoNotSignal</a>
  * </td>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
- * The default interruptor, invokes <code>interrupt</code> on the main test thread. This will
- * set the interrupted status for the main test thread and,
- * if the main thread is blocked, will in some cases cause the main thread to complete abruptly with
- * an <code>InterruptedException</code>.
+ * The default signaler, does not attempt to interrupt the main test thread in any way
  * </td>
  * </tr>
  * <tr>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: center">
- * <a href="DoNotSignal$.html">DoNotSignal</a>
+ * <a href="ThreadSignaler$.html">ThreadSignaler</a>
  * </td>
  * <td style="border-width: 1px; padding: 3px; border: 1px solid black; text-align: left">
- * Does not attempt to interrupt the main test thread in any way
+ * Invokes <code>interrupt</code> on the main test thread. This will
+ * set the interrupted status for the main test thread and,
+ * if the main thread is blocked, will in some cases cause the main thread to complete abruptly with
+ * an <code>InterruptedException</code>.
  * </td>
  * </tr>
  * <tr>
@@ -220,21 +220,21 @@ trait TimeLimits {
    *
    * @param timeout the maximimum amount of time allowed for the passed operation
    * @param fun the operation on which to enforce the passed timeout
-   * @param interruptor a strategy for signaling the passed operation
+   * @param signaler a strategy for signaling the passed operation
    * @param prettifier a <code>Prettifier</code> for prettifying error messages
    * @param pos the <code>Position</code> of the caller site
    * @param timed the <code>Timed</code> type class that provides the behavior implementation of the timing restriction.
    */
-  def failAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
-    failAfterImpl(timeout, interruptor, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
+  def failAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
+    failAfterImpl(timeout, signaler, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
   }
 
-  private[scalatest] def failAfterImpl[T](timeout: Span, interruptor: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
+  private[scalatest] def failAfterImpl[T](timeout: Span, signaler: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
     timed.timeoutAfter(
       timeout,
       fun,
-      interruptor,
+      signaler,
       (cause: Option[Throwable]) => {
         val e = new TestFailedDueToTimeoutException(
           sde => Some(FailureMessages.timeoutFailedAfter(prettifier, UnquotedString(timeout.prettyString))),
@@ -268,21 +268,21 @@ trait TimeLimits {
    *
    * @param timeout the maximimum amount of time allowed for the passed operation
    * @param f the operation on which to enforce the passed timeout
-   * @param interruptor a strategy for signaling the passed operation
+   * @param signaler a strategy for signaling the passed operation
    * @param prettifier a <code>Prettifier</code> for prettifying error messages
    * @param pos the <code>Position</code> of the caller site
    * @param timed the <code>Timed</code> type class that provides the behavior implementation of the timing restriction.
    */
-  def cancelAfter[T](timeout: Span)(fun: => T)(implicit interruptor: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
-    cancelAfterImpl(timeout, interruptor, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
+  def cancelAfter[T](timeout: Span)(fun: => T)(implicit signaler: Signaler, prettifier: Prettifier = implicitly[Prettifier], pos: source.Position = implicitly[source.Position], timed: Timed[T] = implicitly[Timed[T]]): T = {
+    cancelAfterImpl(timeout, signaler, prettifier, Some(pos), getStackDepthFun(pos))(fun)(timed)
   }
 
-  private[scalatest] def cancelAfterImpl[T](timeout: Span, interruptor: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
+  private[scalatest] def cancelAfterImpl[T](timeout: Span, signaler: Signaler, prettifier: Prettifier, pos: Option[source.Position], stackDepthFun: StackDepthException => Int)(fun: => T)(implicit timed: Timed[T]): T = {
     val stackTraceElements = Thread.currentThread.getStackTrace()
     timed.timeoutAfter(
       timeout,
       fun,
-      interruptor,
+      signaler,
       (cause: Option[Throwable]) => {
         val e = new TestCanceledException(
           sde => Some(FailureMessages.timeoutCanceledAfter(prettifier, UnquotedString(timeout.prettyString))),
@@ -296,7 +296,6 @@ trait TimeLimits {
       }
     )
   }
-  
 }
 
 /**

@@ -26,6 +26,7 @@ import java.net.Socket
  * and <a href="TimeLimitedTests.html"><code>TimeLimitedTests</code></a>.
  * <p>
  */
+@deprecated("Please use org.scalatest.concurrent.Signaler instead.")
 class SocketInterruptor(socket: Socket) extends Interruptor {
 
   /**

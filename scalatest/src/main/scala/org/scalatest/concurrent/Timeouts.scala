@@ -30,6 +30,21 @@ import org.scalatest.exceptions.TestCanceledException
 import org.scalactic._
 
 /**
+ * <strong>This trait has been deprecated and will be removed in a later version of ScalaTest. Please use trait
+ * <a href="TimeLimits.scala">TimeLimits</a> instead.</strong>
+ *
+ * <p>
+ * <strong>
+ * <code>TimeLimits</code> differs from <code>Timeouts</code> in two ways. First, its behavior is driven by a <a href=""><code>Timed</code></a>
+ * typeclass, so that it can treat <code>Future</code>s (and <a href="FutureOutcome.html"><code>FutureOutcome</code></a>s) differently than
+ * non-<code>Future</code>s. Second, where <code>Timeouts</code> <code>failAfter</code> and <code>cancelAfter</code> take an implicit
+ * <code>Interruptor</code> strategy, the corresponding methods in <code>TimeLimits</code> take an implicit  <code>Signaler</code> strategy. 
+ * Although the <code>Signaler</code> hierarchy corresponds exactly to the <code>Interruptor</code> hierarchy, the default is different.
+ * For <code>Timeouts</code>, the default is <code>ThreadInterruptor</code>; For <code>Signaler</code>, the default is
+ * <code>DoNotSignal</code>.
+ * </strong>
+ * </p>
+ *
  * Trait that provides a <code>failAfter</code> and <code>cancelAfter</code> construct, which allows you to specify a time limit for an
  * operation passed as a by-name parameter, as well as a way to interrupt it if the operation exceeds its time limit.
  *
@@ -196,6 +211,7 @@ import org.scalactic._
  * @author Chua Chee Seng
  * @author Bill Venners
  */
+@deprecated("Please use org.scalatest.concurrent.TimeLimits instead")
 trait Timeouts {
 
   /**
