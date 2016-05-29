@@ -888,9 +888,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
@@ -901,9 +904,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -2325,9 +2331,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -2338,9 +2347,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestFailedException] {
         assert({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -3755,9 +3767,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3})
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
+      else
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}"))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3") {
@@ -3768,9 +3783,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5)
       }
-      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5))))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
@@ -5192,9 +5210,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume(a == 3 && { println("hi"); b == 3}, ", dude")
       }
-      assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
+      else
+        assert(e.message == Some(commaBut(equaled(3, 3), wasFalse("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(3)" + Prettifier.lineSeparator + "}")) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should do nothing when it is used to check { println(\"hi\"); b == 5} && a == 3 ") {
@@ -5205,9 +5226,12 @@ class AssertionsSpec extends FunSpec {
       val e = intercept[TestCanceledException] {
         assume({ println("hi"); b == 5} && a == 5, ", dude")
       }
-      assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
+      else
+        assert(e.message == Some(commaBut(wasTrue("{" + Prettifier.lineSeparator + "  scala.this.Predef.println(\"hi\");" + Prettifier.lineSeparator + "  b.==(5)" + Prettifier.lineSeparator + "}"), didNotEqual(3, 5)) + ", dude"))
       assert(e.failedCodeFileName == (Some(fileName)))
-      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 4)))
+      assert(e.failedCodeLineNumber == (Some(thisLineNumber - 7)))
     }
 
     it("should preserve side effects when Apply with single argument is passed in") {
