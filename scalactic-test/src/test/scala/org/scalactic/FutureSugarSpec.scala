@@ -25,6 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 //SCALATESTJS-ONLY import scala.scalajs.concurrent.JSExecutionContext.Implicits.runNow
 import org.scalatest.concurrent.ScalaFutures
 import exceptions.ValidationFailedException
+import org.scalatest.exceptions.TestFailedException
 
 class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with ScalaFutures {
 
@@ -39,8 +40,17 @@ class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with S
   "FutureSugar" should "offer a validating method that takes a T => Validation" in {
     Future.successful(12).validating(isRound).failed.futureValue shouldBe ValidationFailedException("12 was not a round number")
     Future.successful(10).validating(isRound).futureValue shouldBe 10
+    // Scala 2.10 has problem compiling the following:
     // Future.failed(SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
-    Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
+    if (ScalacticVersions.BuiltForScalaVersion == "2.12") {
+      // In 2.12, failed always return a Failure now, not Success, and that causing the futureValue to rethrow the exception
+      val e = intercept[TestFailedException] {
+        Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue
+      }
+      e.cause shouldBe Some(SomeException("oops"))
+    }
+    else
+      Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
   }
 
   it should "allow multiple validation functions to be passed to validating" in {
@@ -48,7 +58,14 @@ class FutureSugarSpec extends UnitSpec with Accumulation with FutureSugar with S
     Future.successful(10).validating(isRound, isDivBy3).failed.futureValue shouldBe ValidationFailedException("10 was not divisible by 3")
     Future.successful(30).validating(isRound, isDivBy3).futureValue shouldBe 30
     // Future.failed(SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
-    Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
+    if (ScalacticVersions.BuiltForScalaVersion == "2.12") {
+      val e = intercept[TestFailedException] {
+        Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
+      }
+      e.cause shouldBe Some(SomeException("oops"))
+    }
+    else
+      Future.failed[Int](SomeException("oops")).validating(isRound).failed.futureValue shouldBe SomeException("oops")
   }
 
   it should "require at least one parameter to be passed to validating" in {
