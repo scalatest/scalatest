@@ -80,7 +80,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.6"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.0-M4"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -150,7 +150,7 @@ object ScalatestBuild extends Build {
       // if scala 2.11+ is used, add dependency on scala-xml module
       case Some((2, scalaMajor)) if scalaMajor >= 11 =>
         Seq(
-          "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
+          "org.scala-lang.modules" %% "scala-xml" % "1.0.5",
           "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
           scalacheckDependency("optional")
         )
