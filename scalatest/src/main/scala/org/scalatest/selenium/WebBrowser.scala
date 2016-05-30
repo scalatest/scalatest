@@ -1582,8 +1582,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Frame at index '" + index + "' not found."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
   }
@@ -1617,8 +1616,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Frame with name or ID '" + nameOrId + "' not found."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
   }
@@ -1643,8 +1641,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Frame element '" + webElement + "' not found."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
   }
@@ -1669,8 +1666,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Frame element '" + element + "' not found."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
   }
@@ -1704,8 +1700,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Window with nameOrHandle '" + nameOrHandle + "' not found."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
   }
@@ -1755,8 +1750,7 @@ trait WebBrowser {
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not text field."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     
     /**
@@ -1806,8 +1800,7 @@ trait WebBrowser {
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not text area."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     
     /**
@@ -1858,8 +1851,7 @@ trait WebBrowser {
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not password field."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     
     /**
@@ -1897,8 +1889,7 @@ trait WebBrowser {
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not " + typeDescription + " field."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     }
 
@@ -2196,8 +2187,7 @@ trait WebBrowser {
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not radio button."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     /**
      * Gets this radio button's value.
@@ -2233,8 +2223,7 @@ trait WebBrowser {
       throw new TestFailedException(
                      (_: StackDepthException) => Some("No radio buttons with group name '" + groupName + "' was found."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
 
     /**
@@ -2250,8 +2239,7 @@ trait WebBrowser {
         throw new TestFailedException(
                      (_: StackDepthException) => Some("The radio button group on which value was invoked contained no selected radio button."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     }
 
@@ -2284,8 +2272,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Radio button value '" + value + "' not found for group '" + groupName + "'."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
     }
@@ -2311,8 +2298,7 @@ trait WebBrowser {
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not check box."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     
     /**
@@ -2474,16 +2460,14 @@ trait WebBrowser {
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not select."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     private val select = new Select(underlying)
     if (select.isMultiple)
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not a single-selection list."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     
     /**
@@ -2512,8 +2496,7 @@ trait WebBrowser {
         throw new TestFailedException(
                      (_: StackDepthException) => Some("The single selection list on which value was invoked had no selection."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     }
     
@@ -2532,8 +2515,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some(e.getMessage),
                      Some(e),
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
     }
@@ -2561,16 +2543,14 @@ trait WebBrowser {
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not select."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     private val select = new Select(underlying)
     if (!select.isMultiple)
       throw new TestFailedException(
                      (_: StackDepthException) => Some("Element " + underlying + " is not a multi-selection list."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
 
     /**
@@ -2619,8 +2599,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some(e.getMessage),
                      Some(e),
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
     }
@@ -2824,8 +2803,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some("Element '" + queryStringValue + "' not found."),
                      Some(e),
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
     }
@@ -2890,8 +2868,7 @@ trait WebBrowser {
           throw new TestFailedException(
                      (_: StackDepthException) => Some("WebElement '" + queryStringValue + "' not found."),
                      Some(e),
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       }
     }
@@ -3885,8 +3862,7 @@ trait WebBrowser {
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Current element is not a form element."),
                      Some(e),
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       case e: Throwable => 
         // Could happens as bug in different WebDriver, like NullPointerException in HtmlUnitDriver when element is not a form element.
@@ -3894,8 +3870,7 @@ trait WebBrowser {
         throw new TestFailedException(
                      (_: StackDepthException) => Some("WebDriver encountered problem to submit(): " + e.getMessage),
                      Some(e),
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     }
   }
@@ -4189,8 +4164,7 @@ trait WebBrowser {
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Cookie '" + name + "' not found."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     }
   }
@@ -4218,8 +4192,7 @@ trait WebBrowser {
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Cookie '" + name + "' not found."),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
       driver.manage.deleteCookie(cookie.underlying)
     }
@@ -4500,8 +4473,7 @@ trait WebBrowser {
         throw new TestFailedException(
                      (_: StackDepthException) => Some("Currently selected element is neither a text field, text area, password field, email field, search field, tel field or url field"),
                      None,
-                     Some(pos),
-                     getStackDepthFun(pos)
+                     pos
                    )
     }
   }

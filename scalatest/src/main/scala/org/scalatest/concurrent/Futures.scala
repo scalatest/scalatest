@@ -488,15 +488,13 @@ trait Futures extends PatienceConfiguration {
           throw new TestFailedException(
             (_: StackDepthException) => Some(Resources.futureWasCanceled),
             None,
-            Some(pos),
-            getStackDepthFun(pos)
+            pos
           )
         if (thisFuture.isExpired)
           throw new TestFailedException(
             (_: StackDepthException) => Some(Resources.futureExpired(attempt.toString, interval.prettyString)),
             None,
-            Some(pos),
-            getStackDepthFun(pos)
+            pos
           )
         thisFuture.eitherValue match {
           case Some(Right(v)) => v
@@ -518,8 +516,7 @@ trait Futures extends PatienceConfiguration {
                       Resources.futureReturnedAnExceptionWithMessage(cause.getClass.getName, cause.getMessage)
                   },
                   Some(cause),
-                  Some(pos),
-                  getStackDepthFun(pos)
+                  pos
                 )
             }
           case Some(Left(e)) =>
@@ -531,8 +528,7 @@ trait Futures extends PatienceConfiguration {
                   Resources.futureReturnedAnExceptionWithMessage(e.getClass.getName, e.getMessage)
               },
               Some(e),
-              Some(pos),
-              getStackDepthFun(pos)
+              pos
             )
           case None =>
             val duration = System.nanoTime - startNanos
@@ -542,8 +538,7 @@ trait Futures extends PatienceConfiguration {
               throw new TestFailedException(
                 (_: StackDepthException) => Some(Resources.wasNeverReady(attempt.toString, interval.prettyString)),
                 None,
-                Some(pos),
-                getStackDepthFun(pos)
+                pos
               ) with TimeoutField {
                 val timeout: Span = config.timeout
               }

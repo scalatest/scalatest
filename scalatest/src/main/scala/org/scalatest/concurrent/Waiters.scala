@@ -404,7 +404,7 @@ trait Waiters extends PatienceConfiguration {
         else if (dismissedCount >= dismissals)
           dismissedCount = 0 // reset the dismissed count to support multiple await calls        
         else if (timedOut)
-          throw new TestFailedException((sde: StackDepthException) => Some(Resources.awaitTimedOut), None, Some(pos), None)
+          throw new TestFailedException((sde: StackDepthException) => Some(Resources.awaitTimedOut), None, pos, None)
         else throw new Exception("Should never happen: thrown was not defined; dismissedCount was not greater than dismissals; and timedOut was false")
       }
     }

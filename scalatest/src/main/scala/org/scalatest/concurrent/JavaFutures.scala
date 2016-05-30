@@ -90,8 +90,7 @@ trait JavaFutures extends Futures {
           throw new TestFailedException(
             (_: StackDepthException) => Some(Resources.futureWasCanceled),
             None,
-            Some(pos),
-            getStackDepthFun(pos)
+            pos
           )
         try {
           javaFuture.get(config.timeout.totalNanos, TimeUnit.NANOSECONDS)
@@ -101,8 +100,7 @@ trait JavaFutures extends Futures {
             throw new TestFailedException(
               (_: StackDepthException) => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
               None,
-              Some(pos),
-              getStackDepthFun(pos)
+              pos
             ) with TimeoutField {
               val timeout: Span = config.timeout
             }
@@ -120,8 +118,7 @@ trait JavaFutures extends Futures {
                   Resources.futureReturnedAnExceptionWithMessage(exToReport.getClass.getName, exToReport.getMessage)
               },
               Some(exToReport),
-              Some(pos),
-              getStackDepthFun(pos)
+              pos
             )
         }
       }

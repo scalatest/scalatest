@@ -135,7 +135,7 @@ private[scalatest] object MatchersHelper {
   }
 
   def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, pos: source.Position): Throwable = {
-    new TestFailedException((_: StackDepthException) => Some(message), optionalCause, Some(pos), StackDepthExceptionHelper.getStackDepthFun(pos))
+    new TestFailedException((_: StackDepthException) => Some(message), optionalCause, pos)
   }
 
   def andMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {
@@ -326,7 +326,7 @@ private[scalatest] object MatchersHelper {
     catch {
       case u: Throwable => {
         val message = Resources.exceptionNotExpected(u.getClass.getName)
-        throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), Some(u), Some(pos), StackDepthExceptionHelper.getStackDepthFun(pos))
+        throw new TestFailedException((sde: exceptions.StackDepthException) => Some(message), Some(u), pos)
       }
     }
   }
@@ -336,7 +336,7 @@ private[scalatest] object MatchersHelper {
   def indicateSuccess(shouldBeTrue: Boolean, message: => String, negatedMessage: => String): Assertion = Succeeded
 
   def indicateFailure(failureMessage: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
-    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, Some(pos), StackDepthExceptionHelper.getStackDepthFun(pos))
+    throw new TestFailedException((sde: exceptions.StackDepthException) => Some(failureMessage), optionalCause, pos)
   }
 
   def indicateFailure(e: TestFailedException): Assertion =

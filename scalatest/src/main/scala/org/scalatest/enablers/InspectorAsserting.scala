@@ -317,8 +317,7 @@ abstract class UnitInspectorAsserting {
         throw new TestFailedException(
           (_: StackDepthException) => Some(message),
           optionalCause,
-          Some(pos),
-          getStackDepthFun(pos)
+          pos
         )
       }
     }
@@ -357,8 +356,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
         throw new TestFailedException(
           (_: StackDepthException) => Some(message),
           optionalCause,
-          Some(pos),
-          getStackDepthFun(pos)
+          pos
         )
       }
     }

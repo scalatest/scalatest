@@ -422,7 +422,7 @@ object Failed {
     *
     * @return An instance of <code>Failed</code> with a <code>TestFailedException</code> set as its <code>exception</code> field.
     */
-  def apply()(implicit pos: source.Position): Failed = new Failed(new exceptions.TestFailedException(e => None, None, Some(pos)))
+  def apply()(implicit pos: source.Position): Failed = new Failed(new exceptions.TestFailedException(e => None, None, pos))
 
   /**
     * Creates a <code>Failed</code> instance with the passed in message.
@@ -430,7 +430,7 @@ object Failed {
     * @param message the message for the <code>TestFailedException</code> set as its <code>exception</code> field
     * @return An instance of <code>Failed</code> with a <code>TestFailedException</code> created from passed in <code>message</code> set as its <code>exception</code> field.
     */
-  def apply(message: String)(implicit pos: source.Position): Failed = new Failed(new exceptions.TestFailedException(e => Some(message), None, Some(pos)))
+  def apply(message: String)(implicit pos: source.Position): Failed = new Failed(new exceptions.TestFailedException(e => Some(message), None, pos))
 
   /**
     * Creates a <code>Failed</code> instance with the passed in message and cause.
@@ -443,7 +443,7 @@ object Failed {
     // I always wrap this in a TFE because I need to do that to get the message in there.
     require(!cause.isInstanceOf[exceptions.TestCanceledException], "a TestCanceledException was passed to a factory method in object Failed")
     require(!cause.isInstanceOf[exceptions.TestPendingException], "a TestPendingException was passed to a factory method in object Failed")
-    new Failed(new exceptions.TestFailedException(e => Some(message), Some(cause), Some(pos)))
+    new Failed(new exceptions.TestFailedException(e => Some(message), Some(cause), pos))
   }
 
   /**
@@ -458,9 +458,9 @@ object Failed {
 
     new Failed(
       if (cause.getMessage != null)
-        new exceptions.TestFailedException(e => Some(cause.getMessage), Some(cause), Some(pos))
+        new exceptions.TestFailedException(e => Some(cause.getMessage), Some(cause), pos)
        else
-        new exceptions.TestFailedException(e => None, Some(cause), Some(pos))
+        new exceptions.TestFailedException(e => None, Some(cause), pos)
      )
   }
 }

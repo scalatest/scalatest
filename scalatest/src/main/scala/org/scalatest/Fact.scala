@@ -50,7 +50,7 @@ private[scalatest] sealed abstract class Fact {
       if (!isVacuousYes) Succeeded
       else throw new TestCanceledException((e: StackDepthException) => Some(factMessage), None, pos, None)
     }
-    else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, Some(pos))
+    else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, pos)
   }
 
   // This is called internally by implicit conversions, which has different stack depth
@@ -59,7 +59,7 @@ private[scalatest] sealed abstract class Fact {
       if (!isVacuousYes) Succeeded
       else throw new TestCanceledException((e: StackDepthException) => Some(factMessage), None, pos, None)
     }
-    else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, Some(pos))
+    else throw new TestFailedException((e: StackDepthException) => Some(factMessage), None, pos)
   }
 
   /**

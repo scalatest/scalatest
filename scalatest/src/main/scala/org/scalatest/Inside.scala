@@ -136,8 +136,7 @@ trait Inside {
     }
     else {
       Inside.level.set(Inside.level.get - 1)
-      throw new TestFailedException(sde => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, Some(pos))
-      //throw new TestFailedException(Resources.insidePartialFunctionNotDefined(value.toString()), 2)
+      throw new TestFailedException(sde => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, pos)
     }
   }
 }
