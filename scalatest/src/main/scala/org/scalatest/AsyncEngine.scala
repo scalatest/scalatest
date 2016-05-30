@@ -735,7 +735,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val testName = getTestName(testText, currentBranch)
 
     if (atomic.get.testsMap.keySet.contains(testName))
-      throw new DuplicateTestNameException(testName, Some(pos))
+      throw new DuplicateTestNameException(testName, pos)
     val testLocation = 
       location match {
         case Some(loc) => Some(loc)

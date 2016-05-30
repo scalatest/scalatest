@@ -46,8 +46,8 @@ class DuplicateTestNameException(testName: String, val pos: Option[source.Positi
 
   def this(
     message: String,
-    pos: Option[source.Position]
-  ) = this(message, pos, pos.map(getStackDepthFun).getOrElse((_: StackDepthException) => 0))
+    pos: source.Position
+  ) = this(message, Some(pos), getStackDepthFun(pos))
 
   /**
    * Constructs a <code>DuplicateTestNameException</code> with pre-determined <code>failedCodeStackDepth</code>. (This was
