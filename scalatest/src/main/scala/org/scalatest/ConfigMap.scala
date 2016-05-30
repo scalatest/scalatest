@@ -184,8 +184,8 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
         if (actualClass.isAssignableFrom(boxedExpectedClass))
           value.asInstanceOf[V]
         else
-            throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryHadUnexpectedType(key, actualClass, expectedClass, value.asInstanceOf[AnyRef])), None, Some(pos), None)
-      case None => throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryNotFound(key)), None, Some(pos), None)
+            throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryHadUnexpectedType(key, actualClass, expectedClass, value.asInstanceOf[AnyRef])), None, pos, None)
+      case None => throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryNotFound(key)), None, pos, None)
     }
   }
 }

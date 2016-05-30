@@ -530,7 +530,7 @@ trait Assertions extends TripleEquals  {
     new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Some(pos))
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, Some(pos), None)
+    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, pos, None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>

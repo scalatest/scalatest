@@ -505,7 +505,7 @@ object Canceled {
     *
     * @return An instance of <code>Canceled</code> with a <code>TestCanceledException</code> set as its <code>exception</code> field.
     */
-  def apply()(implicit pos: source.Position): Canceled = new Canceled(new exceptions.TestCanceledException(e => None, None, Some(pos), None))
+  def apply()(implicit pos: source.Position): Canceled = new Canceled(new exceptions.TestCanceledException(e => None, None, pos, None))
 
   /**
     * Creates a <code>Canceled</code> instance with the passed in message and cause.
@@ -515,7 +515,7 @@ object Canceled {
     * @return An instance of <code>Canceled</code> with a <code>TestCanceledException</code> created from passed in <code>message</code> and <code>cause</code> set as its <code>exception</code> field.
     */
   def apply(message: String, cause: Throwable)(implicit pos: source.Position): Canceled = // TODO write tests for NPEs
-    new Canceled(new exceptions.TestCanceledException(e => Some(message), Some(cause), Some(pos), None))
+    new Canceled(new exceptions.TestCanceledException(e => Some(message), Some(cause), pos, None))
 
   /**
     * Creates a <code>Canceled</code> instance with the passed in <code>Throwable</code>.  If the passed in <code>Throwable</code> is a <code>TestCanceledException</code>,
@@ -531,9 +531,9 @@ object Canceled {
       case _ =>
         val msg = ex.getMessage
         if (msg == null)
-          new Canceled(new exceptions.TestCanceledException(e => None, Some(ex), Some(pos), None))
+          new Canceled(new exceptions.TestCanceledException(e => None, Some(ex), pos, None))
         else 
-          new Canceled(new exceptions.TestCanceledException(e => Some(msg), Some(ex), Some(pos), None))
+          new Canceled(new exceptions.TestCanceledException(e => Some(msg), Some(ex), pos, None))
     }
   }
 
@@ -562,7 +562,7 @@ object Canceled {
    */
   def apply(message: String)(implicit pos: source.Position): Canceled = {
     requireNonNull(message)
-    val e = new exceptions.TestCanceledException(e => Some(message), None, Some(pos), None)
+    val e = new exceptions.TestCanceledException(e => Some(message), None, pos, None)
     //e.fillInStackTrace()
     Canceled(e)
   }
@@ -576,9 +576,9 @@ object Canceled {
   def here(cause: Throwable)(implicit pos: source.Position): Canceled = {
     new Canceled(
       if (cause.getMessage != null)
-        new exceptions.TestCanceledException(e => Some(cause.getMessage), Some(cause), Some(pos), None)
+        new exceptions.TestCanceledException(e => Some(cause.getMessage), Some(cause), pos, None)
        else
-        new exceptions.TestCanceledException(e => None, Some(cause), Some(pos), None)
+        new exceptions.TestCanceledException(e => None, Some(cause), pos, None)
      )
   }
 }

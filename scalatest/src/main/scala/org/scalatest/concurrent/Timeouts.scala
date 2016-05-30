@@ -305,7 +305,7 @@ trait Timeouts {
    * @param interruptor a strategy for interrupting the passed operation
    */
   def cancelAfter[T](timeout: Span)(f: => T)(implicit interruptor: Interruptor, pos: source.Position = implicitly[source.Position]): T = {
-    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException((sde: StackDepthException) => Some(Resources.timeoutCanceledAfter(timeout.prettyString)), t, Some(pos), None))
+    timeoutAfter(timeout, f, interruptor, t => new TestCanceledException((sde: StackDepthException) => Some(Resources.timeoutCanceledAfter(timeout.prettyString)), t, pos, None))
   }
 
   /*private def timeoutAfter[T](timeout: Span, f: => T, interruptor: Interruptor, exceptionFun: Option[Throwable] => StackDepthException): T = {

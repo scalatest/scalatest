@@ -53,9 +53,9 @@ class TestCanceledException(
   def this(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
-    pos: Option[source.Position],
+    pos: source.Position,
     payload: Option[Any] = None
-  ) = this(messageFun, cause, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0), payload)
+  ) = this(messageFun, cause, Some(pos), getStackDepthFun(pos), payload)
 
   /**
    * Constructs a <code>TestCanceledException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
