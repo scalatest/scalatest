@@ -666,7 +666,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, Some(pos))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos)
 
     val branchLocation = 
       location match {
@@ -703,7 +703,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val (_, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
 
     if (registrationClosed)
-      throw new TestRegistrationClosedException(registrationClosedMessageFun, Some(pos))
+      throw new TestRegistrationClosedException(registrationClosedMessageFun, pos)
 
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
@@ -727,7 +727,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     checkRegisterTestParamsForNull(testText, testTags: _*)
 
     if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, Some(pos))
+      throw new TestRegistrationClosedException(testRegistrationClosedMessageFun, pos)
 
     val oldBundle = atomic.get
     var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack

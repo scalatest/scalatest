@@ -62,8 +62,8 @@ class TestRegistrationClosedException(message: String, val pos: Option[source.Po
 
   def this(
     message: String,
-    pos: Option[source.Position]
-  ) = this(message, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
+    pos: source.Position
+  ) = this(message, Some(pos), getStackDepthFun(pos))
 
   /**
    * Constructs a <code>TestRegistrationClosedException</code> with a <code>message</code> and a pre-determined 
