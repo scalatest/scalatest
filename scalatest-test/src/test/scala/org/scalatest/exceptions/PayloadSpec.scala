@@ -39,7 +39,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
       // SKIP-SCALATESTJS-END
       new TestFailedDueToTimeoutException(e => Some("message"), None, Some(source.Position.here), e => 3, None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException(e => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
-      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, Some(source.Position.here), e => 3, None, "undecMsg", List.empty, Option(List.empty), List.empty),
+      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty),
       new TestCanceledException("message", Some(source.Position.here), 3)
    )
 

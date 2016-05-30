@@ -81,8 +81,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
               "  )" +
               "", // getLabelDisplay(scalaCheckLabels),
             Some(ex),
-            Some(pos),
-            getStackDepthFun(pos),
+            pos,
             None,
             FailureMessages.propertyFailed(prettifier, succeededCount),
             argsPassed,

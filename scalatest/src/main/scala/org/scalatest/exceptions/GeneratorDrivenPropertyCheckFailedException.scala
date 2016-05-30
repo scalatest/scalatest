@@ -17,6 +17,7 @@ package org.scalatest.exceptions
 
 import org.scalatest._
 import org.scalactic.source
+import StackDepthExceptionHelper.getStackDepthFun
 
 // TODO: A test and code for null labels throwing an NPE
 /**
@@ -38,15 +39,14 @@ import org.scalactic.source
 class GeneratorDrivenPropertyCheckFailedException(
   messageFun: StackDepthException => String,
   cause: Option[Throwable],
-  pos: Option[source.Position],
-  failedCodeStackDepthFun: StackDepthException => Int,
+  pos: source.Position,
   payload: Option[Any],
   undecoratedMessage: String,
   args: List[Any],
   namesOfArgs: Option[List[String]],
   val labels: List[String]
 ) extends PropertyCheckFailedException(
-  messageFun, cause, pos, failedCodeStackDepthFun, payload, undecoratedMessage, args, namesOfArgs
+  messageFun, cause, Some(pos), getStackDepthFun(pos), payload, undecoratedMessage, args, namesOfArgs
 ) {
 
   /**
@@ -63,7 +63,6 @@ class GeneratorDrivenPropertyCheckFailedException(
         sde => fun(message).getOrElse(messageFun(this)),
         cause,
         pos,
-        failedCodeStackDepthFun,
         payload,
         undecoratedMessage,
         args,
@@ -89,7 +88,6 @@ class GeneratorDrivenPropertyCheckFailedException(
         messageFun,
         cause,
         pos,
-        failedCodeStackDepthFun,
         fun(currentPayload),
         undecoratedMessage,
         args,

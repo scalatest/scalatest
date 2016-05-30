@@ -30,8 +30,7 @@ class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Mat
       new GeneratorDrivenPropertyCheckFailedException(
         sde => "msg",
         None,
-        Some(source.Position.here),
-        sde => 7,
+        source.Position.here,
         None,
         "msg",
         List(1, 2, 3),
@@ -48,8 +47,7 @@ class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Mat
       new GeneratorDrivenPropertyCheckFailedException(
         sde => "msg",
         None,
-        Some(source.Position.here),
-        sde => 7,
+        source.Position.here,
         None,
         "msg",
         List(1, 2, 3),

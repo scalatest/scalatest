@@ -180,8 +180,7 @@ abstract class UnitCheckerAsserting {
         throw new GeneratorDrivenPropertyCheckFailedException(
           messageFun,
           optionalCause,
-          Some(pos),
-          getStackDepthFun(pos),
+          pos,
           None,
           undecoratedMessage,
           scalaCheckArgs,
@@ -225,8 +224,7 @@ object CheckerAsserting extends UnitCheckerAsserting /*ExpectationCheckerAsserti
         throw new GeneratorDrivenPropertyCheckFailedException(
           messageFun,
           optionalCause,
-          Some(pos),
-          getStackDepthFun(pos),
+          pos,
           None,
           undecoratedMessage,
           scalaCheckArgs,
