@@ -163,7 +163,7 @@ sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, va
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(comparison: TripleEqualsInvocation[_]): Matcher[Any] = {
     throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
-                                  Some(pos), getStackDepthFun(pos))
+                                  Some(pos))
   }
 
   /**

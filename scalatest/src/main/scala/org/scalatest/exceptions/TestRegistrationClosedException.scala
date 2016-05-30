@@ -60,6 +60,11 @@ class TestRegistrationClosedException(message: String, val pos: Option[source.Po
 
   requireNonNull(message, failedCodeStackDepthFun)
 
+  def this(
+    message: String,
+    pos: Option[source.Position]
+  ) = this(message, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
+
   /**
    * Constructs a <code>TestRegistrationClosedException</code> with a <code>message</code> and a pre-determined 
    * and <code>failedCodeStackDepth</code>. (This was the primary constructor form prior to ScalaTest 1.5.)

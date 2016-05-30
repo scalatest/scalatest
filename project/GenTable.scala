@@ -1820,7 +1820,7 @@ $columnsOfIndexes$
          |        )
          |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position): Unit =
          |        throw new org.scalatest.exceptions.TestFailedException(
-         |          sde => Some(message),
+         |          (_: StackDepthException) => Some(message),
          |          optionalCause,
          |          Some(pos),
          |          stackDepthFun
@@ -1872,7 +1872,7 @@ $columnsOfIndexes$
          |        )
          |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position): Assertion =
          |        throw new org.scalatest.exceptions.TestFailedException(
-         |          sde => Some(message),
+         |          (_: StackDepthException) => Some(message),
          |          optionalCause,
          |          Some(pos),
          |          stackDepthFun

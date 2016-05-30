@@ -1580,7 +1580,7 @@ trait WebBrowser {
       catch {
         case e: org.openqa.selenium.NoSuchFrameException => 
           throw new TestFailedException(
-                     sde => Some("Frame at index '" + index + "' not found."),
+                     (_: StackDepthException) => Some("Frame at index '" + index + "' not found."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -1615,7 +1615,7 @@ trait WebBrowser {
       catch {
         case e: org.openqa.selenium.NoSuchFrameException => 
           throw new TestFailedException(
-                     sde => Some("Frame with name or ID '" + nameOrId + "' not found."),
+                     (_: StackDepthException) => Some("Frame with name or ID '" + nameOrId + "' not found."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -1641,7 +1641,7 @@ trait WebBrowser {
       catch {
         case e: org.openqa.selenium.NoSuchFrameException => 
           throw new TestFailedException(
-                     sde => Some("Frame element '" + webElement + "' not found."),
+                     (_: StackDepthException) => Some("Frame element '" + webElement + "' not found."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -1667,7 +1667,7 @@ trait WebBrowser {
       catch {
         case e: org.openqa.selenium.NoSuchFrameException => 
           throw new TestFailedException(
-                     sde => Some("Frame element '" + element + "' not found."),
+                     (_: StackDepthException) => Some("Frame element '" + element + "' not found."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -1702,7 +1702,7 @@ trait WebBrowser {
       catch {
         case e: org.openqa.selenium.NoSuchWindowException => 
           throw new TestFailedException(
-                     sde => Some("Window with nameOrHandle '" + nameOrHandle + "' not found."),
+                     (_: StackDepthException) => Some("Window with nameOrHandle '" + nameOrHandle + "' not found."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -1753,7 +1753,7 @@ trait WebBrowser {
     
     if(!isTextField(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not text field."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not text field."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -1804,7 +1804,7 @@ trait WebBrowser {
   final class TextArea(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(!isTextArea(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not text area."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not text area."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -1856,7 +1856,7 @@ trait WebBrowser {
     
     if(!isPasswordField(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not password field."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not password field."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -1895,7 +1895,7 @@ trait WebBrowser {
     def checkCorrectType(isA: (WebElement) => Boolean, typeDescription: String)(implicit pos: source.Position): Unit = {
       if(!isA(underlying))
         throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not " + typeDescription + " field."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not " + typeDescription + " field."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2194,7 +2194,7 @@ trait WebBrowser {
   final class RadioButton(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(!isRadioButton(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not radio button."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not radio button."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2231,7 +2231,7 @@ trait WebBrowser {
 
     if (groupElements.length == 0)
       throw new TestFailedException(
-                     sde => Some("No radio buttons with group name '" + groupName + "' was found."),
+                     (_: StackDepthException) => Some("No radio buttons with group name '" + groupName + "' was found."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2248,7 +2248,7 @@ trait WebBrowser {
       case Some(v) => v
       case None => 
         throw new TestFailedException(
-                     sde => Some("The radio button group on which value was invoked contained no selected radio button."),
+                     (_: StackDepthException) => Some("The radio button group on which value was invoked contained no selected radio button."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2282,7 +2282,7 @@ trait WebBrowser {
           radio.click()
         case None => 
           throw new TestFailedException(
-                     sde => Some("Radio button value '" + value + "' not found for group '" + groupName + "'."),
+                     (_: StackDepthException) => Some("Radio button value '" + value + "' not found for group '" + groupName + "'."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2309,7 +2309,7 @@ trait WebBrowser {
   final class Checkbox(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(!isCheckBox(underlying))
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not check box."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not check box."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2472,7 +2472,7 @@ trait WebBrowser {
   class SingleSel(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(underlying.getTagName.toLowerCase != "select")
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not select."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not select."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2480,7 +2480,7 @@ trait WebBrowser {
     private val select = new Select(underlying)
     if (select.isMultiple)
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not a single-selection list."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not a single-selection list."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2510,7 +2510,7 @@ trait WebBrowser {
       case Some(v) => v
       case None => 
         throw new TestFailedException(
-                     sde => Some("The single selection list on which value was invoked had no selection."),
+                     (_: StackDepthException) => Some("The single selection list on which value was invoked had no selection."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2530,7 +2530,7 @@ trait WebBrowser {
       catch {
         case e: org.openqa.selenium.NoSuchElementException => 
           throw new TestFailedException(
-                     sde => Some(e.getMessage),
+                     (_: StackDepthException) => Some(e.getMessage),
                      Some(e),
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2559,7 +2559,7 @@ trait WebBrowser {
   class MultiSel(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(underlying.getTagName.toLowerCase != "select")
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not select."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not select."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2567,7 +2567,7 @@ trait WebBrowser {
     private val select = new Select(underlying)
     if (!select.isMultiple)
       throw new TestFailedException(
-                     sde => Some("Element " + underlying + " is not a multi-selection list."),
+                     (_: StackDepthException) => Some("Element " + underlying + " is not a multi-selection list."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2617,7 +2617,7 @@ trait WebBrowser {
       catch {
         case e: org.openqa.selenium.NoSuchElementException => 
           throw new TestFailedException(
-                     sde => Some(e.getMessage),
+                     (_: StackDepthException) => Some(e.getMessage),
                      Some(e),
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2822,7 +2822,7 @@ trait WebBrowser {
           // the following is avoid the suite instance to be bound/dragged into the messageFun, which can cause serialization problem.
           val queryStringValue = queryString
           throw new TestFailedException(
-                     sde => Some("Element '" + queryStringValue + "' not found."),
+                     (_: StackDepthException) => Some("Element '" + queryStringValue + "' not found."),
                      Some(e),
                      Some(pos),
                      getStackDepthFun(pos)
@@ -2888,7 +2888,7 @@ trait WebBrowser {
           // the following is avoid the suite instance to be bound/dragged into the messageFun, which can cause serialization problem.
           val queryStringValue = queryString
           throw new TestFailedException(
-                     sde => Some("WebElement '" + queryStringValue + "' not found."),
+                     (_: StackDepthException) => Some("WebElement '" + queryStringValue + "' not found."),
                      Some(e),
                      Some(pos),
                      getStackDepthFun(pos)
@@ -3883,7 +3883,7 @@ trait WebBrowser {
     catch {
       case e: org.openqa.selenium.NoSuchElementException => 
         throw new TestFailedException(
-                     sde => Some("Current element is not a form element."),
+                     (_: StackDepthException) => Some("Current element is not a form element."),
                      Some(e),
                      Some(pos),
                      getStackDepthFun(pos)
@@ -3892,7 +3892,7 @@ trait WebBrowser {
         // Could happens as bug in different WebDriver, like NullPointerException in HtmlUnitDriver when element is not a form element.
         // Anyway, we'll just wrap them as TestFailedException
         throw new TestFailedException(
-                     sde => Some("WebDriver encountered problem to submit(): " + e.getMessage),
+                     (_: StackDepthException) => Some("WebDriver encountered problem to submit(): " + e.getMessage),
                      Some(e),
                      Some(pos),
                      getStackDepthFun(pos)
@@ -4187,7 +4187,7 @@ trait WebBrowser {
         new WrappedCookie(cookie)
       case None =>
         throw new TestFailedException(
-                     sde => Some("Cookie '" + name + "' not found."),
+                     (_: StackDepthException) => Some("Cookie '" + name + "' not found."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -4216,7 +4216,7 @@ trait WebBrowser {
       val cookie = getCookie(name)
       if (cookie == null) 
         throw new TestFailedException(
-                     sde => Some("Cookie '" + name + "' not found."),
+                     (_: StackDepthException) => Some("Cookie '" + name + "' not found."),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)
@@ -4498,7 +4498,7 @@ trait WebBrowser {
       case pf: UrlField => pf.value = value
       case _ => 
         throw new TestFailedException(
-                     sde => Some("Currently selected element is neither a text field, text area, password field, email field, search field, tel field or url field"),
+                     (_: StackDepthException) => Some("Currently selected element is neither a text field, text area, password field, email field, search field, tel field or url field"),
                      None,
                      Some(pos),
                      getStackDepthFun(pos)

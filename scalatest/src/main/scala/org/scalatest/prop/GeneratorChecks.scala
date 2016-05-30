@@ -63,7 +63,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, r, nextInitialSizes)
-          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos), getStackDepthFun(pos), None)
+          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos), None)
         case Failure(ex) => 
           throw new GeneratorDrivenPropertyCheckFailedException(
             sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
@@ -131,7 +131,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, br)
-          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos), getStackDepthFun(pos))
+          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos))
         case Failure(ex) => throw ex
       }
     }
@@ -161,7 +161,7 @@ private[prop] trait GeneratorChecks extends Configuration with Whenever {
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, cr)
-          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos), getStackDepthFun(pos))
+          else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, Some(pos))
         case Failure(ex) => throw ex
       }
     }

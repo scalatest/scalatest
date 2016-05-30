@@ -217,7 +217,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
 
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources.cantNestFeatureClauses, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, Some(pos))
 
     try {
       registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, sourceFileName, "feature", stackDepth, stackDepthAdjustment, None, Some(pos))
@@ -227,7 +227,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
       case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
       case nae: NotAllowedException => throw nae
       case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), Some(pos), getStackDepthFun(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), Some(pos))
       case other: Throwable => throw other
     }
   }

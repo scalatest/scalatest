@@ -527,10 +527,10 @@ trait Assertions extends TripleEquals  {
   val assertionsHelper = new AssertionsHelper
 
   private[scalatest] def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Some(pos), getStackDepthFun(pos))
+    new exceptions.TestFailedException(toExceptionFunction(optionalMessage), optionalCause, Some(pos))
 
   private[scalatest] def newTestCanceledException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable =
-    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, Some(pos), getStackDepthFun(pos), None)
+    new exceptions.TestCanceledException(toExceptionFunction(optionalMessage), optionalCause, Some(pos), None)
 
   /**
    * Assert that a boolean condition, described in <code>String</code>
@@ -1326,7 +1326,7 @@ trait Assertions extends TripleEquals  {
       if (isPending)
         throw new TestPendingException
       else
-        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, Some(pos), getStackDepthFun(pos))
+        throw new TestFailedException((sde: StackDepthException) => Some(Resources.pendingUntilFixed), None, Some(pos))
   }
 
   /**

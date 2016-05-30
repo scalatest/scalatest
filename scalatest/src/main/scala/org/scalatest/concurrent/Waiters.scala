@@ -382,7 +382,7 @@ trait Waiters extends PatienceConfiguration {
      */
     private def awaitImpl(timeout: Span, pos: source.Position, dismissals: Int = 1): Unit = {
       if (Thread.currentThread != creatingThread)
-        throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, None, Some(pos), getStackDepthFun(pos))
+        throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, None, Some(pos))
 
       val startTime: Long = System.nanoTime
       val endTime: Long = startTime + timeout.totalNanos
@@ -404,7 +404,7 @@ trait Waiters extends PatienceConfiguration {
         else if (dismissedCount >= dismissals)
           dismissedCount = 0 // reset the dismissed count to support multiple await calls        
         else if (timedOut)
-          throw new TestFailedException((sde: StackDepthException) => Some(Resources.awaitTimedOut), None, Some(pos), getStackDepthFun(pos), None)
+          throw new TestFailedException((sde: StackDepthException) => Some(Resources.awaitTimedOut), None, Some(pos), None)
         else throw new Exception("Should never happen: thrown was not defined; dismissedCount was not greater than dismissals; and timedOut was false")
       }
     }

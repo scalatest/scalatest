@@ -44,6 +44,11 @@ class DuplicateTestNameException(testName: String, val pos: Option[source.Positi
   
   requireNonNull(testName)
 
+  def this(
+    message: String,
+    pos: Option[source.Position]
+  ) = this(message, pos, pos.map(getStackDepthFun).getOrElse((_: StackDepthException) => 0))
+
   /**
    * Constructs a <code>DuplicateTestNameException</code> with pre-determined <code>failedCodeStackDepth</code>. (This was
    * the primary constructor form prior to ScalaTest 1.5.)

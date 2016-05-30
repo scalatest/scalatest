@@ -23,6 +23,7 @@ import org.scalatest.time.Span
 import exceptions.{TestCanceledException, TestFailedException, TestPendingException, TimeoutField}
 import PatienceConfiguration._
 import org.scalactic.source
+import exceptions.StackDepthException
 
 /**
  * Trait that facilitates testing with futures.
@@ -485,14 +486,14 @@ trait Futures extends PatienceConfiguration {
         val interval = config.interval
         if (thisFuture.isCanceled)
           throw new TestFailedException(
-            sde => Some(Resources.futureWasCanceled),
+            (_: StackDepthException) => Some(Resources.futureWasCanceled),
             None,
             Some(pos),
             getStackDepthFun(pos)
           )
         if (thisFuture.isExpired)
           throw new TestFailedException(
-            sde => Some(Resources.futureExpired(attempt.toString, interval.prettyString)),
+            (_: StackDepthException) => Some(Resources.futureExpired(attempt.toString, interval.prettyString)),
             None,
             Some(pos),
             getStackDepthFun(pos)
@@ -510,7 +511,7 @@ trait Futures extends PatienceConfiguration {
               case e if anExceptionThatShouldCauseAnAbort(e) => throw e
               case _ =>
                 throw new TestFailedException(
-                  sde => Some {
+                  (_: StackDepthException) => Some {
                     if (cause.getMessage == null)
                       Resources.futureReturnedAnException(cause.getClass.getName)
                     else
@@ -523,7 +524,7 @@ trait Futures extends PatienceConfiguration {
             }
           case Some(Left(e)) =>
             throw new TestFailedException(
-              sde => Some {
+              (_: StackDepthException) => Some {
                 if (e.getMessage == null)
                   Resources.futureReturnedAnException(e.getClass.getName)
                 else
@@ -539,7 +540,7 @@ trait Futures extends PatienceConfiguration {
               SleepHelper.sleep(interval.millisPart, interval.nanosPart)
             else {
               throw new TestFailedException(
-                sde => Some(Resources.wasNeverReady(attempt.toString, interval.prettyString)),
+                (_: StackDepthException) => Some(Resources.wasNeverReady(attempt.toString, interval.prettyString)),
                 None,
                 Some(pos),
                 getStackDepthFun(pos)

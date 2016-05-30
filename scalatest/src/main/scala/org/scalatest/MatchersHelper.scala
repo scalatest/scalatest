@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier
 import scala.util.matching.Regex
 import java.lang.reflect.Field
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.StackDepthException
 import org.scalactic._
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.
@@ -134,7 +135,7 @@ private[scalatest] object MatchersHelper {
   }
 
   def newTestFailedException(message: String, optionalCause: Option[Throwable] = None, pos: source.Position): Throwable = {
-    new TestFailedException(e => Some(message), optionalCause, Some(pos), StackDepthExceptionHelper.getStackDepthFun(pos))
+    new TestFailedException((_: StackDepthException) => Some(message), optionalCause, Some(pos), StackDepthExceptionHelper.getStackDepthFun(pos))
   }
 
   def andMatchersAndApply[T](left: T, leftMatcher: Matcher[T], rightMatcher: Matcher[T]): MatchResult = {

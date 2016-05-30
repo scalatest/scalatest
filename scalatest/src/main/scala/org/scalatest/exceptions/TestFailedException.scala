@@ -16,6 +16,7 @@
 package org.scalatest.exceptions
 
 import org.scalactic.exceptions.NullArgumentException
+import StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.Requirements._
 import org.scalactic.source
 
@@ -52,6 +53,13 @@ class TestFailedException(
   failedCodeStackDepthFun: StackDepthException => Int,
   val payload: Option[Any]
 ) extends StackDepthException(messageFun, cause, failedCodeStackDepthFun) with ModifiableMessage[TestFailedException] with PayloadField with ModifiablePayload[TestFailedException] {
+
+  def this(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    pos: Option[source.Position],
+    payload: Option[Any] = None
+  ) = this(messageFun, cause, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0), payload)
 
   /**
    * Constructs a <code>TestFailedException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was

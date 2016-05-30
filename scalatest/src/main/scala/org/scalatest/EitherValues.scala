@@ -121,7 +121,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.eitherLeftValueNotDefined), Some(cause), Some(pos), getStackDepthFun(pos))
+          throw new TestFailedException(sde => Some(Resources.eitherLeftValueNotDefined), Some(cause), Some(pos))
       }
     }
   }
@@ -149,7 +149,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.eitherRightValueNotDefined), Some(cause), Some(pos), getStackDepthFun(pos))
+          throw new TestFailedException(sde => Some(Resources.eitherRightValueNotDefined), Some(cause), Some(pos))
       }
     }
   }

@@ -197,7 +197,7 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
       case nae: NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
       case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage), Some(other), Some(pos), getStackDepthFun(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage), Some(other), Some(pos))
       case other: Throwable => throw other
     }
   }
@@ -231,19 +231,19 @@ trait WordSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
                 case nae: NotAllowedException => throw nae
                 case trce: TestRegistrationClosedException => throw trce
                 case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(e.getClass.getName), descriptionText, e.getMessage), Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
-                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(other.getClass.getName), if (descriptionText.endsWith(" " + methodName)) descriptionText.substring(0, descriptionText.length - (" " + methodName).length) else descriptionText, other.getMessage), Some(other), Some(pos), getStackDepthFun(pos))
+                case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(methodName, UnquotedString(other.getClass.getName), if (descriptionText.endsWith(" " + methodName)) descriptionText.substring(0, descriptionText.length - (" " + methodName).length) else descriptionText, other.getMessage), Some(other), Some(pos))
                 case other: Throwable => throw other
               }
 
             case _ => 
-              throw new NotAllowedException(notAllowMessage, None, Some(pos), getStackDepthFun(pos))
+              throw new NotAllowedException(notAllowMessage, None, Some(pos))
           }
         case None => 
-          throw new NotAllowedException(notAllowMessage, None, Some(pos), getStackDepthFun(pos))
+          throw new NotAllowedException(notAllowMessage, None, Some(pos))
       }
     }
     else
-      throw new NotAllowedException(notAllowMessage, None, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(notAllowMessage, None, Some(pos))
   }
 
   /**

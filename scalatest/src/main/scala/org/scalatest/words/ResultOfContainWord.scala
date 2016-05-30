@@ -49,7 +49,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.oneOfDuplicate, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.oneOfDuplicate, Some(pos))
     if (containing.containsOneOf(left, right) != shouldBeTrue)
       indicateFailure(
         if (shouldBeTrue)
@@ -93,7 +93,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, Some(pos))
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
       indicateFailure(
         if (shouldBeTrue)
@@ -138,7 +138,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[L]): Assertion = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.noneOfDuplicate, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.noneOfDuplicate, Some(pos))
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
       indicateFailure(
         if (shouldBeTrue)
@@ -212,9 +212,9 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    **/
   def only(right: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
     if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages.onlyEmpty, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.onlyEmpty, Some(pos))
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.onlyDuplicate, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.onlyDuplicate, Some(pos))
     val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
       indicateFailure(
@@ -259,7 +259,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, Some(pos))
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
       indicateFailure(
         if (shouldBeTrue)
@@ -288,7 +288,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.allOfDuplicate, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.allOfDuplicate, Some(pos))
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
       indicateFailure(
         if (shouldBeTrue)
@@ -333,7 +333,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[L]): Assertion = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.inOrderDuplicate, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.inOrderDuplicate, Some(pos))
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
       indicateFailure(
         if (shouldBeTrue)
@@ -408,7 +408,7 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[L]): Assertion = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, Some(pos), getStackDepthFun(pos))
+      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, Some(pos))
     if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
       indicateFailure(
         if (shouldBeTrue)

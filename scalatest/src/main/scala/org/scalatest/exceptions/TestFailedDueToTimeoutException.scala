@@ -17,6 +17,7 @@ package org.scalatest.exceptions
 
 import org.scalatest.time.Span
 import org.scalactic.source
+import StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Subclass of <a href="TestFailedException.html"><code>TestFailedException</code></a> representing tests that failed because of a timeout.
@@ -45,6 +46,14 @@ class TestFailedDueToTimeoutException(
   payload: Option[Any],
   val timeout: Span
 ) extends TestFailedException(messageFun, cause, pos, failedCodeStackDepthFun, payload) with TimeoutField {
+
+  def this(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    pos: Option[source.Position],
+    payload: Option[Any],
+    timeout: Span
+  ) = this(messageFun, cause, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0), payload, timeout)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,

@@ -22,6 +22,7 @@ import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Resources
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
 import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.StackDepthException
 import org.scalactic._
 
 /**
@@ -87,7 +88,7 @@ trait JavaFutures extends Futures {
 
         if (javaFuture.isCanceled)
           throw new TestFailedException(
-            sde => Some(Resources.futureWasCanceled),
+            (_: StackDepthException) => Some(Resources.futureWasCanceled),
             None,
             Some(pos),
             getStackDepthFun(pos)
@@ -98,7 +99,7 @@ trait JavaFutures extends Futures {
         catch {
           case e: java.util.concurrent.TimeoutException =>
             throw new TestFailedException(
-              sde => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
+              (_: StackDepthException) => Some(Resources.wasNeverReady(1, config.interval.prettyString)),
               None,
               Some(pos),
               getStackDepthFun(pos)
@@ -112,7 +113,7 @@ trait JavaFutures extends Futures {
               throw exToReport
             }
             throw new TestFailedException(
-              sde => Some {
+              (_: StackDepthException) => Some {
                 if (exToReport.getMessage == null)
                   Resources.futureReturnedAnException(exToReport.getClass.getName)
                 else

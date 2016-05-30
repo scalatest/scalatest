@@ -18,6 +18,7 @@ package org.scalatest.exceptions
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
+import StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Exception that indicates something was attempted in test code that is not allowed.
@@ -38,6 +39,17 @@ class NotAllowedException(message: String, cause: Option[Throwable], val pos: Op
     extends StackDepthException(Some(message), cause, failedCodeStackDepthFun) {
 
   requireNonNull(message, failedCodeStackDepthFun)
+
+  def this(
+    message: String,
+    cause: Option[Throwable],
+    pos: Option[source.Position]
+  ) = this(message, cause, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
+
+  def this(
+    message: String,
+    pos: Option[source.Position]
+  ) = this(message, None, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
 
   /**
    * Constructs a <code>NotAllowedException</code> with pre-determined <code>message</code> and
