@@ -187,11 +187,11 @@ trait AsyncWordSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
       registerNestedBranch(description, childPrefix, fun(), registrationClosedMessageFun, None, pos)
     }
     catch {
-      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
-      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
+      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.pos.orElse(Some(pos)))
+      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideItOrTheyClauseNotShouldMustWhenThatWhichOrCanClause, Some(e), e.pos.orElse(Some(pos)))
       case nae: NotAllowedException => throw nae
       case trce: TestRegistrationClosedException => throw trce
-      case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(getStackDepthFun(pos)))
+      case e: DuplicateTestNameException => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.pos.orElse(Some(pos)))
       case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(exceptionWasThrownInClauseMessageFun(verb, UnquotedString(other.getClass.getName), if (description.endsWith(" " + verb)) description.substring(0, description.length - (" " + verb).length) else description, other.getMessage), Some(other), Some(pos))
       case other: Throwable => throw other
     }
