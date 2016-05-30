@@ -982,7 +982,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
             new TestSpec
           }
       assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInWhenClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature when test 1")))))
@@ -1029,7 +1029,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         new TestSpec
       }
       assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInShouldClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature should test 1")))))
@@ -1076,7 +1076,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
             new TestSpec
           }
       assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInMustClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature must test 1")))))
@@ -1169,7 +1169,7 @@ class AsyncWordSpecSpec extends org.scalatest.FunSpec {
         new TestSpec
       }
       assert("AsyncWordSpecSpec.scala" == e.failedCodeFileName.get)
-      assert(e.failedCodeLineNumber.get == thisLineNumber - 9)
+      assert(e.failedCodeLineNumber.get == thisLineNumber - 7)
       assert(e.cause.isDefined)
       val causeThrowable = e.cause.get
       assert(e.message == Some(FailureMessages.exceptionWasThrownInCanClause(prettifier, UnquotedString(causeThrowable.getClass.getName), "a feature", FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature can test 1")))))

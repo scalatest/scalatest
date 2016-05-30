@@ -43,13 +43,13 @@ class NotAllowedException(message: String, cause: Option[Throwable], val pos: Op
   def this(
     message: String,
     cause: Option[Throwable],
-    pos: Option[source.Position]
-  ) = this(message, cause, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
+    pos: source.Position
+  ) = this(message, cause, Some(pos), getStackDepthFun(pos))
 
   def this(
     message: String,
-    pos: Option[source.Position]
-  ) = this(message, None, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
+    pos: source.Position
+  ) = this(message, None, pos)
 
   /**
    * Constructs a <code>NotAllowedException</code> with pre-determined <code>message</code> and

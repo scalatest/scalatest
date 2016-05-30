@@ -230,7 +230,7 @@ final class ContainWord {
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.oneOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -272,7 +272,7 @@ final class ContainWord {
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -314,7 +314,7 @@ final class ContainWord {
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Containing] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.noneOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
     new MatcherFactory1[Any, Containing] {
       def matcher[T](implicit containing: Containing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -393,9 +393,9 @@ final class ContainWord {
   
   def only(right: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
     if (right.isEmpty)
-      throw new NotAllowedException(FailureMessages.onlyEmpty, Some(pos))
+      throw new NotAllowedException(FailureMessages.onlyEmpty, pos)
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.onlyDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.onlyDuplicate, pos)
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -418,7 +418,7 @@ final class ContainWord {
   def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -440,7 +440,7 @@ final class ContainWord {
   def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.allOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {
@@ -482,7 +482,7 @@ final class ContainWord {
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Sequencing] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.inOrderDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
     new MatcherFactory1[Any, Sequencing] {
       def matcher[T](implicit sequencing: Sequencing[T]): Matcher[T] = {
         new Matcher[T] {
@@ -524,7 +524,7 @@ final class ContainWord {
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit prettifier: Prettifier, pos: source.Position): MatcherFactory1[Any, Aggregating] = {
     val right = firstEle :: secondEle :: remainingEles.toList
     if (right.distinct.size != right.size)
-      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
     new MatcherFactory1[Any, Aggregating] {
       def matcher[T](implicit aggregating: Aggregating[T]): Matcher[T] = {
         new Matcher[T] {

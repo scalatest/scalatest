@@ -421,8 +421,7 @@ final class NotWord {
    */
   @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
   def be(tripleEqualsInvocation: TripleEqualsInvocation[_])(implicit pos: source.Position): Matcher[Any] = {
-    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
-                                  Some(pos))
+    throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed, pos)
   }
 
   // SKIP-SCALATESTJS-START

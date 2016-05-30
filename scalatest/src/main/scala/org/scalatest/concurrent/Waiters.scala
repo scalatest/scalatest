@@ -382,7 +382,7 @@ trait Waiters extends PatienceConfiguration {
      */
     private def awaitImpl(timeout: Span, pos: source.Position, dismissals: Int = 1): Unit = {
       if (Thread.currentThread != creatingThread)
-        throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, None, Some(pos))
+        throw new NotAllowedException(Resources.awaitMustBeCalledOnCreatingThread, None, pos)
 
       val startTime: Long = System.nanoTime
       val endTime: Long = startTime + timeout.totalNanos

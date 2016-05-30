@@ -217,17 +217,17 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
     //SCALATESTJS-ONLY val stackDepthAdjustment = -4
 
     if (!currentBranchIsTrunk)
-      throw new NotAllowedException(Resources.cantNestFeatureClauses, Some(pos))
+      throw new NotAllowedException(Resources.cantNestFeatureClauses, pos)
 
     try {
       registerNestedBranch(Resources.feature(description.trim), None, fun, Resources.featureCannotAppearInsideAScenario, sourceFileName, "feature", stackDepth, stackDepthAdjustment, None, Some(pos))
     }
     catch {
-      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.pos.orElse(Some(pos)))
-      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.pos.orElse(Some(pos)))
+      case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.pos.getOrElse(pos))
+      case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideScenarioClauseNotFeatureClause, Some(e), e.pos.getOrElse(pos))
       case nae: NotAllowedException => throw nae
-      case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.pos.orElse(Some(pos)))
-      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), Some(pos))
+      case e: DuplicateTestNameException => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(e.getClass.getName), description, e.getMessage), Some(e), e.pos.getOrElse(pos))
+      case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) => throw new NotAllowedException(FailureMessages.exceptionWasThrownInFeatureClause(Prettifier.default, UnquotedString(other.getClass.getName), description, other.getMessage), Some(other), pos)
       case other: Throwable => throw other
     }
   }

@@ -137,10 +137,10 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
    */
   protected def before(fun: => Any)(implicit pos: source.Position): Unit = {
     if (runHasBeenInvoked)
-      throw new NotAllowedException("You cannot call before after run has been invoked (such as, from within a test). It is probably best to move it to the top level of the Suite class so it is executed during object construction.", Some(pos))
+      throw new NotAllowedException("You cannot call before after run has been invoked (such as, from within a test). It is probably best to move it to the top level of the Suite class so it is executed during object construction.", pos)
     val success = beforeFunctionAtomic.compareAndSet(None, Some(() => fun))
     if (!success)
-      throw new NotAllowedException("You are only allowed to call before once in each Suite that mixes in BeforeAndAfter.", Some(pos))
+      throw new NotAllowedException("You are only allowed to call before once in each Suite that mixes in BeforeAndAfter.", pos)
   }
 
   /**
@@ -157,10 +157,10 @@ trait BeforeAndAfter extends SuiteMixin { this: Suite =>
    */
   protected def after(fun: => Any)(implicit pos: source.Position): Unit = {
     if (runHasBeenInvoked)
-      throw new NotAllowedException("You cannot call after after run has been invoked (such as, from within a test. It is probably best to move it to the top level of the Suite class so it is executed during object construction.", Some(pos))
+      throw new NotAllowedException("You cannot call after after run has been invoked (such as, from within a test. It is probably best to move it to the top level of the Suite class so it is executed during object construction.", pos)
     val success = afterFunctionAtomic.compareAndSet(None, Some(() => fun))
     if (!success)
-      throw new NotAllowedException("You are only allowed to call after once in each Suite that mixes in BeforeAndAfter.", Some(pos))
+      throw new NotAllowedException("You are only allowed to call after once in each Suite that mixes in BeforeAndAfter.", pos)
   }
 
   /**

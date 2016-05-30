@@ -2798,7 +2798,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.oneOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
     new ResultOfOneOfApplication(xs)
   }
 
@@ -2826,7 +2826,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
     new ResultOfAtLeastOneOfApplication(xs)
   }
 
@@ -2854,7 +2854,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.noneOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
     new ResultOfNoneOfApplication(xs)
   }
 
@@ -2901,9 +2901,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   def only(xs: Any*)(implicit pos: source.Position) = {
     if (xs.isEmpty)
-      throw new NotAllowedException(FailureMessages.onlyEmpty, Some(pos))
+      throw new NotAllowedException(FailureMessages.onlyEmpty, pos)
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.onlyDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.onlyDuplicate, pos)
     new ResultOfOnlyApplication(xs)
   }
   
@@ -2918,7 +2918,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   def inOrderOnly[T](firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
     new ResultOfInOrderOnlyApplication(xs)
   }
   
@@ -2933,7 +2933,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.allOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
     new ResultOfAllOfApplication(xs)
   }
 
@@ -2961,7 +2961,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.inOrderDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
     new ResultOfInOrderApplication(xs)
   }
 
@@ -2989,7 +2989,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
   def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit pos: source.Position) = {
     val xs = firstEle :: secondEle :: remainingEles.toList
     if (xs.distinct.size != xs.size)
-      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, Some(pos))
+      throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
     new ResultOfAtMostOneOfApplication(xs)
   }
 
@@ -3234,8 +3234,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     @deprecated("The deprecation period for the be === syntax has expired. Please use should equal, should ===, shouldEqual, should be, or shouldBe instead.")
     def be(comparison: TripleEqualsInvocation[_]): Nothing = {
-      throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed,
-                                    Some(pos))
+      throw new NotAllowedException(FailureMessages.beTripleEqualsNotAllowed, pos)
     }
 
     /**
@@ -4420,7 +4419,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def oneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.oneOfDuplicate, Some(pos))
+        throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
           indicateFailure(
@@ -4480,7 +4479,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def atLeastOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, Some(pos))
+        throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
           indicateFailure(
@@ -4540,7 +4539,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def noneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit containing: Containing[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.noneOfDuplicate, Some(pos))
+        throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
           indicateFailure(
@@ -4655,9 +4654,9 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def only(right: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
       if (right.isEmpty)
-        throw new NotAllowedException(FailureMessages.onlyEmpty, Some(pos))
+        throw new NotAllowedException(FailureMessages.onlyEmpty, pos)
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.onlyDuplicate, Some(pos))
+        throw new NotAllowedException(FailureMessages.onlyDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
           val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
@@ -4696,7 +4695,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def inOrderOnly(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, Some(pos))
+        throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
           indicateFailure(
@@ -4727,7 +4726,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def allOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.allOfDuplicate, Some(pos))
+        throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
           indicateFailure(
@@ -4787,7 +4786,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def inOrder(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit sequencing: Sequencing[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.inOrderDuplicate, Some(pos))
+        throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrder(e, right) != shouldBeTrue)
           indicateFailure(
@@ -4847,7 +4846,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def atMostOneOf(firstEle: Any, secondEle: Any, remainingEles: Any*)(implicit aggregating: Aggregating[T]): Assertion = {
       val right = firstEle :: secondEle :: remainingEles.toList
       if (right.distinct.size != right.size)
-        throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, Some(pos))
+        throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
           indicateFailure(
