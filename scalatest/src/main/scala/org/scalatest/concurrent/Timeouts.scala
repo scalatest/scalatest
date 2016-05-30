@@ -264,7 +264,7 @@ trait Timeouts {
       fun,
       interruptor,
       t => new TestFailedDueToTimeoutException(
-        sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)), t, Some(pos), None, timeout
+        sde => Some(Resources.timeoutFailedAfter(timeout.prettyString)), t, pos, None, timeout
       )
     )
   }

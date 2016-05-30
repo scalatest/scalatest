@@ -50,10 +50,10 @@ class TestFailedDueToTimeoutException(
   def this(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
-    pos: Option[source.Position],
+    pos: source.Position,
     payload: Option[Any],
     timeout: Span
-  ) = this(messageFun, cause, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0), payload, timeout)
+  ) = this(messageFun, cause, Some(pos), getStackDepthFun(pos), payload, timeout)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,
