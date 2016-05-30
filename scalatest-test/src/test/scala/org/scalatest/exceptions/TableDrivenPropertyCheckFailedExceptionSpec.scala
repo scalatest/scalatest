@@ -78,20 +78,20 @@ class TableDrivenPropertyCheckFailedExceptionSpec extends FunSpec with Matchers 
 
     it("should return the cause in both cause and getCause") {
       val theCause = new IllegalArgumentException("howdy")
-      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", Some(theCause), Some(source.Position.here), (sde: StackDepthException) => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
+      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", Some(theCause), source.Position.here, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
       assert(tfe.cause.isDefined)
       assert(tfe.cause.get === theCause)
       assert(tfe.getCause == theCause)
     }
 
     it("should return None in cause and null in getCause if no cause") {
-      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", None, Some(source.Position.here), (sde: StackDepthException) => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
+      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", None, source.Position.here, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
       assert(tfe.cause.isEmpty)
       assert(tfe.getCause == null)
     }
 
     it("should be equal to itself") {
-      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", None, Some(source.Position.here), (sde: StackDepthException) => 3, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
+      val tfe = new TableDrivenPropertyCheckFailedException((sde: StackDepthException) => "doody", None, source.Position.here, None, "howdy", List(1, 2, 3), List("a", "b", "c"), 7)
       assert(tfe == tfe)
     }
   }

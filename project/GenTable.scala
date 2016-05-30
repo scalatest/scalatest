@@ -1737,8 +1737,7 @@ $columnsOfIndexes$
          |                        }.toIndexedSeq).mkString("\n") +
          |                        "  )"),
          |                      Some(ex),
-         |                      Some(pos),
-         |                      getStackDepthFun(pos),
+         |                      pos,
          |                      None,
          |                      FailureMessages.undecoratedPropertyCheckFailureMessage,
          |                      head.productIterator.toList,
@@ -1810,8 +1809,7 @@ $columnsOfIndexes$
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
-         |          Some(pos),
-         |          stackDepthFun,
+         |          pos,
          |          payload,
          |          undecoratedMessage,
          |          args,
@@ -1862,8 +1860,7 @@ $columnsOfIndexes$
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
-         |          Some(pos),
-         |          stackDepthFun,
+         |          pos,
          |          payload,
          |          undecoratedMessage,
          |          args,
