@@ -66,7 +66,7 @@ import org.scalactic.source
  *
  * @author Bill Venners
  */
-class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwable], val pos: Option[source.Position], val failedCodeStackDepth: Int, val payload: Option[Any])
+class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwable], val position: Option[source.Position], val failedCodeStackDepth: Int, val payload: Option[Any])
     extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnitTestFailedError]  with PayloadField with ModifiablePayload[JUnitTestFailedError] {
 
   // TODO: CHange above to a message.getOrElse(""), and same in other exceptions most likely
@@ -179,7 +179,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    */
   def severedAtStackDepth: JUnitTestFailedError = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new JUnitTestFailedError(message, cause, pos, 0, payload)
+    val e = new JUnitTestFailedError(message, cause, position, 0, payload)
     e.setStackTrace(truncated)
     e
   }
@@ -193,7 +193,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * the modified optional detail message for the result instance of <code>JUnitTestFailedError</code>.
    */
   def modifyMessage(fun: Option[String] => Option[String]): JUnitTestFailedError = {
-    val mod = new JUnitTestFailedError(fun(message), cause, pos, failedCodeStackDepth, payload)
+    val mod = new JUnitTestFailedError(fun(message), cause, position, failedCodeStackDepth, payload)
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -208,7 +208,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): JUnitTestFailedError = {
     val currentPayload = payload
-    val mod = new JUnitTestFailedError(message, cause, pos, failedCodeStackDepth, fun(currentPayload))
+    val mod = new JUnitTestFailedError(message, cause, position, failedCodeStackDepth, fun(currentPayload))
     mod.setStackTrace(getStackTrace)
     mod
   }

@@ -26,7 +26,7 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
     cause: Option[Throwable],
     val pos: Option[source.Position],
     failedCodeStackDepthFun: StackDepthException => Int
-  ) extends StackDepthException(messageFun, cause, failedCodeStackDepthFun) {
+  ) extends StackDepthException(messageFun, cause, Right(failedCodeStackDepthFun)) {
     def severedAtStackDepth: FunException = {
       val truncated = getStackTrace.drop(failedCodeStackDepth)
       val e = new FunException(messageFun, cause, pos, e => 0)

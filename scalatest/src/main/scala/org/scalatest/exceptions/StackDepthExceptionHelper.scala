@@ -160,4 +160,10 @@ private[scalatest] object StackDepthExceptionHelper extends Serializable {
     }
     else None
   }
+
+  def transformToEither(pos: Option[source.Position], sdf: StackDepthException => Int): Either[source.Position, StackDepthException => Int] =
+    pos match {
+      case Some(pos) => Left(pos)
+      case None => Right(sdf)
+    }
 }

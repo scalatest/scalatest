@@ -45,7 +45,10 @@ trait StackDepth { this: Throwable =>
    */
   val failedCodeStackDepth: Int
 
-  val pos: Option[source.Position]
+  /**
+   * An optional source position describing the line of test code that failed and caused this exception.
+   */
+  val position: Option[source.Position]
 
   /**
    * A string that provides the filename and line number of the line of code that failed, suitable
@@ -66,7 +69,7 @@ trait StackDepth { this: Throwable =>
 
   private def stackTraceElement: Option[StackTraceElement] = {
     val stackTrace = getStackTrace()
-    pos match {
+    position match {
       case Some(pos) => stackTrace.find(e => StackDepthExceptionHelper.isMatch(e, pos))
       case None =>
         if (stackTrace.length <= failedCodeStackDepth) None
@@ -87,7 +90,7 @@ trait StackDepth { this: Throwable =>
    * @return a string containing the filename that caused the failed test
    */
   def failedCodeFileName: Option[String] = {
-    pos match {
+    position match {
       case Some(pos) => Some(pos.fileName)
       case None =>
         stackTraceElement flatMap { ele =>
@@ -109,7 +112,7 @@ trait StackDepth { this: Throwable =>
    * @return a string containing the line number that caused the failed test
    */
   def failedCodeLineNumber: Option[Int] = {
-    pos match {
+    position match {
       case Some(pos) => Some(pos.lineNumber)
       case None =>
         stackTraceElement flatMap { ele =>

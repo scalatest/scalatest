@@ -17,6 +17,8 @@ package org.scalatest.exceptions
 
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.source
+import StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Exception class that encapsulates information about the stack depth at which the line of code that failed resides,
@@ -36,15 +38,28 @@ import org.scalactic.exceptions.NullArgumentException
 abstract class StackDepthException(
   val messageFun: StackDepthException => Option[String],
   val cause: Option[Throwable],
-  val failedCodeStackDepthFun: StackDepthException => Int
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int]
 ) extends RuntimeException(if (cause != null && cause.isDefined) cause.get else null) with StackDepth {
 
-  requireNonNull(messageFun, cause, failedCodeStackDepthFun)
+  requireNonNull(messageFun, cause, posOrStackDepthFun)
 
   cause match {
     case Some(null) => throw new NullArgumentException("cause was a Some(null)")
     case _ =>
   }
+
+  val position: Option[source.Position] = posOrStackDepthFun.left.toOption
+
+  def this(message: Option[String], cause: Option[Throwable], position: source.Position) =
+    this(
+      message match {
+        case null => throw new NullArgumentException("message was null")
+        case Some(null) => throw new NullArgumentException("message was a Some(null)")
+        case _ => (e: StackDepthException) => message
+      },
+      cause,
+      Left(position)
+    )
 
   /**
    * Constructs a <code>StackDepthException</code> with an optional pre-determined <code>message</code>, optional cause, and
@@ -64,7 +79,7 @@ abstract class StackDepthException(
         case _ => (e: StackDepthException) => message
       },
       cause,
-      failedCodeStackDepthFun
+      Right(failedCodeStackDepthFun)
     )
 
   /**
@@ -86,7 +101,7 @@ abstract class StackDepthException(
         case _ => (e: StackDepthException) => message
       },
       cause,
-      (e: StackDepthException) => failedCodeStackDepth
+      Right((e: StackDepthException) => failedCodeStackDepth)
     )
 
   /**
@@ -115,7 +130,14 @@ abstract class StackDepthException(
    * stack depth, such as the failed file name and line number.
    * </p>
    */
-  lazy val failedCodeStackDepth: Int = failedCodeStackDepthFun(this)
+  lazy val failedCodeStackDepth: Int = {
+     val stackDepthFun =
+       posOrStackDepthFun match {
+         case Left(pos) => getStackDepthFun(pos)
+         case Right(sdf) => sdf
+       }
+     stackDepthFun(this)
+  }
 
   /**
    * Returns the detail message string of this <code>StackDepthException</code>.

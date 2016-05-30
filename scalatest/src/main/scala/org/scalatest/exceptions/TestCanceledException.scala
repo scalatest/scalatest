@@ -19,6 +19,7 @@ import org.scalactic.exceptions.NullArgumentException
 import StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.Requirements._
 import org.scalactic.source
+import StackDepthExceptionHelper.transformToEither
 
 /**
  * Exception thrown to indicate a test has been canceled.
@@ -44,10 +45,10 @@ import org.scalactic.source
 class TestCanceledException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
-  val pos: Option[source.Position],
+  val pos: Option[source.Position], // TODO30 get rid of the val
   failedCodeStackDepthFun: StackDepthException => Int, 
   val payload: Option[Any]
-) extends StackDepthException(messageFun, cause, failedCodeStackDepthFun) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
+) extends StackDepthException(messageFun, cause, transformToEither(pos, failedCodeStackDepthFun)) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
 
 
   def this(
