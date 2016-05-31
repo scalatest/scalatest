@@ -43,12 +43,12 @@ env:
     - MODE=genEmptyTests
     - MODE=examples
     - MODE=examplesJS
-#    - MODE=genSafeStyleTests
 
+matrix:
   exclude:
-    - scala: 2.12.0-M4
+    - scala: "2.12.0-M4"
       jdk: oraclejdk7
-    - scala: 2.12.0-M4
+    - scala: "2.12.0-M4"
       jdk: openjdk6
 
 branches:
