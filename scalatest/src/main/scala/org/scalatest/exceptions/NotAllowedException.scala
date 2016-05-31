@@ -40,7 +40,7 @@ class NotAllowedException(
   message: String,
   cause: Option[Throwable],
   posOrStackDepthFun: Either[source.Position, StackDepthException => Int]
-) extends StackDepthException(_ => Some(message), cause, posOrStackDepthFun) {
+) extends StackDepthException((_: StackDepthException) => Some(message), cause, posOrStackDepthFun) {
 
   requireNonNull(message, cause, posOrStackDepthFun)
 
@@ -65,8 +65,8 @@ class NotAllowedException(
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
-    this(message, None, posOrElseStackDepthFun(pos, _ => failedCodeStackDepth))
+  def this(message: String, failedCodeStackDepth: Int) =
+    this(message, None, Right((_: StackDepthException) => failedCodeStackDepth))
 
   /**
    * Construct a <code>NotAllowedException</code> with pre-determined <code>message</code> and
@@ -77,8 +77,8 @@ class NotAllowedException(
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int) =
-    this(message, None, posOrElseStackDepthFun(pos, failedCodeStackDepthFun))
+  def this(message: String, failedCodeStackDepthFun: StackDepthException => Int) =
+    this(message, None, Right(failedCodeStackDepthFun))
 
   /**
    * Returns an exception of class <code>NotAllowedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 

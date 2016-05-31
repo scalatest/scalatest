@@ -61,8 +61,12 @@ class DuplicateTestNameException(
    *
    * @throws NullArgumentException if <code>testName</code> is <code>null</code>
    */
-  def this(testName: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
-    this(testName, posOrElseStackDepthFun(pos, (e: StackDepthException) => failedCodeStackDepth))
+  def this(testName: String, failedCodeStackDepth: Int) =
+    this(testName, Right((e: StackDepthException) => failedCodeStackDepth))
+
+  // This was probably the olde main constructor
+  def this(testName: String, failedCodeStackDepthFun: StackDepthException => Int) =
+    this(testName, Right(failedCodeStackDepthFun))
 
   /**
    * Returns an exception of class <code>DuplicateTestNameException</code> with <code>failedExceptionStackDepth</code> set to 0 and 

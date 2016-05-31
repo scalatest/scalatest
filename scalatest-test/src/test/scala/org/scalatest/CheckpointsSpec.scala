@@ -119,7 +119,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should pass the NotAllowedException through immediately") {
         val cp = new Checkpoint
         a [NotAllowedException] should be thrownBy {
-          cp { throw new NotAllowedException("This should not be captured by the Checkpoint", Some(source.Position.here), 0) }
+          cp { throw new NotAllowedException("This should not be captured by the Checkpoint", source.Position.here) }
         }
       }
     } 
@@ -127,7 +127,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should pass the DuplicateTestNameException through immediately") {
         val cp = new Checkpoint
         a [DuplicateTestNameException] should be thrownBy {
-          cp { throw new DuplicateTestNameException("This should not be captured by the Checkpoint", Some(source.Position.here), 0) }
+          cp { throw new DuplicateTestNameException("This should not be captured by the Checkpoint", source.Position.here) }
         }
       }
     } 

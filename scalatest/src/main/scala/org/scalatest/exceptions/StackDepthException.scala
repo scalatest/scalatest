@@ -67,6 +67,17 @@ abstract class StackDepthException(
       Left(position)
     )
 
+  // I think this was the olde primary constructor
+  def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
+    this(
+      messageFun,
+      cause,
+      failedCodeStackDepthFun match {
+        case null => throw new NullArgumentException("failedCodeStackDepthFun was null")
+        case _ => Right(failedCodeStackDepthFun)
+      }
+    )
+
   /**
    * Constructs a <code>StackDepthException</code> with an optional pre-determined <code>message</code>, optional cause, and
    * a <code>failedCodeStackDepth</code> function.
