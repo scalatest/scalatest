@@ -17,7 +17,7 @@ package org.scalatest.exceptions
 
 import org.scalactic.exceptions.NullArgumentException
 import StackDepthExceptionHelper.getStackDepthFun
-import StackDepthExceptionHelper.transformToEither
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 import org.scalactic.Requirements._
 import org.scalactic.source
 
@@ -53,7 +53,7 @@ class TestFailedException(
   val pos: Option[source.Position], // TODO30 get rid of the val
   failedCodeStackDepthFun: StackDepthException => Int,
   val payload: Option[Any]
-) extends StackDepthException(messageFun, cause, transformToEither(pos, failedCodeStackDepthFun)) with ModifiableMessage[TestFailedException] with PayloadField with ModifiablePayload[TestFailedException] {
+) extends StackDepthException(messageFun, cause, posOrElseStackDepthFun(pos, failedCodeStackDepthFun)) with ModifiableMessage[TestFailedException] with PayloadField with ModifiablePayload[TestFailedException] {
 
   def this(
     messageFun: StackDepthException => Option[String],

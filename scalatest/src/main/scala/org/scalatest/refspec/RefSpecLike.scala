@@ -19,6 +19,7 @@ import scala.collection.immutable.ListSet
 import org.scalatest._
 import org.scalatest.exceptions._
 import StackDepthExceptionHelper.getStackDepthFun
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 import Suite._
 import RefSpec.isTestMethod
 import RefSpec.equalIfRequiredCompactify
@@ -122,13 +123,13 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
                 registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation), None)
               }
               catch {
-                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(e => 8))
-                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), e.pos, e.pos.map(getStackDepthFun).getOrElse(e => 8))
+                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.pos, _ => 8))
+                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.pos, _ => 8))
                 case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) =>
                   if (ScalaTestVersions.BuiltForScalaVersion == "2.12")
-                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), None, e => 6)
+                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 6))
                   else
-                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), None, e => 8)
+                    throw new NotAllowedException(FailureMessages.exceptionWasThrownInObject(Prettifier.default, UnquotedString(other.getClass.getName), UnquotedString(scopeDesc)), Some(other), Right((_: StackDepthException) => 8))
                 case other: Throwable => throw other
               }
             }

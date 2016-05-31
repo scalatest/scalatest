@@ -19,6 +19,7 @@ import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
 import StackDepthExceptionHelper.getStackDepthFun
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 
 /**
  * Exception that indicates something was attempted in test code that is not allowed.
@@ -35,21 +36,24 @@ import StackDepthExceptionHelper.getStackDepthFun
  *
  * @author Bill Venners
  */
-class NotAllowedException(message: String, cause: Option[Throwable], val pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int)
-    extends StackDepthException(Some(message), cause, failedCodeStackDepthFun) {
+class NotAllowedException(
+  message: String,
+  cause: Option[Throwable],
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int]
+) extends StackDepthException(_ => Some(message), cause, posOrStackDepthFun) {
 
-  requireNonNull(message, failedCodeStackDepthFun)
+  requireNonNull(message, cause, posOrStackDepthFun)
 
   def this(
     message: String,
     cause: Option[Throwable],
     pos: source.Position
-  ) = this(message, cause, Some(pos), getStackDepthFun(pos))
+  ) = this(message, cause, Left(pos))
 
   def this(
     message: String,
     pos: source.Position
-  ) = this(message, None, pos)
+  ) = this(message, None, Left(pos))
 
   /**
    * Constructs a <code>NotAllowedException</code> with pre-determined <code>message</code> and
@@ -61,7 +65,8 @@ class NotAllowedException(message: String, cause: Option[Throwable], val pos: Op
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) = this(message, None, pos, e => failedCodeStackDepth)
+  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
+    this(message, None, posOrElseStackDepthFun(pos, _ => failedCodeStackDepth))
 
   /**
    * Construct a <code>NotAllowedException</code> with pre-determined <code>message</code> and
@@ -72,7 +77,8 @@ class NotAllowedException(message: String, cause: Option[Throwable], val pos: Op
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int) = this(message, None, pos, failedCodeStackDepthFun)
+  def this(message: String, pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int) =
+    this(message, None, posOrElseStackDepthFun(pos, failedCodeStackDepthFun))
 
   /**
    * Returns an exception of class <code>NotAllowedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
@@ -82,7 +88,7 @@ class NotAllowedException(message: String, cause: Option[Throwable], val pos: Op
    */
   def severedAtStackDepth: NotAllowedException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new NotAllowedException(message, pos, 0)
+    val e = new NotAllowedException(message, None, posOrElseStackDepthFun(position, _ => 0))
     e.setStackTrace(truncated)
     e
   }

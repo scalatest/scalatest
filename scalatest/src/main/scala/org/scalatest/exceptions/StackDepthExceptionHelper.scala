@@ -1,6 +1,8 @@
 package org.scalatest.exceptions
 
 import org.scalactic._
+import Requirements.requireNonNull
+import org.scalactic.exceptions.NullArgumentException
 
 /*
 For check methods in Checkers, passed fileName will be "Checkers.scala" and
@@ -161,9 +163,17 @@ private[scalatest] object StackDepthExceptionHelper extends Serializable {
     else None
   }
 
-  def transformToEither(pos: Option[source.Position], sdf: StackDepthException => Int): Either[source.Position, StackDepthException => Int] =
+  def posOrElseStackDepthFun(pos: Option[source.Position], sdf: StackDepthException => Int): Either[source.Position, StackDepthException => Int] = {
+    // requireNonNull(pos, sdf) TODO30 this doesn't compile, probably a problem with hiding a package name again
+    if (pos == null) throw new NullArgumentException("pos was null")
+    if (sdf == null) throw new NullArgumentException("sdf was null")
+    pos match {
+      case Some(null) => throw new NullArgumentException("pos was Some(null)")
+      case _ =>
+    }
     pos match {
       case Some(pos) => Left(pos)
       case None => Right(sdf)
     }
+  }
 }

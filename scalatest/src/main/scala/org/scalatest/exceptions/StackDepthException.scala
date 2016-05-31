@@ -48,6 +48,13 @@ abstract class StackDepthException(
     case _ =>
   }
 
+  posOrStackDepthFun match {
+    case Right(null) => throw new NullArgumentException("posOrStackDepthFun was Right(null)")
+    case Left(null) => throw new NullArgumentException("posOrStackDepthFun was Left(null)")
+    case Right(r) => if (r == null) throw new NullArgumentException("posOrStackDepthFun was Right(null)")
+    case _ =>
+  }
+
   val position: Option[source.Position] = posOrStackDepthFun.left.toOption
 
   def this(message: Option[String], cause: Option[Throwable], position: source.Position) =
@@ -79,7 +86,10 @@ abstract class StackDepthException(
         case _ => (e: StackDepthException) => message
       },
       cause,
-      Right(failedCodeStackDepthFun)
+      failedCodeStackDepthFun match {
+        case null => throw new NullArgumentException("failedCodeStackDepthFun was null")
+        case _ => Right(failedCodeStackDepthFun)
+      }
     )
 
   /**
