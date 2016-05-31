@@ -39,8 +39,8 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
       new JUnitTestFailedError("message", Some(source.Position.here), 3),
       // SKIP-SCALATESTJS-END
       new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
-      new TableDrivenPropertyCheckFailedException(e => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
-      new GeneratorDrivenPropertyCheckFailedException(e => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty)
+      new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
+      new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty)
     )
 
 

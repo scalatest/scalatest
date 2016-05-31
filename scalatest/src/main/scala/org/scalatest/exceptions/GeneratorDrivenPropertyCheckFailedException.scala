@@ -39,15 +39,38 @@ import StackDepthExceptionHelper.getStackDepthFun
 class GeneratorDrivenPropertyCheckFailedException(
   messageFun: StackDepthException => String,
   cause: Option[Throwable],
-  pos: source.Position,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   payload: Option[Any],
   undecoratedMessage: String,
   args: List[Any],
   namesOfArgs: Option[List[String]],
   val labels: List[String]
 ) extends PropertyCheckFailedException(
-  messageFun, cause, Left(pos), payload, undecoratedMessage, args, namesOfArgs
+  messageFun, cause, posOrStackDepthFun, payload, undecoratedMessage, args, namesOfArgs
 ) {
+
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    pos: source.Position,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    namesOfArgs: Option[List[String]],
+    labels: List[String]
+  ) = this(messageFun, cause, Left(pos), payload, undecoratedMessage, args, namesOfArgs, labels)
+
+  // The olde constructor
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    failedCodeStackDepthFun: StackDepthException => Int,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    namesOfArgs: Option[List[String]],
+    labels: List[String]
+  ) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, undecoratedMessage, args, namesOfArgs, labels)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,
@@ -60,9 +83,9 @@ class GeneratorDrivenPropertyCheckFailedException(
   override def modifyMessage(fun: Option[String] => Option[String]): GeneratorDrivenPropertyCheckFailedException = {
     val mod =
       new GeneratorDrivenPropertyCheckFailedException(
-        sde => fun(message).getOrElse(messageFun(this)),
+        (_: StackDepthException) => fun(message).getOrElse(messageFun(this)),
         cause,
-        pos,
+        posOrStackDepthFun,
         payload,
         undecoratedMessage,
         args,
@@ -87,7 +110,7 @@ class GeneratorDrivenPropertyCheckFailedException(
       new GeneratorDrivenPropertyCheckFailedException(
         messageFun,
         cause,
-        pos,
+        posOrStackDepthFun,
         fun(currentPayload),
         undecoratedMessage,
         args,
