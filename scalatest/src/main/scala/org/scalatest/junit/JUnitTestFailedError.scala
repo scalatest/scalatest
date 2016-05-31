@@ -20,6 +20,8 @@ import org.scalatest.exceptions.{PayloadField, ModifiablePayload, StackDepth, Mo
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 
 /**
  * Exception that indicates a test failed.
@@ -66,8 +68,12 @@ import org.scalactic.source
  *
  * @author Bill Venners
  */
-class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwable], val position: Option[source.Position], val failedCodeStackDepth: Int, val payload: Option[Any])
-    extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnitTestFailedError]  with PayloadField with ModifiablePayload[JUnitTestFailedError] {
+class JUnitTestFailedError(
+  val message: Option[String],
+  val cause: Option[Throwable],
+  val posOrStackDepth: Either[source.Position, Int],
+  val payload: Option[Any]
+) extends AssertionFailedError(if (message.isDefined) message.get else "") with StackDepth with ModifiableMessage[JUnitTestFailedError]  with PayloadField with ModifiablePayload[JUnitTestFailedError] {
 
   // TODO: CHange above to a message.getOrElse(""), and same in other exceptions most likely
   // TODO: Possibly change stack depth to stackDepthFun like in TFE, consider messageFun like in TDE
@@ -86,6 +92,29 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
   if (cause.isDefined)
     super.initCause(cause.get)
 
+  def this(
+    message: Option[String],
+    cause: Option[Throwable],
+    pos: source.Position,
+    payload: Option[Any]
+  ) = this(message, cause, Left(pos), payload)
+
+  // This is the olde general constructor
+  def this(
+    message: Option[String],
+    cause: Option[Throwable],
+    failedCodeStackDepth: Int,
+    payload: Option[Any]
+  ) = this(message, cause, Right(failedCodeStackDepth), payload)
+
+  val position: Option[source.Position] = posOrStackDepth.left.toOption
+
+  lazy val failedCodeStackDepth: Int =
+     posOrStackDepth match {
+       case Left(pos) => getStackDepth(this.getStackTrace, pos)
+       case Right(sd) => sd
+     }
+
   /*
   * Throws <code>IllegalStateException</code>, because <code>StackDepthException</code>s are
   * always initialized with a cause passed to the constructor of superclass <code>
@@ -98,7 +127,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    */
-  def this(pos: Option[source.Position], failedCodeStackDepth: Int) = this(None, None, pos, failedCodeStackDepth, None)
+  def this(failedCodeStackDepth: Int) = this(None, None, Right(failedCodeStackDepth), None)
 
   /**
    * Create a <code>JUnitTestFailedError</code> with a specified stack depth and detail message.
@@ -108,15 +137,14 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(message: String, failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(message)
         Some(message)
       },
       None,
-      pos,
-      failedCodeStackDepth,
+      Right(failedCodeStackDepth),
       None
     )
 
@@ -130,15 +158,14 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    *
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>.
    */
-  def this(cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(cause)
         Some(if (cause.getMessage == null) "" else cause.getMessage)
       },
       Some(cause),
-      pos,
-      failedCodeStackDepth,
+      Right(failedCodeStackDepth),
       None
     )
 
@@ -156,7 +183,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    *
    * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>.
    */
-  def this(message: String, cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(message)
@@ -166,8 +193,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
         requireNonNull(cause)
         Some(cause)
       },
-      pos,
-      failedCodeStackDepth,
+      Right(failedCodeStackDepth),
       None
     )
 
@@ -179,7 +205,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    */
   def severedAtStackDepth: JUnitTestFailedError = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new JUnitTestFailedError(message, cause, position, 0, payload)
+    val e = new JUnitTestFailedError(message, cause, posOrStackDepth, payload)
     e.setStackTrace(truncated)
     e
   }
@@ -193,7 +219,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    * the modified optional detail message for the result instance of <code>JUnitTestFailedError</code>.
    */
   def modifyMessage(fun: Option[String] => Option[String]): JUnitTestFailedError = {
-    val mod = new JUnitTestFailedError(fun(message), cause, position, failedCodeStackDepth, payload)
+    val mod = new JUnitTestFailedError(fun(message), cause, posOrStackDepth, payload)
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -208,7 +234,7 @@ class JUnitTestFailedError(val message: Option[String], val cause: Option[Throwa
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): JUnitTestFailedError = {
     val currentPayload = payload
-    val mod = new JUnitTestFailedError(message, cause, position, failedCodeStackDepth, fun(currentPayload))
+    val mod = new JUnitTestFailedError(message, cause, posOrStackDepth, fun(currentPayload))
     mod.setStackTrace(getStackTrace)
     mod
   }
