@@ -40,7 +40,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
       new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException(e => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException(e => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty),
-      new TestCanceledException("message", Some(source.Position.here), 3)
+      new TestCanceledException("message", 3)
    )
 
   "The modifyPayload method on TFE" should "return the an exception with an equal message option if passed a function that returns the same option passed to it" in {
@@ -168,7 +168,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   }
   
   it should "return Canceled that contains TestCanceledException and added payload" in {
-    val canceled = Canceled(new TestCanceledException("rollback!", Some(source.Position.here), 3))
+    val canceled = Canceled(new TestCanceledException("rollback!", 3))
     val result = withPayload("a payload") { canceled }
     result shouldBe a [Canceled]
     result.exception shouldBe a [TestCanceledException]

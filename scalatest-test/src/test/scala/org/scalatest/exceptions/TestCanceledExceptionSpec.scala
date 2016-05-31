@@ -268,20 +268,20 @@ class TestCanceledExceptionSpec extends FunSpec with Matchers {
 
     it("should return the cause in both cause and getCause") {
       val theCause = new IllegalArgumentException("howdy")
-      val tfe = new TestCanceledException(Some("doody"), Some(theCause), Some(source.Position.here), 3)
+      val tfe = new TestCanceledException(Some("doody"), Some(theCause), 3)
       assume(tfe.cause.isDefined)
       assume(tfe.cause.get === theCause)
       assume(tfe.getCause == theCause)
     }
 
     it("should return None in cause and null in getCause if no cause") {
-      val tfe = new TestCanceledException(Some("doody"), None, Some(source.Position.here), 3)
+      val tfe = new TestCanceledException(Some("doody"), None, 3)
       assume(tfe.cause.isEmpty)
       assume(tfe.getCause == null)
     }
 
     it("should be equal to itself") {
-      val tfe = new TestCanceledException(Some("doody"), None, Some(source.Position.here), 3)
+      val tfe = new TestCanceledException(Some("doody"), None, 3)
       assume(tfe == tfe)
     }
   }

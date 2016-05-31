@@ -39,7 +39,7 @@ class OutcomeSpec extends FunSpec {
       assert(!Failed(ex).isPending)
     }
     it("can be Canceled") {
-      val ex = new exceptions.TestCanceledException(Some(source.Position.here), 0)
+      val ex = new exceptions.TestCanceledException(0)
       assert(!Canceled(ex).isSucceeded)
       assert(!Canceled(ex).isFailed)
       assert(Canceled(ex).isCanceled)
@@ -54,7 +54,7 @@ class OutcomeSpec extends FunSpec {
     val res1: Outcome = Succeeded
     val ex2 = new Exception
     val res2: Outcome = Failed(ex2)
-    val ex3 = new exceptions.TestCanceledException(Some(source.Position.here), 0)
+    val ex3 = new exceptions.TestCanceledException(0)
     val res3: Outcome = Canceled(ex3)
     val res4: Outcome = Pending
     it("can be easily pattern matched on based on whether it is Exceptional") {
@@ -101,8 +101,8 @@ class OutcomeSpec extends FunSpec {
       val rtEx2 = new RuntimeException
       val faileds: Vector[Failed] = Vector(Failed(rtEx1), Failed(ex2), Failed(rtEx2))
       assert(faileds.flatten === Vector(rtEx1, ex2, rtEx2))
-      val tceEx1 = new exceptions.TestCanceledException(Some(source.Position.here), 1)
-      val tceEx2 = new exceptions.TestCanceledException(Some(source.Position.here), 2)
+      val tceEx1 = new exceptions.TestCanceledException(1)
+      val tceEx2 = new exceptions.TestCanceledException(2)
       val canceleds: Vector[Canceled] = Vector(Canceled(tceEx1), Canceled(ex3), Canceled(tceEx2))
       assert(canceleds.flatten === Vector(tceEx1, ex3, tceEx2))
     }
@@ -168,7 +168,7 @@ class OutcomeSpec extends FunSpec {
       }
     }
     it("should throw IAE from its apply factory methods if TestCanceledException is passed") {
-      val tce = new exceptions.TestCanceledException(Some(source.Position.here), 0)
+      val tce = new exceptions.TestCanceledException(0)
       intercept[IllegalArgumentException] {
         Failed(tce)
       }
@@ -200,7 +200,7 @@ class OutcomeSpec extends FunSpec {
   }
   describe("The Canceled class") {
     it("should offer a constructor that takes a TestCanceledException and returns it unchanged from its exception field") {
-      val ex1 = new exceptions.TestCanceledException(Some(source.Position.here), 0)
+      val ex1 = new exceptions.TestCanceledException(0)
       assert(new Canceled(ex1).exception eq ex1)
     }
   }
@@ -217,7 +217,7 @@ class OutcomeSpec extends FunSpec {
       }
     }
     it("should offer an apply factory method that takes and holds a TCE, but wraps any other exception in a new TCE") {
-      val tce = new exceptions.TestCanceledException(Some(source.Position.here), 1)
+      val tce = new exceptions.TestCanceledException(1)
       val canceled = Canceled(tce)
       assert(canceled.exception eq tce)
 
@@ -229,7 +229,7 @@ class OutcomeSpec extends FunSpec {
       val canceled3 = Canceled(re)
       assert(canceled3.exception.isInstanceOf[exceptions.TestCanceledException])
       assert(canceled3.exception.getCause eq re)
-      val ex1 = new exceptions.TestCanceledException(Some(source.Position.here), 0)
+      val ex1 = new exceptions.TestCanceledException(0)
       assert(new Canceled(ex1).exception eq ex1)
       val ex2 = new exceptions.TestFailedException(Some(source.Position.here), 0)
       assert(Canceled(ex2).exception.getCause eq ex2)
@@ -280,7 +280,7 @@ class OutcomeSpec extends FunSpec {
       assert(outcomeOf { throw tfe } === Failed(tfe))
       val iae = new IllegalArgumentException
       assert(outcomeOf { throw iae } === Failed(iae))
-      val tce = new exceptions.TestCanceledException(Some(source.Position.here), 0)
+      val tce = new exceptions.TestCanceledException(0)
       assert(outcomeOf { throw tce } === Canceled(tce))
       val tpe = new exceptions.TestPendingException
       assert(outcomeOf { throw tpe } === Pending)
@@ -319,7 +319,7 @@ class OutcomeSpec extends FunSpec {
     }
 
     it("should throw the containing exception when it is Canceled") {
-      val tce = new exceptions.TestCanceledException("boom!", Some(source.Position.here), 3)
+      val tce = new exceptions.TestCanceledException("boom!", 3)
       val outcome1: Outcome = Canceled(tce)
       val e1 = intercept[exceptions.TestCanceledException] {
         outcome1.toSucceeded

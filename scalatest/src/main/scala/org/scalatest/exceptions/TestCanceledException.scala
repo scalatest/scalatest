@@ -53,8 +53,14 @@ class TestCanceledException(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
     pos: source.Position,
-    payload: Option[Any] = None
+    payload: Option[Any]
   ) = this(messageFun, cause, Left(pos), payload)
+
+  def this(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    pos: source.Position
+  ) = this(messageFun, cause, Left(pos), None)
 
   /**
    * Constructs a <code>TestCanceledException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -66,11 +72,11 @@ class TestCanceledException(
    *
    * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
-  def this(message: Option[String], cause: Option[Throwable], pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(message: Option[String], cause: Option[Throwable], failedCodeStackDepth: Int) =
     this(
       StackDepthException.toExceptionFunction(message),
       cause,
-      posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth), 
+      Right((_: StackDepthException) => failedCodeStackDepth), 
       None
     )
 
@@ -80,8 +86,8 @@ class TestCanceledException(
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    */
-  def this(pos: Option[source.Position], failedCodeStackDepth: Int) =
-    this((_: StackDepthException) => None, None, posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth), None)
+  def this(failedCodeStackDepth: Int) =
+    this((_: StackDepthException) => None, None, Right((_: StackDepthException) => failedCodeStackDepth), None)
 
   /**
    * Create a <code>TestCanceledException</code> with a specified stack depth and detail message.
@@ -91,13 +97,13 @@ class TestCanceledException(
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(message: String, failedCodeStackDepth: Int) =
     this(
       {
         (_: StackDepthException) => Option(message)
       },
       None,
-      posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth),
+      Right((_: StackDepthException) => failedCodeStackDepth),
       None
     )
 
@@ -111,14 +117,14 @@ class TestCanceledException(
    *
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>.
    */
-  def this(cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(cause)
         (_: StackDepthException) => if (cause.getMessage == null) None else Some(cause.getMessage)
       },
       Some(cause),
-      posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth),
+      Right((_: StackDepthException) => failedCodeStackDepth),
       None
     )
 
@@ -136,7 +142,7 @@ class TestCanceledException(
    *
    * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>.
    */
-  def this(message: String, cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(message)
@@ -145,7 +151,7 @@ class TestCanceledException(
         requireNonNull(cause)
         Some(cause)
       },
-      posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth),
+      Right((_: StackDepthException) => failedCodeStackDepth),
       None
     )
 

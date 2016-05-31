@@ -153,7 +153,7 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
         val tceFuture: FutureOfScala[String] = {
           val promise = Promise[String]
-          promise.failure(new TestCanceledException(Some(source.Position.here), 0))
+          promise.failure(new TestCanceledException(0))
           promise.future
         }
         intercept[TestCanceledException] {
@@ -285,10 +285,10 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture =
           new FutureConcept[String] {
-            def eitherValue: Option[Either[Throwable, String]] = Some(Left(new TestCanceledException(Some(source.Position.here), 0)))
+            def eitherValue: Option[Either[Throwable, String]] = Some(Left(new TestCanceledException(0)))
             def isExpired: Boolean = false
             def isCanceled: Boolean = false
-            def awaitAtMost(span: Span): String = throw new TestCanceledException(Some(source.Position.here), 0)
+            def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
           }
         intercept[TestCanceledException] {
           tpeFuture.futureValue
@@ -516,10 +516,10 @@ class ScalaFuturesSpec extends FunSpec with Matchers with OptionValues with Scal
       it("should allow TestCanceledException, which does not normally cause a test to fail, through immediately when thrown") {
         val tpeFuture =
           new FutureConcept[String] {
-            def eitherValue: Option[Either[Throwable, String]] = Some(Left(new TestCanceledException(Some(source.Position.here), 0)))
+            def eitherValue: Option[Either[Throwable, String]] = Some(Left(new TestCanceledException(0)))
             def isExpired: Boolean = false
             def isCanceled: Boolean = false
-            def awaitAtMost(span: Span): String = throw new TestCanceledException(Some(source.Position.here), 0)
+            def awaitAtMost(span: Span): String = throw new TestCanceledException(0)
           }
         intercept[TestCanceledException] {
           whenReady(tpeFuture) { s =>
