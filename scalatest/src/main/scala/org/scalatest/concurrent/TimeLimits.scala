@@ -238,10 +238,9 @@ trait TimeLimits {
       signaler,
       (cause: Option[Throwable]) => {
         val e = new TestFailedDueToTimeoutException(
-          sde => Some(FailureMessages.timeoutFailedAfter(prettifier, UnquotedString(timeout.prettyString))),
+          (_: StackDepthException) => Some(FailureMessages.timeoutFailedAfter(prettifier, UnquotedString(timeout.prettyString))),
           cause,
-          pos,
-          stackDepthFun,
+          posOrElseStackDepthFun(pos, stackDepthFun),
           None,
           timeout
         )

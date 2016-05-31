@@ -23,6 +23,7 @@ import scala.annotation.tailrec
 import time.{Nanosecond, Span, Nanoseconds}
 import PatienceConfiguration._
 import org.scalactic.source
+import org.scalatest.exceptions.StackDepthException
 
 /**
  * Trait that provides the <code>eventually</code> construct, which periodically retries executing
@@ -419,7 +420,7 @@ trait Eventually extends PatienceConfiguration {
           else {
             val durationSpan = Span(1, Nanosecond) scaledBy duration // Use scaledBy to get pretty units
             throw new TestFailedDueToTimeoutException(
-              sde =>
+              (_: StackDepthException) =>
                 Some(
                   if (e.getMessage == null)
                     Resources.didNotEventuallySucceed(attempt.toString, durationSpan.prettyString)
@@ -427,8 +428,7 @@ trait Eventually extends PatienceConfiguration {
                     Resources.didNotEventuallySucceedBecause(attempt.toString, durationSpan.prettyString, e.getMessage)
                 ),
               Some(e),
-              Some(pos),
-              getStackDepthFun(pos),
+              Left(pos),
               None,
               config.timeout
             )

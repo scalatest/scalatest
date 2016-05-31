@@ -49,7 +49,6 @@ class TestCanceledException(
   val payload: Option[Any]
 ) extends StackDepthException(messageFun, cause, posOrStackDepthFun/*, posOrElseStackDepthFun(pos, failedCodeStackDepthFun)*/) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
 
-
   def this(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],

@@ -39,16 +39,15 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
 abstract class PropertyCheckFailedException(
   messageFun: StackDepthException => String,
   cause: Option[Throwable],
-  pos: Option[source.Position],
-  failedCodeStackDepthFun: StackDepthException => Int,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   payload: Option[Any],
   val undecoratedMessage: String,
   val args: List[Any],
   optionalArgNames: Option[List[String]]
-) extends TestFailedException((sde: StackDepthException) => Some(messageFun(sde)), cause, posOrElseStackDepthFun(pos, failedCodeStackDepthFun), payload) {
+) extends TestFailedException((sde: StackDepthException) => Some(messageFun(sde)), cause, posOrStackDepthFun, payload) {
 
   requireNonNull(
-    messageFun, cause, failedCodeStackDepthFun, undecoratedMessage, args,
+    messageFun, cause, posOrStackDepthFun, undecoratedMessage, args,
     optionalArgNames)
 
   cause match {

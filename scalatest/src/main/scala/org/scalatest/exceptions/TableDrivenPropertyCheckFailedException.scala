@@ -50,7 +50,7 @@ class TableDrivenPropertyCheckFailedException(
   namesOfArgs: List[String],
   val row: Int
 ) extends PropertyCheckFailedException(
-  messageFun, cause, Some(pos), getStackDepthFun(pos), payload, undecoratedMessage, args, Some(namesOfArgs)
+  messageFun, cause, Left(pos), payload, undecoratedMessage, args, Some(namesOfArgs)
 ) {
 
   /**

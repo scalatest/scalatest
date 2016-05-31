@@ -19,6 +19,7 @@ import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
 import StackDepthExceptionHelper.getStackDepthFun
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 
 /**
  * Exception that indicates an action that is only allowed during a suite's test registration phase,
@@ -55,15 +56,17 @@ import StackDepthExceptionHelper.getStackDepthFun
  *
  * @author Bill Venners
  */
-class TestRegistrationClosedException(message: String, pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int)
-    extends StackDepthException(Some(message), None, failedCodeStackDepthFun) {
+class TestRegistrationClosedException(
+  message: String,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int]
+) extends StackDepthException((_: StackDepthException) => Some(message), None, posOrStackDepthFun) {
 
-  requireNonNull(message, failedCodeStackDepthFun)
+  requireNonNull(message, posOrStackDepthFun)
 
   def this(
     message: String,
     pos: source.Position
-  ) = this(message, Some(pos), getStackDepthFun(pos))
+  ) = this(message, Left(pos))
 
   /**
    * Constructs a <code>TestRegistrationClosedException</code> with a <code>message</code> and a pre-determined 
@@ -74,7 +77,8 @@ class TestRegistrationClosedException(message: String, pos: Option[source.Positi
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) = this(message, pos, (e: StackDepthException) => failedCodeStackDepth)
+  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
+    this(message, posOrElseStackDepthFun(pos, (e: StackDepthException) => failedCodeStackDepth))
 
   /**
    * Returns an exception of class <code>TestRegistrationClosedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
@@ -84,7 +88,7 @@ class TestRegistrationClosedException(message: String, pos: Option[source.Positi
    */
   def severedAtStackDepth: TestRegistrationClosedException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new TestRegistrationClosedException(message, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
+    val e = new TestRegistrationClosedException(message, posOrStackDepthFun)
     e.setStackTrace(truncated)
     e
   }

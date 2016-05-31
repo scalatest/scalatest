@@ -29,6 +29,7 @@ import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
+import org.scalatest.exceptions.StackDepthException
 
 class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
 
@@ -39,7 +40,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
       // SKIP-SCALATESTJS-START
       new JUnitTestFailedError("message", Some(source.Position.here), 3),
       // SKIP-SCALATESTJS-END
-      new TestFailedDueToTimeoutException(e => Some("message"), None, Some(source.Position.here), e => 3, None, Span(1, Second)),
+      new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException(e => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
       new GeneratorDrivenPropertyCheckFailedException(e => "message", None, source.Position.here, None, "undecMsg", List.empty, Option(List.empty), List.empty)
    )

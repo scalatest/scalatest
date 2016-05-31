@@ -42,11 +42,10 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
 class TestFailedDueToTimeoutException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
-  pos: Option[source.Position],
-  failedCodeStackDepthFun: StackDepthException => Int,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   payload: Option[Any],
   val timeout: Span
-) extends TestFailedException(messageFun, cause, posOrElseStackDepthFun(pos, failedCodeStackDepthFun), payload) with TimeoutField {
+) extends TestFailedException(messageFun, cause, posOrStackDepthFun, payload) with TimeoutField {
 
   def this(
     messageFun: StackDepthException => Option[String],
@@ -54,7 +53,7 @@ class TestFailedDueToTimeoutException(
     pos: source.Position,
     payload: Option[Any],
     timeout: Span
-  ) = this(messageFun, cause, Some(pos), getStackDepthFun(pos), payload, timeout)
+  ) = this(messageFun, cause, Left(pos), payload, timeout)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,
@@ -65,7 +64,7 @@ class TestFailedDueToTimeoutException(
    * the modified optional detail message for the result instance of <code>TestFailedDueToTimeoutException</code>.
    */
   override def modifyMessage(fun: Option[String] => Option[String]): TestFailedDueToTimeoutException = {
-    val mod = new TestFailedDueToTimeoutException(sde => fun(message), cause, pos, failedCodeStackDepthFun, payload, timeout)
+    val mod = new TestFailedDueToTimeoutException((_: StackDepthException) => fun(message), cause, posOrStackDepthFun, payload, timeout)
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -80,7 +79,7 @@ class TestFailedDueToTimeoutException(
    */
   override def modifyPayload(fun: Option[Any] => Option[Any]): TestFailedDueToTimeoutException = {
     val currentPayload = payload
-    val mod = new TestFailedDueToTimeoutException(messageFun, cause, pos, failedCodeStackDepthFun, fun(currentPayload), timeout)
+    val mod = new TestFailedDueToTimeoutException(messageFun, cause, posOrStackDepthFun, fun(currentPayload), timeout)
     mod.setStackTrace(getStackTrace)
     mod
   }
