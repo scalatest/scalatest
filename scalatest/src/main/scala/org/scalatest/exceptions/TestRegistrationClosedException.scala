@@ -55,7 +55,7 @@ import StackDepthExceptionHelper.getStackDepthFun
  *
  * @author Bill Venners
  */
-class TestRegistrationClosedException(message: String, val pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int)
+class TestRegistrationClosedException(message: String, pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int)
     extends StackDepthException(Some(message), None, failedCodeStackDepthFun) {
 
   requireNonNull(message, failedCodeStackDepthFun)
