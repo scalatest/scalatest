@@ -45,10 +45,9 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
 class TestCanceledException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
-  pos: Option[source.Position],
-  failedCodeStackDepthFun: StackDepthException => Int, 
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   val payload: Option[Any]
-) extends StackDepthException(messageFun, cause, posOrElseStackDepthFun(pos, failedCodeStackDepthFun)) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
+) extends StackDepthException(messageFun, cause, posOrStackDepthFun/*, posOrElseStackDepthFun(pos, failedCodeStackDepthFun)*/) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
 
 
   def this(
@@ -56,7 +55,7 @@ class TestCanceledException(
     cause: Option[Throwable],
     pos: source.Position,
     payload: Option[Any] = None
-  ) = this(messageFun, cause, Some(pos), getStackDepthFun(pos), payload)
+  ) = this(messageFun, cause, Left(pos), payload)
 
   /**
    * Constructs a <code>TestCanceledException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -72,8 +71,7 @@ class TestCanceledException(
     this(
       StackDepthException.toExceptionFunction(message),
       cause,
-      pos,
-      e => failedCodeStackDepth, 
+      posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth), 
       None
     )
 
@@ -83,7 +81,8 @@ class TestCanceledException(
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    */
-  def this(pos: Option[source.Position], failedCodeStackDepth: Int) = this(None, None, pos, failedCodeStackDepth)
+  def this(pos: Option[source.Position], failedCodeStackDepth: Int) =
+    this((_: StackDepthException) => None, None, posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth), None)
 
   /**
    * Create a <code>TestCanceledException</code> with a specified stack depth and detail message.
@@ -95,12 +94,12 @@ class TestCanceledException(
    */
   def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
     this(
-    {
-      Option(message)
-    },
-    None,
-    pos,
-    failedCodeStackDepth
+      {
+        (_: StackDepthException) => Option(message)
+      },
+      None,
+      posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth),
+      None
     )
 
   /**
@@ -115,13 +114,13 @@ class TestCanceledException(
    */
   def this(cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
     this(
-    {
-      requireNonNull(cause)
-      if (cause.getMessage == null) None else Some(cause.getMessage)
-    },
-    Some(cause),
-    pos,
-    failedCodeStackDepth
+      {
+        requireNonNull(cause)
+        (_: StackDepthException) => if (cause.getMessage == null) None else Some(cause.getMessage)
+      },
+      Some(cause),
+      posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth),
+      None
     )
 
   /**
@@ -140,15 +139,15 @@ class TestCanceledException(
    */
   def this(message: String, cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
     this(
-    {
-      requireNonNull(message)
-      Some(message)
-    }, {
-      requireNonNull(cause)
-      Some(cause)
-    },
-    pos,
-    failedCodeStackDepth
+      {
+        requireNonNull(message)
+        (_: StackDepthException) => Some(message)
+      }, {
+        requireNonNull(cause)
+        Some(cause)
+      },
+      posOrElseStackDepthFun(pos, (_: StackDepthException) => failedCodeStackDepth),
+      None
     )
 
   /**
@@ -159,7 +158,7 @@ class TestCanceledException(
    */
   def severedAtStackDepth: TestCanceledException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new TestCanceledException(message, cause, pos, 0)
+    val e = new TestCanceledException(messageFun, cause, posOrStackDepthFun, payload)
     e.setStackTrace(truncated)
     e
   }
@@ -173,7 +172,7 @@ class TestCanceledException(
    *            the modified optional detail message for the result instance of <code>TestCanceledException</code>.
    */
   def modifyMessage(fun: Option[String] => Option[String]): TestCanceledException = {
-    val mod = new TestCanceledException(fun(message), cause, pos, failedCodeStackDepth)
+    val mod = new TestCanceledException(StackDepthException.toExceptionFunction(fun(message)), cause, posOrStackDepthFun, payload)
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -188,7 +187,7 @@ class TestCanceledException(
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): TestCanceledException = {
     val currentPayload = payload
-    val mod = new TestCanceledException(messageFun, cause, pos, failedCodeStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
+    val mod = new TestCanceledException(messageFun, cause, posOrStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
     mod.setStackTrace(getStackTrace)
     mod
   }

@@ -16,6 +16,7 @@
 package org.scalatest.concurrent
 
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
+import org.scalatest.exceptions.StackDepthExceptionHelper.posOrElseStackDepthFun
 import org.scalatest.{FailureMessages, UnquotedString}
 import org.scalatest.exceptions.{StackDepthException, TestFailedDueToTimeoutException, TestCanceledException}
 import java.nio.channels.ClosedByInterruptException
@@ -285,10 +286,9 @@ trait TimeLimits {
       signaler,
       (cause: Option[Throwable]) => {
         val e = new TestCanceledException(
-          sde => Some(FailureMessages.timeoutCanceledAfter(prettifier, UnquotedString(timeout.prettyString))),
+          (_: StackDepthException) => Some(FailureMessages.timeoutCanceledAfter(prettifier, UnquotedString(timeout.prettyString))),
           cause,
-          pos,
-          stackDepthFun,
+          posOrElseStackDepthFun(pos, stackDepthFun),
           None
         )
         e.setStackTrace(stackTraceElements)
