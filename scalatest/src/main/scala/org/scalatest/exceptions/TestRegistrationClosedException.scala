@@ -77,8 +77,12 @@ class TestRegistrationClosedException(
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
-    this(message, posOrElseStackDepthFun(pos, (e: StackDepthException) => failedCodeStackDepth))
+  def this(message: String, failedCodeStackDepth: Int) =
+    this(message, Right((e: StackDepthException) => failedCodeStackDepth))
+
+  // The olde main constructor
+  def this(message: String, failedCodeStackDepthFun: StackDepthException => Int) =
+    this(message, Right(failedCodeStackDepthFun))
 
   /**
    * Returns an exception of class <code>TestRegistrationClosedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 

@@ -55,6 +55,15 @@ class TestFailedDueToTimeoutException(
     timeout: Span
   ) = this(messageFun, cause, Left(pos), payload, timeout)
 
+  // The olde constructor
+  def this(
+    messageFun: StackDepthException => Option[String],
+    cause: Option[Throwable],
+    failedCodeStackDepthFun: StackDepthException => Int,
+    payload: Option[Any],
+    timeout: Span
+  ) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, timeout)
+
   /**
    * Returns an instance of this exception's class, identical to this exception,
    * except with the detail message option string replaced with the result of passing

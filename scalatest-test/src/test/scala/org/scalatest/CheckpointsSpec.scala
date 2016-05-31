@@ -111,7 +111,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
       it("should pass the TestRegistrationClosedException through immediately") {
         val cp = new Checkpoint
         a [TestRegistrationClosedException] should be thrownBy {
-          cp { throw new TestRegistrationClosedException("This should not be captured by the Checkpoint", Some(source.Position.here), 0) }
+          cp { throw new TestRegistrationClosedException("This should not be captured by the Checkpoint", source.Position.here) }
         }
       }
     } 
