@@ -45,6 +45,12 @@ env:
     - MODE=examplesJS
 #    - MODE=genSafeStyleTests
 
+  exclude:
+    - scala: 2.12.0-M4
+      jdk: oraclejdk7
+    - scala: 2.12.0-M4
+      jdk: openjdk6
+
 branches:
   only:
     - 3.0.x
