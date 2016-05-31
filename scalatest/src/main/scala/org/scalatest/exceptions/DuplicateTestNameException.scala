@@ -19,6 +19,7 @@ import org.scalatest.Resources
 import org.scalactic.Requirements._
 import org.scalactic.source
 import StackDepthExceptionHelper.getStackDepthFun
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 
 /**
  * Exception that indicates an attempt was made to register a test that had the same name as a test
@@ -35,19 +36,21 @@ import StackDepthExceptionHelper.getStackDepthFun
  *
  * @author Bill Venners
  */
-class DuplicateTestNameException(testName: String, val pos: Option[source.Position], failedCodeStackDepthFun: StackDepthException => Int)
-    extends StackDepthException(
-      Some(Resources.duplicateTestName(testName)),
-      None,
-      failedCodeStackDepthFun
-    ) {
+class DuplicateTestNameException(
+  testName: String,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int]
+) extends StackDepthException(
+  (_: StackDepthException) => Some(Resources.duplicateTestName(testName)),
+  None,
+  posOrStackDepthFun
+) {
   
   requireNonNull(testName)
 
   def this(
     message: String,
     pos: source.Position
-  ) = this(message, Some(pos), getStackDepthFun(pos))
+  ) = this(message, Left(pos))
 
   /**
    * Constructs a <code>DuplicateTestNameException</code> with pre-determined <code>failedCodeStackDepth</code>. (This was
@@ -58,7 +61,8 @@ class DuplicateTestNameException(testName: String, val pos: Option[source.Positi
    *
    * @throws NullArgumentException if <code>testName</code> is <code>null</code>
    */
-  def this(testName: String, pos: Option[source.Position], failedCodeStackDepth: Int) = this(testName, pos, (e: StackDepthException) => failedCodeStackDepth)
+  def this(testName: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
+    this(testName, posOrElseStackDepthFun(pos, (e: StackDepthException) => failedCodeStackDepth))
 
   /**
    * Returns an exception of class <code>DuplicateTestNameException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
@@ -68,7 +72,7 @@ class DuplicateTestNameException(testName: String, val pos: Option[source.Positi
    */
   def severedAtStackDepth: DuplicateTestNameException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new DuplicateTestNameException(testName, pos, pos.map(getStackDepthFun).getOrElse((e: StackDepthException) => 0))
+    val e = new DuplicateTestNameException(testName, posOrStackDepthFun)
     e.setStackTrace(truncated)
     e
   }

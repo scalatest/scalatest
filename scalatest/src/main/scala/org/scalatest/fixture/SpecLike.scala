@@ -132,8 +132,8 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
                 registerNestedBranch(scopeDesc, None, scopeFun, Resources.registrationAlreadyClosed, sourceFileName, "ensureScopesAndTestsRegistered", 2, 0, Some(scopeLocation), None)
               }
               catch {
-                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.pos, (_: StackDepthException) => 8))
-                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.pos, (_: StackDepthException) => 8))
+                case e: TestFailedException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.position, (_: StackDepthException) => 8))
+                case e: TestCanceledException => throw new NotAllowedException(FailureMessages.assertionShouldBePutInsideDefNotObject, Some(e), posOrElseStackDepthFun(e.position, (_: StackDepthException) => 8))
                 case dtne: DuplicateTestNameException => throw dtne
                 case other: Throwable if (!Suite.anExceptionThatShouldCauseAnAbort(other)) =>
                   if (ScalaTestVersions.BuiltForScalaVersion == "2.12")

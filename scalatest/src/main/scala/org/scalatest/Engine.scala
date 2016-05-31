@@ -35,6 +35,7 @@ import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalactic._
 import Requirements._
 import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.exceptions.StackDepthExceptionHelper.posOrElseStackDepthFun
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {
@@ -657,7 +658,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       val duplicateTestNameAdjustment = 0
       // SKIP-SCALATESTJS-END
       //SCALATESTJS-ONLY val duplicateTestNameAdjustment = -1
-      throw new DuplicateTestNameException(testName, pos, pos.map(getStackDepthFun(_)).getOrElse(getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment)))
+      throw new DuplicateTestNameException(testName, posOrElseStackDepthFun(pos, getStackDepthFun(sourceFileName, methodName, stackDepth + adjustment + duplicateTestNameAdjustment)))
     }
     val testLocation = 
       location match {

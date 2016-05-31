@@ -19,6 +19,7 @@ package exceptions
 import org.scalactic.Requirements._
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 
 /**
  * Exception that indicates a property check failed.
@@ -44,7 +45,7 @@ abstract class PropertyCheckFailedException(
   val undecoratedMessage: String,
   val args: List[Any],
   optionalArgNames: Option[List[String]]
-) extends TestFailedException(sde => Some(messageFun(sde)), cause, pos, failedCodeStackDepthFun, payload) {
+) extends TestFailedException((sde: StackDepthException) => Some(messageFun(sde)), cause, posOrElseStackDepthFun(pos, failedCodeStackDepthFun), payload) {
 
   requireNonNull(
     messageFun, cause, failedCodeStackDepthFun, undecoratedMessage, args,

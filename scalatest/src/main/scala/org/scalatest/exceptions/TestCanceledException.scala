@@ -45,7 +45,7 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
 class TestCanceledException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
-  val pos: Option[source.Position], // TODO30 get rid of the val
+  pos: Option[source.Position],
   failedCodeStackDepthFun: StackDepthException => Int, 
   val payload: Option[Any]
 ) extends StackDepthException(messageFun, cause, posOrElseStackDepthFun(pos, failedCodeStackDepthFun)) with ModifiableMessage[TestCanceledException] with PayloadField with ModifiablePayload[TestCanceledException] {
