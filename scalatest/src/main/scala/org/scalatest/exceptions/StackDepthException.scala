@@ -51,7 +51,6 @@ abstract class StackDepthException(
   posOrStackDepthFun match {
     case Right(null) => throw new NullArgumentException("posOrStackDepthFun was Right(null)")
     case Left(null) => throw new NullArgumentException("posOrStackDepthFun was Left(null)")
-    case Right(r) => if (r == null) throw new NullArgumentException("posOrStackDepthFun was Right(null)")
     case _ =>
   }
 
