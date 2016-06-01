@@ -251,7 +251,7 @@ class AppendedCluesSpec extends FlatSpec with Matchers with SeveredStackTraces {
   }
   
   it should "return Canceled that contains TestCanceledException and with appended clue" in {
-    val canceled = Canceled(new TestCanceledException("message", Some(source.Position.here), 3))
+    val canceled = Canceled(new TestCanceledException("message", 3))
     val result = { canceled } withClue("a clue")
     result shouldBe a [Canceled]
     result.exception shouldBe a [TestCanceledException]

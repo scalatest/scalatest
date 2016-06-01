@@ -220,7 +220,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
   }
 
   it should "return Canceled that contains TestCanceledException and with prepended clue" in {
-    val canceled = Canceled(new TestCanceledException("message", Some(source.Position.here), 3))
+    val canceled = Canceled(new TestCanceledException("message", 3))
     val result = withClue("a clue") { canceled }
     result shouldBe a [Canceled]
     result.exception shouldBe a [TestCanceledException]
