@@ -43,15 +43,38 @@ import StackDepthExceptionHelper.getStackDepthFun
 class TableDrivenPropertyCheckFailedException(
   messageFun: StackDepthException => String,
   cause: Option[Throwable],
-  pos: source.Position,
+  posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   payload: Option[Any],
   undecoratedMessage: String,
   args: List[Any],
   namesOfArgs: List[String],
   val row: Int
 ) extends PropertyCheckFailedException(
-  messageFun, cause, Left(pos), payload, undecoratedMessage, args, Some(namesOfArgs)
+  messageFun, cause, posOrStackDepthFun, payload, undecoratedMessage, args, Some(namesOfArgs)
 ) {
+
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    pos: source.Position,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    namesOfArgs: List[String],
+    row: Int
+  ) = this(messageFun, cause, Left(pos), payload, undecoratedMessage, args, namesOfArgs, row)
+
+  // The olde constructor
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    failedCodeStackDepthFun: StackDepthException => Int,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    namesOfArgs: List[String],
+    row: Int
+  ) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, undecoratedMessage, args, namesOfArgs, row)
 
   /**
    * Returns an instance of this exception's class, identical to this exception,
@@ -64,9 +87,9 @@ class TableDrivenPropertyCheckFailedException(
   override def modifyMessage(fun: Option[String] => Option[String]): TableDrivenPropertyCheckFailedException = {
     val mod =
       new TableDrivenPropertyCheckFailedException(
-        sde => fun(message).getOrElse(messageFun(this)),
+        (sde: StackDepthException) => fun(message).getOrElse(messageFun(this)),
         cause,
-        pos,
+        posOrStackDepthFun,
         payload,
         undecoratedMessage,
         args,
@@ -91,7 +114,7 @@ class TableDrivenPropertyCheckFailedException(
       new TableDrivenPropertyCheckFailedException(
         messageFun,
         cause,
-        pos,
+        posOrStackDepthFun,
         fun(currentPayload),
         undecoratedMessage,
         args,

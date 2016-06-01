@@ -28,7 +28,7 @@ class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Mat
 
     val e =
       new GeneratorDrivenPropertyCheckFailedException(
-        sde => "msg",
+        (_: StackDepthException) => "msg",
         None,
         source.Position.here,
         None,
@@ -45,7 +45,7 @@ class GeneratorDrivenPropertyCheckFailedExceptionSuite extends FunSuite with Mat
 
     val e =
       new GeneratorDrivenPropertyCheckFailedException(
-        sde => "msg",
+        (_: StackDepthException) => "msg",
         None,
         source.Position.here,
         None,

@@ -1368,7 +1368,7 @@ $columnsOfIndexes$
           |        //SCALATESTJS-ONLY val stackDepth = 1
           |
           |        indicateFailure(
-          |          sde => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+          |          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
           |            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
           |            "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (ex.getMessage == null) "None" else UnquotedString(ex.getMessage)) + "\n" +
           |            (
@@ -1718,7 +1718,7 @@ $columnsOfIndexes$
          |                  result.failedElements :+ ((index,
          |                    head,
          |                    new org.scalatest.exceptions.TableDrivenPropertyCheckFailedException(
-         |                      (sde => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
+         |                      ((sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(ex.getClass.getSimpleName)) +
          |                        (sde.failedCodeFileNameAndLineNumberString match {
          |                          case Some(s) => " (" + s + ")";
          |                          case None => ""
