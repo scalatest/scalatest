@@ -71,6 +71,14 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
       (message, cause, failedCodeStackDepth) => new NoFunException(message, cause, failedCodeStackDepth),
       (messageFun, cause, failedCodeStackDepthFun) => new FunException(messageFun, cause, failedCodeStackDepthFun)
     )
+
+/*
+    when("created with a stack depth (i.e., not a Position)") {
+      it("should return None from its failedCodeFilePathname method") {
+        new TestFailedException(e => Some("hi"), None, Some(source.Position.here), 
+      }
+    }
+*/
   }
 
   describe("A TestFailedException") {
