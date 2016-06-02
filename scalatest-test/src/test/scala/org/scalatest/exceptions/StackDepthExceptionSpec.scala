@@ -24,12 +24,11 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
   class FunException(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
-    val pos: Option[source.Position],
     failedCodeStackDepthFun: StackDepthException => Int
   ) extends StackDepthException(messageFun, cause, Right(failedCodeStackDepthFun)) {
     def severedAtStackDepth: FunException = {
       val truncated = getStackTrace.drop(failedCodeStackDepth)
-      val e = new FunException(messageFun, cause, pos, e => 0)
+      val e = new FunException(messageFun, cause, e => 0)
       e.setStackTrace(truncated)
       e
     }
@@ -38,12 +37,11 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
   class NoFunException(
     message: Option[String],
     cause: Option[Throwable],
-    val pos: Option[source.Position],
     failedCodeStackDepth: Int
   ) extends StackDepthException(message, cause, failedCodeStackDepth) {
     def severedAtStackDepth: NoFunException = {
       val truncated = getStackTrace.drop(failedCodeStackDepth)
-      val e = new NoFunException(message, cause, pos, 0)
+      val e = new NoFunException(message, cause, 0)
       e.setStackTrace(truncated)
       e
     }
@@ -70,8 +68,8 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
   describe("A StackDepthException") {
 
     it should behave like aStackDepthExceptionWhenGivenNulls(
-      (message, cause, failedCodeStackDepth) => new NoFunException(message, cause, Some(source.Position.here), failedCodeStackDepth),
-      (messageFun, cause, failedCodeStackDepthFun) => new FunException(messageFun, cause, Some(source.Position.here), failedCodeStackDepthFun)
+      (message, cause, failedCodeStackDepth) => new NoFunException(message, cause, failedCodeStackDepth),
+      (messageFun, cause, failedCodeStackDepthFun) => new FunException(messageFun, cause, failedCodeStackDepthFun)
     )
   }
 
