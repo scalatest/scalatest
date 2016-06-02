@@ -78,7 +78,7 @@ class TestFailedException(
    * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
   def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], pos: Option[source.Position],failedCodeStackDepthFun: StackDepthException => Int) =
-    this(messageFun, cause, posOrElseStackDepthFun(pos, failedCodeStackDepthFun), None)
+    this(messageFun, cause, Right(failedCodeStackDepthFun), None)
 
   /**
    * Constructs a <code>TestFailedException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -94,7 +94,7 @@ class TestFailedException(
     this(
       StackDepthException.toExceptionFunction(message),
       cause,
-      posOrElseStackDepthFun(pos, _ => failedCodeStackDepth),
+      Right((_: StackDepthException) => failedCodeStackDepth),
       None
     )
 
@@ -105,7 +105,12 @@ class TestFailedException(
    *
    */
   def this(pos: Option[source.Position], failedCodeStackDepth: Int) =
-    this(StackDepthException.toExceptionFunction(None), None, posOrElseStackDepthFun(pos, _ => failedCodeStackDepth), None)
+    this(
+      StackDepthException.toExceptionFunction(None),
+      None,
+      Right((_: StackDepthException) => failedCodeStackDepth),
+      None
+    )
 
   /**
    * Create a <code>TestFailedException</code> with a specified stack depth and detail message.
@@ -122,7 +127,7 @@ class TestFailedException(
         StackDepthException.toExceptionFunction(Some(message))
       },
       None,
-      posOrElseStackDepthFun(pos, _ => failedCodeStackDepth),
+      Right((_: StackDepthException) => failedCodeStackDepth),
       None
     )
 
@@ -143,7 +148,7 @@ class TestFailedException(
         StackDepthException.toExceptionFunction(if (cause.getMessage == null) None else Some(cause.getMessage))
       },
       Some(cause),
-      posOrElseStackDepthFun(pos, _ => failedCodeStackDepth),
+      Right((_: StackDepthException) => failedCodeStackDepth),
       None
     )
 
@@ -171,7 +176,7 @@ class TestFailedException(
         requireNonNull(cause)
         Some(cause)
       },
-      posOrElseStackDepthFun(pos, _ => failedCodeStackDepth),
+      Right((_: StackDepthException) => failedCodeStackDepth),
       None
     )
 
