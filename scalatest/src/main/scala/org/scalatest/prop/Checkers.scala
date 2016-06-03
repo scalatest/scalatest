@@ -24,7 +24,6 @@ import org.scalacheck.util.Pretty
 import org.scalacheck.Prop.Arg
 import org.scalacheck.Prop
 import org.scalacheck.Test
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalacheck.Test.Parameters

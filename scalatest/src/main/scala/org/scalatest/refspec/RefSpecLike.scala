@@ -18,7 +18,6 @@ package org.scalatest.refspec
 import scala.collection.immutable.ListSet
 import org.scalatest._
 import org.scalatest.exceptions._
-import StackDepthExceptionHelper.getStackDepthFun
 import StackDepthExceptionHelper.posOrElseStackDepthFun
 import Suite._
 import RefSpec.isTestMethod

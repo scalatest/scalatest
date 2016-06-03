@@ -22,7 +22,6 @@ import org.scalatest.exceptions.TestFailedException
 import scala.reflect.ClassTag
 import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException._
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 import org.scalactic.source
 

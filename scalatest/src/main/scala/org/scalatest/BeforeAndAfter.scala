@@ -17,7 +17,6 @@ package org.scalatest
 
 import java.util.concurrent.atomic.AtomicReference
 import exceptions.NotAllowedException
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.source
 
 /**

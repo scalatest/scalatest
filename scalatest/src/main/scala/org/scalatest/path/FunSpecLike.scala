@@ -20,7 +20,6 @@ import scala.collection.immutable.ListSet
 import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest._
 import org.scalatest.exceptions._
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import Suite.autoTagClassAnnotations
 import org.scalactic.{source, Prettifier}
 

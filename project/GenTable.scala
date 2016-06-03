@@ -177,7 +177,6 @@ import scala.collection.mutable.Builder
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.IndexedSeqLike
 import scala.collection.generic.CanBuildFrom
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
 import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
@@ -481,7 +480,6 @@ object Tables extends Tables
 """
 
 val propertyCheckPreamble = """
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepth
 import scala.annotation.tailrec
 import org.scalatest.enablers.TableAsserting
@@ -1386,7 +1384,6 @@ $columnsOfIndexes$
           |          List($alphaName$),
           |          Some(ex),
           |          None, // Payload
-          |          getStackDepthFun(pos),
           |          prettifier,
           |          pos,
           |          idx
@@ -1656,7 +1653,6 @@ $columnsOfIndexes$
          |import org.scalatest.exceptions.TableDrivenPropertyCheckFailedException
          |import org.scalatest.exceptions.DiscardedEvaluationException
          |import org.scalatest.exceptions.StackDepth
-         |import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
          |import org.scalactic._
          |
          |/**
@@ -1764,7 +1760,6 @@ $columnsOfIndexes$
          |        indicateFailure(
          |          messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
          |          messageList.headOption,
-         |          getStackDepthFun(pos),
          |          prettifier,
          |          pos
          |        )
@@ -1781,7 +1776,6 @@ $columnsOfIndexes$
          |        indicateFailure(
          |          messageFun(UnquotedString(indentErrorMessages(messageList.map(_.toString)).mkString(", \n"))),
          |          messageList.headOption,
-         |          getStackDepthFun(pos),
          |          prettifier,
          |          pos
          |        )
@@ -1791,9 +1785,9 @@ $columnsOfIndexes$
          |
          |    private[scalatest] def indicateSuccess(message: => String): Result
          |
-         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position, idx: Int): Result
+         |    private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Result
          |
-         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position): Result
+         |    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Result
          |  }
          |
          |  /**
@@ -1805,7 +1799,7 @@ $columnsOfIndexes$
          |    new TableAssertingImpl[T] {
          |      type Result = Unit
          |      def indicateSuccess(message: => String): Unit = ()
-         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position, idx: Int): Unit =
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Unit =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
@@ -1816,14 +1810,12 @@ $columnsOfIndexes$
          |          namesOfArgs,
          |          idx
          |        )
-         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position): Unit =
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Unit =
          |        throw new org.scalatest.exceptions.TestFailedException(
          |          (_: StackDepthException) => Some(message),
          |          optionalCause,
-         |          Some(pos),
-         |          stackDepthFun
+         |          pos
          |        )
-         |
          |    }
          |  }
          |}
@@ -1856,7 +1848,7 @@ $columnsOfIndexes$
          |    new TableAssertingImpl[Assertion] {
          |      type Result = Assertion
          |      def indicateSuccess(message: => String): Assertion = Succeeded
-         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
+         |      def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, args: List[Any], namesOfArgs: List[String], optionalCause: Option[Throwable], payload: Option[Any], prettifier: Prettifier, pos: source.Position, idx: Int): Assertion =
          |        throw new TableDrivenPropertyCheckFailedException(
          |          messageFun,
          |          optionalCause,
@@ -1867,16 +1859,14 @@ $columnsOfIndexes$
          |          namesOfArgs,
          |          idx
          |        )
-         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], stackDepthFun: StackDepthException => Int, prettifier: Prettifier, pos: source.Position): Assertion =
+         |      def indicateFailure(message: => String, optionalCause: Option[Throwable], prettifier: Prettifier, pos: source.Position): Assertion =
          |        throw new org.scalatest.exceptions.TestFailedException(
          |          (_: StackDepthException) => Some(message),
          |          optionalCause,
-         |          Some(pos),
-         |          stackDepthFun
+         |          pos
          |        )
          |    }
          |  }
-         |
          |}
          |
          |

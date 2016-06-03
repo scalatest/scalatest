@@ -19,7 +19,6 @@ import scala.collection.immutable.ListSet
 import words.BehaveWord
 import Suite.autoTagClassAnnotations
 import scala.concurrent.Future
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic._
 
 /**

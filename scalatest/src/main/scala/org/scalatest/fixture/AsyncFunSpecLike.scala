@@ -18,7 +18,6 @@ package org.scalatest.fixture
 import org.scalatest._
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions._
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.events._
@@ -398,13 +397,6 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    * @throws TestRegistrationClosedException if invoked after <code>run</code> has been invoked on this suite
    * @throws NullArgumentException if <code>specText</code> or any passed test tag is <code>null</code>
    */
-/*
-  protected def ignore(specText: String)(testFun: FixtureParam => Future[compatible.Assertion]) {
-    if (atomic.get.registrationClosed)
-      throw new TestRegistrationClosedException(Resources.ignoreCannotAppearInsideAnItOrAThey, getStackDepthFun(sourceFileName, "ignore"))
-    ignore(specText, Array[Tag](): _*)(testFun)
-  }
-*/
 
   /**
    * Describe a &ldquo;subject&rdquo; being specified and tested by the passed function value. The

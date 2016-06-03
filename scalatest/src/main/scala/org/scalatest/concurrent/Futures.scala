@@ -16,7 +16,7 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
-import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import scala.annotation.tailrec
 import org.scalatest.time.Span

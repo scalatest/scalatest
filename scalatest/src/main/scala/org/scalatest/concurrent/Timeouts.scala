@@ -17,7 +17,6 @@ package org.scalatest.concurrent
 
 import java.util.TimerTask
 import java.util.Timer
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.Resources
 import org.scalatest.exceptions.StackDepthException

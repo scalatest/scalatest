@@ -20,7 +20,6 @@ import org.scalatest.exceptions.StackDepthException
 import scala.collection.JavaConverters._
 import org.scalatest.exceptions._
 import org.scalactic._
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Trait providing class <code>Checkpoint</code>, which enables multiple assertions

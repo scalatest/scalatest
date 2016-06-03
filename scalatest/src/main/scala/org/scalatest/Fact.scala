@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalactic._
 import org.scalatest.exceptions.StackDepthException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
 

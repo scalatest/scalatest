@@ -16,7 +16,6 @@
 package org.scalatest.exceptions
 
 import org.scalactic.exceptions.NullArgumentException
-import StackDepthExceptionHelper.getStackDepthFun
 import org.scalactic.Requirements._
 import org.scalactic.source
 import StackDepthExceptionHelper.posOrElseStackDepthFun

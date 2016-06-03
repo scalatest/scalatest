@@ -19,7 +19,6 @@ import scala.collection.immutable.ListSet
 import words.BehaveWord
 import Suite.autoTagClassAnnotations
 import org.scalactic._
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Implementation trait for class <code>FunSpec</code>, which 

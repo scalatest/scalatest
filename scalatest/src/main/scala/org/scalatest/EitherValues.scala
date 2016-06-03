@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.StackDepthException
 import org.scalactic._
 
 /**
@@ -121,7 +121,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.eitherLeftValueNotDefined), Some(cause), pos)
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined), Some(cause), pos)
       }
     }
   }
@@ -149,7 +149,7 @@ trait EitherValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.eitherRightValueNotDefined), Some(cause), pos)
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined), Some(cause), pos)
       }
     }
   }

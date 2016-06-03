@@ -289,20 +289,20 @@ class TestFailedExceptionSpec extends FunSpec with Matchers {
 
     it("should return the cause in both cause and getCause") {
       val theCause = new IllegalArgumentException("howdy")
-      val tfe = new TestFailedException(Some("doody"), Some(theCause), Some(source.Position.here), 3)
+      val tfe = new TestFailedException((_: StackDepthException) => Some("doody"), Some(theCause), source.Position.here)
       assert(tfe.cause.isDefined)
       assert(tfe.cause.get === theCause)
       assert(tfe.getCause == theCause)
     }
 
     it("should return None in cause and null in getCause if no cause") {
-      val tfe = new TestFailedException(Some("doody"), None, Some(source.Position.here), 3)
+      val tfe = new TestFailedException((_: StackDepthException) => Some("doody"), None, source.Position.here)
       assert(tfe.cause.isEmpty)
       assert(tfe.getCause == null)
     }
 
     it("should be equal to itself") {
-      val tfe = new TestFailedException(Some("doody"), None, Some(source.Position.here), 3)
+      val tfe = new TestFailedException((_: StackDepthException) => Some("doody"), None, source.Position.here)
       assert(tfe equals tfe)
     }
   }

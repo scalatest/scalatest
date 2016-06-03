@@ -17,7 +17,6 @@ package org.scalatest
 package exceptions
 
 import org.scalactic.source
-import StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Exception that indicates a table-driven property check failed.

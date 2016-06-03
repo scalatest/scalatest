@@ -19,7 +19,6 @@ import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
   MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions._
-import StackDepthExceptionHelper.getStackDepthFun
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.events._

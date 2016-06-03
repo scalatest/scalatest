@@ -33,7 +33,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   def examples =  // TODO, also support payloads in JUnit errors
     Table(
       "exception",
-      new TestFailedException("message", Some(source.Position.here), 3),
+      new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here),
       // SKIP-SCALATESTJS-START
       new JUnitTestFailedError("message", Some(source.Position.here), 3),
       // SKIP-SCALATESTJS-END
@@ -153,7 +153,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
   }
   
   it should "return Failed that contains TestFailedException and added payload" in {
-    val failed = Failed(new TestFailedException("boom!", Some(source.Position.here), 3))
+    val failed = Failed(new TestFailedException((_: StackDepthException) => Some("boom!"), None, source.Position.here))
     val result = withPayload("a payload") { failed }
     result shouldBe a [Failed]
     result.exception shouldBe a [TestFailedException]

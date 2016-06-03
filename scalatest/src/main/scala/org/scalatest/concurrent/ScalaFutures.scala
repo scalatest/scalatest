@@ -16,7 +16,6 @@
 package org.scalatest.concurrent
 
 import org.scalatest.time.Span
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Resources
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}

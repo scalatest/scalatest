@@ -45,7 +45,6 @@ import org.scalatest.MatchersHelper.includeRegexWithGroups
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
 import org.scalatest.exceptions.NotAllowedException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.Assertion
 import org.scalatest.Succeeded
 import scala.annotation.tailrec

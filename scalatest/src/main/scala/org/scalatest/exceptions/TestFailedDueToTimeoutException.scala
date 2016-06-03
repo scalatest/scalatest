@@ -17,7 +17,6 @@ package org.scalatest.exceptions
 
 import org.scalatest.time.Span
 import org.scalactic.source
-import StackDepthExceptionHelper.getStackDepthFun
 import StackDepthExceptionHelper.posOrElseStackDepthFun
 
 /**

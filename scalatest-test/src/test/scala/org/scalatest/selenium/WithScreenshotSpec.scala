@@ -20,6 +20,7 @@ import java.io.File
 import org.openqa.selenium.WebDriver.{Options, TargetLocator, Navigation}
 import org.openqa.selenium._
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.StackDepthException
 import org.scalatest.Matchers
 
 import org.scalactic.source
@@ -36,7 +37,7 @@ class WithScreenshotSpec extends JettySpec with Matchers with WebBrowser {
   describe("withScreenshot") {
 
     it("should save a screenshot file when a ModifiableMessage-based exception is thrown in the given function") {
-      def fun: Int = throw new TestFailedException("foo", Some(source.Position.here), 1)
+      def fun: Int = throw new TestFailedException((_: StackDepthException) => Some("foo"), None, source.Position.here)
 
       val beforeFiles = tmpFiles(systemTmpDir)
 

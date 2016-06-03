@@ -16,7 +16,6 @@
 package org.scalatest.exceptions
 
 import org.scalactic.exceptions.NullArgumentException
-import StackDepthExceptionHelper.getStackDepthFun
 import StackDepthExceptionHelper.posOrElseStackDepthFun
 import org.scalactic.Requirements._
 import org.scalactic.source
@@ -77,7 +76,7 @@ class TestFailedException(
    *
    * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
-  def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], pos: Option[source.Position],failedCodeStackDepthFun: StackDepthException => Int) =
+  def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
     this(messageFun, cause, Right(failedCodeStackDepthFun), None)
 
   /**
@@ -90,7 +89,7 @@ class TestFailedException(
    *
    * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
-  def this(message: Option[String], cause: Option[Throwable], pos: Option[source.Position],failedCodeStackDepth: Int) =
+  def this(message: Option[String], cause: Option[Throwable], failedCodeStackDepth: Int) =
     this(
       StackDepthException.toExceptionFunction(message),
       cause,
@@ -104,7 +103,7 @@ class TestFailedException(
    * @param failedCodeStackDepth the depth in the stack trace of this exception at which the line of test code that failed resides.
    *
    */
-  def this(pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(failedCodeStackDepth: Int) =
     this(
       StackDepthException.toExceptionFunction(None),
       None,
@@ -120,7 +119,7 @@ class TestFailedException(
    *
    * @throws NullArgumentException if <code>message</code> is <code>null</code>.
    */
-  def this(message: String, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(message: String, failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(message)
@@ -141,7 +140,7 @@ class TestFailedException(
    *
    * @throws NullArgumentException if <code>cause</code> is <code>null</code>.
    */
-  def this(cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(cause)
@@ -166,7 +165,7 @@ class TestFailedException(
    *
    * @throws NullArgumentException if either <code>message</code> or <code>cause</code> is <code>null</code>.
    */
-  def this(message: String, cause: Throwable, pos: Option[source.Position], failedCodeStackDepth: Int) =
+  def this(message: String, cause: Throwable, failedCodeStackDepth: Int) =
     this(
       {
         requireNonNull(message)

@@ -18,7 +18,6 @@ package org.scalatest.prop
 import scala.annotation.tailrec
 import scala.util.{Try, Failure, Success}
 import org.scalatest.exceptions.DiscardedEvaluationException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth

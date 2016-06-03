@@ -36,7 +36,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
   def examples: TableFor1[Throwable with ModifiableMessage[_ <: StackDepth]] =
     Table(
       "exception",
-      new TestFailedException("message", Some(source.Position.here), 3),
+      new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here),
       // SKIP-SCALATESTJS-START
       new JUnitTestFailedError("message", Some(source.Position.here), 3),
       // SKIP-SCALATESTJS-END
@@ -205,7 +205,7 @@ class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
   }
 
   it should "return Failed that contains TestFailedException and with prepended clue" in {
-    val failed = Failed(new TestFailedException("message", Some(source.Position.here), 3))
+    val failed = Failed(new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here))
     val result = withClue("a clue") { failed }
     result shouldBe a [Failed]
     result.exception shouldBe a [TestFailedException]

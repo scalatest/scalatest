@@ -16,8 +16,8 @@
 package org.scalatest
 
 import java.util.NoSuchElementException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.StackDepthException
 
 import scala.util.Try
 import scala.util.Failure
@@ -121,7 +121,7 @@ trait TryValues {
       theTry match {
         case failure: Failure[T] => failure
         case _ => 
-          throw new TestFailedException(sde => Some(Resources.tryNotAFailure), None, pos)
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.tryNotAFailure), None, pos)
       }
     }
 
@@ -133,7 +133,7 @@ trait TryValues {
       theTry match {
         case success: Success[T] => success
         case _ => 
-          throw new TestFailedException(sde => Some(Resources.tryNotASuccess), None, pos)
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.tryNotASuccess), None, pos)
       }
     }
   }

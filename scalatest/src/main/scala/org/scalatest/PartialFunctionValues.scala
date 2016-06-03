@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.StackDepthException
 import org.scalactic._
 
 /**
@@ -111,7 +111,7 @@ trait PartialFunctionValues {
         pf.apply(input)
       }
       else
-        throw new TestFailedException(sde => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, pos)
+        throw new TestFailedException((_: StackDepthException) => Some(Resources.partialFunctionValueNotDefined(input.toString)), None, pos)
     }
   }
 }

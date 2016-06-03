@@ -18,7 +18,6 @@ package org.scalatest.concurrent
 //import java.util.TimerTask
 //import java.util.Timer
 import org.scalatest.TimerTask
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.Resources
 import org.scalatest.exceptions.StackDepthException
 import java.nio.channels.ClosedByInterruptException

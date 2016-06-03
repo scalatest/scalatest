@@ -17,7 +17,6 @@ package org.scalatest
 
 import scala.collection.GenTraversable
 import scala.annotation.tailrec
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import scala.collection.GenSeq
 import Suite.indentLines
 import FailureMessages.decorateToStringValue

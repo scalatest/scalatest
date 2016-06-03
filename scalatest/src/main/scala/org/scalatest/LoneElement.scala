@@ -18,7 +18,6 @@ package org.scalatest
 import enablers.Collecting
 import org.scalactic._
 import exceptions.StackDepthException
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 /**
  * Trait that provides an implicit conversion that adds to collection types a <code>loneElement</code> method, which
@@ -117,12 +116,11 @@ trait LoneElement {
         case Some(ele) => ele
         case None =>
           throw new exceptions.TestFailedException(
-            (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
+            (_: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
                  collection,
                  collecting.sizeOf(collection))),
             None,
-            Some(pos),
-            getStackDepthFun(pos)
+            pos
           )
       }
     }
@@ -165,12 +163,11 @@ trait LoneElement {
         case Some(ele) => ele
         case None =>
           throw new exceptions.TestFailedException(
-            (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
+            (_: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
                  jmap,
                  collecting.sizeOf(jmap))), 
             None,
-            Some(pos),
-            getStackDepthFun(pos)
+            pos
           )
       }
     }
@@ -203,15 +200,13 @@ trait LoneElement {
         s.charAt(0)
       else
         throw new exceptions.TestFailedException(
-          (e: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
+          (_: StackDepthException) => Some(FailureMessages.notLoneElement(prettifier,
             s,
             s.length)),
           None,
-          Some(pos),
-          getStackDepthFun(pos)
+          pos
         )
     }
-
   }
 
   /**

@@ -17,7 +17,6 @@ package org.scalatest.exceptions
 
 import org.scalatest._
 import org.scalactic.source
-import StackDepthExceptionHelper.getStackDepthFun
 
 // TODO: A test and code for null labels throwing an NPE
 /**

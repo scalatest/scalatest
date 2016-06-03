@@ -20,7 +20,6 @@ import Assertions.fail
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.StackDepthException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import time.{Nanoseconds, Second, Span}
 import PatienceConfiguration._
 import org.scalactic.source

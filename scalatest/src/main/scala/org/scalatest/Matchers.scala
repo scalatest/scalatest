@@ -40,7 +40,6 @@ import MatchersHelper.endWithRegexWithGroups
 import MatchersHelper.includeRegexWithGroups
 import MatchersHelper.indicateSuccess
 import MatchersHelper.indicateFailure
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.NotAllowedException
 import scala.language.experimental.macros
 import scala.language.higherKinds

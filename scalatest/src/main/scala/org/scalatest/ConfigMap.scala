@@ -17,7 +17,6 @@ package org.scalatest
 
 import exceptions.TestCanceledException
 import exceptions.StackDepthException
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 
 import reflect.ClassTag
 import collection.immutable.MapLike

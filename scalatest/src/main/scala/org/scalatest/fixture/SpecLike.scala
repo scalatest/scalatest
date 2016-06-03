@@ -19,7 +19,6 @@ import scala.collection.immutable.ListSet
 import org.scalatest.Suite.{IgnoreTagName, autoTagClassAnnotations}
 import org.scalatest._
 import org.scalatest.exceptions._
-import StackDepthExceptionHelper.getStackDepthFun
 import StackDepthExceptionHelper.posOrElseStackDepthFun
 import Spec._
 import Suite._

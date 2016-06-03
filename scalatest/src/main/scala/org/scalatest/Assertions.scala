@@ -20,7 +20,6 @@ import exceptions.TestPendingException
 import exceptions.StackDepthException
 import scala.reflect.ClassTag
 import Assertions.areEqualComparingArraysStructurally
-import exceptions.StackDepthExceptionHelper.getStackDepthFun
 import exceptions.StackDepthException.toExceptionFunction
 import Assertions.NormalResult
 import exceptions.TestFailedException

@@ -16,6 +16,7 @@
 package org.scalatest
 
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec
 import org.scalactic._
 
@@ -136,7 +137,7 @@ trait Inside {
     }
     else {
       Inside.level.set(Inside.level.get - 1)
-      throw new TestFailedException(sde => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, pos)
+      throw new TestFailedException((_: StackDepthException) => Some(Resources.insidePartialFunctionNotDefined(value.toString())), None, pos)
     }
   }
 }

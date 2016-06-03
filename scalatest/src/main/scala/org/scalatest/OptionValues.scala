@@ -16,8 +16,8 @@
 package org.scalatest
 
 import java.util.NoSuchElementException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.StackDepthException
 import org.scalactic._
 
 /**
@@ -111,7 +111,7 @@ trait OptionValues {
       }
       catch {
         case cause: NoSuchElementException => 
-          throw new TestFailedException(sde => Some(Resources.optionValueNotDefined), Some(cause), pos)
+          throw new TestFailedException((_: StackDepthException) => Some(Resources.optionValueNotDefined), Some(cause), pos)
       }
     }
   }

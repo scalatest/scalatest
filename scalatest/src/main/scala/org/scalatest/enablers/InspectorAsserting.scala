@@ -18,7 +18,7 @@ package org.scalatest.enablers
 import org.scalactic.{source, Prettifier}
 import org.scalatest._
 import org.scalatest.exceptions._
-import StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
+import StackDepthExceptionHelper.getStackDepth
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
 import Suite.indentLines

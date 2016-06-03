@@ -84,8 +84,8 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
   describe("A TestFailedException") {
 
     it should behave like aStackDepthExceptionWhenGivenNulls(
-      (message, cause, failedCodeStackDepth) => new TestFailedException(message, cause, Some(source.Position.here), failedCodeStackDepth),
-      (messageFun, cause, failedCodeStackDepthFun) => new TestFailedException(messageFun, cause, Some(source.Position.here), failedCodeStackDepthFun)
+      (message, cause, failedCodeStackDepth) => new TestFailedException(message, cause, failedCodeStackDepth),
+      (messageFun, cause, failedCodeStackDepthFun) => new TestFailedException(messageFun, cause, failedCodeStackDepthFun)
     )
   }
 
