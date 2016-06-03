@@ -138,6 +138,8 @@ abstract class StackDepthException(
    */
   lazy val message: Option[String] = messageFun(this)
  
+  lazy val failedCodeFilePathname: Option[String] = position.map(_.filePathname)
+
   /**
    * The depth in the stack trace of this exception at which the line of test code that failed resides.
    *

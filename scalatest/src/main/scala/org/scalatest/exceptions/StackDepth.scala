@@ -46,7 +46,15 @@ trait StackDepth { this: Throwable =>
   val failedCodeStackDepth: Int
 
   /**
-   * An optional source position describing the line of test code that failed and caused this exception.
+   * A string that provides the full pathname of the source file containing the line of code that failed, suitable
+   * for presenting to a user.
+   *
+   * @return a string containing the full pathname of the source file containing the line of code that caused this exception
+   */
+  val failedCodeFilePathname: Option[String]
+
+  /**
+   * An optional source position describing the line of test code that caused this exception.
    */
   val position: Option[source.Position]
 

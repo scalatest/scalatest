@@ -18,6 +18,9 @@ package exceptions
 
 import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalactic.source
+import org.scalatest.time.Span
+import org.scalatest.time.Second
+import org.scalatest.junit.JUnitTestFailedError
 
 class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenPropertyChecks {
 
@@ -65,20 +68,67 @@ class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenProp
       (Some("hi"),  Some(null))
     )
 
-  describe("A StackDepthException") {
+  def positionExamples = 
+    Table(
+      "exception",
+      new TestFailedException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None),
+      // SKIP-SCALATESTJS-START
+      new JUnitTestFailedError(Some("message"), None, Left(source.Position.here), None),
+      // SKIP-SCALATESTJS-END
+      new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
+      new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, Left(source.Position.here), None, "undecMsg", List.empty, List.empty, 3),
+      new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, Left(source.Position.here), None, "undecMsg", List.empty, Option(List.empty), List.empty),
+      new TestCanceledException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None),
+      new TestRegistrationClosedException("message", Left(source.Position.here)),
+      new NotAllowedException("message", None, Left(source.Position.here)),
+      new DuplicateTestNameException("the test name", Left(source.Position.here))
+   )
+
+  def stackDepthExamples = 
+    Table(
+      "exception",
+      new TestFailedException((_: StackDepthException) => Some("message"), None, Right((_: StackDepthException) => 3), None),
+      // SKIP-SCALATESTJS-START
+      new JUnitTestFailedError(Some("message"), None, Right(3), None),
+      // SKIP-SCALATESTJS-END
+      new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Right((_: StackDepthException) => 3), None, Span(1, Second)),
+      new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, Right((_: StackDepthException) => 3), None, "undecMsg", List.empty, List.empty, 3),
+      new GeneratorDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, Right((_: StackDepthException) => 3), None, "undecMsg", List.empty, Option(List.empty), List.empty),
+      new TestCanceledException((_: StackDepthException) => Some("message"), None, Right((_: StackDepthException) => 3), None),
+      new TestRegistrationClosedException("message", Right((_: StackDepthException) => 3)),
+      new NotAllowedException("message", None, Right((_: StackDepthException) => 3)),
+      new DuplicateTestNameException("the test name", Right((_: StackDepthException) => 3))
+   )
+
+/*
+  "The modifyPayload method on TFE" should "return the an exception with an equal message option if passed a function that returns the same option passed to it" in {
+    forAll (examples) { e =>
+      e.modifyPayload(opt => opt) should equal (e)
+    }
+  }
+*/
+
+  describe("A StackDepth exception") {
 
     it should behave like aStackDepthExceptionWhenGivenNulls(
       (message, cause, failedCodeStackDepth) => new NoFunException(message, cause, failedCodeStackDepth),
       (messageFun, cause, failedCodeStackDepthFun) => new FunException(messageFun, cause, failedCodeStackDepthFun)
     )
 
-/*
-    when("created with a stack depth (i.e., not a Position)") {
+    describe("when created with a stack depth (i.e., not a Position)") {
       it("should return None from its failedCodeFilePathname method") {
-        new TestFailedException(e => Some("hi"), None, Some(source.Position.here), 
+        forAll (stackDepthExamples) { ex =>
+          ex.failedCodeFilePathname shouldBe None
+        }
       }
     }
-*/
+    describe("when created with a Position (i.e., not a stack depth)") {
+      it("should return a Some from its failedCodeFilePathname method") {
+        forAll (positionExamples) { ex =>
+          ex.failedCodeFilePathname shouldBe defined
+        }
+      }
+    }
   }
 
   describe("A TestFailedException") {

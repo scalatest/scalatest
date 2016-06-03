@@ -109,6 +109,8 @@ class JUnitTestFailedError(
 
   val position: Option[source.Position] = posOrStackDepth.left.toOption
 
+  lazy val failedCodeFilePathname: Option[String] = position.map(_.filePathname)
+
   lazy val failedCodeStackDepth: Int =
      posOrStackDepth match {
        case Left(pos) => getStackDepth(this.getStackTrace, pos)
