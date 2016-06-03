@@ -97,14 +97,7 @@ import org.scalactic._
 trait AssertionsForJUnit extends Assertions {
 
   private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
-    val e = new Exception
-    val stackDepth = getStackDepth(e.getStackTrace, pos)
-    (optionalMessage, optionalCause) match {
-      case (None, None) => new JUnitTestFailedError(Some(pos), stackDepth)
-      case (None, Some(cause)) => new JUnitTestFailedError(cause, Some(pos), stackDepth)
-      case (Some(message), None) => new JUnitTestFailedError(message.toString, Some(pos), stackDepth)
-      case (Some(message), Some(cause)) => new JUnitTestFailedError(message.toString, cause, Some(pos), stackDepth)
-    }
+    new JUnitTestFailedError(optionalMessage, optionalCause, pos, None)
   }
   
  /*

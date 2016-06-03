@@ -35,7 +35,7 @@ class PayloadSpec extends FlatSpec with Matchers with TableDrivenPropertyChecks 
       "exception",
       new TestFailedException((_: StackDepthException) => Some("message"), None, source.Position.here),
       // SKIP-SCALATESTJS-START
-      new JUnitTestFailedError("message", Some(source.Position.here), 3),
+      new JUnitTestFailedError("message", 3),
       // SKIP-SCALATESTJS-END
       new TestFailedDueToTimeoutException((_: StackDepthException) => Some("message"), None, Left(source.Position.here), None, Span(1, Second)),
       new TableDrivenPropertyCheckFailedException((_: StackDepthException) => "message", None, source.Position.here, None, "undecMsg", List.empty, List.empty, 3),
