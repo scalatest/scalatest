@@ -15,8 +15,7 @@
  */
 package org.scalatest.tools
 import java.net.ServerSocket
-import java.io.BufferedReader
-import java.io.InputStreamReader
+import java.io.{File, BufferedReader, InputStreamReader}
 import scala.xml.XML
 import scala.xml.Elem
 import org.xml.sax.SAXException
@@ -184,7 +183,8 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
         assert(value === "")
     }
   }
-  
+  val sep = File.separator
+
   def checkScopeEvents(scopeOpened: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], fileName: String, lineNumber: Int): Unit = {
     assert((scopeOpened \ "message").text === message )
     assert((scopeOpened \ "nameInfo" \ "suiteName").text === suiteName )
@@ -192,6 +192,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     checkStringOption((scopeOpened \ "nameInfo" \ "suiteClassName").text, suiteClassName)
     assert((scopeOpened \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((scopeOpened \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    assert((scopeOpened \ "location" \ "LineInFile" \ "filePathname").text endsWith s"scalatest-test${sep}src${sep}test${sep}scala${sep}org${sep}scalatest${sep}tools${sep}${fileName}")
   }
   
   def checkTestStarting(testStarting:Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
@@ -204,6 +205,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testStarting \ "testText").text === testText)
     assert((testStarting \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testStarting \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    assert((testStarting \ "location" \ "LineInFile" \ "filePathname").text endsWith s"scalatest-test${sep}src${sep}test${sep}scala${sep}org${sep}scalatest${sep}tools${sep}${fileName}")
     checkStringOption((testStarting \ "rerunner").text, rerunner)
   }
   
@@ -216,6 +218,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testSucceeded \ "testText").text === testText)
     assert((testSucceeded \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testSucceeded \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    assert((testSucceeded \ "location" \ "LineInFile" \ "filePathname").text endsWith s"scalatest-test${sep}src${sep}test${sep}scala${sep}org${sep}scalatest${sep}tools${sep}${fileName}")
     checkStringOption((testSucceeded \ "rerunner").text, rerunner)
   }
   
@@ -240,6 +243,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testPending \ "testText").text === testText)
     assert((testPending \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testPending \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    assert((testPending \ "location" \ "LineInFile" \ "filePathname").text endsWith s"scalatest-test${sep}src${sep}test${sep}scala${sep}org${sep}scalatest${sep}tools${sep}${fileName}")
     checkStringOption((testPending \ "rerunner").text, rerunner)
   }
   
@@ -252,6 +256,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testIgnored \ "testText").text === testText)
     assert((testIgnored \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testIgnored \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    assert((testIgnored \ "location" \ "LineInFile" \ "filePathname").text endsWith s"scalatest-test${sep}src${sep}test${sep}scala${sep}org${sep}scalatest${sep}tools${sep}${fileName}")
   }
   
   def checkTestCanceled(testCanceled: Elem, message: String, suiteName: String, suiteId: String, suiteClassName: Option[String], 
@@ -264,6 +269,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     assert((testCanceled \ "testText").text === testText)
     assert((testCanceled \ "location" \ "LineInFile" \ "fileName").text === fileName)
     assert((testCanceled \ "location" \ "LineInFile" \ "lineNumber").text === lineNumber.toString)
+    assert((testCanceled \ "location" \ "LineInFile" \ "filePathname").text endsWith s"scalatest-test${sep}src${sep}test${sep}scala${sep}org${sep}scalatest${sep}tools${sep}${fileName}")
   }
   
   def checkSuiteStarting(suiteStarting: Elem, suiteName: String, suiteId: String, suiteClassName: Option[String], 
@@ -300,7 +306,6 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
     checkStringOption((suiteAborted \ "rerunner").text, rerunner)
     assert((suiteAborted \ "threadName").text === threadName)
     assert((suiteAborted \ "timeStamp").text === timeStamp.toString)
-    
   }
 
   describe("Socket Reporter") {

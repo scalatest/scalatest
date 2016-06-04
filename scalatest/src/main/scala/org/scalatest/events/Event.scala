@@ -112,21 +112,28 @@ sealed abstract class Event extends Ordered[Event] with java.io.Serializable {
               <TopOfClass>
                 <className>{ topOfClass.className }</className>
               </TopOfClass>
-            case topOfMethod: TopOfMethod => 
+            case topOfMethod: TopOfMethod =>
               <TopOfMethod>
                 <className>{ topOfMethod.className }</className>
                 <methodId>{ topOfMethod.methodId }</methodId>
               </TopOfMethod>
-            case lineInFile: LineInFile => 
+            case lineInFile: LineInFile =>
               <LineInFile>
                 <lineNumber>{ lineInFile.lineNumber }</lineNumber>
                 <fileName>{ lineInFile.fileName }</fileName>
+                <filePathname>{ filePathnameOption(lineInFile.filePathname) }</filePathname>
               </LineInFile>
-            case SeeStackDepthException => 
-              <SeeStackDepthException />
+            case SeeStackDepthException =>
+                <SeeStackDepthException />
             case _ =>
               ""
-          } 
+          }
+        case None => ""
+      }
+    }
+    def filePathnameOption(filePathnameOpt: Option[String]) = {
+      filePathnameOpt match {
+        case Some(filePathname) => filePathname
         case None => ""
       }
     }
