@@ -2024,7 +2024,7 @@ used for test events like succeeded/failed, etc.
     if(stackDepth >= 0 && stackDepth < stackTraceList.length) {
       val stackTrace = stackTraceList(stackDepth)
       if(stackTrace.getLineNumber >= 0 && stackTrace.getFileName != null)
-        Some(LineInFile(stackTrace.getLineNumber, StackDepthExceptionHelper.getFailedCodeFileName(stackTrace).getOrElse("")))
+        Some(LineInFile(stackTrace.getLineNumber, StackDepthExceptionHelper.getFailedCodeFileName(stackTrace).getOrElse(""), None))
       else
         None
     }

@@ -130,7 +130,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
+      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }

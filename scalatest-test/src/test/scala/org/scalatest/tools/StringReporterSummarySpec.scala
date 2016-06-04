@@ -123,7 +123,7 @@ class StringReporterSummarySpec extends UnitSpec {
               ),
               None,
               Some(IndentedText("  + I should not show up in the reminder", "I should not show up in the reminder", 2)),
-              Some(LineInFile(442, "StringReporterSummarySpec.scala")),
+              Some(LineInFile(442, "StringReporterSummarySpec.scala", None)),
               None,
               "Thread-10",
               1369965123278L

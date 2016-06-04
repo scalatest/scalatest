@@ -491,9 +491,9 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
       
       val rep = new XmlSocketReporter("localhost", socket.getLocalPort)
       rep(InfoProvided(new Ordinal(0), "some info", Some(NameInfo("a suite name", "a suite Id", Some("a suite class"), Some("a test name"))),
-          None, None, Some(LineInFile(168, "XmlSocketReporterSpec.scala")), None, Thread.currentThread.getName, timeStamp))
+          None, None, Some(LineInFile(168, "XmlSocketReporterSpec.scala", None)), None, Thread.currentThread.getName, timeStamp))
       rep(MarkupProvided(new Ordinal(0), "some markup", Some(NameInfo("another suite name", "another suite Id", Some("another suite class"), Some("another test name"))),
-          None, Some(LineInFile(188, "XmlSocketReporterSpec.scala")), None, Thread.currentThread.getName, timeStamp))
+          None, Some(LineInFile(188, "XmlSocketReporterSpec.scala", None)), None, Thread.currentThread.getName, timeStamp))
       rep.dispose()
       eventRecorder.stopped = true
       eventually(timeout(Span(10, Seconds))) { assert(eventRecorder.ready) } // Wait until the receiver is ready
@@ -539,7 +539,7 @@ class XmlSocketReporterSpec extends FunSpec with Eventually {
       rep(TestCanceled(new Ordinal(0), "test <function1> canceled, because: \n  <function1> is buggy.", "TestSuite", "com.test.TestSuite", Some("com.test.TestSuite"),
                        "test 2", "test 2", collection.immutable.IndexedSeq.empty[RecordableEvent], Some(new RuntimeException("test <function1> canceled, because: \n  <function1> is buggy."))))
       rep(InfoProvided(new Ordinal(0), "some <function1> info, because: \n  <function1> is buggy.", Some(NameInfo("TestSuite", "com.test.TestSuite", Some("com.test.TestSuite"), Some("test 2"))),
-          Some(new RuntimeException("some <function1> info, because: \n  <function1> is buggy.")), None, Some(LineInFile(168, "XmlSocketReporterSpec.scala")), None, Thread.currentThread.getName, timeStamp))
+          Some(new RuntimeException("some <function1> info, because: \n  <function1> is buggy.")), None, Some(LineInFile(168, "XmlSocketReporterSpec.scala", None)), None, Thread.currentThread.getName, timeStamp))
       eventRecorder.stopped = true
       eventually(timeout(Span(10, Seconds))) { assert(eventRecorder.ready) } // Wait until the receiver is ready             
       
