@@ -48,7 +48,7 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
  * </p>
  *
  * @param message the exception's detail message
- * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
+ * @param posOrStackDepthFun either a source position or a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *   to register the test after registration had been closed.
  *
  * @throws NullArgumentException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
@@ -62,6 +62,14 @@ class TestRegistrationClosedException(
 
   requireNonNull(message, posOrStackDepthFun)
 
+  /**
+    * Constructs a <code>TestRegistrationClosedException</code> with a <code>message</code> and a source position.
+    *
+    * @param message the exception's detail message
+    * @param pos the source position.
+    *
+    * @throws NullArgumentException if <code>message</code> or <code>pos</code> is <code>null</code>
+    */
   def this(
     message: String,
     pos: source.Position
@@ -79,7 +87,15 @@ class TestRegistrationClosedException(
   def this(message: String, failedCodeStackDepth: Int) =
     this(message, Right((e: StackDepthException) => failedCodeStackDepth))
 
-  // The olde main constructor
+  /**
+    * Constructs a <code>TestRegistrationClosedException</code> with a <code>message</code> and a pre-determined
+    * and <code>failedCodeStackDepthFun</code>.
+    *
+    * @param message the exception's detail message
+    * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted.
+    *
+    * @throws NullArgumentException if <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
+    */
   def this(message: String, failedCodeStackDepthFun: StackDepthException => Int) =
     this(message, Right(failedCodeStackDepthFun))
 

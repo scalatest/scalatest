@@ -28,7 +28,7 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
  * stack trace to find the correct filename and line number of the offending code.)
  *
  * @param testName the test name that was attempted to be registered twice
- * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
+ * @param posOrStackDepthFun either a source position or a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *   to register the test with the duplicate name resides.
  *
  * @throws NullArgumentException if <code>testName</code> is <code>null</code>
@@ -46,6 +46,12 @@ class DuplicateTestNameException(
   
   requireNonNull(testName)
 
+  /**
+    * Constructs a <code>DuplicateTestNameException</code> with given message and source position
+    *
+    * @param message the error message
+    * @param pos the source position
+    */
   def this(
     message: String,
     pos: source.Position
@@ -63,7 +69,12 @@ class DuplicateTestNameException(
   def this(testName: String, failedCodeStackDepth: Int) =
     this(testName, Right((e: StackDepthException) => failedCodeStackDepth))
 
-  // This was probably the olde main constructor
+  /**
+    * Constructs a <code>DuplicateTestNameException</code> with given test name and stack depth function.
+    *
+    * @param testName the test name
+    * @param failedCodeStackDepthFun the depth in the stack trace of this exception at which the line of test code that failed resides.
+    */
   def this(testName: String, failedCodeStackDepthFun: StackDepthException => Int) =
     this(testName, Right(failedCodeStackDepthFun))
 

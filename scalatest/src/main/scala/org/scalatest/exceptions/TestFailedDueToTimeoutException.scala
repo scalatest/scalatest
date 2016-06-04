@@ -31,7 +31,7 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
  *
  * @param messageFun a function that produces an optional detail message for this <code>TestFailedDueToTimeoutException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestFailedDueToTimeoutException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param timeout the timeout that expired
  *
  * @throws NullArgumentException if either <code>messageFun</code>, <code>cause</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>, or <code>Some(null)</code>.
@@ -46,6 +46,14 @@ class TestFailedDueToTimeoutException(
   val timeout: Span
 ) extends TestFailedException(messageFun, cause, posOrStackDepthFun, payload) with TimeoutField {
 
+  /**
+    * Constructs a <code>TestFailedDueToTimeoutException</code> with the given error message function, optional cause, source position and optional payload.
+    *
+    * @param messageFun a function that return an optional detail message for this <code>TestCanceledException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestCanceledException</code> to be thrown.
+    * @param pos a source position
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestCanceled</code> event
+    */
   def this(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
@@ -54,7 +62,15 @@ class TestFailedDueToTimeoutException(
     timeout: Span
   ) = this(messageFun, cause, Left(pos), payload, timeout)
 
-  // The olde constructor
+  /**
+    * Constructs a <code>TestFailedDueToTimeoutException</code> with the given error message function, optional cause, stack depth function, optional payload and timeout.
+    *
+    * @param messageFun a function that return an optional detail message for this <code>TestFailedDueToTimeoutException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TestFailedDueToTimeoutException</code> to be thrown.
+    * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestCanceled</code> event
+    * @param timeout the timeout that expired
+    */
   def this(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],

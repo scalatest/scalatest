@@ -29,7 +29,7 @@ import StackDepthExceptionHelper.getStackDepthFun
  *
  * @param messageFun a function that produces an optional detail message for this <code>StackDepthException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that produces the depth in the stack trace of this exception at which the line of test code that failed resides.
  *
  * @throws NullArgumentException if either <code>messageFun</code>, <code>cause</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>, or <code>Some(null)</code>.
  *
@@ -56,6 +56,15 @@ abstract class StackDepthException(
 
   val position: Option[source.Position] = posOrStackDepthFun.left.toOption
 
+  /**
+    * Constructs a <code>StackDepthException</code> with an optional pre-determined <code>message</code>, optional cause, and
+    * a source position.
+    *
+    * @param message an optional detail message for this <code>StackDepthException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
+    * @param position a source position.
+    *.
+    */
   def this(message: Option[String], cause: Option[Throwable], position: source.Position) =
     this(
       message match {
@@ -67,7 +76,15 @@ abstract class StackDepthException(
       Left(position)
     )
 
-  // I think this was the olde primary constructor
+  /**
+    * Constructs a <code>StackDepthException</code> with message function, optional cause, and
+    * a <code>failedCodeStackDepth</code> function.
+    *
+    * @param messageFun a function that produces an optional detail message for this <code>StackDepthException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>StackDepthException</code> to be thrown.
+    * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of test code that failed resides.
+    *.
+    */
   def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
     this(
       messageFun,
