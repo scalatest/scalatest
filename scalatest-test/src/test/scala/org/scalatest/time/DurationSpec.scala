@@ -22,6 +22,7 @@ class DurationSpec extends FunSpec with Matchers {
 
   def span(passed: Span): Span = passed
   def duration(passed: Duration): Duration = passed
+  def finiteDuration(passed: FiniteDuration): FiniteDuration = passed
 
   describe("A Span") {
     it("can be specified with a finite scala.concurrent.Duration via an implicit conversion") {
@@ -40,6 +41,12 @@ class DurationSpec extends FunSpec with Matchers {
     it("can be specified with a Span via an implicit conversion") {
       duration(Span(100, Millis)) shouldEqual (100 millis)
       duration(Span(100, Nanoseconds)) shouldEqual (100 nanos)
+    }
+  }
+  describe("A FiniteDuration") {
+    it("can be specified with a Span via an implicit conversion") {
+      finiteDuration(Span(100, Millis)) shouldEqual (100 millis)
+      finiteDuration(Span(100, Nanoseconds)) shouldEqual (100 nanos)
     }
   }
 }
