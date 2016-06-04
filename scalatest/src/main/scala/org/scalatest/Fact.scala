@@ -20,6 +20,8 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException
 
+// As it stands, this should not extend Product with Serializable because
+// subclasses exists that anen't case classes.
 private[scalatest] sealed abstract class Fact {
 
   val rawFactMessage: String

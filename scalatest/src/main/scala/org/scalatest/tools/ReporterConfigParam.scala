@@ -17,7 +17,7 @@ package org.scalatest.tools
 
 import org.scalatest._
 
-private[tools] sealed abstract class ReporterConfigParam(val character: String)
+private[tools] sealed abstract class ReporterConfigParam(val character: String) extends Product with Serializable
 
 private[tools] case object FilterTestStarting extends ReporterConfigParam("N")
 private[tools] case object FilterTestSucceeded extends ReporterConfigParam("C")

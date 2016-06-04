@@ -18,7 +18,7 @@ package org.scalatest.matchers
 import org.scalactic.Prettifier
 
 // Idea is to override toString each time it is used.
-sealed private[scalatest] abstract class LazyMessage {
+sealed private[scalatest] abstract class LazyMessage extends Product with Serializable {
   val nestedArgs: IndexedSeq[Any]
   def message(prettifier: Prettifier): String
   override def toString: String = message(Prettifier.default)

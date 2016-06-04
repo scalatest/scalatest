@@ -1127,7 +1127,7 @@ trait Conductors extends PatienceConfiguration {
     /**
      * Base class for the possible states of the Conductor.
      */
-    private sealed class ConductorState(val testWasStarted: Boolean, val testIsFinished: Boolean)
+    private sealed abstract class ConductorState(val testWasStarted: Boolean, val testIsFinished: Boolean) extends Product with Serializable
 
     /**
      * The initial state of the Conductor.

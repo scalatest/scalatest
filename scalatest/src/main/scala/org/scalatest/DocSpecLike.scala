@@ -43,7 +43,7 @@ private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying
   protected def note: Notifier = atomicNotifier.get
   protected def alert: Alerter = atomicAlerter.get
 
-  sealed abstract class Snippet
+  sealed abstract class Snippet extends Product with Serializable
   case class MarkupSnippet(text: String) extends Snippet
   case class SuiteSnippet(suite: Suite) extends Snippet
 

@@ -3063,7 +3063,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
   // This is where InspectorShorthands started
 
-  private sealed trait Collected
+  private sealed trait Collected extends Product with Serializable
   private case object AllCollected extends Collected
   private case object EveryCollected extends Collected
   private case class BetweenCollected(from: Int, to: Int) extends Collected

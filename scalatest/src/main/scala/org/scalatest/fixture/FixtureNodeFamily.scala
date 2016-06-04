@@ -17,6 +17,8 @@ package org.scalatest.fixture
 
 import org.scalatest._
 
+// This one shouldn't extend Product with Serializable because it has some subclasses that=
+// aren't case classes.
 private[fixture] object FixtureNodeFamily  {
 
   sealed abstract class Node(parentOption: Option[Branch])

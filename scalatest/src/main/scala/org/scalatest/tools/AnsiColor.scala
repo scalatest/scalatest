@@ -15,7 +15,7 @@
  */
 package org.scalatest.tools
 
-private[scalatest] sealed trait AnsiColor {
+private[scalatest] sealed trait AnsiColor extends Product with Serializable {
   val code: String
 }
 private[scalatest] case object AnsiGreen extends AnsiColor {

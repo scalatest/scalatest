@@ -178,7 +178,7 @@ println("&&&&&&&&&&&")
     backwards.reverse
   }
 
-  private[scalatest] sealed trait Snippet
+  private[scalatest] sealed trait Snippet extends Product with Serializable
   private[scalatest] case class Markup(text: String) extends Snippet
   private[scalatest] case class IncludedSuite(suite: Suite) extends Snippet
 }
