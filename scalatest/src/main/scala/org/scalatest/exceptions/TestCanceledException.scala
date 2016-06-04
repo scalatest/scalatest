@@ -154,6 +154,11 @@ class TestCanceledException(
       None
     )
 
+  def this(messageFun: StackDepthException => Option[String],
+           cause: Option[Throwable],
+           failedCodeStackDepthFun: StackDepthException => Int,
+           payload: Option[Any]) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload)
+
   /**
    * Returns an exception of class <code>TestCanceledException</code> with <code>failedExceptionStackDepth</code> set to 0 and
    * all frames above this stack depth severed off. This can be useful when working with tools (such as IDEs) that do not

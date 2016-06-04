@@ -46,6 +46,16 @@ abstract class PropertyCheckFailedException(
   optionalArgNames: Option[List[String]]
 ) extends TestFailedException((sde: StackDepthException) => Some(messageFun(sde)), cause, posOrStackDepthFun, payload) {
 
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    failedCodeStackDepthFun: StackDepthException => Int,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    optionalArgNames: Option[List[String]]
+  ) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, undecoratedMessage, args, optionalArgNames)
+
   requireNonNull(
     messageFun, cause, posOrStackDepthFun, undecoratedMessage, args,
     optionalArgNames)
