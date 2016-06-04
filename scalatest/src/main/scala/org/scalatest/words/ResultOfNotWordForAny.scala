@@ -55,7 +55,7 @@ import scala.annotation.tailrec
  *
  * @author Bill Venners
  */
-sealed class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val prettifier: Prettifier, val pos: source.Position) {
+final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val prettifier: Prettifier, val pos: source.Position) {
 
   /**
    * This method enables the following syntax:
