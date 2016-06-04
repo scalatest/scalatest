@@ -26,7 +26,7 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
  *
  * @param messageFun a function that returns a detail message (not optional) for this <code>PropertyCheckFailedException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>PropertyCheckFailedException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
  * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it.
  * @param args the argument values that caused the property check to fail.
@@ -45,6 +45,28 @@ abstract class PropertyCheckFailedException(
   val args: List[Any],
   optionalArgNames: Option[List[String]]
 ) extends TestFailedException((sde: StackDepthException) => Some(messageFun(sde)), cause, posOrStackDepthFun, payload) {
+
+  /**
+    * Constructs a <code>PropertyCheckFailedException</code> with given error message function, optional cause, stack depth function,
+    * optional payload, undecorated message, arguments values and optional argument names.
+    *
+    * @param messageFun a function that returns a detail message (not optional) for this <code>PropertyCheckFailedException</code>
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>PropertyCheckFailedException</code> to be thrown.
+    * @param failedCodeStackDepthFun a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
+    * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it.
+    * @param args the argument values that caused the property check to fail.
+    * @param optionalArgNames an optional list of string names for the arguments.
+    */
+  def this(
+    messageFun: StackDepthException => String,
+    cause: Option[Throwable],
+    failedCodeStackDepthFun: StackDepthException => Int,
+    payload: Option[Any],
+    undecoratedMessage: String,
+    args: List[Any],
+    optionalArgNames: Option[List[String]]
+  ) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, undecoratedMessage, args, optionalArgNames)
 
   requireNonNull(
     messageFun, cause, posOrStackDepthFun, undecoratedMessage, args,

@@ -24,7 +24,7 @@ import org.scalactic.source
  *
  * @param messageFun a function that returns a detail message (not optional) for this <code>GeneratorDrivenPropertyCheckFailedException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>GeneratorDrivenPropertyCheckFailedException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
  * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it.
  * @param args the argument values, if any, that caused the property check to fail.
@@ -48,6 +48,20 @@ class GeneratorDrivenPropertyCheckFailedException(
   messageFun, cause, posOrStackDepthFun, payload, undecoratedMessage, args, namesOfArgs
 ) {
 
+  /**
+    * Constructs a <code>GeneratorDrivenPropertyCheckFailedException</code> with the given message function, cause exception, source position, payload,
+    * undecorated message, argument values, names and labels.
+    *
+    * @param messageFun the message function
+    * @param cause the optional cause
+    * @param pos the source position
+    * @param payload the payload
+    * @param undecoratedMessage the undecorated message
+    * @param args the argument values
+    * @param namesOfArgs the argument names
+    * @param labels the argument labels
+    * @return
+    */
   def this(
     messageFun: StackDepthException => String,
     cause: Option[Throwable],
@@ -59,7 +73,19 @@ class GeneratorDrivenPropertyCheckFailedException(
     labels: List[String]
   ) = this(messageFun, cause, Left(pos), payload, undecoratedMessage, args, namesOfArgs, labels)
 
-  // The olde constructor
+  /**
+    * Constructs a <code>GeneratorDrivenPropertyCheckFailedException</code> with the given message function, cause exception, stack depth function,
+    * payload, undecorated message, argument values, names and labels.
+    *
+    * @param messageFun the message function
+    * @param cause the optional cause
+    * @param failedCodeStackDepthFun the function that returns the depth in the stack trace of this exception at which the line of test code that failed resides
+    * @param payload the payload
+    * @param undecoratedMessage the undecorated message
+    * @param args the argument values
+    * @param namesOfArgs the argument names
+    * @param labels the argument labels
+    */
   def this(
     messageFun: StackDepthException => String,
     cause: Option[Throwable],

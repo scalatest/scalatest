@@ -28,7 +28,7 @@ import StackDepthExceptionHelper.posOrElseStackDepthFun
  *
  * @param message a string that explains the problem
  * @param cause an optional cause
- * @param failedCodeStackDepthFun a function that return the depth in the stack trace of this exception at which the line of code that attempted
+ * @param posOrStackDepthFun either a source position or a function that return the depth in the stack trace of this exception at which the line of code that attempted
  *    something not allowed resides.
  *
  * @throws NullArgumentException if either <code>message</code> or <code>failedCodeStackDepthFun</code> is <code>null</code>
@@ -43,12 +43,25 @@ class NotAllowedException(
 
   requireNonNull(message, cause, posOrStackDepthFun)
 
+  /**
+    * Constructs a <code>NotAllowedException</code> with given error message, optional cause and source position.
+    *
+    * @param message the exception's detail message
+    * @param cause the optional cause
+    * @param pos the source position
+    */
   def this(
     message: String,
     cause: Option[Throwable],
     pos: source.Position
   ) = this(message, cause, Left(pos))
 
+  /**
+    * Constructs a <code>NotAllowedException</code> with given error message and source position.
+    *
+    * @param message the exception's detail message
+    * @param pos the source position
+    */
   def this(
     message: String,
     pos: source.Position

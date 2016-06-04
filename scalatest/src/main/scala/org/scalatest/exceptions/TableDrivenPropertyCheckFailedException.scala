@@ -28,7 +28,7 @@ import org.scalactic.source
  *
  * @param messageFun a function that returns a detail message, not optional) for this <code>TableDrivenPropertyCheckFailedException</code>.
  * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TableDrivenPropertyCheckFailedException</code> to be thrown.
- * @param failedCodeStackDepthFun a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
+ * @param posOrStackDepthFun either a source position or a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
  * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
  * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it
  * @param args the argument values
@@ -52,6 +52,20 @@ class TableDrivenPropertyCheckFailedException(
   messageFun, cause, posOrStackDepthFun, payload, undecoratedMessage, args, Some(namesOfArgs)
 ) {
 
+  /**
+    * Constructs a <code>TableDrivenPropertyCheckFailedException</code> with given error message function, optional cause, source position,
+    * optional payload, undecorated message, argument values and names, and index of the failing row.
+    *
+    * @param messageFun a function that returns a detail message, not optional) for this <code>TableDrivenPropertyCheckFailedException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TableDrivenPropertyCheckFailedException</code> to be thrown.
+    * @param pos a source position
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
+    * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it
+    * @param args the argument values
+    * @param namesOfArgs a list of string names for the arguments
+    * @param row the index of the table row that failed the property check, causing this exception to be thrown
+    *
+    */
   def this(
     messageFun: StackDepthException => String,
     cause: Option[Throwable],
@@ -63,7 +77,20 @@ class TableDrivenPropertyCheckFailedException(
     row: Int
   ) = this(messageFun, cause, Left(pos), payload, undecoratedMessage, args, namesOfArgs, row)
 
-  // The olde constructor
+  /**
+    * Constructs a <code>TableDrivenPropertyCheckFailedException</code> with given error message function, optional cause, source position,
+    * optional payload, undecorated message, argument values and names, and index of the failing row.
+    *
+    * @param messageFun a function that returns a detail message, not optional) for this <code>TableDrivenPropertyCheckFailedException</code>.
+    * @param cause an optional cause, the <code>Throwable</code> that caused this <code>TableDrivenPropertyCheckFailedException</code> to be thrown.
+    * @param failedCodeStackDepthFun a function that returns the depth in the stack trace of this exception at which the line of test code that failed resides.
+    * @param payload an optional payload, which ScalaTest will include in a resulting <code>TestFailed</code> event
+    * @param undecoratedMessage just a short message that has no redundancy with args, labels, etc. The regular "message" has everything in it
+    * @param args the argument values
+    * @param namesOfArgs a list of string names for the arguments
+    * @param row the index of the table row that failed the property check, causing this exception to be thrown
+    *
+    */
   def this(
     messageFun: StackDepthException => String,
     cause: Option[Throwable],
