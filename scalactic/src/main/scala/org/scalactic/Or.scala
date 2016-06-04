@@ -578,7 +578,7 @@ import scala.collection.mutable.Builder
  * <a href="https://github.com/vpatryshev/ScalaKittens">ScalaKittens</a>.</em>
  * </p>
  */
-sealed abstract class Or[+G,+B] {
+sealed abstract class Or[+G,+B] extends Product with Serializable {
 
   /**
    * Indicates whether this <code>Or</code> is a <code>Good</code>
