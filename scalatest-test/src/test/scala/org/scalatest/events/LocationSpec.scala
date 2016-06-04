@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.scalatest.events
+
+import java.io.File
+
 import org.scalatest.prop.Checkers
 import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
 // SKIP-SCALATESTJS-START
@@ -22,6 +25,7 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import org.scalatest._
+import Inside._
 
 // SKIP-SCALATESTJS-START
 @RunWith(classOf[JUnitRunner])
@@ -54,13 +58,21 @@ class LocationSpec extends FunSpec with Checkers {
           case testSucceed:TestSucceeded => 
             assertResult(thisLineNumber - 23) { testSucceed.location.get.asInstanceOf[LineInFile].lineNumber }
             assertResult("LocationSpec.scala") { testSucceed.location.get.asInstanceOf[LineInFile].fileName }
-          case testFail:TestFailed => 
+            val sep = File.separator
+            inside (testSucceed.location) { case Some(location) =>
+              inside (location) { case lineInFile: LineInFile =>
+                inside (lineInFile.filePathname) { case Some(filePathname) =>
+                  assert(filePathname.endsWith(s"scalatest-test${sep}src${sep}test${sep}scala${sep}org${sep}scalatest${sep}events${sep}LocationSpec.scala"))
+                }
+              }
+            }
+          case testFail:TestFailed =>
             assertResult(SeeStackDepthException.getClass) { testFail.location.get.getClass }
           case testPending:TestPending => 
-            assertResult(thisLineNumber - 22) { testPending.location.get.asInstanceOf[LineInFile].lineNumber }
+            assertResult(thisLineNumber - 30) { testPending.location.get.asInstanceOf[LineInFile].lineNumber }
             assertResult("LocationSpec.scala") { testPending.location.get.asInstanceOf[LineInFile].fileName }
           case testIgnore:TestIgnored => 
-            assertResult(thisLineNumber - 22) { testIgnore.location.get.asInstanceOf[LineInFile].lineNumber }
+            assertResult(thisLineNumber - 30) { testIgnore.location.get.asInstanceOf[LineInFile].lineNumber }
             assertResult("LocationSpec.scala") { testIgnore.location.get.asInstanceOf[LineInFile].fileName }
           case _ =>
         }

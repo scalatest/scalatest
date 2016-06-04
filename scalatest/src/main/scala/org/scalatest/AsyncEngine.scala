@@ -129,7 +129,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
+      currentBranch.subNodes ::= InfoLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }
@@ -140,7 +140,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
+      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }
@@ -151,7 +151,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
+      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }
@@ -161,7 +161,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
       requireNonNull(message)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, Some(LineInFile(pos.lineNumber, pos.fileName)))
+      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }
@@ -671,7 +671,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val branchLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None => Some(LineInFile(pos.lineNumber, pos.fileName))
+        case None => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
       }
     
     val oldBranch = currentBranch
@@ -707,7 +707,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     // Need to use Trunk here. I think it will be visible to all threads because
     // of the atomic, even though it wasn't inside it.
-    val newBranch = DescriptionBranch(Trunk, description, None, Some(LineInFile(pos.lineNumber, pos.fileName)))
+    val newBranch = DescriptionBranch(Trunk, description, None, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
     Trunk.subNodes ::= newBranch
 
     // Update atomic, making the current branch to the new branch
@@ -739,7 +739,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val testLocation = 
       location match {
         case Some(loc) => Some(loc)
-        case None => Some(LineInFile(pos.lineNumber, pos.fileName))
+        case None => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
       }
 
     val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, Some(pos), duration)

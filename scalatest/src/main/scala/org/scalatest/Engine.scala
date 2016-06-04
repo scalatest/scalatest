@@ -141,7 +141,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
+      currentBranch.subNodes ::= NoteLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }
@@ -152,7 +152,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       requireNonNull(message, payload)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName)))
+      currentBranch.subNodes ::= AlertLeaf(currentBranch, message, payload, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }
@@ -162,7 +162,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
       requireNonNull(message)
       val oldBundle = atomic.get
       var (currentBranch, testNamesList, testsMap, tagsMap, registrationClosed) = oldBundle.unpack
-      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, Some(LineInFile(pos.lineNumber, pos.fileName)))
+      currentBranch.subNodes ::= MarkupLeaf(currentBranch, message, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
       updateAtomic(oldBundle, Bundle(currentBranch, testNamesList, testsMap, tagsMap, registrationClosed))
     }
   }
@@ -578,7 +578,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
         case Some(loc) => Some(loc)
         case None =>
           pos match {
-            case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName))
+            case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
             case None =>
               val stackTraceElements = Thread.currentThread().getStackTrace
               getLineInFile(stackTraceElements, stackDepth)
@@ -620,7 +620,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
     // of the atomic, even though it wasn't inside it.
     val lineInFile =
       pos match {
-        case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName))
+        case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
         case None =>
           val stackTraceElements = Thread.currentThread().getStackTrace
           getLineInFile(stackTraceElements, stackDepth)
@@ -665,7 +665,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
         case Some(loc) => Some(loc)
         case None =>
           pos match {
-            case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName))
+            case Some(pos) => Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))
             case None =>
               val stackTraceElements = Thread.currentThread().getStackTrace
               getLineInFile(stackTraceElements, stackDepth)

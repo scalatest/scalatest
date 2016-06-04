@@ -82,7 +82,7 @@ private[scalatest] class ConcurrentMessageSender(fire: ConcurrentMessageFiringFu
 private[scalatest] class ConcurrentInformer(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Informer {
   def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
-    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
+    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
   }
 }
 
@@ -93,7 +93,7 @@ private[scalatest] object ConcurrentInformer {
 private[scalatest] class ConcurrentNotifier(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Notifier {
   def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
-    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
+    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
   }
 }
 
@@ -104,7 +104,7 @@ private[scalatest] object ConcurrentNotifier {
 private[scalatest] class ConcurrentAlerter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Alerter {
   def apply(message: String, payload: Option[Any] = None)(implicit pos: source.Position): Unit = {
     requireNonNull(message, payload)
-    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName)))
+    fire(message, payload, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
   }
 }
 
@@ -115,7 +115,7 @@ private[scalatest] object ConcurrentAlerter {
 private[scalatest] class ConcurrentDocumenter(fire: ConcurrentMessageFiringFun) extends ThreadAwareness with Documenter {
   def apply(text: String)(implicit pos: source.Position): Unit = {
     requireNonNull(text)
-    fire(text, None, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName))) // Fire the info provided event using the passed function
+    fire(text, None, isConstructingThread, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname)))) // Fire the info provided event using the passed function
   }
 }
 
@@ -167,7 +167,7 @@ private[scalatest] class MessageRecordingInformer(recorder: MessageRecorder, eve
     val stackDepth = 2
     // SKIP-SCALATESTJS-END
     //SCALATESTJS-ONLY val stackDepth = 4
-    recorder.apply(message, payload, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName)))
+    recorder.apply(message, payload, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
   }
 }
 
@@ -177,7 +177,7 @@ private[scalatest] object MessageRecordingInformer {
 
 private[scalatest] class MessageRecordingDocumenter(recorder: MessageRecorder, eventFun: RecordedMessageEventFun) extends Documenter {
   def apply(message: String)(implicit pos: source.Position): Unit = {
-    recorder.apply(message, None, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName)))
+    recorder.apply(message, None, eventFun, Some(LineInFile(pos.lineNumber, pos.fileName, Some(pos.filePathname))))
   }
 }
 
