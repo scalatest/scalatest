@@ -21,7 +21,7 @@ import org.scalatest._
  * Abstract class for the optional formatter objects that must be passed to the <code>Event</code>s reported
  * during a ScalaTest run.
  */
-sealed abstract class Formatter
+sealed abstract class Formatter extends Product with Serializable
 
 /**
  * A <code>Formatter</code> that indicates reporters may wish to suppress reporting of an <code>Event</code>.

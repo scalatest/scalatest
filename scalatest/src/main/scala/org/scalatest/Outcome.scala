@@ -44,7 +44,7 @@ import org.scalatest.exceptions.StackDepthException
  * then the outcome was that the test was pending.
  * </p>
  */
-sealed abstract class Outcome {
+sealed abstract class Outcome extends Product with Serializable {
 
   /**
    * Indicates whether this <code>Outcome</code> represents a test that succeeded.

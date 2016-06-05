@@ -2762,7 +2762,7 @@ trait WebBrowser {
    *          ^
    * </pre>
    */
-  sealed trait Query {
+  sealed trait Query extends Product with Serializable {
 
     /**
      * The Selenium <code>By</code> for this query.

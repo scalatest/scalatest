@@ -120,7 +120,7 @@ object PatienceConfiguration {
    * @author Bill Venners
    * @author Chua Chee Seng
    */
-  sealed abstract class PatienceConfigParam
+  sealed abstract class PatienceConfigParam extends Product with Serializable
 
   /**
    * A <code>PatienceConfigParam</code> that specifies the maximum amount of time to wait for an asynchronous operation to

@@ -18,7 +18,7 @@ package org.scalatest.events
 /**
  * Location in source code indicating where in the source code an event originated.
  */
-sealed abstract class Location
+sealed abstract class Location extends Product with Serializable
 
 /**
  * The location in a source file where the class whose by the fully qualified name

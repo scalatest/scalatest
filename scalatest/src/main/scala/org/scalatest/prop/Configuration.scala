@@ -163,7 +163,7 @@ trait Configuration {
    *
    * @author Bill Venners
    */
-  sealed abstract class PropertyCheckConfigParam
+  sealed abstract class PropertyCheckConfigParam extends Product with Serializable
   
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the minimum number of successful
@@ -172,7 +172,7 @@ trait Configuration {
    * @author Bill Venners
    */
   case class MinSuccessful(value: PosInt) extends PropertyCheckConfigParam
-  
+
   /**
    * A <code>PropertyCheckConfigParam</code> that specifies the maximum number of discarded
    * property evaluations allowed during property evaluation.
