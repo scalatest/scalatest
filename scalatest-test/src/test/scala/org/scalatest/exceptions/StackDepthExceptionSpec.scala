@@ -20,7 +20,9 @@ import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalactic.source
 import org.scalatest.time.Span
 import org.scalatest.time.Second
+// SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnitTestFailedError
+// SKIP-SCALATESTJS-END
 
 class StackDepthExceptionSpec extends FunSpec with Matchers with TableDrivenPropertyChecks {
 

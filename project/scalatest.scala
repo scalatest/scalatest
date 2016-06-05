@@ -616,7 +616,6 @@ object ScalatestBuild extends Build {
       //jsEnv := PhantomJSEnv().value,
       scalaJSStage in Global := FastOptStage,
       fork in test := false,
-      parallelExecution in Test := false,
       testOptions in Test := scalatestTestJSOptions,
       publishArtifact := false,
       publish := {},
