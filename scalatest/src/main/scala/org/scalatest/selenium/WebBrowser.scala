@@ -1792,11 +1792,14 @@ trait WebBrowser {
     def checkCorrectType(isA: (WebElement) => Boolean, typeDescription: String)(implicit pos: source.Position): Unit = {
       if(!isA(underlying))
         throw new TestFailedException(
-                     (_: StackDepthException) => Some("Element " + underlying + " is not " + typeDescription + " field."),
+                     (_: StackDepthException) => Some(s"Element $underlying (${webElementDetails(underlying)}) is not $typeDescription field."),
                      None,
                      pos
                    )
     }
+
+    private def webElementDetails(element: WebElement): String =
+      s"""tag=<${element.getTagName}> type=${Option(element.getAttribute("type")).getOrElse("N/A")}"""
 
     /**
      * Gets this field's value.
