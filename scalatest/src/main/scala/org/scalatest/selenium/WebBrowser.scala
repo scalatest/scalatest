@@ -1728,7 +1728,7 @@ trait WebBrowser {
 
   private def isTextArea(webElement: WebElement): Boolean = 
     webElement.getTagName.toLowerCase == "textarea"
-  
+
   /**
    * This class is part of ScalaTest's Selenium DSL. Please see the documentation for
    * <a href="WebBrowser.html"><code>WebBrowser</code></a> for an overview of the Selenium DSL.
@@ -1742,42 +1742,10 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a text field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a text field
    */
-  final class TextField(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    
-    if(!isTextField(underlying))
-      throw new TestFailedException(
-                     (_: StackDepthException) => Some("Element " + underlying + " is not text field."),
-                     None,
-                     pos
-                   )
-    
-    /**
-     * Gets this text field's value.
-     *
-     * <p>
-     * This method invokes <code>getAttribute("value")</code> on the underlying <code>WebElement</code>.
-     * </p>
-     *
-     * @return the text field's value
-     */
-    def value: String = underlying.getAttribute("value")  
-    
-    /**
-     * Sets this text field's value.
-     *
-     * @param value the new value
-     */
-    def value_=(value: String): Unit = {
-      underlying.clear()
-      underlying.sendKeys(value)
-    }
-
-    /**
-     * Clears this text field.
-     */
-    def clear(): Unit = { underlying.clear() }
+  final class TextField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isTextArea, "text")(pos)
   }
 
   /**
@@ -1793,41 +1761,10 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a text area
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text area
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a text area
    */
-  final class TextArea(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    if(!isTextArea(underlying))
-      throw new TestFailedException(
-                     (_: StackDepthException) => Some("Element " + underlying + " is not text area."),
-                     None,
-                     pos
-                   )
-    
-    /**
-     * Gets this text area's value.
-     *
-     * <p>
-     * This method invokes <code>getAttribute("value")</code> on the underlying <code>WebElement</code>.
-     * </p>
-     *
-     * @return the text area's value
-     */
-    def value: String = underlying.getAttribute("value")
-
-    /**
-     * Sets this text area's value.
-     *
-     * @param value the new value
-     */
-    def value_=(value: String): Unit = {
-      underlying.clear()
-      underlying.sendKeys(value)
-    }
-
-    /**
-     * Clears this text area.
-     */
-    def clear(): Unit = { underlying.clear() }
+  final class TextArea(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isTextArea, "text area")(pos)
   }
   
   /**
@@ -1843,42 +1780,10 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a password field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a password field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a password field
    */
-  final class PasswordField(val underlying: WebElement)(implicit pos: source.Position) extends Element {
-    
-    if(!isPasswordField(underlying))
-      throw new TestFailedException(
-                     (_: StackDepthException) => Some("Element " + underlying + " is not password field."),
-                     None,
-                     pos
-                   )
-    
-    /**
-     * Gets this password field's value.
-     *
-     * <p>
-     * This method invokes <code>getAttribute("value")</code> on the underlying <code>WebElement</code>.
-     * </p>
-     *
-     * @return the password field's value
-     */
-    def value: String = underlying.getAttribute("value")  
-    
-    /**
-     * Sets this password field's value.
-     *
-     * @param value the new value
-     */
-    def value_=(value: String): Unit = {
-      underlying.clear()
-      underlying.sendKeys(value)
-    }
-
-    /**
-     * Clears this text field.
-     */
-    def clear(): Unit = { underlying.clear() }
+  final class PasswordField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
+    checkCorrectType(isPasswordField, "password")(pos)
   }
   
   trait ValueElement extends Element {
@@ -1933,7 +1838,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a email field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a email field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a email field
    */
   final class EmailField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isEmailField, "email")(pos)
@@ -1952,7 +1857,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a color field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a color field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a color field
    */
   final class ColorField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isColorField, "color")(pos)
@@ -1971,7 +1876,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a date field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a date field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a date field
    */
   final class DateField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isDateField, "date")(pos)
@@ -1990,7 +1895,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a datetime field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a datetime field
    */
   final class DateTimeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isDateTimeField, "datetime")(pos)
@@ -2009,7 +1914,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a datetime-local field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a datetime-local field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a datetime-local field
    */
   final class DateTimeLocalField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isDateTimeLocalField, "datetime-local")(pos)
@@ -2028,7 +1933,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a month field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a month field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a month field
    */
   final class MonthField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isMonthField, "month")(pos)
@@ -2047,7 +1952,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a number field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a number field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a number field
    */
   final class NumberField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isNumberField, "number")(pos)
@@ -2066,7 +1971,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a range field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a range field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a range field
    */
   final class RangeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isRangeField, "range")(pos)
@@ -2085,7 +1990,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a search field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a search field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a search field
    */
   final class SearchField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isSearchField, "search")(pos)
@@ -2104,7 +2009,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a tel field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a tel field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a tel field
    */
   final class TelField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isTelField, "tel")(pos)
@@ -2123,7 +2028,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a time field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a time field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a time field
    */
   final class TimeField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isTimeField, "time")(pos)
@@ -2142,7 +2047,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a url field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a url field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a url field
    */
   final class UrlField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isUrlField, "url")(pos)
@@ -2161,7 +2066,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a week field
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a week field
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a week field
    */
   final class WeekField(val underlying: WebElement)(implicit pos: source.Position) extends Element with ValueElement {
     checkCorrectType(isWeekField, "week")(pos)
@@ -2180,7 +2085,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a text area
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a text area
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a text area
    */
   final class RadioButton(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(!isRadioButton(underlying))
@@ -2213,7 +2118,7 @@ trait WebBrowser {
    * radioButtonGroup("group1").value should be ("Option 2")
    * </pre>
    *
-   * @throws TestFailedExeption if no radio button with the passed <code>groupName</code> are found
+   * @throws TestFailedException if no radio button with the passed <code>groupName</code> are found
    */
   final class RadioButtonGroup(groupName: String, driver: WebDriver)(implicit pos: source.Position) {
 
@@ -2231,7 +2136,7 @@ trait WebBrowser {
      * radio button in this group is selected.
      *
      * @return the value of this group's selected radio button
-     * @throws TestFailedExeption if no radio button in this group is selected
+     * @throws TestFailedException if no radio button in this group is selected
      */
     def value(implicit pos: source.Position): String = selection match {
       case Some(v) => v
@@ -2262,7 +2167,7 @@ trait WebBrowser {
      * Selects the radio button with the passed value.
      *
      * @param the value of the radio button to select
-     * @throws TestFailedExeption if the passed string is not the value of any radio button in this group
+     * @throws TestFailedException if the passed string is not the value of any radio button in this group
      */
     def value_=(value: String)(implicit pos: source.Position): Unit = {
       groupElements.find(_.getAttribute("value") == value) match {
@@ -2291,7 +2196,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying the <code>WebElement</code> representing a checkbox
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a checkbox
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a checkbox
    */
   final class Checkbox(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(!isCheckBox(underlying))
@@ -2453,7 +2358,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying a <code>WebElement</code> representing a single selection list
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a single selection list
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a single selection list
    */
   class SingleSel(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(underlying.getTagName.toLowerCase != "select")
@@ -2536,7 +2441,7 @@ trait WebBrowser {
    * </pre>
    *
    * @param underlying a <code>WebElement</code> representing a multiple selection list
-   * @throws TestFailedExeption if the passed <code>WebElement</code> does not represent a multiple selection list
+   * @throws TestFailedException if the passed <code>WebElement</code> does not represent a multiple selection list
    */
   class MultiSel(val underlying: WebElement)(implicit pos: source.Position) extends Element {
     if(underlying.getTagName.toLowerCase != "select")
