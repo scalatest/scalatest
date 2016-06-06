@@ -38,7 +38,8 @@ private[scalatest] abstract class StringReporter(
   presentReminder: Boolean,
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
-  presentReminderWithoutCanceledTests: Boolean
+  presentReminderWithoutCanceledTests: Boolean,
+  presentAbsoluteFileName: Boolean
 ) extends ResourcefulReporter {
 
   val reminderEventsBuf = new ListBuffer[ExceptionalEvent]
@@ -163,6 +164,7 @@ org.scalatest.prop.TableDrivenPropertyCheckFailedException: TestFailedException 
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
+      presentAbsoluteFileName,
       reminderEventsBuf
    ) foreach printPossiblyInColor
   }
@@ -210,11 +212,12 @@ private[scalatest] object StringReporter {
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
     presentFullStackTraces: Boolean,
+    presentAbsoluteFileName: Boolean,
     ansiColor: AnsiColor
   ): Vector[Fragment] = {
 
     val lines: Vector[String] = stringsToPrintOnError(noteMessageFun, errorMessageFun, message, throwable, formatter, suiteName, testName, duration,
-        presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
     lines map (new Fragment(_, ansiColor))
   }
@@ -228,7 +231,8 @@ private[scalatest] object StringReporter {
      presentReminder: Boolean,
      presentReminderWithShortStackTraces: Boolean,
      presentReminderWithFullStackTraces: Boolean,
-     presentReminderWithoutCanceledTests: Boolean
+     presentReminderWithoutCanceledTests: Boolean,
+     presentAbsoluteFileName: Boolean
   ): Vector[Fragment] = {
 
     val resourceName =
@@ -310,7 +314,8 @@ private[scalatest] object StringReporter {
               presentAllDurations,
               presentReminderWithShortStackTraces,
               presentReminderWithFullStackTraces,
-              presentReminderWithoutCanceledTests
+              presentReminderWithoutCanceledTests,
+              presentAbsoluteFileName
             )
           } yield frag
         else Vector.empty
@@ -323,7 +328,8 @@ private[scalatest] object StringReporter {
      presentAllDurations: Boolean,
      presentReminderWithShortStackTraces: Boolean,
      presentReminderWithFullStackTraces: Boolean,
-     presentReminderWithoutCanceledTests: Boolean
+     presentReminderWithoutCanceledTests: Boolean,
+     presentAbsoluteFileName: Boolean
   ): Vector[Fragment] = {
 
     def theFragments(
@@ -368,6 +374,7 @@ private[scalatest] object StringReporter {
           presentAllDurations,
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
+          presentAbsoluteFileName,
           ansiColor
         )
         val testNameFrags: Vector[Fragment] =
@@ -436,10 +443,13 @@ private[scalatest] object StringReporter {
     }
   }
 
-  def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable]): String = {
+  def withPossibleLineNumber(stringToPrint: String, throwable: Option[Throwable], presentAbsoluteFileName: Boolean): String = {
     throwable match {
       case Some(stackDepth: StackDepth) =>
-        stackDepth.failedCodeFileNameAndLineNumberString match {
+        (if (presentAbsoluteFileName)
+          stackDepth.failedCodeAbsoluteFileNameAndLineNumberString
+        else
+          stackDepth.failedCodeFileNameAndLineNumberString) match {
           case Some(lineNumberString) =>
             Resources.printedReportPlusLineNumber(stringToPrint, lineNumberString)
           case None => stringToPrint
@@ -454,13 +464,14 @@ private[scalatest] object StringReporter {
     presentUnformatted: Boolean,
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean
+    presentFullStackTraces: Boolean,
+    presentAbsoluteFileName: Boolean
   ): Vector[Fragment] = {
     // (for (e <- recordedEvents.toVector) yield
     (for (e <- Vector.empty ++ recordedEvents) yield { // While supporting 2.9, can't use toVector
       e match {
         case ipEvent: InfoProvided =>
-          infoProvidedFragments(ipEvent, ansiColor, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+          infoProvidedFragments(ipEvent, ansiColor, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
         case mpEvent: MarkupProvided =>
           markupProvidedOptionalFragment(mpEvent, ansiColor, presentUnformatted)
       }
@@ -473,7 +484,8 @@ private[scalatest] object StringReporter {
     presentUnformatted: Boolean,
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean
+    presentFullStackTraces: Boolean,
+    presentAbsoluteFileName: Boolean
   ): Vector[Fragment] = {
     val (suiteName, testName) =
       event.nameInfo match {
@@ -493,7 +505,8 @@ private[scalatest] object StringReporter {
         presentUnformatted,
         presentAllDurations,
         presentShortStackTraces,
-        presentFullStackTraces
+        presentFullStackTraces,
+        presentAbsoluteFileName
       )
 
     lines map (new Fragment(_, ansiColor))
@@ -505,7 +518,8 @@ private[scalatest] object StringReporter {
     presentUnformatted: Boolean,
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean
+    presentFullStackTraces: Boolean,
+    presentAbsoluteFileName: Boolean
   ): Vector[Fragment] = {
     val (suiteName, testName) =
       event.nameInfo match {
@@ -525,7 +539,8 @@ private[scalatest] object StringReporter {
         presentUnformatted,
         presentAllDurations,
         presentShortStackTraces,
-        presentFullStackTraces
+        presentFullStackTraces,
+        presentAbsoluteFileName
       )
 
     lines map (new Fragment(_, AnsiYellow))
@@ -536,7 +551,8 @@ private[scalatest] object StringReporter {
     presentUnformatted: Boolean,
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean
+    presentFullStackTraces: Boolean,
+    presentAbsoluteFileName: Boolean
   ): Vector[Fragment] = {
     val (suiteName, testName) =
       event.nameInfo match {
@@ -556,7 +572,8 @@ private[scalatest] object StringReporter {
         presentUnformatted,
         presentAllDurations,
         presentShortStackTraces,
-        presentFullStackTraces
+        presentFullStackTraces,
+        presentAbsoluteFileName
       )
 
     lines map (new Fragment(_, AnsiGreen))
@@ -673,6 +690,7 @@ private[scalatest] object StringReporter {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
+    presentAbsoluteFileName: Boolean,
     reminderEvents: Seq[ExceptionalEvent]
   ): Vector[Fragment] = {
 
@@ -711,7 +729,8 @@ private[scalatest] object StringReporter {
           presentReminder,
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
-          presentReminderWithoutCanceledTests
+          presentReminderWithoutCanceledTests,
+          presentAbsoluteFileName
         )
 
       case RunStopped(ordinal, duration, summary, formatter, location, payload, threadName, timeStamp) =>
@@ -726,13 +745,14 @@ private[scalatest] object StringReporter {
           presentReminder,
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
-          presentReminderWithoutCanceledTests
+          presentReminderWithoutCanceledTests,
+          presentAbsoluteFileName
        ) 
 
       case RunAborted(ordinal, message, throwable, duration, summary, formatter, location, payload, threadName, timeStamp) => 
 
         fragmentsOnError(Resources.abortedNote, Any => Resources.runAborted, message, throwable, formatter, None, None, duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiRed)
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName, AnsiRed)
 
       case SuiteStarting(ordinal, suiteName, suiteId, suiteClassName, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
@@ -745,7 +765,7 @@ private[scalatest] object StringReporter {
       case SuiteAborted(ordinal, message, suiteName, suiteId, suiteClassName, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) => 
 
         val lines = stringsToPrintOnError(Resources.abortedNote, Resources.suiteAborted _, message, throwable, formatter, Some(suiteName), None, duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
         for (line <- lines) yield new Fragment(line, AnsiRed)
 
@@ -758,7 +778,7 @@ private[scalatest] object StringReporter {
         val tsf: Vector[Fragment] = 
           fragmentsWhenNoError(Resources.testSucceeded, formatter, suiteName, Some(testName), None, presentUnformatted, presentAllDurations, AnsiGreen, duration)
 
-        val ref = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        val ref = recordedEventFragments(recordedEvents, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
         tsf ++ ref
 
@@ -779,32 +799,32 @@ private[scalatest] object StringReporter {
       case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
         val tff: Vector[Fragment] = fragmentsOnError(Resources.failedNote, Resources.testFailed _, message, throwable, formatter, Some(suiteName), Some(testName), duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiRed)
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName, AnsiRed)
 
-        val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        val ref = recordedEventFragments(recordedEvents, AnsiRed, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
         tff ++ ref
 
       case TestCanceled(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
         val tcf: Vector[Fragment] = fragmentsOnError(Resources.canceledNote, Resources.testCanceled _, message, throwable, formatter, Some(suiteName), Some(testName), duration,
-            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, AnsiYellow)
+            presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName, AnsiYellow)
 
-        val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
         tcf ++ ref
 
       case ipEvent: InfoProvided =>
 
-        infoProvidedFragments(ipEvent, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        infoProvidedFragments(ipEvent, AnsiGreen, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
       case apEvent: AlertProvided =>
 
-        alertProvidedFragments(apEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        alertProvidedFragments(apEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
       case npEvent: NoteProvided =>
 
-        noteProvidedFragments(npEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        noteProvidedFragments(npEvent, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
       case ScopeOpened(ordinal, message, nameInfo, formatter, location, payload, threadName, timeStamp) =>
 
@@ -847,7 +867,7 @@ private[scalatest] object StringReporter {
 
         val tpf = stringToPrint map (new Fragment(_, AnsiYellow))
 
-        val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces)
+        val ref = recordedEventFragments(recordedEvents, AnsiYellow, presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentAbsoluteFileName)
 
         tpf ++ ref
 
@@ -868,7 +888,8 @@ private[scalatest] object StringReporter {
     presentUnformatted: Boolean,
     presentAllDurations: Boolean,
     presentShortStackTraces: Boolean,
-    presentFullStackTraces: Boolean
+    presentFullStackTraces: Boolean,
+    presentAbsoluteFileName: Boolean
   ): Vector[String] = {
 
     def genFormattedText = {
@@ -913,7 +934,7 @@ private[scalatest] object StringReporter {
     val possiblyEmptyMessageWithPossibleLineNumber =
       throwable match {
         case Some(e: PropertyCheckFailedException) => possiblyEmptyMessage // PCFEs already include the line number
-        case Some(e: StackDepth) => withPossibleLineNumber(possiblyEmptyMessage, throwable) // Show it in the stack depth case
+        case Some(e: StackDepth) => withPossibleLineNumber(possiblyEmptyMessage, throwable, presentAbsoluteFileName) // Show it in the stack depth case
         case _ => "" // Don't show it in the non-stack depth case. It will be shown after the exception class name and colon.
       }
 

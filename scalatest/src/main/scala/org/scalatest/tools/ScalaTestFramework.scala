@@ -121,7 +121,7 @@ class ScalaTestFramework extends SbtFramework {
     val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
     val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
     val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
-    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests = new AtomicBoolean(false)
+    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentAbsoluteFileName = new AtomicBoolean(false)
     val filter: AtomicReference[Option[Filter]] = new AtomicReference(None)
     val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
     val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
@@ -283,7 +283,8 @@ class ScalaTestFramework extends SbtFramework {
           presentReminder.get,
           presentReminderWithShortStackTraces.get,
           presentReminderWithFullStackTraces.get,
-          presentReminderWithoutCanceledTests.get
+          presentReminderWithoutCanceledTests.get,
+          presentAbsoluteFileName.get
         )
     }
   }
@@ -306,7 +307,8 @@ class ScalaTestFramework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    presentAbsoluteFileName: Boolean
   ) extends StringReporter(
     presentAllDurations,
     presentInColor,
@@ -316,7 +318,8 @@ class ScalaTestFramework extends SbtFramework {
     presentReminder,
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
-    presentReminderWithoutCanceledTests
+    presentReminderWithoutCanceledTests,
+    presentAbsoluteFileName
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment): Unit = {

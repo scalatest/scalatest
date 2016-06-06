@@ -141,7 +141,8 @@ class StringReporterSuite extends FunSuite with Matchers {
         presentUnformatted = true,
         presentAllDurations = false,
         presentShortStackTraces = false,
-        presentFullStackTraces = false
+        presentFullStackTraces = false,
+        presentAbsoluteFileName = false
       )
     strings should have size 1
     strings(0) should include (msg)
