@@ -15,8 +15,6 @@
  */
 package org.scalatest.events
 
-import java.io.File
-
 import org.scalatest.prop.Checkers
 import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
 // SKIP-SCALATESTJS-START
@@ -58,11 +56,11 @@ class LocationSpec extends FunSpec with Checkers {
           case testSucceed:TestSucceeded => 
             assertResult(thisLineNumber - 23) { testSucceed.location.get.asInstanceOf[LineInFile].lineNumber }
             assertResult("LocationSpec.scala") { testSucceed.location.get.asInstanceOf[LineInFile].fileName }
-            val sep = File.separator
+            val sep = System.getProperty("file.separator") // Not using File.separator because it is not scala-js friendly
             inside (testSucceed.location) { case Some(location) =>
               inside (location) { case lineInFile: LineInFile =>
                 inside (lineInFile.filePathname) { case Some(filePathname) =>
-                  assert(filePathname.endsWith(s"scalatest-test${sep}src${sep}test${sep}scala${sep}org${sep}scalatest${sep}events${sep}LocationSpec.scala"))
+                  assert(filePathname.endsWith(s"test${sep}scala${sep}org${sep}scalatest${sep}events${sep}LocationSpec.scala"))
                 }
               }
             }
