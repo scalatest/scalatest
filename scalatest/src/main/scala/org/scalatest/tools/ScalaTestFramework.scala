@@ -121,7 +121,7 @@ class ScalaTestFramework extends SbtFramework {
     val reporter: AtomicReference[Option[DispatchReporter]] = new AtomicReference(None)
     val reporterConfigs: AtomicReference[Option[ReporterConfigurations]] = new AtomicReference(None)
     val useStdout, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted = new AtomicBoolean(false)
-    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentAbsoluteFileName = new AtomicBoolean(false)
+    val presentReminder, presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname = new AtomicBoolean(false)
     val filter: AtomicReference[Option[Filter]] = new AtomicReference(None)
     val configMap: AtomicReference[Option[ConfigMap]] = new AtomicReference(None)
     val membersOnly: AtomicReference[Option[List[String]]] = new AtomicReference(None)
@@ -284,7 +284,7 @@ class ScalaTestFramework extends SbtFramework {
           presentReminderWithShortStackTraces.get,
           presentReminderWithFullStackTraces.get,
           presentReminderWithoutCanceledTests.get,
-          presentAbsoluteFileName.get
+          presentFilePathname.get
         )
     }
   }
@@ -308,7 +308,7 @@ class ScalaTestFramework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    presentAbsoluteFileName: Boolean
+    presentFilePathname: Boolean
   ) extends StringReporter(
     presentAllDurations,
     presentInColor,
@@ -319,7 +319,7 @@ class ScalaTestFramework extends SbtFramework {
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
     presentReminderWithoutCanceledTests,
-    presentAbsoluteFileName
+    presentFilePathname
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment): Unit = {

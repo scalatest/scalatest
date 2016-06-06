@@ -33,7 +33,7 @@ private[scalatest] class StandardOutReporter(
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean,
-  presentAbsoluteFileName: Boolean
+  presentFilePathname: Boolean
 ) extends PrintReporter(
   Console.out,
   presentAllDurations,
@@ -45,7 +45,7 @@ private[scalatest] class StandardOutReporter(
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
   presentReminderWithoutCanceledTests,
-  presentAbsoluteFileName
+  presentFilePathname
 ) {
   /**
    * Does nothing, because don't want to dispose the standard output stream.

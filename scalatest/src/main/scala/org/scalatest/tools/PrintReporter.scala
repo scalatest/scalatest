@@ -44,7 +44,7 @@ private[scalatest] abstract class PrintReporter(
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean,
-  presentAbsoluteFileName: Boolean
+  presentFilePathname: Boolean
 ) extends StringReporter(
   presentAllDurations,
   presentInColor,
@@ -55,7 +55,7 @@ private[scalatest] abstract class PrintReporter(
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
   presentReminderWithoutCanceledTests,
-  presentAbsoluteFileName
+  presentFilePathname
 ) {
 
   /**
@@ -78,7 +78,7 @@ private[scalatest] abstract class PrintReporter(
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    presentAbsoluteFileName: Boolean
+    presentFilePathname: Boolean
   ) =
     this(
       new PrintWriter(
@@ -95,7 +95,7 @@ private[scalatest] abstract class PrintReporter(
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
-      presentAbsoluteFileName
+      presentFilePathname
     )
 
   // SKIP-SCALATESTJS-START
@@ -120,7 +120,7 @@ private[scalatest] abstract class PrintReporter(
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    presentAbsoluteFileName: Boolean
+    presentFilePathname: Boolean
   ) =
     this(
       new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(filename)), BufferSize)),
@@ -133,7 +133,7 @@ private[scalatest] abstract class PrintReporter(
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
-      presentAbsoluteFileName
+      presentFilePathname
     )
 
   // SKIP-SCALATESTJS-END

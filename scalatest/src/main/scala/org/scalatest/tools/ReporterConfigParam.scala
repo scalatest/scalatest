@@ -42,4 +42,4 @@ private[tools] case object PresentReminderWithoutStackTraces extends ReporterCon
 private[tools] case object PresentReminderWithShortStackTraces extends ReporterConfigParam("T")
 private[tools] case object PresentReminderWithFullStackTraces extends ReporterConfigParam("G")
 private[tools] case object PresentReminderWithoutCanceledTests extends ReporterConfigParam("K")
-private[tools] case object PresentAbsoluteFileName extends ReporterConfigParam("V")
+private[tools] case object PresentFilePathname extends ReporterConfigParam("V")

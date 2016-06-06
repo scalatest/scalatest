@@ -33,7 +33,7 @@ private[scalatest] class StandardErrReporter(
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
   presentReminderWithoutCanceledTests: Boolean,
-  presentAbsoluteFileName: Boolean
+  presentFilePathname: Boolean
 ) extends PrintReporter(
   Console.err,
   presentAllDurations,
@@ -45,7 +45,7 @@ private[scalatest] class StandardErrReporter(
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
   presentReminderWithoutCanceledTests,
-  presentAbsoluteFileName
+  presentFilePathname
 ) {
   /**
    * Does nothing, because don't want to dispose the standard error stream.

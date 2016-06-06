@@ -79,13 +79,13 @@ trait StackDepth { this: Throwable =>
 
   /**
     * A string that provides the absolute filename and line number of the line of code that failed, suitable
-    * for presenting to a user of the failing line.  It calls <code>failedCodeAbsoluteFileName</code> and
+    * for presenting to a user of the failing line.  It calls <code>failedCodeFilePathname</code> and
     * <code>failedCodeLineNumber</code> to get the failing absolute filename and line number.
     *
     * @return a user-presentable string containing the absolute filename and line number that caused the failed test
     */
-  lazy val failedCodeAbsoluteFileNameAndLineNumberString: Option[String] = {
-    for (fileName <- failedCodeAbsoluteFileName; lineNum <- failedCodeLineNumber) yield
+  lazy val failedCodeFilePathnameAndLineNumberString: Option[String] = {
+    for (fileName <- failedCodeFilePathname; lineNum <- failedCodeLineNumber) yield
       fileName + ":" + lineNum
   }
 
@@ -120,15 +120,6 @@ trait StackDepth { this: Throwable =>
         }
     }
   }
-
-  /**
-    * A string that provides the absolute filename of the line of code that failed, suitable
-    * for presenting to a user, which is taken from <code>position</code>
-    *
-    * @return a string containing the absolute filename that caused the failed test
-    */
-  lazy val failedCodeAbsoluteFileName: Option[String] =
-    position.map(_.filePathname)
 
   /**
    * A string that provides the line number of the line of code that failed, suitable

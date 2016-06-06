@@ -205,7 +205,7 @@ class StringReporterSummarySpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
-          presentAbsoluteFileName = false
+          presentFilePathname = false
         )
       fragments should be (Vector(Fragment(Resources.runCompleted, AnsiCyan)))
     }
@@ -221,7 +221,7 @@ class StringReporterSummarySpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
-          presentAbsoluteFileName = false
+          presentFilePathname = false
         )
       fragments should be (Vector(Fragment(Resources.runStopped, AnsiCyan)))
     }
@@ -250,7 +250,7 @@ class StringReporterSummarySpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
-          presentAbsoluteFileName = false
+          presentFilePathname = false
         )
       fragments should be (
         Vector(
@@ -287,7 +287,7 @@ class StringReporterSummarySpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
-          presentAbsoluteFileName = false
+          presentFilePathname = false
         )
       fragments should be (
         Vector(
@@ -312,7 +312,7 @@ class StringReporterSummarySpec extends UnitSpec {
           presentReminderWithShortStackTraces = false,
           presentReminderWithFullStackTraces = false,
           presentReminderWithoutCanceledTests = false,
-          presentAbsoluteFileName = false
+          presentFilePathname = false
         )
 
         fragments.take(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsForOneFailedAndOneCanceledTest)
@@ -332,7 +332,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
         fragments should be (fragmentsWhenNoReminderForOneFailedTest)
       }
@@ -349,7 +349,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
         fragments should be (fragmentsWhenNoReminderForOneFailedTest)
       }
@@ -366,7 +366,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments should be (initialFragmentsForJustOneFailedTest)
@@ -384,7 +384,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = true,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments.take(initialFragmentsForJustOneFailedTest.size) should be (initialFragmentsForJustOneFailedTest)
@@ -403,7 +403,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = true,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments.take(initialFragmentsForJustOneFailedTest.size) should be (initialFragmentsForJustOneFailedTest)
@@ -424,7 +424,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
         fragments should be (fragmentsWhenNoReminderForOneFailedAndOneCanceledTest)
       }
@@ -441,7 +441,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
         fragments should be (fragmentsWhenNoReminderForOneFailedAndOneCanceledTest)
       }
@@ -458,7 +458,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments.take(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsForOneFailedAndOneCanceledTest)
@@ -477,7 +477,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = true,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments should be (initialFragmentsForOneFailedAndOneCanceledTest)
@@ -495,7 +495,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = true,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments.take(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsForOneFailedAndOneCanceledTest)
@@ -515,7 +515,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = true,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments.take(initialFragmentsForOneFailedAndOneCanceledTest.size) should be (initialFragmentsForOneFailedAndOneCanceledTest)
@@ -608,7 +608,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
         fragments should be (fragmentsWhenNoReminderForOneSuiteAborted)
       }
@@ -625,7 +625,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
         fragments should be (fragmentsWhenNoReminderForOneSuiteAborted)
       }
@@ -642,7 +642,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments should be (initialFragmentsForJustOneAbortedSuite)
@@ -660,7 +660,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = true,
             presentReminderWithFullStackTraces = false,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments.take(initialFragmentsForJustOneAbortedSuite.size) should be (
@@ -683,7 +683,7 @@ class StringReporterSummarySpec extends UnitSpec {
             presentReminderWithShortStackTraces = false,
             presentReminderWithFullStackTraces = true,
             presentReminderWithoutCanceledTests = false,
-            presentAbsoluteFileName = false
+            presentFilePathname = false
           )
 
         fragments.take(initialFragmentsForJustOneAbortedSuite.size) should be (

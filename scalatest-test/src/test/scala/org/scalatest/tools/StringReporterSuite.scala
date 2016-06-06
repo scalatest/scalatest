@@ -18,6 +18,9 @@ package tools
 
 import Fragment.{countTrailingEOLs, countLeadingEOLs}
 import StringReporter._
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.TestFailedException
+import SharedHelpers.thisLineNumber
 
 class StringReporterSuite extends FunSuite with Matchers {
 
@@ -142,7 +145,7 @@ class StringReporterSuite extends FunSuite with Matchers {
         presentAllDurations = false,
         presentShortStackTraces = false,
         presentFullStackTraces = false,
-        presentAbsoluteFileName = false
+        presentFilePathname = false
       )
     strings should have size 1
     strings(0) should include (msg)
@@ -374,6 +377,21 @@ class StringReporterSuite extends FunSuite with Matchers {
 
   test("makeDurationString when duration == 10799999") {
     assert(makeDurationString(10799999) === "2 hours, 59 minutes, 59 seconds")
+  }
+
+  test("withPossibleLineNumber returns simple file name on same line if presentFilePathname is false") {
+    import StringReporter.withPossibleLineNumber
+    import org.scalactic.source
+    val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None)), false)
+    assert(result === "oops (StringReporterSuite.scala:" + (thisLineNumber - 1) + ")")
+  }
+
+  test("withPossibleLineNumber returns full file pathname on next line if presentFilePathname is true and it is available") {
+    import StringReporter.withPossibleLineNumber
+    import org.scalactic.source
+    val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None)), true)
+    assert(result startsWith "oops\nAt: ")
+    assert(result endsWith "src/test/scala/org/scalatest/tools/StringReporterSuite.scala:" + (thisLineNumber - 2))
   }
 }
 

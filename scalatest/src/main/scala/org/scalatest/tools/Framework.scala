@@ -389,7 +389,7 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    presentAbsoluteFileName: Boolean,
+    presentFilePathname: Boolean,
     configSet: Set[ReporterConfigParam],
     execService: ExecutorService
   ) extends Task {
@@ -461,7 +461,7 @@ class Framework extends SbtFramework {
                 presentReminderWithShortStackTraces,
                 presentReminderWithFullStackTraces,
                 presentReminderWithoutCanceledTests,
-                presentAbsoluteFileName,
+                presentFilePathname,
                 summaryCounter
               ),
               configSet
@@ -558,7 +558,7 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
-    presentAbsoluteFileName: Boolean,
+    presentFilePathname: Boolean,
     summaryCounter: SummaryCounter
   ) extends StringReporter(
     presentAllDurations,
@@ -570,7 +570,7 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
     presentReminderWithoutCanceledTests,
-    presentAbsoluteFileName: Boolean
+    presentFilePathname: Boolean
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment): Unit = {
@@ -597,7 +597,7 @@ class Framework extends SbtFramework {
         presentReminderWithShortStackTraces,
         presentReminderWithFullStackTraces,
         presentReminderWithoutCanceledTests,
-        presentAbsoluteFileName,
+        presentFilePathname,
         reminderEventsBuf
       ) foreach printPossiblyInColor
     }
@@ -625,7 +625,7 @@ class Framework extends SbtFramework {
     val presentReminderWithShortStackTraces: Boolean,
     val presentReminderWithFullStackTraces: Boolean,
     val presentReminderWithoutCanceledTests: Boolean,
-    val presentAbsoluteFileName: Boolean,
+    val presentFilePathname: Boolean,
     val configSet: Set[ReporterConfigParam],
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
@@ -687,7 +687,7 @@ class Framework extends SbtFramework {
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests,
-          presentAbsoluteFileName,
+          presentFilePathname,
           configSet,
           execSvc
         )
@@ -746,7 +746,7 @@ class Framework extends SbtFramework {
             presentReminderWithShortStackTraces,
             presentReminderWithFullStackTraces,
             presentReminderWithoutCanceledTests,
-            presentAbsoluteFileName
+            presentFilePathname
           ) 
         fragments.map(_.toPossiblyColoredText(presentInColor)).mkString("\n")
       }
@@ -993,7 +993,7 @@ class Framework extends SbtFramework {
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
-      presentAbsoluteFileName,
+      presentFilePathname,
       configSet
     ) = 
       fullReporterConfigurations.standardOutReporterConfiguration match {
@@ -1012,7 +1012,7 @@ class Framework extends SbtFramework {
             configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithoutCanceledTests),
-            configSet.contains(PresentAbsoluteFileName),
+            configSet.contains(PresentFilePathname),
             configSet
           )
         case None =>
@@ -1056,7 +1056,7 @@ class Framework extends SbtFramework {
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
-      presentAbsoluteFileName,
+      presentFilePathname,
       configSet,
       detectSlowpokes,
       slowpokeDetectionDelay,

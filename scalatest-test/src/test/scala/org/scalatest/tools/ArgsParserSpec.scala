@@ -1227,7 +1227,7 @@ class ArgsParserSpec extends FunSpec {
     assertResult(Set(PresentFullStackTraces)) {
       ArgsParser.parseConfigSet("-oF")
     }
-    assertResult(Set(PresentAbsoluteFileName)) {
+    assertResult(Set(PresentFilePathname)) {
       ArgsParser.parseConfigSet("-oV")
     }
     assertResult(Set[ReporterConfigParam]()) {
