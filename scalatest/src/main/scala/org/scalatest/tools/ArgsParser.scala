@@ -547,6 +547,7 @@ private[tools] object ArgsParser {
         case 'S' => set += PresentShortStackTraces
         case 'D' => set += PresentAllDurations
         case 'U' => set += PresentUnformatted
+        case 'V' => set += PresentAbsoluteFileName
         case c: Char => {
 
           // this should be moved to the checker, and just throw an exception here with a debug message. Or allow a MatchError.
@@ -745,6 +746,8 @@ private[tools] object ArgsParser {
             throw new IllegalArgumentException("Cannot specify a D (present all durations) configuration parameter for the graphic reporter (because it shows them all anyway): " + dashGString)
           if (configSet.contains(PresentUnformatted))
             throw new IllegalArgumentException("Cannot specify a U (present unformatted) configuration parameter for the graphic reporter: " + dashGString)
+          if (configSet.contains(PresentAbsoluteFileName))
+            throw new IllegalArgumentException("Cannot specify a V (present absolute file name) configuration parameter for the graphic reporter: " + dashGString)
           Some(new GraphicReporterConfiguration(configSet))
         case None => None
       }
@@ -909,6 +912,8 @@ private[tools] object ArgsParser {
             throw new IllegalArgumentException("Cannot specify a D (present all durations) configuration parameter for a custom reporter: " + dashCString + " " + customReporterClassName)
           if (configSet.contains(PresentUnformatted))
             throw new IllegalArgumentException("Cannot specify a U (present unformatted) configuration parameter for a custom reporter: " + dashCString + " " + customReporterClassName)
+          if (configSet.contains(PresentAbsoluteFileName))
+            throw new IllegalArgumentException("Cannot specify a V (present absolute file name) configuration parameter for a custom reporter: " + dashCString + " " + customReporterClassName)
           lb += new CustomReporterConfiguration(configSet, customReporterClassName)
         }
       }

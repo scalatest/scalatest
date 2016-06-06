@@ -77,7 +77,8 @@ private[scalatest] class ReporterFactory {
           },
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
-        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
+        presentAbsoluteFileName = configSet.contains(PresentAbsoluteFileName)
       )
     else
       new FilterReporter(
@@ -93,7 +94,8 @@ private[scalatest] class ReporterFactory {
             },
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
-          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
+          presentAbsoluteFileName = configSet.contains(PresentAbsoluteFileName)
         ),
         configSet
       )
@@ -113,7 +115,8 @@ private[scalatest] class ReporterFactory {
           },
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
-        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
+        presentAbsoluteFileName = configSet.contains(PresentAbsoluteFileName)
       )
     else
       new FilterReporter(
@@ -129,7 +132,8 @@ private[scalatest] class ReporterFactory {
             },
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
-          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
+          presentAbsoluteFileName = configSet.contains(PresentAbsoluteFileName)
           ),
         configSet
       )
@@ -150,7 +154,8 @@ private[scalatest] class ReporterFactory {
           },
         presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
-        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+        presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
+        presentAbsoluteFileName = configSet.contains(PresentAbsoluteFileName)
       )
     else
       new FilterReporter(
@@ -167,7 +172,8 @@ private[scalatest] class ReporterFactory {
             },
           presentReminderWithShortStackTraces = configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
           presentReminderWithFullStackTraces = configSet.contains(PresentReminderWithFullStackTraces),
-          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests)
+          presentReminderWithoutCanceledTests = configSet.contains(PresentReminderWithoutCanceledTests),
+          presentAbsoluteFileName = configSet.contains(PresentAbsoluteFileName)
         ),
         configSet
       )

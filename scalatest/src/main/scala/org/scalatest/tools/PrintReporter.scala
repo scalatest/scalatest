@@ -43,7 +43,8 @@ private[scalatest] abstract class PrintReporter(
   presentReminder: Boolean,
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
-  presentReminderWithoutCanceledTests: Boolean
+  presentReminderWithoutCanceledTests: Boolean,
+  presentAbsoluteFileName: Boolean
 ) extends StringReporter(
   presentAllDurations,
   presentInColor,
@@ -53,7 +54,8 @@ private[scalatest] abstract class PrintReporter(
   presentReminder,
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
-  presentReminderWithoutCanceledTests
+  presentReminderWithoutCanceledTests,
+  presentAbsoluteFileName
 ) {
 
   /**
@@ -75,7 +77,8 @@ private[scalatest] abstract class PrintReporter(
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    presentAbsoluteFileName: Boolean
   ) =
     this(
       new PrintWriter(
@@ -91,7 +94,8 @@ private[scalatest] abstract class PrintReporter(
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests
+      presentReminderWithoutCanceledTests,
+      presentAbsoluteFileName
     )
 
   // SKIP-SCALATESTJS-START
@@ -115,7 +119,8 @@ private[scalatest] abstract class PrintReporter(
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean
+    presentReminderWithoutCanceledTests: Boolean,
+    presentAbsoluteFileName: Boolean
   ) =
     this(
       new PrintWriter(new BufferedOutputStream(new FileOutputStream(new File(filename)), BufferSize)),
@@ -127,7 +132,8 @@ private[scalatest] abstract class PrintReporter(
       presentReminder,
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
-      presentReminderWithoutCanceledTests
+      presentReminderWithoutCanceledTests,
+      presentAbsoluteFileName
     )
 
   // SKIP-SCALATESTJS-END
