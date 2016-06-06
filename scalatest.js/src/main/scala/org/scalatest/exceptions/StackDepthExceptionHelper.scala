@@ -16,6 +16,7 @@
 package org.scalatest.exceptions
 
 import org.scalactic._
+import org.scalactic.exceptions.NullArgumentException
 
 private[scalatest] object StackDepthExceptionHelper {
 
@@ -78,5 +79,19 @@ private[scalatest] object StackDepthExceptionHelper {
       Some(retrieveFileName(fileName))
     else
       None
+  }
+
+  def posOrElseStackDepthFun(pos: Option[source.Position], sdf: StackDepthException => Int): Either[source.Position, StackDepthException => Int] = {
+    // requireNonNull(pos, sdf) TODO30 this doesn't compile, probably a problem with hiding a package name again
+    if (pos == null) throw new NullArgumentException("pos was null")
+    if (sdf == null) throw new NullArgumentException("sdf was null")
+    pos match {
+      case Some(null) => throw new NullArgumentException("pos was Some(null)")
+      case _ =>
+    }
+    pos match {
+      case Some(pos) => Left(pos)
+      case None => Right(sdf)
+    }
   }
 }
