@@ -170,12 +170,12 @@ abstract class StackDepthException(
    * </p>
    */
   lazy val failedCodeStackDepth: Int = {
-     val stackDepthFun =
-       posOrStackDepthFun match {
-         case Left(pos) => getStackDepthFun(pos)
-         case Right(sdf) => sdf
-       }
-     stackDepthFun(this)
+    val stackDepthFun =
+      posOrStackDepthFun match {
+        case Left(pos) => getStackDepthFun(pos)
+        case Right(sdf) => sdf
+      }
+    stackDepthFun(this)
   }
 
   /**

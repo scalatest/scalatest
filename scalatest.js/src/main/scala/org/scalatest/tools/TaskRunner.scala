@@ -54,6 +54,7 @@ final class TaskRunner(task: TaskDef,
                        presentReminderWithShortStackTraces: Boolean,
                        presentReminderWithFullStackTraces: Boolean,
                        presentReminderWithoutCanceledTests: Boolean,
+                       presentFilePathname: Boolean,
                        notifyServer: Option[String => Unit]) extends Task {
   def tags(): Array[String] = Array.empty
   def taskDef(): TaskDef = task
@@ -88,6 +89,7 @@ println("GOT TO THIS RECOVER CALL")
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
+      presentFilePathname,
       notifyServer
     )
 
@@ -186,6 +188,7 @@ println("GOT TO THIS RECOVER CALL")
                                     presentReminderWithShortStackTraces: Boolean,
                                     presentReminderWithFullStackTraces: Boolean,
                                     presentReminderWithoutCanceledTests: Boolean,
+                                    presentFilePathname: Boolean,
                                     notifyServer: Option[String => Unit]
                                     ) extends StringReporter(
     presentAllDurations,
@@ -196,7 +199,8 @@ println("GOT TO THIS RECOVER CALL")
     presentReminder,
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
-    presentReminderWithoutCanceledTests
+    presentReminderWithoutCanceledTests,
+    presentFilePathname
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment) {
@@ -225,6 +229,7 @@ println("GOT TO THIS RECOVER CALL")
         presentReminderWithShortStackTraces,
         presentReminderWithFullStackTraces,
         presentReminderWithoutCanceledTests,
+        presentFilePathname,
         reminderEventsBuf
       ) foreach printPossiblyInColor
     }
