@@ -42,7 +42,8 @@ private[scalatest] class FileReporter(
   presentReminder: Boolean,
   presentReminderWithShortStackTraces: Boolean,
   presentReminderWithFullStackTraces: Boolean,
-  presentReminderWithoutCanceledTests: Boolean
+  presentReminderWithoutCanceledTests: Boolean,
+  presentFilePathname: Boolean
 ) extends PrintReporter(
   filename,
   presentAllDurations,
@@ -53,6 +54,7 @@ private[scalatest] class FileReporter(
   presentReminder,
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
-  presentReminderWithoutCanceledTests
+  presentReminderWithoutCanceledTests,
+  presentFilePathname
 )
 

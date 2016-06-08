@@ -389,6 +389,7 @@ class Framework extends SbtFramework {
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
     presentReminderWithoutCanceledTests: Boolean,
+    presentFilePathname: Boolean,
     configSet: Set[ReporterConfigParam],
     execService: ExecutorService
   ) extends Task {
@@ -460,6 +461,7 @@ class Framework extends SbtFramework {
                 presentReminderWithShortStackTraces,
                 presentReminderWithFullStackTraces,
                 presentReminderWithoutCanceledTests,
+                presentFilePathname,
                 summaryCounter
               ),
               configSet
@@ -555,7 +557,8 @@ class Framework extends SbtFramework {
     presentReminder: Boolean,
     presentReminderWithShortStackTraces: Boolean,
     presentReminderWithFullStackTraces: Boolean,
-    presentReminderWithoutCanceledTests: Boolean, 
+    presentReminderWithoutCanceledTests: Boolean,
+    presentFilePathname: Boolean,
     summaryCounter: SummaryCounter
   ) extends StringReporter(
     presentAllDurations,
@@ -566,7 +569,8 @@ class Framework extends SbtFramework {
     presentReminder,
     presentReminderWithShortStackTraces,
     presentReminderWithFullStackTraces,
-    presentReminderWithoutCanceledTests
+    presentReminderWithoutCanceledTests,
+    presentFilePathname: Boolean
   ) {
 
     protected def printPossiblyInColor(fragment: Fragment): Unit = {
@@ -593,6 +597,7 @@ class Framework extends SbtFramework {
         presentReminderWithShortStackTraces,
         presentReminderWithFullStackTraces,
         presentReminderWithoutCanceledTests,
+        presentFilePathname,
         reminderEventsBuf
       ) foreach printPossiblyInColor
     }
@@ -620,6 +625,7 @@ class Framework extends SbtFramework {
     val presentReminderWithShortStackTraces: Boolean,
     val presentReminderWithFullStackTraces: Boolean,
     val presentReminderWithoutCanceledTests: Boolean,
+    val presentFilePathname: Boolean,
     val configSet: Set[ReporterConfigParam],
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
@@ -681,6 +687,7 @@ class Framework extends SbtFramework {
           presentReminderWithShortStackTraces,
           presentReminderWithFullStackTraces,
           presentReminderWithoutCanceledTests,
+          presentFilePathname,
           configSet,
           execSvc
         )
@@ -738,7 +745,8 @@ class Framework extends SbtFramework {
             presentReminder,
             presentReminderWithShortStackTraces,
             presentReminderWithFullStackTraces,
-            presentReminderWithoutCanceledTests
+            presentReminderWithoutCanceledTests,
+            presentFilePathname
           ) 
         fragments.map(_.toPossiblyColoredText(presentInColor)).mkString("\n")
       }
@@ -985,6 +993,7 @@ class Framework extends SbtFramework {
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
+      presentFilePathname,
       configSet
     ) = 
       fullReporterConfigurations.standardOutReporterConfiguration match {
@@ -1003,6 +1012,7 @@ class Framework extends SbtFramework {
             configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithFullStackTraces),
             configSet.contains(PresentReminderWithoutCanceledTests),
+            configSet.contains(PresentFilePathname),
             configSet
           )
         case None =>
@@ -1010,7 +1020,7 @@ class Framework extends SbtFramework {
           // the reason that sub-process must use stdout is that the Array[Logger] is passed in from SBT only when the
           // suite is run, in the fork mode case this happens only at the sub-process side, the main process will not be
           // able to get the Array[Logger] to create SbtInfoLoggerReporter.
-          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+          (!remoteArgs.isEmpty || reporterArgs.isEmpty, false, !sbtNoFormat, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
       }
     
     //val reporterConfigs = fullReporterConfigurations.copy(standardOutReporterConfiguration = None)
@@ -1046,6 +1056,7 @@ class Framework extends SbtFramework {
       presentReminderWithShortStackTraces,
       presentReminderWithFullStackTraces,
       presentReminderWithoutCanceledTests,
+      presentFilePathname,
       configSet,
       detectSlowpokes,
       slowpokeDetectionDelay,
