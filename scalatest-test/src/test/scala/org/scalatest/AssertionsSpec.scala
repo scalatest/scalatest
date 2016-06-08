@@ -69,7 +69,6 @@ class AssertionsSpec extends FunSpec {
       intercept[TestFailedException] {
         assert(a3 === a1)
       }
-      assert(a3 == a1)
     }
     it("should compare nulls in a satisfying manner") {
       val n1: String = null
