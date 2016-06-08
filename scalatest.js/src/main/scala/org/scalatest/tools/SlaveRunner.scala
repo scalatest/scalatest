@@ -44,6 +44,7 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
   presentReminderWithShortStackTraces,
   presentReminderWithFullStackTraces,
   presentReminderWithoutCanceledTests,
+  presentFilePathname,
   configSet
   ) = {
     if (reporterArgs.length == 1 && reporterArgs(0).startsWith("-o")) {
@@ -60,13 +61,14 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
         configSet.contains(PresentReminderWithShortStackTraces) && !configSet.contains(PresentReminderWithFullStackTraces),
         configSet.contains(PresentReminderWithFullStackTraces),
         configSet.contains(PresentReminderWithoutCanceledTests),
+        configSet.contains(PresentFilePathname),
         configSet
       )
     }
     else if (reporterArgs.length > 1)
       throw new IllegalArgumentException("Only one -o can be passed in as test argument.")
     else
-      (false, !sbtNoFormat, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
+      (false, !sbtNoFormat, false, false, false, false, false, false, false, false, Set.empty[ReporterConfigParam])
   }
 
   val tagsToInclude: Set[String] = parseCompoundArgIntoSet(tagsToIncludeArgs, "-n")
@@ -123,7 +125,7 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
 
     def createTask(t: TaskDef): Task =
       new TaskRunner(t, testClassLoader, tracker, tagsToInclude, tagsToExclude, t.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-        presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, Some(notifyServer))
+        presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, Some(notifyServer))
 
     for {
       taskDef <- if (wildcard.isEmpty && membersOnly.isEmpty) taskDefs else (filterWildcard(wildcard, taskDefs) ++ filterMembersOnly(membersOnly, taskDefs)).distinct
@@ -140,7 +142,7 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
   def deserializeTask(task: String, deserializer: (String) => TaskDef): Task = {
     val taskDef = deserializer(task)
     new TaskRunner(taskDef, testClassLoader, tracker, tagsToInclude, tagsToExclude, taskDef.selectors ++ autoSelectors, false, presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-      presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, Some(notifyServer))
+      presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname, Some(notifyServer))
   }
 
 }
