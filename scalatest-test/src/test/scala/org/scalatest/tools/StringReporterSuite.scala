@@ -390,8 +390,8 @@ class StringReporterSuite extends FunSuite with Matchers {
     import StringReporter.withPossibleLineNumber
     import org.scalactic.source
     val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None)), true)
-    assert(result startsWith "oops\nAt: ")
-    assert(result endsWith "org/scalatest/tools/StringReporterSuite.scala:" + (thisLineNumber - 2))
+    assert(result startsWith "oops\n** ")
+    assert(result endsWith "org/scalatest/tools/StringReporterSuite.scala:" + (thisLineNumber - 2) + " **")
   }
 }
 
