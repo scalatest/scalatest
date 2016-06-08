@@ -78,6 +78,11 @@ if [[ $MODE = 'RegularTests4' ]] ; then
     sbt ++$TRAVIS_SCALA_VERSION genRegularTests4/testQuick
     rc=$?
     echo second try, exitcode $rc
+    if [[ $rc != 0 ]] ; then
+      sbt ++$TRAVIS_SCALA_VERSION genRegularTests4/testQuick
+      rc=$?
+      echo third try, exitcode $rc
+    fi
   fi
   echo final, exitcode $rc
   exit $rc

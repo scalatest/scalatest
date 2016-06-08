@@ -1,7 +1,8 @@
 language: scala
 scala:
-  - 2.11.7
-  - 2.10.5
+  - 2.11.8
+  - 2.10.6
+  - 2.12.0-M4
 jdk:
   - oraclejdk7
   - openjdk6
@@ -42,7 +43,13 @@ env:
     - MODE=genEmptyTests
     - MODE=examples
     - MODE=examplesJS
-#    - MODE=genSafeStyleTests
+
+matrix:
+  exclude:
+    - scala: "2.12.0-M4"
+      jdk: oraclejdk7
+    - scala: "2.12.0-M4"
+      jdk: openjdk6
 
 branches:
   only:

@@ -60,7 +60,7 @@ class LocationSpec extends FunSpec with Checkers {
             inside (testSucceed.location) { case Some(location) =>
               inside (location) { case lineInFile: LineInFile =>
                 inside (lineInFile.filePathname) { case Some(filePathname) =>
-                  assert(filePathname.endsWith(s"test${sep}scala${sep}org${sep}scalatest${sep}events${sep}LocationSpec.scala"))
+                  assert(filePathname.endsWith(s"org${sep}scalatest${sep}events${sep}LocationSpec.scala"))
                 }
               }
             }
