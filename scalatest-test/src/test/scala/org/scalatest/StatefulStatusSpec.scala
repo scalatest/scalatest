@@ -16,6 +16,7 @@
 package org.scalatest
 
 import scala.util.{Try, Success}
+import OptionValues._
 
 class StatefulStatusSpec extends fixture.FunSpec {
 
@@ -30,6 +31,8 @@ class StatefulStatusSpec extends fixture.FunSpec {
     def waitUntilCompleted()
     // SKIP-SCALATESTJS-END
     def whenCompleted(f: Try[Boolean] => Unit)
+    def setFailedWith(ex: Throwable): Unit
+    def unreportedException: Option[Throwable]
   }
 
    override protected def withFixture(test: OneArgTest): Outcome = {
@@ -237,6 +240,17 @@ class StatefulStatusSpec extends fixture.FunSpec {
       SharedHelpers.serializeRoundtrip(status)
     }
     // SKIP-SCALATESTJS-END
+
+    it("should not replace previous failed exception if it is already set") { status =>
+      val e1 = new RuntimeException("exception 1")
+      val e2 = new RuntimeException("exception 2")
+
+      status.setFailedWith(e1)
+      assert(status.unreportedException.value.getMessage == "exception 1")
+
+      status.setFailedWith(e2)
+      assert(status.unreportedException.value.getMessage == "exception 1")
+    }
 
   }
 }
