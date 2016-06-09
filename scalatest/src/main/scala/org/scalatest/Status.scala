@@ -543,6 +543,19 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
     }
   }
 
+  /**
+   * Sets the status to failed with an unreported exception, without changing the completion status.
+   *
+   * <p>
+   * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to failed, but only
+   * up until <code>setCompleted</code> has been called. Once <code>setCompleted</code> has been called, invoking this method will result in a
+   * thrown <code>IllegalStateException</code>. Also, only the first exception passed will be reported as the unreported exception. Any exceptions
+   * passed via subsequent invocations of <code>setFailedWith</code> after the first will have their stack traces printed to standard output.
+   * </p>
+   *
+   * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
+   * @param ex an unreported exception
+   */
   def setFailedWith(ex: Throwable): Unit = {
     // TODO: Throw an exception if it is a fatal one?
     // TODO: Throw an exception if already have an exception in here.
@@ -660,7 +673,7 @@ final class StatefulStatus extends Status with Serializable {
    * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to failed, but only
    * up until <code>setCompleted</code> has been called. Once <code>setCompleted</code> has been called, invoking this method will result in a
    * thrown <code>IllegalStateException</code>.
-   * <p>
+   * </p>
    *
    * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
    */
@@ -672,6 +685,19 @@ final class StatefulStatus extends Status with Serializable {
     }
   }
 
+  /**
+   * Sets the status to failed with an unreported exception, without changing the completion status.
+   *
+   * <p>
+   * This method may be invoked repeatedly, even though invoking it once is sufficient to set the state of the <code>Status</code> to failed, but only
+   * up until <code>setCompleted</code> has been called. Once <code>setCompleted</code> has been called, invoking this method will result in a
+   * thrown <code>IllegalStateException</code>. Also, only the first exception passed will be reported as the unreported exception. Any exceptions
+   * passed via subsequent invocations of <code>setFailedWith</code> after the first will have their stack traces printed to standard output.
+   * </p>
+   *
+   * @throws IllegalStateException if this method is invoked on this instance after <code>setCompleted</code> has been invoked on this instance.
+   * @param ex an unreported exception
+   */
   def setFailedWith(ex: Throwable): Unit = {
     // TODO: Throw an exception if it is a fatal one?
     // TODO: Throw an exception if already have an exception in here.
