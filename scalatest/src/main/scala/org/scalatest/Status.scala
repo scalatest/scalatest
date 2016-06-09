@@ -282,7 +282,7 @@ sealed trait Status { thisStatus =>
    * </p>
    *
    * <p>
-   * Test-fatal exceptions indicate critical
+   * Run-aborting exceptions indicate critical
    * problems, such as <code>OutOfMemoryError</code>, that instead of being reported via a test completion event
    * should instead cause the entire suite to abort. In synchronous testing styles, this exception will be allowed
    * to just propagate up the call stack. But in async styles, the thread or threads executing the test will often
@@ -745,10 +745,6 @@ final class StatefulStatus extends Status with Serializable {
 /**
  * Composite <code>Status</code> that aggregates its completion and failed states of set of other <code>Status</code>es passed to its constructor.
  *
- * <strong>The tricky one here is what if multiple unreported exceptions exist in the inner statuses. For that
- * I might pick the highest priority one? I.e., if there's a fatal one pick that? Nah, not really.
- * Just pick a random one and printStackTrace the others? Sure why not.</strong>
- *
  * @param status the <code>Status</code>es out of which this status is composed.
  */
 final class CompositeStatus(statuses: Set[Status]) extends Status with Serializable {
@@ -758,13 +754,18 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
   @transient private final val latch = new CountDownLatch(statuses.size)
 
   @volatile private var succeeded = true
+  // This is set possibly by the whenCompleted function registered on all the
+  // inner statuses. If any of them are Failures, then that first one goes in
+  // as this Composite's unreported exception. Any subsequent ones are just printed.
+  // Then if it is the last inner status to complete, that unreported exception is passed
+  // to the callback functions registered with this composite status.
   private var asyncException: Option[Throwable] = None
 
   private final val queue = new ConcurrentLinkedQueue[Try[Boolean] => Unit]
 
   for (status <- statuses) {
     status.whenCompleted { tri =>
-      val youCompleteMe =
+      val youCompleteMe: Boolean =
         synchronized {
           latch.countDown()
 
@@ -855,9 +856,14 @@ final class CompositeStatus(statuses: Set[Status]) extends Status with Serializa
   }
 
   /**
-   * <strong>If this is defined, it means a suite needs to be aborted because of this exception.
-   * This one will include ones that come because one of the nested statuses ended up with an
-   * unreported exception or a callback registered with whenCompleted?</strong>
+   * An optional exception that has not been reported to the reporter for this run.
+   *
+   * <p>
+   * This will be defined if any of the composite <code>Status</code>s (passed to this <code>Status</code>'s 
+   * constructor) has a defined <code>unreportedException</code>. If more than one composite <code>Status</code>
+   * has a defined <code>unreportedException</code>, one of them (not specified) will be reported by this method
+   * and the others will have their stack traces printed to standard output.
+   * </p>
    */
   override def unreportedException: Option[Throwable] = {
     synchronized {
