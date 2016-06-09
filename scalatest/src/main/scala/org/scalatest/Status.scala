@@ -544,13 +544,14 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
   }
 
   def setFailedWith(ex: Throwable): Unit = {
-    // TODO: Throw an exception if it is a fatal one?
-    // TODO: Throw an exception if already have an exception in here.
     synchronized {
       if (isCompleted)
         throw new IllegalStateException("status is already completed")
       succeeded = false
-      asyncException = Some(ex)
+      if (asyncException.isEmpty)
+        asyncException = Some(ex)
+      else
+        ex.printStackTrace()
     }
   }
 
@@ -673,13 +674,14 @@ final class StatefulStatus extends Status with Serializable {
   }
 
   def setFailedWith(ex: Throwable): Unit = {
-    // TODO: Throw an exception if it is a fatal one?
-    // TODO: Throw an exception if already have an exception in here.
     synchronized {
       if (isCompleted)
         throw new IllegalStateException("status is already completed")
       succeeded = false
-      asyncException = Some(ex)
+      if (asyncException.isEmpty)
+        asyncException = Some(ex)
+      else
+        ex.printStackTrace()
     }
   }
 
