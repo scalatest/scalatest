@@ -133,6 +133,11 @@ trait Prettifier { // I removed the extends (Any => String), now that we are mak
  */
 object Prettifier {
 
+  /**
+   * Constract a new <code>Prettifier</code> from a given partial function.
+   *
+   * @param fun a partial function with which to implement the apply method of the returned <code>Prettifier</code>.
+   */
   def apply(fun: PartialFunction[Any, String]): Prettifier =
     new Prettifier {
       def apply(o: Any): String = fun(o)

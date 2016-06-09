@@ -18,10 +18,10 @@ package org.scalactic
 import org.scalatest._
 import scala.collection.mutable.WrappedArray
 
-class PrettyMethodsSpec extends FunSpec with Matchers {
-  describe("Trait PrettyMethods") {
+class DeprecatedPrettyMethodsSpec extends FunSpec with Matchers {
+  describe("Trait DeprecatedPrettyMethods") {
     describe("should by default allow you to call pretty on anything and get default Prettifier output,") {
-      import PrettyMethods._
+      import DeprecatedPrettyMethods._
       it("putting double quotes around strings") {
         "hi".pretty should be ("\"hi\"")
       }
@@ -41,22 +41,10 @@ class PrettyMethodsSpec extends FunSpec with Matchers {
         List("1", "2", "3").pretty should be ("List(\"1\", \"2\", \"3\")")
       }
     }
-    it("should pick up an overridden Prettifier") {
-      implicit val prettifier =
-        new Prettifier {
-          def apply(o: Any) =
-            o match {
-              case s: String => "!!!" + s + "!!!"
-              case _ => Prettifier.default(o)
-            }
-        }
-      import PrettyMethods._
-      "hi".pretty should be ("!!!hi!!!")
-    }
 /* This proved that I got rid of the Any => String conversion, but by not compiling. 
     it("should not simply convert Any to String") {
       new ConversionCheckedTripleEquals {
-        import PrettyMethods._
+        import DeprecatedPrettyMethods._
         "2" should === (2)
       }
     }
