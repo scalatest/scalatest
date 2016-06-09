@@ -16,6 +16,11 @@
 package org.scalactic
 
 /**
+ *
+ * <strong>This trait is the 2.2.6 PrettyMethods trait renamed to DeprecatedPrettyMethods. It is
+ * a quick way to get old code working again that defined an implicit <code>PrettifierConfig</code>, but
+ * before the deprecation cycle is over please change the implicit <code>PrettifierConfig</code> to
+ * an implicit <code>Prettifier</code>.</strong>
  * Provides an implicit conversion that enables <code>pretty</code> to be invoked on any
  * object, to transform that object into a <code>String</code> representation.
  */
@@ -23,6 +28,9 @@ package org.scalactic
 trait DeprecatedPrettyMethods {
 
   /**
+   * <strong>This class is deprecated and will be removed in a future version of ScalaTest. Please use an
+   * implicit Prettifier and PrettyMethods instead.</strong>
+   *
    * Wraps a <code>Prettifier</code>.
    *
    * <p>
@@ -33,6 +41,7 @@ trait DeprecatedPrettyMethods {
    *
    * @param prettifier the configured <code>Prettifier</code>
    */
+  @deprecated("Please use Prettifer and PrettyMethods instead.")
   case class PrettifierConfig(prettifier: Prettifier)
 
   /**
@@ -68,8 +77,10 @@ trait DeprecatedPrettyMethods {
 }
 
 /**
- * Companion object for trait <code>DeprecatedPrettyMethods</code> enabling its members to be imported as an
- * alternative to mixing them in.
+ * <strong>This object is the 2.2.6 PrettyMethods object renamed to DeprecatedPrettyMethods. Please change
+ * DeprecatedPrettyMethods to PrettyMethods, as DeprecatedPrettyMethods is deprecated and will be removed
+ * in a future version of ScalaTest.</strong>
  */
+@deprecated("Please use PrettyMethods instead.")
 object DeprecatedPrettyMethods extends DeprecatedPrettyMethods
 
