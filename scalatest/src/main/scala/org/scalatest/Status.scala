@@ -270,7 +270,7 @@ sealed trait Status { thisStatus =>
   // TODO: Make sure to test what happens when before and after code throw exceptions.
   /**
    * An exception that was thrown during the activity represented by this <code>Status</code> that
-   * was not reported via a ScalaTest event fired to the <code>Reporter</code> by the
+   * was not reported via a ScalaTest event fired to the <code>Reporter</code>.
    *
    * <p>
    * When a test executes, "non-run-aborting" thrown exceptions are reported by events
@@ -495,44 +495,6 @@ object FailedStatus extends Status with Serializable {
    * Executes the passed function immediately on the calling thread.
    */
   def whenCompleted(f: Try[Boolean] => Unit): Unit = { f(Success(false)) }
-}
-
-/** TODO: Indicate this is by definition complet when it is constructed. Search also where it is used
- *to make sure we really want it.
- */
-case class AbortedStatus(ex: Throwable) extends Status with Serializable { thisAbortedStatus =>
-
-  // SKIP-SCALATESTJS-START
-  /**
-   * Always returns <code>false</code>.
-   *
-   * TODO: Document that it always completes abruptly with probably call ex val unreportedException
-   * 
-   * @return <code>true</code>
-   */
-  def succeeds() = throw ex
-  // SKIP-SCALATESTJS-END
-
-  /**
-   * Always returns <code>true</code>.
-   * 
-   * @return <code>true</code>
-   */
-  def isCompleted = true
-
-  // SKIP-SCALATESTJS-START
-  /**
-   * Always returns immediately.
-   */
-  def waitUntilCompleted(): Unit = throw ex
-  // SKIP-SCALATESTJS-END
-
-  /**
-   * Executes the passed function immediately on the calling thread.
-   */
-  def whenCompleted(f: Try[Boolean] => Unit): Unit = { f(Failure(unreportedException.get)) }
-
-  override val unreportedException: Option[Throwable] = Some(ex)
 }
 
 // Used internally in ScalaTest. We don't use the StatefulStatus, because

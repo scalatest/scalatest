@@ -338,49 +338,6 @@ class StatusSpec extends fixture.FunSpec {
     // SKIP-SCALATESTJS-END
   }
 
-  describe("AbortedStatus") {
-
-    it("toFuture should return Future[Boolean] that is completed and has value Some(Failure(unreportedException))") { () =>
-      val e = new IllegalArgumentException("test")
-      val status = AbortedStatus(e)
-      assert(status.unreportedException == Some(e))
-      val future = status.toFuture
-      assert(future.isCompleted)
-      assert(future.value == Some(Failure(e)))
-    }
-
-    // SKIP-SCALATESTJS-START
-    it("waitUntilCompleted should throw unreportedException") { () =>
-      val e = new IllegalArgumentException("test")
-      val status = new AbortedStatus(e)
-      val t = intercept[IllegalArgumentException] {
-        status.waitUntilCompleted()
-      }
-      assert(e eq t)
-    }
-
-    it("succeeds should throw unreportedException") { () =>
-      val e = new IllegalArgumentException("test")
-      val status = new AbortedStatus(e)
-      val t = intercept[IllegalArgumentException] {
-        status.succeeds
-      }
-      assert(e eq t)
-    }
-
-    it("thenRun should propagate a suite-aborting exception thrown in thenRun code") { () =>
-      val status = AbortedStatus(new IllegalArgumentException("test"))
-      val e = new java.lang.annotation.AnnotationFormatError("test")
-      val t = intercept[java.lang.annotation.AnnotationFormatError] {
-        status.thenRun {
-          throw e
-        }
-      }
-      assert(t eq e)
-    }
-    // SKIP-SCALATESTJS-END
-  }
-
   describe("CompositeStatus ") {
     it("should invoke multiple functions registered with whenCompleted, passing a succeeded value, only after all composed statuses complete successfully") { () =>
 
