@@ -82,10 +82,10 @@ sealed trait Status { thisStatus =>
    * If this <code>Status</code> fails with an "unreported exception," an exception that occurred during the
    * activity represented by this <code>Status</code> that was not reported to the <code>Reporter</code> via a
    * ScalaTest event, the <code>succeeds</code> method will complete abruptly with that exception. If the
-   * original exception was a test-fatal exception, such as <code>StackOverflowError</code>, the 
+   * original exception was a run-aborting exception, such as <code>StackOverflowError</code>, the 
    * <code>unreportedException</code> method will return a <code>java.util.ExecutionException</code> that contains
-   * the original test-fatal exception as its cause. The <code>succeeds</code> method will in that case
-   * complete abruptly with the <code>ExecutionException</code> that wraps the original test-fatal exception.
+   * the original run-aborting exception as its cause. The <code>succeeds</code> method will in that case
+   * complete abruptly with the <code>ExecutionException</code> that wraps the original run-aborting exception.
    * </p>
    *
    * <p>
@@ -123,10 +123,10 @@ sealed trait Status { thisStatus =>
    * If this <code>Status</code> fails with an "unreported exception," an exception that occurred during the
    * activity represented by this <code>Status</code> that was not reported to the <code>Reporter</code> via a
    * ScalaTest event, the <code>waitUntilCompleted</code> method will complete abruptly with that exception. If the
-   * original exception was a test-fatal exception, such as <code>StackOverflowError</code>, the 
+   * original exception was a run-aborting exception, such as <code>StackOverflowError</code>, the 
    * <code>unreportedException</code> method will return a <code>java.util.ExecutionException</code> that contains
-   * the original test-fatal exception as its cause. The <code>waitUntilCompleted</code> method will in that case
-   * complete abruptly with the <code>ExecutionException</code> that wraps the original test-fatal exception.
+   * the original run-aborting exception as its cause. The <code>waitUntilCompleted</code> method will in that case
+   * complete abruptly with the <code>ExecutionException</code> that wraps the original run-aborting exception.
    * </p>
    *
    * <p>
@@ -184,21 +184,21 @@ sealed trait Status { thisStatus =>
    * </p>
    *
    * <p>
-   * If the by-name function passed to this method completes abruptly with a <em>non-test-fatal</em> exception,
+   * If the by-name function passed to this method completes abruptly with a <em>non-run-aborting</em> exception,
    * that exception will be caught and installed as the <code>unreportedException</code> on the
    * <code>Status</code> returned by this method. The <code>Status</code> returned by this method
    * will then complete. The thread that attempted to evaluate the by-name function will be allowed
-   * to continue (<code>i.e.</code>, the non-test-fatal exception will <em>not</em> be rethrown
+   * to continue (<code>i.e.</code>, the non-run-aborting exception will <em>not</em> be rethrown
    * on that thread).
    * </p>
    *
    * <p>
-   * If the by-name function passed to this method completes abruptly with a <em>test-fatal</em> exception,
+   * If the by-name function passed to this method completes abruptly with a <em>run-aborting</em> exception,
    * such as <code>StackOverflowError</code>, that exception will be caught and a new
-   * <code>java.util.concurrent.ExecutionException</code> that contains the test-fatal exception as its
+   * <code>java.util.concurrent.ExecutionException</code> that contains the run-aborting exception as its
    * cause will be installed as the <code>unreportedException</code> on the
    * <code>Status</code> returned by this method. The <code>Status</code> returned by this method
-   * will then complete. The original test-fatal exception will then be rethrown on the
+   * will then complete. The original run-aborting exception will then be rethrown on the
    * thread that attempted to evaluate the by-name function.
    * </p>
    *
@@ -273,10 +273,10 @@ sealed trait Status { thisStatus =>
    * was not reported via a ScalaTest event fired to the <code>Reporter</code> by the
    *
    * <p>
-   * When a test executes, "non-test-fatal" thrown exceptions are reported by the events
+   * When a test executes, "non-run-aborting" thrown exceptions are reported by events
    * fired to the reporter. A <a href="exceptions/TestPendingException.html"><code>TestPendingException</code></a> is reported via a
    * <a href="events/TestPending.html"><code>TestPending</code></a> event. A <a href="exceptions/TestCanceledException.html"><code>TestCanceledException</code></a> is reported via a
-   * <a href="events/TestCanceled.html"><code>TestCanceled</code></a> event. Any other non-test-fatal exceptions, including
+   * <a href="events/TestCanceled.html"><code>TestCanceled</code></a> event. Any other non-run-aborting exceptions, including
    * <a href="exceptions/TestFailedException.html"><code>TestFailedException</code></a> will be reported via a
    * <a href="events/TestFailed.html"><code>TestFailed</code></a> event.
    * </p>
@@ -286,10 +286,10 @@ sealed trait Status { thisStatus =>
    * problems, such as <code>OutOfMemoryError</code>, that instead of being reported via a test completion event
    * should instead cause the entire suite to abort. In synchronous testing styles, this exception will be allowed
    * to just propagate up the call stack. But in async styles, the thread or threads executing the test will often
-   * be taken from the async suite's execution context. Instead of propagating these test-fatal exceptions up
+   * be taken from the async suite's execution context. Instead of propagating these run-aborting exceptions up
    * the call stack, they will be installed as an "unreported exception" in the test's <code>Status</code>.
    * They are "unreported" because no test completion event will be fired to report them. For more explanation and
-   * a list of test-fatal exception types, see <a href="Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a>.
+   * a list of run-aborting exception types, see <a href="Suite.html#errorHandling">Treatment of <code>java.lang.Error</code>s</a>.
    * </p>
    *
    * <p>
@@ -298,7 +298,7 @@ sealed trait Status { thisStatus =>
    * and <code>BeforeAndAfterEachTestData</code> execute code before and after tests. Traits
    * <code>BeforeAndAfterAll</code> and </p><code>BeforeAndAfterAllConfigMap</code> execute code before
    * and after all tests and nested suites of a suite. If any "before" or "after"
-   * code completes abruptly with an exception (of any type, not just test-fatal types) on a thread taken
+   * code completes abruptly with an exception (of any type, not just run-aborting types) on a thread taken
    * from an async suite's execution context, this exception will
    * installed as an <code>unreportedException</code> of the relevant <code>Status</code>.
    * </p>
@@ -334,21 +334,21 @@ sealed trait Status { thisStatus =>
    * after this <code>Status</code> completes.
    *
    * <p>
-   * If the by-name function passed to this method completes abruptly with a <em>non-test-fatal</em> exception,
+   * If the by-name function passed to this method completes abruptly with a <em>non-run-aborting</em> exception,
    * that exception will be caught and installed as the <code>unreportedException</code> on the
    * <code>Status</code> returned by this method. The <code>Status</code> returned by this method
    * will then complete. The thread that attempted to evaluate the by-name function will be allowed
-   * to continue (<code>i.e.</code>, the non-test-fatal exception will <em>not</em> be rethrown
+   * to continue (<code>i.e.</code>, the non-run-aborting exception will <em>not</em> be rethrown
    * on that thread).
    * </p>
    *
    * <p>
-   * If the by-name function passed to this method completes abruptly with a <em>test-fatal</em> exception,
+   * If the by-name function passed to this method completes abruptly with a <em>run-aborting</em> exception,
    * such as <code>StackOverflowError</code>, that exception will be caught and a new
-   * <code>java.util.concurrent.ExecutionException</code> that contains the test-fatal exception as its
+   * <code>java.util.concurrent.ExecutionException</code> that contains the run-aborting exception as its
    * cause will be installed as the <code>unreportedException</code> on the
    * <code>Status</code> returned by this method. The <code>Status</code> returned by this method
-   * will then complete. The original test-fatal exception will then be rethrown on the
+   * will then complete. The original run-aborting exception will then be rethrown on the
    * thread that attempted to evaluate the by-name function.
    * </p>
    *

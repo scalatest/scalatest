@@ -347,10 +347,10 @@ object Exceptional {
  *
  * <p>
  * Note: the difference between this <code>Succeeded</code> object and the similarly named <a href="SucceededStatus$.html"><code>SucceededStatus</code></a>
- * object is that this object indicates one test succeeded, whereas the <code>SucceededStatus</code> object indicates the absence of any failed tests or
+ * object is that this object indicates one test (or assertion) succeeded, whereas the <code>SucceededStatus</code> object indicates the absence of any failed tests or
  * aborted suites during a run. Both are used as the result type of <a href="Suite.html#lifecycle-methods"><code>Suite</code></a> lifecycle methods, but <code>Succeeded</code>
  * is a possible result of <code>withFixture</code>, whereas <code>SucceededStatus</code> is a possible result of <code>run</code>, <code>runNestedSuites</code>,
- * <code>runTests</code>, or <code>runTest</code>. In short, <code>Succeeded</code> is always just about one test, whereas <code>SucceededStatus</code> could be
+ * <code>runTests</code>, or <code>runTest</code>. In short, <code>Succeeded</code> is always just about one test (or assertion), whereas <code>SucceededStatus</code> could be
  * about something larger: multiple tests or an entire suite.
  * </p>
  */
