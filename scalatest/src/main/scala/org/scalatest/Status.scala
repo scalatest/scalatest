@@ -563,8 +563,10 @@ private[scalatest] final class ScalaTestStatefulStatus extends Status with Seria
       succeeded = false
       if (asyncException.isEmpty)
         asyncException = Some(ex)
-      else
+      else {
+        println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
         ex.printStackTrace()
+      }
     }
   }
 
@@ -706,8 +708,10 @@ final class StatefulStatus extends Status with Serializable {
       succeeded = false
       if (asyncException.isEmpty)
         asyncException = Some(ex)
-      else
+      else {
+        println("ScalaTest can't report this exception because another preceded it, so printing its stack trace:")
         ex.printStackTrace()
+      }
     }
   }
 
