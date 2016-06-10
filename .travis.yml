@@ -4,7 +4,7 @@ scala:
 jdk:
   - oraclejdk8
 
-sudo: false
+#sudo: false
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
