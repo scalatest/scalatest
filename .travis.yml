@@ -1,14 +1,10 @@
 language: scala
 scala:
-  - 2.11.8
-  - 2.10.6
   - 2.12.0-M4
 jdk:
-  - oraclejdk7
-  - openjdk6
   - oraclejdk8
 
-sudo: false
+#sudo: false
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
