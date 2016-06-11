@@ -12,6 +12,8 @@ jdk:
 # Current 8u31 is having problem and cause a test failure under Scala 2.12 builds.
 # We should enable this back after https://github.com/travis-ci/travis-ci/issues/3259 is closed.
 #sudo: false
+sudo: required
+dist: trusty
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
