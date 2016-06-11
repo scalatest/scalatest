@@ -15,6 +15,12 @@ jdk:
 sudo: required
 dist: trusty
 
+before_install:
+  - cat /etc/hosts # optionally check the content *before*
+  - sudo hostname "$(hostname | cut -c1-63)"
+  - sed -e "s/^\\(127\\.0\\.0\\.1.*\\)/\\1 $(hostname | cut -c1-63)/" /etc/hosts | sudo tee /etc/hosts
+  - cat /etc/hosts # optionally check the content *after*
+
 env:
   #see https://github.com/scalatest/scalatest/pull/245
   #global values should be replaced using http://docs.travis-ci.com/user/encryption-keys/ with valid values
