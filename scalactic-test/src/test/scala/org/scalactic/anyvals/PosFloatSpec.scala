@@ -17,7 +17,6 @@ package org.scalactic.anyvals
 
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen._
-import org.scalactic._
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import OptionValues._

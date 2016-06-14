@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import scala.concurrent.Future
 
 /**
  * Trait defining abstract "lifecycle" methods that are implemented in <a href="AsyncTestSuite.html#lifecycle-methods"><code>AsyncTestSuite</code></a>

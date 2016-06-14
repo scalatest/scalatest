@@ -16,7 +16,6 @@
 package org.scalatest
 
 import SharedHelpers._
-import Matchers._
 
 class AlerterSpec extends FunSpec {
   describe("An Alerter") {

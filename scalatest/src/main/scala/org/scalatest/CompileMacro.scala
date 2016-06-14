@@ -20,8 +20,6 @@ import org.scalatest.exceptions.StackDepthExceptionHelper
 
 import scala.language.experimental.macros
 import scala.reflect.macros.{ Context, TypecheckException, ParseException }
-import org.scalatest.exceptions.StackDepthException._
-import org.scalatest.exceptions.StackDepthExceptionHelper._
 import org.scalatest.words.{TypeCheckWord, CompileWord}
 import org.scalatest.exceptions.StackDepthException
 

@@ -31,7 +31,6 @@ import org.scalatest.exceptions.{TestPendingException, TestFailedException, Test
 import org.scalatest.time._
 import org.scalatest._
 import org.scalatest.exceptions.{TestPendingException, TestFailedException, TestCanceledException}
-import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
 import scala.concurrent.Future
 

@@ -16,7 +16,7 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
-import exceptions.{TestFailedDueToTimeoutException, TestFailedException, TestPendingException}
+import exceptions.{TestFailedDueToTimeoutException,  TestPendingException}
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import scala.annotation.tailrec
 import time.{Nanosecond, Span, Nanoseconds}

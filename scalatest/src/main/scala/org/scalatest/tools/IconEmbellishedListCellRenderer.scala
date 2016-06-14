@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 import javax.swing._
 import java.awt.Color
 import java.awt.Font

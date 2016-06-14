@@ -15,7 +15,6 @@
  */
 package org.scalactic
 
-import org.scalatest._
 
 trait ExplicitlySpecHelpers {
 

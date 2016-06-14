@@ -1939,8 +1939,7 @@ final case class DiscoveryStarting (
    */
   val formatter: Option[Formatter] = None
 
-  import EventXmlHelper._
-  private [scalatest] def toXml = 
+    private [scalatest] def toXml = 
     <DiscoveryStarting>
       <ordinal>
         <runStamp>{ ordinal.runStamp }</runStamp>

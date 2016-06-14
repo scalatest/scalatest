@@ -16,7 +16,6 @@
 package org.scalatest
 
 import collection.immutable.TreeSet
-import org.scalatest.events._
 import scala.reflect.NameTransformer.encode
 import SharedHelpers._
 import org.scalatest.exceptions.TestFailedException

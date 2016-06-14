@@ -16,15 +16,6 @@
 package org.scalatest.concurrent
 
 import java.util.TimerTask
-import java.util.Timer
-import org.scalatest.Resources
-import org.scalatest.exceptions.StackDepthException
-import java.nio.channels.ClosedByInterruptException
-import java.nio.channels.Selector
-import java.net.Socket
-import org.scalatest.Exceptional
-import org.scalatest.time.Span
-import org.scalatest.exceptions.TestFailedDueToTimeoutException
 
 private[scalatest] class TimeoutTask(testThread: Thread, interrupt: Interruptor) extends TimerTask {
   @volatile var timedOut = false

@@ -61,7 +61,6 @@ import java.util.regex.Pattern
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.awt.EventQueue
-import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.events._
 import EventToPresent.eventToEventToPresent
 import org.scalatest.exceptions.StackDepth

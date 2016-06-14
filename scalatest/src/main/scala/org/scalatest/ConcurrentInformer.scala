@@ -20,7 +20,6 @@ import MessageRecorder.RecordedMessageEventFun
 import MessageRecorder.ConcurrentMessageFiringFun
 import org.scalatest.events.Location
 import org.scalatest.events.LineInFile
-import org.scalatest.events.Event
 import org.scalatest.events.RecordableEvent
 import org.scalatest.events.NoteProvided
 import org.scalatest.events.AlertProvided

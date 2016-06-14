@@ -19,11 +19,6 @@ import org.scalactic.{Bad, Good}
 import org.scalatest._
 import org.scalatest.concurrent.Signaler
 import org.scalatest.exceptions.StackDepthException
-import org.scalatest.exceptions.StackDepthExceptionHelper._
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestPendingException
 
 import scala.util.{Failure, Success}
 

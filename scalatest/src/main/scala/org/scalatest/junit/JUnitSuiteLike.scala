@@ -22,7 +22,6 @@ import org.scalatest._
 import org.scalatest.Suite
 import org.junit.runner.notification.RunListener
 import org.junit.runner.notification.Failure
-import org.scalatest.events._
 import org.scalatest.Suite.autoTagClassAnnotations
 import Suite.wrapReporterIfNecessary
 import org.scalactic.source

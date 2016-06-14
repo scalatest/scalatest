@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest._
 import Matchers._
 import FailureMessages.decorateToStringValue
 import org.scalatest.matchers.MatchResult

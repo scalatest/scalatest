@@ -16,7 +16,6 @@
 package org.scalatest.words
 
 import org.scalactic._
-import org.scalatest._
 
 /**
  * Provides an implicit conversion that adds <code>should</code> methods to <code>String</code>

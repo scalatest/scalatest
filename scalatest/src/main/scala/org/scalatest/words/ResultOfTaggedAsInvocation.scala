@@ -16,7 +16,6 @@
 package org.scalatest.words
 
 import org.scalatest._
-import org.scalactic._
 
 /**
  * Supports the registration of tagged tests in shorthand form in <code>FlatSpec</code>

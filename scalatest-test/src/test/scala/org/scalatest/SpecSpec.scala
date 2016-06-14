@@ -20,7 +20,6 @@ import org.scalatest.events._
 import collection.immutable.TreeSet
 import SharedHelpers._
 import Suite.CHOSEN_STYLES
-import PrivateMethodTester._
 import org.scalatest.exceptions.NotAllowedException
 import exceptions.TestFailedException
 import org.scalatest.exceptions.TestCanceledException

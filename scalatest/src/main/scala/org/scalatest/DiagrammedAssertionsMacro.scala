@@ -61,8 +61,7 @@ private[scalatest] object DiagrammedAssertionsMacro {
    * else it will just get the line content.
    */
   private[this] def getSourceText(context: Context)(tree: context.Tree): String = {
-    import context.universe._
-    tree.pos.asInstanceOf[scala.reflect.internal.util.Position].lineContent
+        tree.pos.asInstanceOf[scala.reflect.internal.util.Position].lineContent
   }
 
   /**
@@ -70,8 +69,7 @@ private[scalatest] object DiagrammedAssertionsMacro {
    *
    */
   private def macroImpl(context: Context)(methodName: String, condition: context.Expr[Boolean], clue: context.Expr[Any], prettifier: context.Expr[_], pos: context.Expr[source.Position]): context.Expr[Assertion] = {
-    import context.universe._
-
+    
     val startLine = getFirstLine(context)(condition.tree) // Get the expression first line number
     val endLine = getLastLine(context)(condition.tree) // Get the expression last line number
 

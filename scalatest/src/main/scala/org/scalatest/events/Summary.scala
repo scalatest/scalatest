@@ -15,7 +15,6 @@
  */
 package org.scalatest.events
 
-import org.scalatest._
 
 /**
  * Class each of whose instances hold summary information about one ScalaTest run.

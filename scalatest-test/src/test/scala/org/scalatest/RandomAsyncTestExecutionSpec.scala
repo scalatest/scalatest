@@ -17,7 +17,6 @@ package org.scalatest
 
 import scala.collection.mutable.ListBuffer
 import org.scalatest.SharedHelpers.SilentReporter
-import org.scalatest.SharedHelpers.EventRecordingReporter
 
 class RandomAsyncTestExecutionSpec extends AsyncFunSuite /* with RandomTestOrder*/ { thisOuterSuite =>
 

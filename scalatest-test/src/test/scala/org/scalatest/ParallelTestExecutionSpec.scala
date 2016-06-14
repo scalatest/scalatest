@@ -30,7 +30,6 @@ import org.scalatest.time.Second
 import org.scalatest.time.Seconds
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
-import Matchers._
 
 class ParallelTestExecutionSpec extends FunSpec with EventHelpers {
   /*

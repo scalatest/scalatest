@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import exceptions.TestCanceledException
 import exceptions.TestPendingException
 import exceptions.StackDepthException
 import scala.reflect.ClassTag

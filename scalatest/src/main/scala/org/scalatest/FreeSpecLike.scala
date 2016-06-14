@@ -15,12 +15,10 @@
  */
 package org.scalatest
 
-import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
-  MustVerb, StringVerbBlockRegistration}
+import words.BehaveWord
 import scala.collection.immutable.ListSet
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
-import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import org.scalactic._

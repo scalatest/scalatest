@@ -3117,8 +3117,7 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
    */
   final class ResultOfNotWordForCollectedAny[T](collected: Collected, xs: scala.collection.GenTraversable[T], original: Any, shouldBeTrue: Boolean, prettifier: Prettifier, pos: source.Position) {
 
-    import org.scalatest.InspectorsHelper._
- 
+     
     /**
      * This method enables the following syntax:
      *

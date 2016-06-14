@@ -15,15 +15,6 @@
  */
 package org.scalatest
 
-import scala.collection.GenTraversable
-import scala.annotation.tailrec
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepthFun
-import scala.collection.GenSeq
-import Suite.indentLines
-import FailureMessages.decorateToStringValue
-import enablers.Collecting
-import scala.language.higherKinds
-import Fact.Yes
 
 /**
  * Provides nestable <em>inspector methods</em> (or just <em>inspectors</em>) that enable assertions to be made about collections.

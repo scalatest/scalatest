@@ -26,7 +26,6 @@ import org.scalatest.events.SeeStackDepthException
 import scala.annotation.tailrec
 import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest.Suite.checkChosenStyles
-import org.scalatest.events.Event
 import org.scalatest.events.Location
 import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException

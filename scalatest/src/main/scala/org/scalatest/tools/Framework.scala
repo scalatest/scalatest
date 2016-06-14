@@ -32,7 +32,6 @@ import StringReporter.fragmentsForEvent
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
 import ArgsParser._
-import org.scalactic.Requirements._
 import org.scalatest.time.{Span, Millis}
 
 /**

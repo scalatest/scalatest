@@ -16,7 +16,6 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import org.scalatest.exceptions.StackDepthExceptionHelper._
 
 import scala.concurrent.Future
 

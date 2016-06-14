@@ -23,7 +23,6 @@ import org.junit.runner.notification.RunListener
 import org.junit.runner.notification.Failure
 import org.junit.runner.Description
 import org.junit.runner.Result
-import org.scalatest.events._
 import java.util.Collections
 import java.util.HashSet
 import java.util.regex.Pattern

@@ -26,7 +26,6 @@ import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
 import org.scalactic.ConversionCheckedTripleEquals
 import Matchers._
-import ConversionCheckedTripleEquals._
 
 class ShouldConversionCheckedTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions {
 

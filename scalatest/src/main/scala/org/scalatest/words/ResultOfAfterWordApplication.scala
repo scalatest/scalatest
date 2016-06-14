@@ -15,7 +15,6 @@
  */
 package org.scalatest.words
 
-import org.scalatest._
 
 /**
  * Class that supports the use of <em>after words</em> in <code>WordSpec</code>

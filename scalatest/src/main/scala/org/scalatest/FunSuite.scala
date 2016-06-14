@@ -15,8 +15,6 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import Suite.autoTagClassAnnotations
 
 /**
  * A suite of tests in which each test is represented as a function value. The &ldquo;<code>Fun</code>&rdquo; in <code>FunSuite</code> stands

@@ -22,7 +22,6 @@ import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
 import org.scalatest.exceptions.TestRegistrationClosedException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
-import org.scalatest.events._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
 import scala.concurrent.Future

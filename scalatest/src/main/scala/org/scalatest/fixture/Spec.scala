@@ -18,10 +18,7 @@ package org.scalatest.fixture
 import scala.collection.immutable.ListSet
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest._
-import Spec._
-import Suite._
 import org.scalatest.events.{TopOfClass, TopOfMethod}
-import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 
 /**

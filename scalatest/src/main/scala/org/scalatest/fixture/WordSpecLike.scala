@@ -22,7 +22,6 @@ import scala.collection.immutable.ListSet
 import org.scalatest.exceptions._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
-import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalactic.{source, Prettifier}

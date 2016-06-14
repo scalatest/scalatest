@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 import org.scalatest._
-import org.scalatest.testng._
 import org.scalatest.jmock._
 import java.io.File
 import org.apache.commons.io.FileUtils

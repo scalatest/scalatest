@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import exceptions.TestCanceledException
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
@@ -27,11 +26,9 @@ import org.scalatest.tools.TestSortingReporter
 import org.scalatest.tools.TestSpecificReporter
 import scala.annotation.tailrec
 import org.scalatest.Suite.checkChosenStyles
-import org.scalatest.events.Event
 import org.scalatest.events.Location
 import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestRegistrationClosedException
 import org.scalactic._
 import org.scalactic.Requirements._

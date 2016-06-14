@@ -18,7 +18,6 @@ package org.scalatest
 import SharedHelpers._
 import events.InfoProvided
 import org.scalatest.events.LineInFile
-import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf
 import events.Ordinal
 import scala.concurrent.Future

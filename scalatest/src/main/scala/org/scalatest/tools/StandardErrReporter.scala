@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 
 /**
  * A <code>Reporter</code> that prints test status information to

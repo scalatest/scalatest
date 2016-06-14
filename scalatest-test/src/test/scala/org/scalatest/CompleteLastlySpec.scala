@@ -23,10 +23,8 @@ import scala.util.Failure
 import org.scalactic.Good
 import org.scalactic.Bad
 // SKIP-SCALATESTJS-START
-import org.scalatest.concurrent.Eventually._
 // SKIP-SCALATESTJS-END
 import org.scalatest.OutcomeOf.outcomeOf
-import org.scalatest.concurrent.ScalaFutures._
 
 class CompleteLastlySpec extends AsyncFunSpec {
 

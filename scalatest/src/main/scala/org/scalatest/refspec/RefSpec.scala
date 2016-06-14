@@ -17,11 +17,8 @@ package org.scalatest.refspec
 
 import scala.collection.immutable.ListSet
 import org.scalatest.{Suite, Finders, Resources}
-import Suite._
 import RefSpec.isTestMethod
 import RefSpec.equalIfRequiredCompactify
-import org.scalatest.events._
-import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 
 /**

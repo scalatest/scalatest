@@ -15,8 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
-import javax.swing.Icon
 import javax.swing.JOptionPane
 
 /**

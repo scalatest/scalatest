@@ -18,8 +18,7 @@ package org.scalatest.concurrent
 import org.scalatest.time.Span
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Resources
-import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
-import org.scalatest.exceptions.TestCanceledException
+
 import scala.util.Success
 import scala.util.Failure
 

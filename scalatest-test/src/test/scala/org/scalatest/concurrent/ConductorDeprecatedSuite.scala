@@ -17,7 +17,6 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import SharedHelpers._
-import Thread.State._
 import java.util.concurrent.atomic.AtomicBoolean
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.SharedHelpers.thisLineNumber

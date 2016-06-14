@@ -25,7 +25,6 @@ import java.awt.AWTError
 import SharedHelpers._
 import Suite.CHOSEN_STYLES
 import org.scalatest.Suite.formatterForSuiteStarting
-import PrivateMethodTester._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.refspec.{RefSpec, RefSpecLike}

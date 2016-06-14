@@ -16,7 +16,6 @@
 package org.scalatest.enablers
 
 import org.scalactic.Equality
-import org.scalatest.words.ArrayWrapper
 import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec

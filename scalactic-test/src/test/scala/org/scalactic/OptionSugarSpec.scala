@@ -15,12 +15,10 @@
  */
 package org.scalactic
 
-import java.text._
 import org.scalatest._
 import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
-import prop.TableDrivenPropertyChecks._
 
 class OptionSugarSpec extends UnitSpec with Accumulation with OptionSugar {
 

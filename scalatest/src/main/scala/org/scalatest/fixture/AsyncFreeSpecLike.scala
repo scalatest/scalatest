@@ -16,13 +16,11 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord, MustVerb,
-StringVerbBlockRegistration}
+import words.BehaveWord
 import scala.collection.immutable.ListSet
 import org.scalatest.exceptions._
 import java.util.concurrent.atomic.AtomicReference
 import java.util.ConcurrentModificationException
-import org.scalatest.events._
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
 import scala.concurrent.Future

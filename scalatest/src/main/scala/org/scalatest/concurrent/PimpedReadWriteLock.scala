@@ -15,7 +15,6 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest._
 import java.util.concurrent.locks.{Lock, ReadWriteLock}
 
 /**

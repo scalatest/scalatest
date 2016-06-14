@@ -15,8 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
-import java.io.IOException
 
 /**
  * A <code>Reporter</code> that prints test status information to a file.

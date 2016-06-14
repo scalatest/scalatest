@@ -15,14 +15,7 @@
  */
 package org.scalatest
 
-import words.{ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb}
-import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
-import Suite.anExceptionThatShouldCauseAnAbort
-import Suite.autoTagClassAnnotations
+
 
 /**
  * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests

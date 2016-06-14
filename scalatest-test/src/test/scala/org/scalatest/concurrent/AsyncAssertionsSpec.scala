@@ -164,8 +164,7 @@ OptionValues with AsyncAssertions {
       }
     }
 
-    it("should throw a TFE from await if there's a timeout") { con => import con._
-      val w = new Waiter
+    it("should throw a TFE from await if there's a timeout") { con =>       val w = new Waiter
       val caught =
         intercept[TestFailedException] {
           w.await(timeout(Span(10, Millis)))

@@ -15,10 +15,8 @@
  */
 package org.scalactic
 
-import java.text._
 import org.scalatest._
 import scala.concurrent.Future
-import prop.TableDrivenPropertyChecks._
 // SKIP-SCALATESTJS-START
 import scala.concurrent.ExecutionContext.Implicits.global
 // SKIP-SCALATESTJS-END

@@ -15,8 +15,6 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import Suite.autoTagClassAnnotations
 
 /**
  * A suite of property-based tests.
