@@ -15,7 +15,6 @@
 */
 package org.scalactic.anyvals
 
-import org.scalatest._
 //import org.scalactic.CheckedEquality._
 
 // Uncomment this test once we get the OddIntMacro

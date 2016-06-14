@@ -15,7 +15,6 @@
  */
 package org.scalactic
 
-import org.scalatest._
 import scala.concurrent.Future
 // SKIP-SCALATESTJS-START
 import scala.concurrent.ExecutionContext.Implicits.global

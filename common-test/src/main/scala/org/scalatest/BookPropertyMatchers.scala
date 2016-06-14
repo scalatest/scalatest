@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalacheck._
 
 import matchers.HavePropertyMatcher
 import matchers.HavePropertyMatchResult

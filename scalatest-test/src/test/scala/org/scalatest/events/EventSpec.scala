@@ -18,7 +18,6 @@ package org.scalatest.events
 import org.scalatest._
 import SharedHelpers.EventRecordingReporter
 import org.scalatest.prop.Checkers
-import org.scalacheck._
 import examples._
 
 class EventSpec extends FunSpec with Checkers {

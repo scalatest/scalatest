@@ -16,7 +16,6 @@
 package org.scalatest.prop
 
 import org.scalatest._
-import org.scalacheck._
 
 class FactWheneverSpec extends FunSpec with Matchers with Whenever {
 

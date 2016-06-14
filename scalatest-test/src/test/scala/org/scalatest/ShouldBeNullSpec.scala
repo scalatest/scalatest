@@ -16,7 +16,6 @@
 package org.scalatest
 
 import org.scalatest.prop.Checkers
-import org.scalacheck._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
 import org.scalactic.exceptions.NullArgumentException

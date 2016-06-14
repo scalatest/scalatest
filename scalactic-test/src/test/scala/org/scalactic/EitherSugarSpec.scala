@@ -15,7 +15,6 @@
  */
 package org.scalactic
 
-import org.scalatest._
 import scala.util.Try
 import scala.util.Success
 import scala.util.Failure

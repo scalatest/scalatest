@@ -15,7 +15,6 @@
  */
 package org.scalatest.matchers
 
-import org.scalacheck._
 
 trait BookPropertyMatchers {
 

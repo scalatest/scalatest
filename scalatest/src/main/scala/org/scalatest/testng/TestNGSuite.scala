@@ -15,7 +15,6 @@
  */
 package org.scalatest.testng
 
-import org.scalatest._
 
 
 /**

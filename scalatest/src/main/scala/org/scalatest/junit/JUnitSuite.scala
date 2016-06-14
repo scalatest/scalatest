@@ -17,8 +17,6 @@ package org.scalatest.junit;
 
 
 
-import org.scalatest._
-import org.scalatest.Suite
 
 /**
  * A suite of tests that can be run with either JUnit or ScalaTest. This class allows you to write JUnit 4 tests
