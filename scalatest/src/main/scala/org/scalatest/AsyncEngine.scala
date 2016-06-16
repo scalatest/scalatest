@@ -413,13 +413,14 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     args: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
+    statusList: ListBuffer[Status],
     runTest: (String, Args) => Status
   ): Status = {
 
     import args.stopper
     
     // TODO: Inspect this and make sure it does not need synchronization, and either way, document why.
-    val statusList = new ListBuffer[Status]()
+    //val statusList = new ListBuffer[Status]()
 
     branch match {
 
@@ -472,7 +473,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
             case markupLeaf @ MarkupLeaf(_, message, location) =>
               reportMarkupProvided(theSuite, args.reporter, args.tracker, None, message, markupLeaf.indentationLevel, location, true, includeIcon)
 
-            case branch: Branch => statusList += runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, runTest)
+            case branch: Branch => /*statusList += */runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusList, runTest)
           }
         }
       }
@@ -540,7 +541,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
             statusBuffer += runTest(tn, newArgs)
           }
         }
-      case None => statusBuffer += runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, runTest)
+      case None => /*statusBuffer += */runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, statusBuffer, runTest)
     }
     new CompositeStatus(Set.empty ++ statusBuffer)
   }
