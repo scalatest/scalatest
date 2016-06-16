@@ -65,6 +65,16 @@ object GenScalaTestJS {
     }
   }
 
+  def copyStartsWithFiles(sourceDirName: String, packageDirName: String, startsWith: String, targetDir: File): Seq[File] = {
+    val packageDir = new File(targetDir, packageDirName)
+    packageDir.mkdirs()
+    val sourceDir = new File(sourceDirName)
+    sourceDir.listFiles.toList.filter(f => f.isFile && f.getName.startsWith(startsWith) && f.getName.endsWith(".scala")).map { sourceFile =>
+      val destFile = new File(packageDir, sourceFile.getName)
+      copyFile(sourceFile, destFile)
+    }
+  }
+
   def copyDir(sourceDirName: String, packageDirName: String, targetDir: File, skipList: List[String]): Seq[File] = {
     val packageDir = new File(targetDir, packageDirName)
     packageDir.mkdirs()
@@ -222,7 +232,8 @@ object GenScalaTestJS {
   }
 
   def genTest(targetDir: File, version: String, scalaVersion: String): Seq[File] = {
-    //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("MatcherStackDepthSpec.scala"), targetDir)
+    //copyStartsWithFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", "Async", targetDir) ++ 
+    //copyFiles("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", List("FutureOutcomeSpec.scala"), targetDir)
     copyDir("scalatest-test/src/test/scala/org/scalatest", "org/scalatest", targetDir,
       List(
         "BigSuiteSuite.scala",
