@@ -413,6 +413,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     args: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
+    initStatusList: List[Status],
     runTest: (String, Args) => Status
   ): List[Status] = {
 
@@ -420,7 +421,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     def traverseSubNodes(): List[Status] = {
       //branch.subNodes.reverse.flatMap { node =>
-      branch.subNodes.reverse.foldLeft(List.empty[Status]) { case (statusList, node) =>
+      branch.subNodes.reverse.foldLeft(initStatusList) { case (statusList, node) =>
         if (!stopper.stopRequested) {
           node match {
             case testLeaf @ TestLeaf(_, testName, testText, _, _, _, _) =>
@@ -461,7 +462,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
               reportMarkupProvided(theSuite, args.reporter, args.tracker, None, message, markupLeaf.indentationLevel, location, true, includeIcon)
               statusList
 
-            case branch: Branch => statusList ::: runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, runTest)
+            case branch: Branch => runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusList, runTest)
           }
         }
         else
@@ -551,7 +552,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
           else
             List.empty
 
-        case None => runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, runTest)
+        case None => runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, List.empty, runTest)
       }
     new CompositeStatus(Set.empty ++ statusList)
   }

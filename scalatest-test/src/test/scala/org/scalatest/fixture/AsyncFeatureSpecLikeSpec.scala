@@ -955,6 +955,47 @@ class AsyncFeatureSpecLikeSpec extends org.scalatest.FunSpec {
       assert(markupProvided.text == "hi there")
     }
 
+    it("should allow other execution context to be used") {
+      class TestSpec extends AsyncFeatureSpecLike {
+        // SKIP-SCALATESTJS-START
+        override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        val a = 1
+        feature("feature 1") {
+          scenario("scenario A") { fixture =>
+            Future { assert(a == 1) }
+          }
+        }
+        feature("feature 2")  {
+          scenario("scenario B") { fixture =>
+            Future { assert(a == 1) }
+          }
+        }
+        feature("group3") {
+          scenario("test C") { fixture =>
+            Future { assert(a == 1) }
+          }
+        }
+      }
+      val suite = new TestSpec
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+      assert(reporter.scopeOpenedEventsReceived.length == 3)
+      assert(reporter.scopeClosedEventsReceived.length == 3)
+      assert(reporter.testStartingEventsReceived.length == 3)
+      assert(reporter.testSucceededEventsReceived.length == 3)
+    }
+
   }
 
 }
