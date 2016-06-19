@@ -16,13 +16,12 @@
 package org.scalatest.events
 
 import org.scalatest._
+import org.scalactic.Requirements._
+import java.io.BufferedWriter
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.Date
 import scala.xml.Elem
-import java.io.StringWriter
-import java.io.PrintWriter
-import java.io.BufferedWriter
-import org.scalactic.Requirements._
-
 import exceptions.StackDepthException
 
 /**

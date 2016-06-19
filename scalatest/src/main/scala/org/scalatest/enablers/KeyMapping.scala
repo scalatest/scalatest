@@ -15,12 +15,12 @@
  */
 package org.scalatest.enablers
 
+import org.scalactic.Requirements._
+import scala.collection.JavaConverters._
 import org.scalactic.Equality
-import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
-import scala.collection.JavaConverters._
-import org.scalactic.Requirements._
+import scala.collection.GenTraversable
 
 /**
  * Supertrait for typeclasses that enable <code>contain key</code> matcher syntax.

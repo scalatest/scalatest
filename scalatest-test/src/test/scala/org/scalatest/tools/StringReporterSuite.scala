@@ -16,11 +16,11 @@
 package org.scalatest
 package tools
 
-import Fragment.{countTrailingEOLs, countLeadingEOLs}
 import StringReporter._
+import Fragment.{countTrailingEOLs, countLeadingEOLs}
+import SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
-import SharedHelpers.thisLineNumber
 
 class StringReporterSuite extends FunSuite with Matchers {
 
@@ -380,8 +380,8 @@ class StringReporterSuite extends FunSuite with Matchers {
   }
 
   test("withPossibleLineNumber returns simple file name on same line if presentFilePathname is false") {
-    import StringReporter.withPossibleLineNumber
     import org.scalactic.source
+import StringReporter.withPossibleLineNumber
     val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None)), false)
     assert(result === "oops (StringReporterSuite.scala:" + (thisLineNumber - 1) + ")")
   }

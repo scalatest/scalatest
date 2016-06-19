@@ -17,12 +17,12 @@ package org.scalatest
 
 import org.scalatest.prop.Tables
 // SKIP-SCALATESTJS-START
+import org.junit.Test
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
-import org.junit.Test
-import org.testng.annotations.{Test => TestNGTest}
-import org.scalatest.testng.TestNGSuite
 import org.scalatest.refspec.RefSpec
+import org.scalatest.testng.TestNGSuite
+import org.testng.annotations.{Test => TestNGTest}
 // SKIP-SCALATESTJS-END
 import org.scalatest.prop.TableDrivenPropertyChecks._
 import Matchers._

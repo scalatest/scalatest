@@ -15,8 +15,8 @@
  */
 package org.scalatest.concurrent
 
-import Thread.State
 import Thread.State._
+import Thread.State
 
 /**
  * Object containing implicit def that converts a ThreadGroup into a PimpedThreadGroup.

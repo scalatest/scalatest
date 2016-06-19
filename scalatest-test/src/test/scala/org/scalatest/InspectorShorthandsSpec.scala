@@ -15,22 +15,21 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.TableDrivenPropertyChecks
-import collection.GenTraversable
-import collection.GenSeq
-import collection.GenMap
-import collection.mutable.LinkedHashMap
-import scala.annotation.tailrec
-
-import matchers.HavePropertyMatcher
-import matchers.HavePropertyMatchResult
-import matchers.BePropertyMatcher
-import matchers.BePropertyMatchResult
+import Matchers._
+import SharedHelpers._
 import org.scalactic.Equality
 import org.scalactic.Prettifier
-import SharedHelpers._
+import org.scalatest.prop.TableDrivenPropertyChecks
+import scala.annotation.tailrec
 import FailureMessages.decorateToStringValue
-import Matchers._
+import collection.GenMap
+import collection.GenSeq
+import collection.GenTraversable
+import collection.mutable.LinkedHashMap
+import matchers.BePropertyMatchResult
+import matchers.BePropertyMatcher
+import matchers.HavePropertyMatchResult
+import matchers.HavePropertyMatcher
 
 class InspectorShorthandsSpec extends FunSpec with TableDrivenPropertyChecks {
 

@@ -15,22 +15,22 @@
  */
 package org.scalatest
 
-import scala.reflect.NameTransformer.encode
-import org.scalatest.events._
-import collection.immutable.TreeSet
 import SharedHelpers._
+import org.scalatest.events._
+import org.scalactic.Prettifier
+import org.scalatest.refspec.RefSpec
 import Suite.CHOSEN_STYLES
-import org.scalatest.exceptions.NotAllowedException
+import collection.immutable.TreeSet
 import exceptions.TestFailedException
-import org.scalatest.exceptions.TestCanceledException
-import java.lang.annotation.AnnotationFormatError
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalactic.exceptions.NullArgumentException
-import org.scalatest.refspec.RefSpec
-import org.scalactic.Prettifier
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestCanceledException
+import scala.reflect.NameTransformer.encode
 
 class RefSpecSpec extends FunSpec with PrivateMethodTester {
 

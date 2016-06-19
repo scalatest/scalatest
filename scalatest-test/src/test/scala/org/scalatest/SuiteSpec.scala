@@ -15,12 +15,12 @@
  */
 package org.scalatest
 
-import collection.immutable.TreeSet
-import scala.reflect.NameTransformer.encode
 import SharedHelpers._
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestPendingException
-import org.scalactic.exceptions.NullArgumentException
+import scala.reflect.NameTransformer.encode
+import collection.immutable.TreeSet
 // SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END

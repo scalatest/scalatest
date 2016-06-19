@@ -16,6 +16,7 @@
 package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestFailedException, StackDepth, TestCanceledException, ModifiableMessage}
+
 // SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnitTestFailedError
 // SKIP-SCALATESTJS-END

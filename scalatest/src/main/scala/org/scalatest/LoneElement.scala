@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import enablers.Collecting
 import org.scalactic._
+import enablers.Collecting
 import exceptions.StackDepthException
 
 /**

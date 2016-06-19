@@ -16,18 +16,17 @@
 package org.scalatest.junit;
 
 import org.scalatest._
-import org.scalatest.Suite
-import org.junit.runner.JUnitCore
-import org.junit.runner.Request
-import org.junit.runner.notification.RunListener
-import org.junit.runner.notification.Failure
-import org.junit.runner.Description
-import org.junit.runner.Result
+import java.lang.reflect
 import java.util.Collections
 import java.util.HashSet
 import java.util.regex.Pattern
-
-import java.lang.reflect
+import org.junit.runner.Description
+import org.junit.runner.JUnitCore
+import org.junit.runner.Request
+import org.junit.runner.Result
+import org.junit.runner.notification.Failure
+import org.junit.runner.notification.RunListener
+import org.scalatest.Suite
 
 /**
  * <p>

@@ -15,11 +15,11 @@
  */
 package org.scalatest
 
-import scala.collection.mutable.ListBuffer
-import org.scalatest.events.Event
-import org.scalatest.events.Ordinal
 import org.scalatest.SharedHelpers.SilentReporter
+import org.scalatest.events.Event
 import org.scalatest.events.InfoProvided
+import org.scalatest.events.Ordinal
+import scala.collection.mutable.ListBuffer
 
 class BeforeAndAfterEachSuite extends FunSuite {
 

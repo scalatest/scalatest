@@ -15,12 +15,13 @@
  */
 package org.scalatest.path
 
-import org.scalatest.words.BehaveWord
-import scala.collection.immutable.ListSet
 import org.scalatest._
 import org.scalatest.exceptions._
-import Suite.autoTagClassAnnotations
 import org.scalactic.{source, Prettifier}
+import org.scalatest.words.BehaveWord
+import Suite.autoTagClassAnnotations
+import scala.collection.immutable.ListSet
+
 
 /**
  * Implementation trait for class <code>path.FreeSpec</code>, which is

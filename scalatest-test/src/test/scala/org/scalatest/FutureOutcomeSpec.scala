@@ -15,13 +15,13 @@
  */
 package org.scalatest
 
-import org.scalactic.{Or, Good, Bad, source}
-import scala.util.{Try, Success, Failure}
-import scala.concurrent.Future
-import scala.concurrent.Promise
 import exceptions.TestCanceledException
 import exceptions.TestFailedException
 import java.util.concurrent.ExecutionException
+import org.scalactic.{Or, Good, Bad, source}
+import scala.concurrent.Future
+import scala.concurrent.Promise
+import scala.util.{Try, Success, Failure}
 
 /*
 class SuiteAbortingException(underlying: Throwable) {

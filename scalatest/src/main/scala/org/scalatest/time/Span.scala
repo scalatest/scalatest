@@ -15,9 +15,9 @@
  */
 package org.scalatest.time
 
-import Span.totalNanosForLongLength
-import Span.totalNanosForDoubleLength
 import java.io.Serializable
+import Span.totalNanosForDoubleLength
+import Span.totalNanosForLongLength
 
 /**
  * A time span.

@@ -16,21 +16,21 @@
 package org.scalatest
 
 import SharedHelpers._
-import org.scalatest.events.TestStarting
-import org.scalatest.events.InfoProvided
-import org.scalatest.events.MarkupProvided
-import org.scalatest.exceptions.TestCanceledException
-import java.lang.annotation.AnnotationFormatError
+import org.scalactic.Prettifier
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
+import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.events.InfoProvided
+import org.scalatest.events.MarkupProvided
+import org.scalatest.events.TestStarting
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalactic.exceptions.NullArgumentException
-import org.scalactic.Prettifier
 
 class FeatureSpecSpec extends FunSpec {
 

@@ -15,24 +15,25 @@
  */
 package org.scalatest.tools
 
-import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
 import org.scalatest._
-import SuiteDiscoveryHelper._
-import Suite.formatterForSuiteStarting
-import Suite.formatterForSuiteCompleted
-import Suite.formatterForSuiteAborted
 import org.scalatest.events._
-import Suite.SELECTED_TAG
-import Suite.mergeMap
-import java.io.{StringWriter, PrintWriter}
-import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
-import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
+import ArgsParser._
+import SuiteDiscoveryHelper._
 import scala.collection.JavaConverters._
-import StringReporter.fragmentsForEvent
+import java.io.{StringWriter, PrintWriter}
+import java.util.concurrent.atomic.{AtomicInteger, AtomicBoolean, AtomicReference}
+import java.util.concurrent.{ThreadFactory, Executors, ExecutorService, LinkedBlockingQueue}
+import org.scalatest.time.{Span, Millis}
+import sbt.testing.{Event => SbtEvent, Framework => SbtFramework, Status => SbtStatus, Runner => SbtRunner, _}
 import scala.collection.mutable.ListBuffer
 import scala.util.control.NonFatal
-import ArgsParser._
-import org.scalatest.time.{Span, Millis}
+import StringReporter.fragmentsForEvent
+import Suite.SELECTED_TAG
+import Suite.formatterForSuiteAborted
+import Suite.formatterForSuiteCompleted
+import Suite.formatterForSuiteStarting
+import Suite.mergeMap
+
 
 /**
  * <p>
@@ -756,9 +757,9 @@ class Framework extends SbtFramework {
     def args = runArgs
 
     def remoteArgs: Array[String] = {
-      import java.net.{ServerSocket, InetAddress}
-      import java.io.{ObjectInputStream, ObjectOutputStream}
       import org.scalatest.events._
+import java.io.{ObjectInputStream, ObjectOutputStream}
+import java.net.{ServerSocket, InetAddress}
 
       class SkeletonObjectInputStream(in: java.io.InputStream, loader: ClassLoader) extends ObjectInputStream(in) {
 

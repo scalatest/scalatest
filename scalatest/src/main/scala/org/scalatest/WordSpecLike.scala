@@ -15,15 +15,15 @@
  */
 package org.scalatest
 
-import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
-  MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
-import scala.collection.immutable.ListSet
+import org.scalactic._
 import org.scalatest.exceptions._
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
-import org.scalactic._
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
+import scala.collection.immutable.ListSet
+import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord,
+  MustVerb, StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
 
 /**
  * Implementation trait for class <code>WordSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests

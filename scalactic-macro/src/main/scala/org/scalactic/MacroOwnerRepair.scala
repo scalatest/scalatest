@@ -37,6 +37,7 @@ private[org] class MacroOwnerRepair[C <: reflect.macros.Context with Singleton](
     // The current owner at the call site. Symbols owned by this may need
     // to be transplanted.
     import scala.reflect.macros.runtime.{Context => MRContext}
+
     val callsiteOwner =
       c.asInstanceOf[MRContext]
         .callsiteTyper.context.owner

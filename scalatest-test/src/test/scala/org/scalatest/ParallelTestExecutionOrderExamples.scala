@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Tables
 import org.scalatest.events.Event
+import org.scalatest.prop.Tables
 // SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END

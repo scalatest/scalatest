@@ -17,17 +17,16 @@ package org.scalatest.testng
 
 import org.scalatest._
 import org.scalatest.events._
-import Suite.getIndentedTextForTest
-import Suite.formatterForSuiteAborted
-import Suite.formatterForSuiteStarting
-import Suite.formatterForSuiteCompleted
-import events.MotionToSuppress
-
-import org.testng.TestNG
-import org.testng.TestListenerAdapter
 import exceptions._
-import Suite.wrapReporterIfNecessary
 import org.scalactic.source
+import org.testng.TestListenerAdapter
+import org.testng.TestNG
+import Suite.formatterForSuiteAborted
+import Suite.formatterForSuiteCompleted
+import Suite.formatterForSuiteStarting
+import Suite.getIndentedTextForTest
+import Suite.wrapReporterIfNecessary
+import events.MotionToSuppress
 
 /**
  * Implementation trait for class <code>TestNGSuite</code>, which represents

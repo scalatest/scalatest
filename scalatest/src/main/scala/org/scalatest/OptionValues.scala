@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import java.util.NoSuchElementException
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.StackDepthException
 import org.scalactic._
+import java.util.NoSuchElementException
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.TestFailedException
 
 /**
  * Trait that provides an implicit conversion that adds a <code>value</code> method

@@ -16,12 +16,11 @@
 package org.scalatest
 
 import org.scalactic._
-import org.scalatest.exceptions.StackDepthExceptionHelper
-
-import scala.language.experimental.macros
-import scala.reflect.macros.{ Context, TypecheckException, ParseException }
 import org.scalatest.words.{TypeCheckWord, CompileWord}
+import scala.reflect.macros.{ Context, TypecheckException, ParseException }
 import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.StackDepthExceptionHelper
+import scala.language.experimental.macros
 
 private[scalatest] object CompileMacro {
 

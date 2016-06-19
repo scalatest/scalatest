@@ -15,13 +15,13 @@
  */
 package org.scalatest
 
-import words.BehaveWord
-import scala.collection.immutable.ListSet
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
+import org.scalactic._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
-import org.scalactic._
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
+import scala.collection.immutable.ListSet
+import words.BehaveWord
 
 /**
  * Implementation trait for class <code>FreeSpec</code>, which 

@@ -15,34 +15,34 @@
  */
 package org.scalatest
 
+import org.scalactic._
 import org.scalatest.enablers._
 import org.scalatest.matchers._
+import org.scalatest.words._
 import org.scalatest.words.ResultOfNoElementsOfApplication
 import org.scalatest.words.ResultOfOneElementOfApplication
-import scala.util.matching.Regex
-import scala.reflect.{classTag, ClassTag}
-import MatchersHelper.transformOperatorChars
-import Assertions.areEqualComparingArraysStructurally
 import scala.collection.GenTraversable
-import org.scalactic._
+import scala.reflect.{classTag, ClassTag}
+import scala.util.matching.Regex
+import Assertions.areEqualComparingArraysStructurally
+import MatchersHelper.transformOperatorChars
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
 import TripleEqualsSupport.TripleEqualsInvocationOnSpread
-import org.scalatest.words._
 // SKIP-SCALATESTJS-START
-import MatchersHelper.matchSymbolToPredicateMethod
 import MatchersHelper.accessProperty
+import MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS-END
-import MatchersHelper.newTestFailedException
-import MatchersHelper.fullyMatchRegexWithGroups
-import MatchersHelper.startWithRegexWithGroups
-import MatchersHelper.endWithRegexWithGroups
-import MatchersHelper.includeRegexWithGroups
-import MatchersHelper.indicateSuccess
-import MatchersHelper.indicateFailure
-import exceptions.NotAllowedException
 import scala.language.experimental.macros
 import scala.language.higherKinds
+import MatchersHelper.endWithRegexWithGroups
+import MatchersHelper.fullyMatchRegexWithGroups
+import MatchersHelper.includeRegexWithGroups
+import MatchersHelper.indicateFailure
+import MatchersHelper.indicateSuccess
+import MatchersHelper.newTestFailedException
+import MatchersHelper.startWithRegexWithGroups
+import exceptions.NotAllowedException
 import exceptions.TestFailedException
 
 // TODO: drop generic support for be as an equality comparison, in favor of specific ones.

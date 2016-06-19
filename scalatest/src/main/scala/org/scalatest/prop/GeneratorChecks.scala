@@ -15,22 +15,22 @@
  */
 package org.scalatest.prop
 
+import org.scalactic._
+import org.scalatest.FailureMessages
+import org.scalatest.UnquotedString
+import org.scalatest.exceptions.StackDepthException
 import scala.annotation.tailrec
 import scala.util.{Try, Failure, Success}
 import org.scalatest.exceptions.DiscardedEvaluationException
-import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
-import org.scalatest.exceptions.StackDepthException
-import org.scalatest.FailureMessages
-import org.scalatest.UnquotedString
-import org.scalactic._
+import org.scalatest.exceptions.TestFailedException
 
 // For now, hard coding a size of 10. Later will need to do the size based on config
 private[prop] trait GeneratorChecks extends Configuration with Whenever {
-  import GeneratorChecks.stackDepthFileName
-  import GeneratorChecks.stackDepthMethodName
   import GeneratorChecks.prettyArgs
+import GeneratorChecks.stackDepthFileName
+import GeneratorChecks.stackDepthMethodName
   def forAll[A](fun: (A) => Unit)
       (implicit 
         config: PropertyCheckConfiguration,

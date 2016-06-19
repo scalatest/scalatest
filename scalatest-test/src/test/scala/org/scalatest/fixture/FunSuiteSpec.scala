@@ -18,10 +18,10 @@ package org.scalatest.fixture
 import org.scalatest._
 import SharedHelpers._
 import events.TestFailed
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalactic.exceptions.NullArgumentException
 
 class FunSuiteSpec extends org.scalatest.FunSpec /*with PrivateMethodTester*/ {
 

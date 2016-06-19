@@ -15,18 +15,18 @@
  */
 package org.scalatest.matchers
 
+import org.scalactic._
 import org.scalatest.enablers._
-import org.scalatest.MatchersHelper.orMatchersAndApply
-import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.words._
+import org.scalatest.FailureMessages
+import org.scalatest.MatchersHelper.andMatchersAndApply
+import org.scalatest.MatchersHelper.orMatchersAndApply
+import org.scalatest.Resources
 import scala.collection.GenTraversable
 import scala.reflect.ClassTag
 import scala.util.matching.Regex
-import org.scalactic._
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
-import org.scalatest.FailureMessages
-import org.scalatest.Resources
 
 /**
  * Trait extended by objects that can match a value of the specified type. The value to match is

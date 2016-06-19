@@ -15,13 +15,12 @@
  */
 package org.scalatest
 
-import collection.mutable.ListBuffer
-import SharedHelpers.EventRecordingReporter
-
-import scala.annotation.tailrec
+import Retries._
 import prop.TableDrivenPropertyChecks._
 import org.scalatest.tagobjects.Retryable
-import Retries._
+import scala.annotation.tailrec
+import SharedHelpers.EventRecordingReporter
+import collection.mutable.ListBuffer
 
 // SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec

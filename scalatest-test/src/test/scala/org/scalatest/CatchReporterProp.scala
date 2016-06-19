@@ -15,17 +15,17 @@
  */
 package org.scalatest
 
-import org.scalatest.junit._
-import org.scalatest.testng.TestNGSuite
-import org.junit.Test
-import org.testng.annotations.{Test => TestNG }
 import org.scalatest.events._
-import java.io.PrintStream
-import java.io.ByteArrayOutputStream
-import org.scalatest.tools.SuiteSortingReporter
+import org.scalatest.junit._
 import org.scalatest.time._
-import org.scalatest.tools.TestSortingReporter
 import SharedHelpers._
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import org.junit.Test
+import org.scalatest.testng.TestNGSuite
+import org.scalatest.tools.SuiteSortingReporter
+import org.scalatest.tools.TestSortingReporter
+import org.testng.annotations.{Test => TestNG }
 // SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END

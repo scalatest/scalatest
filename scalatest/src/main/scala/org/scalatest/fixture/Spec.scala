@@ -15,11 +15,12 @@
  */
 package org.scalatest.fixture
 
-import scala.collection.immutable.ListSet
-import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest._
-import org.scalatest.events.{TopOfClass, TopOfMethod}
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
+import org.scalatest.Suite.autoTagClassAnnotations
+import org.scalatest.events.{TopOfClass, TopOfMethod}
+import scala.collection.immutable.ListSet
+
 
 /**
  * <strong>Class <code>fixture.Spec</code> has been deprecated and will be removed in a future version of ScalaTest. Please use

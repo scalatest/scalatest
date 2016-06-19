@@ -16,9 +16,9 @@
 package org.scalatest.easymock
 
 import org.easymock.IExpectationSetters
+import scala.reflect.ClassTag
 import org.easymock.EasyMock
 import org.easymock.EasyMock.{expect => easyMockExpect, expectLastCall}
-import scala.reflect.ClassTag
 
 /**
  * Trait that provides some basic syntax sugar for <a href="http://easymock.org/" target="_blank">EasyMock</a>.

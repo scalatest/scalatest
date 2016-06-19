@@ -16,15 +16,16 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import words.BehaveWord
-import scala.collection.immutable.ListSet
 import org.scalatest.exceptions._
-import java.util.concurrent.atomic.AtomicReference
+import org.scalactic.{source, Prettifier}
+import scala.concurrent.Future
 import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
-import scala.concurrent.Future
-import org.scalactic.{source, Prettifier}
+import scala.collection.immutable.ListSet
+import words.BehaveWord
+
 
 /**
  * Implementation trait for class <code>fixture.AsyncFreeSpec</code>, which is

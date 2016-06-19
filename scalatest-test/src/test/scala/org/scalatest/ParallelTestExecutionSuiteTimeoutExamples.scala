@@ -17,11 +17,11 @@ package org.scalatest
 
 import org.scalatest.events.Event
 import org.scalatest.prop.Tables
-import org.scalatest.events.TestStarting
-import org.scalatest.events.TestSucceeded
+import org.scalatest.time.Span
 import scala.collection.mutable.ListBuffer
 import org.scalatest.events.ScopeClosed
-import org.scalatest.time.Span
+import org.scalatest.events.TestStarting
+import org.scalatest.events.TestSucceeded
 import org.scalatest.time.Millis
 // SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec

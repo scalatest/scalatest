@@ -17,6 +17,7 @@ package org.scalatest.concurrent
 
 import java.util.concurrent.locks.{Lock, ReadWriteLock}
 
+
 /**
  * Provides implicit def for pimping a ReadWriteLock.
  * Provides a nice withLock method that has probably been written a million times.

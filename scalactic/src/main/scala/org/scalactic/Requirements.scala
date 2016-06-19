@@ -15,8 +15,8 @@
  */
 package org.scalactic
 
-import reflect.macros.Context
 import exceptions.NullArgumentException
+import reflect.macros.Context
 
 /**
  * Trait that contains <code>require</code>, and <code>requireState</code>, and <code>requireNonNull</code> methods for checking pre-conditions

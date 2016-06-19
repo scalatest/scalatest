@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
+import org.scalactic._
 import reflect.macros.Context
 import scala.annotation.tailrec
-import org.scalactic._
 
 private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName: String) {
 

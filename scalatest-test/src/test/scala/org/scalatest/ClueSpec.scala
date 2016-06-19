@@ -16,20 +16,21 @@
 package org.scalatest
 
 import exceptions.{GeneratorDrivenPropertyCheckFailedException, TableDrivenPropertyCheckFailedException, TestFailedDueToTimeoutException, TestCanceledException}
+
 // SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnitTestFailedError
 // SKIP-SCALATESTJS-END
 import prop.TableDrivenPropertyChecks
-import prop.TableFor1
-import time.{Second, Span}
-import SharedHelpers.EventRecordingReporter
 import TableDrivenPropertyChecks._
 import org.scalatest.exceptions.ModifiableMessage
 import org.scalatest.exceptions.StackDepth
-import org.scalatest.exceptions.TestFailedException
+import SharedHelpers.EventRecordingReporter
 import org.scalactic.exceptions.NullArgumentException
 import org.scalactic.source
 import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.TestFailedException
+import prop.TableFor1
+import time.{Second, Span}
 
 class ClueSpec extends FlatSpec with Matchers with SeveredStackTraces {
 

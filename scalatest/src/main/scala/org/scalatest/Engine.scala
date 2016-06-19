@@ -15,26 +15,26 @@
  */
 package org.scalatest
 
-import exceptions.TestCanceledException
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
-import Suite.IgnoreTagName
+import org.scalactic._
+import Requirements._
 import org.scalatest.Suite._
-import org.scalatest.events.LineInFile
-import org.scalatest.events.SeeStackDepthException
-import scala.annotation.tailrec
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.PathEngine.isInTargetPath
 import org.scalatest.Suite.checkChosenStyles
+import org.scalatest.events.LineInFile
 import org.scalatest.events.Location
+import org.scalatest.events.SeeStackDepthException
+import org.scalatest.exceptions.StackDepthExceptionHelper.posOrElseStackDepthFun
+import org.scalatest.exceptions.StackDepthExceptionHelper.{getStackDepthFun, getStackDepth}
+import scala.annotation.tailrec
+import Suite.IgnoreTagName
 import collection.mutable.ListBuffer
+import exceptions.TestCanceledException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestPendingException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalactic._
-import Requirements._
-import org.scalactic.exceptions.NullArgumentException
-import org.scalatest.exceptions.StackDepthExceptionHelper.posOrElseStackDepthFun
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {

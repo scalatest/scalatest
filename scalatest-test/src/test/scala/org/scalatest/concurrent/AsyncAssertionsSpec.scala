@@ -15,16 +15,16 @@
  */
 package org.scalatest.concurrent
 
+import org.scalatest.Retries._
 import org.scalatest._
 import SharedHelpers._
-import SharedHelpers.thisLineNumber
-import time.{Span, Millis}
+import scala.concurrent.ExecutionContext.Implicits._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits._
+import SharedHelpers.thisLineNumber
+import time.{Span, Millis}
 
 // This is the test that makes sure the deprecated name still works during the deprecation period.
 

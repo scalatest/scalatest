@@ -15,15 +15,15 @@
  */
 package org.scalatest
 
-import scala.xml.Elem
-import Suite.reportMarkupProvided
 import DocSpec.stripMargin
 import DocSpec.trimMarkup
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import collection.mutable.ListBuffer
 import Suite.reportMarkupProvided
+import Suite.reportMarkupProvided
+import collection.mutable.ListBuffer
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
 import scala.collection.mutable.ListBuffer
+import scala.xml.Elem
 
 private[scalatest] trait DocSpecLike extends Suite with Informing with Notifying with Alerting { thisSuite =>
 

@@ -15,28 +15,26 @@
  */
 package org.scalatest
 
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
-import Suite.IgnoreTagName
+import org.scalactic.Requirements._
+import org.scalactic._
 import org.scalatest.Suite._
-import org.scalatest.events.LineInFile
-import org.scalatest.events.SeeStackDepthException
-import org.scalatest.tools.TestSortingReporter
-import org.scalatest.tools.TestSpecificReporter
-import scala.annotation.tailrec
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.Suite.checkChosenStyles
+import org.scalatest.events.LineInFile
 import org.scalatest.events.Location
+import org.scalatest.events.SeeStackDepthException
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+import scala.annotation.tailrec
+import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
+import Suite.IgnoreTagName
 import collection.mutable.ListBuffer
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalactic._
-import org.scalactic.Requirements._
-import org.scalactic.exceptions.NullArgumentException
-
-
-import scala.util.{Failure, Success}
-import scala.concurrent.ExecutionContext
+import org.scalatest.tools.TestSortingReporter
+import org.scalatest.tools.TestSpecificReporter
 
 // T will be () => Unit for FunSuite and FixtureParam => Any for fixture.FunSuite
 private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleModMessageFun: => String, simpleClassName: String) {

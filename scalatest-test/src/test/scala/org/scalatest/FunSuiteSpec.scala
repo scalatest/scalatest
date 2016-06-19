@@ -18,11 +18,11 @@ package org.scalatest
 import SharedHelpers._
 import org.scalatest.events._
 import Suite.CHOSEN_STYLES
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalactic.exceptions.NullArgumentException
 
 class FunSuiteSpec extends FunSpec {
 

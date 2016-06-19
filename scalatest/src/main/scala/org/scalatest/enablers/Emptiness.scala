@@ -15,11 +15,11 @@
  */
 package org.scalatest.enablers
 
+import Aggregating.tryEquality
 import org.scalactic.Equality
-import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
-import Aggregating.tryEquality
+import scala.collection.GenTraversable
 
 /**
  * Supertrait for typeclasses that enable <code>be empty</code> matcher syntax.

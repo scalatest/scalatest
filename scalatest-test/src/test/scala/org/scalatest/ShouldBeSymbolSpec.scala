@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import org.scalatest.exceptions.TestFailedException
-import SharedHelpers._
 import Matchers._
+import SharedHelpers._
+import org.scalatest.exceptions.TestFailedException
 
 class ShouldBeSymbolSpec extends FunSpec with EmptyMocks {
 

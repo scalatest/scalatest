@@ -15,12 +15,12 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
-import org.scalactic.Equality
 import org.scalatest._
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import OptionValues._
+import org.scalacheck.Gen._
+import org.scalacheck.{Arbitrary, Gen}
+import org.scalactic.Equality
+import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange

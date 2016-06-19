@@ -16,8 +16,8 @@
 package org.scalatest.tools
 
 import org.scalatest._
-import Suite.unparsedXml
-import Suite.xmlContent
+import org.scalatest.events._
+import HtmlReporter._
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -25,27 +25,27 @@ import java.io.IOException
 import java.io.OutputStream
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
-import java.util.Iterator
-import java.util.Set
 import java.io.StringWriter
-import org.scalatest.events._
-import org.scalatest.exceptions.TestFailedException
-import StringReporter.makeDurationString
-import PrintReporter.BufferSize
-import HtmlReporter._
-import org.pegdown.PegDownProcessor
-import scala.collection.mutable.ListBuffer
-import scala.xml.NodeSeq
-import scala.xml.XML
-import java.util.UUID
-import scala.xml.Node
-import scala.xml.NodeBuffer
-import scala.annotation.tailrec
 import java.net.URL
-import scala.io.Source
 import java.nio.channels.Channels
 import java.text.DecimalFormat
+import java.util.Iterator
+import java.util.Set
+import java.util.UUID
+import org.pegdown.PegDownProcessor
 import org.scalatest.exceptions.StackDepth
+import scala.annotation.tailrec
+import scala.collection.mutable.ListBuffer
+import scala.io.Source
+import scala.xml.Node
+import scala.xml.NodeBuffer
+import scala.xml.NodeSeq
+import scala.xml.XML
+import PrintReporter.BufferSize
+import StringReporter.makeDurationString
+import Suite.unparsedXml
+import Suite.xmlContent
+import org.scalatest.exceptions.TestFailedException
 
 /**
  * A <code>Reporter</code> that prints test status information in HTML format to a file.

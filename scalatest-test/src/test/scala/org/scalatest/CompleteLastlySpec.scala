@@ -15,13 +15,13 @@
  */
 package org.scalatest
 
-import scala.concurrent.Promise
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
-import scala.util.Success
-import scala.util.Failure
-import org.scalactic.Good
 import org.scalactic.Bad
+import org.scalactic.Good
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.Promise
+import scala.util.Failure
+import scala.util.Success
 // SKIP-SCALATESTJS-START
 // SKIP-SCALATESTJS-END
 import org.scalatest.OutcomeOf.outcomeOf

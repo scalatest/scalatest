@@ -15,13 +15,13 @@
  */
 package org.scalatest
 
+import java.util.concurrent.atomic.AtomicReference
 import scala.xml.Elem
-import Suite.reportMarkupProvided
 import Doc.stripMargin
 import Doc.trimMarkup
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
+import Suite.reportMarkupProvided
 import collection.mutable.ListBuffer
+import java.util.ConcurrentModificationException
 
 /**
  * A <code>Doc</code> class that takes one XML node markup

@@ -15,14 +15,14 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.time.Span
-import java.util.concurrent.{TimeUnit, Future => FutureOfJava}
-import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
-import org.scalatest.Resources
-import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.StackDepthException
 import org.scalactic._
+import java.util.concurrent.{TimeUnit, Future => FutureOfJava}
+import org.scalatest.Resources
+import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
+import org.scalatest.time.Span
 
 /**
  * Provides an implicit conversion from <code>java.util.concurrent.Future[T]</code> to

@@ -16,20 +16,20 @@
 package org.scalatest
 
 // elements
-import org.scalatest.events._
 import SharedHelpers._
-import org.scalatest.exceptions.TestCanceledException
-import java.lang.annotation.AnnotationFormatError
+import org.scalatest.events._
+import org.scalactic.Prettifier
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestCanceledException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.exceptions.NotAllowedException
-import org.scalactic.exceptions.NullArgumentException
-import org.scalactic.Prettifier
 
 class WordSpecSpec extends FunSpec with GivenWhenThen {
 

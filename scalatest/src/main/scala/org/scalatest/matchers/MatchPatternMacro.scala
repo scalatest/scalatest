@@ -15,8 +15,8 @@
  */
 package org.scalatest.matchers
 
-import reflect.macros.Context
 import org.scalatest.Resources
+import reflect.macros.Context
 
 private[scalatest] object MatchPatternMacro {
 

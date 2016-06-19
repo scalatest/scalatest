@@ -15,14 +15,14 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import org.scalacheck._
 import Arbitrary._
-import Prop._
-import org.scalatest.exceptions.TestFailedException
 import FailureMessages._
 import Matchers._
+import Prop._
 import org.scalactic.Prettifier
+import org.scalatest.prop.Checkers
+import org.scalatest.exceptions.TestFailedException
 
 class ShouldContainElementSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 

@@ -15,16 +15,16 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.Checkers
 import org.scalacheck._
 import Arbitrary._
-import Prop._
-import Integer.MIN_VALUE
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.enablers.Size
 import FailureMessages._
 import Matchers._
+import Prop._
 import org.scalactic.Prettifier
+import org.scalatest.prop.Checkers
+import Integer.MIN_VALUE
+import org.scalatest.enablers.Size
+import org.scalatest.exceptions.TestFailedException
 
 class ShouldSizeSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 

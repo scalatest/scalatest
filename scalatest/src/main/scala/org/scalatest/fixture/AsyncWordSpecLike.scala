@@ -16,16 +16,17 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord, MustVerb,
-StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
-import scala.collection.immutable.ListSet
 import org.scalatest.exceptions._
-import java.util.concurrent.atomic.AtomicReference
+import org.scalactic.{source, Prettifier}
+import scala.concurrent.Future
 import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
-import scala.concurrent.Future
-import org.scalactic.{source, Prettifier}
+import scala.collection.immutable.ListSet
+import words.{CanVerb, ResultOfAfterWordApplication, ShouldVerb, BehaveWord, MustVerb,
+StringVerbBlockRegistration, SubjectWithAfterWordRegistration}
+
 
 /**
  * Implementation trait for class <code>fixture.AsyncWordSpec</code>, which is

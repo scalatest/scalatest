@@ -17,11 +17,12 @@ package org.scalatest.tools
 
 import org.scalatest._
 import org.scalatest.events._
-import Suite.formatterForSuiteStarting
-import Suite.formatterForSuiteCompleted
 import Suite.formatterForSuiteAborted
+import Suite.formatterForSuiteCompleted
+import Suite.formatterForSuiteStarting
 import org.scalatest.exceptions.NotAllowedException
 import scala.util.{Success, Failure}
+
 
 private[scalatest] class SuiteRunner(suite: Suite, args: Args, status: ScalaTestStatefulStatus) extends Runnable {
 

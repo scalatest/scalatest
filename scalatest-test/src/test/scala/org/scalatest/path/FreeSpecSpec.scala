@@ -17,22 +17,22 @@ package org.scalatest.path
 
 import org.scalatest._
 import SharedHelpers._
-
 import org.scalatest.path.{ FreeSpec => PathFreeSpec }
+
 // elements
 import org.scalatest.events._
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.exceptions.NotAllowedException
-import java.lang.annotation.AnnotationFormatError
+import org.scalactic.Prettifier
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
 import org.scalactic.exceptions.NullArgumentException
-import org.scalactic.Prettifier
+import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestRegistrationClosedException
 
 class FreeSpecSpec extends org.scalatest.FunSpec with GivenWhenThen {
 

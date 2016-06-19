@@ -15,20 +15,20 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.TreeSet
 import org.scalatest.events._
+import SharedHelpers._
+import java.awt.AWTError
 import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
-import java.awt.AWTError
-import SharedHelpers._
-import Suite.CHOSEN_STYLES
+import org.scalactic.Prettifier
 import org.scalatest.Suite.formatterForSuiteStarting
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.refspec.{RefSpec, RefSpecLike}
-import org.scalactic.Prettifier
+import scala.collection.immutable.TreeSet
+import Suite.CHOSEN_STYLES
 
 /* Uncomment after remove type aliases in org.scalatest package object
 import org.scalatest.exceptions.NotAllowedException

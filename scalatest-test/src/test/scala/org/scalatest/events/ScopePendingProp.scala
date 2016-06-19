@@ -15,9 +15,9 @@
  */
 package org.scalatest.events
 
-import org.scalatest.AllSuiteProp
 import org.scalatest._
 import SharedHelpers._
+import org.scalatest.AllSuiteProp
 // SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
