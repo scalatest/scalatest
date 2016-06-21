@@ -15,8 +15,8 @@
  */
 package org.scalactic.anyvals
 
-import scala.language.implicitConversions
 import scala.collection.immutable.NumericRange
+import scala.language.implicitConversions
 
 /**
  * An <code>AnyVal</code> for positive <code>Float</code>s.
@@ -346,9 +346,9 @@ final class PosFloat private (val value: Float) extends AnyVal {
   }
 
   def round: PosZInt = {
-    import scala.util.Try
-    import scala.util.Success
     import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
     val roundedInt: Int = math.round(value)
     val result = Try(PosZInt.from(math.round(value)).get)
     result match {

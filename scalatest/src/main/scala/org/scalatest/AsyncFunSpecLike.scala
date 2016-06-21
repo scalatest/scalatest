@@ -15,11 +15,11 @@
  */
 package org.scalatest
 
+import org.scalactic._
+import scala.concurrent.Future
+import Suite.autoTagClassAnnotations
 import scala.collection.immutable.ListSet
 import words.BehaveWord
-import Suite.autoTagClassAnnotations
-import scala.concurrent.Future
-import org.scalactic._
 
 /**
  * Implementation trait for class <code>AsyncFunSpec</code>, which

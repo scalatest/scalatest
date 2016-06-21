@@ -15,7 +15,6 @@
  */
 package org.scalactic
 
-import java.text._
 import org.scalatest._
 import scala.collection.GenTraversable
 import scala.collection.mutable.Buffer

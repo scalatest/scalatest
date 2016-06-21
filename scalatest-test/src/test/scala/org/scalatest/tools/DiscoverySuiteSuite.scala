@@ -17,7 +17,6 @@ package org.scalatest.tools
 
 import org.scalatest.SharedHelpers.EventRecordingReporter
 import org.scalatest._
-import org.scalatest.events._
 import org.scalactic.exceptions.NullArgumentException
 
 /*

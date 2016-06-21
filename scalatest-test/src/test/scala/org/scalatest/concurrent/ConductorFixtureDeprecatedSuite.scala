@@ -16,9 +16,9 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
+import java.lang.Thread.State._
 import org.scalatest.fixture
 import _root_.java.util.concurrent.{Callable, CountDownLatch}
-import java.lang.Thread.State._
 import org.scalatest.exceptions.NotAllowedException
 
 // On Mac got: "ABCFEDGHI" was not equal to "ABCDEFGHI"

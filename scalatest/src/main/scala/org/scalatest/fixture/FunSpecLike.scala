@@ -16,15 +16,15 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import scala.collection.immutable.ListSet
 import org.scalatest.exceptions._
-import java.util.concurrent.atomic.AtomicReference
+import org.scalactic.{source, Prettifier}
 import java.util.ConcurrentModificationException
-import org.scalatest.events._
+import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
+import scala.collection.immutable.ListSet
 import words.BehaveWord
-import org.scalactic.{source, Prettifier}
+
 
 /**
  * Implementation trait for class <code>fixture.FunSpec</code>, which is

@@ -17,7 +17,6 @@ package org.scalatest.fixture
 
 import org.scalactic._
 import org.scalatest.Tag
-import org.scalatest.Assertion
 
 /**
  * Trait declaring methods that can be used to register test functions that accept

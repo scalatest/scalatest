@@ -16,15 +16,15 @@
 package org.scalatest
 
 import org.scalatest.events._
-import java.util.concurrent.Executors
 import java.io.File
-import scala.annotation.tailrec
-import scala.collection.GenTraversable
-import scala.collection.GenMap
-import scala.collection.SortedSet
-import scala.collection.SortedMap
-import FailureMessages.decorateToStringValue
 import org.scalatest.exceptions.StackDepthException
+import scala.annotation.tailrec
+import scala.collection.GenMap
+import scala.collection.GenTraversable
+import scala.collection.SortedMap
+import scala.collection.SortedSet
+import FailureMessages.decorateToStringValue
+import java.util.concurrent.Executors
 import org.scalactic.Prettifier
 
 object SharedHelpers extends Assertions with LineNumberHelper {

@@ -16,14 +16,6 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import FixtureNodeFamily._
-import scala.collection.immutable.ListSet
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
-import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
-import org.scalatest.Suite.autoTagClassAnnotations
-import org.scalatest.exceptions.NotAllowedException
 
 /**
  * A sister class to <code>org.scalatest.FeatureSpec</code> that can pass a fixture object into its tests.

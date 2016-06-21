@@ -15,15 +15,15 @@
  */
 package org.scalactic.anyvals
 
-import org.scalacheck.{Arbitrary, Gen}
-import org.scalacheck.Gen._
 import org.scalatest._
+import org.scalacheck.Gen._
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 // SKIP-SCALATESTJS-START
 import scala.collection.immutable.NumericRange
 // SKIP-SCALATESTJS-END
-import scala.collection.mutable.WrappedArray
 import OptionValues._
+import scala.collection.mutable.WrappedArray
 //import org.scalactic.StrictCheckedEquality
 import org.scalactic.Equality
 

@@ -15,15 +15,13 @@
  */
 package org.scalatest
 
-import java.util.NoSuchElementException
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.StackDepthException
-
-import scala.util.Try
+import org.scalactic._
 import scala.util.Failure
 import scala.util.Success
-
-import org.scalactic._
+import scala.util.Try
+import java.util.NoSuchElementException
+import org.scalatest.exceptions.StackDepthException
+import org.scalatest.exceptions.TestFailedException
 
 /**
  * Trait that provides an implicit conversion that adds <code>success</code> and <code>failure</code> methods

@@ -16,7 +16,6 @@
 package org.scalatest.enablers
 
 import org.scalatest.Assertion
-import org.scalatest.Expectation
 import org.scalatest.exceptions.DiscardedEvaluationException
 
 /**

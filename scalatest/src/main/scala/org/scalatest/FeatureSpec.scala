@@ -15,12 +15,6 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
-import Suite.anExceptionThatShouldCauseAnAbort
-import Suite.autoTagClassAnnotations
 
 /**
  * A suite of tests in which each test represents one <em>scenario</em> of a <em>feature</em>. 

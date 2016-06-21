@@ -15,11 +15,11 @@
  */
 package org.scalatest.enablers
 
-import org.scalactic.{Equality, Every}
-import org.scalatest.words.ArrayWrapper
-import scala.collection.GenTraversable
-import scala.annotation.tailrec
 import scala.collection.JavaConverters._
+import org.scalactic.{Equality, Every}
+import scala.collection.GenTraversable
+import org.scalatest.words.ArrayWrapper
+import scala.annotation.tailrec
 
 /**
  * Typeclass that enables for sequencing certain <code>contain</code> syntax in the ScalaTest matchers DSL.

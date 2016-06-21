@@ -17,12 +17,12 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import SharedHelpers._
+import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.events.InfoProvided
 import org.scalatest.events.{TestStarting, TestFailed}
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.events.InfoProvided
-import org.scalactic.exceptions.NullArgumentException
 
 object SlowTest extends Tag("SlowTest")
 

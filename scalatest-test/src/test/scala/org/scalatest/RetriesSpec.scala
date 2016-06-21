@@ -15,8 +15,6 @@
  */
 package org.scalatest
 
-import matchers._
-import SharedHelpers._
 import time.Span
 import time.SpanSugar._
 import Matchers._

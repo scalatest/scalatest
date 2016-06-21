@@ -16,7 +16,6 @@
 package org.scalatest
 
 import SharedHelpers.thisLineNumber
-import Matchers._
 import org.scalactic.Prettifier
 
 class ShouldBeATypeSpec extends FunSpec with Matchers {

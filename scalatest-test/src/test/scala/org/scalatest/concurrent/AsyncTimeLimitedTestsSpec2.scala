@@ -15,11 +15,12 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.time.{Span, Millis}
 import org.scalatest._
 import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
+import org.scalatest.time.{Span, Millis}
 import scala.concurrent.{Promise, Future}
+
 
 class AsyncTimeLimitedTestsSpec2 extends AsyncFunSpec with Matchers {
   describe("A time-limited test") {

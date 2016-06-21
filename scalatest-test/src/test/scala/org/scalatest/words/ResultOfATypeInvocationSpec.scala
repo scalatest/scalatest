@@ -17,7 +17,6 @@ package org.scalatest.words
 
 import org.scalatest._
 import Matchers._
-import org.scalactic._
 
 class ResultOfATypeInvocationSpec extends FunSpec {
   

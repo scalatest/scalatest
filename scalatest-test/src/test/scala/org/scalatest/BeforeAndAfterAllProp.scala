@@ -18,10 +18,10 @@ package org.scalatest
 // SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
+import org.scalatest.refspec.RefSpec
+import org.scalatest.testng.TestNGSuite
 import org.junit.Test
 import org.testng.annotations.{Test => TestNG }
-import org.scalatest.testng.TestNGSuite
-import org.scalatest.refspec.RefSpec
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
 import scala.compat.Platform

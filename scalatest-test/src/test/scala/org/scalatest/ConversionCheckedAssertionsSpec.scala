@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalactic._
 import SharedHelpers.thisLineNumber
-import ConversionCheckedTripleEquals._
 import exceptions.TestFailedException
 
 class ConversionCheckedAssertionsSpec extends FunSpec {

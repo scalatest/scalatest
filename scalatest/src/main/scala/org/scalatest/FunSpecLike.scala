@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
+import org.scalactic._
+import Suite.autoTagClassAnnotations
 import scala.collection.immutable.ListSet
 import words.BehaveWord
-import Suite.autoTagClassAnnotations
-import org.scalactic._
 
 /**
  * Implementation trait for class <code>FunSpec</code>, which 

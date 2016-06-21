@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalactic.Equality
 import org.scalactic.Prettifier
-import org.scalactic.StringNormalizations._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._

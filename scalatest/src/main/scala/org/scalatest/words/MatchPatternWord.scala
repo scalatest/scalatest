@@ -15,8 +15,8 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers.{MatchPatternMacro, MatchResult, Matcher}
 import org.scalactic.Prettifier
+import org.scalatest.matchers.{MatchPatternMacro, MatchResult, Matcher}
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="../Matchers.html"><code>Matchers</code></a> for an overview of

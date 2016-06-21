@@ -16,9 +16,10 @@
 package org.scalatest
 package exceptions
 
-import org.scalatest.prop.TableDrivenPropertyChecks
 import org.scalatest.SharedHelpers._
+import org.scalatest.prop.TableDrivenPropertyChecks
 import time.{Span, Second}
+
 // SKIP-SCALATESTJS-START
 import junit.JUnitTestFailedError
 // SKIP-SCALATESTJS-END

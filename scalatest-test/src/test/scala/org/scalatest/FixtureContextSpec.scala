@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import matchers._
 import SharedHelpers._
 import FailureMessages.decorateToStringValue
 import Matchers._

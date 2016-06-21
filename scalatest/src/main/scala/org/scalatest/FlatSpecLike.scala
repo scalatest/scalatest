@@ -15,15 +15,14 @@
  */
 package org.scalatest
 
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
-import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
+import org.scalactic._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
-import org.scalactic._
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+import scala.collection.immutable.ListSet
+import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 
 /**
  * Implementation trait for class <code>FlatSpec</code>, which facilitates a
@@ -1376,8 +1375,8 @@ trait FlatSpecLike extends TestSuite with TestRegistration with ShouldVerb with 
    */
   protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
 
-    import resultOfStringPassedToVerb.verb
     import resultOfStringPassedToVerb.rest
+import resultOfStringPassedToVerb.verb
 
     /**
      * Supports the registration of tests in shorthand form.

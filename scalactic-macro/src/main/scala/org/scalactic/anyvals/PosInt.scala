@@ -15,8 +15,8 @@
  */
 package org.scalactic.anyvals
 
-import scala.language.implicitConversions
 import scala.collection.immutable.Range
+import scala.language.implicitConversions
 
 /**
  * An <code>AnyVal</code> for positive <code>Int</code>s.

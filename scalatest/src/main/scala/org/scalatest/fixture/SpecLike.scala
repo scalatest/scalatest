@@ -15,17 +15,18 @@
  */
 package org.scalatest.fixture
 
-import scala.collection.immutable.ListSet
-import org.scalatest.Suite.{IgnoreTagName, autoTagClassAnnotations}
 import org.scalatest._
 import org.scalatest.exceptions._
-import StackDepthExceptionHelper.posOrElseStackDepthFun
 import Spec._
 import Suite._
-import org.scalatest.events.{TopOfClass, TopOfMethod}
 import scala.reflect.NameTransformer._
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalactic.{source, Prettifier}
+import org.scalatest.Suite.{IgnoreTagName, autoTagClassAnnotations}
+import org.scalatest.events.{TopOfClass, TopOfMethod}
+import scala.collection.immutable.ListSet
+
 
 /**
  * <strong>Trait <code>fixture.SpecLike</code> has been deprecated and will be removed in a future version of ScalaTest. Please use

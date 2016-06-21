@@ -16,9 +16,9 @@
 package org.scalatest
 
 import org.scalactic._
+import org.scalactic.Requirements._
 import scala.collection.mutable.ListBuffer
 import collection.immutable.TreeMap
-import org.scalactic.Requirements._
 
 /**
  * Sub-trait of <code>Assertions</code> that override <code>assert</code> and <code>assume</code> methods to include

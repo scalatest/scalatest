@@ -17,13 +17,12 @@ package org.scalatest.concurrent
 
 import org.scalatest._
 import SharedHelpers._
-import Thread.State._
-import java.util.concurrent.atomic.AtomicBoolean
-import org.scalatest.exceptions.NotAllowedException
-import org.scalatest.SharedHelpers.thisLineNumber
-import time.{Millis, Span}
-import PatienceConfiguration.{Timeout, Interval}
 import time.SpanSugar._
+import PatienceConfiguration.{Timeout, Interval}
+import java.util.concurrent.atomic.AtomicBoolean
+import org.scalatest.SharedHelpers.thisLineNumber
+import org.scalatest.exceptions.NotAllowedException
+import time.{Millis, Span}
 
 // Can delete this test after the overloaded thread(name: String)... method deprecation expires.
 class ConductorDeprecatedSuite extends FunSuite with Matchers with Conductors with SeveredStackTraces {

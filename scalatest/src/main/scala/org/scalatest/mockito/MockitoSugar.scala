@@ -15,7 +15,6 @@
  */
 package org.scalatest.mockito
 
-import org.scalatest._
 import org.mockito.Mockito.{mock => mockitoMock}
 import reflect.ClassTag
 import org.mockito.stubbing.Answer

@@ -17,11 +17,11 @@ package org.scalatest.tools
 
 import org.scalatest._
 import org.scalatest.events._
-import org.scalatest.exceptions.PropertyCheckFailedException
-import Suite.indentation
-import org.scalatest.exceptions.StackDepth
 import StringReporter._
 import scala.collection.mutable.ListBuffer
+import Suite.indentation
+import org.scalatest.exceptions.PropertyCheckFailedException
+import org.scalatest.exceptions.StackDepth
 
 /**
  * A <code>Reporter</code> that prints test status information to

@@ -16,12 +16,11 @@
 package org.scalatest
 
 import SharedHelpers._
-import events.InfoProvided
-import org.scalatest.events.LineInFile
-import org.scalatest.exceptions._
 import org.scalatest.OutcomeOf.outcomeOf
-import events.Ordinal
+import org.scalatest.events.LineInFile
 import scala.concurrent.Future
+import events.InfoProvided
+import events.Ordinal
 // SKIP-SCALATESTJS-START
 import concurrent.Eventually._
 // SKIP-SCALATESTJS-END

@@ -15,22 +15,22 @@
  */
 package org.scalatest.tools
 
-import org.scalatools.testing.{Framework => SbtFramework, _}
-import SuiteDiscoveryHelper._
-import org.scalatest.Suite.formatterForSuiteStarting
-import org.scalatest.Suite.formatterForSuiteCompleted
-import org.scalatest.Suite.formatterForSuiteAborted
-import org.scalatest.events.SuiteStarting
-import org.scalatest.events.SuiteCompleted
-import org.scalatest.events.SuiteAborted
-import org.scalatest.events.SeeStackDepthException
-import org.scalatest.events.TopOfClass
 import org.scalatest._
-import java.util.concurrent.atomic.AtomicReference
+import ArgsParser._
+import SuiteDiscoveryHelper._
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
-import ArgsParser._
+import java.util.concurrent.atomic.AtomicReference
+import org.scalatest.Suite.formatterForSuiteAborted
+import org.scalatest.Suite.formatterForSuiteCompleted
+import org.scalatest.Suite.formatterForSuiteStarting
+import org.scalatest.events.SeeStackDepthException
+import org.scalatest.events.SuiteAborted
+import org.scalatest.events.SuiteCompleted
+import org.scalatest.events.SuiteStarting
+import org.scalatest.events.TopOfClass
+import org.scalatools.testing.{Framework => SbtFramework, _}
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).

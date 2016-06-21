@@ -17,8 +17,9 @@ package org.scalatest.jmock
 
 import org.scalatest._
 import SharedHelpers._
-import org.scalatest.fixture
 import org.jmock.Expectations.{equal => thatEquals}
+import org.scalatest.fixture
+
 
 class AsyncJMockCycleSpec extends FlatSpec with Matchers {
 
@@ -37,6 +38,7 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
         val twoFishMock = mock[TwoFish]
 
         expecting { e => import e.{oneOf => OneOf}
+
           OneOf (oneFishMock).eat("red fish")
           OneOf (twoFishMock).eat("blue fish")
         }
@@ -61,6 +63,7 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
         val twoFishMock = mock[TwoFish]
 
         expecting { e => import e.{oneOf => OneOf}
+
           OneOf (oneFishMock).eat("red fish")
           OneOf (twoFishMock).eat("blue fish")
         }
@@ -85,6 +88,7 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
         val twoFishMock = mock[TwoFish]
 
         expecting { e => import e.{oneOf => OneOf}
+
           OneOf (oneFishMock).eat("red fish")
           OneOf (twoFishMock).eat("blue fish")
         }
@@ -123,6 +127,7 @@ class AsyncJMockCycleSpec extends FlatSpec with Matchers {
         val oneFishMock = mock[OneFish]
 
         expecting { e => import e.{oneOf => OneOf, withArg}
+
           OneOf (oneFishMock).doString(withArg(thatEquals("red fish")))
           OneOf (oneFishMock).doInt(withArg(thatEquals(5)))
           OneOf (oneFishMock).doShort(withArg(thatEquals(5.asInstanceOf[Short])))

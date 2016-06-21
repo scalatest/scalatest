@@ -15,9 +15,6 @@
 */
 package org.scalactic.anyvals
 
-import org.scalatest._
-import scala.collection.mutable.WrappedArray
-import OptionValues._
 //import org.scalactic.CheckedEquality._
 
 // Uncomment this test once we get the OddIntMacro

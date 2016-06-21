@@ -16,14 +16,14 @@
 package org.scalatest.junit {
 
   import org.scalatest._
-  import org.scalatest.events._
+import org.scalatest.events._
 
   // Put fixture suites in a subpackage, so they won't be discovered by
   // -m org.scalatest.junit when running the test target for this project.
   package helpers {
 
-    import _root_.org.junit.Test
     import _root_.org.junit.Ignore
+import _root_.org.junit.Test
 
     class HappySuite extends JUnitSuite {
 

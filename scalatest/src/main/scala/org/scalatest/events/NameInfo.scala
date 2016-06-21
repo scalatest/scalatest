@@ -15,7 +15,6 @@
  */
 package org.scalatest.events
 
-import org.scalatest._
 
 /**
  * Class that holds information about names for the <em>information events</em> <a href="InfoProvided.html"><code>InfoProvided</code></a>, <a href="MarkupProvided.html"><code>MarkupProvided</code></a>,

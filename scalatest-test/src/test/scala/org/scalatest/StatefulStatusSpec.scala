@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import scala.util.{Try, Success}
 import OptionValues._
+import scala.util.{Try, Success}
 
 class StatefulStatusSpec extends fixture.FunSpec {
 

@@ -15,13 +15,11 @@
  */
 package org.scalatest.enablers
 
+import Aggregating.tryEquality
 import org.scalactic.Equality
-import org.scalatest.words.ArrayWrapper
-import scala.collection.GenTraversable
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
-import scala.collection.JavaConverters._
-import Aggregating.tryEquality
+import scala.collection.GenTraversable
 
 /**
  * Supertrait for typeclasses that enable the <code>be readable</code> matcher syntax.

@@ -76,12 +76,12 @@ package org.scalatest.junit {
     }
   }
 
-  import org.junit.runner.JUnitCore
   import org.junit.runner.Description
-  import org.junit.runner.notification.Failure
-  import org.junit.runner.notification.RunNotifier
-  import org.scalatest.junit.helpers.EasySuite
-  import org.scalatest.junit.helpers.KerblooeySuite
+import org.junit.runner.JUnitCore
+import org.junit.runner.notification.Failure
+import org.junit.runner.notification.RunNotifier
+import org.scalatest.junit.helpers.EasySuite
+import org.scalatest.junit.helpers.KerblooeySuite
 
   class JUnitRunnerSuite extends FunSuite {
 

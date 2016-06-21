@@ -15,10 +15,7 @@
  */
 package org.scalatest.path
 
-import org.scalatest.words.BehaveWord
-import scala.collection.immutable.ListSet
 import org.scalatest._
-import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
  * A sister class to <code>org.scalatest.FreeSpec</code> that isolates tests by running each test in its own

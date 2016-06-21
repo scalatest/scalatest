@@ -15,8 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest._
-import java.io.File
 
 /**
  * Stackable trait that when mixed into a <code>Suite with ScreenshotCapturer</code> ensures a screenshot

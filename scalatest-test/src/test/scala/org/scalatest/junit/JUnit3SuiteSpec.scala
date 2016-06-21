@@ -19,7 +19,6 @@ import org.scalatest._
 import SharedHelpers._
 import collection.immutable.TreeSet
 import helpers._
-import org.scalatest.events._
 
 class JUnit3SuiteSpec extends FunSpec {
 

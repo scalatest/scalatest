@@ -17,7 +17,6 @@ package org.scalatest
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
-import org.scalatest.exceptions.TestFailedException
 
 import scala.reflect.ClassTag
 import org.scalactic.source

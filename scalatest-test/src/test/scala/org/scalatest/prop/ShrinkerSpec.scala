@@ -18,7 +18,6 @@ package org.scalatest.prop
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic.anyvals._
 
 class ShrinkerSpec extends FunSpec with Matchers {
   describe("A shrinker Stream") {

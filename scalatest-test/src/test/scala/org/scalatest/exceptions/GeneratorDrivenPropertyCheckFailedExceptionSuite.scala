@@ -16,7 +16,6 @@
 package org.scalatest
 package exceptions
 
-import org.scalatest.prop._
 import org.scalactic.source
 /* Uncomment this after removing the deprecated type aliases in the org.scalatest.prop package object
 import org.scalatest.exceptions.PropertyCheckFailedException

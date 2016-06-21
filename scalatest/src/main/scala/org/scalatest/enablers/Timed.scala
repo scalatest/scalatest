@@ -15,17 +15,12 @@
  */
 package org.scalatest.enablers
 
-import org.scalactic.{Bad, Good}
 import org.scalatest._
 import org.scalatest.concurrent.Signaler
 import org.scalatest.exceptions.StackDepthException
-import org.scalatest.exceptions.StackDepthExceptionHelper._
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestPendingException
-
+import org.scalactic.{Bad, Good}
 import scala.util.{Failure, Success}
+
 
 //import java.util.TimerTask
 //import java.util.Timer

@@ -15,13 +15,11 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.time.Span
-import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Resources
-import org.scalatest.exceptions.{TestPendingException, TestFailedException, TimeoutField}
-import org.scalatest.exceptions.TestCanceledException
-import scala.util.Success
+import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
+import org.scalatest.time.Span
 import scala.util.Failure
+import scala.util.Success
 
 /**
  * Provides an implicit conversion from <code>scala.concurrent.Future[T]</code> to

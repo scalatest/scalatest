@@ -15,23 +15,23 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
 import org.scalactic._
+import org.scalatest.matchers._
 import org.scalactic.TripleEqualsSupport.Spread
+import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.FailureMessages
 import org.scalatest.Resources
-import org.scalatest.UnquotedString
 import org.scalatest.Suite
-import org.scalatest.Assertions.areEqualComparingArraysStructurally
+import org.scalatest.UnquotedString
 // SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS-END
+import org.scalatest.enablers.Definition
+import org.scalatest.enablers.Emptiness
+import org.scalatest.enablers.Readability
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.Sortable
-import org.scalatest.enablers.Readability
 import org.scalatest.enablers.Writability
-import org.scalatest.enablers.Emptiness
-import org.scalatest.enablers.Definition
 import org.scalatest.exceptions.NotAllowedException
 
 /**

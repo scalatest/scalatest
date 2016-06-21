@@ -16,7 +16,6 @@
 package org.scalactic.anyvals
 
 import reflect.macros.Context
-import org.scalactic.Resources
 import CompileTimeAssertions._
 
 private[scalactic] object DigitCharMacro {

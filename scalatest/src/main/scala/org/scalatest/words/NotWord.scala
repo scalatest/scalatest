@@ -15,26 +15,26 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
-import org.scalatest.enablers._
-import scala.collection.GenTraversable
 import org.scalactic._
-import org.scalactic.TripleEqualsSupport.Spread
-import TripleEqualsSupport.TripleEqualsInvocation
+import org.scalatest.enablers._
+import org.scalatest.matchers._
 import org.scalatest._
+import org.scalactic.TripleEqualsSupport.Spread
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
+import scala.collection.GenTraversable
+import TripleEqualsSupport.TripleEqualsInvocation
 // SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS-END
-import scala.annotation.tailrec
-import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
-import org.scalatest.MatchersHelper.startWithRegexWithGroups
-import org.scalatest.MatchersHelper.endWithRegexWithGroups
-import org.scalatest.MatchersHelper.includeRegexWithGroups
-import org.scalatest.Suite.getObjectsForFailureMessage
 import org.scalatest.FailureMessages
-import org.scalatest.UnquotedString
+import org.scalatest.MatchersHelper.endWithRegexWithGroups
+import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
+import org.scalatest.MatchersHelper.includeRegexWithGroups
+import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.Resources
+import org.scalatest.Suite.getObjectsForFailureMessage
+import org.scalatest.UnquotedString
+import scala.annotation.tailrec
 import org.scalatest.exceptions.NotAllowedException
 
 /**

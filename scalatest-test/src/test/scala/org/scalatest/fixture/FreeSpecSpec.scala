@@ -17,20 +17,20 @@ package org.scalatest.fixture
 
 import org.scalatest._
 import SharedHelpers._
+import org.scalactic.Prettifier
 import events.TestFailed
-import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.TestCanceledException
-import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.events.InfoProvided
-import java.lang.annotation.AnnotationFormatError
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
-import org.scalatest.exceptions.NotAllowedException
 import org.scalactic.exceptions.NullArgumentException
-import org.scalactic.Prettifier
+import org.scalatest.events.InfoProvided
+import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.NotAllowedException
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.exceptions.TestRegistrationClosedException
 
 class FreeSpecSpec extends org.scalatest.FunSpec {
 

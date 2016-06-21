@@ -15,10 +15,7 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.SharedHelpers.EventRecordingReporter
-import org.scalatest._
 
-import scala.concurrent.Future
 
 /*
 class AsyncFixturesSpec extends org.scalatest.FunSpec {

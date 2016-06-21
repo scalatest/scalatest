@@ -15,10 +15,9 @@
  */
 package org.scalatest
 
-import java.util.concurrent.atomic.AtomicInteger
-
-import events._
 import SharedHelpers._
+import events._
+import java.util.concurrent.atomic.AtomicInteger
 import org.scalactic.exceptions.NullArgumentException
 
 class TopLevelSpec extends FunSpec with OneInstancePerTest {

@@ -15,9 +15,7 @@
  */
 package org.scalatest.jmock
 
-import org.scalatest._
-import org.jmock.api.ExpectationError
-import org.jmock.{Expectations, Mockery}
+import org.jmock.Mockery
 import org.jmock.lib.legacy.ClassImposteriser
 import scala.reflect.ClassTag
 

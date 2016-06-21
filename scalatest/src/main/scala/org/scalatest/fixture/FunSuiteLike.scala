@@ -16,9 +16,9 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import scala.collection.immutable.ListSet
-import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalactic.source
+import org.scalatest.Suite.autoTagClassAnnotations
+import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>fixture.FunSuite</code>, which is

@@ -15,12 +15,12 @@
  */
 package org.scalatest
 // SKIP-SCALATESTJS-START
+import org.junit.Test
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
-import org.junit.Test
-import org.testng.annotations.{Test => TestNG }
-import org.scalatest.testng.TestNGSuite
 import org.scalatest.refspec.RefSpec
+import org.scalatest.testng.TestNGSuite
+import org.testng.annotations.{Test => TestNG }
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
 

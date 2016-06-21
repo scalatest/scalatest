@@ -15,12 +15,12 @@
  */
 package org.scalatest.tools {
 
-import org.scalatest.{FunSuite, Outcome, DispatchReporter, Resources, Retries}
-import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => TestingRunner}
+import java.io.File
 import org.scalatest.SharedHelpers.{EventRecordingReporter, createTempDirectory}
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.tagobjects.Retryable
-import java.io.File
+import org.scalatest.{FunSuite, Outcome, DispatchReporter, Resources, Retries}
+import org.scalatools.testing.{Event, EventHandler, Result, Logger, Runner => TestingRunner}
 
   // testing runner.run:
   // def run(testClassName: String, fingerprint: TestFingerprint, args: Array[String]): Array[Event]

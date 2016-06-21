@@ -16,27 +16,27 @@
 package org.scalatest
 package fixture
 
-import scala.reflect.NameTransformer.encode
+import org.scalatest.SharedHelpers._
+import org.scalatest.SharedHelpers._
+import org.scalatest.Suite._
 import org.scalatest.events._
 import org.scalatest.exceptions._
-import collection.immutable.TreeSet
-import org.scalatest.Suite._
+import org.scalactic.Prettifier
 import org.scalatest.{ PrivateMethodTester, Matchers, BeforeAndAfterEach, BeforeAndAfterAll,
                         Filter, Args, Stopper, Tracker, Ignore, SlowAsMolasses, FastAsLight, WeakAsAKitten, 
                         Reporter, Distributor, OptionValues, Resources, DoNotDiscover, WrapWith, Suites,
                         ConfigMapWrapperSuite, StringFixture, Status, SucceededStatus, ConfigMap, Outcome, FailureMessages,
                         UnquotedString }
-import org.scalatest.SharedHelpers._
-import org.scalatest.Suite.CHOSEN_STYLES
-import org.scalatest.exceptions.DuplicateTestNameException
-import org.scalatest.SharedHelpers._
-import org.scalactic.exceptions.NullArgumentException
-import java.lang.annotation.AnnotationFormatError
+import collection.immutable.TreeSet
 import java.awt.AWTError
+import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
-import org.scalactic.Prettifier
+import org.scalactic.exceptions.NullArgumentException
+import org.scalatest.Suite.CHOSEN_STYLES
+import org.scalatest.exceptions.DuplicateTestNameException
+import scala.reflect.NameTransformer.encode
 
 class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
 

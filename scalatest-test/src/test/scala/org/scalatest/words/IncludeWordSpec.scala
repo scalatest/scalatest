@@ -16,7 +16,6 @@
 package org.scalatest.words
 
 import org.scalatest._
-import Matchers._
 
 class IncludeWordSpec extends FreeSpec with Matchers {
   

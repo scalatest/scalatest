@@ -15,20 +15,20 @@
  */
 package org.scalatest
 
-import scala.collection.mutable.ListBuffer
 import org.scalatest.prop.TableDrivenPropertyChecks._
-import org.scalatest.tools.SuiteSortingReporter
-import org.scalatest.time.Span
-import org.scalatest.events.SuiteStarting
 import org.scalatest.events.SuiteCompleted
+import org.scalatest.events.SuiteStarting
 import org.scalatest.time.Millis
+import org.scalatest.time.Span
+import org.scalatest.tools.SuiteSortingReporter
+import scala.collection.mutable.ListBuffer
 // SKIP-SCALATESTJS-START
 import org.scalatest.concurrent.Eventually._
 // SKIP-SCALATESTJS-END
-import org.scalatest.tools.DistributedTestRunnerSuite
-import SharedHelpers._
 import org.scalatest.Retries._
+import SharedHelpers._
 import org.scalatest.tagobjects.Retryable
+import org.scalatest.tools.DistributedTestRunnerSuite
 
 class ParallelTestExecutionProp extends FunSuite {
 

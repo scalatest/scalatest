@@ -15,26 +15,26 @@
  */
 package org.scalatest.junit
 
-import collection.immutable.TreeSet
-import java.lang.reflect.{Method, Modifier}
 import org.scalatest._
-import _root_.junit.framework.TestCase
-import _root_.junit.framework.TestResult
-import _root_.junit.framework.TestSuite
-import _root_.junit.framework.TestListener
-import _root_.junit.framework.Test
-import _root_.junit.framework.AssertionFailedError
-import scala.collection.mutable.HashSet
-import org.scalatest.events.TestStarting
-import org.scalatest.events.TestSucceeded
-import org.scalatest.events.TestFailed
-import org.scalatest.events.MotionToSuppress
-import org.scalactic.Requirements._
-import Suite.getIndentedTextForTest
 import org.scalatest.events._
 import exceptions._
+import org.scalactic.Requirements._
+import Suite.getIndentedTextForTest
 import Suite.wrapReporterIfNecessary
+import _root_.junit.framework.AssertionFailedError
+import _root_.junit.framework.Test
+import _root_.junit.framework.TestCase
+import _root_.junit.framework.TestListener
+import _root_.junit.framework.TestResult
+import _root_.junit.framework.TestSuite
+import collection.immutable.TreeSet
+import java.lang.reflect.{Method, Modifier}
 import org.scalactic.source
+import org.scalatest.events.MotionToSuppress
+import org.scalatest.events.TestFailed
+import org.scalatest.events.TestStarting
+import org.scalatest.events.TestSucceeded
+import scala.collection.mutable.HashSet
 
 /**
  * A <code>Suite</code> that is also a <code>junit.framework.TestCase</code>. 

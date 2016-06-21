@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import org.scalatest.exceptions.TestFailedException
 import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.exceptions.TestFailedException
 
 /*
 This has a bit of redundancy with several other specs, but was the

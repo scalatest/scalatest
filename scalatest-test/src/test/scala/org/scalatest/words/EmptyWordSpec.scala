@@ -16,7 +16,6 @@
 package org.scalatest.words
 
 import org.scalatest._
-import Matchers._
 
 class EmptyWordSpec extends FunSpec with Matchers {
   

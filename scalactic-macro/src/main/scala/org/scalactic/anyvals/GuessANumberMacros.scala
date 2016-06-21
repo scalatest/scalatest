@@ -16,7 +16,6 @@
 package org.scalactic.anyvals
 
 import reflect.macros.Context
-import org.scalactic.Resources
 
 private[scalactic] object GuessANumberMacro extends CompileTimeAssertions {
   def apply(c: Context)(value: c.Expr[Int]): c.Expr[GuessANumber] = {

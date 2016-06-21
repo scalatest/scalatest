@@ -21,7 +21,6 @@ import scala.util.Failure
 import scala.util.Success
 import Assertions.NormalResult
 import org.scalatest.exceptions.TestCanceledException
-import OptionValues._
 import java.util.Date
 import org.scalactic.Prettifier
 import org.scalactic.exceptions.NullArgumentException

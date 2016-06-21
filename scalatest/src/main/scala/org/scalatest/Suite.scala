@@ -15,39 +15,39 @@
  */
 package org.scalatest
 
+import org.scalactic._
+import org.scalatest.events._
+import Requirements._
+import exceptions._
 import java.lang.annotation.AnnotationFormatError
 import java.lang.reflect.{Method, Modifier}
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
-import Suite.formatterForSuiteStarting
-import Suite.formatterForSuiteCompleted
-import Suite.checkChosenStyles
-import Suite.formatterForSuiteAborted
-import Suite.getSimpleNameOfAnObjectsClass
-import Suite.takesInformer
-import Suite.isTestMethodGoodies
+import org.scalactic.Prettifier
 import org.scalatest.time.{Seconds, Span}
 import scala.collection.immutable.TreeSet
-import Suite.getEscapedIndentedTextForTest
-import org.scalatest.events._
-import Suite.reportTestIgnored
-import Suite.wrapReporterIfNecessary
-import exceptions._
-import StackDepthExceptionHelper.getStackDepthFun
-import collection.mutable.ListBuffer
-import collection.GenTraversable
-import annotation.tailrec
-import org.scalactic.Prettifier
 import scala.util.control.NonFatal
+import StackDepthExceptionHelper.getStackDepthFun
+import Suite.checkChosenStyles
+import Suite.formatterForSuiteAborted
+import Suite.formatterForSuiteCompleted
+import Suite.formatterForSuiteStarting
+import Suite.getEscapedIndentedTextForTest
+import Suite.getSimpleNameOfAnObjectsClass
 import Suite.getTopOfMethod
-import org.scalactic._
-import Requirements._
+import Suite.isTestMethodGoodies
+import Suite.reportTestIgnored
+import Suite.takesInformer
+import Suite.wrapReporterIfNecessary
+import annotation.tailrec
+import collection.GenTraversable
+import collection.mutable.ListBuffer
 
 // SKIP-SCALATESTJS-START
-import tools.SuiteDiscoveryHelper
-import org.scalatest.tools.StandardOutReporter
 import Suite.getTopOfClass
+import org.scalatest.tools.StandardOutReporter
+import tools.SuiteDiscoveryHelper
 // SKIP-SCALATESTJS-END
 
 /*

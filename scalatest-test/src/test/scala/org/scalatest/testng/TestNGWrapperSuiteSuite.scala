@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 import org.scalatest._
-import org.scalatest.testng._
 import org.scalatest.jmock._
 import java.io.File
 import org.apache.commons.io.FileUtils
-import org.jmock.Mockery
 import org.jmock.Expectations
+import org.jmock.Mockery
 import org.scalatest.events.Ordinal
 
 package org.scalatest.testng {

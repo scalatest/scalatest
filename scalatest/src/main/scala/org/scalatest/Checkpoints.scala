@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalatest.exceptions.StackDepthException
 
-import scala.collection.JavaConverters._
 import org.scalatest.exceptions._
 import org.scalactic._
 

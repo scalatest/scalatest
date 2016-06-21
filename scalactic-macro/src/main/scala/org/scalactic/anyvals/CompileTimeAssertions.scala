@@ -15,8 +15,8 @@
 */
 package org.scalactic.anyvals
 
-import reflect.macros.Context
 import org.scalactic.Resources
+import reflect.macros.Context
 
 /**
  * Trait providing assertion methods that can be called at compile time from macros

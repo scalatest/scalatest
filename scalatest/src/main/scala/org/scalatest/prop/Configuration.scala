@@ -16,8 +16,9 @@
 package org.scalatest.prop
 
 import org.scalacheck.Test.Parameters
-import org.scalacheck.Test.TestCallback
 import org.scalactic.anyvals.{PosZInt, PosZDouble, PosInt}
+import org.scalacheck.Test.TestCallback
+
 
 /**
  * Trait providing methods and classes used to configure property checks provided by the
