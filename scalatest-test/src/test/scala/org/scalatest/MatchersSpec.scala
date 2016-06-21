@@ -291,5 +291,4 @@ class MatchersSpec extends FunSpec {
       }
     }
   }
-  
 }

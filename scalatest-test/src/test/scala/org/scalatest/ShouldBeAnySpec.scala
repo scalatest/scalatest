@@ -217,5 +217,12 @@ class ShouldBeAnySpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
       }
       assert(e.message == Some("!!! test [1] !!! was not equal to !!! test [2] !!!"))
     }
+    it("should produce TestFailedExceptions that can be serialized") {
+      import scala.util.Try
+      val result = Try(1 shouldBe 2)
+      val baos = new java.io.ByteArrayOutputStream
+      val oos = new java.io.ObjectOutputStream(baos)
+      oos.writeObject(result) // Should not throw an exeption
+    }
   }
 }

@@ -121,7 +121,7 @@ import scala.xml
  * custom one when a test actually fails.
  * </p>
  */
-trait Prettifier { // I removed the extends (Any => String), now that we are making this implicit.
+trait Prettifier extends Serializable { // I removed the extends (Any => String), now that we are making this implicit.
   /**
    * Prettifies the passed object.
    */
