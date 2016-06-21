@@ -844,6 +844,42 @@ class AsyncFunSpecLikeSpec extends FunSpec {
       assert(markupProvided.text == "hi there")
     }
 
+    it("should allow other execution context to be used") {
+      class TestSpec extends AsyncFunSpecLike {
+        // SKIP-SCALATESTJS-START
+        override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        val a = 1
+        describe("feature 1") {
+          it("test A") {
+            Future { assert(a == 1) }
+          }
+        }
+        describe("feature 2") {
+          it("test B") {
+            Future { assert(a == 1) }
+          }
+        }
+        describe("group3") {
+          it("test C") {
+            Future { assert(a == 1) }
+          }
+        }
+      }
+      val suite = new TestSpec
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+      assert(reporter.scopeOpenedEventsReceived.length == 3)
+      assert(reporter.scopeClosedEventsReceived.length == 3)
+      assert(reporter.testStartingEventsReceived.length == 3)
+      assert(reporter.testSucceededEventsReceived.length == 3)
+    }
+
   }
 
 }

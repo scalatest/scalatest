@@ -844,6 +844,42 @@ class AsyncFeatureSpecSpec2 extends AsyncFunSpec {
       }
     }
 
+    it("should allow other execution context to be used") {
+      class TestSpec extends AsyncFeatureSpec {
+        // SKIP-SCALATESTJS-START
+        override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        val a = 1
+        feature("feature 1") {
+          scenario("scenario A") {
+            Future { assert(a == 1) }
+          }
+        }
+        feature("feature 2")  {
+          scenario("scenario B") {
+            Future { assert(a == 1) }
+          }
+        }
+        feature("group3") {
+          scenario("test C") {
+            Future { assert(a == 1) }
+          }
+        }
+      }
+      val suite = new TestSpec
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+      val promise = Promise[EventRecordingReporter]
+      status whenCompleted { _ => promise.success(reporter) }
+      promise.future.map { r =>
+        assert(reporter.scopeOpenedEventsReceived.length == 3)
+        assert(reporter.scopeClosedEventsReceived.length == 3)
+        assert(reporter.testStartingEventsReceived.length == 3)
+        assert(reporter.testSucceededEventsReceived.length == 3)
+      }
+    }
+
   }
 
 }

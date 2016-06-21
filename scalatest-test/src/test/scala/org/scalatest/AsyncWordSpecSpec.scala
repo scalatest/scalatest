@@ -1061,6 +1061,42 @@ class AsyncWordSpecSpec extends FunSpec {
       assert(cause.getMessage == FailureMessages.duplicateTestName(prettifier, UnquotedString("a feature can test 1")))
     }
 
+    it("should allow other execution context to be used") {
+      class TestSpec extends AsyncWordSpec {
+        // SKIP-SCALATESTJS-START
+        override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+        val a = 1
+        "feature 1" should {
+          "test A" in {
+            Future { assert(a == 1) }
+          }
+        }
+        "feature 2" should {
+          "test B" in {
+            Future { assert(a == 1) }
+          }
+        }
+        "feature 3" should {
+          "test C" in {
+            Future { assert(a == 1) }
+          }
+        }
+      }
+      val suite = new TestSpec
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+      assert(reporter.scopeOpenedEventsReceived.length == 3)
+      assert(reporter.scopeClosedEventsReceived.length == 3)
+      assert(reporter.testStartingEventsReceived.length == 3)
+      assert(reporter.testSucceededEventsReceived.length == 3)
+    }
+
   }
 
 }

@@ -413,32 +413,15 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     args: Args,
     includeIcon: Boolean,
     parallelAsyncTestExecution: Boolean,
+    initStatusList: List[Status],
     runTest: (String, Args) => Status
-  ): Status = {
+  ): List[Status] = {
 
     import args.stopper
-    
-    // TODO: Inspect this and make sure it does not need synchronization, and either way, document why.
-    val statusList = new ListBuffer[Status]()
 
-    branch match {
-
-      case desc @ DescriptionBranch(parent, descriptionText, _, lineInFile) =>
-
-        val descriptionTextWithOptionalPrefix = prependChildPrefix(parent, descriptionText)
-        val indentationLevel = desc.indentationLevel
-        reportScopeOpened(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
-        traverseSubNodes()
-        if (desc.pending) 
-          reportScopePending(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
-        else 
-          reportScopeClosed(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
-      case Trunk =>
-        traverseSubNodes()
-    }
-
-    def traverseSubNodes(): Unit = {
-      branch.subNodes.reverse.foreach { node =>
+    def traverseSubNodes(): List[Status] = {
+      //branch.subNodes.reverse.flatMap { node =>
+      branch.subNodes.reverse.foldLeft(initStatusList) { case (statusList, node) =>
         if (!stopper.stopRequested) {
           node match {
             case testLeaf @ TestLeaf(_, testName, testText, _, _, _, _) =>
@@ -448,36 +431,62 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
                   val testTextWithOptionalPrefix = prependChildPrefix(branch, testText)
                   val theTest = atomic.get.testsMap(testName)
                   reportTestIgnored(theSuite, args.reporter, args.tracker, testName, testTextWithOptionalPrefix, getIndentedTextForTest(testTextWithOptionalPrefix, testLeaf.indentationLevel, true), theTest.location)
+                  statusList
                 }
                 else {
-                  statusList += {
+                  statusList ::: List(
                     if (parallelAsyncTestExecution || statusList.isEmpty) {
                       runTest(testName, args) // Even if serial async test execution (i.e., not parallelAsyncTestExection), first time still just go for it
                     }
                     else {
                       statusList.last thenRun runTest(testName, args)  // Only if serial async test execution (i.e., not parallelAsyncTestExecution), after first Status
                     }
-                  }
+                  )
                 }
+              else
+                statusList
 
             case infoLeaf @ InfoLeaf(_, message, payload, location) =>
               reportInfoProvided(theSuite, args.reporter, args.tracker, None, message, payload, infoLeaf.indentationLevel, location, true, includeIcon)
+              statusList
 
             case noteLeaf @ NoteLeaf(_, message, payload, location) =>
               reportNoteProvided(theSuite, args.reporter, args.tracker, None, message, payload, noteLeaf.indentationLevel, location, true, includeIcon)
+              statusList
 
             case alertLeaf @ AlertLeaf(_, message, payload, location) =>
               reportAlertProvided(theSuite, args.reporter, args.tracker, None, message, payload, alertLeaf.indentationLevel, location, true, includeIcon)
+              statusList
 
             case markupLeaf @ MarkupLeaf(_, message, location) =>
               reportMarkupProvided(theSuite, args.reporter, args.tracker, None, message, markupLeaf.indentationLevel, location, true, includeIcon)
+              statusList
 
-            case branch: Branch => statusList += runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, runTest)
+            case branch: Branch => runTestsInBranch(theSuite, branch, args, includeIcon, parallelAsyncTestExecution, statusList, runTest)
           }
         }
+        else
+          statusList
       }
     }
-    new CompositeStatus(Set.empty ++ statusList)
+
+    branch match {
+
+      case desc @ DescriptionBranch(parent, descriptionText, _, lineInFile) =>
+
+        val descriptionTextWithOptionalPrefix = prependChildPrefix(parent, descriptionText)
+        val indentationLevel = desc.indentationLevel
+        reportScopeOpened(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
+        val statusList = traverseSubNodes()
+        if (desc.pending)
+          reportScopePending(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
+        else
+          reportScopeClosed(theSuite, args.reporter, args.tracker, descriptionTextWithOptionalPrefix, indentationLevel, false, lineInFile)
+        statusList
+
+      case Trunk =>
+        traverseSubNodes()
+    }
   }
 
   def prependChildPrefix(branch: Branch, testText: String): String =
@@ -524,25 +533,28 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
     val report = Suite.wrapReporterIfNecessary(theSuite, reporter)
     val newArgs = if (report eq reporter) args else args.copy(reporter = report)
     
-    val statusBuffer = new ListBuffer[Status]()
+    val statusList: List[Status] =
+      // If a testName is passed to run, just run that, else run the tests returned
+      // by testNames.
+      testName match {
+        case Some(tn) =>
+          val (filterTest, ignoreTest) = filter(tn, theSuite.tags, theSuite.suiteId)
+          if (!filterTest) {
+            if (ignoreTest) {
+              val theTest = atomic.get.testsMap(tn)
+              reportTestIgnored(theSuite, report, tracker, tn, tn, getIndentedTextForTest(tn, 1, true), theTest.location)
+              List.empty
+            }
+            else {
+              List(runTest(tn, newArgs))
+            }
+          }
+          else
+            List.empty
 
-    // If a testName is passed to run, just run that, else run the tests returned
-    // by testNames.
-    testName match {
-      case Some(tn) =>
-        val (filterTest, ignoreTest) = filter(tn, theSuite.tags, theSuite.suiteId)
-        if (!filterTest) {
-          if (ignoreTest) {
-            val theTest = atomic.get.testsMap(tn)
-            reportTestIgnored(theSuite, report, tracker, tn, tn, getIndentedTextForTest(tn, 1, true), theTest.location)
-          }
-          else {
-            statusBuffer += runTest(tn, newArgs)
-          }
-        }
-      case None => statusBuffer += runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, runTest)
-    }
-    new CompositeStatus(Set.empty ++ statusBuffer)
+        case None => runTestsInBranch(theSuite, Trunk, newArgs, includeIcon, parallelAsyncTestExecution, List.empty, runTest)
+      }
+    new CompositeStatus(Set.empty ++ statusList)
   }
 
   def runImpl(

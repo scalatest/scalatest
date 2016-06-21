@@ -840,6 +840,39 @@ class AsyncFunSuiteSpec extends org.scalatest.FunSpec {
       assert(!e.cause.isDefined)
     }
 
+    it("should allow other execution context to be used") {
+      class TestSpec extends AsyncFunSuite {
+        // SKIP-SCALATESTJS-START
+        override implicit val executionContext = scala.concurrent.ExecutionContext.Implicits.global
+        // SKIP-SCALATESTJS-END
+        // SCALATESTJS-ONLY override implicit val executionContext = scala.scalajs.concurrent.JSExecutionContext.runNow
+
+        type FixtureParam = String
+        def withFixture(test: OneArgAsyncTest): FutureOutcome =
+          test("testing")
+
+        val a = 1
+        test("test A") { fixture =>
+          Future { assert(a == 1) }
+        }
+        test("test B") { fixture =>
+          Future { assert(a == 1) }
+        }
+        test("test C") { fixture =>
+          Future { assert(a == 1) }
+        }
+      }
+      val suite = new TestSpec
+      val reporter = new EventRecordingReporter
+      val status = suite.run(None, Args(reporter))
+
+      // SKIP-SCALATESTJS-START
+      status.waitUntilCompleted()
+      // SKIP-SCALATESTJS-END
+      assert(reporter.testStartingEventsReceived.length == 3)
+      assert(reporter.testSucceededEventsReceived.length == 3)
+    }
+
   }
 
 }
