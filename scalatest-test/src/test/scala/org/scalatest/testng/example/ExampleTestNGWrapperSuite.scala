@@ -15,7 +15,6 @@
  */
 package org.scalatest.testng.example
 
-import org.scalatest._
 import org.scalatest.testng._
 import org.scalatest.testng.TestNGWrapperSuite
 

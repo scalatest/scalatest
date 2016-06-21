@@ -16,8 +16,6 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import scala.collection.immutable.ListSet
-import org.scalatest.Suite.autoTagClassAnnotations
 
 /**
  * A sister class to <code>org.scalatest.FunSuite</code> that can pass a fixture object into its tests.

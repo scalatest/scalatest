@@ -16,9 +16,9 @@
 package org.scalatest
 
 import org.scalatest.junit._
-import org.scalatest.testng.TestNGSuite
 import org.junit.Test
 import org.scalatest.refspec.RefSpec
+import org.scalatest.testng.TestNGSuite
 
 class ClassTaggingProp extends AllSuiteProp {
 

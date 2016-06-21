@@ -15,15 +15,15 @@
  */
 package org.scalatest
 
+import Matchers._
 import SharedHelpers._
 import org.scalatest.events._
-import Matchers._
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.exceptions.DuplicateTestNameException
 import org.scalatest.exceptions.DuplicateTestNameException
+import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.TestRegistrationClosedException
-import org.scalatest.exceptions.NotAllowedException
-import org.scalactic.exceptions.NullArgumentException
 
 class FlatSpecSpec extends FunSpec with GivenWhenThen {
 

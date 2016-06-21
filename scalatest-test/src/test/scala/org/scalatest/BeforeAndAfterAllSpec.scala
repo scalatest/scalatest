@@ -15,12 +15,11 @@
  */
 package org.scalatest
 
+import Matchers._
 import SharedHelpers._
 import java.util.concurrent.atomic.AtomicInteger
-import Matchers._
-import concurrent.SleepHelper
-
 import scala.compat.Platform
+import concurrent.SleepHelper
 
 class BeforeAndAfterAllSpec extends FunSpec {
   

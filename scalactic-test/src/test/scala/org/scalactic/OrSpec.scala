@@ -15,11 +15,10 @@
  */
 package org.scalactic
 
-import java.text._
 import org.scalatest._
-import scala.util.Try
-import scala.util.Success
 import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
 // SKIP-SCALATESTJS-START
 import SharedHelpers.serializeRoundtrip
 // SKIP-SCALATESTJS-END

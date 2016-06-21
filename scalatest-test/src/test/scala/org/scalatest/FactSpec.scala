@@ -16,14 +16,15 @@
 package org.scalatest
 
 
-import org.scalactic.PrettyMethods
-import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.TestCanceledException
-import SharedHelpers.thisLineNumber
 import Fact._
 import prop.TableDrivenPropertyChecks._
-import prop.TableFor1
+import org.scalactic.PrettyMethods
+import SharedHelpers.thisLineNumber
 import matchers.{ FailureMessage, NegatedFailureMessage, MidSentenceFailureMessage, MidSentenceNegatedFailureMessage }
+import org.scalatest.exceptions.TestCanceledException
+import org.scalatest.exceptions.TestFailedException
+import prop.TableFor1
+
 
 /*
 No(

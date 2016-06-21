@@ -16,10 +16,10 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import scala.collection.immutable.ListSet
-import org.scalatest.Suite.autoTagClassAnnotations
-import scala.concurrent.Future
 import org.scalactic.source
+import scala.concurrent.Future
+import org.scalatest.Suite.autoTagClassAnnotations
+import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>fixture.AsyncFunSuite</code>, which is

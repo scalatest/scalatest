@@ -17,9 +17,6 @@ package org.scalatest.matchers
 
 import org.scalatest._
 import org.scalatest.prop.Checkers
-import org.scalacheck._
-import Arbitrary._
-import Prop._
 import org.scalatest.exceptions.TestRegistrationClosedException
 
 class ShouldBehaveLikeSpec extends FunSpec {

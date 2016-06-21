@@ -15,17 +15,16 @@
  */
 package org.scalatest.junit;
 
-import collection.immutable.TreeSet
-import java.lang.reflect.{Method, Modifier}
-import org.junit.runner.{Request, JUnitCore, Description, Result}
 import org.scalatest._
-import org.scalatest.Suite
-import org.junit.runner.notification.RunListener
+import java.lang.reflect.{Method, Modifier}
 import org.junit.runner.notification.Failure
-import org.scalatest.events._
+import org.junit.runner.notification.RunListener
+import org.junit.runner.{Request, JUnitCore, Description, Result}
+import org.scalactic.source
+import org.scalatest.Suite
 import org.scalatest.Suite.autoTagClassAnnotations
 import Suite.wrapReporterIfNecessary
-import org.scalactic.source
+import collection.immutable.TreeSet
 
 /**
  * Implementation trait for class <code>JUnitSuite</code>, which represents

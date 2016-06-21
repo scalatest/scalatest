@@ -16,8 +16,7 @@
 package org.scalatest.fixture
 
 import org.scalactic._
-import org.scalatest.OutcomeOf._
-import org.scalatest.{AsyncOutcome, Tag}
+import org.scalatest.Tag
 import scala.concurrent.Future
 import org.scalatest.compatible
 

@@ -15,16 +15,15 @@
  */
 package org.scalatest
 
-import exceptions.TestCanceledException
-import exceptions.TestPendingException
-import exceptions.StackDepthException
-import scala.reflect.ClassTag
-import Assertions.areEqualComparingArraysStructurally
-import exceptions.StackDepthException.toExceptionFunction
-import Assertions.NormalResult
-import exceptions.TestFailedException
 import org.scalactic._
 import Requirements._
+import scala.reflect.ClassTag
+import Assertions.NormalResult
+import Assertions.areEqualComparingArraysStructurally
+import exceptions.StackDepthException
+import exceptions.StackDepthException.toExceptionFunction
+import exceptions.TestFailedException
+import exceptions.TestPendingException
 
 /**
  * Trait that contains ScalaTest's basic assertion methods.

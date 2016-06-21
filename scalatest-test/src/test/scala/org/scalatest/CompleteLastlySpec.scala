@@ -15,18 +15,16 @@
  */
 package org.scalatest
 
-import scala.concurrent.Promise
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
-import scala.util.Success
-import scala.util.Failure
-import org.scalactic.Good
 import org.scalactic.Bad
+import org.scalactic.Good
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.Promise
+import scala.util.Failure
+import scala.util.Success
 // SKIP-SCALATESTJS-START
-import org.scalatest.concurrent.Eventually._
 // SKIP-SCALATESTJS-END
 import org.scalatest.OutcomeOf.outcomeOf
-import org.scalatest.concurrent.ScalaFutures._
 
 class CompleteLastlySpec extends AsyncFunSpec {
 

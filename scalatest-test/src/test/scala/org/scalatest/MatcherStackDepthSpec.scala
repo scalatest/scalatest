@@ -20,7 +20,6 @@ import matchers.BePropertyMatcher
 import matchers.BePropertyMatchResult
 import matchers.BeMatcher
 import matchers.MatchResult
-import org.scalactic.Explicitly._
 import org.scalactic.StringNormalizations._
 import org.scalatest.Inspectors._
 import collection.JavaConverters._

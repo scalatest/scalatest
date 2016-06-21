@@ -15,8 +15,6 @@
  */
 package org.scalatest.prop
 
-import org.scalatest.Assertion
-import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.enablers.WheneverAsserting
 
 /**

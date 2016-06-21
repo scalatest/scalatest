@@ -15,10 +15,10 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.time.{Span, Millis}
 import org.scalatest._
 import SharedHelpers._
 import org.scalatest.exceptions.TestFailedDueToTimeoutException
+import org.scalatest.time.{Span, Millis}
 
 class DeprecatedTimeLimitedTestsSpec extends FunSpec with Matchers with SeveredStackTraces {
   describe("A time-limited test") {

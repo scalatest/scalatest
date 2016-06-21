@@ -15,8 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest._
-import java.io.File
 
 /**
  * Trait containing one abstract method that can capture a screenshot and save it as a file to a given directory.

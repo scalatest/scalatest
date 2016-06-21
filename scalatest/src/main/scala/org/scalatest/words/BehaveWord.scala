@@ -15,7 +15,6 @@
  */
 package org.scalatest.words
 
-import org.scalatest._
 
 /**
  * Class that supports shared test registration via instances referenced from the <code>behave</code> field of <code>FunSpec</code>s,

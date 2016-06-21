@@ -16,6 +16,7 @@
 package org.scalatest
 
 import SharedHelpers.{createTempDirectory, thisLineNumber}
+
 // SKIP-SCALATESTJS-START
 import java.io.File
 // SKIP-SCALATESTJS-END

@@ -16,8 +16,8 @@
 package org.scalatest.words
 
 import org.scalatest._
-import SharedHelpers.createTempDirectory
 import Matchers._
+import SharedHelpers.createTempDirectory
 import matchers.{BePropertyMatcher, 
                  BePropertyMatchResult, 
                  AMatcher, 
@@ -27,6 +27,7 @@ import matchers.{BePropertyMatcher,
 import matchers.{NegatedFailureMessage, 
                  MidSentenceFailureMessage, 
                  MidSentenceNegatedFailureMessage}
+
 // SKIP-SCALATESTJS-START
 import java.io.File
 // SKIP-SCALATESTJS-END

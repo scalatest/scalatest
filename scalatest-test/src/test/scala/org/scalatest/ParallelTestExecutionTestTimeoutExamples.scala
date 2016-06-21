@@ -16,10 +16,10 @@
 package org.scalatest
 
 import org.scalatest.events.Event
-import org.scalatest.time.Span
-import org.scalatest.time.Millis
 import org.scalatest.prop.Tables
+import org.scalatest.time.Span
 import org.scalatest.events.TestSucceeded
+import org.scalatest.time.Millis
 import org.scalatest.tools.TestSortingReporter
 // SKIP-SCALATESTJS-START
 import org.scalatest.refspec.RefSpec

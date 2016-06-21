@@ -15,19 +15,12 @@
  */
 package org.scalatest.prop
 
-import org.scalatest._
-import org.scalatest.Suite
 import org.scalatest.enablers.CheckerAsserting
 import org.scalacheck.Arbitrary
 import org.scalacheck.Shrink
 import org.scalacheck.util.Pretty
-import org.scalacheck.Prop.Arg
 import org.scalacheck.Prop
 import org.scalacheck.Test
-import org.scalatest.exceptions.StackDepth
-import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
-import org.scalacheck.Test.Parameters
-import org.scalacheck.Test.TestCallback
 import org.scalactic._
 
 /**

@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest._
 import events.{SuiteCompleted, Event}
 
 /*

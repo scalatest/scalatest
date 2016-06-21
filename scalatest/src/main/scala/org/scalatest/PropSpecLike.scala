@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import Suite.autoTagClassAnnotations
 import org.scalactic._
+import Suite.autoTagClassAnnotations
+import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>PropSpec</code>, which represents

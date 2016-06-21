@@ -19,8 +19,8 @@ import org.scalatest.events.Ordinal
 // SKIP-SCALATESTJS-START
 import org.scalatest.junit.JUnit3Suite
 import org.scalatest.junit.JUnitSuite
-import org.scalatest.testng.TestNGSuite
 import org.scalatest.refspec.RefSpec
+import org.scalatest.testng.TestNGSuite
 // SKIP-SCALATESTJS-END
 import SharedHelpers._
 

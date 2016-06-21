@@ -18,6 +18,7 @@ package org.scalatest
 import scala.concurrent.ExecutionException
 import scala.util.{Failure, Success}
 
+
 class StatusSpec extends fixture.FunSpec {
   
   protected type FixtureParam = { 

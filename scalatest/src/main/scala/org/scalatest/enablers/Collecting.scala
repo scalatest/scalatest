@@ -17,9 +17,9 @@ package org.scalatest.enablers
 
 import org.scalactic.Every
 import scala.collection.GenTraversable
-import scala.language.higherKinds
 import org.scalatest.FailureMessages
 import scala.annotation.tailrec
+import scala.language.higherKinds
 
 /**
  * Supertrait for typeclasses that enable <a href="../LoneElement.html"><code>loneElement</code></a> and <a href="../Inspectors.html">inspectors</a> syntax

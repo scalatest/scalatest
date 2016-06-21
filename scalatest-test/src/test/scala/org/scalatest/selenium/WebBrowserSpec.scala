@@ -15,30 +15,29 @@
  */
 package org.scalatest.selenium
 
-import org.scalatest.FunSpec
-import org.scalatest.Matchers
-import java.util.concurrent.TimeUnit
-import org.scalatest.time.SpanSugar
-import org.scalatest.ParallelTestExecution
-import org.openqa.selenium.WebDriver
-import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatest.time.Span
-import org.scalatest.time.Seconds
-import org.scalatest.exceptions.TestFailedException
 import java.io.File
-import org.scalatest.Suite
-import org.scalatest.Args
-import org.scalatest.ScreenshotOnFailure
-import org.scalatest.SharedHelpers.SilentReporter
-import org.scalatest.tagobjects.Slow
+import java.util.concurrent.TimeUnit
+import org.openqa.selenium.Cookie
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.WebElement
+import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxProfile
-import org.openqa.selenium.safari.SafariDriver
-import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.ie.InternetExplorerDriver
-import org.openqa.selenium.Cookie
-import org.openqa.selenium.WebElement
-
+import org.openqa.selenium.safari.SafariDriver
+import org.scalatest.Args
+import org.scalatest.FunSpec
+import org.scalatest.Matchers
+import org.scalatest.ParallelTestExecution
+import org.scalatest.ScreenshotOnFailure
+import org.scalatest.SharedHelpers.SilentReporter
+import org.scalatest.Suite
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.tagobjects.Slow
+import org.scalatest.time.Seconds
+import org.scalatest.time.Span
+import org.scalatest.time.SpanSugar
 import scala.reflect.ClassTag
 
 

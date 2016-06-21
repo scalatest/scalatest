@@ -20,8 +20,7 @@ import scala.reflect.macros._
 private[scalatest] object LineNumberMacro {
 
   def thisLineNumberImpl(context: Context): context.Expr[Int] = {
-    import context.universe._
-    val lineNumber = context.enclosingPosition.line
+        val lineNumber = context.enclosingPosition.line
     context.literal(lineNumber)
   }
 

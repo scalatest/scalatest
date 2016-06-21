@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import org.scalatest.OutcomeOf._
 import scala.concurrent.Future
 import org.scalactic._
 

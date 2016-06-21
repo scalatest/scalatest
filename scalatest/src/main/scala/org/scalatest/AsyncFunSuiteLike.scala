@@ -15,10 +15,10 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import Suite.autoTagClassAnnotations
-import scala.concurrent.Future
 import org.scalactic._
+import scala.concurrent.Future
+import Suite.autoTagClassAnnotations
+import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>AsyncFunSuite</code>, which represents

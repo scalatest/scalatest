@@ -15,39 +15,39 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
+import org.scalactic._
 import org.scalatest.enablers._
+import org.scalatest.matchers._
+import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
-import scala.util.matching.Regex
-import java.lang.reflect.Field
-import scala.reflect.Manifest
-import org.scalatest.MatchersHelper.transformOperatorChars
-import scala.collection.Traversable
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
-import scala.collection.GenTraversable
-import scala.collection.GenSeq
-import scala.collection.GenMap
-import org.scalactic._
-import TripleEqualsSupport.Spread
-import TripleEqualsSupport.TripleEqualsInvocation
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
+import org.scalatest.MatchersHelper.transformOperatorChars
+import scala.collection.GenMap
+import scala.collection.GenSeq
+import scala.collection.GenTraversable
+import scala.collection.Traversable
+import scala.reflect.Manifest
+import scala.util.matching.Regex
+import TripleEqualsSupport.Spread
+import TripleEqualsSupport.TripleEqualsInvocation
 // SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS-END
-import org.scalatest.{FailureMessages, UnquotedString}
-import org.scalatest.MatchersHelper.newTestFailedException
-import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
-import org.scalatest.MatchersHelper.startWithRegexWithGroups
-import org.scalatest.MatchersHelper.endWithRegexWithGroups
-import org.scalatest.MatchersHelper.includeRegexWithGroups
-import org.scalatest.MatchersHelper.indicateSuccess
-import org.scalatest.MatchersHelper.indicateFailure
-import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.Assertion
+import org.scalatest.MatchersHelper.endWithRegexWithGroups
+import org.scalatest.MatchersHelper.fullyMatchRegexWithGroups
+import org.scalatest.MatchersHelper.includeRegexWithGroups
+import org.scalatest.MatchersHelper.indicateFailure
+import org.scalatest.MatchersHelper.indicateSuccess
+import org.scalatest.MatchersHelper.newTestFailedException
+import org.scalatest.MatchersHelper.startWithRegexWithGroups
 import org.scalatest.Succeeded
+import org.scalatest.{FailureMessages, UnquotedString}
 import scala.annotation.tailrec
+import org.scalatest.exceptions.NotAllowedException
 
 /**
  * This class is part of the ScalaTest matchers DSL. Please see the documentation for <a href="Matchers.html"><code>Matchers</code></a> for an overview of

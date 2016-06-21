@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 
 private[tools] sealed abstract class ReporterConfigParam(val character: String) extends Product with Serializable
 

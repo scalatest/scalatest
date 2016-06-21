@@ -16,15 +16,15 @@
 package org.scalatest.testng {
 
   import org.scalatest._
-  import org.scalatest.jmock._
-  import testng.testpackage._
-  import org.jmock.Mockery
-  import org.jmock.Expectations
-  import org.hamcrest.core.IsAnything
-  import org.scalatest.events._
-  import org.scalatest.jmock.JMockCycle
-  import org.scalatest.jmock.JMockCycleFixture
-  import org.scalatest.fixture
+import org.scalatest.jmock._
+import org.scalatest.events._
+import testng.testpackage._
+import org.scalatest.fixture
+import org.scalatest.jmock.JMockCycleFixture
+import org.hamcrest.core.IsAnything
+import org.jmock.Expectations
+import org.jmock.Mockery
+import org.scalatest.jmock.JMockCycle
 
   class TestNGSuiteSuite extends fixture.FunSuite with JMockCycleFixture with SuiteExpectations {
 

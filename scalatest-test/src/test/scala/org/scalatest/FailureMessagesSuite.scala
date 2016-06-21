@@ -16,7 +16,6 @@
 package org.scalatest
 
 import scala.collection.immutable.TreeSet
-import org.scalatest.events._
 import Matchers._
 import org.scalactic.Prettifier
 

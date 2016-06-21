@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import events.Event
 import org.scalatest.time.Span
 import org.scalatest.tools.{TestSpecificReporter, DistributedTestRunnerSuite, TestSortingReporter}
 

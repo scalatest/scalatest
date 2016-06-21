@@ -118,8 +118,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
       it("should be overridable with TypeCheckedTripleEquals locally when TripleEquals imported") {
 
         object O extends TripleEquals
-        import O._
-
+        
         new TypeCheckedTripleEquals {
 
           class Fruit { override def equals(o: Any) = o.isInstanceOf[Fruit] }
@@ -210,8 +209,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
       it("should be overridable with ConversionCheckedTripleEquals locally when TripleEquals imported") {
 
         object O extends TripleEquals
-        import O._
-
+        
         new ConversionCheckedTripleEquals {
 
             class Fruit { override def equals(o: Any) = o.isInstanceOf[Fruit] }
@@ -395,8 +393,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
       it("should be overridable with TripleEquals locally when TypeCheckedTripleEquals imported") {
 
         object O extends TypeCheckedTripleEquals
-        import O._
-
+        
         new TripleEquals {
 
           all (List(1, 1, 1)) should === (1)
@@ -457,8 +454,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
       it("should be overridable with ConversionCheckedTripleEquals locally when TypeCheckedTripleEquals imported") {
 
         object O extends TypeCheckedTripleEquals
-        import O._
-
+        
         new ConversionCheckedTripleEquals {
 
           class Fruit { override def equals(o: Any) = o.isInstanceOf[Fruit] }
@@ -644,8 +640,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
       it("should be overridable with TripleEquals locally when ConversionCheckedTripleEquals imported") {
 
         object O extends ConversionCheckedTripleEquals
-        import O._
-
+        
         new TripleEquals {
 
           all (List(1, 1, 1)) should === (1)
@@ -706,8 +701,7 @@ class ShouldCollectedTripleEqualsSpec extends FunSpec with NonImplicitAssertions
       it("should be overridable with TypeCheckedTripleEquals locally when ConversionCheckedTripleEquals imported") {
 
         object O extends ConversionCheckedTripleEquals
-        import O._
-
+        
         new TypeCheckedTripleEquals {
 
           class Fruit { override def equals(o: Any) = o.isInstanceOf[Fruit] }

@@ -15,7 +15,6 @@
  */
 package org.scalatest
 
-import OptionValues._
 import org.scalactic.Prettifier
 import SharedHelpers.thisLineNumber
 import Matchers._

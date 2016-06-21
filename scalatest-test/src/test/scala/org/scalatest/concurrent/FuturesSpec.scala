@@ -15,15 +15,15 @@
  */
 package org.scalatest.concurrent
 
-import org.scalatest.SharedHelpers.thisLineNumber
-import org.scalatest.OptionValues
-import org.scalatest.FunSpec
-import java.util.concurrent.{Future => FutureOfJava}
-import java.util.concurrent.TimeUnit
 import org.scalatest._
 import time._
+import java.util.concurrent.{Future => FutureOfJava}
+import org.scalatest.FunSpec
+import org.scalatest.OptionValues
 import exceptions.{TestCanceledException, TestFailedException, TestPendingException}
+import java.util.concurrent.TimeUnit
 import org.scalactic.source
+import org.scalatest.SharedHelpers.thisLineNumber
 
 class FuturesSpec extends FunSpec with Matchers with OptionValues with Futures with SeveredStackTraces {
 

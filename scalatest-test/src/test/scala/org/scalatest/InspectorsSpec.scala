@@ -15,18 +15,18 @@
  */
 package org.scalatest
 
-import org.scalatest.prop.TableDrivenPropertyChecks
+import Matchers._
+import SharedHelpers._
+import collection._
 import java.lang.annotation.AnnotationFormatError
 import java.nio.charset.CoderMalfunctionError
 import javax.xml.parsers.FactoryConfigurationError
 import javax.xml.transform.TransformerFactoryConfigurationError
-import scala.collection.GenTraversable
-import scala.annotation.tailrec
-import collection._
-import SharedHelpers._
-import FailureMessages.decorateToStringValue
-import Matchers._
 import org.scalactic.Prettifier
+import org.scalatest.prop.TableDrivenPropertyChecks
+import scala.annotation.tailrec
+import scala.collection.GenTraversable
+import FailureMessages.decorateToStringValue
 
 class InspectorsSpec extends FunSpec with Inspectors with TableDrivenPropertyChecks {
 

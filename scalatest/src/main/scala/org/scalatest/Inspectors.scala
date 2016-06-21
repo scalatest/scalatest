@@ -22,7 +22,6 @@ import Suite.indentLines
 import FailureMessages.decorateToStringValue
 import enablers.Collecting
 import scala.language.higherKinds
-import exceptions.NotAllowedException
 import enablers.InspectorAsserting
 import org.scalactic._
 
@@ -203,8 +202,7 @@ import org.scalactic._
  */
 trait Inspectors {
 
-  import InspectorsHelper._
-
+  
   /**
    * Ensure that all elements in a given collection pass the given inspection function, where "pass" means returning normally from the function (<em>i.e.</em>,
    * without throwing an exception).

@@ -1,7 +1,6 @@
 
 package org.scalatest
 
-import scala.concurrent.duration.Duration.Infinite
 import scala.util.{Success, Try, Failure}
 import scala.concurrent.{ExecutionContext, Future, Await}
 import scala.concurrent.duration._

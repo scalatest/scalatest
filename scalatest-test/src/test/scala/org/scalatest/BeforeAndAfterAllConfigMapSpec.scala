@@ -15,9 +15,9 @@
  */
 package org.scalatest
 
+import Matchers._
 import SharedHelpers._
 import java.util.concurrent.atomic.AtomicInteger
-import Matchers._
 import org.scalatest.concurrent.SleepHelper
 
 class BeforeAndAfterAllConfigMapSpec extends FunSpec {

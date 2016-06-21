@@ -17,6 +17,7 @@ package org.scalatest.events
 
 import org.scalatest.prop.Checkers
 import org.scalatest.SharedHelpers.{ EventRecordingReporter, thisLineNumber }
+
 // SKIP-SCALATESTJS-START
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner

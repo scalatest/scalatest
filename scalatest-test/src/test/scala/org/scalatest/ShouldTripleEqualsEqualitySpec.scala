@@ -24,7 +24,6 @@ import scala.collection.GenTraversableOnce
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import org.scalactic.Equality
-import org.scalactic.TripleEquals._
 import Matchers._
 
 class ShouldTripleEqualsEqualitySpec extends FunSpec with NonImplicitAssertions {

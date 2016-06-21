@@ -15,16 +15,16 @@
  */
 package org.scalatest.concurrent
 
+import org.scalatest.Retries._
 import org.scalatest._
 import SharedHelpers._
-import SharedHelpers.thisLineNumber
-import time.{Span, Millis}
+import scala.concurrent.ExecutionContext.Implicits._
 import org.scalatest.exceptions.NotAllowedException
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.Retries._
 import org.scalatest.tagobjects.Retryable
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits._
+import SharedHelpers.thisLineNumber
+import time.{Span, Millis}
 
 
 class WaitersSpec extends fixture.FunSpec with Matchers with ConductorFixture with
@@ -163,8 +163,7 @@ class WaitersSpec extends fixture.FunSpec with Matchers with ConductorFixture wi
       }
     }
 
-    it("should throw a TFE from await if there's a timeout") { con => import con._
-      val w = new Waiter
+    it("should throw a TFE from await if there's a timeout") { con =>       val w = new Waiter
       val caught =
         intercept[TestFailedException] {
           w.await(timeout(Span(10, Millis)))

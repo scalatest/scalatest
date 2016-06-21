@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalactic._
 import Matchers._
-import TripleEquals._
 import exceptions.TestFailedException
 
 class ShouldTripleEqualsToleranceSpec extends FunSpec /* with NonImplicitAssertions */ with Tolerance {

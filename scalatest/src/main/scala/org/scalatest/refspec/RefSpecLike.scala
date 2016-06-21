@@ -15,18 +15,18 @@
  */
 package org.scalatest.refspec
 
-import scala.collection.immutable.ListSet
 import org.scalatest._
 import org.scalatest.exceptions._
-import StackDepthExceptionHelper.posOrElseStackDepthFun
 import Suite._
-import RefSpec.isTestMethod
-import RefSpec.equalIfRequiredCompactify
+import org.scalactic.Requirements._
 import org.scalatest.events._
 import scala.reflect.NameTransformer._
+import RefSpec.equalIfRequiredCompactify
+import RefSpec.isTestMethod
+import StackDepthExceptionHelper.posOrElseStackDepthFun
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalactic.{source, Prettifier}
-import org.scalactic.Requirements._
+import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>RefSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests

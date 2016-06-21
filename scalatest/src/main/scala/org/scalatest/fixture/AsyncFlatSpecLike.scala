@@ -16,16 +16,15 @@
 package org.scalatest.fixture
 
 import org.scalatest._
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
-import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
-import java.util.concurrent.atomic.AtomicReference
+import org.scalactic.source
+import scala.concurrent.Future
 import java.util.ConcurrentModificationException
-import org.scalatest.events._
+import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
-import scala.concurrent.Future
-import org.scalactic.source
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+import scala.collection.immutable.ListSet
+import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 
 /**
  * Implementation trait for class <code>fixture.AsyncFlatSpec</code>, which is
@@ -1701,8 +1700,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
 
-    import resultOfStringPassedToVerb.verb
     import resultOfStringPassedToVerb.rest
+import resultOfStringPassedToVerb.verb
 
     /**
      * Supports the registration of no-arg tests in shorthand form.

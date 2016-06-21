@@ -15,14 +15,12 @@
  */
 package org.scalatest.refspec
 
-import scala.collection.immutable.ListSet
-import org.scalatest.{Suite, Finders, Resources}
-import Suite._
-import RefSpec.isTestMethod
-import RefSpec.equalIfRequiredCompactify
-import org.scalatest.events._
-import scala.reflect.NameTransformer._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
+import org.scalatest.{Suite, Finders, Resources}
+import RefSpec.equalIfRequiredCompactify
+import RefSpec.isTestMethod
+import scala.collection.immutable.ListSet
+
 
 /**
  * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests

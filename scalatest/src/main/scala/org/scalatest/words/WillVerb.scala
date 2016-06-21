@@ -15,7 +15,6 @@
  */
 package org.scalatest.words
 
-import org.scalatest._
 import org.scalactic._
 
 /**

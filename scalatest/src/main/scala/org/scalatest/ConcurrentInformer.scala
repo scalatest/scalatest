@@ -15,18 +15,17 @@
  */
 package org.scalatest
 
-import java.util.concurrent.atomic.AtomicReference
-import MessageRecorder.RecordedMessageEventFun
-import MessageRecorder.ConcurrentMessageFiringFun
-import org.scalatest.events.Location
-import org.scalatest.events.LineInFile
-import org.scalatest.events.Event
-import org.scalatest.events.RecordableEvent
-import org.scalatest.events.NoteProvided
-import org.scalatest.events.AlertProvided
-import org.scalatest.events.NotificationEvent
 import org.scalactic.Requirements._
+import java.util.concurrent.atomic.AtomicReference
 import org.scalactic.source
+import org.scalatest.events.AlertProvided
+import org.scalatest.events.LineInFile
+import org.scalatest.events.Location
+import org.scalatest.events.NoteProvided
+import org.scalatest.events.NotificationEvent
+import org.scalatest.events.RecordableEvent
+import MessageRecorder.ConcurrentMessageFiringFun
+import MessageRecorder.RecordedMessageEventFun
 
 /*
  This is used by Suite and test informers created as tests run, which therefore have
@@ -200,8 +199,8 @@ private[scalatest] object MessageRecorder {
 // (theSuite: Suite, report: Reporter, tracker: Tracker, testName: String, theTest: TestLeaf, includeIcon: Boolean. thread: Thread)
 private[scalatest] class PathMessageRecordingInformer(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => RecordableEvent) extends ThreadAwareness with Informer {
 
-  import scala.collection.mutable.SynchronizedBuffer
   import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.SynchronizedBuffer
   type Tup = (String, Option[Any], Thread, Boolean)
   private val messages = new ArrayBuffer[Tup] with SynchronizedBuffer[Tup]
 
@@ -231,8 +230,8 @@ private[scalatest] object PathMessageRecordingInformer {
 
 private[scalatest] class PathMessageRecordingNotifier(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => NoteProvided) extends ThreadAwareness with Notifier {
 
-  import scala.collection.mutable.SynchronizedBuffer
   import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.SynchronizedBuffer
   type Tup = (String, Option[Any], Thread, Boolean)
   private val messages = new ArrayBuffer[Tup] with SynchronizedBuffer[Tup]
 
@@ -262,8 +261,8 @@ private[scalatest] object PathMessageRecordingNotifier {
 
 private[scalatest] class PathMessageRecordingAlerter(eventFun: (String, Option[Any], Boolean, Boolean, Suite, Reporter, Tracker, String, Int, Boolean, Thread) => AlertProvided) extends ThreadAwareness with Alerter {
 
-  import scala.collection.mutable.SynchronizedBuffer
   import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.SynchronizedBuffer
   type Tup = (String, Option[Any], Thread, Boolean)
   private val messages = new ArrayBuffer[Tup] with SynchronizedBuffer[Tup]
 

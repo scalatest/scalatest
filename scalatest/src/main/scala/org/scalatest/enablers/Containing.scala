@@ -18,6 +18,7 @@ package org.scalatest.enablers
 import org.scalactic.{Equality, NormalizingEquality, Every}
 import scala.collection.{GenTraversableOnce, GenTraversable}
 
+
 /**
  * Supertrait for typeclasses that enable certain <code>contain</code> matcher syntax for containers.
  *

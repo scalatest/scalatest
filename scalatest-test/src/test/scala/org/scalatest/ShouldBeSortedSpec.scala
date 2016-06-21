@@ -15,12 +15,12 @@
  */
 package org.scalatest
 
+import Matchers._
+import org.scalactic.Prettifier
+import FailureMessages.decorateToStringValue
 import SharedHelpers.thisLineNumber
 import enablers.Sortable
-import FailureMessages.decorateToStringValue
-import Matchers._
 import exceptions.TestFailedException
-import org.scalactic.Prettifier
 
 class ShouldBeSortedSpec extends FunSpec {
 

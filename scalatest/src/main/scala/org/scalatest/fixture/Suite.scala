@@ -15,7 +15,6 @@
  */
 package org.scalatest.fixture
 
-import org.scalatest.Finders
 
 /**
  * Base trait for a family of style traits that can pass a fixture object into tests.

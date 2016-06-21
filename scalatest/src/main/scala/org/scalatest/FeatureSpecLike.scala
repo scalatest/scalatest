@@ -15,14 +15,13 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
+import org.scalactic._
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.exceptions.NotAllowedException
-import org.scalactic._
+import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>FeatureSpec</code>, which represents

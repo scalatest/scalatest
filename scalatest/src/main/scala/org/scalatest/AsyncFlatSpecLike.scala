@@ -15,16 +15,15 @@
  */
 package org.scalatest
 
-import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
-import scala.collection.immutable.ListSet
-import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
-import java.util.concurrent.atomic.AtomicReference
-import java.util.ConcurrentModificationException
-import org.scalatest.events._
+import org.scalactic._
+import scala.concurrent.Future
 import Suite.anExceptionThatShouldCauseAnAbort
 import Suite.autoTagClassAnnotations
-import scala.concurrent.Future
-import org.scalactic._
+import java.util.ConcurrentModificationException
+import java.util.concurrent.atomic.AtomicReference
+import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
+import scala.collection.immutable.ListSet
+import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 
 /**
  * Implementation trait for class <code>AsyncFlatSpec</code>, which facilitates a
@@ -1384,8 +1383,8 @@ trait AsyncFlatSpecLike extends AsyncTestSuite with AsyncTestRegistration with S
    */
   protected final class InAndIgnoreMethods(resultOfStringPassedToVerb: ResultOfStringPassedToVerb) {
 
-    import resultOfStringPassedToVerb.verb
     import resultOfStringPassedToVerb.rest
+import resultOfStringPassedToVerb.verb
 
     /**
      * Supports the registration of tests in shorthand form.

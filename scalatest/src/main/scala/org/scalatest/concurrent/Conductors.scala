@@ -16,13 +16,13 @@
 package org.scalatest.concurrent
 
 import org.scalatest._
+import PatienceConfiguration._
 import PimpedThreadGroup._
-import _root_.java.util.concurrent.{CopyOnWriteArrayList, ArrayBlockingQueue}
+import org.scalactic.source
 import _root_.java.util.concurrent.atomic.AtomicReference
+import _root_.java.util.concurrent.{CopyOnWriteArrayList, ArrayBlockingQueue}
 import org.scalatest.exceptions.NotAllowedException
 import time.{Seconds, Millis, Span}
-import PatienceConfiguration._
-import org.scalactic.source
 
 /**
  * Trait whose <code>Conductor</code> member facilitates the testing of classes, traits, and libraries designed

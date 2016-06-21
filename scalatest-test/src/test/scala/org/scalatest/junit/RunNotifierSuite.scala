@@ -17,10 +17,10 @@
 package org.scalatest.junit
 
 import org.scalatest._
-import org.junit.runner.notification.RunNotifier
+import org.scalatest.events._
 import org.junit.runner.Description
 import org.junit.runner.notification.Failure
-import org.scalatest.events._
+import org.junit.runner.notification.RunNotifier
 
 // There's no way to really pass along a SuiteStarting or SuiteCompleted
 // event. They have a dumb comment to "Do not invoke" fireTestRunStarted

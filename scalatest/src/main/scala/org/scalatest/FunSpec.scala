@@ -15,9 +15,6 @@
  */
 package org.scalatest
 
-import scala.collection.immutable.ListSet
-import words.BehaveWord
-import Suite.autoTagClassAnnotations
 
 /**
  * Facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests

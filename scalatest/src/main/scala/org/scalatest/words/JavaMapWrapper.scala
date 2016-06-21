@@ -15,8 +15,6 @@
  */
 package org.scalatest.words
 
-import org.scalatest.matchers._
-import org.scalatest.enablers._
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import scala.util.matching.Regex

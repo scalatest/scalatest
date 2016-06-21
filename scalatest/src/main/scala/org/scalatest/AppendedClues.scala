@@ -15,8 +15,8 @@
  */
 package org.scalatest
 
-import exceptions.ModifiableMessage
 import org.scalactic.Requirements._
+import exceptions.ModifiableMessage
 
 /**
  * Trait providing an implicit conversion that allows clues to be placed after a block of code.

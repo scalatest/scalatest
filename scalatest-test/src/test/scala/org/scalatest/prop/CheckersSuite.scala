@@ -15,15 +15,15 @@
  */
 package org.scalatest.prop
 
-import org.scalatest._
 import org.scalacheck._
-import org.scalacheck.util.Pretty
+import org.scalatest._
 import Arbitrary._
 import Prop._
 import org.scalatest.Matchers._
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
+import org.scalacheck.util.Pretty
 import org.scalatest.SharedHelpers.thisLineNumber
 import org.scalatest.exceptions.TestFailedException
-import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
 class CheckersSpec extends FunSpec with Checkers {
 

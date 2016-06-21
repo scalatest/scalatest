@@ -15,12 +15,12 @@
  */
 package org.scalatest.enablers
 
-import org.scalactic.{source, Prettifier}
 import org.scalatest._
 import org.scalatest.exceptions._
-import StackDepthExceptionHelper.getStackDepth
+import org.scalactic.{source, Prettifier}
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
+import StackDepthExceptionHelper.getStackDepth
 import Suite.indentLines
 import org.scalatest.FailureMessages.decorateToStringValue
 

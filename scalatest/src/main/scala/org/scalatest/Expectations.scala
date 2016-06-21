@@ -17,10 +17,9 @@ package org.scalatest
 
 import org.scalactic._
 import Fact._
-
-import scala.reflect.ClassTag
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.reflect.ClassTag
 
 private[scalatest] trait Expectations {
   

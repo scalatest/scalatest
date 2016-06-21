@@ -15,12 +15,12 @@
  */
 package org.scalatest.prop
 
-import org.scalactic.anyvals.PosZDouble
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
+import org.scalactic.anyvals.PosZDouble
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.TestFailedException
 import scala.collection.mutable.Buffer
-import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 
 class GeneratorChecksSpec extends FunSpec with Matchers {
   describe("GeneratorChecks") {

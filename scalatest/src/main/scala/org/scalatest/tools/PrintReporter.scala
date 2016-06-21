@@ -15,7 +15,6 @@
  */
 package org.scalatest.tools
 
-import org.scalatest._
 // SKIP-SCALATESTJS-START
 import java.io.BufferedOutputStream
 import java.io.File

@@ -15,10 +15,10 @@
  */
 package org.scalatest.prop
 
+import org.scalactic.anyvals._
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
 import org.scalatest.exceptions.TestFailedException
-import org.scalactic.anyvals._
 
 class GeneratorSpec extends FunSpec with Matchers {
   describe("A Generator") {
@@ -499,8 +499,8 @@ class GeneratorSpec extends FunSpec with Matchers {
       }
     }
     it("should offer a chooseInt method") {
-      import Generator._
       import org.scalactic.anyvals._
+import Generator._
       def posIntGen: Generator[PosInt] =
         for (i <- Generator.chooseInt(1, Int.MaxValue)) yield PosInt.from(i).get
 

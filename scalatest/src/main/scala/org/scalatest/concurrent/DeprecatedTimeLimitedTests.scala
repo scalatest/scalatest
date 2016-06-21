@@ -18,7 +18,6 @@ package org.scalatest.concurrent
 import org.scalatest.TestSuiteMixin
 import org.scalatest.TestSuite
 import Timeouts._
-import org.scalatest.exceptions.ModifiableMessage
 import org.scalatest.Resources
 import org.scalatest.time.Span
 import org.scalatest.exceptions.TimeoutField
