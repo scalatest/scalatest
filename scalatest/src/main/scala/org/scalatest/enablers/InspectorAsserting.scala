@@ -314,8 +314,9 @@ abstract class UnitInspectorAsserting {
       type Result = Unit
       def indicateSuccess(message: => String): Unit = ()
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Unit = {
+        val msg: String = message
         throw new TestFailedException(
-          (_: StackDepthException) => Some(message),
+          (_: StackDepthException) => Some(msg),
           optionalCause,
           pos
         )
@@ -353,8 +354,9 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
       type Result = Assertion
       def indicateSuccess(message: => String): Assertion = Succeeded
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+        val msg: String = message
         throw new TestFailedException(
-          (_: StackDepthException) => Some(message),
+          (_: StackDepthException) => Some(msg),
           optionalCause,
           pos
         )
