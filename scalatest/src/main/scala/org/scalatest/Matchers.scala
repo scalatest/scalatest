@@ -1954,7 +1954,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(aMatcher: AMatcher[T]): Assertion = {
       val matcherResult = aMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     
@@ -1969,7 +1972,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(anMatcher: AnMatcher[T]): Assertion = {
       val matcherResult = anMatcher(left)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+        if(shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
 
@@ -1983,7 +1989,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       if ((toAnyRef(left) eq right) != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSameInstanceAs(prettifier, left, right) else FailureMessages.wasSameInstanceAs(prettifier, left, right), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.wasNotSameInstanceAs), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.wasSameInstanceAs), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.wasSameInstanceAs(prettifier, left, right), FailureMessages.wasNotSameInstanceAs(prettifier, left, right))
     }
 
@@ -2019,7 +2028,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, true, prettifier, pos)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     // SKIP-SCALATESTJS-END
@@ -2037,7 +2049,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def a(bePropertyMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
       val result = bePropertyMatcher(left)
       if (result.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotA(prettifier, left, UnquotedString(result.propertyName)) else FailureMessages.wasA(prettifier, left, UnquotedString(result.propertyName)), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(result.propertyName), FailureMessages.wasNotA), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(result.propertyName), FailureMessages.wasA), None, pos)
       } else indicateSuccess(shouldBeTrue, FailureMessages.wasA(prettifier, left, UnquotedString(result.propertyName)), FailureMessages.wasNotA(prettifier, left, UnquotedString(result.propertyName)))
     }
 
@@ -2054,7 +2069,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(symbol: Symbol)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       val matcherResult = matchSymbolToPredicateMethod(toAnyRef(left), symbol, true, false, prettifier, pos)
       if (matcherResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
       } else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
     }
     // SKIP-SCALATESTJS-END
@@ -2071,7 +2089,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def an(beTrueMatcher: BePropertyMatcher[T])(implicit ev: T <:< AnyRef): Assertion = { // TODO: Try expanding this to 2.10 AnyVals
       val beTrueMatchResult = beTrueMatcher(left)
       if (beTrueMatchResult.matches != shouldBeTrue) {
-        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotAn(prettifier, left, UnquotedString(beTrueMatchResult.propertyName)) else FailureMessages.wasAn(prettifier, left, UnquotedString(beTrueMatchResult.propertyName)), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(beTrueMatchResult.propertyName), FailureMessages.wasNotAn), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(beTrueMatchResult.propertyName), FailureMessages.wasAn), None, pos)
       } else indicateSuccess(shouldBeTrue, FailureMessages.wasAn(prettifier, left, UnquotedString(beTrueMatchResult.propertyName)), FailureMessages.wasNotAn(prettifier, left, UnquotedString(beTrueMatchResult.propertyName)))
     }
 
@@ -2085,7 +2106,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
       if (left.isDefinedAt(right) != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefinedAt(prettifier, left, right) else FailureMessages.wasDefinedAt(prettifier, left, right), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.wasNotDefinedAt), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.wasDefinedAt), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.wasDefinedAt(prettifier, left, right), FailureMessages.wasNotDefinedAt(prettifier, left, right))
     }
 
@@ -2171,7 +2195,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = includeRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
@@ -2185,7 +2212,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.findFirstIn(left).isDefined != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.didNotIncludeRegex(prettifier, left, rightRegex) else FailureMessages.includedRegex(prettifier, left, rightRegex), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, rightRegex, FailureMessages.didNotIncludeRegex), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, rightRegex, FailureMessages.includedRegex), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.includedRegex(prettifier, left, rightRegex), FailureMessages.didNotIncludeRegex(prettifier, left, rightRegex))
     }
 
@@ -2226,7 +2256,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = startWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
@@ -2240,7 +2273,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).lookingAt != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.didNotStartWithRegex(prettifier, left, rightRegex) else FailureMessages.startedWithRegex(prettifier, left, rightRegex), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, rightRegex, FailureMessages.didNotStartWithRegex), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, rightRegex, FailureMessages.startedWithRegex), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.startedWithRegex(prettifier, left, rightRegex), FailureMessages.didNotStartWithRegex(prettifier, left, rightRegex))
     }
 
@@ -2281,7 +2317,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = endWithRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
@@ -2296,7 +2335,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(rightRegex: Regex): Assertion = {
       val allMatches = rightRegex.findAllIn(left)
       if ((allMatches.hasNext && (allMatches.end == left.length)) != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.didNotEndWithRegex(prettifier, left, rightRegex) else FailureMessages.endedWithRegex(prettifier, left, rightRegex), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, rightRegex, FailureMessages.didNotEndWithRegex), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, rightRegex, FailureMessages.endedWithRegex), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.endedWithRegex(prettifier, left, rightRegex), FailureMessages.didNotEndWithRegex(prettifier, left, rightRegex))
     }
 
@@ -2337,7 +2379,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def regex(regexWithGroups: RegexWithGroups): Assertion = {
       val result = fullyMatchRegexWithGroups(left, regexWithGroups.regex, regexWithGroups.groups)
       if (result.matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) result.failureMessage(prettifier) else result.negatedFailureMessage(prettifier), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
       else indicateSuccess(shouldBeTrue, result.negatedFailureMessage(prettifier), result.failureMessage(prettifier))
     }
 
@@ -2351,7 +2396,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
      */
     def regex(rightRegex: Regex): Assertion = {
       if (rightRegex.pattern.matcher(left).matches != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.didNotFullyMatchRegex(prettifier, left, rightRegex) else FailureMessages.fullyMatchedRegex(prettifier, left, rightRegex), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, rightRegex, FailureMessages.didNotFullyMatchRegex), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, rightRegex, FailureMessages.fullyMatchedRegex), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.fullyMatchedRegex(prettifier, left, rightRegex), FailureMessages.didNotFullyMatchRegex(prettifier, left, rightRegex))
     }
 
@@ -2682,7 +2730,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def length(expectedLength: Long)(implicit len: Length[A]): Assertion = {
       val leftLength = len.lengthOf(left)
       if ((leftLength == expectedLength) != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, leftLength, expectedLength) else FailureMessages.hadLength(prettifier, left, expectedLength), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, leftLength, expectedLength, FailureMessages.hadLengthInsteadOfExpectedLength), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, expectedLength, FailureMessages.hadLength), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.hadLength(prettifier, left, expectedLength), FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, left, leftLength, expectedLength))
     }
 
@@ -2704,7 +2755,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def size(expectedSize: Long)(implicit sz: Size[A]): Assertion = {
       val leftSize = sz.sizeOf(left)
       if ((leftSize == expectedSize) != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, left, leftSize, expectedSize) else FailureMessages.hadSize(prettifier, left, expectedSize), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, leftSize, expectedSize, FailureMessages.hadSizeInsteadOfExpectedSize), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, expectedSize, FailureMessages.hadSize), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.hadSize(prettifier, left, expectedSize), FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, left, leftSize, expectedSize))
     }
 
@@ -2719,7 +2773,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def message(expectedMessage: String)(implicit messaging: Messaging[A]): Assertion = {
       val actualMessage = messaging.messageOf(left)
       if ((actualMessage== expectedMessage) != shouldBeTrue)
-        indicateFailure(if (shouldBeTrue) FailureMessages.hadMessageInsteadOfExpectedMessage(prettifier, left, actualMessage, expectedMessage) else FailureMessages.hadExpectedMessage(prettifier, left, expectedMessage), None, pos)
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, left, actualMessage, expectedMessage, FailureMessages.hadMessageInsteadOfExpectedMessage), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, expectedMessage, FailureMessages.hadExpectedMessage), None, pos)
       else indicateSuccess(shouldBeTrue, FailureMessages.hadExpectedMessage(prettifier, left, expectedMessage), FailureMessages.hadMessageInsteadOfExpectedMessage(prettifier, left, actualMessage, expectedMessage))
     }
 
@@ -3129,7 +3186,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def equal(right: Any)(implicit equality: Equality[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((equality.areEqual(e, right)) != shouldBeTrue)
-          indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqual(prettifier, e, right) else FailureMessages.equaled(prettifier, e, right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotEqual), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.equaled), None, pos)
         else indicateSuccess(shouldBeTrue, FailureMessages.equaled(prettifier, e, right), FailureMessages.didNotEqual(prettifier, e, right))
       }
     }
@@ -3145,7 +3205,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(right: Any): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e == right) != shouldBeTrue)
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotEqualTo(prettifier, e, right) else FailureMessages.wasEqualTo(prettifier, e, right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.wasNotEqualTo), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.wasEqualTo), None, pos)
         else indicateSuccess(shouldBeTrue, FailureMessages.wasEqualTo(prettifier, e, right), FailureMessages.wasNotEqualTo(prettifier, e, right))
       }
     }
@@ -3161,7 +3224,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThanOrEqualTo(prettifier, e, comparison.right) else FailureMessages.wasLessThanOrEqualTo(prettifier, e, comparison.right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, comparison.right, FailureMessages.wasNotLessThanOrEqualTo), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, comparison.right, FailureMessages.wasLessThanOrEqualTo), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasLessThanOrEqualTo(prettifier, e, comparison.right), FailureMessages.wasNotLessThanOrEqualTo(prettifier, e, comparison.right))
       }
@@ -3178,7 +3244,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, e, comparison.right) else FailureMessages.wasGreaterThanOrEqualTo(prettifier, e, comparison.right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, comparison.right, FailureMessages.wasNotGreaterThanOrEqualTo), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, comparison.right, FailureMessages.wasGreaterThanOrEqualTo), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThanOrEqualTo(prettifier, e, comparison.right), FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, e, comparison.right))
       }
@@ -3195,7 +3264,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(comparison: ResultOfLessThanComparison[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThan(prettifier, e, comparison.right) else FailureMessages.wasLessThan(prettifier, e, comparison.right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, comparison.right, FailureMessages.wasNotLessThan), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, comparison.right, FailureMessages.wasLessThan), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasLessThan(prettifier, e, comparison.right), FailureMessages.wasNotLessThan(prettifier, e, comparison.right))
       }
@@ -3212,7 +3284,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (comparison(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThan(prettifier, e, comparison.right) else FailureMessages.wasGreaterThan(prettifier, e, comparison.right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, comparison.right, FailureMessages.wasNotGreaterThan), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, comparison.right, FailureMessages.wasGreaterThan), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThan(prettifier, e, comparison.right), FailureMessages.wasNotGreaterThan(prettifier, e, comparison.right))
       }
