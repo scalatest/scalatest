@@ -47,4 +47,10 @@ private[scalatest] object MessageBuilder {
 
   def of[T1, T2, T3](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, fun: (Prettifier, T1, T2, T3) => String): MessageBuilder = MessageBuilder3(prettifier, p1, p2, p3, fun)
 
+  case class MessageBuilder4[T1, T2, T3, T4](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, p4: T4, fun: (Prettifier, T1, T2, T3, T4) => String) extends MessageBuilder {
+    def build: String = fun(prettifier, p1, p2, p3, p4)
+  }
+
+  def of[T1, T2, T3, T4](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, p4: T4, fun: (Prettifier, T1, T2, T3, T4) => String): MessageBuilder = MessageBuilder4(prettifier, p1, p2, p3, p4, fun)
+
 }
