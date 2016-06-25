@@ -325,6 +325,44 @@ class MatchersSerializableSpec extends FunSpec {
       serializeRoundtrip(e)
     }
 
+    it("'all(a) should not be (symbol)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        all(List("test", "", "test2")) should not be ('empty)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should not be a (symbol)' should produce Serializable TestFailedException") {
+      case class File(isFile: Boolean)
+      val e = intercept[TestFailedException] {
+        all(List("test1", "", "test2")) should not be (a ('empty))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should not be an (symbol)' should produce Serializable TestFailedException") {
+      case class File(isFile: Boolean)
+      val e = intercept[TestFailedException] {
+        all(List("test1", "", "test2")) should not be (an ('empty))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should not be sorted' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        all(List(List(3, 2, 1), List(1, 2, 3))) should not be sorted
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should not be readable' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class File(isReadable: Boolean)
+        all(List(File(false), File(true), File(false))) should not be readable
+      }
+      serializeRoundtrip(e)
+    }
+
   }
 
 }

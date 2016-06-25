@@ -3617,7 +3617,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, false, false, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
         }
         else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
@@ -3635,7 +3638,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAWordApplication.symbol, true, true, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
         }
         else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
@@ -3653,7 +3659,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), resultOfAnWordApplication.symbol, true, false, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) matcherResult.failureMessage(prettifier) else matcherResult.negatedFailureMessage(prettifier), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
         }
         else indicateSuccess(shouldBeTrue, matcherResult.negatedFailureMessage(prettifier), matcherResult.failureMessage(prettifier))
       }
@@ -3671,7 +3680,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(sortedWord: SortedWord)(implicit sortable: Sortable[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sortable.isSorted(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotSorted(prettifier, e) else FailureMessages.wasSorted(prettifier, e), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasNotSorted), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasSorted), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasSorted(prettifier, e), FailureMessages.wasNotSorted(prettifier, e))
       }
@@ -3688,7 +3700,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(readableWord: ReadableWord)(implicit readability: Readability[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (readability.isReadable(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotReadable(prettifier, e) else FailureMessages.wasReadable(prettifier, e), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasNotReadable), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasReadable), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasReadable(prettifier, e), FailureMessages.wasNotReadable(prettifier, e))
       }
