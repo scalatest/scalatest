@@ -3720,7 +3720,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(writableWord: WritableWord)(implicit writability: Writability[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (writability.isWritable(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotWritable(prettifier, e) else FailureMessages.wasWritable(prettifier, e), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasNotWritable), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasWritable), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasWritable(prettifier, e), FailureMessages.wasNotWritable(prettifier, e))
       }
@@ -3737,7 +3740,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(emptyWord: EmptyWord)(implicit emptiness: Emptiness[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (emptiness.isEmpty(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotEmpty(prettifier, e) else FailureMessages.wasEmpty(prettifier, e), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasNotEmpty), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasEmpty), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasEmpty(prettifier, e), FailureMessages.wasNotEmpty(prettifier, e))
       }
@@ -3754,7 +3760,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def be(definedWord: DefinedWord)(implicit definition: Definition[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (definition.isDefined(e) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.wasNotDefined(prettifier, e) else FailureMessages.wasDefined(prettifier, e), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasNotDefined), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.wasDefined), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.wasDefined(prettifier, e), FailureMessages.wasNotDefined(prettifier, e))
       }
@@ -3771,7 +3780,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def contain(nullValue: Null)(implicit containing: Containing[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((containing.contains(e, null)) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainNull(prettifier, e) else FailureMessages.containedNull(prettifier, e), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.didNotContainNull), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, FailureMessages.containedNull), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.containedNull(prettifier, e), FailureMessages.didNotContainNull(prettifier, e))
       }
@@ -3789,7 +3801,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val right = expectedElement
         if ((containing.contains(e, right)) != shouldBeTrue) {
-          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainExpectedElement(prettifier, e, right) else FailureMessages.containedExpectedElement(prettifier, e, right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainExpectedElement), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedExpectedElement), None, pos)
         }
         else indicateSuccess(shouldBeTrue, FailureMessages.containedExpectedElement(prettifier, e, right), FailureMessages.didNotContainExpectedElement(prettifier, e, right))
       }
@@ -3809,13 +3824,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOneOfElements), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOneOfElements), None, pos)
         else indicateSuccess(
           shouldBeTrue,
           FailureMessages.containedOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
@@ -3838,7 +3850,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainOneElementOf(prettifier, e, right) else FailureMessages.containedOneElementOf(prettifier, e, right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainOneElementOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedOneElementOf), None, pos)
         else indicateSuccess(shouldBeTrue, FailureMessages.containedOneElementOf(prettifier, e, right), FailureMessages.didNotContainOneElementOf(prettifier, e, right))
       }
     }
@@ -3857,13 +3872,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtLeastOneOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtLeastOneOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -3887,7 +3899,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right) else FailureMessages.containedAtLeastOneElementOf(prettifier, e, right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAtLeastOneElementOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAtLeastOneElementOf), None, pos)
         else indicateSuccess(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(prettifier, e, right), FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right))
       }
     }
@@ -3906,14 +3921,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtLeastOneOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtLeastOneOf), None, pos)
         else indicateSuccess(
           shouldBeTrue,
           FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
@@ -3936,7 +3947,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsNoneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(if (shouldBeTrue) FailureMessages.containedAtLeastOneElementOf(prettifier, e, right) else FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAtLeastOneElementOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAtLeastOneElementOf), None, pos)
         else indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right), FailureMessages.containedAtLeastOneElementOf(prettifier, e, right))
       }
     }
@@ -3955,7 +3969,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
-          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElements(prettifier, e, right) else FailureMessages.containedSameElements(prettifier, e, right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainSameElements), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedSameElements), None, pos)
         else indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(prettifier, e, right), FailureMessages.didNotContainSameElements(prettifier, e, right))
       }
     }
@@ -3974,7 +3991,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
-          indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElementsInOrder(prettifier, e, right) else FailureMessages.containedSameElementsInOrder(prettifier, e, right), None, pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainSameElementsInOrder), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedSameElementsInOrder), None, pos)
         else indicateSuccess(shouldBeTrue, FailureMessages.containedSameElementsInOrder(prettifier, e, right), FailureMessages.didNotContainSameElementsInOrder(prettifier, e, right))
       }
     }
@@ -3994,21 +4014,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
           val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
-          indicateFailure(
-            if (shouldBeTrue)
-              if (withFriendlyReminder)
-                FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-              else
-                FailureMessages.didNotContainOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-
+          if (shouldBeTrue)
+            if (withFriendlyReminder)
+              indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOnlyElementsWithFriendlyReminder), None, pos)
             else
-              if (withFriendlyReminder)
-                FailureMessages.containedOnlyElementsWithFriendlyReminder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-              else
-                FailureMessages.containedOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+              indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOnlyElements), None, pos)
+          else
+            if (withFriendlyReminder)
+              indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOnlyElementsWithFriendlyReminder), None, pos)
+            else
+              indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOnlyElements), None, pos)
         }
         else indicateSuccess(
           shouldBeTrue,
@@ -4032,13 +4047,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos)
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainInOrderOnlyElements), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedInOrderOnlyElements), None, pos)
         else indicateSuccess(
           shouldBeTrue,
           FailureMessages.containedInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
@@ -4061,14 +4073,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAllOfElements), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAllOfElements), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4092,14 +4100,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsAllOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAllElementsOf(prettifier, e, right)
-            else
-              FailureMessages.containedAllElementsOf(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAllElementsOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAllElementsOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4123,14 +4127,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrder(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAllOfElementsInOrder), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAllOfElementsInOrder), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4154,14 +4154,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsInOrder(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAllElementsOfInOrder(prettifier, e, right)
-            else
-              FailureMessages.containedAllElementsOfInOrder(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAllElementsOfInOrder), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAllElementsOfInOrder), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4185,14 +4181,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtMostOneOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtMostOneOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4216,14 +4208,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
 
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (evidence.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAtMostOneElementOf(prettifier, e, right)
-            else
-              FailureMessages.containedAtMostOneElementOf(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAtMostOneElementOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAtMostOneElementOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4245,14 +4233,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { map =>
         val expectedKey = resultOfKeyWordApplication.expectedKey
         if ((keyMapping.containsKey(map, expectedKey)) != shouldBeTrue) {
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainKey(prettifier, map, expectedKey)
-            else
-              FailureMessages.containedKey(prettifier, map, expectedKey),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, map, expectedKey, FailureMessages.didNotContainKey), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, map, expectedKey, FailureMessages.containedKey), None, pos)
         }
         else
           indicateSuccess(
@@ -4275,14 +4259,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { map =>
         val expectedValue = resultOfValueWordApplication.expectedValue
         if ((valueMapping.containsValue(map, expectedValue)) != shouldBeTrue) {
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainValue(prettifier, map, expectedValue)
-            else
-              FailureMessages.containedValue(prettifier, map, expectedValue),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, map, expectedValue, FailureMessages.didNotContainValue), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, map, expectedValue, FailureMessages.containedValue), None, pos)
         }
         else
           indicateSuccess(
@@ -4304,14 +4284,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def startWith(right: String)(implicit ev: T <:< String): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e.indexOf(right) == 0) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotStartWith(prettifier, e, right)
-            else
-              FailureMessages.startedWith(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotStartWith), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.startedWith), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4338,14 +4314,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = startWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              result.failureMessage(prettifier)
-            else
-              result.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4366,14 +4338,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def endWith(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e endsWith expectedSubstring) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotEndWith(prettifier, e, expectedSubstring)
-            else
-              FailureMessages.endedWith(prettifier, e, expectedSubstring),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, expectedSubstring, FailureMessages.didNotEndWith), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, expectedSubstring, FailureMessages.endedWith), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4395,14 +4363,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = endWithRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              result.failureMessage(prettifier)
-            else
-              result.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4429,14 +4393,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = includeRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              result.failureMessage(prettifier)
-            else
-              result.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4457,14 +4417,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def include(expectedSubstring: String)(implicit ev: T <:< String): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((e.indexOf(expectedSubstring) >= 0) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotIncludeSubstring(prettifier, e, expectedSubstring)
-            else
-              FailureMessages.includedSubstring(prettifier, e, expectedSubstring),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, expectedSubstring, FailureMessages.didNotIncludeSubstring), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, expectedSubstring, FailureMessages.includedSubstring), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4491,14 +4447,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = fullyMatchRegexWithGroups(e, resultOfRegexWordApplication.regex, resultOfRegexWordApplication.groups)
         if (result.matches != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              result.failureMessage(prettifier)
-            else
-              result.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4539,14 +4491,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedOneOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-        )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOneOfElements), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOneOfElements), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4568,14 +4516,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsOneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainOneElementOf(prettifier, e, right)
-            else
-              FailureMessages.containedOneElementOf(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainOneElementOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedOneElementOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4599,14 +4543,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtLeastOneOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-        )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtLeastOneOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtLeastOneOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4628,14 +4568,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtLeastOneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right)
-            else
-              FailureMessages.containedAtLeastOneElementOf(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAtLeastOneElementOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAtLeastOneElementOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4659,14 +4595,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsNoneOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.containedAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.didNotContainAtLeastOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtLeastOneOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtLeastOneOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4688,14 +4620,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (containing.containsNoneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.containedAtLeastOneElementOf(prettifier, e, right)
-            else
-              FailureMessages.didNotContainAtLeastOneElementOf(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAtLeastOneElementOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAtLeastOneElementOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4716,14 +4644,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsTheSameElementsAs(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainSameElements(prettifier, e, right)
-            else
-              FailureMessages.containedSameElements(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainSameElements), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedSameElements), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4744,14 +4668,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsTheSameElementsInOrderAs(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainSameElementsInOrder(prettifier, e, right)
-            else
-              FailureMessages.containedSameElementsInOrder(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainSameElementsInOrder), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedSameElementsInOrder), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4777,20 +4697,16 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsOnly(e, right) != shouldBeTrue) {
           val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
-          indicateFailure(
-            if (shouldBeTrue)
-              if (withFriendlyReminder)
-                FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-              else
-                FailureMessages.didNotContainOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+          if (shouldBeTrue)
+            if (withFriendlyReminder)
+              indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOnlyElementsWithFriendlyReminder), None, pos)
             else
-              if (withFriendlyReminder)
-                FailureMessages.containedOnlyElementsWithFriendlyReminder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-              else
-                FailureMessages.containedOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+              indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOnlyElements), None, pos)
+          else
+          if (withFriendlyReminder)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOnlyElementsWithFriendlyReminder), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOnlyElements), None, pos)
         }
         else
           indicateSuccess(
@@ -4815,14 +4731,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrderOnly(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedInOrderOnlyElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainInOrderOnlyElements), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedInOrderOnlyElements), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4846,14 +4758,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAllOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedAllOfElements(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAllOfElements), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAllOfElements), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4875,14 +4783,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAllOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAllElementsOf(prettifier, e, right)
-            else
-              FailureMessages.containedAllElementsOf(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAllElementsOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAllElementsOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4906,14 +4810,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrder(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedAllOfElementsInOrder(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAllOfElementsInOrder), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAllOfElementsInOrder), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4935,14 +4835,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (sequencing.containsInOrder(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAllElementsOfInOrder(prettifier, e, right)
-            else
-              FailureMessages.containedAllElementsOfInOrder(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAllElementsOfInOrder), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAllElementsOfInOrder), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4966,14 +4862,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
         throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtMostOneOf(e, right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-            else
-              FailureMessages.containedAtMostOneOf(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtMostOneOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtMostOneOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -4995,14 +4887,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       val right = elements.toList
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if (aggregating.containsAtMostOneOf(e, right.distinct) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainAtMostOneElementOf(prettifier, e, right)
-            else
-              FailureMessages.containedAtMostOneElementOf(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.didNotContainAtMostOneElementOf), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.containedAtMostOneElementOf), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -5023,14 +4911,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def key(expectedKey: Any)(implicit keyMapping: KeyMapping[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { map =>
         if (keyMapping.containsKey(map, expectedKey) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainKey(prettifier, map, expectedKey)
-            else
-              FailureMessages.containedKey(prettifier, map, expectedKey),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, map, expectedKey, FailureMessages.didNotContainKey), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, map, expectedKey, FailureMessages.containedKey), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -5051,14 +4935,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def value(expectedValue: Any)(implicit valueMapping: ValueMapping[T]): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { map =>
         if (valueMapping.containsValue(map, expectedValue) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.didNotContainValue(prettifier, map, expectedValue)
-            else
-              FailureMessages.containedValue(prettifier, map, expectedValue),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, map, expectedValue, FailureMessages.didNotContainValue), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, map, expectedValue, FailureMessages.containedValue), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -5097,14 +4977,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def theSameInstanceAs(right: AnyRef)(implicit toAnyRef: T <:< AnyRef): Assertion = {
       doCollected(collected, xs, original, prettifier, pos) { e =>
         if ((toAnyRef(e) eq right) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.wasNotSameInstanceAs(prettifier, e, right)
-            else
-              FailureMessages.wasSameInstanceAs(prettifier, e, right),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.wasNotSameInstanceAs), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.wasSameInstanceAs), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -5127,14 +5003,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, true, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(
-            if (shouldBeTrue)
-              matcherResult.failureMessage(prettifier)
-            else
-              matcherResult.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
         }
         else
           indicateSuccess(
@@ -5157,14 +5029,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val matcherResult = matchSymbolToPredicateMethod(toAnyRef(e), symbol, true, false, prettifier, pos)
         if (matcherResult.matches != shouldBeTrue) {
-          indicateFailure(
-            if (shouldBeTrue)
-              matcherResult.failureMessage(prettifier)
-            else
-              matcherResult.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, matcherResult.negatedFailureMessage(_)), None, pos)
         }
         else
           indicateSuccess(
@@ -5189,14 +5057,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = bePropertyMatcher(e.asInstanceOf[U])
         if (result.matches != shouldBeTrue) {
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.wasNotA(prettifier, e, UnquotedString(result.propertyName))
-            else
-              FailureMessages.wasA(prettifier, e, UnquotedString(result.propertyName)),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e,  UnquotedString(result.propertyName), FailureMessages.wasNotA), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e,  UnquotedString(result.propertyName), FailureMessages.wasA), None, pos)
         }
         else
           indicateSuccess(
@@ -5220,14 +5084,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val beTrueMatchResult = beTrueMatcher(e.asInstanceOf[U])
         if (beTrueMatchResult.matches != shouldBeTrue) {
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.wasNotAn(prettifier, e, UnquotedString(beTrueMatchResult.propertyName))
-            else
-              FailureMessages.wasAn(prettifier, e, UnquotedString(beTrueMatchResult.propertyName)),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(beTrueMatchResult.propertyName), FailureMessages.wasNotAn), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, UnquotedString(beTrueMatchResult.propertyName), FailureMessages.wasAn), None, pos)
         }
         else
           indicateSuccess(
@@ -5249,14 +5109,10 @@ trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWor
     def definedAt[U](right: U)(implicit ev: T <:< PartialFunction[U, _]): Assertion = {
       doCollected(collected, xs, xs, prettifier, pos) { e =>
       if (e.isDefinedAt(right) != shouldBeTrue)
-        indicateFailure(
-          if (shouldBeTrue)
-            FailureMessages.wasNotDefinedAt(prettifier, e, right)
-          else
-            FailureMessages.wasDefinedAt(prettifier, e, right),
-          None,
-          pos
-        )
+        if (shouldBeTrue)
+          indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.wasNotDefinedAt), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, e, right, FailureMessages.wasDefinedAt), None, pos)
         else
         indicateSuccess(
           shouldBeTrue,
