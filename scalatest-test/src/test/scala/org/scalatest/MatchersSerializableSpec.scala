@@ -27,7 +27,7 @@ class MatchersSerializableSpec extends FunSpec {
 
   describe("Matchers") {
 
-    /*it("'a should be a AMatcher' syntax should produce Serializable TestFailedException") {
+    it("'a should be a AMatcher' syntax should produce Serializable TestFailedException") {
       val positiveNumber = AMatcher[Int]("positive number") { _ > 0 }
       val e = intercept[TestFailedException] {
         -1 should be a positiveNumber
@@ -751,7 +751,7 @@ class MatchersSerializableSpec extends FunSpec {
         all(List(List(1, 2), List(1), List(1, 2, 3))) should be definedAt (1)
       }
       serializeRoundtrip(e)
-    }*/
+    }
 
     it("'all(a) should be (Matcher)' should produce Serializable TestFailedException") {
       val e = intercept[TestFailedException] {
@@ -1023,6 +1023,48 @@ class MatchersSerializableSpec extends FunSpec {
           def exists(file: File): Boolean = file.isExist
         }
         all(List(File(true), File(false), File(true))) shouldNot (exist)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should have length (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        all(List("test", "testing", "test test")) should have length (4)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should have size (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        all(List("test", "testing", "test test")) should have size (4)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should startWith regex (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        all(List("test", "testing", "test test")) should startWith regex ("hel*o")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should include regex (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        all(List("test", "testing", "test test")) should include regex ("hel*o")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should endWith regex (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        all(List("test", "testing", "test test")) should endWith regex ("hel*o")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'all(a) should fullyMatch regex (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        all(List("test", "testing", "test test")) should fullyMatch regex ("hel*o")
       }
       serializeRoundtrip(e)
     }

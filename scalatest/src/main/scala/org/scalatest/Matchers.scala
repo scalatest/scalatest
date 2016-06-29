@@ -6017,14 +6017,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val eLength = len.lengthOf(e)
         if ((eLength == expectedLength) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.hadLengthInsteadOfExpectedLength(prettifier, e, eLength, expectedLength)
-            else
-              FailureMessages.hadLength(prettifier, e, expectedLength),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, eLength, expectedLength, FailureMessages.hadLengthInsteadOfExpectedLength), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, expectedLength, FailureMessages.hadLength), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -6046,14 +6042,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val eSize = sz.sizeOf(e)
         if ((eSize == expectedSize) != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              FailureMessages.hadSizeInsteadOfExpectedSize(prettifier, e, eSize, expectedSize)
-            else
-              FailureMessages.hadSize(prettifier, e, expectedSize),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, e, eSize, expectedSize, FailureMessages.hadSizeInsteadOfExpectedSize), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, e, expectedSize, FailureMessages.hadSize), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -6113,14 +6105,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = startWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              result.failureMessage(prettifier)
-            else
-              result.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -6181,14 +6169,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = includeRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              result.failureMessage(prettifier)
-            else
-              result.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -6249,14 +6233,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = endWithRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              result.failureMessage(prettifier)
-            else
-              result.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
@@ -6317,14 +6297,10 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
       doCollected(collected, xs, original, prettifier, pos) { e =>
         val result = fullyMatchRegexWithGroups(e, rightRegex, groups)
         if (result.matches != shouldBeTrue)
-          indicateFailure(
-            if (shouldBeTrue)
-              result.failureMessage(prettifier)
-            else
-              result.negatedFailureMessage(prettifier),
-            None,
-            pos
-          )
+          if (shouldBeTrue)
+            indicateFailure(MessageBuilder.of(prettifier, result.failureMessage(_)), None, pos)
+          else
+            indicateFailure(MessageBuilder.of(prettifier, result.negatedFailureMessage(_)), None, pos)
         else
           indicateSuccess(
             shouldBeTrue,
