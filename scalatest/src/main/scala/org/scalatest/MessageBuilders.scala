@@ -23,34 +23,40 @@ private[scalatest] sealed trait MessageBuilder extends Serializable {
 
 private[scalatest] object MessageBuilder {
 
-  case class MessageBuilder0(prettifier: Prettifier, fun: (Prettifier) => String) extends MessageBuilder {
+  class MessageBuilder0(fun: => String) extends MessageBuilder {
+    def build: String = fun
+  }
+
+  def of(fun: => String): MessageBuilder = new MessageBuilder0(fun)
+
+  case class MessageBuilder1(prettifier: Prettifier, fun: (Prettifier) => String) extends MessageBuilder {
     def build: String = fun(prettifier)
   }
 
-  def of(prettifier: Prettifier, fun: (Prettifier) => String): MessageBuilder = MessageBuilder0(prettifier, fun)
+  def of(prettifier: Prettifier, fun: (Prettifier) => String): MessageBuilder = MessageBuilder1(prettifier, fun)
 
-  case class MessageBuilder1[T1](prettifier: Prettifier, p1: T1, fun: (Prettifier, T1) => String) extends MessageBuilder {
+  case class MessageBuilder2[T1](prettifier: Prettifier, p1: T1, fun: (Prettifier, T1) => String) extends MessageBuilder {
     def build: String = fun(prettifier, p1)
   }
 
-  def of[T1](prettifier: Prettifier, p1: T1, fun: (Prettifier, T1) => String): MessageBuilder = MessageBuilder1(prettifier, p1, fun)
+  def of[T1](prettifier: Prettifier, p1: T1, fun: (Prettifier, T1) => String): MessageBuilder = MessageBuilder2(prettifier, p1, fun)
 
-  case class MessageBuilder2[T1, T2](prettifier: Prettifier, p1: T1, p2: T2, fun: (Prettifier, T1, T2) => String) extends MessageBuilder {
+  case class MessageBuilder3[T1, T2](prettifier: Prettifier, p1: T1, p2: T2, fun: (Prettifier, T1, T2) => String) extends MessageBuilder {
     def build: String = fun(prettifier, p1, p2)
   }
 
-  def of[T1, T2](prettifier: Prettifier, p1: T1, p2: T2, fun: (Prettifier, T1, T2) => String): MessageBuilder = MessageBuilder2(prettifier, p1, p2, fun)
+  def of[T1, T2](prettifier: Prettifier, p1: T1, p2: T2, fun: (Prettifier, T1, T2) => String): MessageBuilder = MessageBuilder3(prettifier, p1, p2, fun)
 
-  case class MessageBuilder3[T1, T2, T3](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, fun: (Prettifier, T1, T2, T3) => String) extends MessageBuilder {
+  case class MessageBuilder4[T1, T2, T3](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, fun: (Prettifier, T1, T2, T3) => String) extends MessageBuilder {
     def build: String = fun(prettifier, p1, p2, p3)
   }
 
-  def of[T1, T2, T3](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, fun: (Prettifier, T1, T2, T3) => String): MessageBuilder = MessageBuilder3(prettifier, p1, p2, p3, fun)
+  def of[T1, T2, T3](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, fun: (Prettifier, T1, T2, T3) => String): MessageBuilder = MessageBuilder4(prettifier, p1, p2, p3, fun)
 
-  case class MessageBuilder4[T1, T2, T3, T4](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, p4: T4, fun: (Prettifier, T1, T2, T3, T4) => String) extends MessageBuilder {
+  case class MessageBuilder5[T1, T2, T3, T4](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, p4: T4, fun: (Prettifier, T1, T2, T3, T4) => String) extends MessageBuilder {
     def build: String = fun(prettifier, p1, p2, p3, p4)
   }
 
-  def of[T1, T2, T3, T4](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, p4: T4, fun: (Prettifier, T1, T2, T3, T4) => String): MessageBuilder = MessageBuilder4(prettifier, p1, p2, p3, p4, fun)
+  def of[T1, T2, T3, T4](prettifier: Prettifier, p1: T1, p2: T2, p3: T3, p4: T4, fun: (Prettifier, T1, T2, T3, T4) => String): MessageBuilder = MessageBuilder5(prettifier, p1, p2, p3, p4, fun)
 
 }
