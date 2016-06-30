@@ -21,10 +21,12 @@ import org.scalatest.matchers._
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 import org.scalatest.MatchersHelper.andMatchersAndApply
 import org.scalatest.MatchersHelper.orMatchersAndApply
 import org.scalatest.MatchersHelper.transformOperatorChars
+
 import scala.collection.GenMap
 import scala.collection.GenSeq
 import scala.collection.GenTraversable
@@ -33,6 +35,7 @@ import scala.reflect.Manifest
 import scala.util.matching.Regex
 import TripleEqualsSupport.Spread
 import TripleEqualsSupport.TripleEqualsInvocation
+import org.scalatest.MessageBuilder
 // SKIP-SCALATESTJS-START
 import org.scalatest.MatchersHelper.matchSymbolToPredicateMethod
 // SKIP-SCALATESTJS-END
@@ -67,7 +70,10 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    **/
   def equal(right: Any)(implicit equality: Equality[T]): Assertion = {
     if (equality.areEqual(left, right) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotEqual(prettifier, left, right) else FailureMessages.equaled(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotEqual), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.equaled), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.equaled(prettifier, left, right), FailureMessages.didNotEqual(prettifier, left, right))
   }
@@ -82,7 +88,10 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    **/
   def be(right: Any): Assertion = {
     if ((left == right) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotEqualTo(prettifier, left, right) else FailureMessages.wasEqualTo(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.wasNotEqualTo), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.wasEqualTo), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasEqualTo(prettifier, left, right), FailureMessages.wasNotEqualTo(prettifier, left, right))
   }
@@ -97,7 +106,10 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    **/
   def be(comparison: ResultOfLessThanOrEqualToComparison[T]): Assertion = {
     if (comparison(left) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThanOrEqualTo(prettifier, left, comparison.right) else FailureMessages.wasLessThanOrEqualTo(prettifier, left, comparison.right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, comparison.right, FailureMessages.wasNotLessThanOrEqualTo), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, comparison.right, FailureMessages.wasLessThanOrEqualTo), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasLessThanOrEqualTo(prettifier, left, comparison.right), FailureMessages.wasNotLessThanOrEqualTo(prettifier, left, comparison.right))
   }
@@ -112,7 +124,10 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    **/
   def be(comparison: ResultOfGreaterThanOrEqualToComparison[T]): Assertion = {
     if (comparison(left) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, left, comparison.right) else FailureMessages.wasGreaterThanOrEqualTo(prettifier, left, comparison.right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, comparison.right, FailureMessages.wasNotGreaterThanOrEqualTo), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, comparison.right, FailureMessages.wasGreaterThanOrEqualTo), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThanOrEqualTo(prettifier, left, comparison.right), FailureMessages.wasNotGreaterThanOrEqualTo(prettifier, left, comparison.right))
   }
@@ -127,7 +142,10 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    **/
   def be(comparison: ResultOfLessThanComparison[T]): Assertion = {
     if (comparison(left) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotLessThan(prettifier, left, comparison.right) else FailureMessages.wasLessThan(prettifier, left, comparison.right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, comparison.right, FailureMessages.wasNotLessThan), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, comparison.right, FailureMessages.wasLessThan), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasLessThan(prettifier, left, comparison.right), FailureMessages.wasNotLessThan(prettifier, left, comparison.right))
   }
@@ -142,7 +160,10 @@ final class ResultOfNotWordForAny[T](val left: T, val shouldBeTrue: Boolean, val
    **/
   def be(comparison: ResultOfGreaterThanComparison[T]): Assertion = {
     if (comparison(left) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.wasNotGreaterThan(prettifier, left, comparison.right) else FailureMessages.wasGreaterThan(prettifier, left, comparison.right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, comparison.right, FailureMessages.wasNotGreaterThan), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, comparison.right, FailureMessages.wasGreaterThan), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.wasGreaterThan(prettifier, left, comparison.right), FailureMessages.wasNotGreaterThan(prettifier, left, comparison.right))
   }

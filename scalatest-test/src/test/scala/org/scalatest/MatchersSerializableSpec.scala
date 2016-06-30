@@ -1568,6 +1568,48 @@ class MatchersSerializableSpec extends FunSpec {
       serializeRoundtrip(e)
     }
 
+    it("'a should not equal (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        3 should not equal (3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        3 should not be (3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be > (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        3 should not be > (2)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be >= (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        3 should not be >= (2)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be < (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        3 should not be < (4)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be <= (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        3 should not be <= (4)
+      }
+      serializeRoundtrip(e)
+    }
+
   }
 
 }
