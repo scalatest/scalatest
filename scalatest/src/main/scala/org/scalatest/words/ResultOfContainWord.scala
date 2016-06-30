@@ -21,10 +21,8 @@ import org.scalatest.enablers.Aggregating
 import org.scalatest.enablers.Sequencing
 import org.scalatest.enablers.KeyMapping
 import org.scalatest.enablers.ValueMapping
-import org.scalatest.FailureMessages
-import org.scalatest.UnquotedString
+import org.scalatest.{Assertion, FailureMessages, MessageBuilder, UnquotedString}
 import org.scalatest.exceptions.NotAllowedException
-import org.scalatest.Assertion
 import org.scalatest.MatchersHelper.indicateSuccess
 import org.scalatest.MatchersHelper.indicateFailure
 import org.scalactic._
@@ -50,14 +48,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.oneOfDuplicate, pos)
     if (containing.containsOneOf(left, right) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.didNotContainOneOfElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-        else
-          FailureMessages.containedOneOfElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-        None,
-        pos
-      )
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOneOfElements), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOneOfElements), None, pos)
     else
       indicateSuccess(
         shouldBeTrue,
@@ -77,7 +71,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def oneElementOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
     val right = elements.toList
     if (containing.containsOneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainOneElementOf(prettifier, left, right) else FailureMessages.containedOneElementOf(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotContainOneElementOf), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.containedOneElementOf), None, pos)
     else indicateSuccess(shouldBeTrue, FailureMessages.containedOneElementOf(prettifier, left, right), FailureMessages.didNotContainOneElementOf(prettifier, left, right))
   }
 
@@ -94,14 +91,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atLeastOneOfDuplicate, pos)
     if (aggregating.containsAtLeastOneOf(left, right) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.didNotContainAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-        else
-          FailureMessages.containedAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-        None,
-        pos
-      )
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtLeastOneOf), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtLeastOneOf), None, pos)
     else
       indicateSuccess(
         shouldBeTrue,
@@ -121,7 +114,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def atLeastOneElementOf(elements: GenTraversable[Any])(implicit aggregating: Aggregating[L]): Assertion = {
     val right = elements.toList
     if (aggregating.containsAtLeastOneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right) else FailureMessages.containedAtLeastOneElementOf(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotContainAtLeastOneElementOf), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.containedAtLeastOneElementOf), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedAtLeastOneElementOf(prettifier, left, right), FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right))
   }
@@ -139,14 +135,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.noneOfDuplicate, pos)
     if (containing.containsNoneOf(left, right) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.containedAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-        else
-          FailureMessages.didNotContainAtLeastOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-        None,
-        pos
-      )
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtLeastOneOf), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtLeastOneOf), None, pos)
     else
       indicateSuccess(
         shouldBeTrue,
@@ -166,7 +158,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def noElementsOf(elements: GenTraversable[Any])(implicit containing: Containing[L]): Assertion = {
     val right = elements.toList
     if (containing.containsNoneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.containedAtLeastOneElementOf(prettifier, left, right) else FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.containedAtLeastOneElementOf), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotContainAtLeastOneElementOf), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.didNotContainAtLeastOneElementOf(prettifier, left, right), FailureMessages.containedAtLeastOneElementOf(prettifier, left, right))
   }
@@ -181,7 +176,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    **/
   def theSameElementsAs(right: GenTraversable[_])(implicit aggregating: Aggregating[L]): Assertion = {
     if (aggregating.containsTheSameElementsAs(left, right) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElements(prettifier, left, right) else FailureMessages.containedSameElements(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotContainSameElements), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.containedSameElements), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedSameElements(prettifier, left, right), FailureMessages.didNotContainSameElements(prettifier, left, right))
   }
@@ -196,7 +194,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    **/
   def theSameElementsInOrderAs(right: GenTraversable[_])(implicit sequencing: Sequencing[L]): Assertion = {
     if (sequencing.containsTheSameElementsInOrderAs(left, right) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainSameElementsInOrder(prettifier, left, right) else FailureMessages.containedSameElementsInOrder(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotContainSameElementsInOrder), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.containedSameElementsInOrder), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedSameElementsInOrder(prettifier, left, right), FailureMessages.didNotContainSameElementsInOrder(prettifier, left, right))
   }
@@ -216,20 +217,16 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
       throw new NotAllowedException(FailureMessages.onlyDuplicate, pos)
     val withFriendlyReminder = right.size == 1 && (right(0).isInstanceOf[scala.collection.GenTraversable[_]] || right(0).isInstanceOf[Every[_]])
     if (aggregating.containsOnly(left, right) != shouldBeTrue) {
-      indicateFailure(
-        if (shouldBeTrue)
-          if (withFriendlyReminder)
-            FailureMessages.didNotContainOnlyElementsWithFriendlyReminder(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-          else
-            FailureMessages.didNotContainOnlyElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
+      if (shouldBeTrue)
+        if (withFriendlyReminder)
+          indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOnlyElementsWithFriendlyReminder), None, pos)
         else
-          if (withFriendlyReminder)
-            FailureMessages.containedOnlyElementsWithFriendlyReminder(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-          else
-            FailureMessages.containedOnlyElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-        None,
-        pos
-      )
+          indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainOnlyElements), None, pos)
+      else
+        if (withFriendlyReminder)
+          indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOnlyElementsWithFriendlyReminder), None, pos)
+        else
+          indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedOnlyElements), None, pos)
     }
     else
       indicateSuccess(
@@ -260,14 +257,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderOnlyDuplicate, pos)
     if (sequencing.containsInOrderOnly(left, right) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.didNotContainInOrderOnlyElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-        else
-          FailureMessages.containedInOrderOnlyElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-        None,
-        pos
-      )
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainInOrderOnlyElements), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedInOrderOnlyElements), None, pos)
     else
       indicateSuccess(
         shouldBeTrue,
@@ -289,14 +282,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.allOfDuplicate, pos)
     if (aggregating.containsAllOf(left, right) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.didNotContainAllOfElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-        else
-          FailureMessages.containedAllOfElements(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-        None,
-        pos
-      )
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAllOfElements), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAllOfElements), None, pos)
     else
       indicateSuccess(
         shouldBeTrue,
@@ -316,7 +305,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def allElementsOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
     val right = elements.toList
     if (aggregating.containsAllOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAllElementsOf(prettifier, left, right) else FailureMessages.containedAllElementsOf(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotContainAllElementsOf), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.containedAllElementsOf), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOf(prettifier, left, right), FailureMessages.didNotContainAllElementsOf(prettifier, left, right))
   }
@@ -334,14 +326,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.inOrderDuplicate, pos)
     if (sequencing.containsInOrder(left, right) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.didNotContainAllOfElementsInOrder(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-        else
-          FailureMessages.containedAllOfElementsInOrder(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-        None,
-        pos
-      )
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAllOfElementsInOrder), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAllOfElementsInOrder), None, pos)
     else
       indicateSuccess(
         shouldBeTrue,
@@ -361,7 +349,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def inOrderElementsOf[R](elements: GenTraversable[R])(implicit sequencing: Sequencing[L]): Assertion = {
     val right = elements.toList
     if (sequencing.containsInOrder(left, right.distinct) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainAllElementsOfInOrder(prettifier, left, right) else FailureMessages.containedAllElementsOfInOrder(prettifier, left, right), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotContainAllElementsOfInOrder), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.containedAllElementsOfInOrder), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedAllElementsOfInOrder(prettifier, left, right), FailureMessages.didNotContainAllElementsOfInOrder(prettifier, left, right))
   }
@@ -376,7 +367,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    **/
   def key(expectedKey: Any)(implicit keyMapping: KeyMapping[L]): Assertion = {
     if (keyMapping.containsKey(left, expectedKey) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainKey(prettifier, left, expectedKey) else FailureMessages.containedKey(prettifier, left, expectedKey), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, expectedKey, FailureMessages.didNotContainKey), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, expectedKey, FailureMessages.containedKey), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedKey(prettifier, left, expectedKey), FailureMessages.didNotContainKey(prettifier, left, expectedKey))
   }
@@ -391,7 +385,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
    **/
   def value(expectedValue: Any)(implicit valueMapping: ValueMapping[L]): Assertion = {
     if (valueMapping.containsValue(left, expectedValue) != shouldBeTrue)
-      indicateFailure(if (shouldBeTrue) FailureMessages.didNotContainValue(prettifier, left, expectedValue) else FailureMessages.containedValue(prettifier, left, expectedValue), None, pos)
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, expectedValue, FailureMessages.didNotContainValue), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, expectedValue, FailureMessages.containedValue), None, pos)
     else
       indicateSuccess(shouldBeTrue, FailureMessages.containedValue(prettifier, left, expectedValue), FailureMessages.didNotContainValue(prettifier, left, expectedValue))
   }
@@ -409,14 +406,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
     if (right.distinct.size != right.size)
       throw new NotAllowedException(FailureMessages.atMostOneOfDuplicate, pos)
     if (aggregating.containsAtMostOneOf(left, right) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.didNotContainAtMostOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")))
-        else
-          FailureMessages.containedAtMostOneOf(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", "))),
-        None,
-        pos
-      )
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.didNotContainAtMostOneOf), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, UnquotedString(right.map(r => FailureMessages.decorateToStringValue(prettifier, r)).mkString(", ")), FailureMessages.containedAtMostOneOf), None, pos)
     else
       indicateSuccess(
         shouldBeTrue,
@@ -436,14 +429,10 @@ class ResultOfContainWord[L](left: L, shouldBeTrue: Boolean, prettifier: Prettif
   def atMostOneElementOf[R](elements: GenTraversable[R])(implicit aggregating: Aggregating[L]): Assertion = {
     val right = elements.toList
     if (aggregating.containsAtMostOneOf(left, right.distinct) != shouldBeTrue)
-      indicateFailure(
-        if (shouldBeTrue)
-          FailureMessages.didNotContainAtMostOneElementOf(prettifier, left, right)
-        else
-          FailureMessages.containedAtMostOneElementOf(prettifier, left, right),
-        None,
-        pos
-      )
+      if (shouldBeTrue)
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.didNotContainAtMostOneElementOf), None, pos)
+      else
+        indicateFailure(MessageBuilder.of(prettifier, left, right, FailureMessages.containedAtMostOneElementOf), None, pos)
     else
       indicateSuccess(
         shouldBeTrue,
