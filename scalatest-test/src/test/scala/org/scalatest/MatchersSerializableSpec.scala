@@ -1069,6 +1069,305 @@ class MatchersSerializableSpec extends FunSpec {
       serializeRoundtrip(e)
     }
 
+    it("'a should be (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" should be ("test 1")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should equal (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" should equal ("test 1")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should (equal (b) and have length c)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" should (equal ("test") and have length 3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldEqual (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldEqual ("test 1")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldEqual (Spread)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        14.0 shouldEqual (3.0 +- 0.5)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldEqual (null)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldEqual (null)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should === (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" should === ("test 1")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should === (Spread)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        14 should === (3 +- 1)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe ("testing")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe < (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        2 shouldBe < (1)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe <= (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        2 shouldBe <= (1)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe > (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        1 shouldBe > (2)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe >= (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        1 shouldBe >= (2)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe (BeMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val odd = BeMatcher[Int] { v =>
+          MatchResult(v % 2 != 0, "test", "test")
+        }
+        2 shouldBe (odd)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe (Spread)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        2 shouldBe (5 +- 1)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe (sorted)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(2, 3, 1) shouldBe (sorted)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe a [Type]' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe a [BigDecimal]
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe an [Type]' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe an [BigDecimal]
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe readable' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class File(isReadable: Boolean)
+        File(false) shouldBe readable
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe writable' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class File(isWritable: Boolean)
+        File(false) shouldBe writable
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe empty' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe empty
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe defined' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val opt: Option[String] = None
+        opt shouldBe defined
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldNot (be (b))' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        1 shouldNot (be (1))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldNot (equal (b))' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        1 shouldNot (equal (1))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe (null)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe (null)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe theSameInstanceAs (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe theSameInstanceAs ("testing")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe (Symbol)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe ('empty)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe a (Symbol)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe a ('empty)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe an (Symbol)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" shouldBe an ('empty)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe (BePropertyMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val nonEmpty = new BePropertyMatcher[String] {
+          def apply(value: String) = {
+            new BePropertyMatchResult(!value.isEmpty, "non-empty string")
+          }
+        }
+        "" shouldBe (nonEmpty)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe a (BePropertyMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val nonEmptyString = new BePropertyMatcher[String] {
+          def apply(value: String) = {
+            new BePropertyMatchResult(!value.isEmpty, "non-empty string")
+          }
+        }
+        "" shouldBe a (nonEmptyString)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldBe an (BePropertyMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val nonEmptyString = new BePropertyMatcher[String] {
+          def apply(value: String) = {
+            new BePropertyMatchResult(!value.isEmpty, "non-empty string")
+          }
+        }
+        "" shouldBe an (nonEmptyString)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should (exist)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class File(isExist: Boolean)
+        implicit val existence = new Existence[File] {
+          def exists(file: File): Boolean = file.isExist
+        }
+        File(false) should (exist)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not (exist)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class File(isExist: Boolean)
+        implicit val existence = new Existence[File] {
+          def exists(file: File): Boolean = file.isExist
+        }
+        File(true) should not (exist)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a shouldNot (exist)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class File(isExist: Boolean)
+        implicit val existence = new Existence[File] {
+          def exists(file: File): Boolean = file.isExist
+        }
+        File(true) shouldNot (exist)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'s should compile' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "vaa a = 3" should compile
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'s shouldNot compile' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "val a = 3" shouldNot compile
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'s should typeCheck' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "val a: Int = 3" shouldNot typeCheck
+      }
+      serializeRoundtrip(e)
+    }
+
   }
 
 }
