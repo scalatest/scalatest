@@ -21,7 +21,6 @@ import Suite.autoTagClassAnnotations
 import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.exceptions.StackDepthExceptionHelper.getStackDepth
-import scala.collection.immutable.ListSet
 import words.{ResultOfTaggedAsInvocation, ResultOfStringPassedToVerb, BehaveWord, ShouldVerb, MustVerb, CanVerb, StringVerbStringInvocation, StringVerbBehaveLikeInvocation}
 
 /**
@@ -1788,8 +1787,7 @@ import resultOfStringPassedToVerb.verb
    * </pre>
    */
   override def testNames: Set[String] = {
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   override def run(testName: Option[String], args: Args): Status = {

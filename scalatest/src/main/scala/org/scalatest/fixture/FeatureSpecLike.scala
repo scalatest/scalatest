@@ -22,8 +22,6 @@ import java.util.ConcurrentModificationException
 import java.util.concurrent.atomic.AtomicReference
 import org.scalatest.Suite.anExceptionThatShouldCauseAnAbort
 import org.scalatest.Suite.autoTagClassAnnotations
-import scala.collection.immutable.ListSet
-
 
 /**
  * Implementation trait for class <code>fixture.FeatureSpec</code>, which is
@@ -340,8 +338,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    */
   //override def testNames: Set[String] = ListSet(atomic.get.testsList.map(_.testName): _*)
   override def testNames: Set[String] = {
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   override def run(testName: Option[String], args: Args): Status = {

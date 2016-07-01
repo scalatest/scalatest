@@ -18,7 +18,6 @@ package org.scalatest.fixture
 import org.scalatest._
 import org.scalactic.source
 import org.scalatest.Suite.autoTagClassAnnotations
-import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>fixture.FunSuite</code>, which is
@@ -219,8 +218,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
    * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

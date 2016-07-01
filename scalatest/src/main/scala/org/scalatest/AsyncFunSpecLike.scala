@@ -18,7 +18,6 @@ package org.scalatest
 import org.scalactic._
 import scala.concurrent.Future
 import Suite.autoTagClassAnnotations
-import scala.collection.immutable.ListSet
 import words.BehaveWord
 
 /**
@@ -404,7 +403,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    */
   override def testNames: Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

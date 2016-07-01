@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalactic._
 import Suite.autoTagClassAnnotations
-import scala.collection.immutable.ListSet
 import words.BehaveWord
 
 /**
@@ -428,8 +427,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </pre>
    */
   override def testNames: Set[String] = {
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

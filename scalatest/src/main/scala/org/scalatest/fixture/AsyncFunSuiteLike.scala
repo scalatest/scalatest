@@ -19,7 +19,6 @@ import org.scalatest._
 import org.scalactic.source
 import scala.concurrent.Future
 import org.scalatest.Suite.autoTagClassAnnotations
-import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>fixture.AsyncFunSuite</code>, which is
@@ -186,8 +185,7 @@ trait AsyncFunSuiteLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

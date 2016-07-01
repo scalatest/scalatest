@@ -20,7 +20,6 @@ import org.scalatest.exceptions._
 import org.scalactic.{source, Prettifier}
 import org.scalatest.words.BehaveWord
 import Suite.autoTagClassAnnotations
-import scala.collection.immutable.ListSet
 
 
 /**
@@ -460,8 +459,7 @@ trait FreeSpecLike extends org.scalatest.Suite with OneInstancePerTest with Info
    */
   final override def testNames: Set[String] = {
     ensureTestResultsRegistered(thisSuite)
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

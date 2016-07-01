@@ -17,7 +17,6 @@ package org.scalatest
 
 import org.scalactic._
 import Suite.autoTagClassAnnotations
-import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>PropSpec</code>, which represents
@@ -162,8 +161,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
   * </p>
   */
   override def testNames: Set[String] = {
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

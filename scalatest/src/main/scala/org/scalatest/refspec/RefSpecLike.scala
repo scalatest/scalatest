@@ -26,7 +26,6 @@ import RefSpec.isTestMethod
 import StackDepthExceptionHelper.posOrElseStackDepthFun
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalactic.{source, Prettifier}
-import scala.collection.immutable.ListSet
 
 /**
  * Implementation trait for class <code>RefSpec</code>, which facilitates a &ldquo;behavior-driven&rdquo; style of development (BDD), in which tests
@@ -247,8 +246,7 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
    */
   override def testNames: Set[String] = {
     ensureScopesAndTestsRegistered()
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
   
   /**

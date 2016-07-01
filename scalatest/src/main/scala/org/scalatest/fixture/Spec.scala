@@ -19,7 +19,6 @@ import org.scalatest._
 import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalatest.Suite.autoTagClassAnnotations
 import org.scalatest.events.{TopOfClass, TopOfMethod}
-import scala.collection.immutable.ListSet
 
 
 /**

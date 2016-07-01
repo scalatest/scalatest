@@ -25,7 +25,6 @@ import java.lang.reflect.{Method, Modifier, InvocationTargetException}
 import org.scalactic.{source, Prettifier}
 import org.scalatest.Suite.{IgnoreTagName, autoTagClassAnnotations}
 import org.scalatest.events.{TopOfClass, TopOfMethod}
-import scala.collection.immutable.ListSet
 
 
 /**
@@ -274,8 +273,7 @@ trait SpecLike extends TestSuite with Informing with Notifying with Alerting wit
    */
   override def testNames: Set[String] = {
     ensureScopesAndTestsRegistered()
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
   
   /**

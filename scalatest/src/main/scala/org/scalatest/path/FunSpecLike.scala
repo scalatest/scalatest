@@ -21,8 +21,6 @@ import org.scalactic.{source, Prettifier}
 import org.scalatest.words.BehaveWord
 import Suite.autoTagClassAnnotations
 import org.scalatest.PathEngine.isInTargetPath
-import scala.collection.immutable.ListSet
-
 
 /**
  * Implementation trait for class <code>path.FunSpec</code>, which is
@@ -460,8 +458,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    */
   final override def testNames: Set[String] = {
     ensureTestResultsRegistered(thisSuite)
-    // I'm returning a ListSet here so that they tests will be run in registration order
-    ListSet(atomic.get.testNamesList.toArray: _*)
+    new InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**
