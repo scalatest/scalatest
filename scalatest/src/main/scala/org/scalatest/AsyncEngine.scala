@@ -751,7 +751,7 @@ private[scalatest] sealed abstract class AsyncSuperEngine[T](concurrentBundleMod
 
     val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, Some(pos), duration)
     testsMap += (testName -> testLeaf)
-    testNamesList ::= testName
+    testNamesList = testNamesList :+ testName
     currentBranch.subNodes ::= testLeaf
 
     val tagNames = Set[String]() ++ testTags.map(_.name)

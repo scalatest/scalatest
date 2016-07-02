@@ -584,7 +584,7 @@ trait AsyncFreeSpecLike extends AsyncTestSuite with AsyncTestRegistration with I
    * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
-    new InsertionOrderSet(atomic.get.testNamesList)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
 
   override def run(testName: Option[String], args: Args): Status = {

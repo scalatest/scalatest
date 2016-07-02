@@ -246,7 +246,7 @@ trait RefSpecLike extends TestSuite with Informing with Notifying with Alerting 
    */
   override def testNames: Set[String] = {
     ensureScopesAndTestsRegistered()
-    new InsertionOrderSet(atomic.get.testNamesList)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
   
   /**

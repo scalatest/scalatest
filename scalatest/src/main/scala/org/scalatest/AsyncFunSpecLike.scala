@@ -403,7 +403,7 @@ trait AsyncFunSpecLike extends AsyncTestSuite with AsyncTestRegistration with In
    */
   override def testNames: Set[String] = {
     // I'm returning a ListSet here so that they tests will be run in registration order
-    new InsertionOrderSet(atomic.get.testNamesList)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

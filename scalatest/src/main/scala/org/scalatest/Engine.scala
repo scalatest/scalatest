@@ -673,7 +673,7 @@ private[scalatest] sealed abstract class SuperEngine[T](concurrentBundleModMessa
 
     val testLeaf = TestLeaf(currentBranch, testName, testText, testFun, testLocation, pos, duration, informer)
     testsMap += (testName -> testLeaf)
-    testNamesList ::= testName
+    testNamesList = testNamesList :+ testName
     currentBranch.subNodes ::= testLeaf
 
     val tagNames = Set[String]() ++ testTags.map(_.name)
