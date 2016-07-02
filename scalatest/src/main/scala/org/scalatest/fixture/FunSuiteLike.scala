@@ -218,7 +218,7 @@ trait FunSuiteLike extends TestSuite with TestRegistration with Informing with N
    * @return the <code>Set</code> of test names
    */
   override def testNames: Set[String] = {
-    new InsertionOrderSet(atomic.get.testNamesList)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

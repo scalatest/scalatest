@@ -18,7 +18,7 @@ package org.scalatest
 class InsertionOrderSetSpec extends FunSpec with Matchers {
   describe("An InsertionOrderSet") {
     it("should offer an apply method in the companion object") {
-      InsertionOrderSet(List(1, 2, 3)) shouldBe (new InsertionOrderSet(List(1, 2, 3)))
+      InsertionOrderSet(List(1, 2, 3)) shouldBe (InsertionOrderSet(List(1, 2, 3)))
     }
     it("should ensure duplicates can't be passed to the constructor") {
       InsertionOrderSet(List(1, 2, 3, 3)) shouldBe InsertionOrderSet(List(1, 2, 3))

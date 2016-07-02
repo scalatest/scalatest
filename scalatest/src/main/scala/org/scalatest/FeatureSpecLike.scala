@@ -339,7 +339,7 @@ trait FeatureSpecLike extends TestSuite with TestRegistration with Informing wit
    */
   // override def testNames: Set[String] = ListSet(atomic.get.testsList.map(_.testName): _*)
   override def testNames: Set[String] = {
-    new InsertionOrderSet(atomic.get.testNamesList)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
 
   override def run(testName: Option[String], args: Args): Status = {

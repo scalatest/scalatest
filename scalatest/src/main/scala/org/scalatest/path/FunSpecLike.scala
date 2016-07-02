@@ -458,7 +458,7 @@ trait FunSpecLike extends org.scalatest.Suite with OneInstancePerTest with Infor
    */
   final override def testNames: Set[String] = {
     ensureTestResultsRegistered(thisSuite)
-    new InsertionOrderSet(atomic.get.testNamesList)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**
