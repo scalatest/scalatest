@@ -17,7 +17,7 @@ package org.scalatest
 
 private[scalatest] class InsertionOrderSet[A](elements: List[A]) extends Set[A] {
 
-  val list = elements.distinct.reverse
+  val list = elements.distinct
 
   def contains(key: A): Boolean = list.contains(key)
   def iterator: Iterator[A] = list.iterator

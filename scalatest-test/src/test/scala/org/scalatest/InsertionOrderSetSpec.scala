@@ -30,13 +30,11 @@ class InsertionOrderSetSpec extends FunSpec with Matchers {
       InsertionOrderSet(List(1, 2, 3)) + 4 shouldBe InsertionOrderSet(List(1, 2, 3, 4))
     }
     it("should return Iterator that iterates elements in the order they were inserted") {
-      pendingUntilFixed {
-        val set = InsertionOrderSet(List(2, 1, 3))
-        val itr = set.iterator
-        itr.next shouldBe 2
-        itr.next shouldBe 1
-        itr.next shouldBe 3
-      }
+      val set = InsertionOrderSet(List(2, 1, 3))
+      val itr = set.iterator
+      itr.next shouldBe 2
+      itr.next shouldBe 1
+      itr.next shouldBe 3
     }
     it("should return true when contains is called with element it contains") {
       val set = InsertionOrderSet(List(2, 1, 3))
