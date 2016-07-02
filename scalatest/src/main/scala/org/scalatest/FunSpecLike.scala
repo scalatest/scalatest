@@ -427,7 +427,7 @@ trait FunSpecLike extends TestSuite with TestRegistration with Informing with No
    * </pre>
    */
   override def testNames: Set[String] = {
-    new InsertionOrderSet(atomic.get.testNamesList)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

@@ -161,7 +161,7 @@ trait PropSpecLike extends TestSuite with TestRegistration with Informing with N
   * </p>
   */
   override def testNames: Set[String] = {
-    new InsertionOrderSet(atomic.get.testNamesList)
+    InsertionOrderSet(atomic.get.testNamesList)
   }
 
   /**

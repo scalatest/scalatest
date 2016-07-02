@@ -17,12 +17,12 @@ package org.scalatest
 
 private[scalatest] class InsertionOrderSet[A](elements: List[A]) extends Set[A] {
 
-  val list = elements.distinct.reverse
+  val list = elements.distinct
 
   def contains(key: A): Boolean = list.contains(key)
   def iterator: Iterator[A] = list.iterator
-  def +(elem: A) = new InsertionOrderSet[A](list :+ elem)
-  def -(elem: A) = new InsertionOrderSet[A](list.filter(_ != elem))
+  def +(elem: A) = InsertionOrderSet[A](list :+ elem)
+  def -(elem: A) = InsertionOrderSet[A](list.filter(_ != elem))
 }
 
 private[scalatest] object InsertionOrderSet {
