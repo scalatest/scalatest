@@ -274,10 +274,11 @@ import org.scalatest._
  *
  * <p>
  * The reason lexical placement is the one and only one way to share fixtures in a <code>path.FunSpec</code> is because
- * all of its lifecycle methods are overridden and declared <code>final</code>. Thus you can't override
- * <code>withFixture</code>, because it is <code>final</code>, or mix in <code>BeforeAndAfter</code> or
+ * all of its lifecycle methods are overridden and declared <code>final</code>. Thus you can't mix in <code>BeforeAndAfter</code> or
  * <code>BeforeAndAfterEach</code>, because both override <code>runTest</code>, which is <code>final</code> in
- * a <code>path.FunSpec</code>. In short:
+ * a <code>path.FunSpec</code>. You also can't override <code>withFixture</code>, because <code>path.FreeSpec</code>
+ * extends <a href="../Suite.html"><code>Suite</code></a> not <a href="../TestSuite.html"><code>TestSuite</code></a>,
+ * where <code>withFixture</code> is defined. In short:
  * </p>
  *
  * <p>
