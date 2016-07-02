@@ -24,7 +24,10 @@ class InsertionOrderSetSpec extends FunSpec with Matchers {
       InsertionOrderSet(List(1, 2, 3, 3)) shouldEqual InsertionOrderSet(List(1, 2, 3))
     }
     it("should ensure duplicates can't be added") {
-      pending
+      InsertionOrderSet(List(1, 2, 3)) + 3 shouldEqual InsertionOrderSet(List(1, 2, 3))
+    }
+    it("should ensure non-duplicates can be added") {
+      InsertionOrderSet(List(1, 2, 3)) + 4 shouldEqual InsertionOrderSet(List(1, 2, 3, 4))
     }
   }
 }
