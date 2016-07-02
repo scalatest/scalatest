@@ -15,16 +15,16 @@
  */
 package org.scalatest
 
-private[scalatest] class InsertionOrderSet[A](elements: List[A]) extends Set[A] {
-
-  val list = elements.distinct.reverse
-
-  def contains(key: A): Boolean = list.contains(key)
-  def iterator: Iterator[A] = list.iterator
-  def +(elem: A) = new InsertionOrderSet[A](list :+ elem)
-  def -(elem: A) = new InsertionOrderSet[A](list.filter(_ != elem))
-}
-
-private[scalatest] object InsertionOrderSet {
-  def apply[A](elements: List[A]): InsertionOrderSet[A] = new InsertionOrderSet(elements)
+class InsertionOrderSetSpec extends FunSpec with Matchers {
+  describe("An InsertionOrderSet") {
+    it("should offer an apply method in the companion object") {
+      InsertionOrderSet(List(1, 2, 3)) shouldEqual (new InsertionOrderSet(List(1, 2, 3)))
+    }
+    it("should ensure duplicates can't be passed to the constructor") {
+      InsertionOrderSet(List(1, 2, 3, 3)) shouldEqual InsertionOrderSet(List(1, 2, 3))
+    }
+    it("should ensure duplicates can't be added") {
+      pending
+    }
+  }
 }
