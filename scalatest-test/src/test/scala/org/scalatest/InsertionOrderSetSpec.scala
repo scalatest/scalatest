@@ -18,16 +18,36 @@ package org.scalatest
 class InsertionOrderSetSpec extends FunSpec with Matchers {
   describe("An InsertionOrderSet") {
     it("should offer an apply method in the companion object") {
-      InsertionOrderSet(List(1, 2, 3)) shouldEqual (new InsertionOrderSet(List(1, 2, 3)))
+      InsertionOrderSet(List(1, 2, 3)) shouldBe (new InsertionOrderSet(List(1, 2, 3)))
     }
     it("should ensure duplicates can't be passed to the constructor") {
-      InsertionOrderSet(List(1, 2, 3, 3)) shouldEqual InsertionOrderSet(List(1, 2, 3))
+      InsertionOrderSet(List(1, 2, 3, 3)) shouldBe InsertionOrderSet(List(1, 2, 3))
     }
     it("should ensure duplicates can't be added") {
-      InsertionOrderSet(List(1, 2, 3)) + 3 shouldEqual InsertionOrderSet(List(1, 2, 3))
+      InsertionOrderSet(List(1, 2, 3)) + 3 shouldBe InsertionOrderSet(List(1, 2, 3))
     }
     it("should ensure non-duplicates can be added") {
-      InsertionOrderSet(List(1, 2, 3)) + 4 shouldEqual InsertionOrderSet(List(1, 2, 3, 4))
+      InsertionOrderSet(List(1, 2, 3)) + 4 shouldBe InsertionOrderSet(List(1, 2, 3, 4))
+    }
+    it("should return Iterator that iterates elements in the order they were inserted") {
+      pendingUntilFixed {
+        val set = InsertionOrderSet(List(2, 1, 3))
+        val itr = set.iterator
+        itr.next shouldBe 2
+        itr.next shouldBe 1
+        itr.next shouldBe 3
+      }
+    }
+    it("should return true when contains is called with element it contains") {
+      val set = InsertionOrderSet(List(2, 1, 3))
+      set.contains(1) shouldBe true
+    }
+    it("should return false when contains is called with element it contains") {
+      val set = InsertionOrderSet(List(2, 1, 3))
+      set.contains(6) shouldBe false
+    }
+    it("should remove element passed in from -") {
+      InsertionOrderSet(List(2, 1, 3)) - 1 shouldBe InsertionOrderSet(List(2, 3))
     }
   }
 }
