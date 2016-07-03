@@ -1719,7 +1719,7 @@ object SharedHelpers extends Assertions with LineNumberHelper {
 
   private val TEMP_DIR_ATTEMPTS = 10000
 
-  // This is based on createTempDir here (Apache License): http://code.google.com/p/guava-libraries/source/browse/guava/src/com/google/common/io/Files.java
+  // This is based on createTempDir here (Apache License): https://github.com/google/guava/blob/v19.0/guava/src/com/google/common/io/Files.java
   // java.nio.file.Files#createTempDirectory() exists in Java 7 should be preferred when we no longer support Java 5/6.
   def createTempDirectory(): File = {
     val baseDir = new File(System.getProperty("java.io.tmpdir"))
