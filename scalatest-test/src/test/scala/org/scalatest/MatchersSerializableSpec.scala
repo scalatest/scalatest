@@ -301,7 +301,7 @@ class MatchersSerializableSpec extends FunSpec {
       serializeRoundtrip(e)
     }
 
-    it("'all(a) should not be have (HavePropertyMatcher)' should produce Serializable TestFailedException") {
+    it("'all(a) should not have (HavePropertyMatcher)' should produce Serializable TestFailedException") {
       case class Book(title: String, author: String)
       def title(expectedValue: String) =
         new HavePropertyMatcher[Book, String] {
@@ -1606,6 +1606,143 @@ class MatchersSerializableSpec extends FunSpec {
     it("'a should not be <= (b)' should produce Serializable TestFailedException") {
       val e = intercept[TestFailedException] {
         3 should not be <= (4)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be (BeMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val odd = BeMatcher[Int] { i =>
+          MatchResult(i % 2 != 0, "test", "test")
+        }
+        3 should not be (odd)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be a (AMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val positiveNumber = AMatcher[Int]("positive number") { _ > 0 }
+        3 should not be a (positiveNumber)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be an (AnMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val positiveNumber = AnMatcher[Int]("positive number") { _ > 0 }
+        3 should not be an (positiveNumber)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be a [Type]' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" should not be a [String]
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be an [Type]' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" should not be an [String]
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be (Spread)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        3 should not be (4 +- 1)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be definedAt (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not be definedAt (1)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not equal (Spread)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        3 should not equal (4 +- 1)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not equal (null)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val a: String = null
+        a should not equal (null)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not have (length (b))' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" should not have (length (4))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not have (size (b))' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "test" should not have (size (4))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not have (HavePropertyMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class Book(title: String, author: String)
+        def title(expectedValue: String) =
+          new HavePropertyMatcher[Book, String] {
+            def apply(book: Book) =
+              HavePropertyMatchResult(
+                book.title == expectedValue,
+                "title",
+                expectedValue,
+                book.title
+              )
+          }
+        Book("test1", "author1") should not have (title ("test1"))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not have (message (b))' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        new RuntimeException("test") should not have (message ("test"))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain (null)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        Some(null) should not contain (null)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        Some("test") should not contain ("test")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be (null)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val a: String = null
+        a should not be (null)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be (Symbol)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "" should not be ('empty)
       }
       serializeRoundtrip(e)
     }
