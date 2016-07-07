@@ -1747,6 +1747,272 @@ class MatchersSerializableSpec extends FunSpec {
       serializeRoundtrip(e)
     }
 
+    it("'a should not be (empty)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "" should not be (empty)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be a (Symbol)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "" should not be a ('empty)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be an (Symbol)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "" should not be an ('empty)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be a (BePropertyMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val nonEmptyString = new BePropertyMatcher[String] {
+          def apply(value: String) = {
+            new BePropertyMatchResult(!value.isEmpty, "non-empty string")
+          }
+        }
+        "test" should not be a (nonEmptyString)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be an (BePropertyMatcher)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val nonEmptyString = new BePropertyMatcher[String] {
+          def apply(value: String) = {
+            new BePropertyMatchResult(!value.isEmpty, "non-empty string")
+          }
+        }
+        "test" should not be an (nonEmptyString)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be theSameInstanceAs (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        val a = "test"
+        a should not be theSameInstanceAs (a)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be sorted' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not be sorted
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be readable' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class File(isReadable: Boolean)
+        File(true) should not be readable
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be writable' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class File(isWritable: Boolean)
+        File(true) should not be writable
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not be defined' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        Some("test") should not be defined
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain oneOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain oneOf (2, 4, 6)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain oneElementOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain oneElementOf (List(2, 4, 6))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain atLeastOneOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain atLeastOneOf (2, 4, 6)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain atLeastOneElementOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain atLeastOneElementOf (List(2, 4, 6))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain noneOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain noneOf (4, 5, 6)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain noElementsOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain noElementsOf (List(4, 5, 6))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain theSameElementsAs (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain theSameElementsAs (List(1, 2, 3))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain theSameElementsInOrderAs (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain theSameElementsInOrderAs (List(1, 2, 3))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain only (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain only (1, 2, 3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain inOrderOnly (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain inOrderOnly (1, 2, 3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain allOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain allOf (1, 2, 3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain allElementsOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain allElementsOf (List(1, 2, 3))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain inOrder (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain inOrder (1, 2, 3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain inOrderElementsOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain inOrderElementsOf (List(1, 2, 3))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain atMostOneOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain atMostOneOf (3, 4, 5)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain atMostOneElementOf (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        List(1, 2, 3) should not contain atMostOneElementOf (List(3, 4, 5))
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain key (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        Map(1 -> 1, 2 -> 2, 3 -> 3) should not contain key (3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not contain value (b)' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        Map(1 -> 1, 2 -> 2, 3 -> 3) should not contain value (3)
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not fullyMatch regex (\"a(b*)c\")' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "abbc" should not fullyMatch regex ("a(b*)c")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not include regex (\"a(b*)c\")' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "aabbcc" should not include regex ("a(b*)c")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not include (\"abc\")' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "aabcc" should not include regex ("abc")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not startWith regex (\"a(b*)c\")' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "abbcc" should not startWith regex ("a(b*)c")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not startWith (\"abc\")' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "abcc" should not startWith ("abc")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not endWith regex (\"a(b*)c\")' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "aabbc" should not endWith regex ("a(b*)c")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not endWith (\"abc\")' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        "aaabc" should not endWith ("abc")
+      }
+      serializeRoundtrip(e)
+    }
+
+    it("'a should not matchPattern {...}' should produce Serializable TestFailedException") {
+      val e = intercept[TestFailedException] {
+        case class Person(name: String, age: Int)
+        Person("Bob", 21) should not matchPattern { case Person("Bob", _) => }
+      }
+      serializeRoundtrip(e)
+    }
+
   }
 
 }
