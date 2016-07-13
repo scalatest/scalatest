@@ -107,8 +107,7 @@ trait Accumulation {
    * For more information and examples, see the <a href="Or.html#usingCombined">Using <code>combined</code></a> section of the main documentation for class <code>Or</code>.
    * </p>
    */
-  implicit def convertGenTraversableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[G Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[G Or EVERY[ERR]], G, TRAVONCE[G]]): Combinable[G, ERR, TRAVONCE] = 
-
+  implicit def convertGenTraversableOnceToCombinable[G, ERR, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[G Or EVERY[ERR]])(implicit cbf: CanBuildFrom[TRAVONCE[G Or EVERY[ERR]], G, TRAVONCE[G]]): Combinable[G, ERR, TRAVONCE] =
     new Combinable[G, ERR, TRAVONCE] {
 
       def combined: TRAVONCE[G] Or Every[ERR] = {
@@ -118,6 +117,27 @@ trait Accumulation {
         // += into the builder, what? Oh I get it. The result type of my foldLeft needs to be Builder[Seq[G]] Or Every[ERR]
         val tempOr: Builder[G, TRAVONCE[G]] Or Every[ERR] = 
           xs.foldLeft((Good(emptyTRAVONCEOfGBuilder): Builder[G, TRAVONCE[G]] Or Every[ERR])) { (accumulator: Builder[G, TRAVONCE[G]] Or Every[ERR],  nextElem: G Or Every[ERR]) =>
+            (accumulator, nextElem) match {
+              case (Good(bldr), Good(ele)) => Good(bldr += ele)
+              case (Good(_), Bad(err)) => Bad(err)
+              case (Bad(errA), Bad(errB)) => Bad(errA ++ errB)
+              case (Bad(errA), Good(_)) => Bad(errA)
+            }
+          }
+        tempOr map (_.result)
+      }
+    }
+
+  implicit def convertGenTraversableOnceToCombinable2[G, EVERY[b] <: Every[b], TRAVONCE[+e] <: GenTraversableOnce[e]](xs: TRAVONCE[G Or EVERY[Nothing]])(implicit cbf: CanBuildFrom[TRAVONCE[G Or EVERY[Nothing]], G, TRAVONCE[G]]): Combinable[G, Nothing, TRAVONCE] =
+    new Combinable[G, Nothing, TRAVONCE] {
+
+      def combined: TRAVONCE[G] Or Every[Nothing] = {
+        // So now I have an empty builder
+        val emptyTRAVONCEOfGBuilder: Builder[G, TRAVONCE[G]] = cbf(xs)
+        // So now I want to foldLeft across my TRAVONCE[G Or EVERY[ERR]], starting with an empty TRAVONCEOfGBuilder, and each step along the way, I'll
+        // += into the builder, what? Oh I get it. The result type of my foldLeft needs to be Builder[Seq[G]] Or Every[ERR]
+        val tempOr: Builder[G, TRAVONCE[G]] Or Every[Nothing] =
+          xs.foldLeft((Good(emptyTRAVONCEOfGBuilder): Builder[G, TRAVONCE[G]] Or Every[Nothing])) { (accumulator: Builder[G, TRAVONCE[G]] Or Every[Nothing],  nextElem: G Or Every[Nothing]) =>
             (accumulator, nextElem) match {
               case (Good(bldr), Good(ele)) => Good(bldr += ele)
               case (Good(_), Bad(err)) => Bad(err)
