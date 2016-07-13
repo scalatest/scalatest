@@ -22,6 +22,7 @@ import Prop._
 import org.scalatest.exceptions._
 import org.scalatest.exceptions.TestFailedException
 import Matchers._
+import org.scalactic.Good
 
 class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAssertion {
 
@@ -38,6 +39,14 @@ class ShouldEqualSpec extends FunSpec with Checkers with ReturnsNormallyThrowsAs
 
       // a string should equal another string with the same value
       check((s: String) => returnsNormally(s should equal (new String(s))))
+    }
+
+    it("should work correctly with List(Good(3)).combined shouldBe Good(List(3))") {
+      //List(Good(3)).combined shouldBe Good(List(3))
+
+      import org.scalactic.Accumulation._
+
+      List(Good(3)).combined shouldEqual Good(List(3))
     }
 
     it("should do nothing when not equal and used with not") {
