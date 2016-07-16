@@ -1093,14 +1093,18 @@ class FrameworkSuite extends FunSuite {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-P"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-P <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
+    assert(iae.getMessage === "-P without specifying <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
+  }
+
+  test("Framework.runner accept without problem when -P 4 is passed in") {
+    framework.runner(Array("-P4"), Array.empty, testClassLoader)
   }
   
   test("Framework.runner should throw IllegalArgumentException when -PS is passed in") {
     val iae = intercept[IllegalArgumentException] {
       framework.runner(Array("-PS"), Array.empty, testClassLoader)
     }
-    assert(iae.getMessage === "-P <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
+    assert(iae.getMessage === "-PS is not supported when running ScalaTest from sbt, please use sbt parallel and logBuffered configuration instead.")
   }
   
   test("Framework.runner should throw IllegalArgumentException when -R is passed in") {
