@@ -629,7 +629,8 @@ class Framework extends SbtFramework {
     val configSet: Set[ReporterConfigParam],
     detectSlowpokes: Boolean,
     slowpokeDetectionDelay: Long,
-    slowpokeDetectionPeriod: Long
+    slowpokeDetectionPeriod: Long,
+    concurrentConfig: ConcurrentConfig
   ) extends sbt.testing.Runner {
     val isDone = new AtomicBoolean(false)
     val serverThread = new AtomicReference[Option[Thread]](None)
@@ -660,7 +661,11 @@ class Framework extends SbtFramework {
         }
       }
 
-    val poolSize = Runtime.getRuntime.availableProcessors * 2
+    val poolSize =
+      if (concurrentConfig.numThreads == 0)
+        Runtime.getRuntime.availableProcessors * 2
+      else
+        concurrentConfig.numThreads
 
     val execSvc: ExecutorService = Executors.newFixedThreadPool(poolSize, threadFactory)
     
@@ -929,9 +934,6 @@ import java.net.{ServerSocket, InetAddress}
     if (!testNGArgs.isEmpty)
       throw new IllegalArgumentException("Running TestNG tests (-b <testng>) is not supported when running ScalaTest from sbt.")
 
-    if (!concurrentArgs.isEmpty)
-      throw new IllegalArgumentException("-P <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
-    
     if (!suffixes.isEmpty)
       throw new IllegalArgumentException("Discovery suffixes (-q) is not supported when running ScalaTest from sbt; Please use sbt's test-only or test filter instead.")
 
@@ -1035,7 +1037,15 @@ import java.net.{ServerSocket, InetAddress}
           throw new IllegalArgumentException("Graphic reporter -g is not supported when running ScalaTest from sbt.")
         }
       }
-    
+
+    val concurrentConfig: ConcurrentConfig = parseConcurrentConfig(concurrentArgs)
+
+    if (concurrentConfig.enableSuiteSortingReporter)
+      throw new IllegalArgumentException("-PS is not supported when running ScalaTest from sbt, please use sbt parallel and logBuffered configuration instead.")
+
+    if (!concurrentArgs.isEmpty && concurrentConfig.numThreads == 0)
+      throw new IllegalArgumentException("-P without specifying <numthreads> is not supported when running ScalaTest from sbt, please use sbt parallel configuration instead.")
+
     new ScalaTestRunner(
       args,
       testClassLoader,
@@ -1060,7 +1070,8 @@ import java.net.{ServerSocket, InetAddress}
       configSet,
       detectSlowpokes,
       slowpokeDetectionDelay,
-      slowpokeDetectionPeriod
+      slowpokeDetectionPeriod,
+      concurrentConfig
     )
   }
   
