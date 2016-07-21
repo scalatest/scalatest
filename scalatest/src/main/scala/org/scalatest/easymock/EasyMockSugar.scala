@@ -412,19 +412,21 @@ trait EasyMockSugar {
    * @param mocks one or more mock objects to invoke <code>replay</code> before using and <code>verify</code> after using.
    * @throws IllegalArgumentException if no mocks are passed
    */
-  def whenExecuting(mocks: AnyRef*)(fun: => Unit): Unit = {
+  def whenExecuting[R](mocks: AnyRef*)(fun: => R): R = {
 
     require(mocks.length > 0, "Must pass at least one mock to whenExecuting, but mocks.length was 0.") 
 
     for (m <- mocks)
       EasyMock.replay(m)
 
-    fun
+    val result = fun
 
     // Don't put this in a try block, so that if fun throws an exception 
     // it propagates out immediately and shows up as the cause of the failed test
     for (m <- mocks)
       EasyMock.verify(m)
+
+    result
   }
 
   /**
