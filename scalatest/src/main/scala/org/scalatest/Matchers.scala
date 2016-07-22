@@ -5423,7 +5423,14 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
         val result = rightMatcher(e)
         MatchFailed.unapply(result)(prettifier) match {
           case Some(failureMessage) =>
-            indicateFailure(failureMessage, None, pos)
+            rightMatcher match {
+              case eqMatcher: EqualMatcher[T] =>
+                eqMatcher.difference(e) match {
+                  case Some(diff) => indicateFailure(failureMessage, None, pos, diff)
+                  case _ => indicateFailure(failureMessage, None, pos)
+                }
+              case _ => indicateFailure(failureMessage, None, pos)
+            }
           case None => indicateSuccess(result.negatedFailureMessage(prettifier))
         }
       }

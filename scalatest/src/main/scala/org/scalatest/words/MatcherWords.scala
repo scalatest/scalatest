@@ -301,10 +301,6 @@ trait MatcherWords {
           }
           def apply(left: T): MatchResult = {
             val (leftee, rightee) = difference(left).flatMap(_.inlineDiff).getOrElse(Suite.getObjectsForFailureMessage(left, right))
-              /*equality match {
-                case differ: Differ[T] => differ.difference(left, right).inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(left, right))
-                case _ => Suite.getObjectsForFailureMessage(left, right)
-              }*/
             MatchResult(
               equality.areEqual(left, right),
               Resources.rawDidNotEqual,
