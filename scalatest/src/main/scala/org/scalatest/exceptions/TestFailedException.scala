@@ -52,7 +52,7 @@ class TestFailedException(
   cause: Option[Throwable],
   posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   val payload: Option[Any],
-  val difference: IndexedSeq[Difference]
+  val differences: IndexedSeq[Difference]
 ) extends StackDepthException(messageFun, cause, posOrStackDepthFun) with ModifiableMessage[TestFailedException] with PayloadField with ModifiablePayload[TestFailedException] {
 
   /**
@@ -223,7 +223,7 @@ class TestFailedException(
    */
   def severedAtStackDepth: TestFailedException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new TestFailedException(messageFun, cause, posOrStackDepthFun, payload, difference)
+    val e = new TestFailedException(messageFun, cause, posOrStackDepthFun, payload, differences)
     e.setStackTrace(truncated)
     e
   }
@@ -237,7 +237,7 @@ class TestFailedException(
    * the modified optional detail message for the result instance of <code>TestFailedException</code>.
    */
   def modifyMessage(fun: Option[String] => Option[String]): TestFailedException = {
-    val mod = new TestFailedException(StackDepthException.toExceptionFunction(fun(message)), cause, posOrStackDepthFun, payload, difference) // TODO: Seems like here I could just compose the message functions and not evaluate them, in case it is never used
+    val mod = new TestFailedException(StackDepthException.toExceptionFunction(fun(message)), cause, posOrStackDepthFun, payload, differences) // TODO: Seems like here I could just compose the message functions and not evaluate them, in case it is never used
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -252,7 +252,7 @@ class TestFailedException(
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): TestFailedException = {
     val currentPayload = payload
-    val mod = new TestFailedException(messageFun, cause, posOrStackDepthFun, fun(currentPayload), difference) // TODO: Should I be lazy about replacing the payload?
+    val mod = new TestFailedException(messageFun, cause, posOrStackDepthFun, fun(currentPayload), differences) // TODO: Should I be lazy about replacing the payload?
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -270,7 +270,7 @@ class TestFailedException(
    */
   override def equals(other: Any): Boolean =
     other match {
-      case that: TestFailedException => super.equals(that) && payload == that.payload && difference == that.difference
+      case that: TestFailedException => super.equals(that) && payload == that.payload && differences == that.differences
       case _ => false
     }
 
@@ -280,6 +280,6 @@ class TestFailedException(
   override def hashCode: Int =
     41 * (
       super.hashCode
-    ) + payload.hashCode + difference.hashCode
+    ) + payload.hashCode + differences.hashCode
 }
 
