@@ -46,8 +46,7 @@ class DifferSpec extends FunSpec {
       assert(e.message == Some("'all' inspection failed, because: \n" +
         "  at index 1, \"**test[2]\" did not equal \"test[]**\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
         "in List(\"test\", \"test2\", \"test\")"))
-      assert(e.differences.isEmpty)  // because it is thrown as inspector TestFailedException
-      //assert(e.difference.map(_.inlineDiff) == Some(("**test[2]", "test[]**")))
+      assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
     }
 
     it("can be used with a shouldEqual (b) syntax") {
