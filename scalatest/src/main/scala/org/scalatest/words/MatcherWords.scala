@@ -292,13 +292,19 @@ trait MatcherWords {
     new MatcherFactory1[Any, Equality] {
       def matcher[T <: Any : Equality]: Matcher[T] = {
         val equality = implicitly[Equality[T]]
-        new Matcher[T] {
+        new EqualMatcher[T] {
+          def difference(left: T) = {
+            equality match {
+              case differ: Differ[T] => Some(differ.difference(left, right))
+              case _ => None
+            }
+          }
           def apply(left: T): MatchResult = {
-            val (leftee, rightee) =
-              equality match {
+            val (leftee, rightee) = difference(left).flatMap(_.inlineDiff).getOrElse(Suite.getObjectsForFailureMessage(left, right))
+              /*equality match {
                 case differ: Differ[T] => differ.difference(left, right).inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(left, right))
                 case _ => Suite.getObjectsForFailureMessage(left, right)
-              }
+              }*/
             MatchResult(
               equality.areEqual(left, right),
               Resources.rawDidNotEqual,

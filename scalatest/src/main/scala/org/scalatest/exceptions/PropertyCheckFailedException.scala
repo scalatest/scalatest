@@ -44,7 +44,7 @@ abstract class PropertyCheckFailedException(
   val undecoratedMessage: String,
   val args: List[Any],
   optionalArgNames: Option[List[String]]
-) extends TestFailedException((sde: StackDepthException) => Some(messageFun(sde)), cause, posOrStackDepthFun, payload) {
+) extends TestFailedException((sde: StackDepthException) => Some(messageFun(sde)), cause, posOrStackDepthFun, payload, None) {
 
   /**
     * Constructs a <code>PropertyCheckFailedException</code> with given error message function, optional cause, stack depth function,

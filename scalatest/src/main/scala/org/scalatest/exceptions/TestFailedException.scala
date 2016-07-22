@@ -19,6 +19,7 @@ import org.scalactic.exceptions.NullArgumentException
 import StackDepthExceptionHelper.posOrElseStackDepthFun
 import org.scalactic.Requirements._
 import org.scalactic.source
+import org.scalatest.Difference
 
 /**
  * Exception that indicates a test failed.
@@ -50,7 +51,8 @@ class TestFailedException(
   messageFun: StackDepthException => Option[String],
   cause: Option[Throwable],
   posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
-  val payload: Option[Any]
+  val payload: Option[Any],
+  val difference: Option[Difference]
 ) extends StackDepthException(messageFun, cause, posOrStackDepthFun) with ModifiableMessage[TestFailedException] with PayloadField with ModifiablePayload[TestFailedException] {
 
   /**
@@ -66,7 +68,7 @@ class TestFailedException(
     cause: Option[Throwable],
     pos: source.Position,
     payload: Option[Any]
-  ) = this(messageFun, cause, Left(pos), payload)
+  ) = this(messageFun, cause, Left(pos), payload, None)
 
   /**
     * Constructs a <code>TestFailedException</code> with the given error message function, optional cause and source position.
@@ -79,7 +81,7 @@ class TestFailedException(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
     pos: source.Position
-  ) = this(messageFun, cause, Left(pos), None)
+  ) = this(messageFun, cause, Left(pos), None, None)
 
   /**
    * Constructs a <code>TestFailedException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -92,7 +94,7 @@ class TestFailedException(
    * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
   def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
-    this(messageFun, cause, Right(failedCodeStackDepthFun), None)
+    this(messageFun, cause, Right(failedCodeStackDepthFun), None, None)
 
   /**
    * Constructs a <code>TestFailedException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -109,6 +111,7 @@ class TestFailedException(
       StackDepthException.toExceptionFunction(message),
       cause,
       Right((_: StackDepthException) => failedCodeStackDepth),
+      None,
       None
     )
 
@@ -123,6 +126,7 @@ class TestFailedException(
       StackDepthException.toExceptionFunction(None),
       None,
       Right((_: StackDepthException) => failedCodeStackDepth),
+      None,
       None
     )
 
@@ -142,6 +146,7 @@ class TestFailedException(
       },
       None,
       Right((_: StackDepthException) => failedCodeStackDepth),
+      None,
       None
     )
 
@@ -163,6 +168,7 @@ class TestFailedException(
       },
       Some(cause),
       Right((_: StackDepthException) => failedCodeStackDepth),
+      None,
       None
     )
 
@@ -191,6 +197,7 @@ class TestFailedException(
         Some(cause)
       },
       Right((_: StackDepthException) => failedCodeStackDepth),
+      None,
       None
     )
 
@@ -206,7 +213,7 @@ class TestFailedException(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
     failedCodeStackDepthFun: StackDepthException => Int,
-    payload: Option[Any]) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload)
+    payload: Option[Any]) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, None)
 
   /**
    * Returns an exception of class <code>TestFailedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
@@ -216,7 +223,7 @@ class TestFailedException(
    */
   def severedAtStackDepth: TestFailedException = {
     val truncated = getStackTrace.drop(failedCodeStackDepth)
-    val e = new TestFailedException(messageFun, cause, posOrStackDepthFun, payload)
+    val e = new TestFailedException(messageFun, cause, posOrStackDepthFun, payload, difference)
     e.setStackTrace(truncated)
     e
   }
@@ -230,7 +237,7 @@ class TestFailedException(
    * the modified optional detail message for the result instance of <code>TestFailedException</code>.
    */
   def modifyMessage(fun: Option[String] => Option[String]): TestFailedException = {
-    val mod = new TestFailedException(StackDepthException.toExceptionFunction(fun(message)), cause, posOrStackDepthFun, payload) // TODO: Seems like here I could just compose the message functions and not evaluate them, in case it is never used
+    val mod = new TestFailedException(StackDepthException.toExceptionFunction(fun(message)), cause, posOrStackDepthFun, payload, difference) // TODO: Seems like here I could just compose the message functions and not evaluate them, in case it is never used
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -245,7 +252,7 @@ class TestFailedException(
    */
   def modifyPayload(fun: Option[Any] => Option[Any]): TestFailedException = {
     val currentPayload = payload
-    val mod = new TestFailedException(messageFun, cause, posOrStackDepthFun, fun(currentPayload)) // TODO: Should I be lazy about replacing the payload?
+    val mod = new TestFailedException(messageFun, cause, posOrStackDepthFun, fun(currentPayload), difference) // TODO: Should I be lazy about replacing the payload?
     mod.setStackTrace(getStackTrace)
     mod
   }
@@ -263,7 +270,7 @@ class TestFailedException(
    */
   override def equals(other: Any): Boolean =
     other match {
-      case that: TestFailedException => super.equals(that) && payload == that.payload
+      case that: TestFailedException => super.equals(that) && payload == that.payload && difference == that.difference
       case _ => false
     }
 
@@ -273,6 +280,6 @@ class TestFailedException(
   override def hashCode: Int =
     41 * (
       super.hashCode
-    ) + payload.hashCode
+    ) + payload.hashCode + difference.hashCode
 }
 
