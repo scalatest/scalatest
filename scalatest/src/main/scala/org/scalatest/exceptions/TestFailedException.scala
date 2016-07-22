@@ -52,7 +52,7 @@ class TestFailedException(
   cause: Option[Throwable],
   posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   val payload: Option[Any],
-  val difference: Option[Difference]
+  val difference: IndexedSeq[Difference]
 ) extends StackDepthException(messageFun, cause, posOrStackDepthFun) with ModifiableMessage[TestFailedException] with PayloadField with ModifiablePayload[TestFailedException] {
 
   /**
@@ -68,7 +68,7 @@ class TestFailedException(
     cause: Option[Throwable],
     pos: source.Position,
     payload: Option[Any]
-  ) = this(messageFun, cause, Left(pos), payload, None)
+  ) = this(messageFun, cause, Left(pos), payload, Vector.empty)
 
   /**
     * Constructs a <code>TestFailedException</code> with the given error message function, optional cause and source position.
@@ -81,7 +81,7 @@ class TestFailedException(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
     pos: source.Position
-  ) = this(messageFun, cause, Left(pos), None, None)
+  ) = this(messageFun, cause, Left(pos), None, Vector.empty)
 
   /**
    * Constructs a <code>TestFailedException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -94,7 +94,7 @@ class TestFailedException(
    * @throws NullArgumentException if either <code>message</code> of <code>cause</code> is <code>null</code>, or <code>Some(null)</code>.
    */
   def this(messageFun: StackDepthException => Option[String], cause: Option[Throwable], failedCodeStackDepthFun: StackDepthException => Int) =
-    this(messageFun, cause, Right(failedCodeStackDepthFun), None, None)
+    this(messageFun, cause, Right(failedCodeStackDepthFun), None, Vector.empty)
 
   /**
    * Constructs a <code>TestFailedException</code> with pre-determined <code>message</code> and <code>failedCodeStackDepth</code>. (This was
@@ -112,7 +112,7 @@ class TestFailedException(
       cause,
       Right((_: StackDepthException) => failedCodeStackDepth),
       None,
-      None
+      Vector.empty
     )
 
   /**
@@ -127,7 +127,7 @@ class TestFailedException(
       None,
       Right((_: StackDepthException) => failedCodeStackDepth),
       None,
-      None
+      Vector.empty
     )
 
   /**
@@ -147,7 +147,7 @@ class TestFailedException(
       None,
       Right((_: StackDepthException) => failedCodeStackDepth),
       None,
-      None
+      Vector.empty
     )
 
   /**
@@ -169,7 +169,7 @@ class TestFailedException(
       Some(cause),
       Right((_: StackDepthException) => failedCodeStackDepth),
       None,
-      None
+      Vector.empty
     )
 
   /**
@@ -198,7 +198,7 @@ class TestFailedException(
       },
       Right((_: StackDepthException) => failedCodeStackDepth),
       None,
-      None
+      Vector.empty
     )
 
   /**
@@ -213,7 +213,7 @@ class TestFailedException(
     messageFun: StackDepthException => Option[String],
     cause: Option[Throwable],
     failedCodeStackDepthFun: StackDepthException => Int,
-    payload: Option[Any]) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, None)
+    payload: Option[Any]) = this(messageFun, cause, Right(failedCodeStackDepthFun), payload, Vector.empty)
 
   /**
    * Returns an exception of class <code>TestFailedException</code> with <code>failedExceptionStackDepth</code> set to 0 and 
