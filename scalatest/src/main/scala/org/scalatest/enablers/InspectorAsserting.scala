@@ -17,10 +17,10 @@ package org.scalatest.enablers
 
 import org.scalatest._
 import org.scalatest.exceptions._
-import org.scalactic.{source, Prettifier}
+import org.scalactic.{Prettifier, source}
+
 import scala.annotation.tailrec
 import scala.collection.GenTraversable
-import StackDepthExceptionHelper.getStackDepth
 import Suite.indentLines
 import org.scalatest.FailureMessages.decorateToStringValue
 
@@ -90,7 +90,7 @@ abstract class UnitInspectorAsserting {
       val xsIsMap = isMap(original)
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
-      if (result.failedElements.length > 0)
+      if (result.failedElements.length > 0) {
         indicateFailure(
           if (shorthand)
             Resources.allShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
@@ -98,14 +98,15 @@ abstract class UnitInspectorAsserting {
             Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
           Some(result.failedElements(0)._3),
           pos,
-          result.failedElements.map(_._3).filter(_.isInstanceOf[TestFailedException]).flatMap(_.asInstanceOf[TestFailedException].differences)
+          result.failedElements.map(_._3).flatMap(Suite.differencesFromThrowable)
         )
+      }
       else indicateSuccess("forAll succeeded")
     }
 
     def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       @tailrec
-      def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String], throwableAcc: IndexedSeq[Throwable]): (Int, IndexedSeq[String], IndexedSeq[Throwable]) = {
+      def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String], throwableAcc: scala.collection.immutable.IndexedSeq[Throwable]): (Int, IndexedSeq[String], scala.collection.immutable.IndexedSeq[Throwable]) = {
         if (itr.hasNext) {
           val head = itr.next
           val (newPassedCount, newMessageAcc, newThrowableAcc) =
@@ -135,7 +136,7 @@ abstract class UnitInspectorAsserting {
       if (min <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'min'"))
 
-      val (passedCount, messageAcc, throwableAcc) = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty, IndexedSeq.empty)
+      val (passedCount, messageAcc, throwableAcc) = forAtLeastAcc(xs.toIterator, xs.isInstanceOf[Seq[E]], 0, 0, IndexedSeq.empty, scala.collection.immutable.IndexedSeq.empty)
       if (passedCount < min)
         indicateFailure(
           if (shorthand)
@@ -143,14 +144,13 @@ abstract class UnitInspectorAsserting {
               Resources.atLeastShorthandFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
             else
               Resources.atLeastShorthandFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
+          else if (passedCount > 0)
+            Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
           else
-            if (passedCount > 0)
-              Resources.forAtLeastFailed(min.toString, elementLabel(passedCount), indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
-            else
-              Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
+            Resources.forAtLeastFailedNoElement(min.toString, indentErrorMessages(messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
           None,
           pos,
-          throwableAcc.filter(_.isInstanceOf[TestFailedException]).flatMap(_.asInstanceOf[TestFailedException].differences)
+          throwableAcc.flatMap(Suite.differencesFromThrowable)
         )
       else indicateSuccess("forAtLeast succeeded")
     }
@@ -266,7 +266,7 @@ abstract class UnitInspectorAsserting {
 
     def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       @tailrec
-      def runAndCollectErrorMessage[E](itr: Iterator[E], messageList: IndexedSeq[String], throwableList: IndexedSeq[Throwable],  index: Int)(fun: E => T): (IndexedSeq[String], IndexedSeq[Throwable]) = {
+      def runAndCollectErrorMessage[E](itr: Iterator[E], messageList: IndexedSeq[String], throwableList: scala.collection.immutable.IndexedSeq[Throwable],  index: Int)(fun: E => T): (IndexedSeq[String], scala.collection.immutable.IndexedSeq[Throwable]) = {
         if (itr.hasNext) {
           val head = itr.next
           val (newMessageList, newThrowableList) =
@@ -290,7 +290,7 @@ abstract class UnitInspectorAsserting {
         else
           (messageList, throwableList)
       }
-      val (messageList, throwableList) = runAndCollectErrorMessage(xs.toIterator, IndexedSeq.empty, IndexedSeq.empty, 0)(fun)
+      val (messageList, throwableList) = runAndCollectErrorMessage(xs.toIterator, IndexedSeq.empty, scala.collection.immutable.IndexedSeq.empty, 0)(fun)
       if (messageList.size > 0)
         indicateFailure(
           if (shorthand)
@@ -299,7 +299,7 @@ abstract class UnitInspectorAsserting {
             Resources.forEveryFailed(indentErrorMessages(messageList).mkString(", \n"), decorateToStringValue(prettifier, original)),
           None,
           pos,
-          throwableList.filter(_.isInstanceOf[TestFailedException]).flatMap(_.asInstanceOf[TestFailedException].differences)
+          throwableList.flatMap(Suite.differencesFromThrowable)
         )
       else indicateSuccess("forEvery succeeded")
     }
@@ -309,7 +309,7 @@ abstract class UnitInspectorAsserting {
     // CS: because we want to construct the message lazily.
     private[scalatest] def indicateSuccess(message: => String): Result
 
-    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, differences: IndexedSeq[Difference]): Result
+    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[Difference]): Result
   }
 
   /**
@@ -320,7 +320,7 @@ abstract class UnitInspectorAsserting {
     new InspectorAssertingImpl[T] {
       type Result = Unit
       def indicateSuccess(message: => String): Unit = ()
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, differences: IndexedSeq[Difference]): Unit = {
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[Difference]): Unit = {
         val msg: String = message
         throw new TestFailedException(
           (_: StackDepthException) => Some(msg),
@@ -362,7 +362,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
     new InspectorAssertingImpl[Assertion] {
       type Result = Assertion
       def indicateSuccess(message: => String): Assertion = Succeeded
-      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, differences: IndexedSeq[Difference]): Assertion = {
+      def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position, differences: scala.collection.immutable.IndexedSeq[Difference]): Assertion = {
         val msg: String = message
         throw new TestFailedException(
           (_: StackDepthException) => Some(msg),
@@ -420,7 +420,7 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
     if (count > 1) Resources.forAssertionsElements(count.toString) else Resources.forAssertionsElement(count.toString)
 
   private[scalatest] final case class ForResult[T](passedCount: Int = 0, messageAcc: IndexedSeq[String] = IndexedSeq.empty,
-                          passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty, failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
+                          passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty, failedElements: scala.collection.immutable.IndexedSeq[(Int, T, Throwable)] = scala.collection.immutable.IndexedSeq.empty)
 
   @tailrec
   private[scalatest] final def runFor[T, ASSERTION](itr: Iterator[T], xsIsMap: Boolean, index:Int, result: ForResult[T], fun: T => ASSERTION, stopFun: ForResult[_] => Boolean): ForResult[T] = {

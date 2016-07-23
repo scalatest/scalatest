@@ -25,54 +25,100 @@ class DifferSpec extends FunSpec {
 
   describe("Differ") {
 
-    implicit val equality =
-      new Equality[String] with Differ[String] {
-        def areEqual(a: String, b: Any): Boolean = Equality.default.areEqual(a, b)
-        def difference(a: String, b: Any): Difference =
-          new Difference {
-            def inlineDiff = {
-              val (aa, bb) = Suite.getObjectsForFailureMessage(a, b)
-              Some(("**" + aa, bb + "**"))
+    describe("when used with default Equality") {
+
+      it("can be used with a shouldEqual (b) syntax") {
+        val e = intercept[TestFailedException] {
+          "test2" shouldEqual ("test")
+        }
+        assert(e.message == Some("\"test[2]\" did not equal \"test[]\""))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
+      }
+
+      it("can be used with a should equal (b) syntax") {
+        val e = intercept[TestFailedException] {
+          "test2" should equal("test")
+        }
+        assert(e.message == Some("\"test[2]\" did not equal \"test[]\""))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
+      }
+
+      it("can be used with all(a) shouldEqual (b) syntax") {
+        val e = intercept[TestFailedException] {
+          all(List("test", "test2", "test")) shouldEqual ("test")
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 1, \"test[2]\" did not equal \"test[]\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(\"test\", \"test2\", \"test\")"))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
+      }
+
+      it("can be used with all(a) should equal (b) syntax") {
+        val e = intercept[TestFailedException] {
+          all(List("test", "test2", "test")) should equal("test")
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 1, \"test[2]\" did not equal \"test[]\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(\"test\", \"test2\", \"test\")"))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
+      }
+
+    }
+
+    describe("when used with custom Equality that has custom difference implementation") {
+
+      implicit val equality =
+        new Equality[String] with Differ[String] {
+          def areEqual(a: String, b: Any): Boolean = Equality.default.areEqual(a, b)
+
+          def difference(a: String, b: Any): Difference =
+            new Difference {
+              def inlineDiff = {
+                val (aa, bb) = Suite.getObjectsForFailureMessage(a, b)
+                Some(("**" + aa, bb + "**"))
+              }
+
+              def sideBySideDiff = None
+
+              def analysis = None
             }
-            def sideBySideDiff = None
-            def analysis = None
-          }
+        }
+
+      it("can be used with a shouldEqual (b) syntax") {
+        val e = intercept[TestFailedException] {
+          "test2" shouldEqual ("test")
+        }
+        assert(e.message == Some("\"**test[2]\" did not equal \"test[]**\""))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
       }
 
-    it("can be used with all(a) shouldEqual (b) syntax") {
-      val e = intercept[TestFailedException] {
-        all(List("test", "test2", "test")) shouldEqual ("test")
+      it("can be used with a should equal (b) syntax") {
+        val e = intercept[TestFailedException] {
+          "test2" should equal("test")
+        }
+        assert(e.message == Some("\"**test[2]\" did not equal \"test[]**\""))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
       }
-      assert(e.message == Some("'all' inspection failed, because: \n" +
-        "  at index 1, \"**test[2]\" did not equal \"test[]**\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
-        "in List(\"test\", \"test2\", \"test\")"))
-      assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
-    }
 
-    it("can be used with all(a) should equal (b) syntax") {
-      val e = intercept[TestFailedException] {
-        all(List("test", "test2", "test")) should equal ("test")
+      it("can be used with all(a) shouldEqual (b) syntax") {
+        val e = intercept[TestFailedException] {
+          all(List("test", "test2", "test")) shouldEqual ("test")
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 1, \"**test[2]\" did not equal \"test[]**\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(\"test\", \"test2\", \"test\")"))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
       }
-      assert(e.message == Some("'all' inspection failed, because: \n" +
-        "  at index 1, \"**test[2]\" did not equal \"test[]**\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
-        "in List(\"test\", \"test2\", \"test\")"))
-      assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
-    }
 
-    it("can be used with a shouldEqual (b) syntax") {
-      val e = intercept[TestFailedException] {
-        "test2" shouldEqual ("test")
+      it("can be used with all(a) should equal (b) syntax") {
+        val e = intercept[TestFailedException] {
+          all(List("test", "test2", "test")) should equal("test")
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 1, \"**test[2]\" did not equal \"test[]**\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(\"test\", \"test2\", \"test\")"))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
       }
-      assert(e.message == Some("\"**test[2]\" did not equal \"test[]**\""))
-      assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
-    }
-
-    it("can be used with a should equal (b) syntax") {
-      val e = intercept[TestFailedException] {
-        "test2" should equal ("test")
-      }
-      assert(e.message == Some("\"**test[2]\" did not equal \"test[]**\""))
-      assert(e.differences.flatMap(_.inlineDiff) == Vector(("**test[2]", "test[]**")))
     }
 
   }

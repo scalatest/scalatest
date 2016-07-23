@@ -814,7 +814,7 @@ private[scalatest] object StringReporter {
  
         stringToPrint map (new Fragment(_, AnsiYellow))
 
-      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
+      case TestFailed(ordinal, message, suiteName, suiteId, suiteClassName, testName, testText, recordedEvents, differences, throwable, duration, formatter, location, rerunnable, payload, threadName, timeStamp) =>
 
         val tff: Vector[Fragment] = fragmentsOnError(Resources.failedNote, Resources.testFailed _, message, throwable, formatter, Some(suiteName), Some(testName), duration,
             presentUnformatted, presentAllDurations, presentShortStackTraces, presentFullStackTraces, presentFilePathname, AnsiRed)

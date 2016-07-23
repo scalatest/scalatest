@@ -15,7 +15,7 @@
  */
 package org.scalatest
 
-trait Difference {
+trait Difference extends Serializable {
 
   def inlineDiff: Option[(String, String)]
 

@@ -52,7 +52,7 @@ class TestFailedException(
   cause: Option[Throwable],
   posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
   val payload: Option[Any],
-  val differences: IndexedSeq[Difference]
+  val differences: scala.collection.immutable.IndexedSeq[Difference]
 ) extends StackDepthException(messageFun, cause, posOrStackDepthFun) with ModifiableMessage[TestFailedException] with PayloadField with ModifiablePayload[TestFailedException] {
 
   /**
