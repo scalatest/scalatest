@@ -27,7 +27,7 @@ class DifferSpec extends FunSpec {
 
     describe("when used with default Equality") {
 
-      it("can be used with a shouldEqual (b) syntax") {
+      it("should include differences in TestFailedException thrown from a shouldEqual (b) syntax when both a and b is String") {
         val e = intercept[TestFailedException] {
           "test2" shouldEqual ("test")
         }
@@ -35,7 +35,31 @@ class DifferSpec extends FunSpec {
         assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
       }
 
-      it("can be used with a should equal (b) syntax") {
+      it("should not include differences in TestFailedException thrown from a shouldEqual (b) syntax when a is String and b is Int") {
+        val e = intercept[TestFailedException] {
+          "test2" shouldEqual (3)
+        }
+        assert(e.message == Some("\"test2\" did not equal 3"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should not include differences in TestFailedException thrown from a shouldEqual (b) syntax when a is Int and b is String") {
+        val e = intercept[TestFailedException] {
+          3 shouldEqual ("test2")
+        }
+        assert(e.message == Some("3 did not equal \"test2\""))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should not include differences in TestFailedException thrown from a shouldEqual (b) syntax when a is Int and b is Int") {
+        val e = intercept[TestFailedException] {
+          3 shouldEqual (2)
+        }
+        assert(e.message == Some("3 did not equal 2"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should include differences in TestFailedException thrown from a should equal (b) syntax when both a and b is String") {
         val e = intercept[TestFailedException] {
           "test2" should equal("test")
         }
@@ -43,7 +67,31 @@ class DifferSpec extends FunSpec {
         assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
       }
 
-      it("can be used with all(a) shouldEqual (b) syntax") {
+      it("should not include differences in TestFailedException thrown from a should equal (b) syntax when a is String and b is Int") {
+        val e = intercept[TestFailedException] {
+          "test2" should equal (2)
+        }
+        assert(e.message == Some("\"test2\" did not equal 2"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should not include differences in TestFailedException thrown from a should equal (b) syntax when a is Int and b is String") {
+        val e = intercept[TestFailedException] {
+          2 should equal ("test2")
+        }
+        assert(e.message == Some("2 did not equal \"test2\""))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should not include differences in TestFailedException thrown from a should equal (b) syntax when a is Int and b is Int") {
+        val e = intercept[TestFailedException] {
+          2 should equal (3)
+        }
+        assert(e.message == Some("2 did not equal 3"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should include diffences in TestFailedException thrown from all(a) shouldEqual (b) syntax when both a and b is String") {
         val e = intercept[TestFailedException] {
           all(List("test", "test2", "test")) shouldEqual ("test")
         }
@@ -53,7 +101,37 @@ class DifferSpec extends FunSpec {
         assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
       }
 
-      it("can be used with all(a) should equal (b) syntax") {
+      it("should not include diffences in TestFailedException thrown from all(a) shouldEqual (b) syntax when both a is String and b is Int") {
+        val e = intercept[TestFailedException] {
+          all(List("test", "test2", "test")) shouldEqual (2)
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 0, \"test\" did not equal 2 (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(\"test\", \"test2\", \"test\")"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should not include diffences in TestFailedException thrown from all(a) shouldEqual (b) syntax when both a is Int and b is String") {
+        val e = intercept[TestFailedException] {
+          all(List(1, 2, 3)) shouldEqual ("test")
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 0, 1 did not equal \"test\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(1, 2, 3)"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should not include diffences in TestFailedException thrown from all(a) shouldEqual (b) syntax when both a is Int and b is Int") {
+        val e = intercept[TestFailedException] {
+          all(List(1, 2, 3)) shouldEqual (2)
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 0, 1 did not equal 2 (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(1, 2, 3)"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should include differences in TestFailedException thrown from all(a) should equal (b) syntax when both a and b is String") {
         val e = intercept[TestFailedException] {
           all(List("test", "test2", "test")) should equal("test")
         }
@@ -61,6 +139,36 @@ class DifferSpec extends FunSpec {
           "  at index 1, \"test[2]\" did not equal \"test[]\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
           "in List(\"test\", \"test2\", \"test\")"))
         assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
+      }
+
+      it("should not include differences in TestFailedException thrown from all(a) should equal (b) syntax when a is String and b is Int") {
+        val e = intercept[TestFailedException] {
+          all(List("test", "test2", "test")) should equal(2)
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 0, \"test\" did not equal 2 (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(\"test\", \"test2\", \"test\")"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should not include differences in TestFailedException thrown from all(a) should equal (b) syntax when a is Int and b is String") {
+        val e = intercept[TestFailedException] {
+          all(List(1, 2, 3)) should equal("test")
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 0, 1 did not equal \"test\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(1, 2, 3)"))
+        assert(e.differences.isEmpty)
+      }
+
+      it("should not include differences in TestFailedException thrown from all(a) should equal (b) syntax when a is Int and b is Int") {
+        val e = intercept[TestFailedException] {
+          all(List(1, 2, 3)) should equal(2)
+        }
+        assert(e.message == Some("'all' inspection failed, because: \n" +
+          "  at index 0, 1 did not equal 2 (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
+          "in List(1, 2, 3)"))
+        assert(e.differences.isEmpty)
       }
 
     }

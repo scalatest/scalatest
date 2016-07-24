@@ -5255,25 +5255,28 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               val (eee, rightee) = difference.inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(e, right))
               indicateFailure(FailureMessages.didNotEqual(prettifier, eee, rightee), None, pos, difference)
             case _ =>
-              //val (eee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-              val difference =
-                new Difference {
-                  val inlineDiff = {
-                    (e, right) match {
-                      case (leftStr: String, rightStr: String) =>
+              (e, right) match {
+                case (leftStr: String, rightStr: String) =>
+                  val difference =
+                    new Difference {
+                      val inlineDiff = {
                         val (leftee, rightee) = Suite.getObjectsForFailureMessage(e, right)
                         Some((leftee.toString, rightee.toString))
+                      }
 
-                      case _ => None
+                      lazy val sideBySideDiff = None
+
+                      lazy val analysis = None
                     }
-                  }
+                  val (eee, rightee) = difference.inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(e, right))
+                  indicateFailure(FailureMessages.didNotEqual(prettifier, eee, rightee), None, pos, difference)
 
-                  lazy val sideBySideDiff = None
+                case _ =>
+                  indicateFailure(FailureMessages.didNotEqual(prettifier, e, right), None, pos)
 
-                  lazy val analysis = None
-                }
-              val (eee, rightee) = difference.inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(e, right))
-              indicateFailure(FailureMessages.didNotEqual(prettifier, eee, rightee), None, pos, difference)
+              }
+
+
           }
         }
         else indicateSuccess(FailureMessages.equaled(prettifier, e, right))
@@ -6784,13 +6787,20 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
             indicateFailure(FailureMessages.didNotEqual(prettifier, leftee, rightee), None, pos, difference)
 
           case _ =>
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
-            val difference = new Difference {
-              val inlineDiff = Some((leftee.toString, rightee.toString))
-              val sideBySideDiff = None
-              val analysis = None
+            (leftSideValue, right) match {
+              case (leftStr: String, rightStr: String) =>
+                val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
+                val difference = new Difference {
+                  val inlineDiff = Some((leftee.toString, rightee.toString))
+                  val sideBySideDiff = None
+                  val analysis = None
+                }
+                indicateFailure(FailureMessages.didNotEqual(prettifier, leftee, rightee), None, pos, difference)
+
+              case _ =>
+                indicateFailure(FailureMessages.didNotEqual(prettifier, leftSideValue, right), None, pos)
             }
-            indicateFailure(FailureMessages.didNotEqual(prettifier, leftee, rightee), None, pos, difference)
+
         }
       }
       else indicateSuccess(FailureMessages.equaled(prettifier, leftSideValue, right))

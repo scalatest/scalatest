@@ -296,23 +296,23 @@ trait MatcherWords {
             equality match {
               case differ: Differ[T] => Some(differ.difference(left, right))
               case _ =>
-                Some(
-                  new Difference {
-                    val inlineDiff = {
-                      (left, right) match {
-                        case (leftStr: String, rightStr: String) =>
+                (left, right) match {
+                  case (leftStr: String, rightStr: String) =>
+                    Some(
+                      new Difference {
+                        val inlineDiff = {
                           val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
                           Some((leftee.toString, rightee.toString))
+                        }
 
-                        case _ => None
+                        lazy val sideBySideDiff = None
+
+                        lazy val analysis = None
                       }
-                    }
+                    )
 
-                    lazy val sideBySideDiff = None
-
-                    lazy val analysis = None
-                  }
-                )
+                  case _ => None
+                }
             }
           }
           def apply(left: T): MatchResult = {
