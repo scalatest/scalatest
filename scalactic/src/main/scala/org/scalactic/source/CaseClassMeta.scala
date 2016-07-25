@@ -42,7 +42,7 @@ object CaseClassMeta {
     if (symbol.isCaseClass) {
       new CaseClassMeta {
 
-        val caseAccessorSymbols = symbol.info.declarations.filter(isCaseAccessor)
+        val caseAccessorSymbols = symbol.toType.declarations.filter(isCaseAccessor)
 
         lazy val caseAccessorNames = {
           caseAccessorSymbols.map(_.name.toString).toVector
