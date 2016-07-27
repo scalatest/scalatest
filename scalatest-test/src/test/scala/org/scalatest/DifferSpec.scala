@@ -246,7 +246,7 @@ class DifferSpec extends FunSpec {
 
       assert(CaseClassDiffer.difference(a, b).analysis == Some("(i: 5 -> 6)"))
       assert(CaseClassDiffer.difference(b, c).analysis == Some("(s: as[d]f -> as[]f)"))
-      assert(CaseClassDiffer.difference(a, c).analysis == Some("(i: 5 -> 6" + EOL + "s: as[d]f -> as[]f)"))
+      assert(CaseClassDiffer.difference(a, c).analysis == Some("(i: 5 -> 6, s: as[d]f -> as[]f)"))
     }
 
     it("should produce difference of 2 Foos correctly") {

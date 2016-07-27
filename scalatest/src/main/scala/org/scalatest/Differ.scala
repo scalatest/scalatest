@@ -143,7 +143,7 @@ object CaseClassDiffer extends Differ[Any] {
         if (diffSet.isEmpty)
           None
         else
-          Some("(" + diffSet.toList.sorted.mkString(scala.compat.Platform.EOL) + ")")
+          Some("(" + diffSet.toList.sorted.mkString(", ") + ")")
       }
     }
 
