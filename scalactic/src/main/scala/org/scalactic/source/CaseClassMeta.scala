@@ -25,19 +25,36 @@ trait CaseClassMeta {
 
 object CaseClassMeta {
 
-  def apply(value: Any): CaseClassMeta = {
-    import reflect.runtime.universe._
+  import reflect.runtime.universe._
 
-    def isCaseAccessor(s: Symbol): Boolean = {
-      s match {
-        case m: MethodSymbol if m.isCaseAccessor => true
-        case _ => false
-      }
-    }
+  def isCaseClass(value: Any): Boolean = {
+    val typeMirror = runtimeMirror(value.getClass.getClassLoader)
+    val instanceMirror = typeMirror.reflect(value)
+    val symbol: ClassSymbol = instanceMirror.symbol
+    symbol.isCaseClass
+  }
+
+  def apply(value: Any): CaseClassMeta = {
 
     val typeMirror = runtimeMirror(value.getClass.getClassLoader)
     val instanceMirror = typeMirror.reflect(value)
     val symbol: ClassSymbol = instanceMirror.symbol
+
+    def isCaseAccessor(s: Symbol): Boolean = {
+      s match {
+        case m: MethodSymbol if m.isCaseAccessor =>
+          try {
+            val fieldMirror = instanceMirror.reflectField(m.asTerm)
+            fieldMirror.get
+            true
+          }
+          catch {
+            case e: Throwable => false
+          }
+
+        case _ => false
+      }
+    }
 
     if (symbol.isCaseClass) {
       new CaseClassMeta {

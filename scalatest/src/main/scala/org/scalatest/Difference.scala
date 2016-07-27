@@ -24,3 +24,15 @@ trait Difference extends Serializable {
   def analysis: Option[String]
 
 }
+
+object Difference {
+
+  val empty = new Difference {
+    val inlineDiff = None
+
+    val sideBySideDiff = None
+
+    val analysis = None
+  }
+
+}

@@ -231,4 +231,40 @@ class DifferSpec extends FunSpec {
 
   }
 
+  val EOL = scala.compat.Platform.EOL
+
+  sealed trait Parent
+  case class Bar( s: String, i: Int ) extends Parent
+  case class Foo( bar: Bar, b: List[Int], parent: Option[Parent] ) extends Parent
+
+  describe("CaseClassDiffer") {
+
+    it("should produce difference of 2 Bars correctly") {
+      val a = Bar("asdf", 5)
+      val b = Bar("asdf", 6)
+      val c = Bar("asf", 6)
+
+      assert(CaseClassDiffer.difference(a, b).analysis == Some("(i: 5 -> 6)"))
+      assert(CaseClassDiffer.difference(b, c).analysis == Some("(s: as[d]f -> as[]f)"))
+      assert(CaseClassDiffer.difference(a, c).analysis == Some("(i: 5 -> 6" + EOL + "s: as[d]f -> as[]f)"))
+    }
+
+    it("should produce difference of 2 Foos correctly") {
+      val a: Foo = Foo(
+        Bar( "asdf", 5 ),
+        List( 123, 1234 ),
+        Some( Bar( "asdf", 5 ) )
+      )
+      val b: Foo = Foo(
+        Bar( "asdf", 66 ),
+        List( 1234 ),
+        Some( Bar( "qwer", 5 ) )
+      )
+
+      println("###difference: ")
+      println(CaseClassDiffer.difference(a, b).analysis.get)
+    }
+
+  }
+
 }
