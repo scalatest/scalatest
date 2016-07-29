@@ -30,8 +30,8 @@ import exceptions.TestPendingException
   *
   * <p>
   * You can use the assertions provided by this trait in any ScalaTest <code>Suite</code>,
-  * because <a href="Suite.html"><code>Suite</code></a>
-  * mixes in this trait. This trait is designed to be used independently of anything else in ScalaTest, though, so you
+  * because <a href="Suite.html"><code>Suite</code></a>'s subtypes
+  * mix in this trait. This trait is designed to be used independently of anything else in ScalaTest, though, so you
   * can mix it into anything. (You can alternatively import the methods defined in this trait. For details, see the documentation
   * for the <a href="Assertions$.html"><code>Assertions</code> companion object</a>.
   * </p>
@@ -418,6 +418,9 @@ trait GenericAssertions extends TripleEquals  {
 
   import language.experimental.macros
 
+  /**
+   * Result type of
+   */
   type RESULT
 
   /**

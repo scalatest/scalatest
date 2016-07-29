@@ -18,78 +18,17 @@ package org.scalatest.testng
 import org.scalatest._
 
 /**
-  * Trait that contains ScalaTest's basic assertion methods, suitable for use with JUnit.
-  *
-  * <p>
-  * The assertion methods provided in this trait look and behave exactly like the ones in
-  * <a href="../Assertions.html"><code>Assertions</code></a>, except instead of throwing
-  * <a href="../exceptions/TestFailedException.html"><code>TestFailedException</code></a> they throw
-  * <a href="JUnitTestFailedError.html"><code>JUnitTestFailedError</code></a>,
-  * which extends <code>junit.framework.AssertionFailedError</code>.
-  *
-  * <p>
-  * JUnit 3 (release 3.8 and earlier) distinguishes between <em>failures</em> and <em>errors</em>.
-  * If a test fails because of a failed assertion, that is considered a <em>failure</em>. If a test
-  * fails for any other reason, either the test code or the application being tested threw an unexpected
-  * exception, that is considered an <em>error</em>. The way JUnit 3 decides whether an exception represents
-  * a failure or error is that only thrown <code>junit.framework.AssertionFailedError</code>s are considered
-  * failures. Any other exception type is considered an error. The exception type thrown by the JUnit 3
-  * assertion methods declared in <code>junit.framework.Assert</code> (such as <code>assertEquals</code>,
-  * <code>assertTrue</code>, and <code>fail</code>) is, therefore, <code>AssertionFailedError</code>.
-  * </p>
-  *
-  * <p>
-  * In JUnit 4, <code>AssertionFailedError</code> was made to extend <code>java.lang.AssertionError</code>,
-  * and the distinction between failures and errors was essentially dropped. However, some tools that integrate
-  * with JUnit carry on this distinction, so even if you are using JUnit 4 you may want to use this
-  * <code>AssertionsForJUnit</code> trait instead of plain-old ScalaTest
-  * <a href="../Assertions.html"><code>Assertions</code></a>.
-  * </p>
-  *
-  * <p>
-  * To use this trait in a JUnit 3 <code>TestCase</code>, you can mix it into your <code>TestCase</code> class, like this:
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * import junit.framework.TestCase
-  * import org.scalatest.junit.AssertionsForJUnit
-  *
-  * class MyTestCase extends TestCase with AssertionsForJUnit {
-  *
-  *   def testSomething() {
-  *     assert("hi".charAt(1) === 'i')
-  *   }
-  *
-  *   // ...
-  * }
-  * </pre>
-  *
-  * <p>
-  * You can alternatively import the methods defined in this trait.
-  * </p>
-  *
-  * <pre class="stHighlight">
-  * import junit.framework.TestCase
-  * import org.scalatest.junit.AssertionsForJUnit._
-  *
-  * class MyTestCase extends TestCase {
-  *
-  *   def testSomething() {
-  *     assert("hi".charAt(1) === 'i')
-  *   }
-  *
-  *   // ...
-  * }
-  * </pre>
+  * Trait that contains ScalaTest's basic assertion methods, suitable for use with TestNG that requires its test method to return <code>void</code> in <code>Java</code> (<code>Unit</code> in <code>Scala</code>).
   *
   * <p>
   * For details on the importing approach, see the documentation
-  * for the <a href="AssertionsForJUnit$.html"><code>AssertionsForJUnit</code> companion object</a>.
-  * For the details on the <code>AssertionsForJUnit</code> syntax, see the Scaladoc documentation for
-  * <a href="../Assertions.html"><code>org.scalatest.Assertions</code></a>
+  * for the <a href="AssertionsForTestNG$.html"><code>AssertionsForTestNG</code> companion object</a>.
+  * For the details on the <code>AssertionsForTestNG</code> syntax, see the Scaladoc documentation for
+  * <a href="../GenericAssertions.html"><code>org.scalatest.GenericAssertions</code></a>
   * </p>
   *
   * @author Bill Venners
+  * @author Chee Seng
   */
 trait AssertionsForTestNG extends GenericAssertions {
 
@@ -98,18 +37,18 @@ trait AssertionsForTestNG extends GenericAssertions {
 }
 
 /**
-  * Companion object that facilitates the importing of <code>AssertionsForJUnit</code> members as
-  * an alternative to mixing it in. One use case is to import <code>AssertionsForJUnit</code> members so you can use
+  * Companion object that facilitates the importing of <code>AssertionsForTestNG</code> members as
+  * an alternative to mixing it in. One use case is to import <code>AssertionsForTestNG</code> members so you can use
   * them in the Scala interpreter:
   *
   * <pre>
-  * $ scala -cp junit3.8.2/junit.jar:../target/jar_contents
+  * $ scala -cp testng.jar:../target/jar_contents
   * Welcome to Scala version 2.7.5.final (Java HotSpot(TM) Client VM, Java 1.5.0_16).
   * Type in expressions to have them evaluated.
   * Type :help for more information.
   *
-  * scala> import org.scalatest.junit.AssertionsForJUnit._
-  * import org.scalatest.junit.AssertionsForJUnit._
+  * scala> import org.scalatest.junit.AssertionsForTestNG._
+  * import org.scalatest.junit.AssertionsForTestNG._
   *
   * scala> assert(1 === 2)
   * junit.framework.AssertionFailedError: 1 did not equal 2

@@ -25,6 +25,10 @@ import exceptions.StackDepthException.toExceptionFunction
 import exceptions.TestFailedException
 import exceptions.TestPendingException
 
+/**
+ * Assertions trait that uses <code>Assertion</code> as its <code>RESULT</code> type.  This trait is mixed into <a href="TestSuite.html"><code>TestSuite</code></a>.
+ * For details of using methods in this trait, please see <a href="Assertions.html"><code>Assertions</code></a>.
+ */
 trait Assertions extends GenericAssertions {
 
   type RESULT = Assertion
