@@ -94,9 +94,11 @@ import org.scalactic._
  *
  * @author Bill Venners
  */
-trait AssertionsForJUnit extends Assertions {
+trait AssertionsForJUnit extends GenericAssertions {
 
-  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
+  type RESULT = Unit
+
+  protected[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
     new JUnitTestFailedError(optionalMessage, optionalCause, pos, None)
   }
   

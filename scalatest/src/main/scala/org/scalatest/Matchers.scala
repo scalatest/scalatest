@@ -1792,7 +1792,7 @@ import exceptions.TestFailedException
  * @author Bill Venners
  * @author Chua Chee Seng
  */
-trait Matchers extends Assertions with Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
+trait Matchers extends Tolerance with ShouldVerb with MatcherWords with Explicitly { matchers =>
 
   import scala.language.implicitConversions
 

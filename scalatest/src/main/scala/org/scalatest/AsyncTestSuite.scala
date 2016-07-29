@@ -211,7 +211,7 @@ import enablers.Futuristic
  * }
  * </pre>
  */
-trait AsyncTestSuite extends Suite with RecoverMethods with CompleteLastly { thisAsyncTestSuite =>
+trait AsyncTestSuite extends Suite with Assertions with RecoverMethods with CompleteLastly { thisAsyncTestSuite =>
 
   /**
    * An implicit execution context used by async styles to transform <code>Future[Assertion]</code> values

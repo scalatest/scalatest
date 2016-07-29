@@ -33,7 +33,7 @@ import Matchers._
 import org.scalactic.source
 
 // SKIP-SCALATESTJS-START
-class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
+class CheckpointsSpec extends FunSpec {
 // SKIP-SCALATESTJS-END
   //SCALATESTJS-ONLY class CheckpointsSpec extends FunSpec {
 
@@ -141,7 +141,7 @@ class CheckpointsSpec extends FunSpec with AssertionsForJUnit {
         val cp = new Checkpoint
         val caught = 
           the [TestFailedException] thrownBy {
-            cp { assert(1 === 2) }
+            cp { AssertionsForJUnit.assert(1 === 2) }
             cp.reportAll()
           }
 

@@ -18,21 +18,25 @@ package org.scalatest.junit
 import org.scalatest._
 import org.scalactic.source
 import SharedHelpers.thisLineNumber
+import org.junit.Test
 
-class JUnitTestFailedErrorSpec extends FunSpec with Matchers with AssertionsForJUnit {
+class JUnitTestFailedErrorSpec extends /*FunSpec*/ JUnitSuite /*with Matchers*/ {
+
+  //import AssertionsForJUnit._
 
   val baseLineNumber = thisLineNumber
 
-  describe("The JUnitTestFailedError") {
+  //describe("The JUnitTestFailedError") {
 
-    it("should give the proper line on fail()") {
+    //it("should give the proper line on fail()") {
+    @Test def shouldGiveTheProperLineOnFail() {
       try {
         fail()
       }
       catch {
         case e: JUnitTestFailedError =>
           e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 6))
+            case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
             case None => fail("fail() didn't produce a file name and line number string: " + e.failedCodeFileNameAndLineNumberString, e)
           }
         case e: Throwable =>
@@ -40,14 +44,14 @@ class JUnitTestFailedErrorSpec extends FunSpec with Matchers with AssertionsForJ
       }
     }
 
-    it("should give the proper line on fail(\"message\")") {
+    @Test def shouldGiveTheProperLineOnFailMessage() {
       try {
         fail("some message")
       }
       catch {
         case e: JUnitTestFailedError =>
           e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 21))
+            case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
             case None => fail("fail(\"some message\") didn't produce a file name and line number string", e)
           }
         case e: Throwable =>
@@ -55,14 +59,14 @@ class JUnitTestFailedErrorSpec extends FunSpec with Matchers with AssertionsForJ
       }
     }
 
-    it("should give the proper line on fail(throwable)") {
+    @Test def shouldGiveTheProperLineOnFailThrowable() {
       try {
         fail(new RuntimeException)
       }
       catch {
         case e: JUnitTestFailedError =>
           e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 36))
+            case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
             case None => fail("fail(throwable) didn't produce a file name and line number string", e)
           }
         case e: Throwable =>
@@ -70,153 +74,153 @@ class JUnitTestFailedErrorSpec extends FunSpec with Matchers with AssertionsForJ
       }
     }
 
-    it("should give the proper line on fail(\"some message\", throwable)") {
-      try {
-        fail("some message", new RuntimeException)
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 51))
-            case None => fail("fail(\"some message\", throwable) didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("fail(\"some message\", throwable) didn't produce a JUnitTestFailedError", e)
-      }
+  @Test def shouldGiveTheProperLineOnFailSomeMessageThrowable() {
+    try {
+      fail("some message", new RuntimeException)
     }
-
-    it("should give the proper line on assert(false)") {
-      try {
-        assert(false)
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 66))
-            case None => fail("assert(false) didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("assert(false) didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on assert(false, \"some message\")") {
-      try {
-        assert(false, "some message")
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 81))
-            case None => fail("assert(false, \"some message\") didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("assert(false, \"some message\") didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on assert(1 === 2)") {
-      try {
-        assert(1 === 2)
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 96))
-            case None => fail("assert(1 === 2) didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("assert(1 === 2) didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on assert(1 === 2, \"some message\")") {
-      try {
-        assert(1 === 2, "some message")
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 111))
-            case None => fail("assert(1 === 2, \"some message\") didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("assert(1 === 2, \"some message\") didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on assertResult(1) { 2 }") {
-      try {
-        assertResult(1) { 2 }
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 126))
-            case None => fail("assertResult(1) { 2 } didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("assertResult(1) { 2 } didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on assertResult(1, \"some message\") { 2 }") {
-      try {
-        assertResult(1, "some message") { 2 }
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 141))
-            case None => fail("assertResult(1, \"some message\") { 2 } didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("assertResult(1, \"some message\") { 2 } didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on intercept[IllegalArgumentException] {}") {
-      try {
-        intercept[IllegalArgumentException] {}
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 156))
-            case None => fail("intercept[IllegalArgumentException] {} didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("intercept[IllegalArgumentException] {} didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should give the proper line on intercept[IllegalArgumentException] { throw new RuntimeException }") {
-      try {
-        intercept[IllegalArgumentException] { if (false) 1 else throw new RuntimeException }
-      }
-      catch {
-        case e: JUnitTestFailedError =>
-          e.failedCodeFileNameAndLineNumberString match {
-            case Some(s) => s should equal ("JUnitTestFailedErrorSpec.scala:" + (baseLineNumber + 171))
-            case None => fail("intercept[IllegalArgumentException] { throw new RuntimeException } didn't produce a file name and line number string", e)
-          }
-        case e: Throwable =>
-          fail("intercept[IllegalArgumentException] { throw new RuntimeException } didn't produce a JUnitTestFailedError", e)
-      }
-    }
-
-    it("should return the cause in both cause and getCause") {
-      val theCause = new IllegalArgumentException("howdy")
-      val tfe = new JUnitTestFailedError(Some("doody"), Some(theCause), 3, None)
-      assert(tfe.cause.isDefined)
-      assert(tfe.cause.get === theCause)
-      assert(tfe.getCause == theCause)
-    }
-
-    it("should return None in cause and null in getCause if no cause") {
-      val tfe = new JUnitTestFailedError(Some("doody"), None, 3, None)
-      assert(tfe.cause.isEmpty)
-      assert(tfe.getCause == null)
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("fail(\"some message\", throwable) didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("fail(\"some message\", throwable) didn't produce a JUnitTestFailedError", e)
     }
   }
+
+  @Test def shouldGiveTheProperLineOnAssertFalse() {
+    try {
+      assert(false)
+    }
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("assert(false) didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("assert(false) didn't produce a JUnitTestFailedError", e)
+    }
+  }
+
+  @Test def shouldGiveTheProperLineOnAssertFalseSomeMessage() {
+    try {
+      assert(false, "some message")
+    }
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("assert(false, \"some message\") didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("assert(false, \"some message\") didn't produce a JUnitTestFailedError", e)
+    }
+  }
+
+  @Test def shouldGiveTheProperLineOnAssert1TripleEqual2() {
+    try {
+      assert(1 === 2)
+    }
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("assert(1 === 2) didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("assert(1 === 2) didn't produce a JUnitTestFailedError", e)
+    }
+  }
+
+  @Test def shouldGiveTheProperLineOnAssert1TripleEqual2SomeMessage() {
+    try {
+      assert(1 === 2, "some message")
+    }
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("assert(1 === 2, \"some message\") didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("assert(1 === 2, \"some message\") didn't produce a JUnitTestFailedError", e)
+    }
+  }
+
+  @Test def shouldGiveTheProperLineOnAssertResult12() {
+    try {
+      assertResult(1) { 2 }
+    }
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("assertResult(1) { 2 } didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("assertResult(1) { 2 } didn't produce a JUnitTestFailedError", e)
+    }
+  }
+
+  @Test def shouldGiveTheProperLineOnAssertResult1SomeMessage2() {
+    try {
+      assertResult(1, "some message") { 2 }
+    }
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("assertResult(1, \"some message\") { 2 } didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("assertResult(1, \"some message\") { 2 } didn't produce a JUnitTestFailedError", e)
+    }
+  }
+
+  @Test def shouldGiveTheProperLineOnInterceptIllegalArgumentException() {
+    try {
+      intercept[IllegalArgumentException] {}
+    }
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("intercept[IllegalArgumentException] {} didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("intercept[IllegalArgumentException] {} didn't produce a JUnitTestFailedError", e)
+    }
+  }
+
+  @Test def shouldGiveTheProperLineOnInterceptIllegalArgumentExceptionThrowNewRuntimeException() {
+    try {
+      intercept[IllegalArgumentException] { if (false) 1 else throw new RuntimeException }
+    }
+    catch {
+      case e: JUnitTestFailedError =>
+        e.failedCodeFileNameAndLineNumberString match {
+          case Some(s) => assert(s == ("JUnitTestFailedErrorSpec.scala:" + (thisLineNumber - 5)))
+          case None => fail("intercept[IllegalArgumentException] { throw new RuntimeException } didn't produce a file name and line number string", e)
+        }
+      case e: Throwable =>
+        fail("intercept[IllegalArgumentException] { throw new RuntimeException } didn't produce a JUnitTestFailedError", e)
+    }
+  }
+
+  @Test def shouldReturnTheCauseInBothCauseAndGetCause() {
+    val theCause = new IllegalArgumentException("howdy")
+    val tfe = new JUnitTestFailedError(Some("doody"), Some(theCause), 3, None)
+    assert(tfe.cause.isDefined)
+    assert(tfe.cause.get === theCause)
+    assert(tfe.getCause == theCause)
+  }
+
+  @Test def shouldReturnNoneInCauseAndNullInGetCauseIfNoCause() {
+    val tfe = new JUnitTestFailedError(Some("doody"), None, 3, None)
+    assert(tfe.cause.isEmpty)
+    assert(tfe.getCause == null)
+  }
+  //}
 }

@@ -59,7 +59,9 @@ class TestNameProp  extends AllSuiteProp {
 
 trait TestNameFixtureServices { suite: Suite =>
   val expectedTestNames: Set[String]
-  
+
+  import Assertions._
+
   def assertTestNames(): Unit = {
     val expectedSet = expectedTestNames
     val testNameSet = testNames
