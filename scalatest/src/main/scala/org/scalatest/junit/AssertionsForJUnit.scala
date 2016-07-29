@@ -98,7 +98,7 @@ trait AssertionsForJUnit extends GenericAssertions {
 
   type RESULT = Unit
 
-  protected[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
+  private[scalatest] override def newAssertionFailedException(optionalMessage: Option[String], optionalCause: Option[Throwable], pos: source.Position): Throwable = {
     new JUnitTestFailedError(optionalMessage, optionalCause, pos, None)
   }
   
