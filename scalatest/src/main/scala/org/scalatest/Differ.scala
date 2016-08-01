@@ -23,17 +23,44 @@ trait Differ[T] {
 
 }
 
+object Differ {
+
+  def simpleClassName(v: Any): String = {
+    val className = v.getClass.getName
+    val lastIdxOfDot = className.lastIndexOf(".")
+    val shortName =
+      if (lastIdxOfDot >= 0)
+        className.substring(lastIdxOfDot + 1)
+      else
+        className
+    if (shortName == "$colon$colon")
+      "List"
+    else if (shortName.startsWith("Set$Set"))
+      "Set"
+    else if (shortName.startsWith("Map$Map"))
+      "Map"
+    else
+      shortName
+  }
+
+}
+
 object DefaultDiffer extends Differ[Any] {
 
-  def difference(a: Any, b: Any): Difference =
+  def difference(a: Any, b: Any): Difference = {
+
     (a, b) match {
       case (s1: String, s2: String) => StringDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2)
       case _ =>
         if (CaseClassMeta.isCaseClass(a) && CaseClassMeta.isCaseClass(b))
           CaseClassDiffer.difference(a, b)
         else
           Difference.empty
     }
+  }
 
 }
 
@@ -142,11 +169,140 @@ object CaseClassDiffer extends Differ[Any] {
 
         if (diffSet.isEmpty)
           None
-        else
-          Some("(" + diffSet.toList.sorted.mkString(", ") + ")")
+        else {
+          val shortName = Differ.simpleClassName(a)
+          Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
+        }
       }
     }
 
+  }
+
+}
+
+// interesting to see https://github.com/twitter/diffy/blob/master/src/main/scala/com/twitter/diffy/compare/Difference.scala
+
+object GenSeqDiffer extends Differ[scala.collection.GenSeq[Any]] {
+
+  def difference(aSeq: scala.collection.GenSeq[Any], b: Any): Difference = {
+    new Difference {
+      def inlineDiff = None
+
+      def sideBySideDiff = None
+
+      def analysis = {
+        b match {
+          case bSeq: scala.collection.GenSeq[_] =>
+            val diffSet =
+              ((0 until aSeq.length) flatMap { i =>
+                val leftEl = aSeq(i)
+                if (bSeq.isDefinedAt(i)) {
+                  val rightEl = bSeq(i)
+                  if (leftEl != rightEl)
+                    Some(i + ": " + leftEl + " -> " + rightEl)
+                  else
+                    None
+                }
+                else
+                  Some(i + ": " + leftEl + " -> ")
+              }).toSet ++
+              ((aSeq.length until bSeq.length) flatMap { i =>
+                Some(i + ": -> " + bSeq(i))
+              }).toSet
+
+            val shortName = Differ.simpleClassName(aSeq)
+            if (diffSet.isEmpty)
+              None
+            else
+              Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
+
+          case _ => None
+        }
+      }
+    }
+  }
+
+}
+
+object GenSetDiffer extends Differ[scala.collection.GenSet[Any]] {
+
+  def difference(aSet: scala.collection.GenSet[Any], b: Any): Difference = {
+    new Difference {
+      def inlineDiff = None
+
+      def sideBySideDiff = None
+
+      def analysis = {
+        b match {
+          case bSet: scala.collection.GenSet[Any] =>
+            val missingInRight = aSet.diff(bSet.asInstanceOf[scala.collection.GenSet[Any]])
+            val missingInLeft = bSet.diff(aSet)
+
+            val shortName = Differ.simpleClassName(aSet)
+            if (missingInLeft.isEmpty && missingInRight.isEmpty)
+              None
+            else {
+              val diffList =
+                List(
+                  if (missingInLeft.isEmpty) "" else "missingInLeft: [" + missingInLeft.mkString(", ") + "]",
+                  if (missingInRight.isEmpty) "" else "missingInRight: [" + missingInRight.mkString(", ") + "]"
+                ).filter(_.nonEmpty)
+              Some(shortName + "(" + diffList.mkString(", ") + ")")
+            }
+
+          case _ => None
+        }
+      }
+    }
+  }
+
+}
+
+object GenMapDiffer extends Differ[scala.collection.GenMap[Any, Any]] {
+
+  def difference(aMap: scala.collection.GenMap[Any, Any], b: Any): Difference = {
+    new Difference {
+      def inlineDiff = None
+
+      def sideBySideDiff = None
+
+      def analysis = {
+        b match {
+          case bMap: scala.collection.GenMap[Any, Any] =>
+            val leftKeySet = aMap.keySet
+            val rightKeySet = bMap.keySet
+            val missingKeyInRight = leftKeySet.diff(rightKeySet)
+            val missingKeyInLeft = rightKeySet.diff(leftKeySet)
+            val intersectKeys = leftKeySet.intersect(rightKeySet)
+            val diffSet =
+              intersectKeys.flatMap { k =>
+                val leftValue = aMap(k)
+                val rightValue = bMap(k)
+                if (leftValue != rightValue)
+                  Some(k + ": " + leftValue + " -> " + rightValue)
+                else
+                  None
+              }.toSet ++
+              missingKeyInLeft.flatMap { k =>
+                val rightValue = bMap(k)
+                Option(k + ": -> " + rightValue)
+              }.toSet ++
+              missingKeyInRight.flatMap { k =>
+                val leftValue = aMap(k)
+                Option(k + ": " + leftValue + " -> ")
+              }.toSet
+
+            val shortName = Differ.simpleClassName(aMap)
+            if (diffSet.isEmpty)
+              None
+            else
+              Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
+
+          case _ =>
+            None
+        }
+      }
+    }
   }
 
 }

@@ -21,6 +21,10 @@ trait CaseClassMeta {
 
   def value(name: String): Any
 
+  def typeName(name: String): String
+
+  def shortTypeName(name: String): String
+
 }
 
 object CaseClassMeta {
@@ -70,6 +74,28 @@ object CaseClassMeta {
             case Some(fieldSymbol) =>
               val fieldMirror = instanceMirror.reflectField(fieldSymbol.asTerm)
               fieldMirror.get
+
+            case None =>
+              throw new IllegalArgumentException("'" + name + "' is not a case accessor for this instance of case class.")
+          }
+        }
+
+        def typeName(name: String): String = {
+          caseAccessorSymbols.find(s => s.name.toString == name) match {
+            case Some(fieldSymbol) =>
+              // This is a safe cast
+              fieldSymbol.asInstanceOf[MethodSymbol].returnType.typeSymbol.fullName
+
+            case None =>
+              throw new IllegalArgumentException("'" + name + "' is not a case accessor for this instance of case class.")
+          }
+        }
+
+        def shortTypeName(name: String): String = {
+          caseAccessorSymbols.find(s => s.name.toString == name) match {
+            case Some(fieldSymbol) =>
+              // This is a safe cast
+              fieldSymbol.asInstanceOf[MethodSymbol].returnType.typeSymbol.name.decoded
 
             case None =>
               throw new IllegalArgumentException("'" + name + "' is not a case accessor for this instance of case class.")
