@@ -43,6 +43,8 @@ object Differ {
       shortName
   }
 
+  val default = DefaultDiffer
+
 }
 
 object DefaultDiffer extends Differ[Any] {

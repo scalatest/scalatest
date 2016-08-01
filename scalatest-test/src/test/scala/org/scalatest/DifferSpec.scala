@@ -244,9 +244,9 @@ class DifferSpec extends FunSpec {
       val b = Bar("asdf", 6)
       val c = Bar("asf", 6)
 
-      assert(CaseClassDiffer.difference(a, b).analysis == Some("DifferSpec$Bar(i: 5 -> 6)"))
-      assert(CaseClassDiffer.difference(b, c).analysis == Some("DifferSpec$Bar(s: as[d]f -> as[]f)"))
-      assert(CaseClassDiffer.difference(a, c).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[d]f -> as[]f)"))
+      assert(Differ.default.difference(a, b).analysis == Some("DifferSpec$Bar(i: 5 -> 6)"))
+      assert(Differ.default.difference(b, c).analysis == Some("DifferSpec$Bar(s: as[d]f -> as[]f)"))
+      assert(Differ.default.difference(a, c).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[d]f -> as[]f)"))
     }
 
     it("should produce difference of 2 Foos correctly") {
@@ -261,7 +261,7 @@ class DifferSpec extends FunSpec {
         Some( Bar( "qwer", 5 ) )
       )
 
-      assert(CaseClassDiffer.difference(a, b).analysis == Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(x: DifferSpec$Bar(s: [asdf] -> [qwer])))"))
+      assert(Differ.default.difference(a, b).analysis == Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(x: DifferSpec$Bar(s: [asdf] -> [qwer])))"))
     }
 
   }
@@ -269,23 +269,23 @@ class DifferSpec extends FunSpec {
   describe("GenSeqDiffer") {
 
     it("should not produce difference when left and right have the same elements in same order") {
-      assert(GenSeqDiffer.difference(List(1, 2, 3), List(1, 2, 3)).analysis == None)
+      assert(Differ.default.difference(List(1, 2, 3), List(1, 2, 3)).analysis == None)
     }
 
     it("should produce difference when element in left and right is different") {
-      assert(GenSeqDiffer.difference(List(1, 2, 3), List(1, 6, 3)).analysis == Some("List(1: 2 -> 6)"))
+      assert(Differ.default.difference(List(1, 2, 3), List(1, 6, 3)).analysis == Some("List(1: 2 -> 6)"))
     }
 
     it("should product difference when element exist in left, but not in right") {
-      assert(GenSeqDiffer.difference(List(1, 2, 3), List(1, 2)).analysis == Some("List(2: 3 -> )"))
+      assert(Differ.default.difference(List(1, 2, 3), List(1, 2)).analysis == Some("List(2: 3 -> )"))
     }
 
     it("should product difference when element exist in right, but not in left") {
-      assert(GenSeqDiffer.difference(List(1, 2), List(1, 2, 3)).analysis == Some("List(2: -> 3)"))
+      assert(Differ.default.difference(List(1, 2), List(1, 2, 3)).analysis == Some("List(2: -> 3)"))
     }
 
     it("should produce difference when elements in left and right is same but in different order") {
-      assert(GenSeqDiffer.difference(List(1, 2, 3), List(3, 2, 1)).analysis == Some("List(0: 1 -> 3, 2: 3 -> 1)"))
+      assert(Differ.default.difference(List(1, 2, 3), List(3, 2, 1)).analysis == Some("List(0: 1 -> 3, 2: 3 -> 1)"))
     }
 
   }
@@ -293,23 +293,23 @@ class DifferSpec extends FunSpec {
   describe("GenSetDiffer") {
 
     it("should not produce difference when left and right have the same elements in same order") {
-      assert(GenSetDiffer.difference(Set(1, 2, 3), Set(1, 2, 3)).analysis == None)
+      assert(Differ.default.difference(Set(1, 2, 3), Set(1, 2, 3)).analysis == None)
     }
 
     it("should produce difference when element in left and right is different") {
-      assert(GenSetDiffer.difference(Set(1, 2, 3), Set(1, 6, 3)).analysis == Some("Set(missingInLeft: [6], missingInRight: [2])"))
+      assert(Differ.default.difference(Set(1, 2, 3), Set(1, 6, 3)).analysis == Some("Set(missingInLeft: [6], missingInRight: [2])"))
     }
 
     it("should product difference when element exist in left, but not in right") {
-      assert(GenSetDiffer.difference(Set(1, 2, 3), Set(1, 2)).analysis == Some("Set(missingInRight: [3])"))
+      assert(Differ.default.difference(Set(1, 2, 3), Set(1, 2)).analysis == Some("Set(missingInRight: [3])"))
     }
 
     it("should product difference when element exist in right, but not in left") {
-      assert(GenSetDiffer.difference(Set(1, 2), Set(1, 2, 3)).analysis == Some("Set(missingInLeft: [3])"))
+      assert(Differ.default.difference(Set(1, 2), Set(1, 2, 3)).analysis == Some("Set(missingInLeft: [3])"))
     }
 
     it("should not produce difference when elements in left and right is same but in different order") {
-      assert(GenSetDiffer.difference(Set(1, 2, 3), Set(3, 2, 1)).analysis == None)
+      assert(Differ.default.difference(Set(1, 2, 3), Set(3, 2, 1)).analysis == None)
     }
 
   }
@@ -317,23 +317,23 @@ class DifferSpec extends FunSpec {
   describe("GenMapDiffer") {
 
     it("should not produce difference when left and right have the same elements in same order") {
-      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), List(1 -> "one", 2 -> "two", 3 -> "three")).analysis == None)
+      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), List(1 -> "one", 2 -> "two", 3 -> "three")).analysis == None)
     }
 
     it("should produce difference when element in left and right is different") {
-      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 6 -> "six", 3 -> "three")).analysis == Some("Map(2: two -> , 6: -> six)"))
+      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 6 -> "six", 3 -> "three")).analysis == Some("Map(2: two -> , 6: -> six)"))
     }
 
     it("should product difference when element exist in left, but not in right") {
-      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 2 -> "two")).analysis == Some("Map(3: three -> )"))
+      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 2 -> "two")).analysis == Some("Map(3: three -> )"))
     }
 
     it("should product difference when element exist in right, but not in left") {
-      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two"), Map(1 -> "one", 2 -> "two", 3 -> "three")).analysis == Some("Map(3: -> three)"))
+      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two"), Map(1 -> "one", 2 -> "two", 3 -> "three")).analysis == Some("Map(3: -> three)"))
     }
 
     it("should not produce difference when elements in left and right is same but in different order") {
-      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(3 -> "three", 2 -> "two", 1 -> "one")).analysis == None)
+      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(3 -> "three", 2 -> "two", 1 -> "one")).analysis == None)
     }
 
   }
