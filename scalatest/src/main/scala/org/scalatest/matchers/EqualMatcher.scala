@@ -15,7 +15,7 @@
  */
 package org.scalatest.matchers
 
-import org.scalatest.Difference
+import org.scalactic.Difference
 
 trait EqualMatcher[T] extends Matcher[T] {
 

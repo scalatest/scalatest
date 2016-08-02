@@ -30,6 +30,7 @@ import org.scalatest.events.RecordableEvent
 import org.scalatest.events.AlertProvided
 import org.scalatest.events.NoteProvided
 import org.scalatest.events.NameInfo
+import org.scalactic.Difference
 
 import java.io.File
 

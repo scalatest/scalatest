@@ -19,7 +19,7 @@ import org.scalactic.exceptions.NullArgumentException
 import StackDepthExceptionHelper.posOrElseStackDepthFun
 import org.scalactic.Requirements._
 import org.scalactic.source
-import org.scalatest.Difference
+import org.scalactic.Difference
 
 /**
  * Exception that indicates a test failed.

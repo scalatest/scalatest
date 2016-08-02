@@ -44,6 +44,7 @@ import org.scalatest.time.Span
 import org.scalatest.time.Seconds
 import org.scalatest._
 import SharedHelpers._
+import org.scalactic.Difference
 
 class XmlSocketReporterSpec extends FunSpec with Eventually {
   

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.scalatest
+package org.scalactic
 
 import org.scalactic.source.CaseClassMeta
 
@@ -66,7 +66,7 @@ object DefaultDiffer extends Differ[Any] {
 
 }
 
-object StringDiffer extends Differ[String] {
+trait StringDiffer extends Differ[String] {
 
   def difference(a: String, b: Any): Difference =
     new Difference {
@@ -125,6 +125,8 @@ object StringDiffer extends Differ[String] {
     }
 
 }
+
+object StringDiffer extends StringDiffer
 
 object CaseClassDiffer extends Differ[Any] {
 

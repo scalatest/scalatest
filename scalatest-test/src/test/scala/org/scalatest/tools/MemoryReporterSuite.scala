@@ -26,6 +26,7 @@ import org.scalatest.events.RecordableEvent
 import org.scalatest.events.RunCompleted
 import org.scalatest.events.RunStarting
 import org.scalatest.ConfigMap
+import org.scalactic.Difference
 
 import java.io.File
 

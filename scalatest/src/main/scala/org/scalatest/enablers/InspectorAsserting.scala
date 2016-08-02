@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 import org.scalatest._
 import org.scalatest.exceptions._
-import org.scalactic.{Prettifier, source}
+import org.scalactic.{Prettifier, source, Difference}
 
 import scala.annotation.tailrec
 import scala.collection.GenTraversable

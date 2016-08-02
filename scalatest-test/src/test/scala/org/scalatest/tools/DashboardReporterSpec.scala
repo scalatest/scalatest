@@ -18,6 +18,7 @@ package org.scalatest.tools
 import org.scalatest._
 import SharedHelpers._
 import events._
+import org.scalactic.Difference
 
 class DashboardReporterSpec extends FunSpec {
 

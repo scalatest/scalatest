@@ -17,6 +17,7 @@ package org.scalatest.events
 
 import org.scalatest._
 import org.scalactic.Requirements._
+import org.scalactic.Difference
 import java.io.BufferedWriter
 import java.io.PrintWriter
 import java.io.StringWriter

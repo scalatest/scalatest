@@ -17,7 +17,7 @@ package org.scalatest.words
 
 import org.scalatest.matchers._
 import org.scalactic._
-import org.scalatest.{Differ, Difference, Resources, Suite}
+import org.scalatest.{Resources, Suite}
 import org.scalatest.Assertions.areEqualComparingArraysStructurally
 
 /**
