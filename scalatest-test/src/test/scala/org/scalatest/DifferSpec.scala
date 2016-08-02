@@ -338,4 +338,28 @@ class DifferSpec extends FunSpec {
 
   }
 
+  describe("ProductDiffer") {
+
+    it("should not produce difference when left and right have the same elements in same order") {
+      assert(Differ.default.difference((1, 2, 3), (1, 2, 3)).analysis == None)
+    }
+
+    it("should produce difference when element in left and right is different") {
+      assert(Differ.default.difference((1, 2, 3), (1, 6, 3)).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
+    it("should product difference when element exist in left, but not in right") {
+      assert(Differ.default.difference((1, 2, 3), (1, 2)).analysis == Some("Tuple3(_3: 3 -> )"))
+    }
+
+    it("should product difference when element exist in right, but not in left") {
+      assert(Differ.default.difference((1, 2), (1, 2, 3)).analysis == Some("Tuple2(_3: -> 3)"))
+    }
+
+    it("should produce difference when elements in left and right is same but in different order") {
+      assert(Differ.default.difference((1, 2, 3), (3, 2, 1)).analysis == Some("Tuple3(_1: 1 -> 3, _3: 3 -> 1)"))
+    }
+
+  }
+
 }

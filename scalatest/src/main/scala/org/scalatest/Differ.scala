@@ -39,6 +39,8 @@ object Differ {
       "Set"
     else if (shortName.startsWith("Map$Map"))
       "Map"
+    else if (shortName.startsWith("Tuple"))
+      shortName.takeWhile(_ != '$')
     else
       shortName
   }
@@ -56,11 +58,9 @@ object DefaultDiffer extends Differ[Any] {
       case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2)
       case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2)
       case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2)
-      case _ =>
-        if (CaseClassMeta.isCaseClass(a) && CaseClassMeta.isCaseClass(b))
-          CaseClassDiffer.difference(a, b)
-        else
-          Difference.empty
+      case (s1: Product, s2: Product) if CaseClassMeta.isCaseClass(s1) && CaseClassMeta.isCaseClass(s2) => CaseClassDiffer.difference(s1, s2)
+      case (s1: Product, s2: Product) => ProductDiffer.difference(s1, s2)
+      case _ => Difference.empty
     }
   }
 
@@ -302,6 +302,48 @@ object GenMapDiffer extends Differ[scala.collection.GenMap[Any, Any]] {
 
           case _ =>
             None
+        }
+      }
+    }
+  }
+
+}
+
+object ProductDiffer extends Differ[Product] {
+
+  def difference(aProduct: Product, b: Any): Difference = {
+    new Difference {
+      def inlineDiff = None
+
+      def sideBySideDiff = None
+
+      def analysis = {
+        b match {
+          case bProduct: scala.Product =>
+            val diffSet =
+              ((0 until aProduct.productArity) flatMap { i =>
+                val leftEl = aProduct.productElement(i)
+                if (bProduct.productArity > i) {
+                  val rightEl = bProduct.productElement(i)
+                  if (leftEl != rightEl)
+                    Some("_" + (i + 1) + ": " + leftEl + " -> " + rightEl)
+                  else
+                    None
+                }
+                else
+                  Some("_" + (i + 1) + ": " + leftEl + " -> ")
+              }).toSet ++
+                ((aProduct.productArity until bProduct.productArity) flatMap { i =>
+                  Some("_" + (i + 1) + ": -> " + bProduct.productElement(i))
+                }).toSet
+
+            val shortName = Differ.simpleClassName(aProduct)
+            if (diffSet.isEmpty)
+              None
+            else
+              Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
+
+          case _ => None
         }
       }
     }
