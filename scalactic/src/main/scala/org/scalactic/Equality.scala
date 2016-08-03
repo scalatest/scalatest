@@ -252,6 +252,8 @@ object Equality {
    *
    * @return a default <code>Equivalence[A]</code>
    */
-  implicit def default[A]: Equality[A] = new DefaultEquality[A]
+  implicit def default[A]: Equality[A] = new DefaultEquality[A] with DefaultDiffer
+
+  implicit def stringEquality: Equality[String] = new DefaultEquality[String] with StringDiffer
 }
 

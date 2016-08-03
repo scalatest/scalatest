@@ -17,7 +17,7 @@ package org.scalactic
 
 trait Difference extends Serializable {
 
-  def inlineDiff: Option[(String, String)]
+  def inlineDiff: Option[(Any, Any)]
 
   def sideBySideDiff: Option[(String, String)]
 

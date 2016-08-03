@@ -49,7 +49,7 @@ object Differ {
 
 }
 
-object DefaultDiffer extends Differ[Any] {
+trait DefaultDiffer extends Differ[Any] {
 
   def difference(a: Any, b: Any): Difference = {
 
@@ -60,17 +60,29 @@ object DefaultDiffer extends Differ[Any] {
       case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2)
       case (s1: Product, s2: Product) if CaseClassMeta.isCaseClass(s1) && CaseClassMeta.isCaseClass(s2) => CaseClassDiffer.difference(s1, s2)
       case (s1: Product, s2: Product) => ProductDiffer.difference(s1, s2)
-      case _ => Difference.empty
+      case _ =>
+        if (a != b)
+          new Difference {
+
+            def inlineDiff = Some((a, b))
+
+            def sideBySideDiff = None
+
+            def analysis = None
+          }
+        else
+          Difference.empty
     }
   }
 
 }
 
+object DefaultDiffer extends DefaultDiffer
+
 trait StringDiffer extends Differ[String] {
 
   def difference(a: String, b: Any): Difference =
     new Difference {
-
       def diffStrings(s: String, t: String): Tuple2[String, String] = {
         def findCommonPrefixLength(s: String, t: String): Int = {
           val max = s.length.min(t.length) // the maximum potential size of the prefix
@@ -113,9 +125,9 @@ trait StringDiffer extends Differ[String] {
       }
 
       def inlineDiff = {
-        b match {
-          case bStr: String => Some(diffStrings(a, bStr))
-          case _ => None
+        (a, b) match {
+          case (aStr: String, bStr: String) if aStr != bStr => Some(diffStrings(aStr, bStr))
+          case _ => if (a != b) Some((a, b)) else None
         }
       }
 

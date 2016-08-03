@@ -5255,27 +5255,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
               val (eee, rightee) = difference.inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(e, right))
               indicateFailure(FailureMessages.didNotEqual(prettifier, eee, rightee), None, pos, difference)
             case _ =>
-              (e, right) match {
-                case (leftStr: String, rightStr: String) =>
-                  val difference =
-                    new Difference {
-                      val inlineDiff = {
-                        val (leftee, rightee) = Suite.getObjectsForFailureMessage(e, right)
-                        Some((leftee.toString, rightee.toString))
-                      }
-
-                      lazy val sideBySideDiff = None
-
-                      lazy val analysis = None
-                    }
-                  val (eee, rightee) = difference.inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(e, right))
-                  indicateFailure(FailureMessages.didNotEqual(prettifier, eee, rightee), None, pos, difference)
-
-                case _ =>
-                  indicateFailure(FailureMessages.didNotEqual(prettifier, e, right), None, pos)
-
-              }
-
+              indicateFailure(FailureMessages.didNotEqual(prettifier, e, right), None, pos)
 
           }
         }
@@ -6786,20 +6766,7 @@ org.scalatest.exceptions.TestFailedException: org.scalatest.Matchers$ResultOfCol
             val (leftee, rightee) = difference.inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(leftSideValue, right))
             indicateFailure(FailureMessages.didNotEqual(prettifier, leftee, rightee), None, pos, difference)
 
-          case _ =>
-            (leftSideValue, right) match {
-              case (leftStr: String, rightStr: String) =>
-                val (leftee, rightee) = Suite.getObjectsForFailureMessage(leftSideValue, right)
-                val difference = new Difference {
-                  val inlineDiff = Some((leftee.toString, rightee.toString))
-                  val sideBySideDiff = None
-                  val analysis = None
-                }
-                indicateFailure(FailureMessages.didNotEqual(prettifier, leftee, rightee), None, pos, difference)
-
-              case _ =>
-                indicateFailure(FailureMessages.didNotEqual(prettifier, leftSideValue, right), None, pos)
-            }
+          case _ => indicateFailure(FailureMessages.didNotEqual(prettifier, leftSideValue, right), None, pos)
 
         }
       }

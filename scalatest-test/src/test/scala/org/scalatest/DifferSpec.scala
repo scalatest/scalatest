@@ -40,7 +40,7 @@ class DifferSpec extends FunSpec {
           "test2" shouldEqual (3)
         }
         assert(e.message == Some("\"test2\" did not equal 3"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test2", 3)))
       }
 
       it("should not include differences in TestFailedException thrown from a shouldEqual (b) syntax when a is Int and b is String") {
@@ -48,7 +48,7 @@ class DifferSpec extends FunSpec {
           3 shouldEqual ("test2")
         }
         assert(e.message == Some("3 did not equal \"test2\""))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((3, "test2")))
       }
 
       it("should not include differences in TestFailedException thrown from a shouldEqual (b) syntax when a is Int and b is Int") {
@@ -56,7 +56,7 @@ class DifferSpec extends FunSpec {
           3 shouldEqual (2)
         }
         assert(e.message == Some("3 did not equal 2"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((3, 2)))
       }
 
       it("should include differences in TestFailedException thrown from a should equal (b) syntax when both a and b is String") {
@@ -72,7 +72,7 @@ class DifferSpec extends FunSpec {
           "test2" should equal (2)
         }
         assert(e.message == Some("\"test2\" did not equal 2"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test2", 2)))
       }
 
       it("should not include differences in TestFailedException thrown from a should equal (b) syntax when a is Int and b is String") {
@@ -80,7 +80,7 @@ class DifferSpec extends FunSpec {
           2 should equal ("test2")
         }
         assert(e.message == Some("2 did not equal \"test2\""))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((2, "test2")))
       }
 
       it("should not include differences in TestFailedException thrown from a should equal (b) syntax when a is Int and b is Int") {
@@ -88,7 +88,7 @@ class DifferSpec extends FunSpec {
           2 should equal (3)
         }
         assert(e.message == Some("2 did not equal 3"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((2, 3)))
       }
 
       it("should include diffences in TestFailedException thrown from all(a) shouldEqual (b) syntax when both a and b is String") {
@@ -108,7 +108,7 @@ class DifferSpec extends FunSpec {
         assert(e.message == Some("'all' inspection failed, because: \n" +
           "  at index 0, \"test\" did not equal 2 (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
           "in List(\"test\", \"test2\", \"test\")"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test", 2)))
       }
 
       it("should not include diffences in TestFailedException thrown from all(a) shouldEqual (b) syntax when both a is Int and b is String") {
@@ -118,7 +118,7 @@ class DifferSpec extends FunSpec {
         assert(e.message == Some("'all' inspection failed, because: \n" +
           "  at index 0, 1 did not equal \"test\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
           "in List(1, 2, 3)"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((1, "test")))
       }
 
       it("should not include diffences in TestFailedException thrown from all(a) shouldEqual (b) syntax when both a is Int and b is Int") {
@@ -128,7 +128,7 @@ class DifferSpec extends FunSpec {
         assert(e.message == Some("'all' inspection failed, because: \n" +
           "  at index 0, 1 did not equal 2 (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
           "in List(1, 2, 3)"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((1, 2)))
       }
 
       it("should include differences in TestFailedException thrown from all(a) should equal (b) syntax when both a and b is String") {
@@ -148,7 +148,7 @@ class DifferSpec extends FunSpec {
         assert(e.message == Some("'all' inspection failed, because: \n" +
           "  at index 0, \"test\" did not equal 2 (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
           "in List(\"test\", \"test2\", \"test\")"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test", 2)))
       }
 
       it("should not include differences in TestFailedException thrown from all(a) should equal (b) syntax when a is Int and b is String") {
@@ -158,7 +158,7 @@ class DifferSpec extends FunSpec {
         assert(e.message == Some("'all' inspection failed, because: \n" +
           "  at index 0, 1 did not equal \"test\" (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
           "in List(1, 2, 3)"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((1, "test")))
       }
 
       it("should not include differences in TestFailedException thrown from all(a) should equal (b) syntax when a is Int and b is Int") {
@@ -168,7 +168,7 @@ class DifferSpec extends FunSpec {
         assert(e.message == Some("'all' inspection failed, because: \n" +
           "  at index 0, 1 did not equal 2 (DifferSpec.scala:" + (thisLineNumber - 3) + ") \n" +
           "in List(1, 2, 3)"))
-        assert(e.differences.isEmpty)
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((1, 2)))
       }
 
     }

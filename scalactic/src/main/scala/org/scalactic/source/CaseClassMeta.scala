@@ -38,10 +38,10 @@ object CaseClassMeta {
     symbol.isCaseClass
   }
 
-  def apply(value: Any): CaseClassMeta = {
+  def apply(v: Any): CaseClassMeta = {
 
-    val typeMirror = runtimeMirror(value.getClass.getClassLoader)
-    val instanceMirror = typeMirror.reflect(value)
+    val typeMirror = runtimeMirror(v.getClass.getClassLoader)
+    val instanceMirror = typeMirror.reflect(v)
     val symbol: ClassSymbol = instanceMirror.symbol
 
     def isCaseAccessor(s: Symbol): Boolean = {

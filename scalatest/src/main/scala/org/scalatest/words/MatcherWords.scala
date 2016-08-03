@@ -295,24 +295,7 @@ trait MatcherWords {
           def difference(left: T): Option[Difference] = {
             equality match {
               case differ: Differ[T] => Some(differ.difference(left, right))
-              case _ =>
-                (left, right) match {
-                  case (leftStr: String, rightStr: String) =>
-                    Some(
-                      new Difference {
-                        val inlineDiff = {
-                          val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right)
-                          Some((leftee.toString, rightee.toString))
-                        }
-
-                        lazy val sideBySideDiff = None
-
-                        lazy val analysis = None
-                      }
-                    )
-
-                  case _ => None
-                }
+              case _ => None
             }
           }
           def apply(left: T): MatchResult = {
