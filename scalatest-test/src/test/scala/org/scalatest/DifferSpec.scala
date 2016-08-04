@@ -264,6 +264,50 @@ class DifferSpec extends FunSpec {
       assert(Differ.default.difference(a, b).analysis == Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(x: DifferSpec$Bar(s: [asdf] -> [qwer])))"))
     }
 
+    it("should be used when case class is being compared with shouldEqual matcher") {
+      val a = Bar("asdf", 5)
+      val b = Bar("asbdf", 6)
+
+      val e = intercept[TestFailedException] {
+        a shouldEqual b
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[]df -> as[b]df)"))
+    }
+
+    it("should be used when case class is being compared with should equal matcher") {
+      val a = Bar("asdf", 5)
+      val b = Bar("asbdf", 6)
+
+      val e = intercept[TestFailedException] {
+        a should equal (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[]df -> as[b]df)"))
+    }
+
+    it("should be used when case class is being compared with 'all' shouldEqual matcher") {
+      val a = Bar("asdf", 5)
+      val b = Bar("asbdf", 6)
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) shouldEqual (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[]df -> as[b]df)"))
+    }
+
+    it("should be used when case class is being compared with 'all' should equal matcher") {
+      val a = Bar("asdf", 5)
+      val b = Bar("asbdf", 6)
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) should equal (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[]df -> as[b]df)"))
+    }
+
   }
 
   describe("GenSeqDiffer") {
@@ -286,6 +330,50 @@ class DifferSpec extends FunSpec {
 
     it("should produce difference when elements in left and right is same but in different order") {
       assert(Differ.default.difference(List(1, 2, 3), List(3, 2, 1)).analysis == Some("List(0: 1 -> 3, 2: 3 -> 1)"))
+    }
+
+    it("should be used when GenSeq is being compared with shouldEqual matcher") {
+      val a = List(1, 2, 3)
+      val b = List(1, 6, 3)
+
+      val e = intercept[TestFailedException] {
+        a shouldEqual b
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("List(1: 2 -> 6)"))
+    }
+
+    it("should be used when case class is being compared with should equal matcher") {
+      val a = List(1, 2, 3)
+      val b = List(1, 6, 3)
+
+      val e = intercept[TestFailedException] {
+        a should equal (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("List(1: 2 -> 6)"))
+    }
+
+    it("should be used when case class is being compared with 'all' shouldEqual matcher") {
+      val a = List(1, 2, 3)
+      val b = List(1, 6, 3)
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) shouldEqual (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("List(1: 2 -> 6)"))
+    }
+
+    it("should be used when case class is being compared with 'all' should equal matcher") {
+      val a = List(1, 2, 3)
+      val b = List(1, 6, 3)
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) should equal (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("List(1: 2 -> 6)"))
     }
 
   }
