@@ -240,9 +240,9 @@ object CaseClassDiffer extends CaseClassDiffer[Any]
 
 // interesting to see https://github.com/twitter/diffy/blob/master/src/main/scala/com/twitter/diffy/compare/Difference.scala
 
-trait GenSeqDiffer extends Differ[scala.collection.GenSeq[Any]] {
+trait GenSeqDiffer[E] extends Differ[scala.collection.GenSeq[E]] {
 
-  def difference(aSeq: scala.collection.GenSeq[Any], b: Any): Difference = {
+  def difference(aSeq: scala.collection.GenSeq[E], b: Any): Difference = {
     new Difference {
       def inlineDiff = None
 
@@ -282,11 +282,11 @@ trait GenSeqDiffer extends Differ[scala.collection.GenSeq[Any]] {
 
 }
 
-object GenSeqDiffer extends GenSeqDiffer
+object GenSeqDiffer extends GenSeqDiffer[Any]
 
-trait GenSetDiffer extends Differ[scala.collection.GenSet[Any]] {
+trait GenSetDiffer[E] extends Differ[scala.collection.GenSet[E]] {
 
-  def difference(aSet: scala.collection.GenSet[Any], b: Any): Difference = {
+  def difference(aSet: scala.collection.GenSet[E], b: Any): Difference = {
     new Difference {
       def inlineDiff = None
 
@@ -294,8 +294,8 @@ trait GenSetDiffer extends Differ[scala.collection.GenSet[Any]] {
 
       def analysis = {
         b match {
-          case bSet: scala.collection.GenSet[Any] =>
-            val missingInRight = aSet.diff(bSet.asInstanceOf[scala.collection.GenSet[Any]])
+          case bSet: scala.collection.GenSet[E] =>
+            val missingInRight = aSet.diff(bSet)
             val missingInLeft = bSet.diff(aSet)
 
             val shortName = Differ.simpleClassName(aSet)
@@ -318,11 +318,11 @@ trait GenSetDiffer extends Differ[scala.collection.GenSet[Any]] {
 
 }
 
-object GenSetDiffer extends GenSetDiffer
+object GenSetDiffer extends GenSetDiffer[Any]
 
-trait GenMapDiffer extends Differ[scala.collection.GenMap[Any, Any]] {
+trait GenMapDiffer[K, V] extends Differ[scala.collection.GenMap[K, V]] {
 
-  def difference(aMap: scala.collection.GenMap[Any, Any], b: Any): Difference = {
+  def difference(aMap: scala.collection.GenMap[K, V], b: Any): Difference = {
     new Difference {
       def inlineDiff = None
 
@@ -330,7 +330,7 @@ trait GenMapDiffer extends Differ[scala.collection.GenMap[Any, Any]] {
 
       def analysis = {
         b match {
-          case bMap: scala.collection.GenMap[Any, Any] =>
+          case bMap: scala.collection.GenMap[K, V] =>
             val leftKeySet = aMap.keySet
             val rightKeySet = bMap.keySet
             val missingKeyInRight = leftKeySet.diff(rightKeySet)
@@ -369,7 +369,7 @@ trait GenMapDiffer extends Differ[scala.collection.GenMap[Any, Any]] {
 
 }
 
-object GenMapDiffer extends GenMapDiffer
+object GenMapDiffer extends GenMapDiffer[Any, Any]
 
 trait ProductDiffer extends Differ[Product] {
 

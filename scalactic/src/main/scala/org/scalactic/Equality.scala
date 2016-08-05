@@ -264,10 +264,10 @@ object Equality extends LowPriorityEqualityImplicits {
 
   import scala.language.higherKinds
 
-  implicit def genSeqEquality[E, SEQ[e] <: scala.collection.GenSeq[e]]: Equality[SEQ[E]] = new DefaultEquality[SEQ[E]] with GenSeqDiffer
+  implicit def genSeqEquality[E, SEQ[e] <: scala.collection.GenSeq[e]]: Equality[SEQ[E]] = new DefaultEquality[SEQ[E]] with GenSeqDiffer[E]
 
-  implicit def genSetEquality[E, SET[e] <: scala.collection.GenSet[e]]: Equality[SET[E]] = new DefaultEquality[SET[E]] with GenSetDiffer
+  implicit def genSetEquality[E, SET[e] <: scala.collection.GenSet[e]]: Equality[SET[E]] = new DefaultEquality[SET[E]] with GenSetDiffer[E]
 
-  implicit def genMapEquality[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]]: Equality[MAP[K, V]] = new DefaultEquality[MAP[K, V]] with GenMapDiffer
+  implicit def genMapEquality[K, V, MAP[k, v] <: scala.collection.GenMap[k, v]]: Equality[MAP[K, V]] = new DefaultEquality[MAP[K, V]] with GenMapDiffer[K, V]
 }
 
