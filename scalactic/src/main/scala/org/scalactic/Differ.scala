@@ -53,6 +53,46 @@ trait DefaultDiffer extends Differ[Any] {
 
   def difference(a: Any, b: Any): Difference = {
 
+    /*(a, b) match {
+      case (s1: String, s2: String) => StringDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2)
+      case (s1: Product, s2: Product) if CaseClassMeta.isCaseClass(s1) && CaseClassMeta.isCaseClass(s2) => CaseClassDiffer.difference(s1, s2)
+      case (s1: Product, s2: Product) => ProductDiffer.difference(s1, s2)
+      case _ =>
+        if (a != b)
+          new Difference {
+
+            def inlineDiff = Some((a, b))
+
+            def sideBySideDiff = None
+
+            def analysis = None
+          }
+        else
+          Difference.empty
+    }*/
+    if (a != b)
+      new Difference {
+        def inlineDiff = Some((a, b))
+
+        def sideBySideDiff = None
+
+        def analysis = None
+      }
+    else
+      Difference.empty
+  }
+
+}
+
+object DefaultDiffer extends DefaultDiffer
+
+trait GeneralDiffer extends Differ[Any] {
+
+  def difference(a: Any, b: Any): Difference = {
+
     (a, b) match {
       case (s1: String, s2: String) => StringDiffer.difference(s1, s2)
       case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2)
@@ -77,7 +117,7 @@ trait DefaultDiffer extends Differ[Any] {
 
 }
 
-object DefaultDiffer extends DefaultDiffer
+object GeneralDiffer extends GeneralDiffer
 
 trait StringDiffer extends Differ[String] {
 
@@ -158,7 +198,7 @@ object CaseClassDiffer extends Differ[Any] {
             try {
               val rightValue = rightMeta.value(name)
               if (leftValue != rightValue) {
-                val nestedDiff = DefaultDiffer.difference(leftValue, rightValue)
+                val nestedDiff = GeneralDiffer.difference(leftValue, rightValue)
                 if (nestedDiff == Difference.empty)
                   Some(name + ": " + leftValue + " -> " + rightValue)
                 else {
@@ -198,7 +238,7 @@ object CaseClassDiffer extends Differ[Any] {
 
 // interesting to see https://github.com/twitter/diffy/blob/master/src/main/scala/com/twitter/diffy/compare/Difference.scala
 
-object GenSeqDiffer extends Differ[scala.collection.GenSeq[Any]] {
+trait GenSeqDiffer extends Differ[scala.collection.GenSeq[Any]] {
 
   def difference(aSeq: scala.collection.GenSeq[Any], b: Any): Difference = {
     new Difference {
@@ -240,7 +280,9 @@ object GenSeqDiffer extends Differ[scala.collection.GenSeq[Any]] {
 
 }
 
-object GenSetDiffer extends Differ[scala.collection.GenSet[Any]] {
+object GenSeqDiffer extends GenSeqDiffer
+
+trait GenSetDiffer extends Differ[scala.collection.GenSet[Any]] {
 
   def difference(aSet: scala.collection.GenSet[Any], b: Any): Difference = {
     new Difference {
@@ -274,7 +316,9 @@ object GenSetDiffer extends Differ[scala.collection.GenSet[Any]] {
 
 }
 
-object GenMapDiffer extends Differ[scala.collection.GenMap[Any, Any]] {
+object GenSetDiffer extends GenSetDiffer
+
+trait GenMapDiffer extends Differ[scala.collection.GenMap[Any, Any]] {
 
   def difference(aMap: scala.collection.GenMap[Any, Any], b: Any): Difference = {
     new Difference {
@@ -323,44 +367,51 @@ object GenMapDiffer extends Differ[scala.collection.GenMap[Any, Any]] {
 
 }
 
-object ProductDiffer extends Differ[Product] {
+object GenMapDiffer extends GenMapDiffer
+
+trait ProductDiffer extends Differ[Product] {
 
   def difference(aProduct: Product, b: Any): Difference = {
-    new Difference {
-      def inlineDiff = None
+    if (aProduct != null && CaseClassMeta.isCaseClass(aProduct) && b != null && CaseClassMeta.isCaseClass(b))
+      CaseClassDiffer.difference(aProduct, b)
+    else
+      new Difference {
+        def inlineDiff = None
 
-      def sideBySideDiff = None
+        def sideBySideDiff = None
 
-      def analysis = {
-        b match {
-          case bProduct: scala.Product =>
-            val diffSet =
-              ((0 until aProduct.productArity) flatMap { i =>
-                val leftEl = aProduct.productElement(i)
-                if (bProduct.productArity > i) {
-                  val rightEl = bProduct.productElement(i)
-                  if (leftEl != rightEl)
-                    Some("_" + (i + 1) + ": " + leftEl + " -> " + rightEl)
+        def analysis = {
+          b match {
+            case bProduct: scala.Product =>
+              val diffSet =
+                ((0 until aProduct.productArity) flatMap { i =>
+                  val leftEl = aProduct.productElement(i)
+                  if (bProduct.productArity > i) {
+                    val rightEl = bProduct.productElement(i)
+                    if (leftEl != rightEl)
+                      Some("_" + (i + 1) + ": " + leftEl + " -> " + rightEl)
+                    else
+                      None
+                  }
                   else
-                    None
-                }
-                else
-                  Some("_" + (i + 1) + ": " + leftEl + " -> ")
-              }).toSet ++
-                ((aProduct.productArity until bProduct.productArity) flatMap { i =>
-                  Some("_" + (i + 1) + ": -> " + bProduct.productElement(i))
-                }).toSet
+                    Some("_" + (i + 1) + ": " + leftEl + " -> ")
+                }).toSet ++
+                  ((aProduct.productArity until bProduct.productArity) flatMap { i =>
+                    Some("_" + (i + 1) + ": -> " + bProduct.productElement(i))
+                  }).toSet
 
-            val shortName = Differ.simpleClassName(aProduct)
-            if (diffSet.isEmpty)
-              None
-            else
-              Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
+              val shortName = Differ.simpleClassName(aProduct)
+              if (diffSet.isEmpty)
+                None
+              else
+                Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
 
-          case _ => None
+            case _ => None
+          }
         }
       }
-    }
   }
 
 }
+
+object ProductDiffer extends ProductDiffer

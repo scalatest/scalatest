@@ -244,9 +244,9 @@ class DifferSpec extends FunSpec {
       val b = Bar("asdf", 6)
       val c = Bar("asf", 6)
 
-      assert(Differ.default.difference(a, b).analysis == Some("DifferSpec$Bar(i: 5 -> 6)"))
-      assert(Differ.default.difference(b, c).analysis == Some("DifferSpec$Bar(s: as[d]f -> as[]f)"))
-      assert(Differ.default.difference(a, c).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[d]f -> as[]f)"))
+      assert(CaseClassDiffer.difference(a, b).analysis == Some("DifferSpec$Bar(i: 5 -> 6)"))
+      assert(CaseClassDiffer.difference(b, c).analysis == Some("DifferSpec$Bar(s: as[d]f -> as[]f)"))
+      assert(CaseClassDiffer.difference(a, c).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[d]f -> as[]f)"))
     }
 
     it("should produce difference of 2 Foos correctly") {
@@ -261,7 +261,7 @@ class DifferSpec extends FunSpec {
         Some( Bar( "qwer", 5 ) )
       )
 
-      assert(Differ.default.difference(a, b).analysis == Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(x: DifferSpec$Bar(s: [asdf] -> [qwer])))"))
+      assert(CaseClassDiffer.difference(a, b).analysis == Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(x: DifferSpec$Bar(s: [asdf] -> [qwer])))"))
     }
 
     it("should be used when case class is being compared with shouldEqual matcher") {
@@ -313,23 +313,23 @@ class DifferSpec extends FunSpec {
   describe("GenSeqDiffer") {
 
     it("should not produce difference when left and right have the same elements in same order") {
-      assert(Differ.default.difference(List(1, 2, 3), List(1, 2, 3)).analysis == None)
+      assert(GenSeqDiffer.difference(List(1, 2, 3), List(1, 2, 3)).analysis == None)
     }
 
     it("should produce difference when element in left and right is different") {
-      assert(Differ.default.difference(List(1, 2, 3), List(1, 6, 3)).analysis == Some("List(1: 2 -> 6)"))
+      assert(GenSeqDiffer.difference(List(1, 2, 3), List(1, 6, 3)).analysis == Some("List(1: 2 -> 6)"))
     }
 
     it("should product difference when element exist in left, but not in right") {
-      assert(Differ.default.difference(List(1, 2, 3), List(1, 2)).analysis == Some("List(2: 3 -> )"))
+      assert(GenSeqDiffer.difference(List(1, 2, 3), List(1, 2)).analysis == Some("List(2: 3 -> )"))
     }
 
     it("should product difference when element exist in right, but not in left") {
-      assert(Differ.default.difference(List(1, 2), List(1, 2, 3)).analysis == Some("List(2: -> 3)"))
+      assert(GenSeqDiffer.difference(List(1, 2), List(1, 2, 3)).analysis == Some("List(2: -> 3)"))
     }
 
     it("should produce difference when elements in left and right is same but in different order") {
-      assert(Differ.default.difference(List(1, 2, 3), List(3, 2, 1)).analysis == Some("List(0: 1 -> 3, 2: 3 -> 1)"))
+      assert(GenSeqDiffer.difference(List(1, 2, 3), List(3, 2, 1)).analysis == Some("List(0: 1 -> 3, 2: 3 -> 1)"))
     }
 
     it("should be used when GenSeq is being compared with shouldEqual matcher") {
@@ -343,7 +343,7 @@ class DifferSpec extends FunSpec {
       assert(e.differences(0).analysis == Some("List(1: 2 -> 6)"))
     }
 
-    it("should be used when case class is being compared with should equal matcher") {
+    it("should be used when GenSeq is being compared with should equal matcher") {
       val a = List(1, 2, 3)
       val b = List(1, 6, 3)
 
@@ -354,7 +354,7 @@ class DifferSpec extends FunSpec {
       assert(e.differences(0).analysis == Some("List(1: 2 -> 6)"))
     }
 
-    it("should be used when case class is being compared with 'all' shouldEqual matcher") {
+    it("should be used when GenSeq is being compared with 'all' shouldEqual matcher") {
       val a = List(1, 2, 3)
       val b = List(1, 6, 3)
 
@@ -365,7 +365,7 @@ class DifferSpec extends FunSpec {
       assert(e.differences(0).analysis == Some("List(1: 2 -> 6)"))
     }
 
-    it("should be used when case class is being compared with 'all' should equal matcher") {
+    it("should be used when GenSeq is being compared with 'all' should equal matcher") {
       val a = List(1, 2, 3)
       val b = List(1, 6, 3)
 
@@ -381,23 +381,67 @@ class DifferSpec extends FunSpec {
   describe("GenSetDiffer") {
 
     it("should not produce difference when left and right have the same elements in same order") {
-      assert(Differ.default.difference(Set(1, 2, 3), Set(1, 2, 3)).analysis == None)
+      assert(GenSetDiffer.difference(Set(1, 2, 3), Set(1, 2, 3)).analysis == None)
     }
 
     it("should produce difference when element in left and right is different") {
-      assert(Differ.default.difference(Set(1, 2, 3), Set(1, 6, 3)).analysis == Some("Set(missingInLeft: [6], missingInRight: [2])"))
+      assert(GenSetDiffer.difference(Set(1, 2, 3), Set(1, 6, 3)).analysis == Some("Set(missingInLeft: [6], missingInRight: [2])"))
     }
 
     it("should product difference when element exist in left, but not in right") {
-      assert(Differ.default.difference(Set(1, 2, 3), Set(1, 2)).analysis == Some("Set(missingInRight: [3])"))
+      assert(GenSetDiffer.difference(Set(1, 2, 3), Set(1, 2)).analysis == Some("Set(missingInRight: [3])"))
     }
 
     it("should product difference when element exist in right, but not in left") {
-      assert(Differ.default.difference(Set(1, 2), Set(1, 2, 3)).analysis == Some("Set(missingInLeft: [3])"))
+      assert(GenSetDiffer.difference(Set(1, 2), Set(1, 2, 3)).analysis == Some("Set(missingInLeft: [3])"))
     }
 
     it("should not produce difference when elements in left and right is same but in different order") {
-      assert(Differ.default.difference(Set(1, 2, 3), Set(3, 2, 1)).analysis == None)
+      assert(GenSetDiffer.difference(Set(1, 2, 3), Set(3, 2, 1)).analysis == None)
+    }
+
+    it("should be used when GenSet is being compared with shouldEqual matcher") {
+      val a = Set(1, 2, 3)
+      val b = Set(1, 6, 3)
+
+      val e = intercept[TestFailedException] {
+        a shouldEqual b
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Set(missingInLeft: [6], missingInRight: [2])"))
+    }
+
+    it("should be used when GenSet is being compared with should equal matcher") {
+      val a = Set(1, 2, 3)
+      val b = Set(1, 6, 3)
+
+      val e = intercept[TestFailedException] {
+        a should equal (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Set(missingInLeft: [6], missingInRight: [2])"))
+    }
+
+    it("should be used when GenSet is being compared with 'all' shouldEqual matcher") {
+      val a = Set(1, 2, 3)
+      val b = Set(1, 6, 3)
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) shouldEqual (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Set(missingInLeft: [6], missingInRight: [2])"))
+    }
+
+    it("should be used when GenSet is being compared with 'all' should equal matcher") {
+      val a = Set(1, 2, 3)
+      val b = Set(1, 6, 3)
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) should equal (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Set(missingInLeft: [6], missingInRight: [2])"))
     }
 
   }
@@ -405,23 +449,67 @@ class DifferSpec extends FunSpec {
   describe("GenMapDiffer") {
 
     it("should not produce difference when left and right have the same elements in same order") {
-      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), List(1 -> "one", 2 -> "two", 3 -> "three")).analysis == None)
+      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), List(1 -> "one", 2 -> "two", 3 -> "three")).analysis == None)
     }
 
     it("should produce difference when element in left and right is different") {
-      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 6 -> "six", 3 -> "three")).analysis == Some("Map(2: two -> , 6: -> six)"))
+      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 6 -> "six", 3 -> "three")).analysis == Some("Map(2: two -> , 6: -> six)"))
     }
 
     it("should product difference when element exist in left, but not in right") {
-      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 2 -> "two")).analysis == Some("Map(3: three -> )"))
+      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(1 -> "one", 2 -> "two")).analysis == Some("Map(3: three -> )"))
     }
 
     it("should product difference when element exist in right, but not in left") {
-      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two"), Map(1 -> "one", 2 -> "two", 3 -> "three")).analysis == Some("Map(3: -> three)"))
+      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two"), Map(1 -> "one", 2 -> "two", 3 -> "three")).analysis == Some("Map(3: -> three)"))
     }
 
     it("should not produce difference when elements in left and right is same but in different order") {
-      assert(Differ.default.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(3 -> "three", 2 -> "two", 1 -> "one")).analysis == None)
+      assert(GenMapDiffer.difference(Map(1 -> "one", 2 -> "two", 3 -> "three"), Map(3 -> "three", 2 -> "two", 1 -> "one")).analysis == None)
+    }
+
+    it("should be used when GenMap is being compared with shouldEqual matcher") {
+      val a = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val b = Map(1 -> "one", 6 -> "six", 3 -> "three")
+
+      val e = intercept[TestFailedException] {
+        a shouldEqual b
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Map(2: two -> , 6: -> six)"))
+    }
+
+    it("should be used when GenMap is being compared with should equal matcher") {
+      val a = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val b = Map(1 -> "one", 6 -> "six", 3 -> "three")
+
+      val e = intercept[TestFailedException] {
+        a should equal (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Map(2: two -> , 6: -> six)"))
+    }
+
+    it("should be used when GenMap is being compared with 'all' shouldEqual matcher") {
+      val a = Map(1 -> "one", 2-> "two", 3 -> "three")
+      val b = Map(1-> "one", 6-> "six", 3 -> "three")
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) shouldEqual (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Map(2: two -> , 6: -> six)"))
+    }
+
+    it("should be used when GenMap is being compared with 'all' should equal matcher") {
+      val a = Map(1 -> "one", 2 -> "two", 3 -> "three")
+      val b = Map(1 -> "one", 6 -> "six", 3 -> "three")
+
+      val e = intercept[TestFailedException] {
+        all(List(a)) should equal (b)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Map(2: two -> , 6: -> six)"))
     }
 
   }
@@ -429,23 +517,55 @@ class DifferSpec extends FunSpec {
   describe("ProductDiffer") {
 
     it("should not produce difference when left and right have the same elements in same order") {
-      assert(Differ.default.difference((1, 2, 3), (1, 2, 3)).analysis == None)
+      assert(ProductDiffer.difference((1, 2, 3), (1, 2, 3)).analysis == None)
     }
 
     it("should produce difference when element in left and right is different") {
-      assert(Differ.default.difference((1, 2, 3), (1, 6, 3)).analysis == Some("Tuple3(_2: 2 -> 6)"))
+      assert(ProductDiffer.difference((1, 2, 3), (1, 6, 3)).analysis == Some("Tuple3(_2: 2 -> 6)"))
     }
 
     it("should product difference when element exist in left, but not in right") {
-      assert(Differ.default.difference((1, 2, 3), (1, 2)).analysis == Some("Tuple3(_3: 3 -> )"))
+      assert(ProductDiffer.difference((1, 2, 3), (1, 2)).analysis == Some("Tuple3(_3: 3 -> )"))
     }
 
     it("should product difference when element exist in right, but not in left") {
-      assert(Differ.default.difference((1, 2), (1, 2, 3)).analysis == Some("Tuple2(_3: -> 3)"))
+      assert(ProductDiffer.difference((1, 2), (1, 2, 3)).analysis == Some("Tuple2(_3: -> 3)"))
     }
 
     it("should produce difference when elements in left and right is same but in different order") {
-      assert(Differ.default.difference((1, 2, 3), (3, 2, 1)).analysis == Some("Tuple3(_1: 1 -> 3, _3: 3 -> 1)"))
+      assert(ProductDiffer.difference((1, 2, 3), (3, 2, 1)).analysis == Some("Tuple3(_1: 1 -> 3, _3: 3 -> 1)"))
+    }
+
+    it("should be used when Tuple is being compared with shouldEqual matcher") {
+      val e = intercept[TestFailedException] {
+        (1, 2, 3) shouldEqual (1, 6, 3)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
+    it("should be used when Tuple is being compared with should equal matcher") {
+      val e = intercept[TestFailedException] {
+        (1, 2, 3) should equal ((1, 6, 3))
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
+    it("should be used when Tuple is being compared with 'all' shouldEqual matcher") {
+      val e = intercept[TestFailedException] {
+        all(List((1, 2, 3))) shouldEqual ((1, 6, 3))
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
+    it("should be used when Tuple is being compared with 'all' should equal matcher") {
+      val e = intercept[TestFailedException] {
+        all(List((1, 2, 3))) should equal ((1, 6, 3))
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
     }
 
   }
