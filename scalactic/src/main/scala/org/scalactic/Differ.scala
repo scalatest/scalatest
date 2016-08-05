@@ -180,9 +180,9 @@ trait StringDiffer extends Differ[String] {
 
 object StringDiffer extends StringDiffer
 
-object CaseClassDiffer extends Differ[Any] {
+trait CaseClassDiffer[T] extends Differ[T] {
 
-  def difference(a: Any, b: Any): Difference = {
+  def difference(a: T, b: Any): Difference = {
     new Difference {
       def inlineDiff = None
 
@@ -235,6 +235,8 @@ object CaseClassDiffer extends Differ[Any] {
   }
 
 }
+
+object CaseClassDiffer extends CaseClassDiffer[Any]
 
 // interesting to see https://github.com/twitter/diffy/blob/master/src/main/scala/com/twitter/diffy/compare/Difference.scala
 
