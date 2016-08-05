@@ -231,7 +231,7 @@ trait LowPriorityEqualityImplicits {
     *
     * @return a default <code>Equivalence[A]</code>
     */
-  implicit def default[A]: Equality[A] = new DefaultEquality[A] with DefaultDiffer
+  implicit def default[A]: Equality[A] = new DefaultEquality[A]
 
   implicit def productDefault[A <: Product]: Equality[A] = new DefaultEquality[A] with ProductDiffer
 

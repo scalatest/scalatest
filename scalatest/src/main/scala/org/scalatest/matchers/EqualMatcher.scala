@@ -19,6 +19,6 @@ import org.scalactic.Difference
 
 trait EqualMatcher[T] extends Matcher[T] {
 
-  def difference(left: T): Option[Difference]
+  def difference(left: T): Difference
 
 }

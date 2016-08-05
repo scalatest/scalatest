@@ -44,50 +44,8 @@ object Differ {
     else
       shortName
   }
-
-  val default = DefaultDiffer
-
+  
 }
-
-trait DefaultDiffer extends Differ[Any] {
-
-  def difference(a: Any, b: Any): Difference = {
-
-    /*(a, b) match {
-      case (s1: String, s2: String) => StringDiffer.difference(s1, s2)
-      case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2)
-      case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2)
-      case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2)
-      case (s1: Product, s2: Product) if CaseClassMeta.isCaseClass(s1) && CaseClassMeta.isCaseClass(s2) => CaseClassDiffer.difference(s1, s2)
-      case (s1: Product, s2: Product) => ProductDiffer.difference(s1, s2)
-      case _ =>
-        if (a != b)
-          new Difference {
-
-            def inlineDiff = Some((a, b))
-
-            def sideBySideDiff = None
-
-            def analysis = None
-          }
-        else
-          Difference.empty
-    }*/
-    if (a != b)
-      new Difference {
-        def inlineDiff = Some((a, b))
-
-        def sideBySideDiff = None
-
-        def analysis = None
-      }
-    else
-      Difference.empty
-  }
-
-}
-
-object DefaultDiffer extends DefaultDiffer
 
 trait GeneralDiffer extends Differ[Any] {
 
