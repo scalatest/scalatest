@@ -44,10 +44,10 @@ object Differ {
     else
       shortName
   }
-  
+
 }
 
-trait GeneralDiffer extends Differ[Any] {
+trait AnyDiffer extends Differ[Any] {
 
   def difference(a: Any, b: Any): Difference = {
 
@@ -75,7 +75,7 @@ trait GeneralDiffer extends Differ[Any] {
 
 }
 
-object GeneralDiffer extends GeneralDiffer
+object AnyDiffer extends AnyDiffer
 
 trait StringDiffer extends Differ[String] {
 
@@ -156,7 +156,7 @@ trait CaseClassDiffer[T] extends Differ[T] {
             try {
               val rightValue = rightMeta.value(name)
               if (leftValue != rightValue) {
-                val nestedDiff = GeneralDiffer.difference(leftValue, rightValue)
+                val nestedDiff = AnyDiffer.difference(leftValue, rightValue)
                 if (nestedDiff == Difference.empty)
                   Some(name + ": " + leftValue + " -> " + rightValue)
                 else {
