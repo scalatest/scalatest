@@ -28,7 +28,7 @@ import scala.language.higherKinds
  * are in scope.  Commonly, this will be a class that takes implicit generators
  * for any required parameters.
  */
-case class Law(lawsName: String, lawName: String, fun: () => Unit)
+case class Law(lawsName: String, lawName: String, fun: () => Assertion)
 
 /**
  * A Laws class represents a list of Laws, together with a name
@@ -38,7 +38,7 @@ case class Law(lawsName: String, lawName: String, fun: () => Unit)
 abstract class Laws(val lawsName: String) {
   def laws: Every[Law]
 
-  def law(name: String)(code: () => Unit): Law = Law(lawsName, name, code)
+  def law(name: String)(code: => Assertion): Law = Law(lawsName, name, () => code)
 
   def assert() = laws.foreach { law =>
     withClue(s"The ${law.lawsName} ${law.lawName} law could not be verified: ")(law.fun())

@@ -53,7 +53,7 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
 */
 
   override val laws = Every(
-    law("composition") { () =>
+    law("composition") {
       forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Double]) =>
         ((ca applying cf) applying cg) shouldEqual
           (ca applying (cf applying (cg map ( (g: String => Double) => (f: Int => String) => g compose f))))
@@ -61,20 +61,20 @@ class ApplicativeLaws[Context[_]](implicit ap: Applicative[Context],
     },
 
     // ca ap (a => a) should be the same as ca
-    law("identity") { () =>
+    law("identity") {
       forAll { (ca: Context[Int]) =>
         (ca applying ap.insert((a: Int) => a)) shouldEqual ca
       }
     },
 
     // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
-    law("homomorphism") { () =>
+    law("homomorphism") {
       forAll { (a: Int, f: Int => String) =>
         (ap.insert(a) applying ap.insert(f)) shouldEqual ap.insert(f(a))
       }
     },
 
-    law("interchange") { () =>
+    law("interchange") {
       forAll { (a: Int, cf: Context[Int => String]) =>
         (ap.insert(a) applying cf) shouldEqual (cf applying ap.insert((f: Int => String) => f(a)))
       }

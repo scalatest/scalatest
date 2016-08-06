@@ -31,13 +31,13 @@ class FunctorLaws[Context[_]](implicit functor: Functor[Context],
   val shrCa: Shrink[Context[Int]]) extends Laws("functor") {
 
   override val laws = Every(
-    law("identity") { () =>
+    law("identity") {
       forAll { (ca: Context[Int]) =>
         (ca map identity[Int]) shouldEqual ca
       }
     },
 
-    law("composition") { () =>
+    law("composition") {
       forAll { (ca: Context[Int], f: Int => Int, g: Int => Int) =>
         ((ca map f) map g) shouldEqual (ca map (g compose f))
       }
