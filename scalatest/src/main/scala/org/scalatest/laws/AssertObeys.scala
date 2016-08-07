@@ -23,6 +23,12 @@ trait AssertObeys {
   def assertObeys(laws: Laws): Assertion = {
     laws.check()
   }
+  implicit class ShouldObeyThe(o: Any) {
+    def shouldObeyThe(laws: Laws): Assertion = {
+      laws.check()
+    }
+  }
 }
 
 object AssertObeys extends AssertObeys
+

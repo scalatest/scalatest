@@ -40,7 +40,7 @@ class ApplicativeLaws[Context[_]] private (
   shrCbc: Shrink[Context[String => Double]]
 ) extends Laws("applicative") {
 
-  override val laws = Every(
+  override def laws = Every (
     law("composition") {
       forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Double]) =>
         ((ca applying cf) applying cg) shouldEqual
