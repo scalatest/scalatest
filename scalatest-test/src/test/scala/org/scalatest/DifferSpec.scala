@@ -171,6 +171,38 @@ class DifferSpec extends FunSpec {
         assert(e.differences.flatMap(_.inlineDiff) == Vector((1, 2)))
       }
 
+      it("should include differences in TestFailedException thrown from assert(a === b) syntax when both a and b is String") {
+        val e = intercept[TestFailedException] {
+          assert("test2" === "test")
+        }
+        assert(e.message == Some("\"test[2]\" did not equal \"test[]\""))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test[2]", "test[]")))
+      }
+
+      it("should not include differences in TestFailedException thrown from assert(a === b) syntax when a is String and b is Int") {
+        val e = intercept[TestFailedException] {
+          assert("test2" === 3)
+        }
+        assert(e.message == Some("\"test2\" did not equal 3"))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector(("test2", 3)))
+      }
+
+      it("should not include differences in TestFailedException thrown from assert(a === b) syntax when a is Int and b is String") {
+        val e = intercept[TestFailedException] {
+          assert(3 === "test2")
+        }
+        assert(e.message == Some("3 did not equal \"test2\""))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((3, "test2")))
+      }
+
+      it("should not include differences in TestFailedException thrown from assert(a === b) syntax when a is Int and b is Int") {
+        val e = intercept[TestFailedException] {
+          assert(3 === 2)
+        }
+        assert(e.message == Some("3 did not equal 2"))
+        assert(e.differences.flatMap(_.inlineDiff) == Vector((3, 2)))
+      }
+
     }
 
     describe("when used with custom Equality that has custom difference implementation") {
