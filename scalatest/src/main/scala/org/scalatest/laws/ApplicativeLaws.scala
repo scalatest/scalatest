@@ -40,20 +40,6 @@ class ApplicativeLaws[Context[_]](
   shrCbc: Shrink[Context[String => Double]]
 ) extends Laws("applicative") {
 
-/*
-  "applicative" laws {
-    "composition" law {
-      forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Double]) =>
-        ((ca applying cf) applying cg) shouldEqual
-          (ca applying (cf applying (cg map ( (g: String => Double) => (f: Int => String) => g compose f))))
-      }
-    }
-    "identity" law {
-    }
-  }
-  }
-*/
-
   override val laws = Every(
     law("composition") {
       forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Double]) =>

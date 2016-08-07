@@ -36,13 +36,13 @@ class FunctorSpec extends UnitSpec {
     implicit def arbOptionSome[G](implicit arbG: Arbitrary[G]): Arbitrary[Option[G]] =
       Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Some(g))
 
-    new FunctorLaws[Option]().assert()
+    new FunctorLaws[Option]().check()
   }
 
   "List" should "obey the functor laws via its map method" in {
     implicit val listIntFunctor = new ListFunctor
 
-    new FunctorLaws[List]().assert()
+    new FunctorLaws[List]().check()
   }
 
   "Or" should "obey the functor laws (for its 'good' type) via its map method" in {
@@ -55,7 +55,7 @@ class FunctorSpec extends UnitSpec {
     implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] =
       Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
-    new FunctorLaws[Or.B[Int]#G]().assert()
+    new FunctorLaws[Or.B[Int]#G]().check()
   }
 
   "Or" should "obey the functor laws (for its 'bad' type) via its badMap method" in {
@@ -68,7 +68,7 @@ class FunctorSpec extends UnitSpec {
     implicit def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] =
       Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
 
-    new FunctorLaws[Or.G[Int]#B]().assert()
+    new FunctorLaws[Or.G[Int]#B]().check()
   }
 }
 
