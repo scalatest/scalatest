@@ -32,7 +32,7 @@ class ApplicativeSpec extends UnitSpec {
     }
 
     implicit val listApplicative = new ListApplicative
-    new ApplicativeLaws[List]().assert()
+    new ApplicativeLaws[List]().check()
   }
 
   "Option" should "obey the applicative laws" in {
@@ -44,7 +44,7 @@ class ApplicativeSpec extends UnitSpec {
 
     implicit val optionApplicative = new OptionApplicative
 
-    new ApplicativeLaws[Option]().assert()
+    new ApplicativeLaws[Option]().check()
   }
 
   "The good nature of Or" should "obey the applicative laws" in {
@@ -57,6 +57,6 @@ class ApplicativeSpec extends UnitSpec {
     implicit val orApplicative = new OrApplicative[Int]
     implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
-    new ApplicativeLaws[Or.B[Int]#G]().assert()
+    new ApplicativeLaws[Or.B[Int]#G]().check()
   }
 }
