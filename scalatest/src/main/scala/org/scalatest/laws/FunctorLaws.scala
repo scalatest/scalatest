@@ -34,19 +34,20 @@ class FunctorLaws[Context[_]] private (
 
   val lawsName = "functor"
 
-  override def laws = Every (
-    law("identity") {
-      forAll { (ca: Context[Int]) =>
-        (ca map identity[Int]) shouldEqual ca
-      }
-    },
+  override def laws =
+    Vector(
+      law("identity") {
+        forAll { (ca: Context[Int]) =>
+          (ca map identity[Int]) shouldEqual ca
+        }
+      },
 
-    law("composition") {
-      forAll { (ca: Context[Int], f: Int => Int, g: Int => Int) =>
-        ((ca map f) map g) shouldEqual (ca map (g compose f))
+      law("composition") {
+        forAll { (ca: Context[Int], f: Int => Int, g: Int => Int) =>
+          ((ca map f) map g) shouldEqual (ca map (g compose f))
+        }
       }
-    }
-  )
+    )
 }
 
 object FunctorLaws {
