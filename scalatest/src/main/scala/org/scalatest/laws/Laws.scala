@@ -39,7 +39,7 @@ trait Laws {
 
   val lawsName: String
 
-  def laws: Every[Law]
+  def laws: IndexedSeq[Law]
 
   def law(name: String)(body: => Assertion): Law =
     new Law(lawsName, name) {

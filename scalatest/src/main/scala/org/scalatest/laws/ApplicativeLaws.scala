@@ -42,34 +42,35 @@ class ApplicativeLaws[Context[_]] private (
 
   val lawsName = "applicative"
 
-  override def laws = Every (
-    law("composition") {
-      forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Double]) =>
-        ((ca applying cf) applying cg) shouldEqual
-          (ca applying (cf applying (cg map ( (g: String => Double) => (f: Int => String) => g compose f))))
-      }
-    },
+  override def laws =
+    Vector(
+      law("composition") {
+        forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Double]) =>
+          ((ca applying cf) applying cg) shouldEqual
+            (ca applying (cf applying (cg map ( (g: String => Double) => (f: Int => String) => g compose f))))
+        }
+      },
 
-    // ca ap (a => a) should be the same as ca
-    law("identity") {
-      forAll { (ca: Context[Int]) =>
-        (ca applying ap.insert((a: Int) => a)) shouldEqual ca
-      }
-    },
+      // ca ap (a => a) should be the same as ca
+      law("identity") {
+        forAll { (ca: Context[Int]) =>
+          (ca applying ap.insert((a: Int) => a)) shouldEqual ca
+        }
+      },
 
-    // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
-    law("homomorphism") {
-      forAll { (a: Int, f: Int => String) =>
-        (ap.insert(a) applying ap.insert(f)) shouldEqual ap.insert(f(a))
-      }
-    },
+      // (insert(a) ap insert(ab)) should be the same as insert(ab(a))
+      law("homomorphism") {
+        forAll { (a: Int, f: Int => String) =>
+          (ap.insert(a) applying ap.insert(f)) shouldEqual ap.insert(f(a))
+        }
+      },
 
-    law("interchange") {
-      forAll { (a: Int, cf: Context[Int => String]) =>
-        (ap.insert(a) applying cf) shouldEqual (cf applying ap.insert((f: Int => String) => f(a)))
+      law("interchange") {
+        forAll { (a: Int, cf: Context[Int => String]) =>
+          (ap.insert(a) applying cf) shouldEqual (cf applying ap.insert((f: Int => String) => f(a)))
+        }
       }
-    }
-  )
+    )
 }
 
 object ApplicativeLaws {

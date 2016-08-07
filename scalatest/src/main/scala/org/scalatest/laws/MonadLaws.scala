@@ -43,26 +43,26 @@ class MonadLaws[Context[_]] private (
 
   val lawsName = "monad"
 
-  override def laws = Every (
+  override def laws =
+    Vector(
+      law("associativity") {
+        forAll { (ca: Context[Int], f: Int => Context[String], g: String => Context[Double]) =>
+          ((ca flatMap f) flatMap g) shouldEqual (ca flatMap (a => f(a) flatMap g))
+        }
+      },
 
-    law("associativity") {
-      forAll { (ca: Context[Int], f: Int => Context[String], g: String => Context[Double]) =>
-        ((ca flatMap f) flatMap g) shouldEqual (ca flatMap (a => f(a) flatMap g))
-      }
-    },
+      law("left identity") {
+        forAll { (ca: Context[Int]) =>
+          ca.flatMap(a => monad.insert(a)) shouldEqual ca
+        }
+      },
 
-    law("left identity") {
-      forAll { (ca: Context[Int]) =>
-        ca.flatMap(a => monad.insert(a)) shouldEqual ca
+      law("right identity") {
+        forAll { (a: Int, f: Int => Context[String]) =>
+          (monad.insert(a) flatMap f) shouldEqual f(a)
+        }
       }
-    },
-
-    law("right identity") {
-      forAll { (a: Int, f: Int => Context[String]) =>
-        (monad.insert(a) flatMap f) shouldEqual f(a)
-      }
-    }
-  )
+    )
 }
 
 object MonadLaws {
