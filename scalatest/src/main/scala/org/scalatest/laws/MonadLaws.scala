@@ -30,13 +30,15 @@ import scala.language.higherKinds
  * contains a "flatMap" operation and obeys the laws of associativity, right identity,
  * and left identity.
  */
-class MonadLaws[Context[_]](implicit monad: Monad[Context],
+class MonadLaws[Context[_]](
+  implicit monad: Monad[Context],
   arbCa: Arbitrary[Context[Int]],
   shrCa: Shrink[Context[Int]],
   arbCab: Arbitrary[Int => Context[String]],
   shrCab: Shrink[Int => Context[String]],
   arbCbc: Arbitrary[String => Context[Double]],
-  shrCbc: Shrink[String => Context[Double]]) extends Laws("monad") {
+  shrCbc: Shrink[String => Context[Double]]
+) extends Laws("monad") {
 
   override val laws = Every (
 
