@@ -26,7 +26,7 @@ import Applicative.adapters
 
 import scala.language.higherKinds
 
-class ApplicativeLaws[Context[_]](
+class ApplicativeLaws[Context[_]] private (
   implicit ap: Applicative[Context],
   arbCa: Arbitrary[Context[Int]],
   shrCa: Shrink[Context[Int]],
@@ -70,3 +70,18 @@ class ApplicativeLaws[Context[_]](
   )
 }
 
+object ApplicativeLaws {
+  def apply[Context[_]](
+    implicit ap: Applicative[Context],
+    arbCa: Arbitrary[Context[Int]],
+    shrCa: Shrink[Context[Int]],
+    arbAb: Arbitrary[Int => String],
+    shrAb: Shrink[Int => String],
+    arbBc: Arbitrary[String => Double],
+    shrBc: Shrink[String => Double],
+    arbCab: Arbitrary[Context[Int => String]],
+    shrCab: Shrink[Context[Int => String]],
+    arbCbc: Arbitrary[Context[String => Double]],
+    shrCbc: Shrink[Context[String => Double]]
+  ): ApplicativeLaws[Context] = new ApplicativeLaws[Context]
+}

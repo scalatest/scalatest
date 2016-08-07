@@ -36,14 +36,14 @@ class MonadSpec extends UnitSpec {
   }
 
   it should "provide an instance for List" in {
-    new MonadLaws[List].check()
+    MonadLaws[List].check()
   }
   it should "provide an instance for Option" in {
-    new MonadLaws[Option].check()
+    MonadLaws[Option].check()
   }
   it should "provide an instance for Or, which abstracts over the Good side" in {
     implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
-    new MonadLaws[Or.B[Int]#G].check()
+    MonadLaws[Or.B[Int]#G].check()
   }
 
   "A Monad Adapter" should "offer a flatten method" in {
