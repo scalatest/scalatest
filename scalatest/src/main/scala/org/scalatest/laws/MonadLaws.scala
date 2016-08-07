@@ -20,6 +20,7 @@ import org.scalactic.Every
 import org.scalactic.algebra._
 import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalactic.source
 
 import Monad.adapters
 
@@ -40,7 +41,7 @@ class MonadLaws[Context[_]] private (
   shrCbc: Shrink[String => Context[Double]]
 ) extends Laws("monad") {
 
-  override val laws = Every (
+  override def laws = Every (
 
     law("associativity") {
       forAll { (ca: Context[Int], f: Int => Context[String], g: String => Context[Double]) =>

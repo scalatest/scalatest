@@ -26,7 +26,9 @@ import Matchers._
  * are in scope.  Commonly, this will be a class that takes implicit generators
  * for any required parameters.
  */
-case class Law(lawsName: String, lawName: String, check: () => Assertion)
+abstract class Law(val lawsName: String, val lawName: String) {
+  def check(): Assertion
+}
 
 /**
  * A Laws class represents a list of Laws, together with a name
@@ -37,15 +39,19 @@ abstract class Laws(val lawsName: String) {
 
   def laws: Every[Law]
 
-  def law(name: String)(code: => Assertion): Law = Law(lawsName, name, () => code)
+  def law(name: String)(body: => Assertion): Law =
+    new Law(lawsName, name) {
+      def check(): Assertion = body
+    }
 
-  def check(): Assertion = {
+  def check()(implicit pos: source.Position): Assertion = {
     import Inspectors.forAll
     forAll (laws) { law =>
-      withClue(s"The ${law.lawsName} ${law.lawName} law was not obeyed: ") {
+      withClue(s"The ${law.lawsName} ${law.lawName} law was not obeyed (${pos.fileName}:${pos.lineNumber}): ") {
         law.check()
       }
     }
   }
 }
+
 

@@ -32,7 +32,7 @@ class FunctorLaws[Context[_]] private (
   shrCa: Shrink[Context[Int]]
 ) extends Laws("functor") {
 
-  override val laws = Every(
+  override def laws = Every (
     law("identity") {
       forAll { (ca: Context[Int]) =>
         (ca map identity[Int]) shouldEqual ca
