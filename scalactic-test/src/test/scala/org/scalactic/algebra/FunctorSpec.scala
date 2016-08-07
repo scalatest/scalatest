@@ -21,7 +21,7 @@ import org.scalatest.laws._
 
 import scala.language.implicitConversions
 
-class FunctorSpec extends UnitSpec {
+class FunctorSpec extends UnitSpec with AssertObeys {
 
   class ListFunctor extends Functor[List] {
     override def map[A, B](ca: List[A])(f: (A) => B): List[B] = ca.map(f)
@@ -36,13 +36,13 @@ class FunctorSpec extends UnitSpec {
     implicit def arbOptionSome[G](implicit arbG: Arbitrary[G]): Arbitrary[Option[G]] =
       Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Some(g))
 
-    FunctorLaws[Option].check()
+    assertObeys(FunctorLaws[Option])
   }
 
   "List" should "obey the functor laws via its map method" in {
     implicit val listIntFunctor = new ListFunctor
 
-    FunctorLaws[List].check()
+    assertObeys(FunctorLaws[List])
   }
 
   "Or" should "obey the functor laws (for its 'good' type) via its map method" in {
@@ -55,7 +55,7 @@ class FunctorSpec extends UnitSpec {
     implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] =
       Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
-    FunctorLaws[Or.B[Int]#G].check()
+    assertObeys(FunctorLaws[Or.B[Int]#G])
   }
 
   "Or" should "obey the functor laws (for its 'bad' type) via its badMap method" in {
@@ -68,7 +68,7 @@ class FunctorSpec extends UnitSpec {
     implicit def orArbBad[G, B](implicit arbG: Arbitrary[B]): Arbitrary[G Or B] =
       Arbitrary(for (b <- Arbitrary.arbitrary[B]) yield Bad(b))
 
-    FunctorLaws[Or.G[Int]#B].check()
+    assertObeys(FunctorLaws[Or.G[Int]#B])
   }
 }
 

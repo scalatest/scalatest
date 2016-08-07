@@ -21,7 +21,7 @@ import org.scalatest.laws._
 
 import scala.language.implicitConversions
 
-class ApplicativeSpec extends UnitSpec {
+class ApplicativeSpec extends UnitSpec with AssertObeys {
 
   "List" should "obey the applicative laws" in {
     // implementation for List
@@ -32,7 +32,7 @@ class ApplicativeSpec extends UnitSpec {
     }
 
     implicit val listApplicative = new ListApplicative
-    ApplicativeLaws[List].check()
+    assertObeys(ApplicativeLaws[List])
   }
 
   "Option" should "obey the applicative laws" in {
@@ -44,7 +44,7 @@ class ApplicativeSpec extends UnitSpec {
 
     implicit val optionApplicative = new OptionApplicative
 
-    ApplicativeLaws[Option].check()
+    assertObeys(ApplicativeLaws[Option])
   }
 
   "The good nature of Or" should "obey the applicative laws" in {
@@ -57,6 +57,7 @@ class ApplicativeSpec extends UnitSpec {
     implicit val orApplicative = new OrApplicative[Int]
     implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
-    ApplicativeLaws[Or.B[Int]#G].check()
+    assertObeys(ApplicativeLaws[Or.B[Int]#G])
   }
 }
+

@@ -19,8 +19,6 @@ import org.scalatest._
 import org.scalactic._
 import Matchers._
 
-import scala.language.higherKinds
-
 /**
  * A law is a requirement expressed in the form of an assertion function
  * augmented with explanatory information.  As generalized, laws take no
@@ -36,11 +34,18 @@ case class Law(lawsName: String, lawName: String, check: () => Assertion)
  * @param lawsName  The name of the group of laws.
  */
 abstract class Laws(val lawsName: String) {
+
   def laws: Every[Law]
 
   def law(name: String)(code: => Assertion): Law = Law(lawsName, name, () => code)
 
-  def check() = laws.foreach { law =>
-    withClue(s"The ${law.lawsName} ${law.lawName} law could not be verified: ")(law.check())
+  def check(): Assertion = {
+    import Inspectors.forAll
+    forAll (laws) { law =>
+      withClue(s"The ${law.lawsName} ${law.lawName} law was not obeyed: ") {
+        law.check()
+      }
+    }
   }
 }
+
