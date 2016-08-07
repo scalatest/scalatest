@@ -29,6 +29,7 @@ import org.openqa.selenium.safari.SafariDriver
 import org.scalatest.Args
 import org.scalatest.FunSpec
 import org.scalatest.Matchers
+import org.scalatest.OptionValues._
 import org.scalatest.ParallelTestExecution
 import org.scalatest.ScreenshotOnFailure
 import org.scalatest.SharedHelpers.SilentReporter
@@ -675,6 +676,27 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     }
   }
 
+  describe("find in element") {
+    def head = {
+      val head = find(cssSelector("head"))
+      head should be ('defined)
+      head.value
+    }
+    it("should return None if specified item not found") {
+      go to (host + "index.html")
+      head.find("something") should be(None)
+    }
+    it("should return a defined Option[Element] containing an instance of Element") {
+      go to (host + "index.html")
+      head.find(cssSelector("title")) match {
+        case Some(element) =>
+          element.text should be ("Test Title")
+        case other =>
+          fail("Expected Some(element), but got: " + other)
+      }
+    }
+  }
+
   describe("findAll") {
     it("should return an empty Iterator if specified item not found") {
       go to (host + "index.html")
@@ -781,6 +803,29 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
           image.tagName should be ("img")
         case other =>
           fail("Expected Element, but got: " + other)  
+      }
+    }
+  }
+
+  describe("findAll in element") {
+    def head = {
+      val head = find(cssSelector("head"))
+      head should be ('defined)
+      head.value
+    }
+    it("should return an empty Iterator if specified item not found") {
+      go to (host + "index.html")
+      head.findAll("something").hasNext should be(false)
+    }
+    it("should return a defined Iterator[Element] containing an instance of Element") {
+      go to (host + "index.html")
+      val titles = head.findAll(cssSelector("title"))
+      titles.hasNext should be(true)
+      titles.next match {
+        case element =>
+          element.text should be("Test Title")
+        case other                =>
+          fail("Expected Element, but got: " + other)
       }
     }
   }

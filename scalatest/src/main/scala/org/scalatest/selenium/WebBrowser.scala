@@ -15,15 +15,13 @@
  */
 package org.scalatest.selenium
 
-import org.openqa.selenium.WebDriver
+import org.openqa.selenium._
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.firefox.FirefoxProfile
 import org.openqa.selenium.safari.SafariDriver
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.ie.InternetExplorerDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.openqa.selenium.By
-import org.openqa.selenium.WebElement
 import java.util.concurrent.TimeUnit
 import org.openqa.selenium.support.ui.WebDriverWait
 import org.openqa.selenium.support.ui.Clock
@@ -31,20 +29,15 @@ import org.openqa.selenium.support.ui.Sleeper
 import org.openqa.selenium.support.ui.ExpectedCondition
 import scala.collection.mutable.Buffer
 import scala.collection.JavaConverters._
-import org.openqa.selenium.Cookie
 import java.util.Date
 import org.scalatest.time.Span
 import org.scalatest.time.Milliseconds
-import org.openqa.selenium.TakesScreenshot
-import org.openqa.selenium.OutputType
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileInputStream
-import org.openqa.selenium.Alert
 import org.openqa.selenium.support.ui.Select
 import org.scalatest.exceptions.TestFailedException
 import org.scalatest.exceptions.StackDepthException
-import org.openqa.selenium.JavascriptExecutor
 import org.scalatest.ScreenshotCapturer
 import org.scalatest.time.Nanosecond
 import org.scalatest.Resources
@@ -1183,7 +1176,7 @@ import org.scalactic.source
  * @author Chua Chee Seng
  * @author Bill Venners
  */
-trait WebBrowser { 
+trait WebBrowser {
 
   /**
    * A point containing an XY screen location.
@@ -1306,12 +1299,103 @@ trait WebBrowser {
     }
 
     /**
+      * Finds and returns the first element selected by the specified <code>Query</code> from
+      * the scope of this element, wrapped in a <code>Some</code>, or <code>None</code>
+      * if no element is selected.
+      *
+      * <p>
+      * The class of the <code>Element</code> returned will be a subtype of <code>Element</code> if appropriate.
+      * For example, if the query selects a text field, the class of the returned <code>Element</code> will
+      * be <code>TextField</code>.
+      * </p>
+      *
+      * @param query the <code>Query</code> with which to search
+      * @return the <code>Element</code> selected by this query, wrapped in a <code>Some</code>, or <code>None</code> if
+      *   no <code>Element</code> is selected
+      */
+    def find(query: Query): Option[Element] = query.findElement(underlying)
+
+    /**
+      * Finds and returns the first element selected by the specified string ID or name from
+      * the scope of this element, wrapped in a <code>Some</code>, or <code>None</code>
+      * if no element is selected. YYY
+      *
+      * <p>
+      * This method will try to lookup by id first. If it cannot find
+      * any element with an id equal to the specified <code>queryString</code>, it will then try lookup by name.
+      * </p>
+      *
+      * <p>
+      * The class of the <code>Element</code> returned will be a subtype of <code>Element</code> if appropriate.
+      * For example, if the query selects a text field, the class of the returned <code>Element</code> will
+      * be <code>TextField</code>.
+      * </p>
+      *
+      * @param queryString the string with which to search, first by ID then by name
+      * @return the <code>Element</code> selected by this query, wrapped in a <code>Some</code>, or <code>None</code> if
+      *   no <code>Element</code> is selected
+      */
+    def find(queryString: String): Option[Element] =
+      new IdQuery(queryString).findElement(underlying) match {
+        case Some(element) => Some(element)
+        case None => new NameQuery(queryString).findElement(underlying) match {
+          case Some(element) => Some(element)
+          case None => None
+        }
+      }
+
+    /**
+      * Returns an <code>Iterator</code> over all <code>Element</code>s selected by this query from
+      * the scope of this element.
+      *
+      * <p>
+      * The class of the <code>Element</code>s produced by the returned <code>Iterator</code> will be a
+      * subtypes of <code>Element</code> if appropriate.  For example, if an <code>Element</code>representing
+      * a text field is returned by the <code>Iterator</code>, the class of the returned <code>Element</code> will
+      * be <code>TextField</code>.
+      * </p>
+      *
+      * <p>
+      * If no <code>Elements</code> are selected by this query, this method will return an empty <code>Iterator</code> will be returned.
+      * <p>
+      *
+      * @param query the <code>Query</code> with which to search
+      * @return the <code>Iterator</code> over all <code>Element</code>s selected by this query
+      */
+    def findAll(query: Query): Iterator[Element] = query.findAllElements(underlying)
+
+    /**
+      * Returns an <code>Iterator</code> over all <code>Element</code>s selected by the specified string ID or name
+      * from the scope of this element
+      *
+      * <p>
+      * This method will try to lookup by id first. If it cannot find
+      * any element with an id equal to the specified <code>queryString</code>, it will then try lookup by name.
+      * </p>
+      *
+      * <p>
+      * The class of the <code>Element</code> returned will be a subtype of <code>Element</code> if appropriate.
+      * For example, if the query selects a text field, the class of the returned <code>Element</code> will
+      * be <code>TextField</code>.
+      * </p>
+      *
+      * @param queryString the string with which to search, first by ID then by name
+      * @return the <code>Iterator</code> over all <code>Element</code>s selected by this query
+      */
+    def findAll(queryString: String): Iterator[Element] = {
+      val byIdItr = new IdQuery(queryString).findAllElements(underlying)
+      if (byIdItr.hasNext)
+        byIdItr
+      else
+        new NameQuery(queryString).findAllElements(underlying)
+    }
+
+    /**
      * Returns the result of invoking <code>equals</code> on the underlying <code>Element</code>, passing
      * in the specified <code>other</code> object.
      *
      * @param other the object with which to compare for equality
-     *
-     * @return true if the passed object is equal to this one
+      * @return true if the passed object is equal to this one
      */
     override def equals(other: Any): Boolean = underlying == other
 
@@ -1417,8 +1501,7 @@ trait WebBrowser {
      * </p>
      *
      * @param other the object with which to compare for equality
-     *
-     * @return true if the passed object is equal to this one
+      * @return true if the passed object is equal to this one
      */
     override def equals(other: Any): Boolean = underlying == other
 
@@ -2641,7 +2724,8 @@ trait WebBrowser {
      *    ^
      * </pre>
      *
-     * @param url the URL to which to send the browser
+      *
+      * @param url the URL to which to send the browser
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
     def to(url: String)(implicit driver: WebDriver): Unit = {
@@ -2660,7 +2744,8 @@ trait WebBrowser {
      *    ^
      * </pre>
      *
-     * @param page the <code>Page</code> object containing the URL to which to send the browser
+      *
+      * @param page the <code>Page</code> object containing the URL to which to send the browser
      * @param driver the <code>WebDriver</code> with which to drive the browser
      */
     def to(page: Page)(implicit driver: WebDriver): Unit = {
@@ -2831,6 +2916,27 @@ trait WebBrowser {
       }
 
     /**
+      * Returns the first <code>Element</code> selected by this query, wrapped in a <code>Some</code>, or <code>None</code>
+      * if no <code>Element</code> is selected.
+      *
+      * <p>
+      * The class of the <code>Element</code> returned will be a subtype of <code>Element</code> if appropriate.
+      * For example, if this query selects a text field, the class of the returned <code>Element</code> will
+      * be <code>TextField</code>.
+      * </p>
+      *
+      * @param searchContext the <code>SearchContext</code> within which to select elements
+      * @return the <code>Element</code> selected by this query, wrapped in a <code>Some</code>, or <code>None</code> if
+      *   no <code>Element</code> is selected
+      */
+    private[WebBrowser] def findElement(searchContext: SearchContext)(implicit pos: source.Position = implicitly[source.Position]): Option[Element] =
+      try {
+        Some(createTypedElement(searchContext.findElement(by), pos))
+      } catch {
+        case e: org.openqa.selenium.NoSuchElementException => None
+      }
+
+    /**
      * Returns an <code>Iterator</code> over all <code>Element</code>s selected by this query.
      *
      * <p>
@@ -2847,8 +2953,30 @@ trait WebBrowser {
      * @param driver the <code>WebDriver</code> with which to drive the browser
      * @return the <code>Iterator</code> over all <code>Element</code>s selected by this query
      */
-    def findAllElements(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Iterator[Element] = driver.findElements(by).asScala.toIterator.map { e => createTypedElement(e, pos) }
-    
+    def findAllElements(implicit driver: WebDriver, pos: source.Position = implicitly[source.Position]): Iterator[Element] =
+      driver.findElements(by).asScala.toIterator.map { e => createTypedElement(e, pos) }
+
+
+    /**
+      * Returns an <code>Iterator</code> over all <code>Element</code>s selected by this query.
+      *
+      * <p>
+      * The class of the <code>Element</code>s produced by the returned <code>Iterator</code> will be a
+      * subtypes of <code>Element</code> if appropriate.  For example, if an <code>Element</code>representing
+      * a text field is returned by the <code>Iterator</code>, the class of the returned <code>Element</code> will
+      * be <code>TextField</code>.
+      * </p>
+      *
+      * <p>
+      * If no <code>Elements</code> are selected by this query, this method will return an empty <code>Iterator</code> will be returned.
+      * <p>
+      *
+      * @param searchContext the <code>SearchContext</code> within which to select elements
+      * @return the <code>Iterator</code> over all <code>Element</code>s selected by this query
+      */
+    private[WebBrowser] def findAllElements(searchContext: SearchContext)(implicit pos: source.Position = implicitly[source.Position]): Iterator[Element] =
+      searchContext.findElements(by).asScala.toIterator.map { e => createTypedElement(e, pos) }
+
     /**
      * Returns the first <code>WebElement</code> selected by this query, or throws <code>TestFailedException</code>
      * if no <code>WebElement</code> is selected.
@@ -2886,7 +3014,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   case class IdQuery(queryString: String) extends Query { val by = By.id(queryString)}
 
@@ -2902,7 +3031,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   case class NameQuery(queryString: String) extends Query { val by = By.name(queryString) }
 
@@ -2918,7 +3048,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   case class XPathQuery(queryString: String) extends Query { val by = By.xpath(queryString) }
 
@@ -2935,7 +3066,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   case class ClassNameQuery(queryString: String) extends Query { val by = By.className(queryString) }
 
@@ -2951,7 +3083,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   case class CssSelectorQuery(queryString: String) extends Query { val by = By.cssSelector(queryString) }
 
@@ -2967,7 +3100,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   case class LinkTextQuery(queryString: String) extends Query { val by = By.linkText(queryString) }
 
@@ -2983,7 +3117,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   case class PartialLinkTextQuery(queryString: String) extends Query { val by = By.partialLinkText(queryString) }
 
@@ -2999,7 +3134,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   case class TagNameQuery(queryString: String) extends Query { val by = By.tagName(queryString) }
   
@@ -3015,7 +3151,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   def id(elementId: String): IdQuery = new IdQuery(elementId)
 
@@ -3031,7 +3168,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   def name(elementName: String): NameQuery = new NameQuery(elementName)
 
@@ -3047,7 +3185,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   def xpath(xpath: String): XPathQuery = new XPathQuery(xpath)
 
@@ -3063,7 +3202,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   def className(className: String): ClassNameQuery = new ClassNameQuery(className)
 
@@ -3079,7 +3219,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   def cssSelector(cssSelector: String): CssSelectorQuery = new CssSelectorQuery(cssSelector)
 
@@ -3095,7 +3236,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   def linkText(linkText: String): LinkTextQuery = new LinkTextQuery(linkText)
 
@@ -3111,7 +3253,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   def partialLinkText(partialLinkText: String): PartialLinkTextQuery = new PartialLinkTextQuery(partialLinkText)
 
@@ -3127,7 +3270,8 @@ trait WebBrowser {
    *          ^
    * </pre>
    *
-   * @param queryString the query string for this query.
+    *
+    * @param queryString the query string for this query.
    */
   def tagName(tagName: String): TagNameQuery = new TagNameQuery(tagName)
 
@@ -4006,8 +4150,9 @@ trait WebBrowser {
    * switch to frame(0)
    *           ^
    * </pre>
-   * 
-   * @param index the index of frame to switch to
+   *
+    *
+    * @param index the index of frame to switch to
    * @return a FrameIndexTarget instance
    */
   def frame(index: Int) = new FrameIndexTarget(index)
@@ -4024,8 +4169,9 @@ trait WebBrowser {
    * switch to frame("name")
    *           ^
    * </pre>
-   * 
-   * @param nameOrId name or ID of the frame to switch to
+   *
+    *
+    * @param nameOrId name or ID of the frame to switch to
    * @return a FrameNameOrIdTarget instance
    */
   def frame(nameOrId: String) = new FrameNameOrIdTarget(nameOrId)
@@ -4069,8 +4215,9 @@ trait WebBrowser {
    * switch to window(windowHandle)
    *           ^
    * </pre>
-   * 
-   * @param nameOrHandle name or window handle of the window to switch to
+   *
+    *
+    * @param nameOrHandle name or window handle of the window to switch to
    * @return a WindowTarget instance
    */
   def window(nameOrHandle: String) = new WindowTarget(nameOrHandle)
