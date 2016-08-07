@@ -35,7 +35,9 @@ abstract class Law(val lawsName: String, val lawName: String) {
  * for the group and methods to assert all of the laws.
  * @param lawsName  The name of the group of laws.
  */
-abstract class Laws(val lawsName: String) {
+trait Laws {
+
+  val lawsName: String
 
   def laws: Every[Law]
 

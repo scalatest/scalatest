@@ -38,7 +38,9 @@ class ApplicativeLaws[Context[_]] private (
   shrCab: Shrink[Context[Int => String]],
   arbCbc: Arbitrary[Context[String => Double]],
   shrCbc: Shrink[Context[String => Double]]
-) extends Laws("applicative") {
+) extends Laws {
+
+  val lawsName = "applicative"
 
   override def laws = Every (
     law("composition") {
