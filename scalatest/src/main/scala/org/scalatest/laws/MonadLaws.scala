@@ -39,7 +39,9 @@ class MonadLaws[Context[_]] private (
   shrCab: Shrink[Int => Context[String]],
   arbCbc: Arbitrary[String => Context[Double]],
   shrCbc: Shrink[String => Context[Double]]
-) extends Laws("monad") {
+) extends Laws {
+
+  val lawsName = "monad"
 
   override def laws = Every (
 

@@ -30,7 +30,9 @@ class FunctorLaws[Context[_]] private (
   implicit functor: Functor[Context],
   arbCa: Arbitrary[Context[Int]],
   shrCa: Shrink[Context[Int]]
-) extends Laws("functor") {
+) extends Laws {
+
+  val lawsName = "functor"
 
   override def laws = Every (
     law("identity") {
