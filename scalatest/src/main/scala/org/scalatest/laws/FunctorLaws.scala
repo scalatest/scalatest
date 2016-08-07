@@ -28,8 +28,8 @@ import scala.language.higherKinds
 
 class FunctorLaws[Context[_]] private (
   implicit functor: Functor[Context],
-  val arbCa: Arbitrary[Context[Int]],
-  val shrCa: Shrink[Context[Int]]
+  arbCa: Arbitrary[Context[Int]],
+  shrCa: Shrink[Context[Int]]
 ) extends Laws("functor") {
 
   override val laws = Every(
