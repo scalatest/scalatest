@@ -26,9 +26,11 @@ import Functor.adapters
 
 import scala.language.higherKinds
 
-class FunctorLaws[Context[_]](implicit functor: Functor[Context],
+class FunctorLaws[Context[_]](
+  implicit functor: Functor[Context],
   val arbCa: Arbitrary[Context[Int]],
-  val shrCa: Shrink[Context[Int]]) extends Laws("functor") {
+  val shrCa: Shrink[Context[Int]]
+) extends Laws("functor") {
 
   override val laws = Every(
     law("identity") {
