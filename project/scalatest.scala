@@ -395,7 +395,7 @@ object ScalatestBuild extends Build {
       //jsDependencies += RuntimeDOM % "test",
       libraryDependencies += "org.scalacheck" %%% "scalacheck" % scalacheckVersion % "test",
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
-      jsEnv := NodeJSEnv(executable = "node").value,
+      //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
       scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,

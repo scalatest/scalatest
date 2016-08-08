@@ -56,7 +56,9 @@ trait AnyDiffer extends Differ[Any] {
       case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2)
       case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2)
       case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2)
+      // SKIP-SCALATESTJS-START
       case (s1: Product, s2: Product) if CaseClassMeta.isCaseClass(s1) && CaseClassMeta.isCaseClass(s2) => CaseClassDiffer.difference(s1, s2)
+      // SKIP-SCALATESTJS-END
       case (s1: Product, s2: Product) => ProductDiffer.difference(s1, s2)
       case _ =>
         if (a != b)
@@ -138,6 +140,7 @@ trait StringDiffer extends Differ[String] {
 
 object StringDiffer extends StringDiffer
 
+// SKIP-SCALATESTJS-START
 trait CaseClassDiffer[T] extends Differ[T] {
 
   def difference(a: T, b: Any): Difference = {
@@ -195,6 +198,7 @@ trait CaseClassDiffer[T] extends Differ[T] {
 }
 
 object CaseClassDiffer extends CaseClassDiffer[Any]
+// SKIP-SCALATESTJS-END
 
 // interesting to see https://github.com/twitter/diffy/blob/master/src/main/scala/com/twitter/diffy/compare/Difference.scala
 
@@ -332,9 +336,11 @@ object GenMapDiffer extends GenMapDiffer[Any, Any]
 trait ProductDiffer extends Differ[Product] {
 
   def difference(aProduct: Product, b: Any): Difference = {
+    // SKIP-SCALATESTJS-START
     if (aProduct != null && CaseClassMeta.isCaseClass(aProduct) && b != null && CaseClassMeta.isCaseClass(b))
       CaseClassDiffer.difference(aProduct, b)
     else
+    // SKIP-SCALATESTJS-END
       new Difference {
         def inlineDiff = None
 
