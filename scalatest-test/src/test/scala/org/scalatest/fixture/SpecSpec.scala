@@ -1661,7 +1661,7 @@ class SpecSpec extends org.scalatest.FunSpec with PrivateMethodTester {
     
     it("suite durations are included in SuiteAborted events fired from Spec") {
 
-      class SuiteThatAborts extends TestSuite with StringFixture {
+      class SuiteThatAborts extends FunSuite with StringFixture {
         override def run(testName: Option[String], args: Args): Status = {
           throw new RuntimeException("Aborting for testing purposes")
         }
