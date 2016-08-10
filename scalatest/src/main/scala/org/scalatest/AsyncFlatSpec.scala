@@ -282,7 +282,7 @@ package org.scalatest
  *
  * <p>
  * If you prefer on the JVM to use the global execution context, which is backed by a thread pool, instead of ScalaTest's default
- * serial execution contex, which confines execution to a single thread, you would write:
+ * serial execution context, which confines execution to a single thread, you would write:
  * </p>
  *
  * <pre class="stHighlight">
