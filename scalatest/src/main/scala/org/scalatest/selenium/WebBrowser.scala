@@ -1705,8 +1705,15 @@ trait WebBrowser {
       }
   }
   
-  private def isInputField(webElement: WebElement, name: String): Boolean = 
-    webElement.getTagName.toLowerCase == "input" && webElement.getAttribute("type").toLowerCase == name
+  private def isInputField(webElement: WebElement, name: String): Boolean = {
+    val elementTypeRaw = webElement.getAttribute("type")
+    val elementType =
+      if (elementTypeRaw == null)
+        "text"
+      else
+        elementTypeRaw
+    webElement.getTagName.toLowerCase == "input" && elementType.toLowerCase == name
+  }
       
   private def isTextField(webElement: WebElement): Boolean = isInputField(webElement, "text")
   private def isPasswordField(webElement: WebElement): Boolean = isInputField(webElement, "password")
@@ -1909,9 +1916,15 @@ trait WebBrowser {
      *
      * @param value the new value
      */
-    def value_=(value: String): Unit = {
+    def value_=(value: String)(implicit driver: WebDriver): Unit = {
       underlying.clear()
-      underlying.sendKeys(value)
+
+      driver match {
+        case executor: JavascriptExecutor => executor.executeScript("arguments[0].setAttribute(arguments[1], arguments[2]);", underlying, "value", value)
+        case _ => underlying.sendKeys(value)
+      }
+      //underlying.setAttribute("value", value)
+      //underlying.sendKeys(value)
     }
 
     /**
@@ -4294,6 +4307,26 @@ trait WebBrowser {
           throw new UnsupportedOperationException("Screen capture is not support by " + driver.getClass.getName)
       }
     }
+
+    /**
+      * Capture screenshot and save it as the specified directory.
+      *
+      * @param dirName directory name to save screenshot.
+      */
+    def toDir(dirName: String)(implicit driver: WebDriver): Unit = {
+      driver match {
+        case takesScreenshot: TakesScreenshot =>
+          val tmpFile = takesScreenshot.getScreenshotAs(OutputType.FILE)
+          val dir = new File(dirName)
+          if (!dir.exists)
+            dir.mkdirs()
+          val outFile = new File(dir, if (tmpFile.getName.toLowerCase.endsWith(".png")) "ScalaTest-" + tmpFile.getName else "ScalaTest-" + tmpFile.getName + ".png")
+          new FileOutputStream(outFile).getChannel.transferFrom(
+            new FileInputStream(tmpFile).getChannel, 0, Long.MaxValue)
+        case _ =>
+          throw new UnsupportedOperationException("Screen capture is not support by " + driver.getClass.getName)
+      }
+    }
     
     /**
      * Capture screenshot and save it in capture directory, which by default is system property's java.io.tmpdir.  
@@ -4567,7 +4600,7 @@ trait HtmlUnit extends WebBrowser with Driver with ScreenshotCapturer {
    * Captures a screenshot and saves it as a file in the specified directory.
    */
   def captureScreenshot(directory: String): Unit = {
-    capture to directory
+    capture toDir directory
   }
 }
 
@@ -4613,7 +4646,7 @@ trait Firefox extends WebBrowser with Driver with ScreenshotCapturer {
    * Captures a screenshot and saves it as a file in the specified directory.
    */
   def captureScreenshot(directory: String): Unit = {
-    capture to directory
+    capture toDir directory
   }
 }
 
@@ -4637,7 +4670,7 @@ trait Safari extends WebBrowser with Driver with ScreenshotCapturer {
    * Captures a screenshot and saves it as a file in the specified directory.
    */
   def captureScreenshot(directory: String): Unit = {
-    capture to directory
+    capture toDir directory
   }
 }
 
@@ -4661,7 +4694,7 @@ trait Chrome extends WebBrowser with Driver with ScreenshotCapturer {
    * Captures a screenshot and saves it as a file in the specified directory.
    */
   def captureScreenshot(directory: String): Unit = {
-    capture to directory
+    capture toDir directory
   }
 }
 
@@ -4685,7 +4718,7 @@ trait InternetExplorer extends WebBrowser with Driver with ScreenshotCapturer {
    * Captures a screenshot and saves it as a file in the specified directory.
    */
   def captureScreenshot(directory: String): Unit = {
-    capture to directory
+    capture toDir directory
   }
 }
 

@@ -173,11 +173,14 @@ object ScalatestBuild extends Build {
       "org.testng" % "testng" % "6.8.7" % "optional",
       "com.google.inject" % "guice" % "2.0" % "optional",
       "junit" % "junit" % "4.10" % "optional",
-      "org.seleniumhq.selenium" % "selenium-java" % "2.35.0" % "optional",
+      "org.seleniumhq.selenium" % "selenium-java" % "2.53.1" % "optional",
+      "net.sourceforge.htmlunit" % "htmlunit" % "2.23" % "optional",
       "org.apache.ant" % "ant" % "1.7.1" % "optional",
       "commons-io" % "commons-io" % "1.3.2" % "test",
-      "org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
-      "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
+      //"org.eclipse.jetty" % "jetty-server" % "8.1.8.v20121106" % "test",
+      //"org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "test",
+      "org.eclipse.jetty" % "jetty-server" % "9.3.11.v20160721" % "test",
+      "org.eclipse.jetty" % "jetty-webapp" % "9.3.11.v20160721" % "test",
       "org.ow2.asm" % "asm-all" % "4.1" % "optional",
       "org.pegdown" % "pegdown" % "1.4.2" % "optional"
     )

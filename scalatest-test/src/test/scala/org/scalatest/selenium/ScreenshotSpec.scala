@@ -15,7 +15,7 @@
  */
 package org.scalatest.selenium
 
-import org.scalatest.FunSpec
+import org.scalatest.{FunSpec, FunSuite}
 import java.util.concurrent.TimeUnit
 import org.scalatest.time.SpanSugar
 import org.scalatest.ParallelTestExecution
@@ -32,7 +32,6 @@ import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.Ignore
 import org.scalatest.Matchers
 
-@Ignore
 class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit {
 
   describe("ScreenshotFixture") {
@@ -41,15 +40,20 @@ class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       
     def tmpFiles(tmpDir: String): Seq[String] = for {
       f <- new File(tmpDir).listFiles()
-        fName = f.toString
-        if fName.startsWith("Scala") && fName.endsWith("Test")
+        fName = f.getName
+        if fName.startsWith("ScalaTest-")
       } yield fName
       
     it("should by default save the file in the system's default temp dir") {
-      class MySuite extends TestSuite with Firefox with ScreenshotOnFailure { // TODO: How are these working? They should fail.
-        def `test: screenshot should be saved`: Unit = {
-          go to "http://www.artima.com"
-          assert(1 + 1 === 3)
+      class MySuite extends FunSuite with Firefox with ScreenshotOnFailure { // TODO: How are these working? They should fail.
+        test("screenshot should be saved") {
+          try {
+            go to "http://www.artima.com"
+            assert(1 + 1 === 3)
+          }
+          finally {
+            close
+          }
         }    
       }
       val beforeFiles = tmpFiles(systemTmpDir)
@@ -59,9 +63,16 @@ class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     }
     
     it("should not create a temp file if a test succeeds") {
-      class MySuite extends TestSuite with Firefox with ScreenshotOnFailure {
-        def `test: no screenshot needed for this one`: Unit = {
-          assert(1 + 1 === 2)
+      class MySuite extends FunSuite with Firefox with ScreenshotOnFailure {
+        test("no screenshot needed for this one") {
+          try {
+            go to "http://www.artima.com"
+            assert(1 + 1 === 2)
+            close
+          }
+          finally {
+            close
+          }
         }    
       }
       val beforeFiles = tmpFiles(systemTmpDir)
@@ -71,11 +82,16 @@ class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrow
     }
     
     it("should create a temp file in a user-chosen directory") {
-      class MySuite extends TestSuite with Firefox with ScreenshotOnFailure {
+      class MySuite extends FunSuite with Firefox with ScreenshotOnFailure {
         override val screenshotDir = "myTmpDir"
-        def `test: screenshot should be saved`: Unit = {
-          go to "http://www.artima.com"
-          assert(1 + 1 === 3)
+        test("screenshot should be saved") {
+          try {
+            go to "http://www.artima.com"
+            assert(1 + 1 === 3)
+          }
+          finally {
+            close
+          }
         }    
       }
       val theTmpDir = new File("myTmpDir")
