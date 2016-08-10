@@ -27,10 +27,10 @@ import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
 
 // For now, hard coding a size of 10. Later will need to do the size based on config
-private[prop] trait GeneratorChecks extends Configuration with Whenever {
+trait GeneratorChecks extends Configuration with Whenever {
   import GeneratorChecks.prettyArgs
-import GeneratorChecks.stackDepthFileName
-import GeneratorChecks.stackDepthMethodName
+  import GeneratorChecks.stackDepthFileName
+  import GeneratorChecks.stackDepthMethodName
   def forAll[A](fun: (A) => Unit)
       (implicit 
         config: PropertyCheckConfiguration,
@@ -167,7 +167,7 @@ import GeneratorChecks.stackDepthMethodName
   }
 }
 
-private[prop] object GeneratorChecks extends GeneratorChecks {
+object GeneratorChecks extends GeneratorChecks {
   private val stackDepthFileName = "GeneratorChecks.scala"
   private val stackDepthMethodName = "apply"
   import FailureMessages.decorateToStringValue

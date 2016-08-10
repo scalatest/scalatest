@@ -18,7 +18,7 @@ package org.scalatest.prop
 
 import org.scalactic.anyvals._
 
-private[prop] case class Edges(
+case class Edges(
   byteEdges: List[Byte],
   shortEdges: List[Short],
   charEdges: List[Char],
