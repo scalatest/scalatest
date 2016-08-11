@@ -16,7 +16,7 @@
 package org.scalatest.selenium
 
 import org.scalatest._
-import org.eclipse.jetty.server.{Server, ServerConnector}
+import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.webapp.WebAppContext
 
 trait JettySpec extends FunSpec {
@@ -39,7 +39,7 @@ trait JettySpec extends FunSpec {
     def isStarted = server.isStarted()
     def getHost = {
       val conn = server.getConnectors()(0)
-      "http://localhost:" + conn.asInstanceOf[ServerConnector].getLocalPort + "/"
+      "http://localhost:" + conn.getLocalPort + "/"
     }
   }
 

@@ -32,6 +32,7 @@ import org.scalatest.SharedHelpers.SilentReporter
 import org.scalatest.Ignore
 import org.scalatest.Matchers
 
+@Ignore
 class ScreenshotSpec extends JettySpec with Matchers with SpanSugar with WebBrowser with HtmlUnit {
 
   describe("ScreenshotFixture") {

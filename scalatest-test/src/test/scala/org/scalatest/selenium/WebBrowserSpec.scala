@@ -1054,7 +1054,7 @@ class WebBrowserSpec extends JettySpec with Matchers with SpanSugar with WebBrow
       go to (host + "textarea.html")
       pageTitle should be ("Text Area")
       
-      textArea("area1").value should be ("  ")
+      textArea("area1").value should be ("")
 
       click on "area1"
       enter("area 1 - line 1\narea 1 - line 2")
