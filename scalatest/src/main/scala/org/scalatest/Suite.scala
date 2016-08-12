@@ -1681,6 +1681,12 @@ used for test events like succeeded/failed, etc.
   
   def xmlContent(value: String) = unparsedXml(substituteHtmlSpace(value))
 
+  def differencesFromThrowable(throwable: Throwable): scala.collection.immutable.IndexedSeq[Difference] =
+    throwable match {
+      case tfe: TestFailedException => tfe.differences
+      case _ => Vector.empty
+    }
+
   def reportTestFailed(theSuite: Suite, report: Reporter, throwable: Throwable, testName: String, testText: String,
                        recordedEvents: collection.immutable.IndexedSeq[RecordableEvent], rerunnable: Option[String], tracker: Tracker, duration: Long, formatter: Formatter, location: Option[Location]): Unit = {
 

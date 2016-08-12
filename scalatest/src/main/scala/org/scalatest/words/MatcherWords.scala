@@ -292,15 +292,20 @@ trait MatcherWords {
     new MatcherFactory1[Any, Equality] {
       def matcher[T <: Any : Equality]: Matcher[T] = {
         val equality = implicitly[Equality[T]]
-        new Matcher[T] {
-          def apply(left: T): MatchResult = {
-            val (leftee, rightee) = Suite.getObjectsForFailureMessage(left, right) // TODO: to move this code to reporters
-            MatchResult(
-              equality.areEqual(left, right),
-              Resources.rawDidNotEqual,
-              Resources.rawEqualed,
-              Vector(leftee, rightee), 
-              Vector(left, right)
+        new EqualMatcher[T] {
+          def apply(left: T, differ: Differ[T]): (MatchResult, Difference) = {
+            val difference = differ.difference(left, right)
+            val (leftee, rightee) = difference.inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(left, right))
+
+            (
+              MatchResult(
+                equality.areEqual(left, right),
+                Resources.rawDidNotEqual,
+                Resources.rawEqualed,
+                Vector(leftee, rightee),
+                Vector(left, right)
+              ),
+              difference
             )
           }
           override def toString: String = "equal (" + Prettifier.default(right) + ")"
