@@ -227,7 +227,7 @@ trait Requirements {
    * @param condition the boolean condition to check as requirement
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    */
-  def require(condition: Boolean)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.require
+  def require(condition: Boolean)(implicit prettifier: Prettifier, differ: Differ[Any]): Unit = macro RequirementsMacro.require
 
   /**
    * Require that a boolean condition about an argument passed to a method, function, or constructor,
@@ -244,7 +244,7 @@ trait Requirements {
    * @throws IllegalArgumentException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  def require(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.requireWithClue
+  def require(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, differ: Differ[Any]): Unit = macro RequirementsMacro.requireWithClue
 
   /**
    * Require that a boolean condition is true about the state of an object on which a method has been invoked.
@@ -261,7 +261,7 @@ trait Requirements {
    * @param condition the boolean condition to check as requirement
    * @throws IllegalStateException if the condition is <code>false</code>.
    */
-  def requireState(condition: Boolean)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.requireState
+  def requireState(condition: Boolean)(implicit prettifier: Prettifier, differ: Differ[Any]): Unit = macro RequirementsMacro.requireState
 
   /**
    * Require that a boolean condition about the state of an object on which a method has been
@@ -280,7 +280,7 @@ trait Requirements {
    * @throws IllegalStateException if the condition is <code>false</code>.
    * @throws NullPointerException if <code>message</code> is <code>null</code>.
    */
-  def requireState(condition: Boolean, clue: Any)(implicit prettifier: Prettifier): Unit = macro RequirementsMacro.requireStateWithClue
+  def requireState(condition: Boolean, clue: Any)(implicit prettifier: Prettifier, differ: Differ[Any]): Unit = macro RequirementsMacro.requireStateWithClue
 
   /**
    * Require that all passed arguments are non-null.
@@ -309,8 +309,8 @@ private[scalactic] object RequirementsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message if requirement failed
    */
-  def require(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", context.literal(""), prettifier)
+  def require(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], differ: context.Expr[Differ[Any]]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", context.literal(""), prettifier, differ)
 
   /**
    * Provides requirement implementation for <code>Requirements.require(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -320,8 +320,8 @@ private[scalactic] object RequirementsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalArgumentException</code> with rich error message (clue included) if requirement failed
    */
-  def requireWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", clue, prettifier)
+  def requireWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], differ: context.Expr[Differ[Any]]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequire", clue, prettifier, differ)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean)</code>, with rich error message.
@@ -330,8 +330,8 @@ private[scalactic] object RequirementsMacro {
    * @param condition original condition expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message if requirement failed
    */
-  def requireState(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", context.literal(""), prettifier)
+  def requireState(context: Context)(condition: context.Expr[Boolean])(prettifier: context.Expr[Prettifier], differ: context.Expr[Differ[Any]]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", context.literal(""), prettifier, differ)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireState(booleanExpr: Boolean, clue: Any)</code>, with rich error message.
@@ -341,8 +341,8 @@ private[scalactic] object RequirementsMacro {
    * @param clue original clue expression
    * @return transformed expression that performs the requirement check and throw <code>IllegalStateException</code> with rich error message (clue included) if requirement failed
    */
-  def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier]): context.Expr[Unit] =
-    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", clue, prettifier)
+  def requireStateWithClue(context: Context)(condition: context.Expr[Boolean], clue: context.Expr[Any])(prettifier: context.Expr[Prettifier], differ: context.Expr[Differ[Any]]): context.Expr[Unit] =
+    new BooleanMacro[context.type](context, "requirementsHelper").genMacro(condition, "macroRequireState", clue, prettifier, differ)
 
   /**
    * Provides requirement implementation for <code>Requirements.requireNonNull(arguments: Any*)</code>, with rich error message.

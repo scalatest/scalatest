@@ -386,7 +386,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
 
   // Generate AST for:
   // helper.methodName($org_scalatest_assert_macro_expr, clue, sourceText)
-  def callHelper(methodName: String, clueTree: Tree, sourceText: String, pos: Tree): Apply =
+  def callHelper(methodName: String, clueTree: Tree, sourceText: String, pos: Tree, differ: Tree): Apply =
     Apply(
       Select(
         Ident(newTermName(helperName)),
@@ -403,13 +403,13 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
    *   [code generated from callHelper]
    * }
    */
-  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any], sourceText: String, pos: Expr[source.Position]): Expr[Assertion] = {
+  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any], sourceText: String, pos: Expr[source.Position], differ: Expr[Differ[Any]]): Expr[Assertion] = {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =
       context.Expr(
         Block(
           valDef("$org_scalatest_assert_macro_expr", transformAst(booleanExpr.tree)),
-          callHelper(methodName, clueExpr.tree, sourceText, pos.tree)
+          callHelper(methodName, clueExpr.tree, sourceText, pos.tree, differ.tree)
         )
       )
     ownerRepair.repairOwners(expandedCode)

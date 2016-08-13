@@ -190,7 +190,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a binary macro <code>Bool</code>
    */
-  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, expression, prettifier)
+  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier, differ: Differ[Any]): Bool = new BinaryMacroBool(left, operator, right, expression, prettifier)
 
   /**
    * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new binary macro <code>Bool</code>.
@@ -202,7 +202,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a binary macro <code>Bool</code>
    */
-  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier): Bool = new BinaryMacroBool(left, operator, right, bool, prettifier)
+  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier, differ: Differ[Any]): Bool = new BinaryMacroBool(left, operator, right, bool, prettifier)
 
   /**
    * Create unary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression represented by a unary method call,
