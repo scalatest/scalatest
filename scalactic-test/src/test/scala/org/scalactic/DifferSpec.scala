@@ -171,7 +171,7 @@ class DifferSpec extends FunSpec {
         assert(e.differences.flatMap(_.inlineDiff) == Vector((1, 2)))
       }
 
-      /*it("should include differences in TestFailedException thrown from assert(a === b) syntax when both a and b is String") {
+      it("should include differences in TestFailedException thrown from assert(a === b) syntax when both a and b is String") {
         val e = intercept[TestFailedException] {
           assert("test2" === "test")
         }
@@ -201,7 +201,7 @@ class DifferSpec extends FunSpec {
         }
         assert(e.message == Some("3 did not equal 2"))
         assert(e.differences.flatMap(_.inlineDiff) == Vector((3, 2)))
-      }*/
+      }
 
     }
 

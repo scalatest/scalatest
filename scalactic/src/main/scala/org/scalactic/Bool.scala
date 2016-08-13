@@ -31,6 +31,8 @@ trait Bool {
 
   val prettifier: Prettifier
 
+  def differences: scala.collection.immutable.IndexedSeq[Difference] = Vector.empty
+
   private def makeString(raw: String, args: Array[Any]): String =
     Resources.formatString(raw, args.map(prettifier.apply))
 
@@ -190,7 +192,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a binary macro <code>Bool</code>
    */
-  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier, differ: Differ): Bool = new BinaryMacroBool(left, operator, right, expression, prettifier)
+  def binaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, prettifier: Prettifier, differ: Differ): Bool = new BinaryMacroBool(left, operator, right, expression, prettifier, differ)
 
   /**
    * Overloaded method that takes a <code>Bool</code> in place of <code>Boolean</code> expression to create a new binary macro <code>Bool</code>.
@@ -202,7 +204,7 @@ object Bool {
    * @param prettifier the <code>Prettifier</code> used for prettifying messages, this need to be implicit to let the compiler resolve it implicitly, it will be too tricky for our macro to resolve it and pass it over explicitly.
    * @return a binary macro <code>Bool</code>
    */
-  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier, differ: Differ): Bool = new BinaryMacroBool(left, operator, right, bool, prettifier)
+  def binaryMacroBool(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier, differ: Differ): Bool = new BinaryMacroBool(left, operator, right, bool, prettifier, differ)
 
   /**
    * Create unary macro <code>Bool</code> that is used by <code>BooleanMacro</code> to wrap a recognized <code>Boolean</code> expression represented by a unary method call,
@@ -644,7 +646,19 @@ private[scalactic] class SimpleMacroBool(expression: Boolean, val expressionText
  * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
  * @param expression the <code>Boolean</code> expression
  */
-private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, val prettifier: Prettifier) extends Bool {
+private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any, expression: Boolean, val prettifier: Prettifier, differ: Differ) extends Bool {
+
+  override lazy val differences: scala.collection.immutable.IndexedSeq[Difference] = {
+    val leftValue =
+      left match {
+        case aEqualizer: org.scalactic.TripleEqualsSupport#Equalizer[_] => aEqualizer.leftSide
+        case aEqualizer: org.scalactic.TripleEqualsSupport#CheckingEqualizer[_] => aEqualizer.leftSide
+        case _ => left
+      }
+    Vector(differ.difference(leftValue, right))
+  }
+
+
 
   /**
    * Overloaded constructor that takes a <code>Bool</code> in place of <code>Boolean</code> expression.
@@ -654,8 +668,8 @@ private[scalactic] class BinaryMacroBool(left: Any, operator: String, right: Any
    * @param right the right-hand-side (RHS) of the <code>Boolean</code> expression
    * @param bool the <code>Bool</code> that will provide the <code>Boolean</code> expression value with <code>bool.value</code>
    */
-  def this(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier) =
-    this(left, operator, right, bool.value, prettifier)
+  def this(left: Any, operator: String, right: Any, bool: Bool, prettifier: Prettifier, differ: Differ) =
+    this(left, operator, right, bool.value, prettifier, differ)
 
   /**
    * the <code>Boolean</code> value of this <code>Bool</code>.
