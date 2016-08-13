@@ -110,7 +110,7 @@ private[scalatest] trait Expectations {
 
   class ExpectationsHelper {
 
-    def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier, pos: source.Position, differ: Differ[Any]): Fact = {
+    def macroExpect(bool: Bool, clue: Any, prettifier: Prettifier, pos: source.Position, differ: Differ): Fact = {
       //requireNonNull(clue)
       if (!bool.value)
         No(
@@ -142,7 +142,7 @@ private[scalatest] trait Expectations {
 
   import language.experimental.macros
 
-  def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position, differ: Differ[Any]): Fact = macro ExpectationsMacro.expect
+  def expect(expression: Boolean)(implicit prettifier: Prettifier, pos: source.Position, differ: Differ): Fact = macro ExpectationsMacro.expect
 
   def expectDoesNotCompile(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectDoesNotCompileImpl
 

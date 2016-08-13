@@ -293,7 +293,7 @@ trait MatcherWords {
       def matcher[T <: Any : Equality]: Matcher[T] = {
         val equality = implicitly[Equality[T]]
         new EqualMatcher[T] {
-          def apply(left: T, differ: Differ[T]): (MatchResult, Difference) = {
+          def apply(left: T, differ: Differ): (MatchResult, Difference) = {
             val difference = differ.difference(left, right)
             val (leftee, rightee) = difference.inlineDiff.getOrElse(Suite.getObjectsForFailureMessage(left, right))
 

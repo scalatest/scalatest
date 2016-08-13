@@ -19,7 +19,7 @@ import org.scalactic.{Differ, Difference}
 
 private[scalatest] trait EqualMatcher[T] extends Matcher[T] {
 
-  def apply(left: T, differ: Differ[T]): (MatchResult, Difference)
+  def apply(left: T, differ: Differ): (MatchResult, Difference)
 
   def apply(left: T): MatchResult = {
     val (result, difference) = apply(left, Differ.default)

@@ -403,7 +403,7 @@ private[org] class DiagrammedExprMacro[C <: Context](val context: C, helperName:
    *   [code generated from callHelper]
    * }
    */
-  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any], sourceText: String, pos: Expr[source.Position], differ: Expr[Differ[Any]]): Expr[Assertion] = {
+  def genMacro(booleanExpr: Expr[Boolean], methodName: String, clueExpr: Expr[Any], sourceText: String, pos: Expr[source.Position], differ: Expr[Differ]): Expr[Assertion] = {
     val ownerRepair = new MacroOwnerRepair[context.type](context)
     val expandedCode =
       context.Expr(

@@ -208,8 +208,8 @@ class DifferSpec extends FunSpec {
     describe("when used with custom Equality that has custom difference implementation") {
 
       implicit val differ =
-        new Differ[String] {
-          def difference(a: String, b: Any): Difference =
+        new Differ {
+          def difference(a: Any, b: Any): Difference =
             new Difference {
               def inlineDiff = {
                 val (aa, bb) = Prettifier.getObjectsForFailureMessage(a, b)
