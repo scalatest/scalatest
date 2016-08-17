@@ -856,12 +856,9 @@ val propertyCheckForAllTemplate = """
    *
    * @param fun the property check function to apply to the generated arguments
    */
-  def forAll[$alphaUpper$, ASSERTION](fun: ($alphaUpper$) => ASSERTION)
+  private def internalForAll$n$[$alphaUpper$, ASSERTION](names: List[String], config: PropertyCheckConfiguration, prettifier: Prettifier, pos: source.Position)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
-      config: PropertyCheckConfiguration,
-$gens$,
-        prettifier: Prettifier,
-        pos: source.Position
+$gens$
     ): Assertion = {
       val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
       val maxSize = config.minSize + config.sizeRange
@@ -878,7 +875,6 @@ $gens$,
 $stepToStepToResult$
         val result: Try[Unit] = Try { fun($alphaLower$) }
         val argsPassed = List($alphaLower$)
-        val scalaCheckLabels = Set.empty[String]
         result match {
           case Success(()) =>
             val nextSucceededCount = succeededCount + 1
@@ -904,14 +900,14 @@ $stepToStepToResult$
               "  " + FailureMessages.occurredOnValues + "\n" +
               prettyArgs(argsPassed, prettifier) + "\n" +
               "  )" +
-              "", // getLabelDisplay(scalaCheckLabels),
+              "", // getLabelDisplay(names),
               Some(ex),
               pos,
               None,
               FailureMessages.propertyFailed(prettifier, succeededCount),
               argsPassed,
               None,
-              scalaCheckLabels.toList
+              names
             )
         }
       }
@@ -930,6 +926,25 @@ $stepToStepToResult$
       loop(0, 0, Randomizer.default, initialSizes)
       org.scalatest.Succeeded
   }
+
+  def forAll[$alphaUpper$, ASSERTION](fun: ($alphaUpper$) => ASSERTION)
+  (implicit
+    config: PropertyCheckConfiguration,
+    $gens$,
+    prettifier: Prettifier,
+    pos: source.Position
+  ): Assertion =
+    internalForAll$n$(List.empty, config, prettifier, pos)(fun)
+
+  def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+$gens$,
+      prettifier: Prettifier,
+      pos: source.Position
+    ): Assertion =
+    internalForAll$n$(List($alphaLower$), config, prettifier, pos)(fun)
+
 """
 
 val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
