@@ -89,8 +89,8 @@ sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
    * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Otherwise</code>'s value
    */
   def fold[V](bf: B => V, wf: W => V): V
-  def black: BlackAttitude[B, W] = new BlackAttitude(this)
-  def white: WhiteAttitude[B, W] = new WhiteAttitude(this)
+  def black: BlackProjection[B, W] = new BlackProjection(this)
+  def white: WhiteProjection[B, W] = new WhiteProjection(this)
 }
 
 /**
@@ -525,7 +525,7 @@ final case class White[+W](w: W) extends Otherwise[Nothing,W] {
   def fold[V](bf: Nothing => V, wf: W => V): V = wf(w)
 }
 
-class BlackAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Serializable {
+class BlackProjection[+B,+W](val underlying: B Otherwise W) extends AnyVal with Serializable {
 
   /**
    * Indicates whether this <code>Otherwise</code> is a <code>Good</code>
@@ -542,44 +542,44 @@ class BlackAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
   def isWhite: Boolean = underlying.isWhite
 
   /**
-   * Maps the given function to this <code>BlackAttitude</code>'s value if it is a <code>Black</code> or returns <code>this</code> if it is a <code>White</code>.
+   * Maps the given function to this <code>BlackProjection</code>'s value if it is a <code>Black</code> or returns <code>this</code> if it is a <code>White</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
    *         else this <code>White</code> is returned
    */
-  def map[C](f: B => C): BlackAttitude[C, W] =
+  def map[C](f: B => C): BlackProjection[C, W] =
     underlying match {
-      case Black(b) => new BlackAttitude(Black(f(b)))
-      case w: White[W] => new BlackAttitude(w)
+      case Black(b) => new BlackProjection(Black(f(b)))
+      case w: White[W] => new BlackProjection(w)
     }
 
   /**
-   * Maps the given function to this <code>BlackAttitude</code>'s value if it is a <code>White</code>, transforming it into a <code>Black</code>, or returns
+   * Maps the given function to this <code>BlackProjection</code>'s value if it is a <code>White</code>, transforming it into a <code>Black</code>, or returns
    * <code>this</code> if it is already a <code>Black</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
    *         else this <code>Black</code> is returned
    */
-  def recover[C >: B](f: W => C): BlackAttitude[C, W] =
+  def recover[C >: B](f: W => C): BlackProjection[C, W] =
     underlying match {
-      case White(w) => new BlackAttitude(Black(f(w)))
-      case b: Black[B] => new BlackAttitude(b)
+      case White(w) => new BlackProjection(Black(f(w)))
+      case b: Black[B] => new BlackProjection(b)
     }
 
   /**
-   * Maps the given function to this <code>BlackAttitude</code>'s value if it is a <code>White</code>, returning the result, or returns
+   * Maps the given function to this <code>BlackProjection</code>'s value if it is a <code>White</code>, returning the result, or returns
    * <code>this</code> if it is already a <code>Black</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>White</code>, the result of applying the given function to the contained value,
    *         else this <code>Black</code> is returned
    */
-  def recoverWith[C >: B, X](f: W => BlackAttitude[C, X]): BlackAttitude[C, X] =
+  def recoverWith[C >: B, X](f: W => BlackProjection[C, X]): BlackProjection[C, X] =
     underlying match {
       case White(w) => f(w)
-      case b: Black[B] => new BlackAttitude(b)
+      case b: Black[B] => new BlackProjection(b)
     }
 
   /**
@@ -764,7 +764,7 @@ class BlackAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
    * @return if this <code>Otherwise</code> is a <code>Black</code>, its <code>Black</code> value wrapped in a <code>White</code>; if this <code>Otherwise</code> is
    *     a <code>White</code>, its <code>White</code> value wrapped in a <code>Black</code>.
    */
-  def swap: BlackAttitude[W, B] = ???
+  def swap: BlackProjection[W, B] = ???
 
   /**
    * Transforms this <code>Otherwise</code> by applying the function <code>gf</code> to this <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,
@@ -774,7 +774,7 @@ class BlackAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
    * @param bf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Otherwise</code>'s value
    */
-  def transform[C, X](bf: B => BlackAttitude[C, X], wf: W => BlackAttitude[C, X]): BlackAttitude[C, X] = ???
+  def transform[C, X](bf: B => BlackProjection[C, X], wf: W => BlackProjection[C, X]): BlackProjection[C, X] = ???
 
   /**
    * Folds this <code>Otherwise</code> into a value of type <code>V</code> by applying the given <code>gf</code> function if this is
@@ -786,10 +786,10 @@ class BlackAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
    */
   def fold[V](bf: B => V, wf: W => V): V = ???
 
-  override def toString = s"BlackAttitude($underlying)"
+  override def toString = s"BlackProjection($underlying)"
 }
 
-class WhiteAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Serializable {
+class WhiteProjection[+B,+W](val underlying: B Otherwise W) extends AnyVal with Serializable {
 
   /**
    * Indicates whether this <code>Otherwise</code> is a <code>Good</code>
@@ -812,10 +812,10 @@ class WhiteAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
    * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
    *         else this <code>White</code> is returned
    */
-  def map[X](f: W => X): WhiteAttitude[B, X] =
+  def map[X](f: W => X): WhiteProjection[B, X] =
     underlying match {
-      case White(w) => new WhiteAttitude(White(f(w)))
-      case b: Black[B] => new WhiteAttitude(b)
+      case White(w) => new WhiteProjection(White(f(w)))
+      case b: Black[B] => new WhiteProjection(b)
     }
 
   /**
@@ -826,24 +826,24 @@ class WhiteAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
    * @return if this is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
    *         else this <code>Black</code> is returned
    */
-  def recover[X >: W](f: B => X): WhiteAttitude[B, X] =
+  def recover[X >: W](f: B => X): WhiteProjection[B, X] =
     underlying match {
-      case Black(b) => new WhiteAttitude(White(f(b)))
-      case w: White[W] => new WhiteAttitude(w)
+      case Black(b) => new WhiteProjection(White(f(b)))
+      case w: White[W] => new WhiteProjection(w)
     }
 
   /**
-   * Maps the given function to this <code>WhiteAttitude</code>'s value if the underlying is a <code>Black</code>, returning the result, or returns
+   * Maps the given function to this <code>WhiteProjection</code>'s value if the underlying is a <code>Black</code>, returning the result, or returns
    * <code>this</code> if the underlying is already a <code>White</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>Black</code>, the result of applying the given function to the contained value,
    *         else this <code>White</code> is returned
    */
-  def recoverWith[C, X >: W](f: B => WhiteAttitude[C, X]): WhiteAttitude[C, X] =
+  def recoverWith[C, X >: W](f: B => WhiteProjection[C, X]): WhiteProjection[C, X] =
     underlying match {
       case Black(b) => f(b)
-      case w: White[W] => new WhiteAttitude(w) // It looks inefficient to an old C programmer, but it doesn't box because AnyVal
+      case w: White[W] => new WhiteProjection(w) // It looks inefficient to an old C programmer, but it doesn't box because AnyVal
     }
 
   /**
@@ -1028,7 +1028,7 @@ class WhiteAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
    * @return if this <code>Otherwise</code> is a <code>Black</code>, its <code>Black</code> value wrapped in a <code>White</code>; if this <code>Otherwise</code> is
    *     a <code>White</code>, its <code>White</code> value wrapped in a <code>Black</code>.
    */
-  def swap: WhiteAttitude[W, B] = ???
+  def swap: WhiteProjection[W, B] = ???
 
   /**
    * Transforms this <code>Otherwise</code> by applying the function <code>gf</code> to this <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,
@@ -1038,7 +1038,7 @@ class WhiteAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
    * @param bf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Otherwise</code>'s value
    */
-  def transform[C, X](bf: B => WhiteAttitude[C, X], wf: W => WhiteAttitude[C, X]): WhiteAttitude[C, X] = ???
+  def transform[C, X](bf: B => WhiteProjection[C, X], wf: W => WhiteProjection[C, X]): WhiteProjection[C, X] = ???
 
   /**
    * Folds this <code>Otherwise</code> into a value of type <code>V</code> by applying the given <code>gf</code> function if this is
@@ -1050,5 +1050,5 @@ class WhiteAttitude[+B,+W](val underlying: B Otherwise W) extends AnyVal with Se
    */
   def fold[V](bf: B => V, wf: W => V): V = ???
 
-  override def toString = s"WhiteAttitude($underlying)"
+  override def toString = s"WhiteProjection($underlying)"
 }

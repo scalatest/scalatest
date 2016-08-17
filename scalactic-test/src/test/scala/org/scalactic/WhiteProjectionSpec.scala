@@ -23,7 +23,7 @@ import scala.util.Try
 import SharedHelpers.serializeRoundtrip
 // SKIP-SCALATESTJS-END
 
-class BlackAttitudeSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
+class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
 
   def isRound(i: Int): Validation[ErrorMessage] =
     if (i % 10 != 0) Fail(i + " was not a round number") else Pass
@@ -31,33 +31,33 @@ class BlackAttitudeSpec extends UnitSpec with Accumulation with TypeCheckedTripl
   def isDivBy3(i: Int): Validation[ErrorMessage] =
     if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
 
-  "A BlackAttitude" can "be either Black or White" in {
-    Black(7).black.isBlack shouldBe true
-    Black(7).black.isWhite shouldBe false
-    White("oops").black.isWhite shouldBe true
-    White("oops").black.isBlack shouldBe false
-    Black(7).black.underlying shouldBe an [Black[_]]
-    White("oops").black.underlying shouldBe an [White[_]]
+  "A WhiteProjection" can "be either Black or White" in {
+    Black(7).white.isBlack shouldBe true
+    Black(7).white.isWhite shouldBe false
+    White("oops").white.isWhite shouldBe true
+    White("oops").white.isBlack shouldBe false
+    Black(7).white.underlying shouldBe an [Black[_]]
+    White("oops").white.underlying shouldBe an [White[_]]
   }
   it can "be used with map" in {
-    Black(8).black map (_ + 1) should equal (Black(9).black)
-    Black[Int].otherwiseWhite("eight").black map (_ + 1) should equal (White("eight").black)
+    Black(8).otherwiseWhite[ErrorMessage].white map (_.toUpperCase) should equal (Black(8).white)
+    Black[Int].otherwiseWhite("eight").white map (_.toUpperCase) should equal (White("EIGHT").white)
   }
   it can "be used with recover" in {
-    Black(8).otherwiseWhite[Throwable].black recover {
+    Black[Throwable].otherwiseWhite(8).white recover {
       case iae: IllegalArgumentException => 9
-    } should equal (Black(8).black)
-    Black[Int].otherwiseWhite(new IllegalArgumentException).black recover {
+    } should equal (White(8).white)
+    Black(new IllegalArgumentException).otherwiseWhite[Int].white recover {
       case iae: IllegalArgumentException => 9
-    } should equal (Black(9).black)
+    } should equal (White(9).white)
   }
   it can "be used with recoverWith" in {
-    Black(8).otherwiseWhite[Throwable].black recoverWith {
-      case iae: IllegalArgumentException => Black(9).black
-    } should equal (Black(8).black)
-    Black[Int].otherwiseWhite(new IllegalArgumentException).black recoverWith {
-      case iae: IllegalArgumentException => Black(9).black
-    } should equal (Black(9).black)
+    Black[Throwable].otherwiseWhite(8).white recoverWith {
+      case iae: IllegalArgumentException => White(9).white
+    } should equal (White(8).white)
+    Black(new IllegalArgumentException).otherwiseWhite[Int].white recoverWith {
+      case iae: IllegalArgumentException => White(9).white
+    } should equal (White(9).white)
   }
 /*
   it can "be used with foreach" in {
