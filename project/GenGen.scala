@@ -834,6 +834,9 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         asserting.check(prop, params, prettifier, pos)
     }
   }*/
+
+  import GeneratorDrivenPropertyChecks.prettyArgs
+
 """
 
 val propertyCheckForAllTemplate = """
@@ -861,33 +864,90 @@ $gens$,
         pos: source.Position
     ): Assertion = {
       val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
+      val maxSize = config.minSize + config.sizeRange
 
       @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer): Unit = {
+      def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): Unit = {
+        val (size, nextInitialSizes, nextRandomizer2) =
+          initialSizes match {
+            case head :: tail => (head, tail, nextRandomizer)
+            case Nil =>
+              val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
+              (sz, Nil, r2)
+          }
 $stepToStepToResult$
         val result: Try[Unit] = Try { fun($alphaLower$) }
+        val argsPassed = List($alphaLower$)
+        val scalaCheckLabels = Set.empty[String]
         result match {
           case Success(()) =>
             val nextSucceededCount = succeededCount + 1
             if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, $alphaLast$r)
+              loop(nextSucceededCount, discardedCount, $alphaLast$r, nextInitialSizes)
           case Failure(ex: DiscardedEvaluationException) =>
             val nextDiscardedCount = discardedCount + 1
             if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, $alphaLast$r)
-            else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos)
-          case Failure(ex) => throw ex
+              loop(succeededCount, nextDiscardedCount, $alphaLast$r, nextInitialSizes)
+            else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+          case Failure(ex) =>
+            throw new GeneratorDrivenPropertyCheckFailedException(
+              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+              "  " + FailureMessages.propertyFailed(prettifier, succeededCount) + "\n" +
+              (
+              sde match {
+                case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                  "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+                case _ => ""
+              }
+              ) +
+              "  " + FailureMessages.occurredOnValues + "\n" +
+              prettyArgs(argsPassed, prettifier) + "\n" +
+              "  )" +
+              "", // getLabelDisplay(scalaCheckLabels),
+              Some(ex),
+              pos,
+              None,
+              FailureMessages.propertyFailed(prettifier, succeededCount),
+              argsPassed,
+              None,
+              scalaCheckLabels.toList
+            )
         }
       }
-      loop(0, 0, Randomizer.default)
 
+      @tailrec
+      def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
+        sizes match {
+          case Nil => sizesLoop(List(config.minSize), 1, rnd)
+          case szs if count < 10 =>
+            val (nextSize, nextRandomizer) = rnd.chooseInt(config.minSize, maxSize)
+            sizesLoop(nextSize :: sizes, count + 1,  nextRandomizer)
+          case _ => sizes.sorted
+        }
+      }
+      val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
+      loop(0, 0, Randomizer.default, initialSizes)
       org.scalatest.Succeeded
   }
 """
 
 val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
 
-object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks
+object GeneratorDrivenPropertyChecks extends GeneratorDrivenPropertyChecks {
+
+  import FailureMessages.decorateToStringValue
+  private def prettyArgs(args: List[Any], prettifier: Prettifier) = {
+    val strs = for((a, i) <- args.zipWithIndex) yield (
+      "    " +
+      ("arg" + i) +
+      " = " + decorateToStringValue(prettifier, a) + (if (i < args.length - 1) "," else "") // +
+      // (if (a.shrinks > 0) " // " + a.shrinks + (if (a.shrinks == 1) " shrink" else " shrinks") else "")
+    )
+    strs.mkString("\n")
+  }
+
+}
 """
 
 val generatorSuitePreamble = """
