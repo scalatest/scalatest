@@ -33,7 +33,9 @@ class OrSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
 
   "An Or" can "be either Good or Bad" in {
     Good(7).isGood shouldBe true
+    Good(7).isBad shouldBe false
     Bad("oops").isBad shouldBe true
+    Bad("oops").isGood shouldBe false
 
     Good(7) shouldBe an [Or[_, _]]
     Good(7) shouldBe an [Good[_]]
