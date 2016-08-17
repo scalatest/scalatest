@@ -59,15 +59,15 @@ class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTri
       case iae: IllegalArgumentException => Black(9).black
     } should equal (Black(9).black)
   }
-/*
   it can "be used with foreach" in {
     var vCount = 0
     var eCount = 0
-    Black(8) foreach { vCount += _ }
+    Black(8).black foreach { vCount += _ }
     vCount should equal (8)
-    Black[Int].otherwiseWhite("eight") foreach { eCount += _ }
+    Black[Int].otherwiseWhite("eight").black foreach { eCount += _ }
     eCount should equal (0)
   }
+/*
   it can "be used with flatMap" in {
     Black(8).otherwiseWhite[String] flatMap ((x: Int) => Black(x + 1)) should equal (Black(9))
     Black[Int].otherwiseWhite("eight") flatMap ((x: Int) => Black(x + 1)) should equal (White("eight"))

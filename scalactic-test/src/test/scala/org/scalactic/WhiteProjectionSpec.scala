@@ -59,15 +59,15 @@ class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
       case iae: IllegalArgumentException => White(9).white
     } should equal (White(9).white)
   }
-/*
   it can "be used with foreach" in {
     var vCount = 0
     var eCount = 0
-    Black(8) foreach { vCount += _ }
+    White(8).white foreach { vCount += _ }
     vCount should equal (8)
-    Black[Int].otherwiseWhite("eight") foreach { eCount += _ }
+    Black("eight").otherwiseWhite[Int].white foreach { eCount += _ }
     eCount should equal (0)
   }
+/*
   it can "be used with flatMap" in {
     Black(8).otherwiseWhite[String] flatMap ((x: Int) => Black(x + 1)) should equal (Black(9))
     Black[Int].otherwiseWhite("eight") flatMap ((x: Int) => Black(x + 1)) should equal (White("eight"))
