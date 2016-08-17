@@ -55,7 +55,7 @@ class ApplicativeSpec extends UnitSpec with AssertObeys {
     }
 
     implicit val orApplicative = new OrApplicative[Int]
-    implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
+    //implicit def orArbGood[G, B](implicit arbG: Arbitrary[G]): Arbitrary[G Or B] = Arbitrary(for (g <- Arbitrary.arbitrary[G]) yield Good(g))
 
     assertObeys(ApplicativeLaws[Or.B[Int]#G])
   }

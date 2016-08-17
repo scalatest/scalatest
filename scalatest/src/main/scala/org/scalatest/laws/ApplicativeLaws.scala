@@ -21,6 +21,7 @@ import org.scalactic.algebra._
 import org.scalatest._
 import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.prop.Generator
 
 import Applicative.adapters
 
@@ -28,7 +29,7 @@ import scala.language.higherKinds
 
 class ApplicativeLaws[Context[_]] private (
   implicit ap: Applicative[Context],
-  arbCa: Arbitrary[Context[Int]],
+  /*arbCa: Arbitrary[Context[Int]],
   shrCa: Shrink[Context[Int]],
   arbAb: Arbitrary[Int => String],
   shrAb: Shrink[Int => String],
@@ -37,7 +38,12 @@ class ApplicativeLaws[Context[_]] private (
   arbCab: Arbitrary[Context[Int => String]],
   shrCab: Shrink[Context[Int => String]],
   arbCbc: Arbitrary[Context[String => Double]],
-  shrCbc: Shrink[Context[String => Double]]
+  shrCbc: Shrink[Context[String => Double]]*/
+  genCa: Generator[Context[Int]],
+  genAb: Generator[Int => String],
+  genBc: Generator[String => Double],
+  genCab: Generator[Context[Int => String]],
+  genCbc: Generator[Context[String => Double]]
 ) extends Laws {
 
   val lawsName = "applicative"
@@ -76,7 +82,7 @@ class ApplicativeLaws[Context[_]] private (
 object ApplicativeLaws {
   def apply[Context[_]](
     implicit ap: Applicative[Context],
-    arbCa: Arbitrary[Context[Int]],
+    /*arbCa: Arbitrary[Context[Int]],
     shrCa: Shrink[Context[Int]],
     arbAb: Arbitrary[Int => String],
     shrAb: Shrink[Int => String],
@@ -85,6 +91,11 @@ object ApplicativeLaws {
     arbCab: Arbitrary[Context[Int => String]],
     shrCab: Shrink[Context[Int => String]],
     arbCbc: Arbitrary[Context[String => Double]],
-    shrCbc: Shrink[Context[String => Double]]
+    shrCbc: Shrink[Context[String => Double]]*/
+    genCa: Generator[Context[Int]],
+    genAb: Generator[Int => String],
+    genBc: Generator[String => Double],
+    genCab: Generator[Context[Int => String]],
+    genCbc: Generator[Context[String => Double]]
   ): ApplicativeLaws[Context] = new ApplicativeLaws[Context]
 }

@@ -17,6 +17,7 @@ package org.scalatest.prop
 
 import scala.collection.mutable.ListBuffer
 import org.scalactic.anyvals._
+import org.scalactic.{Or, Good, Bad}
 
 trait Generator[T] { thisGeneratorOfT =>
   def next(size: Int = 100, rnd: Randomizer = Randomizer.default): (T, Randomizer)
@@ -157,6 +158,46 @@ object Generator {
         rnd.nextList[T](size)
       }
       override def toString = "Generator[List[T]]"
+    }
+
+  implicit def function1Generator[T1, R](implicit genOfR: Generator[R]): Generator[T1 => R] =
+    new Generator[T1 => R] {
+      def next(size: Int, rnd: Randomizer): (T1 => R, Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextR, nextRnd) = genOfR.next(size, rnd)
+        (t1 => nextR, nextRnd)
+
+      }
+    }
+
+  implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
+    new Generator[Option[T]] {
+      def next(size: Int, rnd: Randomizer): (Option[T], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = rnd.nextInt
+        if (nextInt % 10 == 0)
+          (None, nextRnd)
+        else {
+          val (nextT, nextRnd) = genOfT.next(size, rnd)
+          (Some(nextT), nextRnd)
+        }
+      }
+    }
+
+  implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[Or[G, B]] =
+    new Generator[Or[G, B]] {
+      def next(size: Int, rnd: Randomizer): (Or[G, B], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = rnd.nextInt
+        if (nextInt % 4 == 0) {
+          val (nextB, nextRnd) = genOfB.next(size, rnd)
+          (Bad(nextB), nextRnd)
+        }
+        else {
+          val (nextG, nextRnd) = genOfG.next(size, rnd)
+          (Good(nextG), nextRnd)
+        }
+      }
     }
 }
 

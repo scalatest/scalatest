@@ -20,6 +20,7 @@ import org.scalactic._
 import org.scalactic.algebra._
 import org.scalatest._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.prop.Generator
 import Matchers._
 
 import Functor.adapters
@@ -28,8 +29,10 @@ import scala.language.higherKinds
 
 class FunctorLaws[Context[_]] private (
   implicit functor: Functor[Context],
-  arbCa: Arbitrary[Context[Int]],
-  shrCa: Shrink[Context[Int]]
+  /*arbCa: Arbitrary[Context[Int]],
+  shrCa: Shrink[Context[Int]]*/
+  genCa: Generator[Context[Int]],
+  genAa: Generator[Int => Int]
 ) extends Laws {
 
   val lawsName = "functor"
@@ -53,7 +56,9 @@ class FunctorLaws[Context[_]] private (
 object FunctorLaws {
   def apply[Context[_]](
     implicit functor: Functor[Context],
-    arbCa: Arbitrary[Context[Int]],
-    shrCa: Shrink[Context[Int]]
+    /*arbCa: Arbitrary[Context[Int]],
+    shrCa: Shrink[Context[Int]]*/
+    genCa: Generator[Context[Int]],
+    genAa: Generator[Int => Int]
   ): FunctorLaws[Context] = new FunctorLaws[Context]
 }

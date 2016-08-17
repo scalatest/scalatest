@@ -20,6 +20,7 @@ import org.scalactic.Every
 import org.scalactic.algebra._
 import org.scalatest.Matchers._
 import org.scalatest.prop.GeneratorDrivenPropertyChecks._
+import org.scalatest.prop.Generator
 import org.scalactic.source
 
 import Monad.adapters
@@ -33,12 +34,15 @@ import scala.language.higherKinds
  */
 class MonadLaws[Context[_]] private (
   implicit monad: Monad[Context],
-  arbCa: Arbitrary[Context[Int]],
+  /*arbCa: Arbitrary[Context[Int]],
   shrCa: Shrink[Context[Int]],
   arbCab: Arbitrary[Int => Context[String]],
   shrCab: Shrink[Int => Context[String]],
   arbCbc: Arbitrary[String => Context[Double]],
-  shrCbc: Shrink[String => Context[Double]]
+  shrCbc: Shrink[String => Context[Double]]*/
+  genCa: Generator[Context[Int]],
+  genCab: Generator[Int => Context[String]],
+  genCbc: Generator[String => Context[Double]]
 ) extends Laws {
 
   val lawsName = "monad"
@@ -68,11 +72,14 @@ class MonadLaws[Context[_]] private (
 object MonadLaws {
   def apply[Context[_]](
     implicit monad: Monad[Context],
-    arbCa: Arbitrary[Context[Int]],
+    /*arbCa: Arbitrary[Context[Int]],
     shrCa: Shrink[Context[Int]],
     arbCab: Arbitrary[Int => Context[String]],
     shrCab: Shrink[Int => Context[String]],
     arbCbc: Arbitrary[String => Context[Double]],
-    shrCbc: Shrink[String => Context[Double]]
+    shrCbc: Shrink[String => Context[Double]]*/
+    genCa: Generator[Context[Int]],
+    genCab: Generator[Int => Context[String]],
+    genCbc: Generator[String => Context[Double]]
   ) = new MonadLaws[Context]
 }

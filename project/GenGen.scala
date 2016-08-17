@@ -41,14 +41,16 @@ package prop
 """
 
 val propertyCheckPreamble = """
-import org.scalacheck.Arbitrary
-import org.scalacheck.Shrink
-import org.scalacheck.Prop
-import org.scalacheck.Gen
-import org.scalacheck.Prop._
-import org.scalatest.exceptions.DiscardedEvaluationException
-import org.scalatest.enablers.CheckerAsserting
 import org.scalactic._
+import org.scalatest.FailureMessages
+import org.scalatest.UnquotedString
+import org.scalatest.exceptions.StackDepthException
+import scala.annotation.tailrec
+import scala.util.{Try, Failure, Success}
+import org.scalatest.exceptions.DiscardedEvaluationException
+import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
+import org.scalatest.exceptions.StackDepth
+import org.scalatest.exceptions.TestFailedException
 
 /**
  * Trait containing methods that faciliate property checks against generated data using ScalaCheck.
@@ -489,7 +491,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *   values in the <code>PropertyCheckConfiguration</code> implicitly passed to the <code>apply</code> methods of the <code>ConfiguredPropertyCheck</code>
    *   object returned by this method.
    */
-  def forAll(configParams: PropertyCheckConfigParam*): ConfiguredPropertyCheck = new ConfiguredPropertyCheck(configParams)
+  //def forAll(configParams: PropertyCheckConfigParam*): ConfiguredPropertyCheck = new ConfiguredPropertyCheck(configParams)
 
   /**
    * Performs a configured property checks by applying property check functions passed to its <code>apply</code> methods to arguments
@@ -551,7 +553,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
    *
    * @author Bill Venners
   */
-  class ConfiguredPropertyCheck(configParams: Seq[PropertyCheckConfigParam]) {
+  /*class ConfiguredPropertyCheck(configParams: Seq[PropertyCheckConfigParam]) {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
@@ -831,7 +833,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         val params = getParams(configParams, config)
         asserting.check(prop, params, prettifier, pos)
     }
-  }
+  }*/
 """
 
 val propertyCheckForAllTemplate = """
@@ -853,175 +855,33 @@ val propertyCheckForAllTemplate = """
    */
   def forAll[$alphaUpper$, ASSERTION](fun: ($alphaUpper$) => ASSERTION)
     (implicit
-      config: PropertyCheckConfigurable,
-$arbShrinks$,
-        asserting: CheckerAsserting[ASSERTION],
+      config: PropertyCheckConfiguration,
+$gens$,
         prettifier: Prettifier,
         pos: source.Position
-    ): asserting.Result = {
-      val propF = { ($argType$) =>
-        val (unmetCondition, exception) =
-          try {
-            fun($alphaLower$)
-            (false, None)
-          }
-          catch {
-            case e: DiscardedEvaluationException => (true, None)
-            case e: Throwable => (false, Some(e))
-          }
-        !unmetCondition ==> (
-          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-        )
+    ): Assertion = {
+      val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
+
+      @tailrec
+      def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer): Unit = {
+$stepToStepToResult$
+        val result: Try[Unit] = Try { fun($alphaLower$) }
+        result match {
+          case Success(()) =>
+            val nextSucceededCount = succeededCount + 1
+            if (nextSucceededCount < config.minSuccessful)
+              loop(nextSucceededCount, discardedCount, $alphaLast$r)
+          case Failure(ex: DiscardedEvaluationException) =>
+            val nextDiscardedCount = discardedCount + 1
+            if (nextDiscardedCount < maxDiscarded)
+              loop(succeededCount, nextDiscardedCount, $alphaLast$r)
+            else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos)
+          case Failure(ex) => throw ex
+        }
       }
-      val prop = Prop.forAll(propF)
-      val params = getParams(Seq(), config)
-      asserting.check(prop, params, prettifier, pos)
-  }
+      loop(0, 0, Randomizer.default)
 
-  /**
-   * Performs a property check by applying the specified property check function with the specified
-   * argument names to arguments supplied by implicitly passed generators.
-   *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * forAll ($argNames$) { ($namesAndTypes$) =>
-   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
-   * }
-   * </pre>
-   *
-   * @param fun the property check function to apply to the generated arguments
-   */
-  def forAll[$alphaUpper$, ASSERTION]($argNameNamesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
-    (implicit
-      config: PropertyCheckConfigurable,
-$arbShrinks$,
-        asserting: CheckerAsserting[ASSERTION],
-        prettifier: Prettifier,
-        pos: source.Position
-    ): asserting.Result = {
-      val propF = { ($argType$) =>
-        val (unmetCondition, exception) =
-          try {
-            fun($alphaLower$)
-            (false, None)
-          }
-          catch {
-            case e: DiscardedEvaluationException => (true, None)
-            case e: Throwable => (false, Some(e))
-          }
-        !unmetCondition ==> (
-          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-        )
-      }
-      val prop = Prop.forAll(propF)
-      val params = getParams(configParams, config)
-      asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
-  }
-
-  /**
-   * Performs a property check by applying the specified property check function to arguments
-   * supplied by the specified generators.
-   *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * import org.scalacheck.Gen
-   *
-   * // Define your own string generator:
-   * val famousLastWords = for {
-   *   s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
-   * } yield s
-   * 
-   * forAll ($famousArgs$) { ($namesAndTypes$) =>
-   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
-   * }
-   * </pre>
-   *
-   * @param fun the property check function to apply to the generated arguments
-   */
-  def forAll[$alphaUpper$, ASSERTION]($genArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
-    (implicit
-      config: PropertyCheckConfigurable,
-$shrinks$,
-        asserting: CheckerAsserting[ASSERTION],
-        prettifier: Prettifier,
-        pos: source.Position
-    ): asserting.Result = {
-      val propF = { ($argType$) =>
-        val (unmetCondition, exception) =
-          try {
-            fun($alphaLower$)
-            (false, None)
-          }
-          catch {
-            case e: DiscardedEvaluationException => (true, None)
-            case e: Throwable => (false, Some(e))
-          }
-        !unmetCondition ==> (
-          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-        )
-      }
-      val prop = Prop.forAll($genArgs$)(propF)
-      val params = getParams(configParams, config)
-      asserting.check(prop, params, prettifier, pos)
-  }
-
-  /**
-   * Performs a property check by applying the specified property check function to named arguments
-   * supplied by the specified generators.
-   *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * import org.scalacheck.Gen
-   *
-   * // Define your own string generator:
-   * val famousLastWords = for {
-   *   s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
-   * } yield s
-   * 
-   * forAll ($nameGenTuples$) { ($namesAndTypes$) =>
-   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
-   * }
-   * </pre>
-   *
-   * @param fun the property check function to apply to the generated arguments
-   */
-  def forAll[$alphaUpper$, ASSERTION]($nameAndGenArgsAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
-    (implicit
-      config: PropertyCheckConfigurable,
-$shrinks$,
-        asserting: CheckerAsserting[ASSERTION],
-        prettifier: Prettifier,
-        pos: source.Position
-    ): asserting.Result = {
-
-$tupleBusters$
-
-      val propF = { ($argType$) =>
-        val (unmetCondition, exception) =
-          try {
-            fun($alphaLower$)
-            (false, None)
-          }
-          catch {
-            case e: DiscardedEvaluationException => (true, None)
-            case e: Throwable => (false, Some(e))
-          }
-        !unmetCondition ==> (
-          if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-        )
-      }
-      val prop = Prop.forAll($genArgs$)(propF)
-      val params = getParams(configParams, config)
-      asserting.check(prop, params, prettifier, pos, Some(List($argNameNames$)))
+      org.scalatest.Succeeded
   }
 """
 
@@ -2416,6 +2276,23 @@ $okayExpressions$
         val shrinks = alpha.take(i).toUpperCase.map(
           c => "      shr" + c + ": Shrink[" + c + "]"
         ).mkString(",\n")
+
+        val gens = alpha.take(i).toUpperCase.map(
+          c => "      gen" + c + ": org.scalatest.prop.Generator[" + c + "]"
+        ).mkString(",\n")
+
+        val stepToStepToResult =
+          "        val (a, ar) = genA.next(10, nextRandomizer)" + "\n" +
+          (if (i > 1)
+            alpha.take(i).sliding(2).map {
+              ab =>
+              val a = ab.charAt(0)
+              val b = ab.charAt(1)
+              "      val (" + b + ", " + b + "r) = gen" + b.toString.toUpperCase + ".next(10, " + a + "r)"
+            }.mkString("\n")
+          else
+            "")
+
         val sumOfArgLengths = alpha.take(i).map(_ + ".length").mkString(" + ")
         val namesAndTypes = alpha.take(i).map(_ + ": String").mkString(", ")
         val sumOfArgs = alpha.take(i).mkString(" + ")
@@ -2432,8 +2309,11 @@ $okayExpressions$
         st.setAttribute("argType", argType)
         st.setAttribute("arbShrinks", arbShrinks)
         st.setAttribute("shrinks", shrinks)
+        st.setAttribute("gens", gens)
+        st.setAttribute("stepToStepToResult", stepToStepToResult)
         st.setAttribute("alphaLower", alphaLower)
         st.setAttribute("alphaUpper", alphaUpper)
+        st.setAttribute("alphaLast", alpha.take(i).last.toString)
         st.setAttribute("strings", strings)
         st.setAttribute("sumOfArgLengths", sumOfArgLengths)
         st.setAttribute("namesAndTypes", namesAndTypes)
