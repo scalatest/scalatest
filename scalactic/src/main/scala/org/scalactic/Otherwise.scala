@@ -55,8 +55,8 @@ sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
    * lyrics: org.scalactic.Otherwise[Double,String] =
    *     White(But we decide which is right. And which is an illusion?)
    *
-   * scala&gt; val icslyr = lyrics.swap
-   * icslyr: org.scalactic.Otherwise[String,Double] =
+   * scala&gt; val swapped = lyrics.swap
+   * swapped: org.scalactic.Otherwise[String,Double] =
    *     Black(But we decide which is right. And which is an illusion?)
    * </pre>
    *
@@ -84,7 +84,17 @@ sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Otherwise</code>'s value
    */
   def fold[V](bf: B => V, wf: W => V): V
+
+  /**
+   * Wraps this <code>Otherwise</code> in an <code>Ebony</code>, an <code>AnyVal</code> that enables you to transform <code>Black</code> values in a <code>for</code> expression with
+   * <code>White</code> values passing through unchanged.
+   */
   def ebony: Ebony[B, W] = new Ebony(this)
+
+  /**
+   * Wraps this <code>Otherwise</code> in an <code>Ivory</code>, an <code>AnyVal</code> that enables you to transform <code>White</code> values in a <code>for</code> expression with
+   * <code>Black</code> values passing through unchanged.
+   */
   def ivory: Ivory[B, W] = new Ivory(this)
 }
 
