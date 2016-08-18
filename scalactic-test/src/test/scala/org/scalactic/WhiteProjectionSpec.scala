@@ -88,13 +88,13 @@ class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
     White(12).white.exists(_ == 13) shouldBe false
     Black(12).otherwiseWhite[Int].white.exists(_ == 12) shouldBe false
   }
-/*
   it can "be used with forall" in {
-    Black(12).forall(_ > 10) shouldBe true
-    Black(7).forall(_ > 10) shouldBe false
-    Black[Int].otherwiseWhite(12).forall(_ > 10) shouldBe true
-    Black[Int].otherwiseWhite(7).forall(_ > 10) shouldBe true
+    White(12).white.forall(_ > 10) shouldBe true
+    White(7).white.forall(_ > 10) shouldBe false
+    Black(12).otherwiseWhite[Int].white.forall(_ > 10) shouldBe true
+    Black(7).otherwiseWhite[Int].white.forall(_ > 10) shouldBe true
   }
+/*
   it can "be used with getOrElse, which takes a by-name" in {
 
     Black(12).getOrElse(17) shouldBe 12

@@ -705,7 +705,8 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
    * @param p the predicate to apply to the <code>Good</code> value, if this is a <code>Good</code>
    * @return the result of applying the passed predicate <code>p</code> to the <code>Good</code> value, if this is a <code>Good</code>, else <code>true</code>
    */
-  def forall(f: G => Boolean): Boolean
+  
+  def forall(@deprecatedName('f) p: G => Boolean): Boolean
 
   /**
    * Returns, if this <code>Or</code> is <code>Good</code>, this <code>Good</code>'s value; otherwise returns the result of evaluating <code>default</code>. 

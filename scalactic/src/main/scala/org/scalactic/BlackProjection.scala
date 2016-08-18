@@ -165,7 +165,11 @@ class BlackProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @param p the predicate to apply to the <code>Black</code> value, if this is a <code>Black</code>
    * @return the result of applying the passed predicate <code>p</code> to the <code>Black</code> value, if this is a <code>Black</code>, else <code>true</code>
    */
-  def forall(f: B => Boolean): Boolean = ???
+  def forall(p: B => Boolean): Boolean =
+    underlying match {
+      case Black(b) => p(b)
+      case _ => true
+    }
 
   /**
    * Returns, if this <code>Otherwise</code> is <code>Black</code>, this <code>Black</code>'s value; otherwise returns the result of evaluating <code>default</code>. 

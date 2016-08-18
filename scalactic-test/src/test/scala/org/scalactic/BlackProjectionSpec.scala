@@ -88,13 +88,13 @@ class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTri
     Black(12).black.exists(_ == 13) shouldBe false
     Black[Int].otherwiseWhite(12).black.exists(_ == 12) shouldBe false
   }
-/*
   it can "be used with forall" in {
-    Black(12).forall(_ > 10) shouldBe true
-    Black(7).forall(_ > 10) shouldBe false
-    Black[Int].otherwiseWhite(12).forall(_ > 10) shouldBe true
-    Black[Int].otherwiseWhite(7).forall(_ > 10) shouldBe true
+    Black(12).black.forall(_ > 10) shouldBe true
+    Black(7).black.forall(_ > 10) shouldBe false
+    Black[Int].otherwiseWhite(12).black.forall(_ > 10) shouldBe true
+    Black[Int].otherwiseWhite(7).black.forall(_ > 10) shouldBe true
   }
+/*
   it can "be used with getOrElse, which takes a by-name" in {
 
     Black(12).getOrElse(17) shouldBe 12
