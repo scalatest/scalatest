@@ -177,7 +177,11 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @param default the default expression to evaluate if this <code>Otherwise</code> is a <code>White</code>
    * @return the contained value, if this <code>Otherwise</code> is a <code>Black</code>, else the result of evaluating the given <code>default</code>
    */
-  def getOrOtherwise[X >: W](default: => X): X = ???
+  def getOrElse[X >: W](default: => X): X =
+    underlying match {
+      case White(w) => w
+      case _ => default
+    }
 
   /**
    * Returns this <code>Otherwise</code> if it is a <code>Black</code>, otherwise returns the result of evaluating the passed <code>alternative</code>.
@@ -185,7 +189,7 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @param alternative the alternative by-name to evaluate if this <code>Otherwise</code> is a <code>White</code>
    * @return this <code>Otherwise</code>, if it is a <code>Black</code>, else the result of evaluating <code>alternative</code>
    */
-  def orOtherwise[C >: B, X >: W](alternative: => C Otherwise X): C Otherwise X = ???
+  def orElse[C >: B, X >: W](alternative: => C Otherwise X): C Otherwise X = ???
 
   /**
    * Returns a <code>Some</code> containing the <code>Black</code> value, if this <code>Otherwise</code> is a <code>Black</code>, else <code>None</code>.

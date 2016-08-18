@@ -94,18 +94,18 @@ class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTri
     Black[Int].otherwiseWhite(12).black.forall(_ > 10) shouldBe true
     Black[Int].otherwiseWhite(7).black.forall(_ > 10) shouldBe true
   }
-/*
   it can "be used with getOrElse, which takes a by-name" in {
 
-    Black(12).getOrElse(17) shouldBe 12
-    Black[Int].otherwiseWhite(12).getOrElse(17) shouldBe 17
+    Black(12).black.getOrElse(17) shouldBe 12
+    Black[Int].otherwiseWhite(12).black.getOrElse(17) shouldBe 17
 
     var x = 16 // should not increment if Black
-    Black(12) getOrElse { x += 1; x } shouldBe 12
+    Black(12).black getOrElse { x += 1; x } shouldBe 12
     x shouldBe 16
-    Black[Int].otherwiseWhite(12) getOrElse { x += 1; x } shouldBe 17
+    Black[Int].otherwiseWhite(12).black getOrElse { x += 1; x } shouldBe 17
     x shouldBe 17
   }
+/*
   it can "be used with orElse, which takes a by-name" in {
 
     Black(12).orElse(Black(13)) shouldBe Black(12)
