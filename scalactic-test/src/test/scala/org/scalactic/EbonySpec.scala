@@ -23,7 +23,7 @@ import scala.util.Try
 import SharedHelpers.serializeRoundtrip
 // SKIP-SCALATESTJS-END
 
-class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
+class EbonySpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals {
 
   def isRound(i: Int): Validation[ErrorMessage] =
     if (i % 10 != 0) Fail(i + " was not a round number") else Pass
@@ -31,7 +31,7 @@ class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTri
   def isDivBy3(i: Int): Validation[ErrorMessage] =
     if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
 
-  "A BlackProjection" can "be either Black or White" in {
+  "An Ebony" can "be either Black or White" in {
     Black(7).ebony.isBlack shouldBe true
     Black(7).ebony.isWhite shouldBe false
     White("oops").ebony.isWhite shouldBe true

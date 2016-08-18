@@ -23,7 +23,7 @@ import scala.util.Try
 import SharedHelpers.serializeRoundtrip
 // SKIP-SCALATESTJS-END
 
-class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
+class IvorySpec extends UnitSpec with TypeCheckedTripleEquals {
 
   def isRound(i: Int): Validation[ErrorMessage] =
     if (i % 10 != 0) Fail(i + " was not a round number") else Pass
@@ -31,7 +31,7 @@ class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
   def isDivBy3(i: Int): Validation[ErrorMessage] =
     if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
 
-  "A WhiteProjection" can "be either Black or White" in {
+  "An Ivory" can "be either Black or White" in {
     Black(7).ivory.isBlack shouldBe true
     Black(7).ivory.isWhite shouldBe false
     White("oops").ivory.isWhite shouldBe true
