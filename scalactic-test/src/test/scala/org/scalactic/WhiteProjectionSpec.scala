@@ -67,23 +67,23 @@ class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
     Black("eight").otherwiseWhite[Int].white foreach { eCount += _ }
     eCount should equal (0)
   }
-/*
   it can "be used with flatMap" in {
-    Black(8).otherwiseWhite[String] flatMap ((x: Int) => Black(x + 1)) should equal (Black(9))
-    Black[Int].otherwiseWhite("eight") flatMap ((x: Int) => Black(x + 1)) should equal (White("eight"))
+    Black[String].otherwiseWhite(8).white flatMap ((x: Int) => White(x + 1).white) should equal (White(9).white)
+    Black("eight").otherwiseWhite[Int].white flatMap ((x: Int) => White(x + 1).white) should equal (Black("eight").white)
   }
   it can "be used with filter" in {
-    Black(12).filter(isRound) shouldBe White("12 was not a round number")
-    Black(10).filter(isRound) shouldBe Black(10)
-    Black[Int].otherwiseWhite(12).filter(isRound) shouldBe White(12)
-    (for (i <- Black(10) if isRound(i)) yield i) shouldBe Black(10)
-    (for (i <- Black(12) if isRound(i)) yield i) shouldBe White("12 was not a round number")
-    (for (i <- Black(12) if isRound(i)) yield i) shouldBe White("12 was not a round number")
-    (for (i <- Black(30) if isRound(i) && isDivBy3(i)) yield i) shouldBe Black(30)
-    (for (i <- Black(10) if isRound(i) && isDivBy3(i)) yield i) shouldBe White("10 was not divisible by 3")
-    (for (i <- Black(3) if isRound(i) && isDivBy3(i)) yield i) shouldBe White("3 was not a round number")
-    (for (i <- Black(2) if isRound(i) && isDivBy3(i)) yield i) shouldBe White("2 was not a round number")
+    White(12).white.filter(isRound) shouldBe Black("12 was not a round number").white
+    White(10).white.filter(isRound) shouldBe White(10).white
+    Black(12).otherwiseWhite[Int].white.filter(isRound) shouldBe Black(12).white
+    (for (i <- White(10).white if isRound(i)) yield i) shouldBe White(10).white
+    (for (i <- White(12).white if isRound(i)) yield i) shouldBe Black("12 was not a round number").white
+    (for (i <- White(12).white if isRound(i)) yield i) shouldBe Black("12 was not a round number").white
+    (for (i <- White(30).white if isRound(i) && isDivBy3(i)) yield i) shouldBe White(30).white
+    (for (i <- White(10).white if isRound(i) && isDivBy3(i)) yield i) shouldBe Black("10 was not divisible by 3").white
+    (for (i <- White(3).white if isRound(i) && isDivBy3(i)) yield i) shouldBe Black("3 was not a round number").white
+    (for (i <- White(2).white if isRound(i) && isDivBy3(i)) yield i) shouldBe Black("2 was not a round number").white
   }
+/*
   it can "be used with exists" in {
     Black(12).exists(_ == 12) shouldBe true
     Black(12).exists(_ == 13) shouldBe false

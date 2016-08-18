@@ -23,7 +23,7 @@ import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
-class WhiteProjection[+B,+W](val underlying: B Otherwise W) extends AnyVal with Serializable {
+class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) extends AnyVal with Serializable {
 
   /**
    * Indicates whether this <code>Otherwise</code> is a <code>Good</code>
@@ -100,7 +100,11 @@ class WhiteProjection[+B,+W](val underlying: B Otherwise W) extends AnyVal with 
    * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
    *         else this <code>White</code> is returned
    */
-  def flatMap[C >: B, X](f: W => C Otherwise X): C Otherwise X = ???
+  def flatMap[C >: B, X](f: W => WhiteProjection[C, X]): WhiteProjection[C, X] =
+    underlying match {
+      case White(w) => f(w)
+      case b: Black[B] => new WhiteProjection(b)
+    }
 
   /**
    * Returns this <code>Otherwise</code> if either 1) it is a <code>White</code> or 2) it is a <code>Black</code> and applying the validation function <code>f</code> to this
@@ -116,13 +120,21 @@ class WhiteProjection[+B,+W](val underlying: B Otherwise W) extends AnyVal with 
    * @param f the validation function to apply
    * @return a <code>Black</code> if this <code>Otherwise</code> is a <code>Black</code> that passes the validation function, else a <code>White</code>.
    */
-  def filter[C >: B](f: W => Validation[C]): C Otherwise W = ???
+  def filter[C >: B](f: W => Validation[C]): WhiteProjection[C, W] =
+    underlying match {
+      case White(w) =>
+        f(w) match {
+          case Pass => this
+          case Fail(c) => new WhiteProjection(Black(c))
+        }
+      case b: Black[B] => new WhiteProjection(b)
+    }
 
   // TODO: What should we do about withFilter. Black question for the hackathon.
   /**
    * Currently just forwards to </code>filter</code>, and therefore, returns the same result.
    */
-  def withFilter[C >: B](f: W => Validation[C]): C Otherwise W = filter(f)
+  def withFilter[C >: B](f: W => Validation[C]): WhiteProjection[C, W] = filter(f)
 
   /**
    * Returns <code>true</code> if this <code>Otherwise</code> is a <code>Black</code> and the predicate <code>p</code> returns true when applied to this <code>Black</code>'s value.
