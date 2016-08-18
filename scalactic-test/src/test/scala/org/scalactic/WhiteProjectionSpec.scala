@@ -105,27 +105,27 @@ class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
     Black(12).otherwiseWhite[Int].white getOrElse { x += 1; x } shouldBe 17
     x shouldBe 17
   }
-/*
   it can "be used with orElse, which takes a by-name" in {
 
-    Black(12).orElse(Black(13)) shouldBe Black(12)
-    White(12).orElse(Black(13)) shouldBe Black(13)
+    White(12).white.orElse(White(13).white) shouldBe White(12).white
+    Black(12).white.orElse(White(13).white) shouldBe White(13).white
 
-    Black(12).orElse(White(13)) shouldBe Black(12)
-    White(12).orElse(White(13)) shouldBe White(13)
+    White(12).white.orElse(Black(13).white) shouldBe White(12).white
+    Black(12).white.orElse(Black(13).white) shouldBe Black(13).white
 
-    var x = 16 // should not increment if Black
-    Black(12) orElse { x += 1; Black(x) } shouldBe Black(12)
+    var x = 16 // should not increment if White
+    White(12).white orElse { x += 1; White(x).white } shouldBe White(12).white
     x shouldBe 16
-    Black[Int].otherwiseWhite(12) orElse { x += 1; Black(x) } shouldBe Black(17)
+    Black(12).otherwiseWhite[Int].white orElse { x += 1; White(x).white } shouldBe White(17).white
     x shouldBe 17
 
-    var y = 16 // should not increment if Black
-    Black(12) orElse { y += 1; White(y) } shouldBe Black(12)
+    var y = 16 // should not increment if White
+    White(12).white orElse { y += 1; Black(y).white } shouldBe White(12).white
     y shouldBe 16
-    Black[Int].otherwiseWhite(12) orElse { y += 1; White(y) } shouldBe White(17)
+    Black(12).otherwiseWhite[Int].white orElse { y += 1; Black(y).white } shouldBe Black(17).white
     y shouldBe 17
   }
+/*
   it can "be used with toOption" in {
     Black(12).toOption shouldBe Some(12)
     Black[Int].otherwiseWhite(12).toOption shouldBe None

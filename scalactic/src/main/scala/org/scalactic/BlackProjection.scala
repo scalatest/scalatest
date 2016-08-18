@@ -189,7 +189,8 @@ class BlackProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @param alternative the alternative by-name to evaluate if this <code>Otherwise</code> is a <code>White</code>
    * @return this <code>Otherwise</code>, if it is a <code>Black</code>, else the result of evaluating <code>alternative</code>
    */
-  def orElse[C >: B, X >: W](alternative: => C Otherwise X): C Otherwise X = ???
+  def orElse[C >: B, X >: W](alternative: => BlackProjection[C, X]): BlackProjection[C, X] =
+    if (isBlack) this else alternative
 
   /**
    * Returns a <code>Some</code> containing the <code>Black</code> value, if this <code>Otherwise</code> is a <code>Black</code>, else <code>None</code>.

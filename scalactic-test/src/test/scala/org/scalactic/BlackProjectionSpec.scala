@@ -105,27 +105,27 @@ class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTri
     Black[Int].otherwiseWhite(12).black getOrElse { x += 1; x } shouldBe 17
     x shouldBe 17
   }
-/*
   it can "be used with orElse, which takes a by-name" in {
 
-    Black(12).orElse(Black(13)) shouldBe Black(12)
-    White(12).orElse(Black(13)) shouldBe Black(13)
+    Black(12).black.orElse(Black(13).black) shouldBe Black(12).black
+    White(12).black.orElse(Black(13).black) shouldBe Black(13).black
 
-    Black(12).orElse(White(13)) shouldBe Black(12)
-    White(12).orElse(White(13)) shouldBe White(13)
+    Black(12).black.orElse(White(13).black) shouldBe Black(12).black
+    White(12).black.orElse(White(13).black) shouldBe White(13).black
 
     var x = 16 // should not increment if Black
-    Black(12) orElse { x += 1; Black(x) } shouldBe Black(12)
+    Black(12).black orElse { x += 1; Black(x).black } shouldBe Black(12).black
     x shouldBe 16
-    Black[Int].otherwiseWhite(12) orElse { x += 1; Black(x) } shouldBe Black(17)
+    Black[Int].otherwiseWhite(12).black orElse { x += 1; Black(x).black } shouldBe Black(17).black
     x shouldBe 17
 
     var y = 16 // should not increment if Black
-    Black(12) orElse { y += 1; White(y) } shouldBe Black(12)
+    Black(12).black orElse { y += 1; White(y).black } shouldBe Black(12).black
     y shouldBe 16
-    Black[Int].otherwiseWhite(12) orElse { y += 1; White(y) } shouldBe White(17)
+    Black[Int].otherwiseWhite(12).black orElse { y += 1; White(y).black } shouldBe White(17).black
     y shouldBe 17
   }
+/*
   it can "be used with toOption" in {
     Black(12).toOption shouldBe Some(12)
     Black[Int].otherwiseWhite(12).toOption shouldBe None
