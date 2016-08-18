@@ -83,12 +83,12 @@ class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTri
     (for (i <- Black(3).black if isRound(i) && isDivBy3(i)) yield i) shouldBe White("3 was not a round number").black
     (for (i <- Black(2).black if isRound(i) && isDivBy3(i)) yield i) shouldBe White("2 was not a round number").black
   }
-/*
   it can "be used with exists" in {
-    Black(12).exists(_ == 12) shouldBe true
-    Black(12).exists(_ == 13) shouldBe false
-    Black[Int].otherwiseWhite(12).exists(_ == 12) shouldBe false
+    Black(12).black.exists(_ == 12) shouldBe true
+    Black(12).black.exists(_ == 13) shouldBe false
+    Black[Int].otherwiseWhite(12).black.exists(_ == 12) shouldBe false
   }
+/*
   it can "be used with forall" in {
     Black(12).forall(_ > 10) shouldBe true
     Black(7).forall(_ > 10) shouldBe false

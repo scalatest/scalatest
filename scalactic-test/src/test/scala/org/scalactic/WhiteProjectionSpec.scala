@@ -83,12 +83,12 @@ class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
     (for (i <- White(3).white if isRound(i) && isDivBy3(i)) yield i) shouldBe Black("3 was not a round number").white
     (for (i <- White(2).white if isRound(i) && isDivBy3(i)) yield i) shouldBe Black("2 was not a round number").white
   }
-/*
   it can "be used with exists" in {
-    Black(12).exists(_ == 12) shouldBe true
-    Black(12).exists(_ == 13) shouldBe false
-    Black[Int].otherwiseWhite(12).exists(_ == 12) shouldBe false
+    White(12).white.exists(_ == 12) shouldBe true
+    White(12).white.exists(_ == 13) shouldBe false
+    Black(12).otherwiseWhite[Int].white.exists(_ == 12) shouldBe false
   }
+/*
   it can "be used with forall" in {
     Black(12).forall(_ > 10) shouldBe true
     Black(7).forall(_ > 10) shouldBe false
