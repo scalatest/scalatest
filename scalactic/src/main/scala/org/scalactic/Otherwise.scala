@@ -84,8 +84,8 @@ sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
    * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Otherwise</code>'s value
    */
   def fold[V](bf: B => V, wf: W => V): V
-  def black: BlackProjection[B, W] = new BlackProjection(this)
-  def white: WhiteProjection[B, W] = new WhiteProjection(this)
+  def ebony: Ebony[B, W] = new Ebony(this)
+  def ivory: Ivory[B, W] = new Ivory(this)
 }
 
 /**

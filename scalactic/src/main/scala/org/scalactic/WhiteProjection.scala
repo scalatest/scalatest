@@ -23,21 +23,21 @@ import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
-class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) extends AnyVal with Serializable {
+class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends AnyVal with Serializable {
 
   /**
    * Indicates whether this <code>Otherwise</code> is a <code>Good</code>
    *
    * @return true if this <code>Otherwise</code> is a <code>Good</code>, <code>false</code> if it is a <code>White</code>.
    */
-  def isBlack: Boolean = underlying.isBlack
+  def isBlack: Boolean = otherwise.isBlack
 
   /**
    * Indicates whether this <code>Otherwise</code> is a <code>White</code>
    *
    * @return true if this <code>Otherwise</code> is a <code>White</code>, <code>false</code> if it is a <code>Black</code>.
    */
-  def isWhite: Boolean = underlying.isWhite
+  def isWhite: Boolean = otherwise.isWhite
 
   /**
    * Maps the given function to this <code>Otherwise</code>'s value if it is a <code>Black</code> or returns <code>this</code> if it is a <code>White</code>.
@@ -46,10 +46,10 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
    *         else this <code>White</code> is returned
    */
-  def map[X](f: W => X): WhiteProjection[B, X] =
-    underlying match {
-      case White(w) => new WhiteProjection(White(f(w)))
-      case b: Black[B] => new WhiteProjection(b)
+  def map[X](f: W => X): Ivory[B, X] =
+    otherwise match {
+      case White(w) => new Ivory(White(f(w)))
+      case b: Black[B] => new Ivory(b)
     }
 
   /**
@@ -60,24 +60,24 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @return if this is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
    *         else this <code>Black</code> is returned
    */
-  def recover[X >: W](f: B => X): WhiteProjection[B, X] =
-    underlying match {
-      case Black(b) => new WhiteProjection(White(f(b)))
-      case w: White[W] => new WhiteProjection(w)
+  def recover[X >: W](f: B => X): Ivory[B, X] =
+    otherwise match {
+      case Black(b) => new Ivory(White(f(b)))
+      case w: White[W] => new Ivory(w)
     }
 
   /**
-   * Maps the given function to this <code>WhiteProjection</code>'s value if the underlying is a <code>Black</code>, returning the result, or returns
+   * Maps the given function to this <code>Ivory</code>'s value if the underlying is a <code>Black</code>, returning the result, or returns
    * <code>this</code> if the underlying is already a <code>White</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>Black</code>, the result of applying the given function to the contained value,
    *         else this <code>White</code> is returned
    */
-  def recoverWith[C, X >: W](f: B => WhiteProjection[C, X]): WhiteProjection[C, X] =
-    underlying match {
+  def recoverWith[C, X >: W](f: B => Ivory[C, X]): Ivory[C, X] =
+    otherwise match {
       case Black(b) => f(b)
-      case w: White[W] => new WhiteProjection(w) // It looks inefficient to an old C programmer, but it doesn't box because AnyVal
+      case w: White[W] => new Ivory(w) // It looks inefficient to an old C programmer, but it doesn't box because AnyVal
     }
 
   /**
@@ -87,7 +87,7 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @param f the function to apply
    */
   def foreach(f: W => Unit): Unit =
-    underlying match {
+    otherwise match {
       case White(w) => f(w)
       case _ => ()
     }
@@ -100,10 +100,10 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
    *         else this <code>White</code> is returned
    */
-  def flatMap[C >: B, X](f: W => WhiteProjection[C, X]): WhiteProjection[C, X] =
-    underlying match {
+  def flatMap[C >: B, X](f: W => Ivory[C, X]): Ivory[C, X] =
+    otherwise match {
       case White(w) => f(w)
-      case b: Black[B] => new WhiteProjection(b)
+      case b: Black[B] => new Ivory(b)
     }
 
   /**
@@ -120,21 +120,21 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @param f the validation function to apply
    * @return a <code>Black</code> if this <code>Otherwise</code> is a <code>Black</code> that passes the validation function, else a <code>White</code>.
    */
-  def filter[C >: B](f: W => Validation[C]): WhiteProjection[C, W] =
-    underlying match {
+  def filter[C >: B](f: W => Validation[C]): Ivory[C, W] =
+    otherwise match {
       case White(w) =>
         f(w) match {
           case Pass => this
-          case Fail(c) => new WhiteProjection(Black(c))
+          case Fail(c) => new Ivory(Black(c))
         }
-      case b: Black[B] => new WhiteProjection(b)
+      case b: Black[B] => new Ivory(b)
     }
 
   // TODO: What should we do about withFilter. Black question for the hackathon.
   /**
    * Currently just forwards to </code>filter</code>, and therefore, returns the same result.
    */
-  def withFilter[C >: B](f: W => Validation[C]): WhiteProjection[C, W] = filter(f)
+  def withFilter[C >: B](f: W => Validation[C]): Ivory[C, W] = filter(f)
 
   /**
    * Returns <code>true</code> if this <code>Otherwise</code> is a <code>Black</code> and the predicate <code>p</code> returns true when applied to this <code>Black</code>'s value.
@@ -148,7 +148,7 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @return the result of applying the passed predicate <code>p</code> to the <code>Black</code> value, if this is a <code>Black</code>, else <code>false</code>
    */
   def exists(p: W => Boolean): Boolean =
-    underlying match {
+    otherwise match {
       case White(w) => p(w)
       case _ => false
     }
@@ -166,7 +166,7 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @return the result of applying the passed predicate <code>p</code> to the <code>Black</code> value, if this is a <code>Black</code>, else <code>true</code>
    */
   def forall(p: W => Boolean): Boolean =
-    underlying match {
+    otherwise match {
       case White(w) => p(w)
       case _ => true
     }
@@ -178,7 +178,7 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @return the contained value, if this <code>Otherwise</code> is a <code>Black</code>, else the result of evaluating the given <code>default</code>
    */
   def getOrElse[X >: W](default: => X): X =
-    underlying match {
+    otherwise match {
       case White(w) => w
       case _ => default
     }
@@ -189,18 +189,18 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @param alternative the alternative by-name to evaluate if this <code>Otherwise</code> is a <code>Black</code>
    * @return this <code>Otherwise</code>, if it is a <code>White</code>, else the result of evaluating <code>alternative</code>
    */
-  def orElse[C >: B, X >: W](alternative: => WhiteProjection[C, X]): WhiteProjection[C, X] =
+  def orElse[C >: B, X >: W](alternative: => Ivory[C, X]): Ivory[C, X] =
     if (isWhite) this else alternative
 
   /**
-   * Returns a <code>Some</code> containing the <code>White</code> value, if the <code>Otherwise</code> underlying this <code>WhiteProjection</code>
+   * Returns a <code>Some</code> containing the <code>White</code> value, if the <code>Otherwise</code> underlying this <code>Ivory</code>
    * is a <code>White</code>, else <code>None</code>.
    *
-   * @return the contained &ldquo;white&rdquo; value wrapped in a <code>Some</code>, if the <code>Otherwise</code> underlying this <code>WhiteProjection</code>
+   * @return the contained &ldquo;white&rdquo; value wrapped in a <code>Some</code>, if the <code>Otherwise</code> underlying this <code>Ivory</code>
    * is a <code>White</code>; <code>None</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
    */
   def toOption: Option[W] =
-    underlying match {
+    otherwise match {
       case White(w) => Some(w)
       case _ => None
     }
@@ -296,7 +296,7 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @return if this <code>Otherwise</code> is a <code>Black</code>, its <code>Black</code> value wrapped in a <code>White</code>; if this <code>Otherwise</code> is
    *     a <code>White</code>, its <code>White</code> value wrapped in a <code>Black</code>.
    */
-  def swap: WhiteProjection[W, B] = ???
+  def swap: Ivory[W, B] = ???
 
   /**
    * Transforms this <code>Otherwise</code> by applying the function <code>gf</code> to this <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,
@@ -306,7 +306,7 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    * @param bf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
    * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Otherwise</code>'s value
    */
-  def transform[C, X](bf: B => WhiteProjection[C, X], wf: W => WhiteProjection[C, X]): WhiteProjection[C, X] = ???
+  def transform[C, X](bf: B => Ivory[C, X], wf: W => Ivory[C, X]): Ivory[C, X] = ???
 
   /**
    * Folds this <code>Otherwise</code> into a value of type <code>V</code> by applying the given <code>gf</code> function if this is
@@ -318,5 +318,5 @@ class WhiteProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
    */
   def fold[V](bf: B => V, wf: W => V): V = ???
 
-  override def toString = s"WhiteProjection($underlying)"
+  override def toString = s"Ivory($otherwise)"
 }

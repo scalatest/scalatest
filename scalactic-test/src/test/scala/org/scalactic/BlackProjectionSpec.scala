@@ -32,102 +32,102 @@ class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTri
     if (i % 3 != 0) Fail(i + " was not divisible by 3") else Pass
 
   "A BlackProjection" can "be either Black or White" in {
-    Black(7).black.isBlack shouldBe true
-    Black(7).black.isWhite shouldBe false
-    White("oops").black.isWhite shouldBe true
-    White("oops").black.isBlack shouldBe false
-    Black(7).black.underlying shouldBe an [Black[_]]
-    White("oops").black.underlying shouldBe an [White[_]]
+    Black(7).ebony.isBlack shouldBe true
+    Black(7).ebony.isWhite shouldBe false
+    White("oops").ebony.isWhite shouldBe true
+    White("oops").ebony.isBlack shouldBe false
+    Black(7).ebony.otherwise shouldBe an [Black[_]]
+    White("oops").ebony.otherwise shouldBe an [White[_]]
   }
   it can "be used with map" in {
-    Black(8).black map (_ + 1) should equal (Black(9).black)
-    Black[Int].otherwiseWhite("eight").black map (_ + 1) should equal (White("eight").black)
+    Black(8).ebony map (_ + 1) should equal (Black(9).ebony)
+    Black[Int].otherwiseWhite("eight").ebony map (_ + 1) should equal (White("eight").ebony)
   }
   it can "be used with recover" in {
-    Black(8).otherwiseWhite[Throwable].black recover {
+    Black(8).otherwiseWhite[Throwable].ebony recover {
       case iae: IllegalArgumentException => 9
-    } should equal (Black(8).black)
-    Black[Int].otherwiseWhite(new IllegalArgumentException).black recover {
+    } should equal (Black(8).ebony)
+    Black[Int].otherwiseWhite(new IllegalArgumentException).ebony recover {
       case iae: IllegalArgumentException => 9
-    } should equal (Black(9).black)
+    } should equal (Black(9).ebony)
   }
   it can "be used with recoverWith" in {
-    Black(8).otherwiseWhite[Throwable].black recoverWith {
-      case iae: IllegalArgumentException => Black(9).black
-    } should equal (Black(8).black)
-    Black[Int].otherwiseWhite(new IllegalArgumentException).black recoverWith {
-      case iae: IllegalArgumentException => Black(9).black
-    } should equal (Black(9).black)
+    Black(8).otherwiseWhite[Throwable].ebony recoverWith {
+      case iae: IllegalArgumentException => Black(9).ebony
+    } should equal (Black(8).ebony)
+    Black[Int].otherwiseWhite(new IllegalArgumentException).ebony recoverWith {
+      case iae: IllegalArgumentException => Black(9).ebony
+    } should equal (Black(9).ebony)
   }
   it can "be used with foreach" in {
     var vCount = 0
     var eCount = 0
-    Black(8).black foreach { vCount += _ }
+    Black(8).ebony foreach { vCount += _ }
     vCount should equal (8)
-    Black[Int].otherwiseWhite("eight").black foreach { eCount += _ }
+    Black[Int].otherwiseWhite("eight").ebony foreach { eCount += _ }
     eCount should equal (0)
   }
   it can "be used with flatMap" in {
-    Black(8).otherwiseWhite[String].black flatMap ((x: Int) => Black(x + 1).black) should equal (Black(9).black)
-    Black[Int].otherwiseWhite("eight").black flatMap ((x: Int) => Black(x + 1).black) should equal (White("eight").black)
+    Black(8).otherwiseWhite[String].ebony flatMap ((x: Int) => Black(x + 1).ebony) should equal (Black(9).ebony)
+    Black[Int].otherwiseWhite("eight").ebony flatMap ((x: Int) => Black(x + 1).ebony) should equal (White("eight").ebony)
   }
   it can "be used with filter" in {
-    Black(12).black.filter(isRound) shouldBe White("12 was not a round number").black
-    Black(10).black.filter(isRound) shouldBe Black(10).black
-    Black[Int].otherwiseWhite(12).black.filter(isRound) shouldBe White(12).black
-    (for (i <- Black(10).black if isRound(i)) yield i) shouldBe Black(10).black
-    (for (i <- Black(12).black if isRound(i)) yield i) shouldBe White("12 was not a round number").black
-    (for (i <- Black(12).black if isRound(i)) yield i) shouldBe White("12 was not a round number").black
-    (for (i <- Black(30).black if isRound(i) && isDivBy3(i)) yield i) shouldBe Black(30).black
-    (for (i <- Black(10).black if isRound(i) && isDivBy3(i)) yield i) shouldBe White("10 was not divisible by 3").black
-    (for (i <- Black(3).black if isRound(i) && isDivBy3(i)) yield i) shouldBe White("3 was not a round number").black
-    (for (i <- Black(2).black if isRound(i) && isDivBy3(i)) yield i) shouldBe White("2 was not a round number").black
+    Black(12).ebony.filter(isRound) shouldBe White("12 was not a round number").ebony
+    Black(10).ebony.filter(isRound) shouldBe Black(10).ebony
+    Black[Int].otherwiseWhite(12).ebony.filter(isRound) shouldBe White(12).ebony
+    (for (i <- Black(10).ebony if isRound(i)) yield i) shouldBe Black(10).ebony
+    (for (i <- Black(12).ebony if isRound(i)) yield i) shouldBe White("12 was not a round number").ebony
+    (for (i <- Black(12).ebony if isRound(i)) yield i) shouldBe White("12 was not a round number").ebony
+    (for (i <- Black(30).ebony if isRound(i) && isDivBy3(i)) yield i) shouldBe Black(30).ebony
+    (for (i <- Black(10).ebony if isRound(i) && isDivBy3(i)) yield i) shouldBe White("10 was not divisible by 3").ebony
+    (for (i <- Black(3).ebony if isRound(i) && isDivBy3(i)) yield i) shouldBe White("3 was not a round number").ebony
+    (for (i <- Black(2).ebony if isRound(i) && isDivBy3(i)) yield i) shouldBe White("2 was not a round number").ebony
   }
   it can "be used with exists" in {
-    Black(12).black.exists(_ == 12) shouldBe true
-    Black(12).black.exists(_ == 13) shouldBe false
-    Black[Int].otherwiseWhite(12).black.exists(_ == 12) shouldBe false
+    Black(12).ebony.exists(_ == 12) shouldBe true
+    Black(12).ebony.exists(_ == 13) shouldBe false
+    Black[Int].otherwiseWhite(12).ebony.exists(_ == 12) shouldBe false
   }
   it can "be used with forall" in {
-    Black(12).black.forall(_ > 10) shouldBe true
-    Black(7).black.forall(_ > 10) shouldBe false
-    Black[Int].otherwiseWhite(12).black.forall(_ > 10) shouldBe true
-    Black[Int].otherwiseWhite(7).black.forall(_ > 10) shouldBe true
+    Black(12).ebony.forall(_ > 10) shouldBe true
+    Black(7).ebony.forall(_ > 10) shouldBe false
+    Black[Int].otherwiseWhite(12).ebony.forall(_ > 10) shouldBe true
+    Black[Int].otherwiseWhite(7).ebony.forall(_ > 10) shouldBe true
   }
   it can "be used with getOrElse, which takes a by-name" in {
 
-    Black(12).black.getOrElse(17) shouldBe 12
-    Black[Int].otherwiseWhite(12).black.getOrElse(17) shouldBe 17
+    Black(12).ebony.getOrElse(17) shouldBe 12
+    Black[Int].otherwiseWhite(12).ebony.getOrElse(17) shouldBe 17
 
     var x = 16 // should not increment if Black
-    Black(12).black getOrElse { x += 1; x } shouldBe 12
+    Black(12).ebony getOrElse { x += 1; x } shouldBe 12
     x shouldBe 16
-    Black[Int].otherwiseWhite(12).black getOrElse { x += 1; x } shouldBe 17
+    Black[Int].otherwiseWhite(12).ebony getOrElse { x += 1; x } shouldBe 17
     x shouldBe 17
   }
   it can "be used with orElse, which takes a by-name" in {
 
-    Black(12).black.orElse(Black(13).black) shouldBe Black(12).black
-    White(12).black.orElse(Black(13).black) shouldBe Black(13).black
+    Black(12).ebony.orElse(Black(13).ebony) shouldBe Black(12).ebony
+    White(12).ebony.orElse(Black(13).ebony) shouldBe Black(13).ebony
 
-    Black(12).black.orElse(White(13).black) shouldBe Black(12).black
-    White(12).black.orElse(White(13).black) shouldBe White(13).black
+    Black(12).ebony.orElse(White(13).ebony) shouldBe Black(12).ebony
+    White(12).ebony.orElse(White(13).ebony) shouldBe White(13).ebony
 
     var x = 16 // should not increment if Black
-    Black(12).black orElse { x += 1; Black(x).black } shouldBe Black(12).black
+    Black(12).ebony orElse { x += 1; Black(x).ebony } shouldBe Black(12).ebony
     x shouldBe 16
-    Black[Int].otherwiseWhite(12).black orElse { x += 1; Black(x).black } shouldBe Black(17).black
+    Black[Int].otherwiseWhite(12).ebony orElse { x += 1; Black(x).ebony } shouldBe Black(17).ebony
     x shouldBe 17
 
     var y = 16 // should not increment if Black
-    Black(12).black orElse { y += 1; White(y).black } shouldBe Black(12).black
+    Black(12).ebony orElse { y += 1; White(y).ebony } shouldBe Black(12).ebony
     y shouldBe 16
-    Black[Int].otherwiseWhite(12).black orElse { y += 1; White(y).black } shouldBe White(17).black
+    Black[Int].otherwiseWhite(12).ebony orElse { y += 1; White(y).ebony } shouldBe White(17).ebony
     y shouldBe 17
   }
   it can "be used with toOption" in {
-    Black(12).black.toOption shouldBe Some(12)
-    Black[Int].otherwiseWhite(12).black.toOption shouldBe None
+    Black(12).ebony.toOption shouldBe Some(12)
+    Black[Int].otherwiseWhite(12).ebony.toOption shouldBe None
   }
 /*
   it can "be used with toSeq" in {
