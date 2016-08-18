@@ -125,11 +125,11 @@ class WhiteProjectionSpec extends UnitSpec with TypeCheckedTripleEquals {
     Black(12).otherwiseWhite[Int].white orElse { y += 1; Black(y).white } shouldBe Black(17).white
     y shouldBe 17
   }
-/*
   it can "be used with toOption" in {
-    Black(12).toOption shouldBe Some(12)
-    Black[Int].otherwiseWhite(12).toOption shouldBe None
+    White(12).white.toOption shouldBe Some(12)
+    Black(12).otherwiseWhite[Int].white.toOption shouldBe None
   }
+/*
   it can "be used with toSeq" in {
     Black(12).toSeq shouldEqual Seq(12)
     Black[Int].otherwiseWhite(12).toSeq shouldEqual Seq.empty

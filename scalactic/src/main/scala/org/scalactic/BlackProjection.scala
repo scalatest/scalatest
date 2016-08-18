@@ -193,12 +193,17 @@ class BlackProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
     if (isBlack) this else alternative
 
   /**
-   * Returns a <code>Some</code> containing the <code>Black</code> value, if this <code>Otherwise</code> is a <code>Black</code>, else <code>None</code>.
+   * Returns a <code>Some</code> containing the <code>Black</code> value, if the <code>Otherwise</code> underlying this <code>BlackProjection</code>
+   * is a <code>Black</code>, else <code>None</code>.
    *
-   * @return the contained &ldquo;good&rdquo; value wrapped in a <code>Some</code>, if this <code>Otherwise</code> is a <code>Black</code>; <code>None</code>
-   *     if this <code>Otherwise</code> is a <code>White</code>.
+   * @return the contained &ldquo;black&rdquo; value wrapped in a <code>Some</code>, if the underlying <code>Otherwise</code> is a <code>Black</code>;
+   * <code>None</code> if the underlying <code>Otherwise</code> is a <code>White</code>.
    */
-  def toOption: Option[B] = ???
+  def toOption: Option[B] =
+    underlying match {
+      case Black(b) => Some(b)
+      case _ => None
+    }
 
   /**
    * Returns an immutable <code>IndexedSeq</code> containing the <code>Black</code> value, if this <code>Otherwise</code> is a <code>Black</code>, else an empty

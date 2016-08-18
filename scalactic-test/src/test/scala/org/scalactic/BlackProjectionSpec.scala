@@ -125,11 +125,11 @@ class BlackProjectionSpec extends UnitSpec with Accumulation with TypeCheckedTri
     Black[Int].otherwiseWhite(12).black orElse { y += 1; White(y).black } shouldBe White(17).black
     y shouldBe 17
   }
-/*
   it can "be used with toOption" in {
-    Black(12).toOption shouldBe Some(12)
-    Black[Int].otherwiseWhite(12).toOption shouldBe None
+    Black(12).black.toOption shouldBe Some(12)
+    Black[Int].otherwiseWhite(12).black.toOption shouldBe None
   }
+/*
   it can "be used with toSeq" in {
     Black(12).toSeq shouldEqual Seq(12)
     Black[Int].otherwiseWhite(12).toSeq shouldEqual Seq.empty
