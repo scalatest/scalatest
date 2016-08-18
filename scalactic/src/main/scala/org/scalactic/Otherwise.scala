@@ -24,8 +24,7 @@ import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
 /**
- * Represents a value that is one of two possible types, with both types &ldquo;of equal worth&rdquo; (<em>i.e.</em>, one is
- * not &ldquo;good&rdquo; and the other &ldquo;bad&rdquo;).
+ * Represents a value that is one of two possible types, with both types &ldquo;equally acceptable.&rdquo;
  */
 sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
 
@@ -52,18 +51,14 @@ sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
    * </p>
    *
    * <pre class="stREPL">
-   * scala&gt; val lyrics = White("Hey Jude, don't make it bad. Take a sad song and make it better.")
-   * lyrics: org.scalactic.White[Nothing,String] =
-   *     White(Hey Jude, don't make it bad. Take a sad song and make it better.)
+   * scala&gt; val lyrics = Black[Double].otherwiseWhite("But we decide which is right. And which is an illusion?")
+   * lyrics: org.scalactic.Otherwise[Double,String] =
+   *     White(But we decide which is right. And which is an illusion?)
    *
-   * scala&gt; lyrics.swap
-   * res12: org.scalactic.Otherwise[String,Nothing] =
-   *     Black(Hey Jude, don't make it bad. Take a sad song and make it better.)
+   * scala&gt; val icslyr = lyrics.swap
+   * icslyr: org.scalactic.Otherwise[String,Double] =
+   *     Black(But we decide which is right. And which is an illusion?)
    * </pre>
-   *
-   * <p>
-   * Now that song will be rolling around in your head all afternoon. But at least it is a good song (thanks to <code>swap</code>).
-   * </p>
    *
    * @return if this <code>Otherwise</code> is a <code>Black</code>, its <code>Black</code> value wrapped in a <code>White</code>; if this <code>Otherwise</code> is
    *     a <code>White</code>, its <code>White</code> value wrapped in a <code>Black</code>.
@@ -71,22 +66,22 @@ sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
   def swap: W Otherwise B
 
   /**
-   * Transforms this <code>Otherwise</code> by applying the function <code>gf</code> to this <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,
-   * or by applying <code>bf</code> to this <code>Otherwise</code>'s <code>White</code> value if it is a <code>White</code>.
+   * Transforms this <code>Otherwise</code> by applying the function <code>bf</code> to this <code>Otherwise</code>'s <code>Black</code> value if it
+   * is a <code>Black</code>, or by applying <code>wf</code> to this <code>Otherwise</code>'s <code>White</code> value if it is a <code>White</code>.
    *
-   * @param gf the function to apply to this <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
-   * @param bf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
-   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Otherwise</code>'s value
+   * @param bf the function to apply to this <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
+   * @param wf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
+   * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Otherwise</code>'s value
    */
   def transform[C, X](bf: B => C Otherwise X, wf: W => C Otherwise X): C Otherwise X
 
   /**
-   * Folds this <code>Otherwise</code> into a value of type <code>V</code> by applying the given <code>gf</code> function if this is
-   * a <code>Black</code> else the given <code>bf</code> function if this is a <code>White</code>.
+   * Folds this <code>Otherwise</code> into a value of type <code>V</code> by applying the given <code>bf</code> function if this is
+   * a <code>Black</code> else the given <code>wf</code> function if this is a <code>White</code>.
    *
-   * @param gf the function to apply to this <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
-   * @param bf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
-   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Otherwise</code>'s value
+   * @param bf the function to apply to this <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
+   * @param wf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
+   * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to this <code>Otherwise</code>'s value
    */
   def fold[V](bf: B => V, wf: W => V): V
   def black: BlackProjection[B, W] = new BlackProjection(this)

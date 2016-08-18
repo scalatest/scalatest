@@ -272,7 +272,7 @@ class BlackProjection[+B,+W] private[scalactic] (val underlying: B Otherwise W) 
   def toTry(implicit ev: W <:< Throwable): Try[B] = ???
 
   /**
-   * Returns an <code>Otherwise</code> with the <code>Black</code> and <code>White</code> types swapped: <code>White</code> becomes <code>Black</code> and <code>Black</code>
+   * Returns a <code>BlackProjection</code> with the <code>Black</code> and <code>White</code> types swapped: <code>White</code> becomes <code>Black</code> and <code>Black</code>
    * becomes <code>White</code>.
    *
    * <p>
