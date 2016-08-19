@@ -603,11 +603,12 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
   def get: G
 
   /**
-   * Applies the given function to this <code>Or</code>'s value if it is a <code>Good</code> or returns <code>this</code> if it is a <code>Bad</code>.
+   * Applies the given function to this <code>Or</code>'s value if it is a <code>Good</code>, returning a <code>Good</code> containing the
+   * result of the function application; or returns <code>this</code> if this <code>Or</code> is a <code>Bad</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>Good</code>, the result of applying the given function to the contained value wrapped in a <code>Good</code>,
-   *         else this <code>Bad</code> is returned
+   *         else this <code>Bad</code>
    */
   def map[H](f: G => H): H Or B
 
@@ -616,17 +617,17 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
    *
    * @param f the function to apply
    * @return if this is a <code>Bad</code>, the result of applying the given function to the contained value wrapped in a <code>Bad</code>,
-   *         else this <code>Good</code> is returned
+   *         else this <code>Good</code>
    */
   def badMap[C](f: B => C): G Or C
 
   /**
    * Applies the given function to this <code>Or</code>'s value if it is a <code>Bad</code>, transforming it into a <code>Good</code>, or returns
-   * <code>this</code> if it is already a <code>Good</code>.
+   * <code>this</code> given it is already a <code>Good</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>Bad</code>, the result of applying the given function to the contained value wrapped in a <code>Good</code>,
-   *         else this <code>Good</code> is returned
+   *         else this <code>Good</code>
    */
   def recover[H >: G](f: B => H): H Or B
 

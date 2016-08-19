@@ -73,12 +73,13 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Applies the given function to this <code>Ebony</code>'s value if it is a <code>White</code>, returning the result, or returns
-   * <code>this</code> if it is already a <code>Black</code>.
+   * Applies the given function to the value in the <code>Otherwise</code> underlying this <code>Ebony</code>'s value if the
+   * underlying <code>Otherwise</code> is a <code>White</code>, returning the result, or returns
+   * <code>this</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
    *
    * @param f the function to apply
-   * @return if this is a <code>White</code>, the result of applying the given function to the contained value,
-   *         else this <code>Black</code> is returned
+   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the result of applying the given function to the
+   *         contained value, else this <code>Ebony</code> (already containing a <code>Black</code>)
    */
   def recoverWith[C >: B, X](f: W => Ebony[C, X]): Ebony[C, X] =
     otherwise match {
@@ -99,12 +100,14 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns the given function applied to the value contained in the <code>Otherwise</code> underlying this </code>Ebony</code> if it is a <code>Black</code>,
-   * or returns <code>this</code> if it is a <code>White</code>.
+   * Applies the given function to the value contained in the <code>Otherwise</code> underlying this <code>Ebony</code> if it is a <code>Black</code>,
+   * returning the result;
+   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>White</code>.
    *
    * @param f the function to apply
-   * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
-   *         else this <code>White</code> is returned
+   * @return if the underlying <code>Otherwise</code> is a <code>Black</code>, the result of applying the given function to the value contained in the
+   *         underlying <code>Black</code>,
+   *         else this <code>Ebony</code> (already containing a <code>White</code>)
    */
   def flatMap[C, X >: W](f: B => Ebony[C, X]): Ebony[C, X] =
     otherwise match {
@@ -116,7 +119,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * Returns this <code>Ebony</code> if either 1) the underlying <code>Otherwise</code> is a <code>White</code> or 2) it is a <code>Black</code> and applying the validation function <code>f</code> to the
    * <code>Black</code>'s value returns <code>Pass</code>; otherwise, 
    * returns a new <code>Ebony</code> wrapping a <code>White</code> containing the error value contained in the <code>Fail</code> resulting from applying the validation
-   * function <code>f</code> to this <code>Ebony</code>'s <code>Black</code> value.
+   * function <code>f</code> to this <code>Ebony</code>'s underlying <code>Black</code> value.
    *
    * <p>
    * For examples of <code>filter</code> used in <code>for</code> expressions, see the main documentation for trait
@@ -143,14 +146,14 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
   def withFilter[X >: W](f: B => Validation[X]): Ebony[B, X] = filter(f)
 
   /**
-   * Returns <code>true</code> if the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>Black</code> and the predicate <code>p</code> returns true when applied to this <code>Black</code>'s value.
+   * Returns <code>true</code> if the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>Black</code> and the predicate <code>p</code> returns true when applied to the underlying <code>Black</code>'s value.
    *
    * <p>
    * Note: The <code>exists</code> method will return the same result as <code>forall</code> if the underlying <code>Otherwise</code> is a <code>Black</code>, but the opposite
    * result if the underlying <code>Otherwise</code> is a <code>White</code>.
    * </p>
    *
-   * @param p the predicate to apply to the <code>Black</code> value, if this is a <code>Black</code>
+   * @param p the predicate to apply to the <code>Black</code> value, if the underlying <code>Otherwise</code> is a <code>Black</code>
    * @return the result of applying the passed predicate <code>p</code> to the <code>Black</code> value, if this is a <code>Black</code>, else <code>false</code>
    */
   def exists(p: B => Boolean): Boolean =
@@ -161,14 +164,14 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
 
   /**
    * Returns <code>true</code> if either the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>White</code> or if the predicate <code>p</code> returns <code>true</code> when applied
-   * to this <code>Black</code>'s value.
+   * to the underlying <code>Black</code>'s value.
    *
    * <p>
    * Note: The <code>forall</code> method will return the same result as <code>exists</code> if the underlying <code>Otherwise</code> is a <code>Black</code>, but the opposite
    * result if the underlying <code>Otherwise</code> is a <code>White</code>.
    * </p>
    *
-   * @param p the predicate to apply to the <code>Black</code> value, if this is a <code>Black</code>
+   * @param p the predicate to apply to the <code>Black</code> value, if the underlying <code>Otherwise</code> is a <code>Black</code>
    * @return the result of applying the passed predicate <code>p</code> to the <code>Black</code> value, if this is a <code>Black</code>, else <code>true</code>
    */
   def forall(p: B => Boolean): Boolean =
