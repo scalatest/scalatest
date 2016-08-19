@@ -278,24 +278,22 @@ class Ivory[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal 
 
   /**
    * Returns a <code>Try</code>: a <code>Success</code> containing the
-   * <code>Black</code> value, if this is a <code>Black</code>; a <code>Failure</code>
-   * containing the <code>White</code> value, if this is a <code>White</code>.
+   * <code>White</code> value, if this is a <code>White</code>; or a <code>Failure</code>
+   * containing the <code>Black</code> value, if this is a <code>Black</code>.
    *
    * <p>
-   * Note: This method can only be called if the <code>White</code> type of this <code>Otherwise</code> is a subclass
-   * of <code>Throwable</code> (or <code>Throwable</code> itself).
+   * Note: This method can only be called if the <code>Black</code> type of this <code>Ivory</code> is a subclass
+   * of <code>Throwable</code> (including <code>Throwable</code> itself).
    * </p>
    *
-   * <p>
-   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Otherwise</code> to an <code>Either</code>. If the type of the
-   * <code>Otherwise</code> on which you invoke <code>toEither</code> is <code>Otherwise[Int, ErrorMessage]</code> for example, the result will be an
-   * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
-   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
-   * </p>
-   *
-   * @return this <code>Black</code> value, wrapped in a <code>Right</code>, or this <code>White</code> value, wrapped in a <code>Left</code>.
+   * @return the underlying <code>White</code> value, wrapped in a <code>Success</code>, if the underlying <code>Otherwise</code> is a <code>White</code>; else
+   * the underlying <code>Black</code> value, wrapped in a <code>Failure</code>.
    */
-  def toTry(implicit ev: B <:< Throwable): Try[W] = ???
+  def toTry(implicit ev: B <:< Throwable): Try[W] =
+    thisIvory.value match {
+      case White(w) => Success(w)
+      case Black(b) => Failure(b)
+    }
 
   /**
    * Returns an <code>Otherwise</code> with the <code>Black</code> and <code>White</code> types swapped: <code>White</code> becomes <code>Black</code> and <code>Black</code>

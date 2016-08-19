@@ -143,19 +143,15 @@ class IvorySpec extends UnitSpec with TypeCheckedTripleEquals {
     White(12).ivory.toOr shouldBe Good(12)
     Black(12).ivory.toOr shouldBe Bad(12)
   }
-/*
-  it can "be used with accumulating" in {
-    Black(12).otherwiseWhite[Int].accumulating shouldBe Black(12).otherwiseWhite[Every[Int]]
-    Black[Int].otherwiseWhite(12).accumulating shouldBe Black[Int].otherwiseWhite(One(12))
-  }
   it can "be used with toTry, if the error type is a subtype of Throwable" in {
-    Black(12).otherwiseWhite[Throwable].toTry shouldBe Success(12)
-    Black(12).otherwiseWhite[RuntimeException].toTry shouldBe Success(12)
+    Black[Throwable].otherwiseWhite(12).ivory.toTry shouldBe Success(12)
+    Black[RuntimeException].otherwiseWhite(12).ivory.toTry shouldBe Success(12)
     val ex = new RuntimeException("oops")
-    Black[Int].otherwiseWhite(ex).toTry shouldBe Failure(ex)
-    Black[Int].otherwiseWhite(ex).toTry shouldBe Failure(ex)
-    // Does not compile: Black[Int, Int](12).toTry shouldBe Success(12)
+    Black(ex).otherwiseWhite[Int].ivory.toTry shouldBe Failure(ex)
+    Black(ex).otherwiseWhite[Int].ivory.toTry shouldBe Failure(ex)
+    "Black(12).otherwiseWhite[Int].ivory.toTry" shouldNot typeCheck
   }
+/*
   it can "be used with transform" in {
     Black(12).otherwiseWhite[String].transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (Black(13))
     Black[Int].otherwiseWhite("hi").transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (White("HI"))

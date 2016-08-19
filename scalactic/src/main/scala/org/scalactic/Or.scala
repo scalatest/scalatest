@@ -785,17 +785,10 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
    *
    * <p>
    * Note: This method can only be called if the <code>Bad</code> type of this <code>Or</code> is a subclass
-   * of <code>Throwable</code> (or <code>Throwable</code> itself).
+   * of <code>Throwable</code> (including <code>Throwable</code> itself).
    * </p>
    *
-   * <p>
-   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Or</code> to an <code>Either</code>. If the type of the
-   * <code>Or</code> on which you invoke <code>toEither</code> is <code>Or[Int, ErrorMessage]</code> for example, the result will be an
-   * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
-   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
-   * </p>
-   *
-   * @return this <code>Good</code> value, wrapped in a <code>Right</code>, or this <code>Bad</code> value, wrapped in a <code>Left</code>.
+   * @return this <code>Good</code> value, wrapped in a <code>Success</code>, or this <code>Bad</code> value, wrapped in a <code>Failure</code>.
    */
   def toTry(implicit ev: B <:< Throwable): Try[G]
 

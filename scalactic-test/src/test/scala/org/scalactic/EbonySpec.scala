@@ -143,15 +143,15 @@ class EbonySpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals 
     Black(12).ebony.toOr shouldBe Good(12)
     White(12).ebony.toOr shouldBe Bad(12)
   }
-/*
   it can "be used with toTry, if the error type is a subtype of Throwable" in {
-    Black(12).otherwiseWhite[Throwable].toTry shouldBe Success(12)
-    Black(12).otherwiseWhite[RuntimeException].toTry shouldBe Success(12)
+    Black(12).otherwiseWhite[Throwable].ebony.toTry shouldBe Success(12)
+    Black(12).otherwiseWhite[RuntimeException].ebony.toTry shouldBe Success(12)
     val ex = new RuntimeException("oops")
-    Black[Int].otherwiseWhite(ex).toTry shouldBe Failure(ex)
-    Black[Int].otherwiseWhite(ex).toTry shouldBe Failure(ex)
-    // Does not compile: Black[Int, Int](12).toTry shouldBe Success(12)
+    Black[Int].otherwiseWhite(ex).ebony.toTry shouldBe Failure(ex)
+    Black[Int].otherwiseWhite(ex).ebony.toTry shouldBe Failure(ex)
+    "Black[Int].otherwiseWhite(12).ebony.toTry" shouldNot typeCheck
   }
+/*
   it can "be used with transform" in {
     Black(12).otherwiseWhite[String].transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (Black(13))
     Black[Int].otherwiseWhite("hi").transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (White("HI"))
