@@ -129,17 +129,17 @@ class IvorySpec extends UnitSpec with TypeCheckedTripleEquals {
     White(12).ivory.toOption shouldBe Some(12)
     Black(12).otherwiseWhite[Int].ivory.toOption shouldBe None
   }
-/*
   it can "be used with toSeq" in {
-    Black(12).toSeq shouldEqual Seq(12)
-    Black[Int].otherwiseWhite(12).toSeq shouldEqual Seq.empty
+    White(12).ivory.toSeq shouldEqual Seq(12)
+    Black(12).otherwiseWhite[Int].ivory.toSeq shouldEqual Seq.empty
   }
 // toArray, toBuffer, toIndexedSeq, toIterable, toIterator, toList, 
 // toSeq, toStream, toTraversable, toVector
   it can "be used with toEither" in {
-    Black(12).toEither shouldBe Right(12)
-    White(12).toEither shouldBe Left(12)
+    White(12).ivory.toEither shouldBe Right(12)
+    Black(12).ivory.toEither shouldBe Left(12)
   }
+/*
   it can "be used with accumulating" in {
     Black(12).otherwiseWhite[Int].accumulating shouldBe Black(12).otherwiseWhite[Every[Int]]
     Black[Int].otherwiseWhite(12).accumulating shouldBe Black[Int].otherwiseWhite(One(12))

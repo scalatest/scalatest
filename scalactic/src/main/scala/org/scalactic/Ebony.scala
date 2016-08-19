@@ -218,25 +218,34 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * Returns an immutable <code>IndexedSeq</code> containing the <code>Black</code> value, if the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>Black</code>, else an empty
    * immutable <code>IndexedSeq</code>.
    *
-   * @return the contained &ldquo;good&rdquo; value in a lone-element <code>Seq</code> if the underlying <code>Otherwise</code> is a <code>Black</code>; an empty <code>Seq</code> if
+   * @return the contained <code>Black</code> value in a lone-element <code>Seq</code> if the underlying <code>Otherwise</code> is a <code>Black</code>; an empty <code>Seq</code> if
    *     the underlying <code>Otherwise</code> is a <code>White</code>.
    */
-  def toSeq: scala.collection.immutable.IndexedSeq[B] = ???
+  def toSeq: scala.collection.immutable.IndexedSeq[B] =
+    otherwise match {
+      case Black(b) => Vector(b)
+      case _ => Vector.empty
+    }
 
   /**
    * Returns an <code>Either</code>: a <code>Right</code> containing the <code>Black</code> value, if this is a <code>Black</code>; a <code>Left</code>
    * containing the <code>White</code> value, if this is a <code>White</code>.
    *
    * <p>
-   * Note that values effectively &ldquo;switch sides&rdquo; when convering an <code>Otherwise</code> to an <code>Either</code>. If the type of the
-   * <code>Otherwise</code> on which you invoke <code>toEither</code> is <code>Otherwise[Int, ErrorMessage]</code> for example, the result will be an
-   * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
-   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
+   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Ebony</code> to an <code>Either</code>. If the type of the
+   * <code>Ebony</code> on which you invoke <code>toEither</code> is <code>Ebony[Int, Double]</code>, for example, the result will be an
+   * <code>Either[Double, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;unexpected&rdquo;
+   * or &ldquo;error&rdquo; values and <code>Right</code> is used for &ldquo;expected&rdquo; or &ldquo;successful&rdquo; ones.
    * </p>
    *
-   * @return this <code>Black</code> value, wrapped in a <code>Right</code>, or this <code>White</code> value, wrapped in a <code>Left</code>.
+   * @return if the underlying <code>Otherwise</code> is a <code>Black</code>, the <code>Black</code> value wrapped in a <code>Right</code>, else the
+   *         underlying <code>White</code> value, wrapped in a <code>Left</code>.
    */
-  def toEither: Either[W, B] = ???
+  def toEither: Either[W, B] =
+    otherwise match {
+      case Black(b) => Right(b)
+      case White(w) => Left(w)
+    }
 
   /**
    * Converts this <code>Ebony</code> to an <code>Or</code> with the same <code>Black</code> type and a <code>White</code> type consisting of

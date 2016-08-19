@@ -221,28 +221,37 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns an immutable <code>IndexedSeq</code> containing the <code>Black</code> value, if the <code>Otherwise</code> underlying this <code>Ivory</code> is a <code>Black</code>, else an empty
+   * Returns an immutable <code>IndexedSeq</code> containing the <code>White</code> value, if the <code>Otherwise</code> underlying this <code>Ivory</code> is a <code>White</code>, else an empty
    * immutable <code>IndexedSeq</code>.
    *
-   * @return the contained &ldquo;good&rdquo; value in a lone-element <code>Seq</code> if the underlying <code>Otherwise</code> is a <code>Black</code>; an empty <code>Seq</code> if
-   *     the underlying <code>Otherwise</code> is a <code>White</code>.
+   * @return the contained <code>White</code> value in a lone-element <code>Seq</code> if the underlying <code>Otherwise</code> is a <code>White</code>; an empty <code>Seq</code> if
+   *     the underlying <code>Otherwise</code> is a <code>Black</code>.
    */
-  def toSeq: scala.collection.immutable.IndexedSeq[W] = ???
+  def toSeq: scala.collection.immutable.IndexedSeq[W] =
+    otherwise match {
+      case White(w) => Vector(w)
+      case _ => Vector.empty
+    }
 
   /**
-   * Returns an <code>Either</code>: a <code>Right</code> containing the <code>Black</code> value, if this is a <code>Black</code>; a <code>Left</code>
-   * containing the <code>White</code> value, if this is a <code>White</code>.
+   * Returns an <code>Either</code>: a <code>Right</code> containing the <code>White</code> value, if this is a <code>White</code>; a <code>Left</code>
+   * containing the <code>Black</code> value, if this is a <code>Black</code>.
    *
    * <p>
-   * Note that values effectively &ldquo;switch sides&rdquo; when convering an <code>Otherwise</code> to an <code>Either</code>. If the type of the
-   * <code>Otherwise</code> on which you invoke <code>toEither</code> is <code>Otherwise[Int, ErrorMessage]</code> for example, the result will be an
-   * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
-   * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
+   * Note that values effectively &ldquo;stay on the same sides&rdquo; when converting an <code>Ivory</code> to an <code>Either</code>. If the type of the
+   * <code>Ivory</code> on which you invoke <code>toEither</code> is <code>Ivory[Double, Int]</code>, for example, the result will be an
+   * <code>Either[Double, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;unexpected&rdquo;
+   * or &ldquo;error&rdquo; values and <code>Right</code> is used for &ldquo;expected&rdquo; or &ldquo;successful&rdquo; ones.
    * </p>
    *
-   * @return this <code>Black</code> value, wrapped in a <code>Right</code>, or this <code>White</code> value, wrapped in a <code>Left</code>.
+   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the <code>White</code> value wrapped in a <code>Right</code>, else the
+   *         underlying <code>Black</code> value, wrapped in a <code>Left</code>.
    */
-  def toEither: Either[B, W] = ???
+  def toEither: Either[B, W] =
+    otherwise match {
+      case White(w) => Right(w)
+      case Black(b) => Left(b)
+    }
 
   /**
    * Converts this <code>Ivory</code> to an <code>Or</code> with the same <code>Black</code> type and a <code>White</code> type consisting of

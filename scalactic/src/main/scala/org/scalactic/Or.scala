@@ -747,7 +747,7 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
    * containing the <code>Bad</code> value, if this is a <code>Bad</code>.
    *
    * <p>
-   * Note that values effectively &ldquo;switch sides&rdquo; when convering an <code>Or</code> to an <code>Either</code>. If the type of the
+   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Or</code> to an <code>Either</code>. If the type of the
    * <code>Or</code> on which you invoke <code>toEither</code> is <code>Or[Int, ErrorMessage]</code> for example, the result will be an
    * <code>Either[ErrorMessage, Int]</code>. The reason is that the convention for <code>Either</code> is that <code>Left</code> is used for &ldquo;bad&rdquo;
    * values and <code>Right</code> is used for &ldquo;good&rdquo; ones.
