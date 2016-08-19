@@ -36,8 +36,8 @@ class IvorySpec extends UnitSpec with TypeCheckedTripleEquals {
     Black(7).ivory.isWhite shouldBe false
     White("oops").ivory.isWhite shouldBe true
     White("oops").ivory.isBlack shouldBe false
-    Black(7).ivory.otherwise shouldBe an [Black[_]]
-    White("oops").ivory.otherwise shouldBe an [White[_]]
+    Black(7).ivory.value shouldBe an [Black[_]]
+    White("oops").ivory.value shouldBe an [White[_]]
   }
   it can "be used with map" in {
     Black(8).otherwiseWhite[ErrorMessage].ivory map (_.toUpperCase) should equal (Black(8).ivory)

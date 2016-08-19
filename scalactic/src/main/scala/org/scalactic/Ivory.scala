@@ -23,21 +23,21 @@ import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
-class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends AnyVal with Serializable { thisIvory =>
+class Ivory[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal with Serializable { thisIvory =>
 
   /**
    * Indicates whether the <code>Otherwise</code> underlying this <code>Ivory</code> is a <code>Black</code>
    *
    * @return true if the underlying <code>Otherwise</code> is a <code>Black</code>, <code>false</code> if it is a <code>White</code>.
    */
-  def isBlack: Boolean = otherwise.isBlack
+  def isBlack: Boolean = thisIvory.value.isBlack
 
   /**
    * Indicates whether the <code>Otherwise</code> underlying this <code>Ivory</code> is a <code>White</code>
    *
    * @return true if the underlying <code>Otherwise</code> is a <code>White</code>, <code>false</code> if it is a <code>Black</code>.
    */
-  def isWhite: Boolean = otherwise.isWhite
+  def isWhite: Boolean = thisIvory.value.isWhite
 
   /**
    * Applies the given function to the <code>Otherwise</code> underlying this <code>Ivory</code>'s value if it is a <code>Black</code> or returns <code>this</code> if it is a <code>White</code>.
@@ -56,7 +56,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         else this <code>Ivory</code> (already containing a <code>Black</code>)
    */
   def map[X](f: W => X): Ivory[B, X] =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => new Ivory(White(f(w)))
       case b: Black[B] => new Ivory(b) // My dox says "this", but i'm doing new, but it is an AnyVal so it shouldn't box. 
     }                                  // For an AnyVal, "this" can kind of refer to the underlying seems like, and I am returning that.
@@ -73,7 +73,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         else this <code>Ivory</code> (already containing a <code>White</code>)
    */
   def recover[X >: W](f: B => X): Ivory[B, X] =
-    otherwise match {
+    thisIvory.value match {
       case Black(b) => new Ivory(White(f(b)))
       case w: White[W] => new Ivory(w)
     }
@@ -88,7 +88,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         contained value, else this <code>Ivory</code> (already containing a <code>White</code>)
    */
   def recoverWith[C, X >: W](f: B => Ivory[C, X]): Ivory[C, X] =
-    otherwise match {
+    thisIvory.value match {
       case Black(b) => f(b)
       case w: White[W] => new Ivory(w) // It looks inefficient to an old C programmer, but it doesn't box because AnyVal
     }
@@ -100,7 +100,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @param f the function to apply
    */
   def foreach(f: W => Unit): Unit =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => f(w)
       case _ => ()
     }
@@ -116,7 +116,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         else this <code>Ivory</code> (already containing a <code>Black</code>)
    */
   def flatMap[C >: B, X](f: W => Ivory[C, X]): Ivory[C, X] =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => f(w)
       case b: Black[B] => new Ivory(b)
     }
@@ -136,7 +136,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @return an <code>Ivory</code> wrapping a <code>White</code> if the underlying <code>Otherwise</code> is a <code>White</code> that passes the validation function, else an <code>Ivory</code> wrapping a <code>Black</code>.
    */
   def filter[C >: B](f: W => Validation[C]): Ivory[C, W] =
-    otherwise match {
+    thisIvory.value match {
       case White(w) =>
         f(w) match {
           case Pass => thisIvory
@@ -163,7 +163,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @return the result of applying the passed predicate <code>p</code> to the <code>White</code> value, if this is a <code>White</code>, else <code>false</code>
    */
   def exists(p: W => Boolean): Boolean =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => p(w)
       case _ => false
     }
@@ -181,7 +181,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @return the result of applying the passed predicate <code>p</code> to the <code>White</code> value, if this is a <code>White</code>, else <code>true</code>
    */
   def forall(p: W => Boolean): Boolean =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => p(w)
       case _ => true
     }
@@ -193,7 +193,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @return the contained value, if the underlying <code>Otherwise</code> is a <code>White</code>, else the result of evaluating the given <code>default</code>
    */
   def getOrElse[X >: W](default: => X): X =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => w
       case _ => default
     }
@@ -215,7 +215,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * is a <code>White</code>; <code>None</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
    */
   def toOption: Option[W] =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => Some(w)
       case _ => None
     }
@@ -228,7 +228,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *     the underlying <code>Otherwise</code> is a <code>Black</code>.
    */
   def toSeq: scala.collection.immutable.IndexedSeq[W] =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => Vector(w)
       case _ => Vector.empty
     }
@@ -248,7 +248,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         underlying <code>Black</code> value, wrapped in a <code>Left</code>.
    */
   def toEither: Either[B, W] =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => Right(w)
       case Black(b) => Left(b)
     }
@@ -268,7 +268,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         underlying <code>Black</code> value, wrapped in a <code>Bad</code>.
    */
   def toOr: W Or B =
-    otherwise match {
+    thisIvory.value match {
       case White(w) => Good(w)
       case Black(b) => Bad(b)
     }
@@ -341,5 +341,5 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    */
   def fold[V](bf: B => V, wf: W => V): V = ???
 
-  override def toString = s"Ivory($otherwise)"
+  override def toString = s"Ivory($thisIvory.value)"
 }

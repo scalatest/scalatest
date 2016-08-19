@@ -23,21 +23,21 @@ import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
-class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends AnyVal with Serializable { thisEbony =>
+class Ebony[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal with Serializable { thisEbony =>
 
   /**
    * Indicates whether the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>Black</code>
    *
    * @return true if the underlying <code>Otherwise</code> is a <code>Black</code>, <code>false</code> if it is a <code>White</code>.
    */
-  def isBlack: Boolean = otherwise.isBlack
+  def isBlack: Boolean = thisEbony.value.isBlack
 
   /**
    * Indicates whether the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>White</code>
    *
    * @return true if the underlying <code>Otherwise</code> is a <code>White</code>, <code>false</code> if it is a <code>Black</code>.
    */
-  def isWhite: Boolean = otherwise.isWhite
+  def isWhite: Boolean = thisEbony.value.isWhite
 
   /**
    * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>Black</code>, and 
@@ -50,7 +50,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         else this <code>Ebony</code> (already containing a <code>White</code>)
    */
   def map[C](f: B => C): Ebony[C, W] =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => new Ebony(Black(f(b)))
       case w: White[W] => new Ebony(w)
     }
@@ -67,7 +67,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         else this <code>Ebony</code> (already containing a <code>Black</code>)
    */
   def recover[C >: B](f: W => C): Ebony[C, W] =
-    otherwise match {
+    thisEbony.value match {
       case White(w) => new Ebony(Black(f(w)))
       case b: Black[B] => new Ebony(b)
     }
@@ -82,7 +82,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         contained value, else this <code>Ebony</code> (already containing a <code>Black</code>)
    */
   def recoverWith[C >: B, X](f: W => Ebony[C, X]): Ebony[C, X] =
-    otherwise match {
+    thisEbony.value match {
       case White(w) => f(w)
       case b: Black[B] => new Ebony(b)
     }
@@ -94,7 +94,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @param f the function to apply
    */
   def foreach(f: B => Unit): Unit =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => f(b)
       case _ => ()
     }
@@ -110,7 +110,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         else this <code>Ebony</code> (already containing a <code>White</code>)
    */
   def flatMap[C, X >: W](f: B => Ebony[C, X]): Ebony[C, X] =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => f(b)
       case w: White[W] => new Ebony(w)
     }
@@ -130,7 +130,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @return an <code>Ebony</code> wrapping a <code>Black</code> if the underlying <code>Otherwise</code> is a <code>Black</code> that passes the validation function, else an <code>Ebony</code> wrapping a <code>White</code>.
    */
   def filter[X >: W](f: B => Validation[X]): Ebony[B, X] =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) =>
         f(b) match {
           case Pass => thisEbony
@@ -157,7 +157,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @return the result of applying the passed predicate <code>p</code> to the <code>Black</code> value, if this is a <code>Black</code>, else <code>false</code>
    */
   def exists(p: B => Boolean): Boolean =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => p(b)
       case _ => false
     }
@@ -175,7 +175,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @return the result of applying the passed predicate <code>p</code> to the <code>Black</code> value, if this is a <code>Black</code>, else <code>true</code>
    */
   def forall(p: B => Boolean): Boolean =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => p(b)
       case _ => true
     }
@@ -187,7 +187,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * @return the contained value, if the underlying <code>Otherwise</code> is a <code>Black</code>, else the result of evaluating the given <code>default</code>
    */
   def getOrElse[C >: B](default: => C): C =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => b
       case _ => default
     }
@@ -209,7 +209,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * <code>None</code> if the underlying <code>Otherwise</code> is a <code>White</code>.
    */
   def toOption: Option[B] =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => Some(b)
       case _ => None
     }
@@ -222,7 +222,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *     the underlying <code>Otherwise</code> is a <code>White</code>.
    */
   def toSeq: scala.collection.immutable.IndexedSeq[B] =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => Vector(b)
       case _ => Vector.empty
     }
@@ -242,7 +242,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         underlying <code>White</code> value, wrapped in a <code>Left</code>.
    */
   def toEither: Either[W, B] =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => Right(b)
       case White(w) => Left(w)
     }
@@ -262,7 +262,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    *         underlying <code>White</code> value, wrapped in a <code>Bad</code>.
    */
   def toOr: B Or W =
-    otherwise match {
+    thisEbony.value match {
       case Black(b) => Good(b)
       case White(w) => Bad(w)
     }
@@ -335,6 +335,6 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    */
   def fold[V](bf: B => V, wf: W => V): V = ???
 
-  override def toString = s"Ebony($otherwise)"
+  override def toString = s"Ebony($thisEbony.value)"
 }
 

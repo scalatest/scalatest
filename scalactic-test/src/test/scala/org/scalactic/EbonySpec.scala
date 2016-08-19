@@ -36,8 +36,8 @@ class EbonySpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals 
     Black(7).ebony.isWhite shouldBe false
     White("oops").ebony.isWhite shouldBe true
     White("oops").ebony.isBlack shouldBe false
-    Black(7).ebony.otherwise shouldBe an [Black[_]]
-    White("oops").ebony.otherwise shouldBe an [White[_]]
+    Black(7).ebony.value shouldBe an [Black[_]]
+    White("oops").ebony.value shouldBe an [White[_]]
   }
   it can "be used with map" in {
     Black(8).ebony map (_ + 1) should equal (Black(9).ebony)
