@@ -23,6 +23,9 @@ import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
+/**
+ * @param value the underlying <code>Otherwise</code> value wrapped in this <code>Ivory</code>.
+ */
 class Ivory[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal with Serializable { thisIvory =>
 
   /**
