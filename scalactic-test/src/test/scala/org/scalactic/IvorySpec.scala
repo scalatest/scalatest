@@ -139,6 +139,10 @@ class IvorySpec extends UnitSpec with TypeCheckedTripleEquals {
     White(12).ivory.toEither shouldBe Right(12)
     Black(12).ivory.toEither shouldBe Left(12)
   }
+  it can "be used with toOr" in {
+    White(12).ivory.toOr shouldBe Good(12)
+    Black(12).ivory.toOr shouldBe Bad(12)
+  }
 /*
   it can "be used with accumulating" in {
     Black(12).otherwiseWhite[Int].accumulating shouldBe Black(12).otherwiseWhite[Every[Int]]

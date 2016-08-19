@@ -234,7 +234,7 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns an <code>Either</code>: a <code>Right</code> containing the <code>White</code> value, if this is a <code>White</code>; a <code>Left</code>
+   * Returns an <code>Either</code>: a <code>Right</code> containing the <code>White</code> value, if this is a <code>White</code>; or a <code>Left</code>
    * containing the <code>Black</code> value, if this is a <code>Black</code>.
    *
    * <p>
@@ -254,25 +254,24 @@ class Ivory[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Converts this <code>Ivory</code> to an <code>Or</code> with the same <code>Black</code> type and a <code>White</code> type consisting of
-   * <a href="One.html"><code>One</code></a> parameterized by this <code>Otherwise</code>'s <code>White</code> type.
+   * Returns an <code>Or</code>: a <code>Good</code> containing the <code>White</code> value, if this is a <code>White</code>; or a <code>Bad</code>
+   * containing the <code>Black</code> value, if this is a <code>Black</code>.
    *
    * <p>
-   * For example, invoking the <code>accumulating</code> method on an <code>Int Otherwise ErrorMessage</code> would convert it to an
-   * <code>Int Otherwise One[ErrorMessage]</code>. This result type, because the <code>White</code> type is an <code>Every</code>, can be used
-   * with the mechanisms provided in trait <a href="Accumulation.html"><code>Accumulation</code></a> to accumulate errors.
-   * <p>
-   *
-   * <p>
-   * Note that if this <code>Otherwise</code> is already an accumulating <code>Otherwise</code>, the behavior of this <code>accumulating</code> method does not change.
-   * For example, if you invoke <code>accumulating</code> on an <code>Int Otherwise One[ErrorMessage]</code> you will be rewarded with an
-   * <code>Int Otherwise One[One[ErrorMessage]]</code>.
+   * Note that values effectively &ldquo;switch sides&rdquo; when converting an <code>Ivory</code> to an <code>Or</code>. If the type of the
+   * <code>Ivory</code> on which you invoke <code>toOr</code> is <code>Ivory[Int, Double]</code>, for example, the result will be an
+   * <code>Or[Double, Int]</code>. The reason is that the convention for <code>Or</code> is that <code>Bad</code> (the right side) is used for &ldquo;unexpected&rdquo;
+   * or &ldquo;error&rdquo; values and <code>Good</code> (the left side) is used for &ldquo;expected&rdquo; or &ldquo;successful&rdquo; ones.
    * </p>
-   *
-   * @return this <code>Black</code>, if this <code>Otherwise</code> is a <code>Black</code>; or this <code>White</code> value wrapped in a <code>One</code> if
-   *     this <code>Otherwise</code> is a <code>White</code>.
+   * 
+   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the <code>White</code> value wrapped in a <code>Good</code>, else the
+   *         underlying <code>Black</code> value, wrapped in a <code>Bad</code>.
    */
-  def toOr: W Or B = ???
+  def toOr: W Or B =
+    otherwise match {
+      case White(w) => Good(w)
+      case Black(b) => Bad(b)
+    }
 
   /**
    * Returns a <code>Try</code>: a <code>Success</code> containing the
