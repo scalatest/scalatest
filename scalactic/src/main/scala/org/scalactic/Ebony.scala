@@ -293,28 +293,15 @@ class Ebony[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal 
    * Returns a <code>Ebony</code> with the <code>Black</code> and <code>White</code> types swapped: <code>White</code> becomes <code>Black</code> and <code>Black</code>
    * becomes <code>White</code>.
    *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stREPL">
-   * scala&gt; val lyrics = White("Hey Jude, don't make it bad. Take a sad song and make it better.")
-   * lyrics: org.scalactic.White[Nothing,String] =
-   *     White(Hey Jude, don't make it bad. Take a sad song and make it better.)
-   *
-   * scala&gt; lyrics.swap
-   * res12: org.scalactic.Otherwise[String,Nothing] =
-   *     Black(Hey Jude, don't make it bad. Take a sad song and make it better.)
-   * </pre>
-   *
-   * <p>
-   * Now that song will be rolling around in your head all afternoon. But at least it is a good song (thanks to <code>swap</code>).
-   * </p>
-   *
-   * @return if the underlying <code>Otherwise</code> is a <code>Black</code>, its <code>Black</code> value wrapped in a <code>White</code>; if the underlying <code>Otherwise</code> is
-   *     a <code>White</code>, its <code>White</code> value wrapped in a <code>Black</code>.
+   * @return if the underlying <code>Otherwise</code> is a <code>Black</code>, its <code>Black</code> value wrapped in a <code>White</code> then wrapped in an
+   *     <code>Ebony</code>; if the underlying <code>Otherwise</code> is
+   *     a <code>White</code>, its <code>White</code> value wrapped in a <code>Black</code> then wrapped in an <code>Ebony</code>.
    */
-  def swap: Ebony[W, B] = ???
+  def swap: Ebony[W, B] =
+    thisEbony.value match {
+      case Black(b) => new Ebony(White(b))
+      case White(w) => new Ebony(Black(w))
+    }
 
   /**
    * Transforms this <code>Otherwise</code> by applying the function <code>gf</code> to the underlying <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,

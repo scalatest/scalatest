@@ -151,16 +151,16 @@ class EbonySpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals 
     Black[Int].otherwiseWhite(ex).ebony.toTry shouldBe Failure(ex)
     "Black[Int].otherwiseWhite(12).ebony.toTry" shouldNot typeCheck
   }
+  it can "be used with swap" in {
+    Black(12).otherwiseWhite[String].ebony.swap should === (Black[String].otherwiseWhite(12).ebony)
+    Black[Int].otherwiseWhite("hi").ebony.swap should === (Black("hi").otherwiseWhite[Int].ebony)
+  }
 /*
   it can "be used with transform" in {
     Black(12).otherwiseWhite[String].transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (Black(13))
     Black[Int].otherwiseWhite("hi").transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (White("HI"))
     Black(12).otherwiseWhite[String].transform((i: Int) => White(i + 1), (s: String) => Black(s.toUpperCase)) should === (White(13))
     Black[Int].otherwiseWhite("hi").transform((i: Int) => White(i + 1), (s: String) => Black(s.toUpperCase)) should === (Black("HI"))
-  }
-  it can "be used with swap" in {
-    Black(12).otherwiseWhite[String].swap should === (Black[String].otherwiseWhite(12))
-    Black[Int].otherwiseWhite("hi").swap should === (Black("hi").otherwiseWhite[Int])
   }
   it can "be used with zip" in {
     Black(12).otherwiseWhite[Every[ErrorMessage]] zip Black("hi").otherwiseWhite[Every[ErrorMessage]] should === (Black((12, "hi")).otherwiseWhite[Every[ErrorMessage]])

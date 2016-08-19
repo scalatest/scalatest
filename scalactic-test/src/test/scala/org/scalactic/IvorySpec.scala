@@ -151,16 +151,16 @@ class IvorySpec extends UnitSpec with TypeCheckedTripleEquals {
     Black(ex).otherwiseWhite[Int].ivory.toTry shouldBe Failure(ex)
     "Black(12).otherwiseWhite[Int].ivory.toTry" shouldNot typeCheck
   }
+  it can "be used with swap" in {
+    Black(12).otherwiseWhite[String].ivory.swap should === (Black[String].otherwiseWhite(12).ivory)
+    Black[Int].otherwiseWhite("hi").ivory.swap should === (Black("hi").otherwiseWhite[Int].ivory)
+  }
 /*
   it can "be used with transform" in {
     Black(12).otherwiseWhite[String].transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (Black(13))
     Black[Int].otherwiseWhite("hi").transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (White("HI"))
     Black(12).otherwiseWhite[String].transform((i: Int) => White(i + 1), (s: String) => Black(s.toUpperCase)) should === (White(13))
     Black[Int].otherwiseWhite("hi").transform((i: Int) => White(i + 1), (s: String) => Black(s.toUpperCase)) should === (Black("HI"))
-  }
-  it can "be used with swap" in {
-    Black(12).otherwiseWhite[String].swap should === (Black[String].otherwiseWhite(12))
-    Black[Int].otherwiseWhite("hi").swap should === (Black("hi").otherwiseWhite[Int])
   }
   it can "be used with zip" in {
     Black(12).otherwiseWhite[Every[ErrorMessage]] zip Black("hi").otherwiseWhite[Every[ErrorMessage]] should === (Black((12, "hi")).otherwiseWhite[Every[ErrorMessage]])
