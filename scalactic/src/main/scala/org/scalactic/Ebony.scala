@@ -181,7 +181,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns, if the <code>Otherwise</code> underlying this </code>Ebony</code> is <code>Black</code>, this <code>Black</code>'s value; otherwise returns the result of evaluating <code>default</code>. 
+   * Returns, if the <code>Otherwise</code> underlying this </code>Ebony</code> is <code>Black</code>, the <code>Black</code>'s value; otherwise returns the result of evaluating <code>default</code>. 
    *
    * @param default the default expression to evaluate if the underlying <code>Otherwise</code> is a <code>White</code>
    * @return the contained value, if the underlying <code>Otherwise</code> is a <code>Black</code>, else the result of evaluating the given <code>default</code>
@@ -193,7 +193,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns this </code>Ebony</code> if the underlying <code>Otherwise</code> is a <code>Black</code>, otherwise returns the result of evaluating the passed <code>alternative</code>.
+   * Returns this <code>Ebony</code> if the underlying <code>Otherwise</code> is a <code>Black</code>, otherwise returns the result of evaluating the passed <code>alternative</code>.
    *
    * @param alternative the alternative by-name to evaluate if the underlying <code>Otherwise</code> is a <code>White</code>
    * @return this <code>Ebony</code>, if the underlying <code>Otherwise</code> is a <code>Black</code>, else the result of evaluating <code>alternative</code>
@@ -205,7 +205,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * Returns a <code>Some</code> containing the <code>Black</code> value, if the <code>Otherwise</code> underlying this <code>Ebony</code>
    * is a <code>Black</code>, else <code>None</code>.
    *
-   * @return the contained &ldquo;black&rdquo; value wrapped in a <code>Some</code>, if the underlying <code>Otherwise</code> is a <code>Black</code>;
+   * @return the contained <code>Black</code> value wrapped in a <code>Some</code>, if the underlying <code>Otherwise</code> is a <code>Black</code>;
    * <code>None</code> if the underlying <code>Otherwise</code> is a <code>White</code>.
    */
   def toOption: Option[B] =
