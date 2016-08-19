@@ -603,7 +603,7 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
   def get: G
 
   /**
-   * Maps the given function to this <code>Or</code>'s value if it is a <code>Good</code> or returns <code>this</code> if it is a <code>Bad</code>.
+   * Applies the given function to this <code>Or</code>'s value if it is a <code>Good</code> or returns <code>this</code> if it is a <code>Bad</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>Good</code>, the result of applying the given function to the contained value wrapped in a <code>Good</code>,
@@ -612,7 +612,7 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
   def map[H](f: G => H): H Or B
 
   /**
-   * Maps the given function to this <code>Or</code>'s value if it is a <code>Bad</code> or returns <code>this</code> if it is a <code>Good</code>.
+   * Applies the given function to this <code>Or</code>'s value if it is a <code>Bad</code> or returns <code>this</code> if it is a <code>Good</code>.
    *
    * @param f the function to apply
    * @return if this is a <code>Bad</code>, the result of applying the given function to the contained value wrapped in a <code>Bad</code>,
@@ -621,7 +621,7 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
   def badMap[C](f: B => C): G Or C
 
   /**
-   * Maps the given function to this <code>Or</code>'s value if it is a <code>Bad</code>, transforming it into a <code>Good</code>, or returns
+   * Applies the given function to this <code>Or</code>'s value if it is a <code>Bad</code>, transforming it into a <code>Good</code>, or returns
    * <code>this</code> if it is already a <code>Good</code>.
    *
    * @param f the function to apply
@@ -631,7 +631,7 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
   def recover[H >: G](f: B => H): H Or B
 
   /**
-   * Maps the given function to this <code>Or</code>'s value if it is a <code>Bad</code>, returning the result, or returns
+   * Applies the given function to this <code>Or</code>'s value if it is a <code>Bad</code>, returning the result, or returns
    * <code>this</code> if it is already a <code>Good</code>.
    *
    * @param f the function to apply

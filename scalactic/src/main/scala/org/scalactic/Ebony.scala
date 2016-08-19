@@ -23,28 +23,31 @@ import scala.collection.GenTraversableOnce
 import scala.collection.generic.CanBuildFrom
 import scala.collection.mutable.Builder
 
-class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends AnyVal with Serializable {
+class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends AnyVal with Serializable { thisEbony =>
 
   /**
-   * Indicates whether this <code>Otherwise</code> is a <code>Good</code>
+   * Indicates whether the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>Black</code>
    *
-   * @return true if this <code>Otherwise</code> is a <code>Good</code>, <code>false</code> if it is a <code>White</code>.
+   * @return true if the underlying <code>Otherwise</code> is a <code>Black</code>, <code>false</code> if it is a <code>White</code>.
    */
   def isBlack: Boolean = otherwise.isBlack
 
   /**
-   * Indicates whether this <code>Otherwise</code> is a <code>White</code>
+   * Indicates whether the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>White</code>
    *
-   * @return true if this <code>Otherwise</code> is a <code>White</code>, <code>false</code> if it is a <code>Black</code>.
+   * @return true if the underlying <code>Otherwise</code> is a <code>White</code>, <code>false</code> if it is a <code>Black</code>.
    */
   def isWhite: Boolean = otherwise.isWhite
 
   /**
-   * Maps the given function to this <code>Ebony</code>'s value if it is a <code>Black</code> or returns <code>this</code> if it is a <code>White</code>.
+   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>Black</code>, and 
+   * returns a new <code>Ebony</code> wrapping a new <code>Black</code> containing the result of the function application;
+   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>White</code>.
    *
    * @param f the function to apply
-   * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
-   *         else this <code>White</code> is returned
+   * @return if the underlying <code>Otherwise</code> is a <code>Black</code>, the result of applying the given function to the contained
+   *         value wrapped in a <code>Black</code> wrapped in an <code>Ebony</code>,
+   *         else this <code>Ebony</code> (already containing a <code>White</code>)
    */
   def map[C](f: B => C): Ebony[C, W] =
     otherwise match {
@@ -53,12 +56,15 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Maps the given function to this <code>Ebony</code>'s value if it is a <code>White</code>, transforming it into a <code>Black</code>, or returns
-   * <code>this</code> if it is already a <code>Black</code>.
+   * Applies the given function to the value in the <code>Otherwise</code> underlying this <code>Ebony</code> if the underlying
+   * <code>Otherwise</code> is a <code>White</code>, returning an <code>Ebony</code> wrapping a <code>Black</code> containing
+   * the result of the function application, or returns
+   * <code>this</code> if the underlying <code>Otherwise</code> is already a <code>Black</code>.
    *
    * @param f the function to apply
-   * @return if this is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
-   *         else this <code>Black</code> is returned
+   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the result of applying the given function to the
+   *         contained value wrapped in a <code>Black</code> wrapped in an <code>Ebony</code>,
+   *         else this <code>Ebony</code> (already containing a <code>Black</code>)
    */
   def recover[C >: B](f: W => C): Ebony[C, W] =
     otherwise match {
@@ -67,7 +73,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Maps the given function to this <code>Ebony</code>'s value if it is a <code>White</code>, returning the result, or returns
+   * Applies the given function to this <code>Ebony</code>'s value if it is a <code>White</code>, returning the result, or returns
    * <code>this</code> if it is already a <code>Black</code>.
    *
    * @param f the function to apply
@@ -81,7 +87,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Applies the given function f to the contained value if this <code>Otherwise</code> is a <code>Black</code>; does nothing if this <code>Otherwise</code>
+   * Applies the given function f to the contained value if the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>Black</code>; does nothing if the underlying <code>Otherwise</code>
    * is a <code>White</code>.
    *
    * @param f the function to apply
@@ -93,7 +99,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns the given function applied to the value contained in this <code>Otherwise</code> if it is a <code>Black</code>,
+   * Returns the given function applied to the value contained in the <code>Otherwise</code> underlying this </code>Ebony</code> if it is a <code>Black</code>,
    * or returns <code>this</code> if it is a <code>White</code>.
    *
    * @param f the function to apply
@@ -107,10 +113,10 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns this <code>Otherwise</code> if either 1) it is a <code>White</code> or 2) it is a <code>Black</code> and applying the validation function <code>f</code> to this
+   * Returns this <code>Ebony</code> if either 1) the underlying <code>Otherwise</code> is a <code>White</code> or 2) it is a <code>Black</code> and applying the validation function <code>f</code> to the
    * <code>Black</code>'s value returns <code>Pass</code>; otherwise, 
-   * returns a new <code>White</code> containing the error value contained in the <code>Fail</code> resulting from applying the validation
-   * function <code>f</code> to this <code>Black</code>'s value.
+   * returns a new <code>Ebony</code> wrapping a <code>White</code> containing the error value contained in the <code>Fail</code> resulting from applying the validation
+   * function <code>f</code> to this <code>Ebony</code>'s <code>Black</code> value.
    *
    * <p>
    * For examples of <code>filter</code> used in <code>for</code> expressions, see the main documentation for trait
@@ -118,16 +124,16 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * </p>
    *
    * @param f the validation function to apply
-   * @return a <code>Black</code> if this <code>Otherwise</code> is a <code>Black</code> that passes the validation function, else a <code>White</code>.
+   * @return an <code>Ebony</code> wrapping a <code>Black</code> if the underlying <code>Otherwise</code> is a <code>Black</code> that passes the validation function, else an <code>Ebony</code> wrapping a <code>White</code>.
    */
   def filter[X >: W](f: B => Validation[X]): Ebony[B, X] =
     otherwise match {
       case Black(b) =>
         f(b) match {
-          case Pass => this
+          case Pass => thisEbony
           case Fail(x) => new Ebony(White(x))
         }
-      case w: White[W] => new Ebony(w)
+      case _ => thisEbony
     }
 
   // TODO: What should we do about withFilter. Black question for the hackathon.
@@ -137,11 +143,11 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
   def withFilter[X >: W](f: B => Validation[X]): Ebony[B, X] = filter(f)
 
   /**
-   * Returns <code>true</code> if this <code>Otherwise</code> is a <code>Black</code> and the predicate <code>p</code> returns true when applied to this <code>Black</code>'s value.
+   * Returns <code>true</code> if the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>Black</code> and the predicate <code>p</code> returns true when applied to this <code>Black</code>'s value.
    *
    * <p>
-   * Note: The <code>exists</code> method will return the same result as <code>forall</code> if this <code>Otherwise</code> is a <code>Black</code>, but the opposite
-   * result if this <code>Otherwise</code> is a <code>White</code>.
+   * Note: The <code>exists</code> method will return the same result as <code>forall</code> if the underlying <code>Otherwise</code> is a <code>Black</code>, but the opposite
+   * result if the underlying <code>Otherwise</code> is a <code>White</code>.
    * </p>
    *
    * @param p the predicate to apply to the <code>Black</code> value, if this is a <code>Black</code>
@@ -154,12 +160,12 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns <code>true</code> if either this <code>Otherwise</code> is a <code>White</code> or if the predicate <code>p</code> returns <code>true</code> when applied
+   * Returns <code>true</code> if either the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>White</code> or if the predicate <code>p</code> returns <code>true</code> when applied
    * to this <code>Black</code>'s value.
    *
    * <p>
-   * Note: The <code>forall</code> method will return the same result as <code>exists</code> if this <code>Otherwise</code> is a <code>Black</code>, but the opposite
-   * result if this <code>Otherwise</code> is a <code>White</code>.
+   * Note: The <code>forall</code> method will return the same result as <code>exists</code> if the underlying <code>Otherwise</code> is a <code>Black</code>, but the opposite
+   * result if the underlying <code>Otherwise</code> is a <code>White</code>.
    * </p>
    *
    * @param p the predicate to apply to the <code>Black</code> value, if this is a <code>Black</code>
@@ -172,10 +178,10 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns, if this <code>Otherwise</code> is <code>Black</code>, this <code>Black</code>'s value; otherwise returns the result of evaluating <code>default</code>. 
+   * Returns, if the <code>Otherwise</code> underlying this </code>Ebony</code> is <code>Black</code>, this <code>Black</code>'s value; otherwise returns the result of evaluating <code>default</code>. 
    *
-   * @param default the default expression to evaluate if this <code>Otherwise</code> is a <code>White</code>
-   * @return the contained value, if this <code>Otherwise</code> is a <code>Black</code>, else the result of evaluating the given <code>default</code>
+   * @param default the default expression to evaluate if the underlying <code>Otherwise</code> is a <code>White</code>
+   * @return the contained value, if the underlying <code>Otherwise</code> is a <code>Black</code>, else the result of evaluating the given <code>default</code>
    */
   def getOrElse[C >: B](default: => C): C =
     otherwise match {
@@ -184,13 +190,13 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns this <code>Otherwise</code> if it is a <code>Black</code>, otherwise returns the result of evaluating the passed <code>alternative</code>.
+   * Returns this </code>Ebony</code> if the underlying <code>Otherwise</code> is a <code>Black</code>, otherwise returns the result of evaluating the passed <code>alternative</code>.
    *
-   * @param alternative the alternative by-name to evaluate if this <code>Otherwise</code> is a <code>White</code>
-   * @return this <code>Otherwise</code>, if it is a <code>Black</code>, else the result of evaluating <code>alternative</code>
+   * @param alternative the alternative by-name to evaluate if the underlying <code>Otherwise</code> is a <code>White</code>
+   * @return this <code>Ebony</code>, if the underlying <code>Otherwise</code> is a <code>Black</code>, else the result of evaluating <code>alternative</code>
    */
   def orElse[C >: B, X >: W](alternative: => Ebony[C, X]): Ebony[C, X] =
-    if (isBlack) this else alternative
+    if (isBlack) thisEbony else alternative
 
   /**
    * Returns a <code>Some</code> containing the <code>Black</code> value, if the <code>Otherwise</code> underlying this <code>Ebony</code>
@@ -206,11 +212,11 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
     }
 
   /**
-   * Returns an immutable <code>IndexedSeq</code> containing the <code>Black</code> value, if this <code>Otherwise</code> is a <code>Black</code>, else an empty
+   * Returns an immutable <code>IndexedSeq</code> containing the <code>Black</code> value, if the <code>Otherwise</code> underlying this </code>Ebony</code> is a <code>Black</code>, else an empty
    * immutable <code>IndexedSeq</code>.
    *
-   * @return the contained &ldquo;good&rdquo; value in a lone-element <code>Seq</code> if this <code>Otherwise</code> is a <code>Black</code>; an empty <code>Seq</code> if
-   *     this <code>Otherwise</code> is a <code>White</code>.
+   * @return the contained &ldquo;good&rdquo; value in a lone-element <code>Seq</code> if the underlying <code>Otherwise</code> is a <code>Black</code>; an empty <code>Seq</code> if
+   *     the underlying <code>Otherwise</code> is a <code>White</code>.
    */
   def toSeq: scala.collection.immutable.IndexedSeq[B] = ???
 
@@ -230,7 +236,7 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
   def toEither: Either[W, B] = ???
 
   /**
-   * Converts this <code>Otherwise</code> to an <code>Otherwise</code> with the same <code>Black</code> type and a <code>White</code> type consisting of
+   * Converts this <code>Ebony</code> to an <code>Or</code> with the same <code>Black</code> type and a <code>White</code> type consisting of
    * <a href="One.html"><code>One</code></a> parameterized by this <code>Otherwise</code>'s <code>White</code> type.
    *
    * <p>
@@ -293,18 +299,18 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * Now that song will be rolling around in your head all afternoon. But at least it is a good song (thanks to <code>swap</code>).
    * </p>
    *
-   * @return if this <code>Otherwise</code> is a <code>Black</code>, its <code>Black</code> value wrapped in a <code>White</code>; if this <code>Otherwise</code> is
+   * @return if the underlying <code>Otherwise</code> is a <code>Black</code>, its <code>Black</code> value wrapped in a <code>White</code>; if the underlying <code>Otherwise</code> is
    *     a <code>White</code>, its <code>White</code> value wrapped in a <code>Black</code>.
    */
   def swap: Ebony[W, B] = ???
 
   /**
-   * Transforms this <code>Otherwise</code> by applying the function <code>gf</code> to this <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,
-   * or by applying <code>bf</code> to this <code>Otherwise</code>'s <code>White</code> value if it is a <code>White</code>.
+   * Transforms this <code>Otherwise</code> by applying the function <code>gf</code> to the underlying <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,
+   * or by applying <code>bf</code> to the underlying <code>Otherwise</code>'s <code>White</code> value if it is a <code>White</code>.
    *
-   * @param gf the function to apply to this <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
-   * @param bf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
-   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Otherwise</code>'s value
+   * @param gf the function to apply to the underlying <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
+   * @param bf the function to apply to the underlying <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
+   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to the underlying <code>Otherwise</code>'s value
    */
   def transform[C, X](bf: B => Ebony[C, X], wf: W => Ebony[C, X]): Ebony[C, X] = ???
 
@@ -312,9 +318,9 @@ class Ebony[+B,+W] private[scalactic] (val otherwise: B Otherwise W) extends Any
    * Folds this <code>Otherwise</code> into a value of type <code>V</code> by applying the given <code>gf</code> function if this is
    * a <code>Black</code> else the given <code>bf</code> function if this is a <code>White</code>.
    *
-   * @param gf the function to apply to this <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
-   * @param bf the function to apply to this <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
-   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to this <code>Otherwise</code>'s value
+   * @param gf the function to apply to the underlying <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
+   * @param bf the function to apply to the underlying <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
+   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to the underlying <code>Otherwise</code>'s value
    */
   def fold[V](bf: B => V, wf: W => V): V = ???
 
