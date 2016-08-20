@@ -155,13 +155,13 @@ class IvorySpec extends UnitSpec with TypeCheckedTripleEquals {
     Black(12).otherwiseWhite[String].ivory.swap should === (Black[String].otherwiseWhite(12).ivory)
     Black[Int].otherwiseWhite("hi").ivory.swap should === (Black("hi").otherwiseWhite[Int].ivory)
   }
-/*
   it can "be used with transform" in {
-    Black(12).otherwiseWhite[String].transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (Black(13))
-    Black[Int].otherwiseWhite("hi").transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (White("HI"))
-    Black(12).otherwiseWhite[String].transform((i: Int) => White(i + 1), (s: String) => Black(s.toUpperCase)) should === (White(13))
-    Black[Int].otherwiseWhite("hi").transform((i: Int) => White(i + 1), (s: String) => Black(s.toUpperCase)) should === (Black("HI"))
+    Black[String].otherwiseWhite(12).ivory.transform((s: String) => White(s.toUpperCase).ivory, (i: Int) => Black(i + 1).ivory) should === (Black(13).ivory)
+    Black("hi").otherwiseWhite[Int].ivory.transform( (s: String) => White(s.toUpperCase).ivory, (i: Int) => Black(i + 1).ivory) should === (White("HI").ivory)
+    Black[String].otherwiseWhite(12).ivory.transform((s: String) => Black(s.toUpperCase).ivory, (i: Int) => White(i + 1).ivory) should === (White(13).ivory)
+    Black("hi").otherwiseWhite[Int].ivory.transform((s: String) => Black(s.toUpperCase).ivory, (i: Int) => White(i + 1).ivory) should === (Black("HI").ivory)
   }
+/*
   it can "be used with zip" in {
     Black(12).otherwiseWhite[Every[ErrorMessage]] zip Black("hi").otherwiseWhite[Every[ErrorMessage]] should === (Black((12, "hi")).otherwiseWhite[Every[ErrorMessage]])
     Black[Int].otherwiseWhite(One("so")) zip Black[String].otherwiseWhite(One("ho")) should === (White(Many("so", "ho")))

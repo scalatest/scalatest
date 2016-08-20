@@ -155,13 +155,13 @@ class EbonySpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals 
     Black(12).otherwiseWhite[String].ebony.swap should === (Black[String].otherwiseWhite(12).ebony)
     Black[Int].otherwiseWhite("hi").ebony.swap should === (Black("hi").otherwiseWhite[Int].ebony)
   }
-/*
   it can "be used with transform" in {
-    Black(12).otherwiseWhite[String].transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (Black(13))
-    Black[Int].otherwiseWhite("hi").transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (White("HI"))
-    Black(12).otherwiseWhite[String].transform((i: Int) => White(i + 1), (s: String) => Black(s.toUpperCase)) should === (White(13))
-    Black[Int].otherwiseWhite("hi").transform((i: Int) => White(i + 1), (s: String) => Black(s.toUpperCase)) should === (Black("HI"))
+    Black(12).otherwiseWhite[String].ebony.transform((i: Int) => Black(i + 1).ebony, (s: String) => White(s.toUpperCase).ebony) should === (Black(13).ebony)
+    Black[Int].otherwiseWhite("hi").ebony.transform((i: Int) => Black(i + 1).ebony, (s: String) => White(s.toUpperCase).ebony) should === (White("HI").ebony)
+    Black(12).otherwiseWhite[String].ebony.transform((i: Int) => White(i + 1).ebony, (s: String) => Black(s.toUpperCase).ebony) should === (White(13).ebony)
+    Black[Int].otherwiseWhite("hi").ebony.transform((i: Int) => White(i + 1).ebony, (s: String) => Black(s.toUpperCase).ebony) should === (Black("HI").ebony)
   }
+/*
   it can "be used with zip" in {
     Black(12).otherwiseWhite[Every[ErrorMessage]] zip Black("hi").otherwiseWhite[Every[ErrorMessage]] should === (Black((12, "hi")).otherwiseWhite[Every[ErrorMessage]])
     Black[Int].otherwiseWhite(One("so")) zip Black[String].otherwiseWhite(One("ho")) should === (White(Many("so", "ho")))

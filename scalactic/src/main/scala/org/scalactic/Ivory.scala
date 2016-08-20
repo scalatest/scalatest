@@ -310,14 +310,18 @@ class Ivory[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal 
     }
 
   /**
-   * Transforms this <code>Otherwise</code> by applying the function <code>gf</code> to the underlying <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,
-   * or by applying <code>bf</code> to the underlying <code>Otherwise</code>'s <code>White</code> value if it is a <code>White</code>.
+   * Transforms this <code>Ivory</code> by applying the function <code>bf</code> to the underlying <code>Otherwise</code>'s <code>Black</code> value if it is a <code>Black</code>,
+   * or by applying <code>wf</code> to the underlying <code>Otherwise</code>'s <code>White</code> value if it is a <code>White</code>.
    *
-   * @param gf the function to apply to the underlying <code>Otherwise</code>'s <code>Black</code> value, if it is a <code>Black</code>
-   * @param bf the function to apply to the underlying <code>Otherwise</code>'s <code>White</code> value, if it is a <code>White</code>
-   * @return the result of applying the appropriate one of the two passed functions, <code>gf</code> or </code>bf</code>, to the underlying <code>Otherwise</code>'s value
+   * @param bf the function to apply to the <code>Ivory</code>'s underlying <code>Black</code> value, if it is a <code>Black</code>
+   * @param wf the function to apply to the <code>Ivory</code>'s underlying <code>White</code> value, if it is a <code>White</code>
+   * @return the result of applying the appropriate one of the two passed functions, <code>bf</code> or </code>wf</code>, to the underlying <code>Otherwise</code>'s value
    */
-  def transform[C, X](bf: B => Ivory[C, X], wf: W => Ivory[C, X]): Ivory[C, X] = ???
+  def transform[C, X](bf: B => Ivory[C, X], wf: W => Ivory[C, X]): Ivory[C, X] =
+    thisIvory.value match {
+      case White(w) => wf(w)
+      case Black(b) => bf(b)
+    }
 
   /**
    * Folds this <code>Otherwise</code> into a value of type <code>V</code> by applying the given <code>gf</code> function if this is
