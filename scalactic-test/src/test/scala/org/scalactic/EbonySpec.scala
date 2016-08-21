@@ -161,6 +161,10 @@ class EbonySpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals 
     Black(12).otherwiseWhite[String].ebony.transform((i: Int) => White(i + 1).ebony, (s: String) => Black(s.toUpperCase).ebony) should === (White(13).ebony)
     Black[Int].otherwiseWhite("hi").ebony.transform((i: Int) => White(i + 1).ebony, (s: String) => Black(s.toUpperCase).ebony) should === (Black("HI").ebony)
   }
+  it can "be folded with fold" in {
+    Black(3).otherwiseWhite[String].ebony.fold(_ + 1, _.length) shouldBe 4
+    Black[Int].otherwiseWhite("howdy").ebony.fold(_ + 1, _.length) shouldBe 5
+  }
 /*
   it can "be used with zip" in {
     Black(12).otherwiseWhite[Every[ErrorMessage]] zip Black("hi").otherwiseWhite[Every[ErrorMessage]] should === (Black((12, "hi")).otherwiseWhite[Every[ErrorMessage]])
@@ -452,11 +456,6 @@ class EbonySpec extends UnitSpec with Accumulation with TypeCheckedTripleEquals 
     (None: Option[Int Or Every[ErrorMessage]]).combined shouldBe Black(None)
     Some(White(One("oops"))).combined shouldBe White(One("oops"))
     Some(White(Many("oops", "idoops"))).combined shouldBe White(Many("oops", "idoops"))
-  }
-  it can "be folded with fold" in {
-    Black(3).otherwiseWhite[String].fold(_ + 1, _.length) shouldBe 4
-    Black[Int].otherwiseWhite("howdy").fold(_ + 1, _.length) shouldBe 5
-
   }
   // SKIP-SCALATESTJS-START
   it can "be serialized correctly" in {
