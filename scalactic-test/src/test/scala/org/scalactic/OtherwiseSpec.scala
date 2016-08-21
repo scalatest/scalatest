@@ -143,6 +143,14 @@ class OtherwiseSpec extends UnitSpec with Accumulation with TypeCheckedTripleEqu
     }
     ae should have message "/ by zero"
   }
+  it can "be used with blackMap" in {
+    Black(8) blackMap (_ + 1) should equal (Black(9))
+    Black[Int].otherwiseWhite("eight") blackMap (_ + 1) should equal (White("eight"))
+  }
+  it can "be used with whiteMap" in {
+    Black(8).otherwiseWhite[ErrorMessage] whiteMap (_.toUpperCase) should equal (Black(8))
+    Black[Int].otherwiseWhite("eight") whiteMap (_.toUpperCase) should equal (White("EIGHT"))
+  }
   it can "be used with transform" in {
     Black(12).otherwiseWhite[String].transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (Black(13))
     Black[Int].otherwiseWhite("hi").transform((i: Int) => Black(i + 1), (s: String) => White(s.toUpperCase)) should === (White("HI"))

@@ -43,6 +43,29 @@ sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
   val isWhite: Boolean = false
 
   /**
+   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>Black</code>, and 
+   * returns a new <code>Ebony</code> wrapping a new <code>Black</code> containing the result of the function application;
+   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>White</code>.
+   *
+   * @param f the function to apply
+   * @return if the underlying <code>Otherwise</code> is a <code>Black</code>, the result of applying the given function to the contained
+   *         value wrapped in a <code>Black</code> wrapped in an <code>Ebony</code>,
+   *         else this <code>Ebony</code> (already containing a <code>White</code>)
+   */
+  def blackMap[C](f: B => C): C Otherwise W
+
+  /**
+   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>White</code>, and 
+   * returns a new <code>Ivory</code> wrapping a new <code>White</code> containing the result of the function application;
+   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
+   *
+   * @param f the function to apply
+   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>White</code> wrapped in an <code>Ivory</code>,
+   *         else this <code>Ivory</code> (already containing a <code>Black</code>)
+   */
+  def whiteMap[X](f: W => X): B Otherwise X
+
+  /**
    * Returns an <code>Otherwise</code> with the <code>Black</code> and <code>White</code> types swapped: <code>White</code> becomes <code>Black</code> and <code>Black</code>
    * becomes <code>White</code>.
    *
@@ -391,6 +414,19 @@ final case class Black[+B](b: B) extends Otherwise[B,Nothing] {
    * </pre>
    */
   def otherwiseWhite[W]: B Otherwise W = this
+
+  def blackMap[C](f: B => C): C Otherwise Nothing = Black(f(b))
+
+  /**
+   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>White</code>, and 
+   * returns a new <code>Ivory</code> wrapping a new <code>White</code> containing the result of the function application;
+   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
+   *
+   * @param f the function to apply
+   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>White</code> wrapped in an <code>Ivory</code>,
+   *         else this <code>Ivory</code> (already containing a <code>Black</code>)
+   */
+  def whiteMap[X](f: Nothing => X): B Otherwise X = this
   def swap: Nothing Otherwise B = White(b)
   def transform[C, X](bf: B => C Otherwise X, wf: Nothing => C Otherwise X): C Otherwise X = bf(b)
   def fold[V](bf: B => V, wf: Nothing => V): V = bf(b)
@@ -472,6 +508,19 @@ object Black {
 final case class White[+W](w: W) extends Otherwise[Nothing,W] {
 
   override val isWhite: Boolean = true
+
+  def blackMap[C](f: Nothing => C): C Otherwise W = this
+
+  /**
+   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>White</code>, and 
+   * returns a new <code>Ivory</code> wrapping a new <code>White</code> containing the result of the function application;
+   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
+   *
+   * @param f the function to apply
+   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>White</code> wrapped in an <code>Ivory</code>,
+   *         else this <code>Ivory</code> (already containing a <code>Black</code>)
+   */
+  def whiteMap[X](f: W => X): Nothing Otherwise X = White(f(w))
 
   /*
    * Returns this <code>White</code> with the type widened to <code>Otherwise</code>.

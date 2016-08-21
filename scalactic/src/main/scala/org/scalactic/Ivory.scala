@@ -43,13 +43,6 @@ class Ivory[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal 
   def isWhite: Boolean = thisIvory.value.isWhite
 
   /**
-   * Applies the given function to the <code>Otherwise</code> underlying this <code>Ivory</code>'s value if it is a <code>Black</code> or returns <code>this</code> if it is a <code>White</code>.
-   *
-   * @param f the function to apply
-   * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
-   *         else this <code>White</code> is returned
-   */
-  /**
    * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>White</code>, and 
    * returns a new <code>Ivory</code> wrapping a new <code>White</code> containing the result of the function application;
    * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
