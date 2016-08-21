@@ -331,6 +331,9 @@ class Ebony[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal 
       case White(w) => wf(w)
     }
 
+  /**
+   * A string representation for this <code>Ebony</code>.
+   */
   override def toString = s"Ebony($thisEbony.value)"
 }
 

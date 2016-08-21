@@ -337,5 +337,8 @@ class Ivory[+B,+W] private[scalactic] (val value: B Otherwise W) extends AnyVal 
       case Black(b) => bf(b)
     }
 
+  /**
+   * A string representation for this <code>Ivory</code>.
+   */
   override def toString = s"Ivory($thisIvory.value)"
 }
