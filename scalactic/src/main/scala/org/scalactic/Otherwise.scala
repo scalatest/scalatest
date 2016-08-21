@@ -43,25 +43,20 @@ sealed abstract class Otherwise[+B,+W] extends Product with Serializable {
   val isWhite: Boolean = false
 
   /**
-   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>Black</code>, and 
-   * returns a new <code>Ebony</code> wrapping a new <code>Black</code> containing the result of the function application;
-   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>White</code>.
+   * Applies the given function to this <code>Otherwise</code>'s value if it is a <code>Black</code> or returns <code>this</code> if it is a <code>White</code>.
    *
    * @param f the function to apply
-   * @return if the underlying <code>Otherwise</code> is a <code>Black</code>, the result of applying the given function to the contained
-   *         value wrapped in a <code>Black</code> wrapped in an <code>Ebony</code>,
-   *         else this <code>Ebony</code> (already containing a <code>White</code>)
+   * @return if this is a <code>Black</code>, the result of applying the given function to the contained value wrapped in a <code>Black</code>,
+   *         else this <code>White</code>
    */
   def blackMap[C](f: B => C): C Otherwise W
 
   /**
-   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>White</code>, and 
-   * returns a new <code>Ivory</code> wrapping a new <code>White</code> containing the result of the function application;
-   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
+   * Applies the given function to this <code>Otherwise</code>'s value if it is a <code>White</code> or returns <code>this</code> if it is a <code>Black</code>.
    *
    * @param f the function to apply
-   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>White</code> wrapped in an <code>Ivory</code>,
-   *         else this <code>Ivory</code> (already containing a <code>Black</code>)
+   * @return if this is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>White</code>,
+   *         else this <code>Black</code>
    */
   def whiteMap[X](f: W => X): B Otherwise X
 
@@ -416,16 +411,6 @@ final case class Black[+B](b: B) extends Otherwise[B,Nothing] {
   def otherwiseWhite[W]: B Otherwise W = this
 
   def blackMap[C](f: B => C): C Otherwise Nothing = Black(f(b))
-
-  /**
-   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>White</code>, and 
-   * returns a new <code>Ivory</code> wrapping a new <code>White</code> containing the result of the function application;
-   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
-   *
-   * @param f the function to apply
-   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>White</code> wrapped in an <code>Ivory</code>,
-   *         else this <code>Ivory</code> (already containing a <code>Black</code>)
-   */
   def whiteMap[X](f: Nothing => X): B Otherwise X = this
   def swap: Nothing Otherwise B = White(b)
   def transform[C, X](bf: B => C Otherwise X, wf: Nothing => C Otherwise X): C Otherwise X = bf(b)
@@ -511,15 +496,6 @@ final case class White[+W](w: W) extends Otherwise[Nothing,W] {
 
   def blackMap[C](f: Nothing => C): C Otherwise W = this
 
-  /**
-   * Applies the given function to the value contained in the underlying <code>Otherwise</code> if it is a <code>White</code>, and 
-   * returns a new <code>Ivory</code> wrapping a new <code>White</code> containing the result of the function application;
-   * or returns <code>this</code> if the underlying <code>Otherwise</code> is a <code>Black</code>.
-   *
-   * @param f the function to apply
-   * @return if the underlying <code>Otherwise</code> is a <code>White</code>, the result of applying the given function to the contained value wrapped in a <code>White</code> wrapped in an <code>Ivory</code>,
-   *         else this <code>Ivory</code> (already containing a <code>Black</code>)
-   */
   def whiteMap[X](f: W => X): Nothing Otherwise X = White(f(w))
 
   /*
