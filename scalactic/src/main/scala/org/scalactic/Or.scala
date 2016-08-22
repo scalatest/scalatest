@@ -847,6 +847,8 @@ sealed abstract class Or[+G,+B] extends Product with Serializable {
     */
   @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).")
   def asOr: G Or B = this
+
+  def mitigator: Mitigator[G, B] = new Mitigator(this)
 }
 
 /**
