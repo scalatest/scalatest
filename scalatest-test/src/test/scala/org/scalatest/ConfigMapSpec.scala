@@ -68,9 +68,102 @@ class ConfigMapSpec extends FunSpec {
       assert(caught.getMessage === Resources.configMapEntryNotFound("t"))
     }
 
-    it("should throw a TestCanceledException if a required entry has an unexpected type") {
+    describe("should provide a nice syntax to get") {
 
-      // Ensure supertype and subype is done correctly
+      it("Boolean values") {
+        // Ensure Boolean works
+        assert(cm.getRequired[Boolean]("boolean") === true)
+        assert(cm.getRequired[Boolean]("Boolean") === new java.lang.Boolean(true))
+        val caught2 =
+          intercept[TestCanceledException] {
+            cm.getRequired[Boolean]("string")
+          }
+
+        assert(caught2.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "boolean", "aStringValue"))
+      }
+
+      it("Byte values") {
+        // Ensure Byte works
+        assert(cm.getRequired[Byte]("byte") === 1.toByte)
+        assert(cm.getRequired[Byte]("Byte") === new java.lang.Byte(1.toByte))
+        val caught3 =
+          intercept[TestCanceledException] {
+            cm.getRequired[Byte]("string")
+          }
+
+        assert(caught3.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "byte", "aStringValue"))
+      }
+
+      it("Short values") {
+        // Ensure Short works
+        assert(cm.getRequired[Short]("short") === 1.toShort)
+        assert(cm.getRequired[Short]("Short") === new java.lang.Short(1.toShort))
+        val caught4 =
+          intercept[TestCanceledException] {
+            cm.getRequired[Short]("string")
+          }
+        assert(caught4.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "short", "aStringValue"))
+      }
+
+      it("Int values") {
+        // Ensure Int works
+        assert(cm.getRequired[Int]("int") === 1)
+        assert(cm.getRequired[Int]("Integer") === new java.lang.Integer(1))
+        val caught5 =
+          intercept[TestCanceledException] {
+            cm.getRequired[Int]("string")
+          }
+        assert(caught5.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "int", "aStringValue"))
+      }
+
+      it("Long values") {
+        // Ensure Long works
+        assert(cm.getRequired[Long]("long") === Long.MaxValue)
+        assert(cm.getRequired[Long]("Long") === new java.lang.Long(Long.MaxValue))
+        val caught6 =
+          intercept[TestCanceledException] {
+            cm.getRequired[Long]("string")
+          }
+        assert(caught6.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "long", "aStringValue"))
+      }
+
+      it("Char values") {
+        // Ensure Char works
+        assert(cm.getRequired[Char]("char") === 'c')
+        assert(cm.getRequired[Char]("Char") === new java.lang.Character('c'))
+        // 510 287 1900
+        val caught7 =
+        intercept[TestCanceledException] {
+          cm.getRequired[Char]("string")
+        }
+        assert(caught7.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "char", "aStringValue"))
+      }
+
+      it("Float values") {
+        // Ensure Float works
+        assert(cm.getRequired[Float]("float") === 1.0F)
+        assert(cm.getRequired[Float]("Float") === new java.lang.Float(1.0F))
+        val caught8 =
+          intercept[TestCanceledException] {
+            cm.getRequired[Float]("string")
+          }
+        assert(caught8.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "float", "aStringValue"))
+      }
+
+      it("Double values") {
+        // Ensure Double works
+        assert(cm.getRequired[Double]("double") === 1.0)
+        assert(cm.getRequired[Double]("Double") === new java.lang.Double(1.0))
+        val caught9 =
+          intercept[TestCanceledException] {
+            cm.getRequired[Double]("string")
+          }
+        assert(caught9.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "double", "aStringValue"))
+      }
+    }
+
+    it("should throw a TestCanceledException if a required entry has an unexpected type") {
+      // Ensure supertype and subtype is done correctly
       assert(cm.getRequired[Apple]("apple") === apple)
       assert(cm.getRequired[Fruit]("apple") === apple)
       val caught1 =
@@ -78,81 +171,6 @@ class ConfigMapSpec extends FunSpec {
           cm.getRequired[Apple]("fruit")
         }
       assert(caught1.getMessage === Resources.configMapEntryHadUnexpectedType("fruit", "class " + fruit.getClass.getName, "class " + apple.getClass.getName, "a Fruit"))
-
-      // Ensure Boolean works
-      assert(cm.getRequired[Boolean]("boolean") === true)
-      assert(cm.getRequired[Boolean]("Boolean") === new java.lang.Boolean(true))
-      val caught2 =
-        intercept[TestCanceledException] {
-          cm.getRequired[Boolean]("string")
-        }
-
-      assert(caught2.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "boolean", "aStringValue"))
-
-      // Ensure Byte works
-      assert(cm.getRequired[Byte]("byte") === 1.toByte)
-      assert(cm.getRequired[Byte]("Byte") === new java.lang.Byte(1.toByte))
-      val caught3 =
-        intercept[TestCanceledException] {
-          cm.getRequired[Byte]("string")
-        }
-
-      assert(caught3.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "byte", "aStringValue"))
-
-      // Ensure Short works
-      assert(cm.getRequired[Short]("short") === 1.toShort)
-      assert(cm.getRequired[Short]("Short") === new java.lang.Short(1.toShort))
-      val caught4 =
-        intercept[TestCanceledException] {
-          cm.getRequired[Short]("string")
-        }
-      assert(caught4.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "short", "aStringValue"))
-
-      // Ensure Int works
-      assert(cm.getRequired[Int]("int") === 1)
-      assert(cm.getRequired[Int]("Integer") === new java.lang.Integer(1))
-      val caught5 =
-        intercept[TestCanceledException] {
-          cm.getRequired[Int]("string")
-        }
-      assert(caught5.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "int", "aStringValue"))
-
-      // Ensure Long works
-      assert(cm.getRequired[Long]("long") === Long.MaxValue)
-      assert(cm.getRequired[Long]("Long") === new java.lang.Long(Long.MaxValue))
-      val caught6 =
-        intercept[TestCanceledException] {
-          cm.getRequired[Long]("string")
-        }
-      assert(caught6.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "long", "aStringValue"))
-
-      // Ensure Char works
-      assert(cm.getRequired[Char]("char") === 'c')
-      assert(cm.getRequired[Char]("Char") === new java.lang.Character('c'))
-// 510 287 1900
-      val caught7 =
-        intercept[TestCanceledException] {
-          cm.getRequired[Char]("string")
-        }
-      assert(caught7.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "char", "aStringValue"))
-
-      // Ensure Float works
-      assert(cm.getRequired[Float]("float") === 1.0F)
-      assert(cm.getRequired[Float]("Float") === new java.lang.Float(1.0F))
-      val caught8 =
-        intercept[TestCanceledException] {
-          cm.getRequired[Float]("string")
-        }
-      assert(caught8.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "float", "aStringValue"))
-
-      // Ensure Double works
-      assert(cm.getRequired[Double]("double") === 1.0)
-      assert(cm.getRequired[Double]("Double") === new java.lang.Double(1.0))
-      val caught9 =
-        intercept[TestCanceledException] {
-          cm.getRequired[Double]("string")
-        }
-      assert(caught9.getMessage === Resources.configMapEntryHadUnexpectedType("string", "class java.lang.String", "double", "aStringValue"))
     }
 
     it("should provide a nice syntax for getting an optional entry") {
@@ -166,7 +184,7 @@ class ConfigMapSpec extends FunSpec {
 
     it("should throw a TestCanceledException if an optional entry has an unexpected type") {
 
-      // Ensure supertype and subype is done correctly
+      // Ensure supertype and subtype is done correctly
       assert(cm.getOptional[Apple]("apple") === Some(apple))
       assert(cm.getOptional[Fruit]("apple") === Some(apple))
       val caught1 =
