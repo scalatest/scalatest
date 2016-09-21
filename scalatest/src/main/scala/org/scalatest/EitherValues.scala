@@ -20,7 +20,7 @@ import org.scalatest.exceptions.StackDepthException
 import org.scalatest.exceptions.TestFailedException
 
 /**
- * Trait that provides an implicit conversion that adds <code>left.value</code> and <code>right.value</code> methods
+ * Trait that provides an implicit conversion that adds the methods <code>rightValue</code> and <code>leftValue</code>
  * to <code>Either</code>, which will return the selected value of the <code>Either</code> if defined,
  * or throw <code>TestFailedException</code> if not.
  *
@@ -30,8 +30,8 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
- * either1.right.value should be &gt; 9
- * either2.left.value should be ("Muchas problemas")
+ * either1.rightValue should be &gt; 9
+ * either2.leftValue should be ("Muchas problemas")
  * </pre>
  *
  * <p>
@@ -39,12 +39,12 @@ import org.scalatest.exceptions.TestFailedException
  * </p>
  *
  * <pre class="stHighlight">
- * assert(either1.right.value &gt; 9)
- * assert(either2.left.value === "Muchas problemas")
+ * assert(either1.rightValue &gt; 9)
+ * assert(either2.leftValue === "Muchas problemas")
  * </pre>
  *
  * <p>
- * Were you to simply invoke <code>right.get</code> or <code>left.get</code> on the <code>Either</code>, 
+ * Were you to simply invoke <code>toOption.get</code> or <code>swap.toOption.get</code> on the <code>Either</code>,
  * if the <code>Either</code> wasn't defined as expected (<em>e.g.</em>, it was a <code>Left</code> when you expected a <code>Right</code>), it
  * would throw a <code>NoSuchElementException</code>:
  * </p>
@@ -52,7 +52,7 @@ import org.scalatest.exceptions.TestFailedException
  * <pre class="stHighlight">
  * val either: Either[String, Int] = Left("Muchas problemas")
  *
- * either.right.get should be &gt; 9 // either.right.get throws NoSuchElementException
+ * either.toOption.get should be &gt; 9 // either.toOption.get throws NoSuchElementException
  * </pre>
  *
  * <p>
@@ -67,7 +67,7 @@ import org.scalatest.exceptions.TestFailedException
  * val either: Either[String, Int] = Left("Muchas problemas")
  *
  * either should be ('right) // throws TestFailedException
- * either.right.get should be &gt; 9
+ * either.toOption.get should be &gt; 9
  * </pre>
  *
  * <p>
@@ -77,7 +77,7 @@ import org.scalatest.exceptions.TestFailedException
  * <pre class="stHighlight">
  * val either: Either[String, Int] = Left("Muchas problemas")
  *
- * either.right.value should be &gt; 9 // either.right.value throws TestFailedException
+ * either.rightValue should be &gt; 9 // either.rightValue throws TestFailedException
  * </pre>
  */
 trait EitherValues {
@@ -89,6 +89,7 @@ trait EitherValues {
    *
    * @param either the <code>LeftProjection</code> on which to add the <code>value</code> method
    */
+  @deprecated("Use convertEitherToValuableEither instead.")
   implicit def convertLeftProjectionToValuable[L, R](leftProj: Either.LeftProjection[L, R])(implicit pos: source.Position): LeftValuable[L, R] = new LeftValuable(leftProj, pos)
 
   /**
@@ -96,6 +97,7 @@ trait EitherValues {
    *
    * @param either the <code>RightProjection</code> on which to add the <code>value</code> method
    */
+  @deprecated("Use convertEitherToValuableEither instead.")
   implicit def convertRightProjectionToValuable[L, R](rightProj: Either.RightProjection[L, R])(implicit pos: source.Position): RightValuable[L, R] = new RightValuable(rightProj, pos)
 
   /**
@@ -109,6 +111,7 @@ trait EitherValues {
    * @param leftProj A <code>LeftProjection</code> to convert to <code>LeftValuable</code>, which provides the
    *   <code>value</code> method.
    */
+  @deprecated("Use leftValue directly on either instead.")
   class LeftValuable[L, R](leftProj: Either.LeftProjection[L, R], pos: source.Position) {
 
     /**
@@ -137,6 +140,7 @@ trait EitherValues {
    * @param rightProj A <code>RightProjection</code> to convert to <code>RightValuable</code>, which provides the
    *   <code>value</code> method.
    */
+  @deprecated("Use rightValue directly on either instead.")
   class RightValuable[L, R](rightProj: Either.RightProjection[L, R], pos: source.Position) {
 
     /**
@@ -153,12 +157,56 @@ trait EitherValues {
       }
     }
   }
+  
+  
+  /**
+    * Implicit conversion that adds the methods <code>rightValue</code> and <code>leftValue</code> to <code>Either</code>.
+    *
+    * @param either the <code>Either</code> on which to add the methods <code>rightValue</code> and <code>leftValue</code>.
+    */
+  implicit def convertEitherToValuableEither[L, R](either: Either[L, R])(implicit pos: source.Position): ValuableEither[L, R] = new ValuableEither(either, pos)
+  
+  /**
+    * Wrapper class that adds the methods <code>rightValue</code> and <code>leftValue</code> to <code>Either</code>, allowing
+    * you to make statements like:
+    *
+    * <pre class="stHighlight">
+    * either.leftValue should be &gt; "Muchas problemas"
+    * either.rightValue should be &gt; 9
+    * </pre>
+    *
+    * @param either An <code>Either</code> to convert to <code>ValuableEither</code>, which provides the methods
+    *               <code>rightValue</code> and <code>leftValue</code>.
+    */
+  class ValuableEither[L, R](either: Either[L, R], pos: source.Position) {
+    /**
+      * Returns the <code>Right</code> value contained in the wrapped <code>Either</code>, if defined as a <code>Right</code>, else throws <code>TestFailedException</code> with
+      * a detail message indicating the <code>Either</code> was defined as a <code>Left</code>, not a <code>Right</code>.
+      */
+    def rightValue: R = either match {
+      case Right(r) ⇒ r
+      case Left(_) ⇒
+        throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherRightValueNotDefined),
+          Some(new NoSuchElementException("Either.rightValue on Lefts")), pos)
+    }
+  
+    /**
+      * Returns the <code>Left</code> value contained in the wrapped <code>Either</code>, if defined as a <code>Left</code>, else throws <code>TestFailedException</code> with
+      * a detail message indicating the <code>Either</code> was defined as a <code>Right</code>, not a <code>Left</code>.
+      */
+    def leftValue: L = either match {
+      case Left(l) ⇒ l
+      case Right(_) ⇒
+        throw new TestFailedException((_: StackDepthException) => Some(Resources.eitherLeftValueNotDefined),
+          Some(new NoSuchElementException("Either.leftValue on Right")), pos)
+    }
+  }
 }
 
 /**
- * Companion object that facilitates the importing of <code>ValueEither</code> members as 
+ * Companion object that facilitates the importing of <code>EitherValues</code> members as
  * an alternative to mixing it in. One use case is to import <code>EitherValues</code>'s members so you can use
- * <code>left.value</code> and <code>right.value</code> on <code>Either</code> in the Scala interpreter:
+ * <code>leftValue</code> and <code>rightValue</code> on <code>Either</code> in the Scala interpreter:
  *
  * <pre class="stREPL">
  * $ scala -cp scalatest-1.7.jar
@@ -178,9 +226,9 @@ trait EitherValues {
  * scala&gt; val e: Either[String, Int] = Left("Muchas problemas")
  * e: Either[String,Int] = Left(Muchas problemas)
  * 
- * scala&gt; e.left.value should be ("Muchas problemas")
+ * scala&gt; e.leftValue should be ("Muchas problemas")
  * 
- * scala&gt; e.right.value should be &lt; 9
+ * scala&gt; e.rightValue should be &lt; 9
  * org.scalatest.TestFailedException: The Either on which rightValue was invoked was not defined.
  *   at org.scalatest.EitherValues$RightValuable.value(EitherValues.scala:148)
  *   at .&lt;init&gt;(&lt;console&gt;:18)
