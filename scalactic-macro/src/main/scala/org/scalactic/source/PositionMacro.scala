@@ -48,7 +48,7 @@ object PositionMacro {
         ),
         List(
           Literal(Constant(context.enclosingPosition.source.file.name)),
-          Literal(Constant(context.enclosingPosition.source.path)),
+          Literal(Constant(context.enclosingPosition.source.file.name)),
           Literal(Constant(context.enclosingPosition.line))
         )
       )
@@ -81,7 +81,7 @@ object PositionMacro {
         ),
         List(
           Literal(Constant(context.enclosingPosition.source.file.name)),
-          Literal(Constant(context.enclosingPosition.source.path)),
+          Literal(Constant(context.enclosingPosition.source.file.name)),
           Literal(Constant(context.enclosingPosition.line))
         )
       )
