@@ -127,6 +127,7 @@ below:
           val result = f
           val endTime = scala.compat.Platform.currentTime
           task.cancel()
+          timer.cancel()
           result match {
             case Exceptional(ex) => throw ex  // If the result is Exceptional, the exception is already wrapped, just re-throw it to get the old behavior.
             case _ => 
@@ -142,6 +143,7 @@ below:
           case t: Throwable =>
             val endTime = scala.compat.Platform.currentTime
             task.cancel() // Duplicate code could be factored out I think. Maybe into a finally? Oh, not that doesn't work. So a method.
+            timer.cancel()
             if(task.timedOut || (endTime - startTime) > maxDuration) {
               if (task.needToResetInterruptedStatus)
                 Thread.interrupted() // Clear the interrupt status (There's a race condition here, but not sure we an do anything about that.)
@@ -206,6 +208,7 @@ below:
             t match {
               case Success(r) =>
                 task.cancel()
+                timer.cancel()
                 if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
                 val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
@@ -217,6 +220,7 @@ below:
 
               case Failure(e) =>
                 task.cancel()
+                timer.cancel()
                 if (!promise.isCompleted) { // If it completed already, it will fail or have failed with a timeout exception
                 val endTime = scala.compat.Platform.currentTime
                   val duration = endTime - startTime
@@ -303,6 +307,7 @@ below:
           t match {
             case Good(r) =>
               task.cancel()
+              timer.cancel()
               val endTime = scala.compat.Platform.currentTime
               val duration = endTime - startTime
               try {
@@ -317,6 +322,7 @@ below:
 
             case Bad(e) =>
               task.cancel()
+              timer.cancel()
               val endTime = scala.compat.Platform.currentTime
               val duration = endTime - startTime
               if (duration > maxDuration)
