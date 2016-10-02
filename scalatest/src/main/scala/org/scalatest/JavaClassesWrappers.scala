@@ -68,9 +68,13 @@ private[scalatest] trait TimerTask extends Runnable {
 
   def run()
 
-  def cancel(): Unit = timerTaskRef.get match {
-    case Some(javaTimerTask) => javaTimerTask.cancel
-    case None =>
+  def cancel(): Unit = {
+    timerTaskRef.get match {
+      case Some(javaTimerTask) =>
+        javaTimerTask.cancel()
+
+      case None =>
+    }
   }
 
 }
@@ -99,6 +103,8 @@ private[scalatest] class Timer {
     timer.schedule(javaTimerTask, delay, period)
   }
 
-  def cancel(): Unit = timer.cancel
+  def cancel(): Unit = {
+    timer.cancel()
+  }
 
 }
