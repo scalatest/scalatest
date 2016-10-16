@@ -97,4 +97,6 @@ private[scalatest] class Timer {
       )
   }
 
+  def cancel(): Unit = ()   // You can't cancel the one and only timer in javascript.
+
 }
