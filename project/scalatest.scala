@@ -184,7 +184,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.11"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.13"
     )
 
   def scalatestTestOptions =
@@ -397,6 +397,7 @@ object ScalatestBuild extends Build {
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
+      scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -614,6 +615,7 @@ object ScalatestBuild extends Build {
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
+      scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
       fork in test := false,
       testOptions in Test := scalatestTestJSOptions,
