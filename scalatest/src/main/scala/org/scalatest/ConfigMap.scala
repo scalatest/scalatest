@@ -180,7 +180,7 @@ class ConfigMap(underlying: Map[String, Any]) extends Map[String, Any] with MapL
             case _ => expectedClass
           }
         val actualClass = value.asInstanceOf[AnyRef].getClass
-        if (actualClass.isAssignableFrom(boxedExpectedClass))
+        if (boxedExpectedClass.isAssignableFrom(actualClass))
           value.asInstanceOf[V]
         else
             throw new TestCanceledException((sde: StackDepthException) => Some(Resources.configMapEntryHadUnexpectedType(key, actualClass, expectedClass, value.asInstanceOf[AnyRef])), None, pos, None)
