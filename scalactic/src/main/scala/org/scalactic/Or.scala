@@ -1205,9 +1205,9 @@ final case class Good[+G](g: G) extends Or[G,Nothing] {
   def orBad[C]: G Or C = this
   def get: G = g
   def map[H](f: G => H): H Or Nothing = Good(f(g))
-  def badMap[C](f: Nothing => C): G Or C = this.asInstanceOf[G Or C]
-  def recover[H >: G](f: Nothing => H): H Or Nothing = this.asInstanceOf[H Or Nothing]
-  def recoverWith[H >: G, C](f: Nothing => H Or C): H Or C = this.asInstanceOf[H Or C]
+  def badMap[C](f: Nothing => C): G Or C = this
+  def recover[H >: G](f: Nothing => H): H Or Nothing = this
+  def recoverWith[H >: G, C](f: Nothing => H Or C): H Or C = this
   def foreach(f: G => Unit): Unit = f(g)
   def flatMap[H, C >: Nothing](f: G => H Or C): H Or C = f(g)
   def filter[C >: Nothing](f: G => Validation[C]): G Or C =
@@ -1366,12 +1366,12 @@ final case class Bad[+B](b: B) extends Or[Nothing,B] {
   @deprecated("The asOr is no longer needed because Good(value).orBad[Type] and Good[Type].orBad(value) now return Or. You can delete invocations of asOr in those cases, otherwise, please use a type annotation to widen the type, like (Good(3): Int Or ErrorMessage).")
   override def asOr: Nothing Or B = this
   def get: Nothing = throw new NoSuchElementException("Bad(" + b + ").get")
-  def map[H](f: Nothing => H): H Or B = this.asInstanceOf[H Or B]
+  def map[H](f: Nothing => H): H Or B = this
   def badMap[C](f: B => C): Nothing Or C = Bad(f(b))
   def recover[H >: Nothing](f: B => H): H Or B = Good(f(b))
   def recoverWith[H >: Nothing, C](f: B => H Or C): H Or C = f(b)
   def foreach(f: Nothing => Unit): Unit = ()
-  def flatMap[H, C >: B](f: Nothing => H Or C): H Or C = this.asInstanceOf[H Or C]
+  def flatMap[H, C >: B](f: Nothing => H Or C): H Or C = this
   def filter[C >: B](f: Nothing => Validation[C]): Nothing Or C = this
   def exists(p: Nothing => Boolean): Boolean = false
   def forall(p: Nothing => Boolean): Boolean = true
