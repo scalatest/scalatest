@@ -15,18 +15,13 @@
  */
 package org.scalatest
 
-import java.util.concurrent.CountDownLatch
 import java.io.PrintStream
 import org.scalatest.events._
 import org.scalactic.Requirements._
 import Reporter.propagateDispose
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.TimerTask
-import java.util.Timer
 import time.Now._
 import java.util.concurrent.atomic.AtomicReference
 import tools.StringReporter.makeDurationString
-import org.scalatest.events._
 
 /**
  * A <code>Reporter</code> that dispatches test results to other <code>Reporter</code>s.
