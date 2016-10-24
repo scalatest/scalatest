@@ -647,17 +647,15 @@ class Framework extends SbtFramework {
     val runStartTime = System.currentTimeMillis
     
     val dispatchReporter = ReporterFactory.getDispatchReporter(repConfig, None, None, loader, Some(resultHolder), detectSlowpokes, slowpokeDetectionDelay, slowpokeDetectionPeriod)
-    if (detectSlowpokes) {
-      val slowpokeReporter = new StandardOutReporter(presentAllDurations, presentInColor, presentShortStackTraces, presentFullStackTraces, presentUnformatted, presentReminder,
-                                                  presentReminderWithShortStackTraces, presentReminderWithFullStackTraces, presentReminderWithoutCanceledTests, presentFilePathname)
-      dispatchReporter.registerSlowpokeReporter(slowpokeReporter)
-    }
 
     val suiteSortingReporter =
       new SuiteSortingReporter(
         dispatchReporter,
         Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis),
         System.err)
+
+    if (detectSlowpokes)
+      dispatchReporter.registerSlowpokeReporter(suiteSortingReporter)
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
 

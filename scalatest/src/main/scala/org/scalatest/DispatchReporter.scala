@@ -22,6 +22,7 @@ import Reporter.propagateDispose
 import time.Now._
 import java.util.concurrent.atomic.AtomicReference
 import tools.StringReporter.makeDurationString
+import tools.SuiteSortingReporter
 
 /**
  * A <code>Reporter</code> that dispatches test results to other <code>Reporter</code>s.
@@ -48,9 +49,9 @@ private[scalatest] class DispatchReporter(
 
   requireNonNull(reporters)
 
-  private val slowpokeReporter: AtomicReference[Option[Reporter]] = new AtomicReference[Option[Reporter]](None)
+  private val slowpokeReporter: AtomicReference[Option[SuiteSortingReporter]] = new AtomicReference[Option[SuiteSortingReporter]](None)
 
-  def registerSlowpokeReporter(reporter: Reporter): Unit =
+  def registerSlowpokeReporter(reporter: SuiteSortingReporter): Unit =
     slowpokeReporter.getAndSet(Some(reporter))
 
   private case object Dispose
@@ -86,7 +87,7 @@ private[scalatest] class DispatchReporter(
               )
             thisDispatchReporter.apply(alertEvent)
             slowpokeReporter.get match {
-              case Some(slowpokeRep) => slowpokeRep(alertEvent)
+              case Some(slowpokeRep) => slowpokeRep.slowpokeEvent(alertEvent)
               case None =>
             }
           }

@@ -226,6 +226,13 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
   }
 
+  private[scalatest] def slowpokeEvent(event: AlertProvided): Unit = {
+    suiteReporterMap.values.headOption match {
+      case Some(rep) => rep(event)
+      case None => // If no more active rep, well, probably fine then since this probably means that test is now completed.
+    }
+  }
+
   // Will need a timeout. Hmm. Because can change it. Hmm. This is an issue. I wanted
   // suite's timeout to be 20% longer than the -T one. If an overridden sortingTimeout timeout is shorter, then
   // that's no prob. But if it is longer, then the suiteTimeout will timeout first. I think that's fine. I'll
