@@ -222,6 +222,7 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       if (slotIdx >= 0)
         slotListBuf.update(slotIdx, newSlot)
       fireReadyEvents()
+      suiteReporterMap -= (suiteId)
     }
   }
 
