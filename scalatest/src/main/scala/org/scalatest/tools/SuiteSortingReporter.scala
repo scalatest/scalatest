@@ -227,9 +227,11 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   }
 
   private[scalatest] def slowpokeEvent(event: AlertProvided): Unit = {
-    suiteReporterMap.values.headOption match {
-      case Some(rep) => rep(event)
-      case None => // If no more active rep, well, probably fine then since this probably means that test is now completed.
+    synchronized {
+      suiteReporterMap.values.headOption match {
+        case Some(rep) => rep(event)
+        case None => // If no more active rep, well, probably fine then since this probably means that test is now completed.
+      }
     }
   }
 
