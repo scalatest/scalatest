@@ -352,7 +352,7 @@ trait Configuration {
    */
   def workers(value: PosInt): Workers = new Workers(value)
 
-  private[prop] def getParams(
+  private[prop] def getScalaCheckParams(
                                configParams: Seq[Configuration#PropertyCheckConfigParam],
                                c: PropertyCheckConfigurable
                                ): Parameters = {

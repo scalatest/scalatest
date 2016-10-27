@@ -47,19 +47,19 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
     )
 
   // minSuccessful
-  test("getParams returns passed minSuccessful config param") {
-    val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
+  test("getScalaCheckParams returns passed minSuccessful config param") {
+    val params = getScalaCheckParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
     params.minSuccessfulTests should equal (PassedMinSuccessful.value)
   }
 
-  test("getParams throws IAE if passed multiple minSuccessful config params") {
+  test("getScalaCheckParams throws IAE if passed multiple minSuccessful config params") {
     intercept[IllegalArgumentException] {
-      getParams(Seq(MinSuccessful(33), MinSuccessful(34)), defaultConfig)
+      getScalaCheckParams(Seq(MinSuccessful(33), MinSuccessful(34)), defaultConfig)
     }
   }
 
-  test("getParams returns default minSuccessful config param if none passed") {
-    val params = getParams(Seq(Workers(DefaultWorkers)), defaultConfig)
+  test("getScalaCheckParams returns default minSuccessful config param if none passed") {
+    val params = getScalaCheckParams(Seq(Workers(DefaultWorkers)), defaultConfig)
     params.minSuccessfulTests should equal (DefaultMinSuccessful.value)
   }
 
@@ -67,86 +67,86 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
     (maxDiscardedTests: Float)/(minSuccessfulTests: Float)
 
   // maxDiscarded
-  test("getParams returns passed maxDiscarded config param") {
-    val params = getParams(Seq(MaxDiscardedFactor(PassedMaxDiscardedFactor)), defaultConfig)
+  test("getScalaCheckParams returns passed maxDiscarded config param") {
+    val params = getScalaCheckParams(Seq(MaxDiscardedFactor(PassedMaxDiscardedFactor)), defaultConfig)
     params.maxDiscardRatio should equal (PassedMaxDiscardedFactor.value)
   }
 
-  test("getParams throws IAE if passed multiple maxDiscarded config params") {
+  test("getScalaCheckParams throws IAE if passed multiple maxDiscarded config params") {
     intercept[IllegalArgumentException] {
-      getParams(Seq(MaxDiscardedFactor(33.0), MaxDiscardedFactor(34.0)), defaultConfig)
+      getScalaCheckParams(Seq(MaxDiscardedFactor(33.0), MaxDiscardedFactor(34.0)), defaultConfig)
     }
   }
 
-  test("getParams returns default maxDiscarded config param if none passed") {
-    val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
+  test("getScalaCheckParams returns default maxDiscarded config param if none passed") {
+    val params = getScalaCheckParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
     params.maxDiscardRatio should equal (DefaultMaxDiscardedFactor.value)
   }
 
   // minSize
-  test("getParams returns passed minSize config param") {
-    val params = getParams(Seq(MinSize(PassedMinSize)), defaultConfig)
+  test("getScalaCheckParams returns passed minSize config param") {
+    val params = getScalaCheckParams(Seq(MinSize(PassedMinSize)), defaultConfig)
     params.minSize should equal (PassedMinSize.value)
   }
 
-  test("getParams throws IAE if passed multiple minSize config params") {
+  test("getScalaCheckParams throws IAE if passed multiple minSize config params") {
     intercept[IllegalArgumentException] {
-      getParams(Seq(MinSize(33), MinSize(34)), defaultConfig)
+      getScalaCheckParams(Seq(MinSize(33), MinSize(34)), defaultConfig)
     }
   }
 
-  test("getParams returns default minSize config param if none passed") {
-    val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
+  test("getScalaCheckParams returns default minSize config param if none passed") {
+    val params = getScalaCheckParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
     params.minSize should equal (DefaultMinSize.value)
   }
 
   // sizeRange
-  test("getParams returns passed sizeRange config param") {
-    val params = getParams(Seq(SizeRange(PassedSizeRange)), defaultConfig)
+  test("getScalaCheckParams returns passed sizeRange config param") {
+    val params = getScalaCheckParams(Seq(SizeRange(PassedSizeRange)), defaultConfig)
     params.maxSize should equal (DefaultMinSize + PassedSizeRange)
   }
 
-  test("getParams returns passed minSize and sizeRange config param") {
-    val params = getParams(Seq(MinSize(PassedMinSize), SizeRange(PassedSizeRange)), defaultConfig)
+  test("getScalaCheckParams returns passed minSize and sizeRange config param") {
+    val params = getScalaCheckParams(Seq(MinSize(PassedMinSize), SizeRange(PassedSizeRange)), defaultConfig)
     params.maxSize should equal (PassedMinSize + PassedSizeRange)
   }
 
-  test("getParams throws IAE if passed multiple maxSize config params") {
+  test("getScalaCheckParams throws IAE if passed multiple maxSize config params") {
     intercept[IllegalArgumentException] {
-      getParams(Seq(MaxSize(33), MaxSize(34)), defaultConfig)
+      getScalaCheckParams(Seq(MaxSize(33), MaxSize(34)), defaultConfig)
     }
     intercept[IllegalArgumentException] {
-      getParams(Seq(MaxSize(33), SizeRange(34)), defaultConfig)
+      getScalaCheckParams(Seq(MaxSize(33), SizeRange(34)), defaultConfig)
     }
     intercept[IllegalArgumentException] {
-      getParams(Seq(SizeRange(33), SizeRange(34)), defaultConfig)
+      getScalaCheckParams(Seq(SizeRange(33), SizeRange(34)), defaultConfig)
     }
   }
 
-  test("getParams returns default sizeRange config if none passed") {
-    val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
+  test("getScalaCheckParams returns default sizeRange config if none passed") {
+    val params = getScalaCheckParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
     params.maxSize should equal (DefaultMinSize + DefaultSizeRange)
   }
 
   // workers
-  test("getParams returns passed workers config param") {
-    val params = getParams(Seq(Workers(PassedWorkers)), defaultConfig)
+  test("getScalaCheckParams returns passed workers config param") {
+    val params = getScalaCheckParams(Seq(Workers(PassedWorkers)), defaultConfig)
     params.workers should equal (PassedWorkers.value)
   }
 
-  test("getParams throws IAE if passed multiple workers config params") {
+  test("getScalaCheckParams throws IAE if passed multiple workers config params") {
     intercept[IllegalArgumentException] {
-      getParams(Seq(Workers(33), Workers(34)), defaultConfig)
+      getScalaCheckParams(Seq(Workers(33), Workers(34)), defaultConfig)
     }
   }
 
-  test("getParams returns default workers config param if none passed") {
-    val params = getParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
+  test("getScalaCheckParams returns default workers config param if none passed") {
+    val params = getScalaCheckParams(Seq(MinSuccessful(PassedMinSuccessful)), defaultConfig)
     params.workers should equal (DefaultWorkers.value)
   }
 
-  test("getParams returns all default if no config params passed") {
-    val params = getParams(Seq(), defaultConfig)
+  test("getScalaCheckParams returns all default if no config params passed") {
+    val params = getScalaCheckParams(Seq(), defaultConfig)
     params.minSuccessfulTests should equal (DefaultMinSuccessful.value)
     params.maxDiscardRatio should equal (DefaultMaxDiscardedFactor.value)
     params.minSize should equal (DefaultMinSize.value)
@@ -154,8 +154,8 @@ class PropertyCheckConfigurationHelperSuite extends FunSuite with Matchers {
     params.workers should equal (DefaultWorkers.value)
   }
 
-  test("getParams returns all passed if all config params passed") {
-    val params = getParams(Seq(MinSuccessful(PassedMinSuccessful), MaxDiscardedFactor(PassedMaxDiscardedFactor), MinSize(PassedMinSize),
+  test("getScalaCheckParams returns all passed if all config params passed") {
+    val params = getScalaCheckParams(Seq(MinSuccessful(PassedMinSuccessful), MaxDiscardedFactor(PassedMaxDiscardedFactor), MinSize(PassedMinSize),
       SizeRange(PassedSizeRange), Workers(PassedWorkers)), defaultConfig)
     params.minSuccessfulTests should equal (PassedMinSuccessful.value)
     params.maxDiscardRatio should equal (PassedMaxDiscardedFactor.value)
