@@ -448,7 +448,7 @@ import org.scalatest.exceptions.TestFailedException
  * 
  * @author Bill Venners
  */
-trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
+trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with PropertyFun {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
@@ -840,93 +840,6 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
 """
 
 val propertyCheckForAllTemplate = """
-  /**
-   * Performs a property check by applying the specified property check function to arguments
-   * supplied by implicitly passed generators.
-   *
-   * <p>
-   * Here's an example:
-   * </p>
-   *
-   * <pre class="stHighlight">
-   * forAll { ($namesAndTypes$) =>
-   *   $sumOfArgLengths$ should equal (($sumOfArgs$).length)
-   * }
-   * </pre>
-   *
-   * @param fun the property check function to apply to the generated arguments
-   */
-  private def internalForAll$n$[$alphaUpper$, ASSERTION](names: List[String], config: PropertyCheckConfiguration, prettifier: Prettifier, pos: source.Position)(fun: ($alphaUpper$) => ASSERTION)
-    (implicit
-$gens$
-    ): Assertion = {
-      val maxDiscarded = PropertyCheckConfiguration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
-      val maxSize = config.minSize + config.sizeRange
-
-      @tailrec
-      def loop(succeededCount: Int, discardedCount: Int, nextRandomizer: Randomizer, initialSizes: List[Int]): Unit = {
-        val (size, nextInitialSizes, nextRandomizer2) =
-          initialSizes match {
-            case head :: tail => (head, tail, nextRandomizer)
-            case Nil =>
-              val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
-              (sz, Nil, r2)
-          }
-$stepToStepToResult$
-        val result: Try[Unit] = Try { fun($alphaLower$) }
-        val argsPassed = List($alphaLower$)
-        result match {
-          case Success(()) =>
-            val nextSucceededCount = succeededCount + 1
-            if (nextSucceededCount < config.minSuccessful)
-              loop(nextSucceededCount, discardedCount, $alphaLast$r, nextInitialSizes)
-          case Failure(ex: DiscardedEvaluationException) =>
-            val nextDiscardedCount = discardedCount + 1
-            if (nextDiscardedCount < maxDiscarded)
-              loop(succeededCount, nextDiscardedCount, $alphaLast$r, nextInitialSizes)
-            else throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
-          case Failure(ex) =>
-            throw new GeneratorDrivenPropertyCheckFailedException(
-              (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-              ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-              "  " + FailureMessages.propertyFailed(prettifier, succeededCount) + "\n" +
-              (
-              sde match {
-                case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                  "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                case _ => ""
-              }
-              ) +
-              "  " + FailureMessages.occurredOnValues + "\n" +
-              prettyArgs(argsPassed, prettifier) + "\n" +
-              "  )" +
-              "", // getLabelDisplay(names),
-              Some(ex),
-              pos,
-              None,
-              FailureMessages.propertyFailed(prettifier, succeededCount),
-              argsPassed,
-              None,
-              names
-            )
-        }
-      }
-
-      @tailrec
-      def sizesLoop(sizes: List[Int], count: Int, rnd: Randomizer): List[Int] = {
-        sizes match {
-          case Nil => sizesLoop(List(config.minSize), 1, rnd)
-          case szs if count < 10 =>
-            val (nextSize, nextRandomizer) = rnd.chooseInt(config.minSize, maxSize)
-            sizesLoop(nextSize :: sizes, count + 1,  nextRandomizer)
-          case _ => sizes.sorted
-        }
-      }
-      val initialSizes = sizesLoop(Nil, 0, Randomizer.default)
-      loop(0, 0, Randomizer.default, initialSizes)
-      org.scalatest.Succeeded
-  }
-
   def forAll[$alphaUpper$, ASSERTION](fun: ($alphaUpper$) => ASSERTION)
   (implicit
     config: PropertyCheckConfiguration,
@@ -934,7 +847,34 @@ $stepToStepToResult$
     prettifier: Prettifier,
     pos: source.Position
   ): Assertion =
-    internalForAll$n$(List.empty, config, prettifier, pos)(fun)
+    checkFor$n$(List.empty, config)(fun) match {
+      case PropertyFun.Exhausted(succeeded, discarded) => throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+      case PropertyFun.Failure(succeeded, ex, names, argsPassed) =>
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+          ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+          (
+          sde match {
+            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+            case _ => ""
+          }
+          ) +
+          "  " + FailureMessages.occurredOnValues + "\n" +
+          prettyArgs(argsPassed, prettifier) + "\n" +
+          "  )" +
+          "", // getLabelDisplay(names),
+          Some(ex),
+          pos,
+          None,
+          FailureMessages.propertyFailed(prettifier, succeeded),
+          argsPassed,
+          None,
+          names
+        )
+      case PropertyFun.Success =>  org.scalatest.Succeeded
+    }
 
   def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$)(fun: ($alphaUpper$) => ASSERTION)
     (implicit
@@ -943,7 +883,34 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position
     ): Assertion =
-    internalForAll$n$(List($alphaLower$), config, prettifier, pos)(fun)
+      checkFor$n$(List($alphaLower$), config)(fun) match {
+        case PropertyFun.Exhausted(succeeded, discarded) => throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+        case PropertyFun.Failure(succeeded, ex, names, argsPassed) =>
+          throw new GeneratorDrivenPropertyCheckFailedException(
+            (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+            "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+            (
+            sde match {
+              case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+              case _ => ""
+            }
+            ) +
+            "  " + FailureMessages.occurredOnValues + "\n" +
+            prettyArgs(argsPassed, prettifier) + "\n" +
+            "  )" +
+            "", // getLabelDisplay(names),
+            Some(ex),
+            pos,
+            None,
+            FailureMessages.propertyFailed(prettifier, succeeded),
+            argsPassed,
+            None,
+            names
+          )
+        case PropertyFun.Success =>  org.scalatest.Succeeded
+      }
 
 """
 
