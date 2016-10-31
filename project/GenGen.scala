@@ -51,6 +51,7 @@ import org.scalatest.exceptions.DiscardedEvaluationException
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
 import org.scalatest.exceptions.StackDepth
 import org.scalatest.exceptions.TestFailedException
+import org.scalatest.enablers.PropCheckerAsserting
 
 /**
  * Trait containing methods that faciliate property checks against generated data using ScalaCheck.
@@ -448,7 +449,7 @@ import org.scalatest.exceptions.TestFailedException
  * 
  * @author Bill Venners
  */
-trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with PropertyFun {
+trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
@@ -491,7 +492,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with Pro
    *   values in the <code>PropertyCheckConfiguration</code> implicitly passed to the <code>apply</code> methods of the <code>ConfiguredPropertyCheck</code>
    *   object returned by this method.
    */
-  //def forAll(configParams: PropertyCheckConfigParam*): ConfiguredPropertyCheck = new ConfiguredPropertyCheck(configParams)
+  def forAll(configParams: PropertyCheckConfigParam*): ConfiguredPropertyCheck = new ConfiguredPropertyCheck(configParams)
 
   /**
    * Performs a configured property checks by applying property check functions passed to its <code>apply</code> methods to arguments
@@ -553,7 +554,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with Pro
    *
    * @author Bill Venners
   */
-  /*class ConfiguredPropertyCheck(configParams: Seq[PropertyCheckConfigParam]) {
+  class ConfiguredPropertyCheck(configParams: Seq[PropertyCheckConfigParam]) {
 
   /**
    * Performs a property check by applying the specified property check function to arguments
@@ -574,29 +575,16 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with Pro
    */
     def apply[A, ASSERTION](fun: (A) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          !unmetCondition ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      val propFun = PropertyFun.funForProperty1(List.empty, param)(fun)
+
+      asserting.check(propFun, param, prettifier, pos)
     }
 
   /**
@@ -618,30 +606,17 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with Pro
    */
     def apply[A, B, ASSERTION](fun: (A, B) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          !unmetCondition ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      val propFun = PropertyFun.funForProperty2(List.empty, param)(fun)
+
+      asserting.check(propFun, param, prettifier, pos)
     }
 
   /**
@@ -663,31 +638,18 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with Pro
    */
     def apply[A, B, C, ASSERTION](fun: (A, B, C) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        arbC: Arbitrary[C], shrC: Shrink[C],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B, c: C) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b, c)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          !unmetCondition ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      val propFun = PropertyFun.funForProperty3(List.empty, param)(fun)
+
+      asserting.check(propFun, param, prettifier, pos)
     }
 
   /**
@@ -709,32 +671,19 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with Pro
    */
     def apply[A, B, C, D, ASSERTION](fun: (A, B, C, D) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        arbC: Arbitrary[C], shrC: Shrink[C],
-        arbD: Arbitrary[D], shrD: Shrink[D],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C],
+        genD: org.scalatest.prop.Generator[D],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B, c: C, d: D) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b, c, d)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          !unmetCondition ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      val propFun = PropertyFun.funForProperty4(List.empty, param)(fun)
+
+      asserting.check(propFun, param, prettifier, pos)
     }
 
   /**
@@ -756,33 +705,20 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with Pro
    */
     def apply[A, B, C, D, E, ASSERTION](fun: (A, B, C, D, E) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        arbC: Arbitrary[C], shrC: Shrink[C],
-        arbD: Arbitrary[D], shrD: Shrink[D],
-        arbE: Arbitrary[E], shrE: Shrink[E],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C],
+        genD: org.scalatest.prop.Generator[D],
+        genE: org.scalatest.prop.Generator[E],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B, c: C, d: D, e: E) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b, c, d, e)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          !unmetCondition ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      val propFun = PropertyFun.funForProperty5(List.empty, param)(fun)
+
+      asserting.check(propFun, param, prettifier, pos)
     }
 
   /**
@@ -804,36 +740,23 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration with Pro
    */
     def apply[A, B, C, D, E, F, ASSERTION](fun: (A, B, C, D, E, F) => ASSERTION)
       (implicit
-        config: PropertyCheckConfigurable,
-        arbA: Arbitrary[A], shrA: Shrink[A],
-        arbB: Arbitrary[B], shrB: Shrink[B],
-        arbC: Arbitrary[C], shrC: Shrink[C],
-        arbD: Arbitrary[D], shrD: Shrink[D],
-        arbE: Arbitrary[E], shrE: Shrink[E],
-        arbF: Arbitrary[F], shrF: Shrink[F],
-        asserting: CheckerAsserting[ASSERTION],
+        config: PropertyCheckConfiguration,
+        genA: org.scalatest.prop.Generator[A],
+        genB: org.scalatest.prop.Generator[B],
+        genC: org.scalatest.prop.Generator[C],
+        genD: org.scalatest.prop.Generator[D],
+        genE: org.scalatest.prop.Generator[E],
+        genF: org.scalatest.prop.Generator[F],
+        asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position
       ): asserting.Result = {
-        val propF = { (a: A, b: B, c: C, d: D, e: E, f: F) =>
-          val (unmetCondition, exception) =
-            try {
-              fun(a, b, c, d, e, f)
-              (false, None)
-            }
-            catch {
-              case e: DiscardedEvaluationException => (true, None)
-              case e: Throwable => (false, Some(e))
-            }
-          !unmetCondition ==> (
-            if (exception.isEmpty) Prop.passed else Prop.exception(exception.get)
-          )
-        }
-        val prop = Prop.forAll(propF)
-        val params = getParams(configParams, config)
-        asserting.check(prop, params, prettifier, pos)
+      val param = getParameter(configParams, config)
+      val propFun = PropertyFun.funForProperty6(List.empty, param)(fun)
+
+      asserting.check(propFun, param, prettifier, pos)
     }
-  }*/
+  }
 
   import GeneratorDrivenPropertyChecks.prettyArgs
 
@@ -847,9 +770,9 @@ val propertyCheckForAllTemplate = """
     prettifier: Prettifier,
     pos: source.Position
   ): Assertion =
-    checkFor$n$(List.empty, config)(fun) match {
-      case PropertyFun.Exhausted(succeeded, discarded) => throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
-      case PropertyFun.Failure(succeeded, ex, names, argsPassed) =>
+    PropertyFun.checkFor$n$(List.empty, getParameter(List.empty, config))(fun) match {
+      case PropertyFun.CheckExhausted(succeeded, discarded) => throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+      case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
         throw new GeneratorDrivenPropertyCheckFailedException(
           (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
           ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
@@ -873,7 +796,7 @@ val propertyCheckForAllTemplate = """
           None,
           names
         )
-      case PropertyFun.Success =>  org.scalatest.Succeeded
+      case PropertyFun.CheckSuccess(args) =>  org.scalatest.Succeeded
     }
 
   def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$)(fun: ($alphaUpper$) => ASSERTION)
@@ -883,9 +806,9 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position
     ): Assertion =
-      checkFor$n$(List($alphaLower$), config)(fun) match {
-        case PropertyFun.Exhausted(succeeded, discarded) => throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
-        case PropertyFun.Failure(succeeded, ex, names, argsPassed) =>
+      PropertyFun.checkFor$n$(List($alphaLower$), getParameter(List.empty, config))(fun) match {
+        case PropertyFun.CheckExhausted(succeeded, discarded) => throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+        case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
           throw new GeneratorDrivenPropertyCheckFailedException(
             (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
             ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
@@ -909,7 +832,7 @@ $gens$,
             None,
             names
           )
-        case PropertyFun.Success =>  org.scalatest.Succeeded
+        case PropertyFun.CheckSuccess(args) =>  org.scalatest.Succeeded
       }
 
 """
