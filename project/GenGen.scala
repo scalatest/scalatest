@@ -2007,7 +2007,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  it("ScalaCheck property that takes $n$ args, which fails") {
+  /*it("ScalaCheck property that takes $n$ args, which fails") {
 
     intercept[GeneratorDrivenPropertyCheckFailedException] {
       check { ($namesAndTypes$) =>
@@ -2016,7 +2016,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  /*it("ScalaCheck property that takes $n$ args and generators, which succeeds") {
+  it("ScalaCheck property that takes $n$ args and generators, which succeeds") {
 
     val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
       $sumOfArgLengths$ == (($sumOfArgs$).length)
@@ -2594,7 +2594,7 @@ $okayExpressions$
     
     val traitOrObjectName =
       if (doItForCheckers)
-        "Checkers"
+        "PropCheckers"
       else {
         if (withTables) "PropertyChecks" else "GeneratorDrivenPropertyChecks"
       }

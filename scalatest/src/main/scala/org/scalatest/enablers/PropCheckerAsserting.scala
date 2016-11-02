@@ -164,6 +164,26 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
     }
   }
 
+  // TODO: THIS IS WEIRD, SHOULDN'T NEED THIS.
+  implicit def assertingNatureOfBoolean: PropCheckerAsserting[Boolean] { type Result = Boolean } = {
+    new PropCheckerAssertingImpl[Boolean] {
+      type Result = Boolean
+      private[scalatest] def indicateSuccess(message: => String): Boolean = true
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Boolean = {
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          messageFun,
+          optionalCause,
+          pos,
+          None,
+          undecoratedMessage,
+          scalaCheckArgs,
+          None,
+          scalaCheckLabels.toList
+        )
+      }
+    }
+  }
+
   private[enablers] def argsAndLabels(result: PropertyTest.Result): (List[PropertyArgument], List[String]) = {
 
     val (args: List[PropertyArgument], labels: List[String]) =
