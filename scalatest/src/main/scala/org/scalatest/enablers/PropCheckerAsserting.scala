@@ -17,7 +17,7 @@ package org.scalatest.enablers
 
 import org.scalactic.{Prettifier, source}
 import org.scalatest.exceptions.{StackDepth, StackDepthException, GeneratorDrivenPropertyCheckFailedException}
-import org.scalatest.prop.{Configuration, PropertyArgument, PropertyFun}
+import org.scalatest.prop.{Configuration, PropertyArgument, PropertyTest}
 import org.scalatest.{FailureMessages, Resources, UnquotedString, Fact, Expectation, Assertion, Succeeded}
 import FailureMessages.decorateToStringValue
 
@@ -38,7 +38,7 @@ trait PropCheckerAsserting[T] {
     * @param argNames the list of argument names
     * @return the <code>Result</code> of the property check.
     */
-  def check(p: PropertyFun, prms: Configuration.Parameter, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result
+  def check(p: PropertyTest, prms: Configuration.Parameter, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result
 
 }
 
@@ -63,11 +63,11 @@ abstract class UnitPropCheckerAsserting {
       * @param argNames the list of argument names
       * @return the <code>Result</code> of the property check.
       */
-    def check(p: PropertyFun, prms: Configuration.Parameter, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
-      val result = p.check(argNames.getOrElse(List.empty), prms)
+    def check(p: PropertyTest, prms: Configuration.Parameter, prettifier: Prettifier, pos: source.Position, argNames: Option[List[String]] = None): Result = {
+      val result = p.check
       val (args, labels) = argsAndLabels(result)
       result match {
-        case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+        case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
           val failureMsg =
             if (succeeded == 1)
               FailureMessages.propCheckExhaustedAfterOne(prettifier, discarded)
@@ -83,7 +83,7 @@ abstract class UnitPropCheckerAsserting {
             pos
           )
 
-        case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
+        case PropertyTest.CheckFailure(succeeded, ex, names, argsPassed) =>
           indicateFailure(
             sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
               ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
@@ -108,79 +108,6 @@ abstract class UnitPropCheckerAsserting {
 
         case _ => indicateSuccess(FailureMessages.propertyCheckSucceeded)
       }
-      /*if (!result.passed) {
-
-        val (args, labels) = argsAndLabels(result)
-
-        (result.status: @unchecked) match {
-
-          case PropertyFun.CheckExhausted =>
-
-            val failureMsg =
-              if (result.succeeded == 1)
-                FailureMessages.propCheckExhaustedAfterOne(prettifier, result.discarded)
-              else
-                FailureMessages.propCheckExhausted(prettifier, result.succeeded, result.discarded)
-
-            indicateFailure(
-              sde => failureMsg,
-              failureMsg,
-              args,
-              labels,
-              None,
-              pos
-            )
-
-          case Test.Failed(scalaCheckArgs, scalaCheckLabels) =>
-
-            val stackDepth = 1
-
-            indicateFailure(
-              sde => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
-                ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
-                "  " + FailureMessages.propertyFailed(prettifier, result.succeeded) + "\n" +
-                (
-                  sde match {
-                    case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                      "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                    case _ => ""
-                  }
-                  ) +
-                "  " + FailureMessages.occurredOnValues + "\n" +
-                prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs), prettifier) + "\n" +
-                "  )" +
-                getLabelDisplay(scalaCheckLabels),
-              FailureMessages.propertyFailed(prettifier, result.succeeded),
-              scalaCheckArgs,
-              scalaCheckLabels.toList,
-              None,
-              pos
-            )
-
-          case Test.PropException(scalaCheckArgs, e, scalaCheckLabels) =>
-
-            indicateFailure(
-              sde => FailureMessages.propertyException(prettifier, UnquotedString(e.getClass.getSimpleName)) + "\n" +
-                "  " + FailureMessages.thrownExceptionsMessage(prettifier, if (e.getMessage == null) "None" else UnquotedString(e.getMessage)) + "\n" +
-                (
-                  e match {
-                    case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
-                      "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
-                    case _ => ""
-                  }
-                  ) +
-                "  " + FailureMessages.occurredOnValues + "\n" +
-                prettyArgs(getArgsWithSpecifiedNames(argNames, scalaCheckArgs), prettifier) + "\n" +
-                "  )" +
-                getLabelDisplay(scalaCheckLabels),
-              FailureMessages.propertyException(prettifier, UnquotedString(e.getClass.getName)),
-              scalaCheckArgs,
-              scalaCheckLabels.toList,
-              Some(e),
-              pos
-            )
-        }
-      } else indicateSuccess(FailureMessages.propertyCheckSucceeded)*/
     }
 
     private[scalatest] def indicateSuccess(message: => String): Result
@@ -237,12 +164,12 @@ object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
     }
   }
 
-  private[enablers] def argsAndLabels(result: PropertyFun.Result): (List[PropertyArgument], List[String]) = {
+  private[enablers] def argsAndLabels(result: PropertyTest.Result): (List[PropertyArgument], List[String]) = {
 
     val (args: List[PropertyArgument], labels: List[String]) =
       result match {
-        case PropertyFun.CheckSuccess(args) => (args.toList, List())
-        case PropertyFun.CheckFailure(_, _, names, args) => (args.toList, List())
+        case PropertyTest.CheckSuccess(args) => (args.toList, List())
+        case PropertyTest.CheckFailure(_, _, names, args) => (args.toList, List())
         case _ => (List(), List())
       }
 
