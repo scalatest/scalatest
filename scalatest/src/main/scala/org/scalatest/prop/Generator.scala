@@ -49,6 +49,26 @@ object Generator {
       }
     }
 
+  def oneOf[T](seq: T*): Generator[T] =
+    new Generator[T] {
+      def next(size: Int, rnd: Randomizer): (T, Randomizer) = {
+        val (nextInt, nextRandomizer) = rnd.chooseInt(0, seq.length - 1)
+        val nextT = seq(nextInt)
+        (nextT, nextRandomizer)
+      }
+    }
+
+  /*def sized[T](fun: Int => Generator[T]): Generator[T] =
+    new Generator[T] {
+      def next(size: Int, rnd: Randomizer): (T, Randomizer) = {
+        val sGen = fun(size)
+        sGen.n
+        /*val (nextInt, nextRandomizer) = rnd.nextInt
+        val nextT = fun(size)
+        (nextT, nextRandomizer)*/
+      }
+    }*/
+
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
       def next(size: Int, rnd: Randomizer): (Byte, Randomizer) = rnd.nextByteWithEdges

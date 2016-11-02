@@ -16,9 +16,9 @@
 package org.scalatest.enablers
 
 import org.scalactic.{Prettifier, source}
-import org.scalatest.exceptions.{StackDepth, StackDepthException}
+import org.scalatest.exceptions.{StackDepth, StackDepthException, GeneratorDrivenPropertyCheckFailedException}
 import org.scalatest.prop.{Configuration, PropertyArgument, PropertyFun}
-import org.scalatest.{FailureMessages, Resources, UnquotedString}
+import org.scalatest.{FailureMessages, Resources, UnquotedString, Fact, Expectation, Assertion, Succeeded}
 import FailureMessages.decorateToStringValue
 
 trait PropCheckerAsserting[T] {
@@ -67,7 +67,7 @@ abstract class UnitPropCheckerAsserting {
       val result = p.check(argNames.getOrElse(List.empty), prms)
       val (args, labels) = argsAndLabels(result)
       result match {
-        case PropertyFun.CheckExhausted(succeeded, discarded) =>
+        case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
           val failureMsg =
             if (succeeded == 1)
               FailureMessages.propCheckExhaustedAfterOne(prettifier, discarded)
@@ -191,14 +191,58 @@ abstract class UnitPropCheckerAsserting {
 
 }
 
-object PropCheckerAsserting {
+abstract class ExpectationPropCheckerAsserting extends UnitPropCheckerAsserting {
 
-  private[enablers] def argsAndLabels(result: PropertyFun.Result): (List[Any], List[String]) = {
+  implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): PropCheckerAsserting[Expectation] { type Result = Expectation } = {
+    new PropCheckerAssertingImpl[Expectation] {
+      type Result = Expectation
+      private[scalatest] def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Expectation = {
+        val gdpcfe =
+          new GeneratorDrivenPropertyCheckFailedException(
+            messageFun,
+            optionalCause,
+            pos,
+            None,
+            undecoratedMessage,
+            scalaCheckArgs,
+            None,
+            scalaCheckLabels.toList
+          )
+        val message: String = gdpcfe.getMessage
+        Fact.No(message)(prettifier)
+      }
+    }
+  }
+}
 
-    val (args: List[Any], labels: List[String]) =
+object PropCheckerAsserting extends ExpectationPropCheckerAsserting {
+
+  implicit def assertingNatureOfAssertion: PropCheckerAsserting[Assertion] { type Result = Assertion } = {
+    new PropCheckerAssertingImpl[Assertion] {
+      type Result = Assertion
+      private[scalatest] def indicateSuccess(message: => String): Assertion = Succeeded
+      private[scalatest] def indicateFailure(messageFun: StackDepthException => String, undecoratedMessage: => String, scalaCheckArgs: List[Any], scalaCheckLabels: List[String], optionalCause: Option[Throwable], pos: source.Position): Assertion = {
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          messageFun,
+          optionalCause,
+          pos,
+          None,
+          undecoratedMessage,
+          scalaCheckArgs,
+          None,
+          scalaCheckLabels.toList
+        )
+      }
+    }
+  }
+
+  private[enablers] def argsAndLabels(result: PropertyFun.Result): (List[PropertyArgument], List[String]) = {
+
+    val (args: List[PropertyArgument], labels: List[String]) =
       result match {
         case PropertyFun.CheckSuccess(args) => (args.toList, List())
-        case PropertyFun.CheckFailure(_, _, args, labels) => (args.toList, labels.toList)
+        case PropertyFun.CheckFailure(_, _, names, args) => (args.toList, List())
         case _ => (List(), List())
       }
 

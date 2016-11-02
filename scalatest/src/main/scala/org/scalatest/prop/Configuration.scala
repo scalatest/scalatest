@@ -535,13 +535,24 @@ trait Configuration {
       }
     }
 
-    Configuration.Parameter(
-      PosInt.from(minSuccessfulTests).getOrElse(config.minSuccessful),
-      PosZDouble.from(maxDiscardRatio).getOrElse(config.maxDiscardedFactor),
-      PosZInt.from(minSize).getOrElse(config.minSize),
-      PosZInt.from(psizeRange.getOrElse(config.sizeRange.value)).getOrElse(config.sizeRange),
-      PosInt.from(pworkers.getOrElse(config.workers)).getOrElse(config.workers)
-    )
+    val param =
+      Configuration.Parameter(
+        PosInt.from(minSuccessfulTests).getOrElse(config.minSuccessful),
+        PosZDouble.from(maxDiscardRatio).getOrElse(config.maxDiscardedFactor),
+        PosZInt.from(minSize).getOrElse(config.minSize),
+        PosZInt.from(maxSize - minSize).getOrElse(config.sizeRange),
+        PosInt.from(pworkers.getOrElse(config.workers)).getOrElse(config.workers)
+      )
+
+    if(
+      param.minSuccessful.value <= 0 ||
+      param.maxDiscardedFactor.value <= 0 ||
+      param.minSize.value < 0 ||
+      maxSize < param.minSize.value ||
+      param.workers.value <= 0
+    ) throw new IllegalArgumentException("Invalid test parameters")
+
+    param
   }
 
   /**

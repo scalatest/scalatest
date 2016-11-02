@@ -19,7 +19,7 @@ object PropertyFun {
 
   case class CheckSuccess(args: List[PropertyArgument]) extends Result
 
-  case class CheckExhausted(succeeded: Long, discarded: Long) extends Result
+  case class CheckExhausted(succeeded: Long, discarded: Long, names: List[String], argsPassed: List[PropertyArgument]) extends Result
 
   case class CheckFailure(succeeded: Long, ex: Throwable, names: List[String], argsPassed: List[PropertyArgument]) extends Result
 
@@ -28,13 +28,10 @@ object PropertyFun {
                                    genA: org.scalatest.prop.Generator[A]
                                   ): PropertyFun =
     new PropertyFun {
-      def check(names: List[String], config: Parameter): Result = checkFor1(names, config)(fun)
+      def check(names: List[String], config: Parameter): Result = checkFor1(names, config, genA)(fun)
     }
 
-  def checkFor1[A, ASSERTION](names: List[String], config: Parameter)(fun: (A) => ASSERTION)
-                             (implicit
-                              genA: org.scalatest.prop.Generator[A]
-                             ): PropertyFun.Result = {
+  def checkFor1[A, ASSERTION](names: List[String], config: Parameter, genA: org.scalatest.prop.Generator[A])(fun: (A) => ASSERTION): PropertyFun.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -47,7 +44,7 @@ object PropertyFun {
             val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
             (sz, Nil, r2)
         }
-      val (a, ar) = genA.next(10, nextRandomizer)
+      val (a, ar) = genA.next(size, nextRandomizer)
 
       val result: Try[Unit] = Try { fun(a) }
       val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
@@ -63,7 +60,7 @@ object PropertyFun {
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, ar, nextInitialSizes)
           else
-            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount)
+            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
           new PropertyFun.CheckFailure(succeededCount, ex, names, argsPassed)
       }
@@ -89,14 +86,13 @@ object PropertyFun {
                                       genB: org.scalatest.prop.Generator[B]
                                      ): PropertyFun =
     new PropertyFun {
-      def check(names: List[String], config: Parameter): Result = checkFor2(names, config)(fun)
+      def check(names: List[String], config: Parameter): Result = checkFor2(names, config, genA, genB)(fun)
     }
 
-  def checkFor2[A, B, ASSERTION](names: List[String], config: Parameter)(fun: (A, B) => ASSERTION)
-                                (implicit
+  def checkFor2[A, B, ASSERTION](names: List[String], config: Parameter,
                                  genA: org.scalatest.prop.Generator[A],
-                                 genB: org.scalatest.prop.Generator[B]
-                                ): PropertyFun.Result = {
+                                 genB: org.scalatest.prop.Generator[B])
+                                (fun: (A, B) => ASSERTION): PropertyFun.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -109,8 +105,8 @@ object PropertyFun {
             val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
             (sz, Nil, r2)
         }
-      val (a, ar) = genA.next(10, nextRandomizer)
-      val (b, br) = genB.next(10, ar)
+      val (a, ar) = genA.next(size, nextRandomizer)
+      val (b, br) = genB.next(size, ar)
       val result: Try[Unit] = Try { fun(a, b) }
       val argsPassed =
         List(
@@ -129,7 +125,7 @@ object PropertyFun {
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, br, nextInitialSizes)
           else
-            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount)
+            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
           new PropertyFun.CheckFailure(succeededCount, ex, names, argsPassed)
       }
@@ -156,15 +152,14 @@ object PropertyFun {
                                          genC: org.scalatest.prop.Generator[C]
                                         ): PropertyFun =
     new PropertyFun {
-      def check(names: List[String], config: Parameter): Result = checkFor3(names, config)(fun)
+      def check(names: List[String], config: Parameter): Result = checkFor3(names, config, genA, genB, genC)(fun)
     }
 
-  def checkFor3[A, B, C, ASSERTION](names: List[String], config: Parameter)(fun: (A, B, C) => ASSERTION)
-                                   (implicit
+  def checkFor3[A, B, C, ASSERTION](names: List[String], config: Parameter,
                                     genA: org.scalatest.prop.Generator[A],
                                     genB: org.scalatest.prop.Generator[B],
-                                    genC: org.scalatest.prop.Generator[C]
-                                   ): PropertyFun.Result = {
+                                    genC: org.scalatest.prop.Generator[C])
+                                   (fun: (A, B, C) => ASSERTION): PropertyFun.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -177,9 +172,9 @@ object PropertyFun {
             val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
             (sz, Nil, r2)
         }
-      val (a, ar) = genA.next(10, nextRandomizer)
-      val (b, br) = genB.next(10, ar)
-      val (c, cr) = genC.next(10, br)
+      val (a, ar) = genA.next(size, nextRandomizer)
+      val (b, br) = genB.next(size, ar)
+      val (c, cr) = genC.next(size, br)
       val result: Try[Unit] = Try { fun(a, b, c) }
       val argsPassed =
         List(
@@ -199,7 +194,7 @@ object PropertyFun {
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, cr, nextInitialSizes)
           else
-            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount)
+            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
           new PropertyFun.CheckFailure(succeededCount, ex, names, argsPassed)
       }
@@ -227,16 +222,15 @@ object PropertyFun {
                                             genD: org.scalatest.prop.Generator[D]
                                            ): PropertyFun =
     new PropertyFun {
-      def check(names: List[String], config: Parameter): Result = checkFor4(names, config)(fun)
+      def check(names: List[String], config: Parameter): Result = checkFor4(names, config, genA, genB, genC, genD)(fun)
     }
 
-  def checkFor4[A, B, C, D, ASSERTION](names: List[String], config: Parameter)(fun: (A, B, C, D) => ASSERTION)
-                                      (implicit
+  def checkFor4[A, B, C, D, ASSERTION](names: List[String], config: Parameter,
                                        genA: org.scalatest.prop.Generator[A],
                                        genB: org.scalatest.prop.Generator[B],
                                        genC: org.scalatest.prop.Generator[C],
-                                       genD: org.scalatest.prop.Generator[D]
-                                      ): PropertyFun.Result = {
+                                       genD: org.scalatest.prop.Generator[D])
+                                      (fun: (A, B, C, D) => ASSERTION): PropertyFun.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -249,10 +243,10 @@ object PropertyFun {
             val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
             (sz, Nil, r2)
         }
-      val (a, ar) = genA.next(10, nextRandomizer)
-      val (b, br) = genB.next(10, ar)
-      val (c, cr) = genC.next(10, br)
-      val (d, dr) = genD.next(10, cr)
+      val (a, ar) = genA.next(size, nextRandomizer)
+      val (b, br) = genB.next(size, ar)
+      val (c, cr) = genC.next(size, br)
+      val (d, dr) = genD.next(size, cr)
       val result: Try[Unit] = Try { fun(a, b, c, d) }
       val argsPassed =
         List(
@@ -273,7 +267,7 @@ object PropertyFun {
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, dr, nextInitialSizes)
           else
-            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount)
+            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
           new PropertyFun.CheckFailure(succeededCount, ex, names, argsPassed)
       }
@@ -302,17 +296,16 @@ object PropertyFun {
                                                genE: org.scalatest.prop.Generator[E]
                                               ): PropertyFun =
     new PropertyFun {
-      def check(names: List[String], config: Parameter): Result = checkFor5(names, config)(fun)
+      def check(names: List[String], config: Parameter): Result = checkFor5(names, config, genA, genB, genC, genD, genE)(fun)
     }
 
-  def checkFor5[A, B, C, D, E, ASSERTION](names: List[String], config: Parameter)(fun: (A, B, C, D, E) => ASSERTION)
-                                         (implicit
+  def checkFor5[A, B, C, D, E, ASSERTION](names: List[String], config: Parameter,
                                           genA: org.scalatest.prop.Generator[A],
                                           genB: org.scalatest.prop.Generator[B],
                                           genC: org.scalatest.prop.Generator[C],
                                           genD: org.scalatest.prop.Generator[D],
-                                          genE: org.scalatest.prop.Generator[E]
-                                         ): PropertyFun.Result = {
+                                          genE: org.scalatest.prop.Generator[E])
+                                         (fun: (A, B, C, D, E) => ASSERTION): PropertyFun.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -325,11 +318,11 @@ object PropertyFun {
             val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
             (sz, Nil, r2)
         }
-      val (a, ar) = genA.next(10, nextRandomizer)
-      val (b, br) = genB.next(10, ar)
-      val (c, cr) = genC.next(10, br)
-      val (d, dr) = genD.next(10, cr)
-      val (e, er) = genE.next(10, dr)
+      val (a, ar) = genA.next(size, nextRandomizer)
+      val (b, br) = genB.next(size, ar)
+      val (c, cr) = genC.next(size, br)
+      val (d, dr) = genD.next(size, cr)
+      val (e, er) = genE.next(size, dr)
       val result: Try[Unit] = Try { fun(a, b, c, d, e) }
       val argsPassed =
         List(
@@ -351,7 +344,7 @@ object PropertyFun {
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, er, nextInitialSizes)
           else
-            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount)
+            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
           new PropertyFun.CheckFailure(succeededCount, ex, names, argsPassed)
       }
@@ -372,27 +365,26 @@ object PropertyFun {
   }
 
   def funForProperty6[A, B, C, D, E, F, ASSERTION](names: List[String], config: Parameter)(fun: (A, B, C, D, E, F) => ASSERTION)
-                                                 (implicit
-                                                  genA: org.scalatest.prop.Generator[A],
-                                                  genB: org.scalatest.prop.Generator[B],
-                                                  genC: org.scalatest.prop.Generator[C],
-                                                  genD: org.scalatest.prop.Generator[D],
-                                                  genE: org.scalatest.prop.Generator[E],
-                                                  genF: org.scalatest.prop.Generator[F]
-                                                 ): PropertyFun =
+                                               (implicit
+                                                genA: org.scalatest.prop.Generator[A],
+                                                genB: org.scalatest.prop.Generator[B],
+                                                genC: org.scalatest.prop.Generator[C],
+                                                genD: org.scalatest.prop.Generator[D],
+                                                genE: org.scalatest.prop.Generator[E],
+                                                genF: org.scalatest.prop.Generator[F]
+                                               ): PropertyFun =
     new PropertyFun {
-      def check(names: List[String], config: Parameter): Result = checkFor6(names, config)(fun)
+      def check(names: List[String], config: Parameter): Result = checkFor6(names, config, genA, genB, genC, genD, genE, genF)(fun)
     }
 
-  def checkFor6[A, B, C, D, E, F, ASSERTION](names: List[String], config: Parameter)(fun: (A, B, C, D, E, F) => ASSERTION)
-                                            (implicit
+  def checkFor6[A, B, C, D, E, F, ASSERTION](names: List[String], config: Parameter,
                                              genA: org.scalatest.prop.Generator[A],
                                              genB: org.scalatest.prop.Generator[B],
                                              genC: org.scalatest.prop.Generator[C],
                                              genD: org.scalatest.prop.Generator[D],
                                              genE: org.scalatest.prop.Generator[E],
-                                             genF: org.scalatest.prop.Generator[F]
-                                            ): PropertyFun.Result = {
+                                             genF: org.scalatest.prop.Generator[F])
+                                            (fun: (A, B, C, D, E, F) => ASSERTION): PropertyFun.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -405,12 +397,12 @@ object PropertyFun {
             val (sz, r2) = nextRandomizer.chooseInt(config.minSize, maxSize)
             (sz, Nil, r2)
         }
-      val (a, ar) = genA.next(10, nextRandomizer)
-      val (b, br) = genB.next(10, ar)
-      val (c, cr) = genC.next(10, br)
-      val (d, dr) = genD.next(10, cr)
-      val (e, er) = genE.next(10, dr)
-      val (f, fr) = genF.next(10, er)
+      val (a, ar) = genA.next(size, nextRandomizer)
+      val (b, br) = genB.next(size, ar)
+      val (c, cr) = genC.next(size, br)
+      val (d, dr) = genD.next(size, cr)
+      val (e, er) = genE.next(size, dr)
+      val (f, fr) = genF.next(size, er)
       val result: Try[Unit] = Try { fun(a, b, c, d, e, f) }
       val argsPassed =
         List(
@@ -433,7 +425,7 @@ object PropertyFun {
           if (nextDiscardedCount < maxDiscarded)
             loop(succeededCount, nextDiscardedCount, fr, nextInitialSizes)
           else
-            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount)
+            new PropertyFun.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
           new PropertyFun.CheckFailure(succeededCount, ex, names, argsPassed)
       }

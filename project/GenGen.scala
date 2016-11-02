@@ -770,8 +770,20 @@ val propertyCheckForAllTemplate = """
     prettifier: Prettifier,
     pos: source.Position
   ): Assertion =
-    PropertyFun.checkFor$n$(List.empty, getParameter(List.empty, config))(fun) match {
-      case PropertyFun.CheckExhausted(succeeded, discarded) => throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+    PropertyFun.checkFor$n$(List.empty, getParameter(List.empty, config), $genRefs$)(fun) match {
+      case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          (sde: StackDepthException) => "too many discarded evaluations",
+          None,
+          pos,
+          None,
+          "too many discarded evaluations",
+          argsPassed,
+          Some(names),
+          List.empty[String]  // TODO: to pass over label here
+        )
+        //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+
       case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
         throw new GeneratorDrivenPropertyCheckFailedException(
           (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
@@ -806,8 +818,20 @@ $gens$,
       prettifier: Prettifier,
       pos: source.Position
     ): Assertion =
-      PropertyFun.checkFor$n$(List($alphaLower$), getParameter(List.empty, config))(fun) match {
-        case PropertyFun.CheckExhausted(succeeded, discarded) => throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+      PropertyFun.checkFor$n$(List($alphaLower$), getParameter(List.empty, config), $genRefs$)(fun) match {
+        case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+          throw new GeneratorDrivenPropertyCheckFailedException(
+            (sde: StackDepthException) => "too many discarded evaluations",
+            None,
+            pos,
+            None,
+            "too many discarded evaluations",
+            argsPassed,
+            Some(names),
+            List.empty[String]  // TODO: to pass over label here
+          )
+          //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+
         case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
           throw new GeneratorDrivenPropertyCheckFailedException(
             (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
@@ -835,6 +859,246 @@ $gens$,
         case PropertyFun.CheckSuccess(args) =>  org.scalatest.Succeeded
       }
 
+  def forAll[$alphaUpper$, ASSERTION]($namesAndTypes$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+$gens$,
+      prettifier: Prettifier,
+      pos: source.Position
+    ): Assertion =
+      PropertyFun.checkFor$n$(List($alphaLower$), getParameter(configParams, config), $genRefs$)(fun) match {
+        case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+          throw new GeneratorDrivenPropertyCheckFailedException(
+            (sde: StackDepthException) => "too many discarded evaluations",
+            None,
+            pos,
+            None,
+            "too many discarded evaluations",
+            argsPassed,
+            Some(names),
+            List.empty[String]  // TODO: to pass over label here
+          )
+          //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+
+        case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
+          throw new GeneratorDrivenPropertyCheckFailedException(
+            (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+            "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+            (
+            sde match {
+              case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+              case _ => ""
+            }
+            ) +
+            "  " + FailureMessages.occurredOnValues + "\n" +
+            prettyArgs(argsPassed, prettifier) + "\n" +
+            "  )" +
+            "", // getLabelDisplay(names),
+            Some(ex),
+            pos,
+            None,
+            FailureMessages.propertyFailed(prettifier, succeeded),
+            argsPassed,
+            None,
+            names
+          )
+        case PropertyFun.CheckSuccess(args) =>  org.scalatest.Succeeded
+      }
+
+  def forAll[$alphaUpper$, ASSERTION]($gens$)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+      prettifier: Prettifier,
+      pos: source.Position
+    ): Assertion =
+    PropertyFun.checkFor$n$(List.empty, getParameter(List.empty, config), $genRefs$)(fun) match {
+      case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          (sde: StackDepthException) => "too many discarded evaluations",
+          None,
+          pos,
+          None,
+          "too many discarded evaluations",
+          argsPassed,
+          Some(names),
+          List.empty[String]  // TODO: to pass over label here
+        )
+        //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+
+      case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+          ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+          (
+          sde match {
+            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+            case _ => ""
+          }
+          ) +
+          "  " + FailureMessages.occurredOnValues + "\n" +
+          prettyArgs(argsPassed, prettifier) + "\n" +
+          "  )" +
+          "", // getLabelDisplay(names),
+          Some(ex),
+          pos,
+          None,
+          FailureMessages.propertyFailed(prettifier, succeeded),
+          argsPassed,
+          None,
+          names
+        )
+      case PropertyFun.CheckSuccess(args) =>  org.scalatest.Succeeded
+    }
+
+  def forAll[$alphaUpper$, ASSERTION]($gens$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+      prettifier: Prettifier,
+      pos: source.Position
+    ): Assertion =
+    PropertyFun.checkFor$n$(List.empty, getParameter(configParams, config), $genRefs$)(fun) match {
+      case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          (sde: StackDepthException) => "too many discarded evaluations",
+          None,
+          pos,
+          None,
+          "too many discarded evaluations",
+          argsPassed,
+          Some(names),
+          List.empty[String]  // TODO: to pass over label here
+        )
+        //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+
+      case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+          ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+          (
+          sde match {
+            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+            case _ => ""
+          }
+          ) +
+          "  " + FailureMessages.occurredOnValues + "\n" +
+          prettyArgs(argsPassed, prettifier) + "\n" +
+          "  )" +
+          "", // getLabelDisplay(names),
+          Some(ex),
+          pos,
+          None,
+          FailureMessages.propertyFailed(prettifier, succeeded),
+          argsPassed,
+          None,
+          names
+        )
+      case PropertyFun.CheckSuccess(args) =>  org.scalatest.Succeeded
+    }
+
+  def forAll[$alphaUpper$, ASSERTION]($gensAndNames$)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+      prettifier: Prettifier,
+      pos: source.Position
+    ): Assertion = {
+    $tupleBusters$
+    PropertyFun.checkFor$n$(List($argNameNames$), getParameter(List.empty, config), $genRefs$)(fun) match {
+      case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          (sde: StackDepthException) => "too many discarded evaluations",
+          None,
+          pos,
+          None,
+          "too many discarded evaluations",
+          argsPassed,
+          Some(names),
+          List.empty[String]  // TODO: to pass over label here
+        )
+        //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+
+      case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+          ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+          "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+          (
+          sde match {
+            case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+              "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+            case _ => ""
+          }
+          ) +
+          "  " + FailureMessages.occurredOnValues + "\n" +
+          prettyArgs(argsPassed, prettifier) + "\n" +
+          "  )" +
+          "", // getLabelDisplay(names),
+          Some(ex),
+          pos,
+          None,
+          FailureMessages.propertyFailed(prettifier, succeeded),
+          argsPassed,
+          None,
+          names
+        )
+      case PropertyFun.CheckSuccess(args) =>  org.scalatest.Succeeded
+    }
+  }
+
+  def forAll[$alphaUpper$, ASSERTION]($gensAndNames$, configParams: PropertyCheckConfigParam*)(fun: ($alphaUpper$) => ASSERTION)
+    (implicit
+      config: PropertyCheckConfiguration,
+      prettifier: Prettifier,
+      pos: source.Position
+    ): Assertion = {
+      $tupleBusters$
+      PropertyFun.checkFor$n$(List($argNameNames$), getParameter(configParams, config), $genRefs$)(fun) match {
+        case PropertyFun.CheckExhausted(succeeded, discarded, names, argsPassed) =>
+          throw new GeneratorDrivenPropertyCheckFailedException(
+            (sde: StackDepthException) => "too many discarded evaluations",
+            None,
+            pos,
+            None,
+            "too many discarded evaluations",
+            argsPassed,
+            Some(names),
+            List.empty[String]  // TODO: to pass over label here
+          )
+          //throw new TestFailedException((sde: StackDepthException) => Some("too many discarded evaluations"), None, pos, None)
+
+        case PropertyFun.CheckFailure(succeeded, ex, names, argsPassed) =>
+          throw new GeneratorDrivenPropertyCheckFailedException(
+            (sde: StackDepthException) => FailureMessages.propertyException(prettifier, UnquotedString(sde.getClass.getSimpleName)) + "\n" +
+            ( sde.failedCodeFileNameAndLineNumberString match { case Some(s) => " (" + s + ")"; case None => "" }) + "\n" +
+            "  " + FailureMessages.propertyFailed(prettifier, succeeded) + "\n" +
+            (
+            sde match {
+              case sd: StackDepth if sd.failedCodeFileNameAndLineNumberString.isDefined =>
+                "  " + FailureMessages.thrownExceptionsLocation(prettifier, UnquotedString(sd.failedCodeFileNameAndLineNumberString.get)) + "\n"
+              case _ => ""
+            }
+            ) +
+            "  " + FailureMessages.occurredOnValues + "\n" +
+            prettyArgs(argsPassed, prettifier) + "\n" +
+            "  )" +
+            "", // getLabelDisplay(names),
+            Some(ex),
+            pos,
+            None,
+            FailureMessages.propertyFailed(prettifier, succeeded),
+            argsPassed,
+            None,
+            names
+          )
+        case PropertyFun.CheckSuccess(args) =>  org.scalatest.Succeeded
+      }
+    }
+
 """
 
 val generatorDrivenPropertyChecksCompanionObjectVerbatimString = """
@@ -859,28 +1123,32 @@ val generatorSuitePreamble = """
 
 import org.scalatest.Matchers
 import org.scalatest.exceptions.GeneratorDrivenPropertyCheckFailedException
-import org.scalacheck.Gen
 """
 
 val generatorSuitePostamble = """
   val famousLastWords = for {
-    s <- Gen.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
+    s <- Generator.oneOf("the", "program", "compiles", "therefore", "it", "should", "work")
   } yield s
 
-  val sevenEleven: Gen[String] =
-    Gen.sized { (size: Int) =>
-      if (size >= 7 && size <= 11)
-        Gen.const("OKAY")
-      else
-        throw new Exception("expected 7 <= size <= 11 but got " + size)
+  val sevenEleven: Generator[String] =
+    new Generator[String] {
+      def next(size: Int, rnd: Randomizer): (String, Randomizer) = {
+        if (size >= 7 && size <= 11)
+          ("OKAY", rnd)
+        else
+          throw new Exception("expected 7 <= size <= 11 but got " + size)
+      }
     }
 
-  val fiveFive: Gen[String] =
-    Gen.sized { (size: Int) =>
-      if (size == 5)
-        Gen.const("OKAY")
-      else
-        throw new Exception("expected size 5 but got " + size)
+
+  val fiveFive: Generator[String] =
+    new Generator[String] {
+      def next(size: Int, rnd: Randomizer): (String, Randomizer) = {
+        if (size == 5)
+          ("OKAY", rnd)
+        else
+          throw new Exception("expected size 5 but got " + size)
+      }
     }
 """
 
@@ -1741,7 +2009,7 @@ val checkersSuiteTemplate = """
     }
   }
 
-  it("ScalaCheck property that takes $n$ args and generators, which succeeds") {
+  /*it("ScalaCheck property that takes $n$ args and generators, which succeeds") {
 
     val prop = forAll ($famousArgs$) { ($namesAndTypes$) =>
       $sumOfArgLengths$ == (($sumOfArgs$).length)
@@ -2210,7 +2478,7 @@ $okayExpressions$
 $okayExpressions$
     }
     check(prop)
-  }
+  }*/
 """
 // 1712  2205
 
@@ -2246,6 +2514,14 @@ $okayExpressions$
           c => "      gen" + c + ": org.scalatest.prop.Generator[" + c + "]"
         ).mkString(",\n")
 
+        val genRefs = alpha.take(i).toUpperCase.map(
+          c => "gen" + c
+        ).mkString(", ")
+
+        val gensAndNames = alpha.take(i).toUpperCase.map(
+          c => "      genAndName" + c + ": (org.scalatest.prop.Generator[" + c + "], String)"
+        ).mkString(",\n")
+
         val stepToStepToResult =
           "        val (a, ar) = genA.next(10, nextRandomizer)" + "\n" +
           (if (i > 1)
@@ -2275,6 +2551,8 @@ $okayExpressions$
         st.setAttribute("arbShrinks", arbShrinks)
         st.setAttribute("shrinks", shrinks)
         st.setAttribute("gens", gens)
+        st.setAttribute("genRefs", genRefs)
+        st.setAttribute("gensAndNames", gensAndNames)
         st.setAttribute("stepToStepToResult", stepToStepToResult)
         st.setAttribute("alphaLower", alphaLower)
         st.setAttribute("alphaUpper", alphaUpper)
