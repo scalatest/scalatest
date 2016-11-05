@@ -434,7 +434,7 @@ object PropertyTest {
   def forAll1[A, ASSERTION](names: List[String], config: Parameter)(fun: (A) => ASSERTION)
                                    (implicit
                                     genA: org.scalatest.prop.Generator[A],
-                                    resultChecker: PropertyTestResultChecker[ASSERTION]
+                                    resultChecker: PropertyTestResultHandler[ASSERTION]
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
@@ -446,7 +446,7 @@ object PropertyTest {
                                    (implicit
                                      genA: org.scalatest.prop.Generator[A],
                                      genB: org.scalatest.prop.Generator[B],
-                                     resultChecker: PropertyTestResultChecker[ASSERTION]
+                                     resultChecker: PropertyTestResultHandler[ASSERTION]
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
@@ -459,7 +459,7 @@ object PropertyTest {
                                      genA: org.scalatest.prop.Generator[A],
                                      genB: org.scalatest.prop.Generator[B],
                                      genC: org.scalatest.prop.Generator[C],
-                                     resultChecker: PropertyTestResultChecker[ASSERTION]
+                                     resultChecker: PropertyTestResultHandler[ASSERTION]
                                    ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
@@ -473,7 +473,7 @@ object PropertyTest {
                                         genB: org.scalatest.prop.Generator[B],
                                         genC: org.scalatest.prop.Generator[C],
                                         genD: org.scalatest.prop.Generator[D],
-                                        resultChecker: PropertyTestResultChecker[ASSERTION]
+                                        resultChecker: PropertyTestResultHandler[ASSERTION]
                                       ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
@@ -488,7 +488,7 @@ object PropertyTest {
                                            genC: org.scalatest.prop.Generator[C],
                                            genD: org.scalatest.prop.Generator[D],
                                            genE: org.scalatest.prop.Generator[E],
-                                           resultChecker: PropertyTestResultChecker[ASSERTION]
+                                           resultChecker: PropertyTestResultHandler[ASSERTION]
                                          ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION
@@ -504,7 +504,7 @@ object PropertyTest {
                                                    genD: org.scalatest.prop.Generator[D],
                                                    genE: org.scalatest.prop.Generator[E],
                                                    genF: org.scalatest.prop.Generator[F],
-                                                   resultChecker: PropertyTestResultChecker[ASSERTION]
+                                                   resultChecker: PropertyTestResultHandler[ASSERTION]
                                                   ): PropertyTest =
     new PropertyTest {
       type RESULT = ASSERTION

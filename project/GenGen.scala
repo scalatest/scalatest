@@ -580,7 +580,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position,
-        resultChecker: PropertyTestResultChecker[ASSERTION]
+        resultChecker: PropertyTestResultHandler[ASSERTION]
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll1(List.empty, param)(fun)
@@ -613,7 +613,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position,
-        resultChecker: PropertyTestResultChecker[ASSERTION]
+        resultChecker: PropertyTestResultHandler[ASSERTION]
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll2(List.empty, param)(fun)
@@ -647,7 +647,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position,
-        resultChecker: PropertyTestResultChecker[ASSERTION]
+        resultChecker: PropertyTestResultHandler[ASSERTION]
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll3(List.empty, param)(fun)
@@ -682,7 +682,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position,
-        resultChecker: PropertyTestResultChecker[ASSERTION]
+        resultChecker: PropertyTestResultHandler[ASSERTION]
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll4(List.empty, param)(fun)
@@ -718,7 +718,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position,
-        resultChecker: PropertyTestResultChecker[ASSERTION]
+        resultChecker: PropertyTestResultHandler[ASSERTION]
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll5(List.empty, param)(fun)
@@ -755,7 +755,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
         asserting: PropCheckerAsserting[ASSERTION],
         prettifier: Prettifier,
         pos: source.Position,
-        resultChecker: PropertyTestResultChecker[ASSERTION]
+        resultChecker: PropertyTestResultHandler[ASSERTION]
       ): asserting.Result = {
       val param = getParameter(configParams, config)
       val propFun = PropertyTest.forAll6(List.empty, param)(fun)
@@ -775,7 +775,7 @@ val propertyCheckForAllTemplate = """
     $gens$,
     prettifier: Prettifier,
     pos: source.Position,
-    resultChecker: PropertyTestResultChecker[ASSERTION]
+    resultChecker: PropertyTestResultHandler[ASSERTION]
   ): ASSERTION =
     (PropertyTest.forAll$n$(List.empty, getParameter(List.empty, config))(fun)($genRefs$, resultChecker)).check match {
       case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
@@ -825,7 +825,7 @@ val propertyCheckForAllTemplate = """
 $gens$,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultChecker[ASSERTION]
+      resultChecker: PropertyTestResultHandler[ASSERTION]
     ): ASSERTION =
       (PropertyTest.forAll$n$(List($alphaLower$), getParameter(List.empty, config))(fun)($genRefs$, resultChecker)).check match {
         case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
@@ -875,7 +875,7 @@ $gens$,
 $gens$,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultChecker[ASSERTION]
+      resultChecker: PropertyTestResultHandler[ASSERTION]
     ): ASSERTION =
       (PropertyTest.forAll$n$(List($alphaLower$), getParameter(configParams, config))(fun)($genRefs$, resultChecker)).check match {
         case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
@@ -923,7 +923,7 @@ $gens$,
       config: PropertyCheckConfiguration,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultChecker[ASSERTION]
+      resultChecker: PropertyTestResultHandler[ASSERTION]
     ): ASSERTION =
     (PropertyTest.forAll$n$(List.empty, getParameter(List.empty, config))(fun)($genRefs$, resultChecker)).check match {
       case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
@@ -971,7 +971,7 @@ $gens$,
       config: PropertyCheckConfiguration,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultChecker[ASSERTION]
+      resultChecker: PropertyTestResultHandler[ASSERTION]
     ): ASSERTION =
     (PropertyTest.forAll$n$(List.empty, getParameter(configParams, config))(fun)($genRefs$, resultChecker)).check match {
       case PropertyTest.CheckExhausted(succeeded, discarded, names, argsPassed) =>
@@ -1019,7 +1019,7 @@ $gens$,
       config: PropertyCheckConfiguration,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultChecker[ASSERTION]
+      resultChecker: PropertyTestResultHandler[ASSERTION]
     ): ASSERTION = {
     $tupleBusters$
     (PropertyTest.forAll$n$(List($argNameNames$), getParameter(List.empty, config))(fun)($genRefs$, resultChecker)).check match {
@@ -1068,7 +1068,7 @@ $gens$,
       config: PropertyCheckConfiguration,
       prettifier: Prettifier,
       pos: source.Position,
-      resultChecker: PropertyTestResultChecker[ASSERTION]
+      resultChecker: PropertyTestResultHandler[ASSERTION]
     ): ASSERTION = {
       $tupleBusters$
       (PropertyTest.forAll$n$(List($argNameNames$), getParameter(configParams, config))(fun)($genRefs$, resultChecker)).check match {

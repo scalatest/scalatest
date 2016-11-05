@@ -20,7 +20,7 @@ import org.scalactic.{source, Prettifier}
 import org.scalatest.{Fact, Assertion}
 import org.scalatest.exceptions.{StackDepthException, GeneratorDrivenPropertyCheckFailedException}
 
-private[scalatest] trait PropertyTestResultChecker[T] {
+private[scalatest] trait PropertyTestResultHandler[T] {
 
   def succeed(v: T): Boolean
 
@@ -37,10 +37,10 @@ private[scalatest] trait PropertyTestResultChecker[T] {
 
 }
 
-private[scalatest] object PropertyTestResultChecker {
+private[scalatest] object PropertyTestResultHandler {
 
-  implicit def checkerForAny[ASSERTION <: Assertion]: PropertyTestResultChecker[ASSERTION] =
-    new PropertyTestResultChecker[ASSERTION] {
+  implicit def checkerForAny[ASSERTION <: Assertion]: PropertyTestResultHandler[ASSERTION] =
+    new PropertyTestResultHandler[ASSERTION] {
       def succeed(v: ASSERTION): Boolean = true
 
       def indicateSuccess(): ASSERTION = org.scalatest.Succeeded.asInstanceOf[ASSERTION]
@@ -66,8 +66,8 @@ private[scalatest] object PropertyTestResultChecker {
 
     }
 
-  implicit def checkerForBoolean[FACT <: Fact]: PropertyTestResultChecker[FACT] =
-    new PropertyTestResultChecker[FACT] {
+  implicit def checkerForBoolean[FACT <: Fact]: PropertyTestResultHandler[FACT] =
+    new PropertyTestResultHandler[FACT] {
       def succeed(v: FACT): Boolean = {
         v.isYes
       }
