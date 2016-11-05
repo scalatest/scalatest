@@ -15,24 +15,85 @@
  */
 package org.scalatest.prop
 
-import org.scalatest.Assertion
+import org.scalactic.{source, Prettifier}
 
-trait PropertyTestResultChecker[T] {
+import org.scalatest.{Fact, Assertion}
+import org.scalatest.exceptions.{StackDepthException, GeneratorDrivenPropertyCheckFailedException}
+
+private[scalatest] trait PropertyTestResultChecker[T] {
 
   def succeed(v: T): Boolean
 
+  def indicateSuccess(): T
+
+  def indicateFailure(messageFun: StackDepthException => String,
+                      cause: Option[Throwable],
+                      posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
+                      prettifier: Prettifier,
+                      payload: Option[Any],
+                      undecoratedMessage: String,
+                      args: List[Any],
+                      namesOfArgs: Option[List[String]]): T
+
 }
 
-object PropertyTestResultChecker {
+private[scalatest] object PropertyTestResultChecker {
 
-  implicit def checkerForAny[T]: PropertyTestResultChecker[T] =
-    new PropertyTestResultChecker[T] {
-      def succeed(v: T): Boolean = true
+  implicit def checkerForAny[ASSERTION <: Assertion]: PropertyTestResultChecker[ASSERTION] =
+    new PropertyTestResultChecker[ASSERTION] {
+      def succeed(v: ASSERTION): Boolean = true
+
+      def indicateSuccess(): ASSERTION = org.scalatest.Succeeded.asInstanceOf[ASSERTION]
+
+      def indicateFailure(messageFun: StackDepthException => String,
+                          cause: Option[Throwable],
+                          posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
+                          prettifier: Prettifier,
+                          payload: Option[Any],
+                          undecoratedMessage: String,
+                          args: List[Any],
+                          namesOfArgs: Option[List[String]]): ASSERTION =
+        throw new GeneratorDrivenPropertyCheckFailedException(
+          messageFun,
+          cause,
+          posOrStackDepthFun,
+          payload,
+          undecoratedMessage,
+          args,
+          namesOfArgs,
+          List.empty[String]
+        )
+
     }
 
-  implicit def checkerForBoolean[BOOLEAN <: Boolean]: PropertyTestResultChecker[BOOLEAN] =
-    new PropertyTestResultChecker[BOOLEAN] {
-      def succeed(v: BOOLEAN): Boolean = v
+  implicit def checkerForBoolean[FACT <: Fact]: PropertyTestResultChecker[FACT] =
+    new PropertyTestResultChecker[FACT] {
+      def succeed(v: FACT): Boolean = {
+        v.isYes
+      }
+
+      def indicateSuccess(): FACT = Fact.Yes("Property test passed").asInstanceOf[FACT]
+
+      def indicateFailure(messageFun: StackDepthException => String,
+                          cause: Option[Throwable],
+                          posOrStackDepthFun: Either[source.Position, StackDepthException => Int],
+                          prettifier: Prettifier,
+                          payload: Option[Any],
+                          undecoratedMessage: String,
+                          args: List[Any],
+                          namesOfArgs: Option[List[String]]): FACT = {
+        val gdpcfe = new GeneratorDrivenPropertyCheckFailedException(
+          messageFun,
+          cause,
+          posOrStackDepthFun,
+          payload,
+          undecoratedMessage,
+          args,
+          namesOfArgs,
+          List.empty[String]
+        )
+        (Fact.No(gdpcfe.getMessage)(prettifier)).asInstanceOf[FACT]
+      }
     }
 
   val default = checkerForAny

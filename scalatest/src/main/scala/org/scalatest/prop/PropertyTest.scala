@@ -45,15 +45,20 @@ trait PropertyTest {
         }
       val (a, ar) = genA.next(size, nextRandomizer)
 
-      val result: Try[Unit] = Try { fun(a) }
+      val result: Try[RESULT] = Try { fun(a) }
       val argsPassed = List(if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a))
       result match {
-        case Success(()) =>
-          val nextSucceededCount = succeededCount + 1
-          if (nextSucceededCount < config.minSuccessful)
-            loop(nextSucceededCount, discardedCount, ar, nextInitialSizes)
+        case Success(r) =>
+          if (succeed(r)) {
+            val nextSucceededCount = succeededCount + 1
+            if (nextSucceededCount < config.minSuccessful)
+              loop(nextSucceededCount, discardedCount, ar, nextInitialSizes)
+            else
+              PropertyTest.CheckSuccess(argsPassed)
+          }
           else
-            PropertyTest.CheckSuccess(argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
@@ -61,7 +66,7 @@ trait PropertyTest {
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
-          new PropertyTest.CheckFailure(succeededCount, ex, names, argsPassed)
+          new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
       }
     }
 
@@ -79,10 +84,10 @@ trait PropertyTest {
     loop(0, 0, Randomizer.default, initialSizes)
   }
 
-  def checkForAll[A, B, ASSERTION](names: List[String], config: Parameter,
+  def checkForAll[A, B](names: List[String], config: Parameter,
                                  genA: org.scalatest.prop.Generator[A],
                                  genB: org.scalatest.prop.Generator[B])
-                                (fun: (A, B) => ASSERTION): PropertyTest.Result = {
+                                (fun: (A, B) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -97,19 +102,24 @@ trait PropertyTest {
         }
       val (a, ar) = genA.next(size, nextRandomizer)
       val (b, br) = genB.next(size, ar)
-      val result: Try[Unit] = Try { fun(a, b) }
+      val result: Try[RESULT] = Try { fun(a, b) }
       val argsPassed =
         List(
           if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
           if (names.isDefinedAt(1)) PropertyArgument(Some(names(1)), b) else PropertyArgument(None, b)
         )
       result match {
-        case Success(()) =>
-          val nextSucceededCount = succeededCount + 1
-          if (nextSucceededCount < config.minSuccessful)
-            loop(nextSucceededCount, discardedCount, br, nextInitialSizes)
+        case Success(r) =>
+          if (succeed(r)) {
+            val nextSucceededCount = succeededCount + 1
+            if (nextSucceededCount < config.minSuccessful)
+              loop(nextSucceededCount, discardedCount, br, nextInitialSizes)
+            else
+              PropertyTest.CheckSuccess(argsPassed)
+          }
           else
-            PropertyTest.CheckSuccess(argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
@@ -117,7 +127,7 @@ trait PropertyTest {
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
-          new PropertyTest.CheckFailure(succeededCount, ex, names, argsPassed)
+          new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
       }
     }
 
@@ -135,11 +145,11 @@ trait PropertyTest {
     loop(0, 0, Randomizer.default, initialSizes)
   }
 
-  def checkForAll[A, B, C, ASSERTION](names: List[String], config: Parameter,
+  def checkForAll[A, B, C](names: List[String], config: Parameter,
                                     genA: org.scalatest.prop.Generator[A],
                                     genB: org.scalatest.prop.Generator[B],
                                     genC: org.scalatest.prop.Generator[C])
-                                   (fun: (A, B, C) => ASSERTION): PropertyTest.Result = {
+                                   (fun: (A, B, C) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -155,7 +165,7 @@ trait PropertyTest {
       val (a, ar) = genA.next(size, nextRandomizer)
       val (b, br) = genB.next(size, ar)
       val (c, cr) = genC.next(size, br)
-      val result: Try[Unit] = Try { fun(a, b, c) }
+      val result: Try[RESULT] = Try { fun(a, b, c) }
       val argsPassed =
         List(
           if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
@@ -163,12 +173,17 @@ trait PropertyTest {
           if (names.isDefinedAt(2)) PropertyArgument(Some(names(2)), c) else PropertyArgument(None, c)
         )
       result match {
-        case Success(()) =>
-          val nextSucceededCount = succeededCount + 1
-          if (nextSucceededCount < config.minSuccessful)
-            loop(nextSucceededCount, discardedCount, cr, nextInitialSizes)
+        case Success(r) =>
+          if (succeed(r)) {
+            val nextSucceededCount = succeededCount + 1
+            if (nextSucceededCount < config.minSuccessful)
+              loop(nextSucceededCount, discardedCount, cr, nextInitialSizes)
+            else
+              PropertyTest.CheckSuccess(argsPassed)
+          }
           else
-            PropertyTest.CheckSuccess(argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
@@ -176,7 +191,7 @@ trait PropertyTest {
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
-          new PropertyTest.CheckFailure(succeededCount, ex, names, argsPassed)
+          new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
       }
     }
 
@@ -194,12 +209,12 @@ trait PropertyTest {
     loop(0, 0, Randomizer.default, initialSizes)
   }
 
-  def checkForAll[A, B, C, D, ASSERTION](names: List[String], config: Parameter,
+  def checkForAll[A, B, C, D](names: List[String], config: Parameter,
                                        genA: org.scalatest.prop.Generator[A],
                                        genB: org.scalatest.prop.Generator[B],
                                        genC: org.scalatest.prop.Generator[C],
                                        genD: org.scalatest.prop.Generator[D])
-                                      (fun: (A, B, C, D) => ASSERTION): PropertyTest.Result = {
+                                      (fun: (A, B, C, D) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -216,7 +231,7 @@ trait PropertyTest {
       val (b, br) = genB.next(size, ar)
       val (c, cr) = genC.next(size, br)
       val (d, dr) = genD.next(size, cr)
-      val result: Try[Unit] = Try { fun(a, b, c, d) }
+      val result: Try[RESULT] = Try { fun(a, b, c, d) }
       val argsPassed =
         List(
           if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
@@ -225,12 +240,17 @@ trait PropertyTest {
           if (names.isDefinedAt(3)) PropertyArgument(Some(names(3)), d) else PropertyArgument(None, d)
         )
       result match {
-        case Success(()) =>
-          val nextSucceededCount = succeededCount + 1
-          if (nextSucceededCount < config.minSuccessful)
-            loop(nextSucceededCount, discardedCount, dr, nextInitialSizes)
+        case Success(r) =>
+          if (succeed(r)) {
+            val nextSucceededCount = succeededCount + 1
+            if (nextSucceededCount < config.minSuccessful)
+              loop(nextSucceededCount, discardedCount, dr, nextInitialSizes)
+            else
+              PropertyTest.CheckSuccess(argsPassed)
+          }
           else
-            PropertyTest.CheckSuccess(argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
@@ -238,7 +258,7 @@ trait PropertyTest {
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
-          new PropertyTest.CheckFailure(succeededCount, ex, names, argsPassed)
+          new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
       }
     }
 
@@ -256,13 +276,13 @@ trait PropertyTest {
     loop(0, 0, Randomizer.default, initialSizes)
   }
 
-  def checkForAll[A, B, C, D, E, ASSERTION](names: List[String], config: Parameter,
+  def checkForAll[A, B, C, D, E](names: List[String], config: Parameter,
                                           genA: org.scalatest.prop.Generator[A],
                                           genB: org.scalatest.prop.Generator[B],
                                           genC: org.scalatest.prop.Generator[C],
                                           genD: org.scalatest.prop.Generator[D],
                                           genE: org.scalatest.prop.Generator[E])
-                                         (fun: (A, B, C, D, E) => ASSERTION): PropertyTest.Result = {
+                                         (fun: (A, B, C, D, E) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -280,7 +300,7 @@ trait PropertyTest {
       val (c, cr) = genC.next(size, br)
       val (d, dr) = genD.next(size, cr)
       val (e, er) = genE.next(size, dr)
-      val result: Try[Unit] = Try { fun(a, b, c, d, e) }
+      val result: Try[RESULT] = Try { fun(a, b, c, d, e) }
       val argsPassed =
         List(
           if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
@@ -290,12 +310,17 @@ trait PropertyTest {
           if (names.isDefinedAt(4)) PropertyArgument(Some(names(4)), e) else PropertyArgument(None, e)
         )
       result match {
-        case Success(()) =>
-          val nextSucceededCount = succeededCount + 1
-          if (nextSucceededCount < config.minSuccessful)
-            loop(nextSucceededCount, discardedCount, er, nextInitialSizes)
+        case Success(r) =>
+          if (succeed(r)) {
+            val nextSucceededCount = succeededCount + 1
+            if (nextSucceededCount < config.minSuccessful)
+              loop(nextSucceededCount, discardedCount, er, nextInitialSizes)
+            else
+              PropertyTest.CheckSuccess(argsPassed)
+          }
           else
-            PropertyTest.CheckSuccess(argsPassed)
+            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
@@ -303,7 +328,7 @@ trait PropertyTest {
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
-          new PropertyTest.CheckFailure(succeededCount, ex, names, argsPassed)
+          new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
       }
     }
 
@@ -321,14 +346,14 @@ trait PropertyTest {
     loop(0, 0, Randomizer.default, initialSizes)
   }
 
-  def checkForAll[A, B, C, D, E, F, ASSERTION](names: List[String], config: Parameter,
+  def checkForAll[A, B, C, D, E, F](names: List[String], config: Parameter,
                                              genA: org.scalatest.prop.Generator[A],
                                              genB: org.scalatest.prop.Generator[B],
                                              genC: org.scalatest.prop.Generator[C],
                                              genD: org.scalatest.prop.Generator[D],
                                              genE: org.scalatest.prop.Generator[E],
                                              genF: org.scalatest.prop.Generator[F])
-                                            (fun: (A, B, C, D, E, F) => ASSERTION): PropertyTest.Result = {
+                                            (fun: (A, B, C, D, E, F) => RESULT): PropertyTest.Result = {
     val maxDiscarded = Configuration.calculateMaxDiscarded(config.maxDiscardedFactor, config.minSuccessful)
     val maxSize = config.minSize + config.sizeRange
 
@@ -347,7 +372,7 @@ trait PropertyTest {
       val (d, dr) = genD.next(size, cr)
       val (e, er) = genE.next(size, dr)
       val (f, fr) = genF.next(size, er)
-      val result: Try[Unit] = Try { fun(a, b, c, d, e, f) }
+      val result: Try[RESULT] = Try { fun(a, b, c, d, e, f) }
       val argsPassed =
         List(
           if (names.isDefinedAt(0)) PropertyArgument(Some(names(0)), a) else PropertyArgument(None, a),
@@ -358,12 +383,18 @@ trait PropertyTest {
           if (names.isDefinedAt(5)) PropertyArgument(Some(names(5)), f) else PropertyArgument(None, f)
         )
       result match {
-        case Success(()) =>
-          val nextSucceededCount = succeededCount + 1
-          if (nextSucceededCount < config.minSuccessful)
-            loop(nextSucceededCount, discardedCount, fr, nextInitialSizes)
-          else
-            PropertyTest.CheckSuccess(argsPassed)
+        case Success(r) =>
+          if (succeed(r)) {
+            val nextSucceededCount = succeededCount + 1
+            if (nextSucceededCount < config.minSuccessful)
+              loop(nextSucceededCount, discardedCount, fr, nextInitialSizes)
+            else
+              PropertyTest.CheckSuccess(argsPassed)
+          }
+          else {
+            new PropertyTest.CheckFailure(succeededCount, None, names, argsPassed)
+          }
+
         case Failure(ex: DiscardedEvaluationException) =>
           val nextDiscardedCount = discardedCount + 1
           if (nextDiscardedCount < maxDiscarded)
@@ -371,7 +402,7 @@ trait PropertyTest {
           else
             new PropertyTest.CheckExhausted(succeededCount, nextDiscardedCount, names, argsPassed)
         case Failure(ex) =>
-          new PropertyTest.CheckFailure(succeededCount, ex, names, argsPassed)
+          new PropertyTest.CheckFailure(succeededCount, Some(ex), names, argsPassed)
       }
     }
 
@@ -398,7 +429,7 @@ object PropertyTest {
 
   case class CheckExhausted(succeeded: Long, discarded: Long, names: List[String], argsPassed: List[PropertyArgument]) extends Result
 
-  case class CheckFailure(succeeded: Long, ex: Throwable, names: List[String], argsPassed: List[PropertyArgument]) extends Result
+  case class CheckFailure(succeeded: Long, ex: Option[Throwable], names: List[String], argsPassed: List[PropertyArgument]) extends Result
 
   def forAll1[A, ASSERTION](names: List[String], config: Parameter)(fun: (A) => ASSERTION)
                                    (implicit
