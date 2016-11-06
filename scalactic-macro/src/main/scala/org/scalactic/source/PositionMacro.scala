@@ -65,37 +65,4 @@ object PositionMacro {
     )
   }
 
-  /**
-   * Helper method for Position macro.
-   */
-  def genPositionExplicit(context: Context) = {
-    import context.universe._
-
-    context.Expr(
-      Apply(
-        Select(
-          Select(
-            Select(
-              Select(
-                Select(
-                  Ident(newTermName("_root_")),
-                  newTermName("org")
-                ),
-                newTermName("scalactic")
-              ),
-              newTermName("source")
-            ),
-            newTermName("Position")
-          ),
-          newTermName("apply")
-        ),
-        List(
-          Literal(Constant(context.enclosingPosition.source.file.name)),
-          Literal(Constant(context.enclosingPosition.source.path)),
-          Literal(Constant(context.enclosingPosition.line))
-        )
-      )
-    )
-  }
-
 }
