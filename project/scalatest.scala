@@ -23,7 +23,7 @@ object ScalatestBuild extends Build {
 
   val releaseVersion = "3.0.0"
 
-  val scalacheckVersion = "1.13.1"
+  val scalacheckVersion = "1.13.4"
 
   val githubTag = "release-3.0.0" // for scaladoc source urls
 
@@ -80,7 +80,7 @@ object ScalatestBuild extends Build {
   def sharedSettings: Seq[Setting[_]] = Seq(
     javaHome := getJavaHome,
     scalaVersion := buildScalaVersion,
-    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.0-M4"),
+    crossScalaVersions := Seq(buildScalaVersion, "2.10.6", "2.12.0"),
     version := releaseVersion,
     scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
@@ -184,7 +184,7 @@ object ScalatestBuild extends Build {
 
   def scalatestJSLibraryDependencies =
     Seq(
-      "org.scala-js" %% "scalajs-test-interface" % "0.6.11"
+      "org.scala-js" %% "scalajs-test-interface" % "0.6.13"
     )
 
   def scalatestTestOptions =
@@ -397,6 +397,7 @@ object ScalatestBuild extends Build {
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
+      scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -614,6 +615,7 @@ object ScalatestBuild extends Build {
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
+      scalaJSUseRhino in Global := true, 
       scalaJSStage in Global := FastOptStage,
       fork in test := false,
       testOptions in Test := scalatestTestJSOptions,
