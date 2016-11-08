@@ -507,6 +507,7 @@ object ScalatestBuild extends Build {
       libraryDependencies ++= crossBuildLibraryDependencies(scalaVersion.value),
       libraryDependencies ++= scalatestLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
+      logBuffered in Test := false,
       //fork in Test := true,
       //parallelExecution in Test := true,
       //testForkedParallel in Test := true,
