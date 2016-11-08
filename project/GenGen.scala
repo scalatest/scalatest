@@ -54,13 +54,12 @@ import org.scalatest.exceptions.TestFailedException
 import org.scalatest.enablers.PropCheckerAsserting
 
 /**
- * Trait containing methods that faciliate property checks against generated data using ScalaCheck.
+ * Trait containing methods that faciliate property checks against generated data using [[Generator]].
  *
  * <p>
  * This trait contains <code>forAll</code> methods that provide various ways to check properties using
- * generated data. Use of this trait requires that ScalaCheck be on the class path when you compile and run your tests.
- * It also contains a <code>wherever</code> method that can be used to indicate a property need only hold whenever
- * some condition is true.
+ * generated data.  It also contains a <code>wherever</code> method that can be used to indicate a property
+ * need only hold whenever some condition is true.
  * </p>
  *
  * <p>
@@ -108,26 +107,24 @@ import org.scalatest.enablers.PropCheckerAsserting
  *
  * <p>
  * Trait <code>GeneratorDrivenPropertyChecks</code> provides overloaded <code>forAll</code> methods
- * that allow you to check properties using the data provided by a ScalaCheck generator. The simplest form
+ * that allow you to check properties using the data provided by [[Generator]]. The simplest form
  * of <code>forAll</code> method takes two parameter lists, the second of which is implicit. The first parameter list
- * is a "property" function with one to six parameters. An implicit <code>Arbitrary</code> generator and <code>Shrink</code> object needs to be supplied for
- * The <code>forAll</code> method will pass each row of data to
- * each parameter type. ScalaCheck provides many implicit <code>Arbitrary</code> generators for common types such as
- * <code>Int</code>, <code>String</code>, <code>List[Float]</code>, <em>etc.</em>, in its <code>org.scalacheck.Arbitrary</code> companion
- * object. So long as you use types for which ScalaCheck already provides implicit <code>Arbitrary</code> generators, you needn't
- * worry about them. Same for <code>Shrink</code> objects, which are provided by ScalaCheck's <code>org.scalacheck.Shrink</code> companion
- * object. Most often you can simply pass a property function to <code>forAll</code>, and the compiler will grab the implicit
- * values provided by ScalaCheck.
+ * is a "property" function with one to six parameters. An implicit [[Generator]] generator object needs to be supplied for.
+ * The <code>forAll</code> method will pass each row of data to each parameter type. ScalaTest provides many implicit [[Generator]]s for
+ * common types such as <code>Int</code>, <code>String</code>, <code>List[Float]</code>, <em>etc.</em>, in its [[Generator]] companion
+ * object. So long as you use types for which ScalaTest already provides implicit [[Generator]]s, you needn't
+ * worry about them. Most often you can simply pass a property function to <code>forAll</code>, and the compiler will grab the implicit
+ * values provided by ScalaTest.
  * </p>
  *
  * <p>
- * The <code>forAll</code> methods use the supplied <code>Arbitrary</code> generators to generate example
+ * The <code>forAll</code> methods use the supplied [[Generator]]s to generate example
  * arguments and pass them to the property function, and
  * generate a <code>GeneratorDrivenPropertyCheckFailedException</code> if the function
  * completes abruptly for any exception that would <a href="../Suite.html#errorHandling">normally cause</a> a test to
  * fail in ScalaTest other than <code>DiscardedEvaluationException</code>. An
  * <code>DiscardedEvaluationException</code>,
- * which is thrown by the <code>whenever</code> method (defined in trait <code>Whenever</code>, which this trait extends) to indicate
+ * which is thrown by the <code>whenever</code> method (defined in trait [[Whenever]], which this trait extends) to indicate
  * a condition required by the property function is not met by a row
  * of passed data, will simply cause <code>forAll</code> to discard that row of data.
  * </p>
@@ -183,7 +180,7 @@ import org.scalatest.enablers.PropCheckerAsserting
  * <a name="supplyingGenerators"></a><h2>Supplying generators</h2>
  *
  * <p>
- * ScalaCheck provides a nice library of compositors that makes it easy to create your own custom generators. If you
+ * ScalaTest provides a nice library of compositors that makes it easy to create your own custom generators. If you
  * want to supply custom generators to a property check, place them in parentheses after <code>forAll</code>, before
  * the property check function (a curried form of <code>forAll</code>).
  * </p>
@@ -193,9 +190,9 @@ import org.scalatest.enablers.PropCheckerAsserting
  * </p>
  *
  * <pre class="stHighlight">
- * import org.scalacheck.Gen
+ * import org.scalatest.prop.Generator
  *
- * val evenInts = for (n <- Gen.choose(-1000, 1000)) yield 2 * n
+ * val evenInts = for (n <- Generator.chooseInt(-1000, 1000)) yield 2 * n
  * </pre>
  *
  * <p>
@@ -207,7 +204,7 @@ import org.scalatest.enablers.PropCheckerAsserting
  * </pre>
  *
  * <p>
- * Custom generators are necessary when you want to pass data types not supported by ScalaCheck's arbitrary generators,
+ * Custom generators are necessary when you want to pass data types not supported by ScalaTest's [[Generator]]s,
  * but are also useful when some of the values in the full range for the passed types are not valid. For such values you
  * would use a <code>whenever</code> clause. In the <code>Fraction</code> class shown above, neither the passed numerator or
  * denominator can be <code>Integer.MIN_VALUE</code>, and the passed denominator cannot be zero. This shows up in the
@@ -225,7 +222,7 @@ import org.scalatest.enablers.PropCheckerAsserting
  *
  * <pre class="stHighlight">
  * val validNumers =
- *   for (n <- Gen.choose(Integer.MIN_VALUE + 1, Integer.MAX_VALUE)) yield n
+ *   for (n <- Generator.chooseInt(Integer.MIN_VALUE + 1, Integer.MAX_VALUE)) yield n
  * val validDenoms =
  *   for (d <- validNumers if d != 0) yield d
  * </pre>
@@ -253,15 +250,6 @@ import org.scalatest.enablers.PropCheckerAsserting
  *   }
  * }
  * </pre>
- *
- * <p>
- * Note that even if you use generators that don't produce the invalid values, you still need the
- * <code>whenever</code> clause. The reason is that once a property fails, ScalaCheck will try and shrink
- * the values to the smallest values that still cause the property to fail. During this shrinking process ScalaCheck
- * may pass invalid values. The <code>whenever</code> clause is still needed to guard against those values. (The
- * <code>whenever</code> clause also clarifies to readers of the code exactly what the property is in a succinct
- * way, without requiring that they find and understand the generator definitions.)
- * </p>
  *
  * <a name="supplyingGeneratorsAndArgNames"></a><h2>Supplying both generators and argument names</h2>
  *
@@ -559,7 +547,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
   /**
    * Performs a property check by applying the specified property check function to arguments
    * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -591,7 +579,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
   /**
    * Performs a property check by applying the specified property check function to arguments
    * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -624,7 +612,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
   /**
    * Performs a property check by applying the specified property check function to arguments
    * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -658,7 +646,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
   /**
    * Performs a property check by applying the specified property check function to arguments
    * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -693,7 +681,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
   /**
    * Performs a property check by applying the specified property check function to arguments
    * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
@@ -729,7 +717,7 @@ trait GeneratorDrivenPropertyChecks extends Whenever with Configuration {
   /**
    * Performs a property check by applying the specified property check function to arguments
    * supplied by implicitly passed generators, modifying the values in the implicitly passed 
-   * <code>PropertyGenConfig</code> object with parameter values passed to this object's constructor.
+   * <code>PropertyCheckConfiguration</code> object with parameter values passed to this object's constructor.
    *
    * <p>
    * Here's an example:
