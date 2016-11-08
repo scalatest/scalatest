@@ -222,6 +222,16 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       if (slotIdx >= 0)
         slotListBuf.update(slotIdx, newSlot)
       fireReadyEvents()
+      suiteReporterMap -= (suiteId)
+    }
+  }
+
+  private[scalatest] def slowpokeEvent(event: AlertProvided): Unit = {
+    synchronized {
+      suiteReporterMap.values.headOption match {
+        case Some(rep) => rep(event)
+        case None => // If no more active rep, well, probably fine then since this probably means that test is now completed.
+      }
     }
   }
 

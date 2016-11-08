@@ -653,6 +653,9 @@ class Framework extends SbtFramework {
         dispatchReporter,
         Span(Suite.testSortingReporterTimeout.millisPart + 1000, Millis),
         System.err)
+
+    if (detectSlowpokes)
+      dispatchReporter.registerSlowpokeReporter(suiteSortingReporter)
     
     dispatchReporter(RunStarting(tracker.nextOrdinal(), 0, configMap))
 
