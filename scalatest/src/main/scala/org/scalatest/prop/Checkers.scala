@@ -238,7 +238,7 @@ trait Checkers extends Configuration {
       prettifier: Prettifier,
       pos: source.Position
     ): asserting.Result = {
-    val params = getParams(configParams, config)
+    val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1), params, prettifier, pos)
   }
 
@@ -258,7 +258,7 @@ trait Checkers extends Configuration {
       prettifier: Prettifier,
       pos: source.Position
     ): asserting.Result = {
-    val params = getParams(configParams, config)
+    val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2), params, prettifier, pos)
   }
 
@@ -279,7 +279,7 @@ trait Checkers extends Configuration {
       prettifier: Prettifier,
       pos: source.Position
     ): asserting.Result = {
-    val params = getParams(configParams, config)
+    val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3), params, prettifier, pos)
   }
 
@@ -301,7 +301,7 @@ trait Checkers extends Configuration {
       prettifier: Prettifier,
       pos: source.Position
     ): asserting.Result = {
-    val params = getParams(configParams, config)
+    val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4), params, prettifier, pos)
   }
 
@@ -324,7 +324,7 @@ trait Checkers extends Configuration {
       prettifier: Prettifier,
       pos: source.Position
     ): asserting.Result = {
-    val params = getParams(configParams, config)
+    val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5), params, prettifier, pos)
   }
 
@@ -348,7 +348,7 @@ trait Checkers extends Configuration {
       prettifier: Prettifier,
       pos: source.Position
     ): asserting.Result = {
-    val params = getParams(configParams, config)
+    val params = getScalaCheckParams(configParams, config)
     asserting.check(Prop.forAll(f)(p, a1, s1, pp1, a2, s2, pp2, a3, s3, pp3, a4, s4, pp4, a5, s5, pp5, a6, s6, pp6), params, prettifier, pos)
   }
 
@@ -370,7 +370,7 @@ trait Checkers extends Configuration {
    * @throws TestFailedException if a test case is discovered for which the property doesn't hold.
    */
   def check[ASSERTION](p: Prop, configParams: PropertyCheckConfigParam*)(implicit config: PropertyCheckConfigurable, asserting: CheckerAsserting[ASSERTION], prettifier: Prettifier, pos: source.Position): asserting.Result = {
-    val params = getParams(configParams, config)
+    val params = getScalaCheckParams(configParams, config)
     asserting.check(p, params, prettifier, pos)
   }
 }

@@ -122,4 +122,4 @@ To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, versi
 
 To publish scalactic, scalatest and scalatest-app (for Scala and Scala-js, version 2.12, and make sure you're on Java 8) to Sonatype, use the following command:
 
-  `$ sbt ++2.12.0-M5 clean publishSigned "project scalatestAppJS" clean publishSigned`
+  `$ sbt ++2.12.0-RC2 clean publishSigned "project scalatestAppJS" clean publishSigned`
