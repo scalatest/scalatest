@@ -17,7 +17,7 @@ package org.scalatest.prop
 
 import scala.collection.mutable.ListBuffer
 import org.scalactic.anyvals._
-import org.scalactic.{Or, Good, Bad}
+import org.scalactic.{Bad, Good, Or}
 
 trait Generator[T] { thisGeneratorOfT =>
   def next(size: Int = 100, rnd: Randomizer = Randomizer.default): (T, Randomizer)
@@ -39,7 +39,25 @@ trait Generator[T] { thisGeneratorOfT =>
   def shrink(init: T): Stream[T] = Stream.empty
 }
 
-object Generator {
+trait LowerPriorityGeneratorImplicits {
+
+  import org.scalacheck.{Arbitrary, Gen}
+  import org.scalacheck.rng.Seed
+
+  @deprecated("Please define your own arbitary Generator.")
+  implicit def scalacheckArbitaryGenerator[T](arb: Arbitrary[T]): Generator[T] =
+    new Generator[T] {
+      def next(size: Int, rnd: Randomizer): (T, Randomizer) = {
+        arb.arbitrary.apply(Gen.Parameters.default.withSize(size), Seed.random()) match {
+          case Some(nextT) => (nextT, rnd)
+          case None => throw new IllegalStateException("Unable to generate value using ScalaCheck Arbitary.")
+        }
+      }
+    }
+
+}
+
+object Generator extends LowerPriorityGeneratorImplicits {
 
   def chooseInt(from: Int, to: Int): Generator[Int] =
     new Generator[Int] { thisIntGenerator =>
@@ -57,17 +75,6 @@ object Generator {
         (nextT, nextRandomizer)
       }
     }
-
-  /*def sized[T](fun: Int => Generator[T]): Generator[T] =
-    new Generator[T] {
-      def next(size: Int, rnd: Randomizer): (T, Randomizer) = {
-        val sGen = fun(size)
-        sGen.n
-        /*val (nextInt, nextRandomizer) = rnd.nextInt
-        val nextT = fun(size)
-        (nextT, nextRandomizer)*/
-      }
-    }*/
 
   implicit val byteGenerator: Generator[Byte] =
     new Generator[Byte] {
