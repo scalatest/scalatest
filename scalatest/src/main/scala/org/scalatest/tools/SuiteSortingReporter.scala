@@ -215,7 +215,12 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
     undone
   }
-  
+
+  /**
+    * This method is called after all tests in the suite completed execution, this implementation will update the slot state and fire all events accordingly.
+    *
+    * @param suiteId the <code>suiteId</code> for the suite that's completed its tests execution
+    */
   def completedTests(suiteId: String): Unit = {
     synchronized {
       val slot = slotMap(suiteId)
@@ -231,6 +236,11 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
   }
 
+  /**
+    * This internal method is called by DispatchReporter when a slow poke is triggered.
+    *
+    * @param event an <code>AlertProvided</code> event representing the slow poke.
+    */
   private[scalatest] def slowpokeEvent(event: AlertProvided): Unit = {
     synchronized {
       synchronized(suiteReporterMap.values.headOption) match {
@@ -244,6 +254,11 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   // suite's timeout to be 20% longer than the -T one. If an overridden sortingTimeout timeout is shorter, then
   // that's no prob. But if it is longer, then the suiteTimeout will timeout first. I think that's fine. I'll
   // just document that behavior.
+  /**
+    * This method is called before first test in a suite is distributed to execute, this implementation will setup a new slot for the given suite.
+    *
+    * @param suiteId the <code>suiteId</code> for the suite that's starting to execute its tests
+    */
   def distributingTests(suiteId: String): Unit = {
     synchronized {
       slotMap.get(suiteId) match {
@@ -259,6 +274,9 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
   }
 
+  /**
+    * Dispose this reporter, will fire all pending events before disposing.
+    */
   override def doDispose(): Unit = {
     fireReadyEvents()
   }
