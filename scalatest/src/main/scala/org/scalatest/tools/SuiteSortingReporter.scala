@@ -34,7 +34,9 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
   private val suiteReporterMap = collection.mutable.HashMap[String, Reporter]()
 
   def registerReporter(suiteId: String, reporter: Reporter): Unit =
-    suiteReporterMap += (suiteId -> reporter)
+    synchronized {
+      suiteReporterMap += (suiteId -> reporter)
+    }
   
   // Passed slot will always be the head of waitingBuffer
   class TimeoutTask(val slot: Slot) extends TimerTask {
@@ -122,11 +124,12 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
     }
   }
 
-  private def dispatchToRegisteredSuiteReporter(suiteId: String, event: Event): Unit =
-    suiteReporterMap.get(suiteId) match {
+  private def dispatchToRegisteredSuiteReporter(suiteId: String, event: Event): Unit = {
+    synchronized(suiteReporterMap.get(suiteId)) match {
       case Some(rep) => rep(event)
       case None =>
     }
+  }
 
   // Handles just SuiteCompleted and SuiteAborted
   private def handleSuiteEvents(suiteId: String, event: Event): Unit = {
@@ -222,13 +225,15 @@ private[scalatest] class SuiteSortingReporter(dispatch: Reporter, sortingTimeout
       if (slotIdx >= 0)
         slotListBuf.update(slotIdx, newSlot)
       fireReadyEvents()
-      suiteReporterMap -= (suiteId)
+      synchronized {
+        suiteReporterMap -= (suiteId)
+      }
     }
   }
 
   private[scalatest] def slowpokeEvent(event: AlertProvided): Unit = {
     synchronized {
-      suiteReporterMap.values.headOption match {
+      synchronized(suiteReporterMap.values.headOption) match {
         case Some(rep) => rep(event)
         case None => // If no more active rep, well, probably fine then since this probably means that test is now completed.
       }
