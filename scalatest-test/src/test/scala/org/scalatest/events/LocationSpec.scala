@@ -61,10 +61,10 @@ class LocationSpec extends FunSpec with Checkers {
             inside (testSucceed.location) { case Some(location) =>
               inside (location) { case lineInFile: LineInFile =>
                 inside (lineInFile.filePathname) { case Some(filePathname) =>
-                  if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES").toLowerCase == "true")
+                  if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
                     assert(filePathname.endsWith(s"org${sep}scalatest${sep}events${sep}LocationSpec.scala"))
                   else
-                    assert(filePathname == "Please define the environment variable SCALACTIC_FILL_FILE_PATHNAMES at compile time to enable this feature.")
+                    assert(filePathname == "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.")
                 }
               }
             }
