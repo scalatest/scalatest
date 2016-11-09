@@ -26,10 +26,7 @@ object PositionMacro {
 
   private[scalactic] lazy val showScalacticFillFilePathnames: Boolean = {
     val value = System.getenv("SCALACTIC_FILL_FILE_PATHNAMES")
-    if (value != null && value.toLowerCase == "true")
-      true
-    else
-      false
+    value != null && value == "yes"
   }
 
   /**

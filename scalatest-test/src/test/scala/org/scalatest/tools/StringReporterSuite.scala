@@ -391,10 +391,10 @@ import StringReporter.withPossibleLineNumber
     import org.scalactic.source
     val result = withPossibleLineNumber("oops", Some(new TestFailedException((_: StackDepthException) => Some("also oops"), None, Left(source.Position.here), None)), true)
     assert(result startsWith "oops\n** ")
-    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES").toLowerCase == "true")
+    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") == "yes")
       assert(result endsWith "org/scalatest/tools/StringReporterSuite.scala:" + (thisLineNumber - 3) + " **")
     else
-      assert(result endsWith "Please define the environment variable SCALACTIC_FILL_FILE_PATHNAMES at compile time to enable this feature.:" + (thisLineNumber - 5) + " **")
+      assert(result endsWith "Please set the environment variable SCALACTIC_FILL_FILE_PATHNAMES to yes at compile time to enable this feature.:" + (thisLineNumber - 5) + " **")
   }
 }
 
