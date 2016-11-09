@@ -21,6 +21,9 @@ class PositionSpec extends FlatSpec with Matchers {
 
   "source.Position's filePathname method" should "end in the simple name given in fileName" in {
     val pos = Position.here
-    pos.filePathname should endWith (pos.fileName)
+    if (System.getenv("SCALACTIC_FILL_FILE_PATHNAMES") != null && System.getenv("SCALACTIC_FILL_FILE_PATHNAMES").toLowerCase == "true")
+      pos.filePathname should endWith (pos.fileName)
+    else
+      pos.filePathname should equal (org.scalactic.Resources.pleaseDefineScalacticFillFilePathnameEnvVar)
   }
 }
