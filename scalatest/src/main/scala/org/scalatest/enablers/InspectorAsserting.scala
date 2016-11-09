@@ -38,6 +38,8 @@ import scala.util.{Try, Success, Failure}
 trait InspectorAsserting[T] {
   type Result
 
+  def succeed(result: T): Boolean
+
   /**
    * Implementation method for <code>Inspectors</code> <code>forAll</code> syntax.
    */
@@ -91,14 +93,14 @@ abstract class UnitInspectorAsserting {
     def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       val xsIsMap = isMap(original)
       val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0)
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0, succeed)
       if (result.failedElements.length > 0)
         indicateFailure(
           if (shorthand)
             Resources.allShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
           else
             Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
-          Some(result.failedElements(0)._3),
+          result.failedElements(0)._3,
           pos
         )
       else indicateSuccess("forAll succeeded")
@@ -122,7 +124,7 @@ abstract class UnitInspectorAsserting {
                   case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
                   case _ => index.toString
                 }
-                (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+                (passedCount, messageAcc :+ createMessage(messageKey, Some(e), xsIsMap))
             }
           if (newPassedCount < min)
             forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
@@ -161,7 +163,7 @@ abstract class UnitInspectorAsserting {
 
       val xsIsMap = isMap(original)
       val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > max)
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > max, succeed)
       if (result.passedCount > max)
         indicateFailure(
           if (shorthand)
@@ -180,7 +182,7 @@ abstract class UnitInspectorAsserting {
 
       val xsIsMap = isMap(original)
       val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > succeededCount)
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > succeededCount, succeed)
       if (result.passedCount != succeededCount)
         indicateFailure(
           if (shorthand)
@@ -210,7 +212,7 @@ abstract class UnitInspectorAsserting {
     def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): Result = {
       val xsIsMap = isMap(original)
       val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0)
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0, succeed)
       if (result.passedCount != 0)
         indicateFailure(
           if (shorthand)
@@ -233,7 +235,7 @@ abstract class UnitInspectorAsserting {
 
       val xsIsMap = isMap(original)
       val result =
-        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > upTo)
+        runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount > upTo, succeed)
       if (result.passedCount < from || result.passedCount > upTo)
         indicateFailure(
           if (shorthand)
@@ -278,7 +280,7 @@ abstract class UnitInspectorAsserting {
                   case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
                   case _ => index.toString
                 }
-                messageList :+ createMessage(messageKey, e, xsIsMap)
+                messageList :+ createMessage(messageKey, Some(e), xsIsMap)
             }
 
           runAndCollectErrorMessage(itr, newMessageList, index + 1)(fun)
@@ -314,6 +316,7 @@ abstract class UnitInspectorAsserting {
   implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type Result = Unit } =
     new InspectorAssertingImpl[T] {
       type Result = Unit
+      def succeed(result: T): Boolean = true
       def indicateSuccess(message: => String): Unit = ()
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Unit = {
         val msg: String = message
@@ -332,9 +335,10 @@ abstract class UnitInspectorAsserting {
  */
 abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  private[scalatest] implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type Result = Expectation } = {
+  /*private[scalatest] */implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] = {
     new InspectorAssertingImpl[Expectation] {
       type Result = Expectation
+      def succeed(result: Expectation): Boolean = result.isYes
       def indicateSuccess(message: => String): Expectation = Fact.Yes(message)(prettifier)
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Expectation = Fact.No(message)(prettifier)
     }
@@ -354,6 +358,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
   implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type Result = Assertion } =
     new InspectorAssertingImpl[Assertion] {
       type Result = Assertion
+      def succeed(result: Assertion): Boolean = true
       def indicateSuccess(message: => String): Assertion = Succeeded
       def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
         val msg: String = message
@@ -386,7 +391,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
               Resources.allShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
             else
               Resources.forAllFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
-            Some(result.failedElements(0)._3),
+            result.failedElements(0)._3,
             pos
           )
         else indicateSuccessFuture("forAll succeeded")
@@ -410,7 +415,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
                   case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
                   case _ => index.toString
                 }
-                (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+                (passedCount, messageAcc :+ createMessage(messageKey, Some(e), xsIsMap))
               case other => throw other
             } flatMap { result =>
               val (newPassedCount, newMessageAcc) = result
@@ -428,7 +433,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
                 case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
                 case _ => index.toString
               }
-              val (newPassedCount, newMessageAcc) = (passedCount, messageAcc :+ createMessage(messageKey, e, xsIsMap))
+              val (newPassedCount, newMessageAcc) = (passedCount, messageAcc :+ createMessage(messageKey, Some(e), xsIsMap))
               if (newPassedCount < min)
                 forAtLeastAcc(itr, includeIndex, index + 1, newPassedCount, newMessageAcc)
               else
@@ -585,7 +590,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
               Resources.everyShorthandFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original))
             else
               Resources.forEveryFailed(indentErrorMessages(result.messageAcc).mkString(", \n"), decorateToStringValue(prettifier, original)),
-            Some(result.failedElements(0)._3),
+            result.failedElements(0)._3,
             pos
           )
         else indicateSuccessFuture("forAll succeeded")
@@ -603,6 +608,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
   implicit def assertingNatureOfFutureAssertion(implicit execCtx: ExecutionContext): InspectorAsserting[Future[Assertion]] { type Result = Future[Assertion] } =
     new FutureInspectorAssertingImpl[Assertion] {
       val executionContext = execCtx
+      def succeed(result: Future[Assertion]): Boolean = true
       def indicateSuccessFuture(message: => String): Assertion = Succeeded
       def indicateFailureFuture(message: => String, optionalCause: Option[Throwable], pos: source.Position): Assertion = {
         val msg: String = message
@@ -644,9 +650,9 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
       case _ => false
     }
 
-  private[scalatest] final def createMessage(messageKey: String, t: Throwable, xsIsMap: Boolean): String =
+  private[scalatest] final def createMessage(messageKey: String, t: Option[Throwable], xsIsMap: Boolean): String =
     t match {
-      case sde: StackDepthException =>
+      case Some(sde: StackDepthException) =>
         sde.failedCodeFileNameAndLineNumberString match {
           case Some(failedCodeFileNameAndLineNumber) =>
             if (xsIsMap)
@@ -661,25 +667,33 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
         }
       case _ =>
         if (xsIsMap)
-          Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
+          Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, t.map(e => if (e.getMessage != null) e.getMessage else "null").getOrElse("null"))
         else
-          Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, if (t.getMessage != null) t.getMessage else "null")
+          Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, t.map(e => if (e.getMessage != null) e.getMessage else "null").getOrElse("null"))
     }
 
   private[scalatest] final def elementLabel(count: Int): String =
     if (count > 1) Resources.forAssertionsElements(count.toString) else Resources.forAssertionsElement(count.toString)
 
   private[scalatest] final case class ForResult[T](passedCount: Int = 0, messageAcc: IndexedSeq[String] = IndexedSeq.empty,
-                          passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty, failedElements: IndexedSeq[(Int, T, Throwable)] = IndexedSeq.empty)
+                          passedElements: IndexedSeq[(Int, T)] = IndexedSeq.empty, failedElements: IndexedSeq[(Int, T, Option[Throwable])] = IndexedSeq.empty)
 
   @tailrec
-  private[scalatest] final def runFor[T, ASSERTION](itr: Iterator[T], xsIsMap: Boolean, index:Int, result: ForResult[T], fun: T => ASSERTION, stopFun: ForResult[_] => Boolean): ForResult[T] = {
+  private[scalatest] final def runFor[T, ASSERTION](itr: Iterator[T], xsIsMap: Boolean, index:Int, result: ForResult[T], fun: T => ASSERTION, stopFun: ForResult[_] => Boolean, succeedFun: ASSERTION => Boolean): ForResult[T] = {
     if (itr.hasNext) {
       val head = itr.next
       val newResult =
         try {
-          fun(head)
-          result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+          if (succeedFun(fun(head)))
+            result.copy(passedCount = result.passedCount + 1, passedElements = result.passedElements :+ (index, head))
+          else {
+            val messageKey = head match {
+              case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+              case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+              case _ => index.toString
+            }
+            result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, None, xsIsMap), failedElements = result.failedElements :+ (index, head, None))
+          }
         }
         catch {
           case e if !shouldPropagate(e) =>
@@ -688,12 +702,12 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
               case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
               case _ => index.toString
             }
-            result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
+            result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, Some(e), xsIsMap), failedElements = result.failedElements :+ (index, head, Some(e)))
         }
       if (stopFun(newResult))
         newResult
       else
-        runFor(itr, xsIsMap, index + 1, newResult, fun, stopFun)
+        runFor(itr, xsIsMap, index + 1, newResult, fun, stopFun, succeedFun)
     }
     else
       result
@@ -730,10 +744,10 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
             case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
             case _ => i.toString
           }
-          createMessage(messageKey, f.asInstanceOf[Failure[_]].exception, xsIsMap)
+          createMessage(messageKey, Some(f.asInstanceOf[Failure[_]].exception), xsIsMap)
         }
       ForResult(passedCol.length, messages,
-                passedCol.map(e => (e._2, e._1)), failedCol.map(e => (e._2, e._1, e._3.asInstanceOf[Failure[_]].exception)))
+                passedCol.map(e => (e._2, e._1)), failedCol.map(e => (e._2, e._1, Some(e._3.asInstanceOf[Failure[_]].exception))))
     }
   }
 
@@ -753,7 +767,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
               case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
               case _ => index.toString
             }
-            result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
+            result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, Some(e), xsIsMap), failedElements = result.failedElements :+ (index, head, Some(e)))
           case other =>
             throw other
         } flatMap { newResult =>
@@ -770,7 +784,7 @@ object InspectorAsserting extends ExpectationInspectorAsserting {
             case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
             case _ => index.toString
           }
-          val newResult = result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, e, xsIsMap), failedElements = result.failedElements :+ (index, head, e))
+          val newResult = result.copy(messageAcc = result.messageAcc :+ createMessage(messageKey, Some(e), xsIsMap), failedElements = result.failedElements :+ (index, head, Some(e)))
           if (stopFun(newResult))
             Future.successful(newResult)
           else
