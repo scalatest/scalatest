@@ -28,6 +28,8 @@ class ListShouldContainOneElementOfLogicalAndSpec extends FunSpec {
 
   private val prettifier = Prettifier.default
 
+  //ADDITIONAL//
+
   val invertedStringEquality =
     new Equality[String] {
       def areEqual(a: String, b: Any): Boolean = a != b
@@ -61,8 +63,6 @@ class ListShouldContainOneElementOfLogicalAndSpec extends FunSpec {
         }
       case _ => value
     }
-
-  //ADDITIONAL//
 
   val fileName: String = "ListShouldContainOneElementOfLogicalAndSpec.scala"
 
