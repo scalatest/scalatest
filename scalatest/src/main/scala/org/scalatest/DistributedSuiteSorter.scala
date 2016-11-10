@@ -29,6 +29,17 @@ package org.scalatest
  * </p>
  */
 trait DistributedSuiteSorter {
+  /**
+    * This method is called before first test in a suite is distributed to execute
+    *
+    * @param suiteId the <code>suiteId</code> for the suite that's starting to execute its tests
+    */
   def distributingTests(suiteId: String)
+
+  /**
+    * This method is called after all tests in the suite completed execution
+    *
+    * @param suiteId the <code>suiteId</code> for the suite that's completed its tests execution
+    */
   def completedTests(suiteId: String)
 }
