@@ -21,11 +21,11 @@ object ScalatestBuild extends Build {
   // > ++ 2.10.5
   val buildScalaVersion = "2.11.8"
 
-  val releaseVersion = "3.0.0"
+  val releaseVersion = "3.0.1"
 
   val scalacheckVersion = "1.13.4"
 
-  val githubTag = "release-3.0.0" // for scaladoc source urls
+  val githubTag = "release-3.0.1" // for scaladoc source urls
 
   val scalatestDocSourceUrl =
     "https://github.com/scalatest/scalatest/tree/"+ githubTag +
@@ -459,6 +459,7 @@ object ScalatestBuild extends Build {
    ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.easymock",
         "org.scalatest.enablers",
@@ -733,6 +734,7 @@ object ScalatestBuild extends Build {
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
+        "org.scalatest.compatible",
         "org.scalatest.concurrent",
         "org.scalatest.enablers",
         "org.scalatest.events",
