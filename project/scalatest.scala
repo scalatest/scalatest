@@ -85,10 +85,17 @@ object ScalatestBuild extends Build {
     scalacOptions ++= Seq("-feature", "-target:jvm-1.6"),
     resolvers += "Sonatype Public" at "https://oss.sonatype.org/content/groups/public",
     libraryDependencies ++= scalaLibraries(scalaVersion.value),
-    publishTo <<= version { v: String =>
+    /*publishTo <<= version { v: String =>
       val nexus = "https://oss.sonatype.org/"
       if (v.trim.endsWith("SNAPSHOT")) Some("publish-snapshots" at nexus + "content/repositories/snapshots")
       else                             Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
+    },*/
+    publishTo := {
+      val nexus = "https://oss.sonatype.org/"
+      if (version.value.trim.endsWith("SNAPSHOT"))
+        Some("publish-snapshots" at nexus + "content/repositories/snapshots")
+      else
+        Some("publish-releases" at nexus + "service/local/staging/deploy/maven2")
     },
     publishMavenStyle := true,
     publishArtifact in Test := false,
@@ -397,7 +404,7 @@ object ScalatestBuild extends Build {
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      scalaJSUseRhino in Global := true, 
+      Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       scalaJSStage in Global := FastOptStage,
       //postLinkJSEnv := PhantomJSEnv().value,
       //postLinkJSEnv := NodeJSEnv(executable = "node").value,
@@ -434,20 +441,27 @@ object ScalatestBuild extends Build {
      genFactoriesTask,
      genCompatibleClassesTask,
      //genSafeStylesTask,
-     sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
-     sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMain),
-     sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain),
-     sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain),
-     sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
-     sourceGenerators in Compile <+=
-         (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),
-     /*sourceGenerators in Compile <+=
-       (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMain),*/
+     sourceGenerators in Compile += Def.task {
+       genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
+     sourceGenerators in Compile += Def.task {
+       genFiles("gentables", "GenTable.scala")(GenTable.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
+     sourceGenerators in Compile += Def.task {
+       genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
+     sourceGenerators in Compile += Def.task {
+       genFiles("genfactories", "GenFactories.scala")(GenFactories.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
+     sourceGenerators in Compile += Def.task {
+       genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
+     sourceGenerators in Compile += Def.task {
+       genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,
+     /*sourceGenerators in Compile += Def.task {
+       genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+     }.taskValue,*/
      scalatestDocSourcesSetting,
      sourceGenerators in Compile += {
        Def.task{
@@ -547,27 +561,24 @@ object ScalatestBuild extends Build {
       },
       genFactoriesTask,
       //genSafeStylesTask,
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS),
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genMain),
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS),
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS),
-      /*sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS),*/
-      /*genMustMatchersTask,
-      genGenTask,
-      genTablesTask,
-      genCodeTask,
-      genCompatibleClassesTask,
-
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("gencompcls", "GenCompatibleClasses.scala")(GenCompatibleClasses.genMain),
-      sourceGenerators in Compile <+=
-        (baseDirectory, sourceManaged in Compile, version, scalaVersion) map genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions),*/
-      //unmanagedResourceDirectories in Compile <+= sourceManaged( _ / "resources" ),
+      sourceGenerators in Compile += Def.task {
+        genFiles("genfactories", "GenFactories.scala")(GenFactories.genMainJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        genFiles("gengen", "GenGen.scala")(GenGen.genMain)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        genFiles("gentables", "GenTable.scala")(GenTable.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      sourceGenerators in Compile += Def.task {
+        genFiles("genmatchers", "MustMatchers.scala")(GenMatchers.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,
+      /*sourceGenerators in Compile += Def.task {
+        genFiles("gensafestyles", "GenSafeStyles.scala")(GenSafeStyles.genMainForScalaJS)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,*/
+      /*sourceGenerators in Compile += Def.task {
+        genFiles("genversions", "GenVersions.scala")(GenVersions.genScalaTestVersions)(baseDirectory.value, (sourceManaged in Compile).value, version.value, scalaVersion.value)
+      }.taskValue,*/
       scalatestJSDocTaskSetting
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
@@ -616,7 +627,7 @@ object ScalatestBuild extends Build {
       scalaJSOptimizerOptions ~= { _.withDisableOptimizer(true) },
       //jsEnv := NodeJSEnv(executable = "node").value,
       //jsEnv := PhantomJSEnv().value,
-      scalaJSUseRhino in Global := true, 
+      Seq(Compile, Test).flatMap(c => inConfig(c)(jsEnv := RhinoJSEnv().value)), // to use rhino
       scalaJSStage in Global := FastOptStage,
       fork in test := false,
       testOptions in Test := scalatestTestJSOptions,
@@ -657,7 +668,7 @@ object ScalatestBuild extends Build {
           Seq.empty[File]
         }.taskValue
       },
-      unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "scalatest" / "src" / "main" / "resources" )
+      unmanagedResourceDirectories in Compile += baseDirectory.value / "scalatest" / "src" / "main" / "resources"
     ).settings(osgiSettings: _*).settings(
       OsgiKeys.exportPackage := Seq(
         "org.scalatest",
@@ -792,24 +803,27 @@ object ScalatestBuild extends Build {
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask1,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular1", "GenRegular1.scala")(GenRegularTests1.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genregular1", "GenRegular1.scala")(GenRegularTests1.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genRegularTests2 = Project("genRegularTests2", file("gentests/GenRegular2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask2,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular2", "GenRegular2.scala")(GenRegularTests2.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genregular2", "GenRegular2.scala")(GenRegularTests2.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genRegularTests3 = Project("genRegularTests3", file("gentests/GenRegular3"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genRegularTask3,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular3", "GenRegular3.scala")(GenRegularTests3.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genregular3", "GenRegular3.scala")(GenRegularTests3.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genRegularTests4 = Project("genRegularTests4", file("gentests/GenRegular4"))
@@ -818,8 +832,9 @@ object ScalatestBuild extends Build {
       genRegularTask4,
       libraryDependencies ++= scalatestLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular4", "GenRegularTests1.scala")(GenRegularTests4.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genregular4", "GenRegularTests1.scala")(GenRegularTests4.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genRegularTests5 = Project("genRegularTests5", file("gentests/GenRegular5"))
@@ -828,136 +843,153 @@ object ScalatestBuild extends Build {
       genRegularTask5,
       libraryDependencies ++= scalatestLibraryDependencies,
       testOptions in Test := scalatestTestOptions,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genregular5", "GenRegularTests1.scala")(GenRegularTests5.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genregular5", "GenRegularTests1.scala")(GenRegularTests5.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genMustMatchersTests1 = Project("genMustMatchersTests1", file("gentests/MustMatchers1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers1", "GenMustMatchersTests.scala")(GenMustMatchersTests1.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genmatchers1", "GenMustMatchersTests.scala")(GenMustMatchersTests1.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genMustMatchersTests2 = Project("genMustMatchersTests2", file("gentests/MustMatchers2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers2", "GenMustMatchersTests.scala")(GenMustMatchersTests2.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genmatchers2", "GenMustMatchersTests.scala")(GenMustMatchersTests2.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genMustMatchersTests3 = Project("genMustMatchersTests3", file("gentests/MustMatchers3"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers3", "GenMustMatchersTests.scala")(GenMustMatchersTests3.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genmatchers3", "GenMustMatchersTests.scala")(GenMustMatchersTests3.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genMustMatchersTests4 = Project("genMustMatchersTests4", file("gentests/MustMatchers4"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genMustMatchersTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genmatchers4", "GenMustMatchersTests.scala")(GenMustMatchersTests4.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genmatchers4", "GenMustMatchersTests.scala")(GenMustMatchersTests4.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genGenTests = Project("genGenTests", file("gentests/GenGen"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genGenTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gengen", "GenGen.scala")(GenGen.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("gengen", "GenGen.scala")(GenGen.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genTablesTests = Project("genTablesTests", file("gentests/GenTables"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genTablesTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gentables", "GenTable.scala")(GenTable.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("gentables", "GenTable.scala")(GenTable.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genInspectorsTests = Project("genInspectorsTests", file("gentests/GenInspectors"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genInspectorsTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("geninspectors", "GenInspectors.scala")(GenInspectors.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genInspectorsShorthandsTests1 = Project("genInspectorsShorthandsTests1", file("gentests/GenInspectorsShorthands1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genInspectorsShorthandsTask1,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands1", "GenInspectorsShorthands.scala")(GenInspectorsShorthands1.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("geninspectorsshorthands1", "GenInspectorsShorthands.scala")(GenInspectorsShorthands1.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genInspectorsShorthandsTests2 = Project("genInspectorsShorthandsTests2", file("gentests/GenInspectorsShorthands2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genInspectorsShorthandsTask2,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("geninspectorsshorthands2", "GenInspectorsShorthands.scala")(GenInspectorsShorthands2.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("geninspectorsshorthands2", "GenInspectorsShorthands.scala")(GenInspectorsShorthands2.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genTheyTests = Project("genTheyTests", file("gentests/GenThey"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genTheyWordTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genthey", "GenTheyWord.scala")(GenTheyWord.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genContainTests1 = Project("genContainTests1", file("gentests/GenContain1"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genContainTask1,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain1", "GenContain1.scala")(GenContain1.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("gencontain1", "GenContain1.scala")(GenContain1.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genContainTests2 = Project("genContainTests2", file("gentests/GenContain2"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genContainTask2,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gencontain2", "GenContain2.scala")(GenContain2.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("gencontain2", "GenContain2.scala")(GenContain2.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genSortedTests = Project("genSortedTests", file("gentests/GenSorted"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genSortedTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("gensorted", "GenSorted.scala")(GenSorted.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genLoneElementTests = Project("genLoneElementTests", file("gentests/GenLoneElement"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genLoneElementTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genloneelement", "GenLoneElement.scala")(GenLoneElement.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   lazy val genEmptyTests = Project("genEmptyTests", file("gentests/GenEmpty"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genEmptyTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("genempty", "GenEmpty.scala")(GenEmpty.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")
 
   /*lazy val genSafeStyleTests = Project("genSafeStyleTests", file("gentests/GenSafeStyles"))
     .settings(gentestsSharedSettings: _*)
     .settings(
       genSafeStyleTestsTask,
-      sourceGenerators in Test <+=
-        (baseDirectory, sourceManaged in Test, version, scalaVersion) map genFiles("gensafestyletests", "GenSafeStyles.scala")(GenSafeStyles.genTest)
+      sourceGenerators in Test += Def.task {
+        genFiles("gensafestyletests", "GenSafeStyles.scala")(GenSafeStyles.genTest)(baseDirectory.value, (sourceManaged in Test).value, version.value, scalaVersion.value)
+      }.taskValue
     ).dependsOn(scalatest, commonTest, scalacticMacro % "compile-internal, test-internal")*/
 
   lazy val gentests = Project("gentests", file("gentests"))
@@ -1007,32 +1039,63 @@ object ScalatestBuild extends Build {
   }
 
   val genRegular1 = TaskKey[Unit]("genregular1", "Generate regular tests 1")
-  val genRegularTask1 = genRegular1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genRegularTask1 = genRegular1 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenRegularTests1.genTest(new File(testTargetDir, "scala/genregular1"), theVersion, theScalaVersion)
   }
 
   val genRegular2 = TaskKey[Unit]("genregular2", "Generate regular tests 2")
-  val genRegularTask2 = genRegular2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genRegularTask2 = genRegular2 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenRegularTests2.genTest(new File(testTargetDir, "scala/genregular2"), theVersion, theScalaVersion)
   }
 
   val genRegular3 = TaskKey[Unit]("genregular3", "Generate regular tests 3")
-  val genRegularTask3 = genRegular3 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genRegularTask3 = genRegular3 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenRegularTests3.genTest(new File(testTargetDir, "scala/genregular3"), theVersion, theScalaVersion)
   }
 
   val genRegular4 = TaskKey[Unit]("genregular4", "Generate regular tests 4")
-  val genRegularTask4 = genRegular4 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genRegularTask4 = genRegular4 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenRegularTests4.genTest(new File(testTargetDir, "scala/genregular4"), theVersion, theScalaVersion)
   }
 
   val genRegular5 = TaskKey[Unit]("genregular5", "Generate regular tests 5")
-  val genRegularTask5 = genRegular5 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genRegularTask5 = genRegular5 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenRegularTests5.genTest(new File(testTargetDir, "scala/genregular5"), theVersion, theScalaVersion)
   }
 
   val genMustMatchers = TaskKey[Unit]("genmatchers", "Generate Must Matchers")
-  val genMustMatchersTask = genMustMatchers <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
+  val genMustMatchersTask = genMustMatchers := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val projName = name.value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     projName match {
       case "scalatest" =>
         GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
@@ -1047,7 +1110,13 @@ object ScalatestBuild extends Build {
     }
   }
   val genGen = TaskKey[Unit]("gengen", "Generate Property Checks")
-  val genGenTask = genGen <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
+  val genGenTask = genGen := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val projName = name.value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     projName match {
       case "scalatest" =>
         GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theVersion, theScalaVersion)
@@ -1057,7 +1126,13 @@ object ScalatestBuild extends Build {
   }
 
   val genTables = TaskKey[Unit]("gentables", "Generate Tables")
-  val genTablesTask = genTables <<= (sourceManaged in Compile, sourceManaged in Test, name, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, projName: String, theVersion: String, theScalaVersion: String) =>
+  val genTablesTask = genTables := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val projName = name.value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     projName match {
       case "scalatest" =>
         GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theVersion, theScalaVersion)
@@ -1067,67 +1142,132 @@ object ScalatestBuild extends Build {
   }
 
   val genTheyWord = TaskKey[Unit]("genthey", "Generate They Word tests")
-  val genTheyWordTask = genTheyWord <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genTheyWordTask = genTheyWord := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenTheyWord.genTest(new File(testTargetDir, "scala/genthey"), theVersion, theScalaVersion)
   }
 
   val genInspectors = TaskKey[Unit]("geninspectors", "Generate Inspectors tests")
-  val genInspectorsTask = genInspectors <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genInspectorsTask = genInspectors := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenInspectors.genTest(new File(testTargetDir, "scala/geninspectors"), theVersion, theScalaVersion)
   }
 
   val genInspectorsShorthands1 = TaskKey[Unit]("geninspectorsshorthands1", "Generate Inspectors Shorthands tests 1")
-  val genInspectorsShorthandsTask1 = genInspectorsShorthands1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
+  val genInspectorsShorthandsTask1 = genInspectorsShorthands1 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenInspectorsShorthands1.genTest(new File(testTargetDir, "scala/geninspectorsshorthands1"), theVersion, theScalaVersion)
   }
 
   val genInspectorsShorthands2 = TaskKey[Unit]("geninspectorsshorthands2", "Generate Inspectors Shorthands tests 2")
-  val genInspectorsShorthandsTask2 = genInspectorsShorthands2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion) =>
+  val genInspectorsShorthandsTask2 = genInspectorsShorthands2 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenInspectorsShorthands2.genTest(new File(testTargetDir, "scala/geninspectorsshorthands2"), theVersion, theScalaVersion)
   }
 
   val genFactories = TaskKey[Unit]("genfactories", "Generate Matcher Factories")
-  val genFactoriesTask = genFactories <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genFactoriesTask = genFactories := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenFactories.genMain(new File(mainTargetDir, "scala/genfactories"), theVersion, theScalaVersion)
   }
 
   val genCompatibleClasses = TaskKey[Unit]("gencompcls", "Generate Compatible Classes for Java 6 & 7")
-  val genCompatibleClassesTask = genCompatibleClasses <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genCompatibleClassesTask = genCompatibleClasses := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenCompatibleClasses.genMain(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
 
   val genVersions = TaskKey[Unit]("genversions", "Generate Versions object")
-  val genVersionsTask = genVersions <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genVersionsTask = genVersions := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenVersions.genScalaTestVersions(new File(mainTargetDir, "scala/gencompclass"), theVersion, theScalaVersion)
   }
 
   val genContain1 = TaskKey[Unit]("gencontain1", "Generate contain matcher tests 1")
-  val genContainTask1 = genContain1 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genContainTask1 = genContain1 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenContain1.genTest(new File(testTargetDir, "scala/gencontain1"), theVersion, theScalaVersion)
   }
 
   val genContain2 = TaskKey[Unit]("gencontain2", "Generate contain matcher tests 2")
-  val genContainTask2 = genContain2 <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genContainTask2 = genContain2 := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenContain2.genTest(new File(testTargetDir, "scala/gencontain2"), theVersion, theScalaVersion)
   }
 
   val genSorted = TaskKey[Unit]("gensorted", "Generate sorted matcher tests")
-  val genSortedTask = genSorted <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genSortedTask = genSorted := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenSorted.genTest(new File(testTargetDir, "scala/gensorted"), theVersion, theScalaVersion)
   }
 
   val genLoneElement = TaskKey[Unit]("genloneelement", "Generate lone element matcher tests")
-  val genLoneElementTask = genLoneElement <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genLoneElementTask = genLoneElement := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenLoneElement.genTest(new File(testTargetDir, "scala/genloneelement"), theVersion, theScalaVersion)
   }
 
   val genEmpty = TaskKey[Unit]("genempty", "Generate empty matcher tests")
-  val genEmptyTask = genEmpty <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genEmptyTask = genEmpty := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenEmpty.genTest(new File(testTargetDir, "scala/genempty"), theVersion, theScalaVersion)
   }
 
   val genCode = TaskKey[Unit]("gencode", "Generate Code, includes Must Matchers and They Word tests.")
-  val genCodeTask = genCode <<= (sourceManaged in Compile, sourceManaged in Test, version, scalaVersion) map { (mainTargetDir: File, testTargetDir: File, theVersion: String, theScalaVersion: String) =>
+  val genCodeTask = genCode := {
+    val mainTargetDir = (sourceManaged in Compile).value
+    val testTargetDir = (sourceManaged in Test).value
+    val theVersion = version.value
+    val theScalaVersion = scalaVersion.value
+
     GenGen.genMain(new File(mainTargetDir, "scala/gengen"), theVersion, theScalaVersion)
     GenTable.genMain(new File(mainTargetDir, "scala/gentables"), theVersion, theScalaVersion)
     GenMatchers.genMain(new File(mainTargetDir, "scala/genmatchers"), theVersion, theScalaVersion)
