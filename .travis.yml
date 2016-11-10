@@ -8,7 +8,10 @@ jdk:
   - openjdk6
   - oraclejdk8
 
-sudo: false
+#need to temporary do this because https://github.com/travis-ci/travis-ci/issues/3259
+#sudo: false
+sudo: required
+dist: trusty
 
 env:
   #see https://github.com/scalatest/scalatest/pull/245
