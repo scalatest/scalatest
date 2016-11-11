@@ -113,8 +113,17 @@ abstract class UnitInspectorAsserting {
           val head = itr.next
           val (newPassedCount, newMessageAcc) =
             try {
-              fun(head)
-              (passedCount + 1, messageAcc)
+              if (succeed(fun(head)))
+                (passedCount + 1, messageAcc)
+              else {
+                val xsIsMap = isMap(original)
+                val messageKey = head match {
+                  case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+                  case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+                  case _ => index.toString
+                }
+                (passedCount, messageAcc :+ createMessage(messageKey, None, xsIsMap))
+              }
             }
             catch {
               case e if !shouldPropagate(e) =>
@@ -269,8 +278,17 @@ abstract class UnitInspectorAsserting {
           val head = itr.next
           val newMessageList =
             try {
-              fun(head)
-              messageList
+              if (succeed(fun(head)))
+                messageList
+              else {
+                val xsIsMap = isMap(original)
+                val messageKey = head match {
+                  case tuple: Tuple2[_, _] if xsIsMap => tuple._1.toString
+                  case entry: Entry[_, _] if xsIsMap => entry.getKey.toString
+                  case _ => index.toString
+                }
+                messageList :+ createMessage(messageKey, None, xsIsMap)
+              }
             }
             catch {
               case e if !shouldPropagate(e) =>
