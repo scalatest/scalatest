@@ -3803,7 +3803,7 @@ object GenInspectors {
     genForEverySpecFile(targetDir(targetBaseDir, "forevery"))
     genAsyncForEverySpecFile(targetDir(targetBaseDir, "forevery"))
     genNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
-    genExpectationNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
+    //genExpectationNestedInspectorsSpecFile(targetDir(targetBaseDir, "nested"))
   }
   
   def main(args: Array[String]) {
