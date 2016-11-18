@@ -411,7 +411,7 @@ abstract class UnitInspectorAsserting {
  * Abstract class that in the future will hold an intermediate priority <code>InspectorAsserting</code> implicit, which will enable inspector expressions
  * that have result type <code>Expectation</code>, a more composable form of assertion that returns a result instead of throwing an exception when it fails.
  */
-abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
+private[scalatest] abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
   /*private[scalatest] */implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation, Expectation] = {
     new InspectorAssertingImpl[Expectation, Expectation] {
@@ -447,7 +447,7 @@ abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
  * Companion object to <code>InspectorAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
  * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
  */
-object InspectorAsserting extends /*UnitInspectorAsserting*/ ExpectationInspectorAsserting {
+object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorAsserting*/ {
 
   /**
    * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
@@ -507,28 +507,6 @@ object InspectorAsserting extends /*UnitInspectorAsserting*/ ExpectationInspecto
       case _ if Suite.anExceptionThatShouldCauseAnAbort(throwable) => true
       case _ => false
     }
-
-  /*private[scalatest] final def createMessage(messageKey: String, t: Option[Throwable], xsIsMap: Boolean): String =
-    t match {
-      case Some(sde: StackDepthException) =>
-        sde.failedCodeFileNameAndLineNumberString match {
-          case Some(failedCodeFileNameAndLineNumber) =>
-            if (xsIsMap)
-              Resources.forAssertionsGenMapMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
-            else
-              Resources.forAssertionsGenTraversableMessageWithStackDepth(messageKey, sde.getMessage, failedCodeFileNameAndLineNumber)
-          case None =>
-            if (xsIsMap)
-              Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, sde.getMessage)
-            else
-              Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, sde.getMessage)
-        }
-      case _ =>
-        if (xsIsMap)
-          Resources.forAssertionsGenMapMessageWithoutStackDepth(messageKey, t.map(e => if (e.getMessage != null) e.getMessage else "null").getOrElse("null"))
-        else
-          Resources.forAssertionsGenTraversableMessageWithoutStackDepth(messageKey, t.map(e => if (e.getMessage != null) e.getMessage else "null").getOrElse("null"))
-    }*/
 
   private[scalatest] final def elementLabel(count: Int): String =
     if (count > 1) Resources.forAssertionsElements(count.toString) else Resources.forAssertionsElement(count.toString)
