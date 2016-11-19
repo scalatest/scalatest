@@ -439,7 +439,7 @@ import StringReporter.withPossibleLineNumber
     suite.run(None, Args(rep))
     assert(rep.content ==
       """- test *** FAILED ***
-        |  Person(Student 1,22) did not equal Person(Student 2,23) (StringReporterSuite.scala:431)
+        |  Person(Student 1,22) did not equal Person(Student 2,23) (StringReporterSuite.scala:434)
         |  Difference Analysis:
         |  StringReporterSuite$Person(age: 22 -> 23, name: Student [1] -> Student [2])
         |""".stripMargin
