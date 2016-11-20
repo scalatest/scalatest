@@ -126,6 +126,13 @@ trait Prettifier extends Serializable { // I removed the extends (Any => String)
    * Prettifies the passed object.
    */
   def apply(o: Any): String
+
+  def apply(left: Any, right: Any): PrettyPair =
+    PrettyPair(
+      apply(left),
+      apply(right),
+      None
+    )
 }
 
 /**
