@@ -21,7 +21,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-private[scalatest] trait Expectations {
+trait Expectations {
   
   implicit def convertExpectationToAssertion(exp: Expectation): Assertion = exp.toAssertion
 
@@ -151,5 +151,5 @@ private[scalatest] trait Expectations {
   def expectTypeError(code: String)(implicit prettifier: Prettifier, pos: source.Position): Fact = macro CompileMacro.expectTypeErrorImpl
 }
 
-private[scalatest] object Expectations extends Expectations
+object Expectations extends Expectations
 
