@@ -556,6 +556,10 @@ import Generator._
       values should contain (Int.MaxValue)
       values should contain (Int.MinValue)
     }
+    it("should be able to use ScalaCheck Arbitary as underlying generator without problem") {
+      val dateGen = Generator.scalacheckArbitaryGenerator(org.scalacheck.Arbitrary.arbDate)
+      dateGen.next()
+    }
   }
 }
 

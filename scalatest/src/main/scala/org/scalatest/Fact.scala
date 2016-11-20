@@ -22,7 +22,7 @@ import org.scalatest.exceptions.TestCanceledException
 
 // As it stands, this should not extend Product with Serializable because
 // subclasses exists that anen't case classes.
-private[scalatest] sealed abstract class Fact {
+sealed abstract class Fact {
 
   val rawFactMessage: String
   val rawSimplifiedFactMessage: String
@@ -134,7 +134,7 @@ private[scalatest] sealed abstract class Fact {
   override def toString: String = factDiagram(0)
 }
 
-private[scalatest] object Fact {
+object Fact {
 
   case class Leaf(
     rawFactMessage: String,
