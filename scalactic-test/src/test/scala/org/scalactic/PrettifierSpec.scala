@@ -54,6 +54,19 @@ class PrettifierSpec extends FunSpec with Matchers {
       myLittlePretty(()) should be ("<(), the Unit value>")
       myLittlePretty(List("1", "2", "3")) should be ("List(\"1\", \"2\", \"3\")")
     }
+    it("should by default offer an apply method that takes two args that returns a PrettyPair whose left and right are prettified by the one-arg apply and hint is None.") {
+    
+      case class Yell(secret: String)
+      val myLittlePretty =
+        new Prettifier {
+          def apply(o: Any) =
+            o match {
+              case Yell(secret) => secret.toUpperCase + "!!!"
+              case _ => Prettifier.default(o)
+            }
+        }
+      myLittlePretty(Yell("I like fruit loops"), Yell("I like raisin bran")) shouldBe PrettyPair("I LIKE FRUIT LOOPS!!!", "I LIKE RAISIN BRAN!!!", None)
+    }
   }
 
   describe("the basic Prettifier") {
