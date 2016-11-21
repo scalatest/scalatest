@@ -17,36 +17,31 @@ package org.scalactic.source
 
 import org.scalatest._
 
-class CaseClassMetaSpec extends FunSpec with Matchers {
+class ObjectMetaSpec extends FunSpec with Matchers {
 
   case class Person(name: String, age: Int) {
-    val otherField = "test"
+    val otherField = "test other field"
   }
 
-  describe("CaseClassMeta") {
-    it("should throw IllegalArgumentException when instance passed in is not a case class") {
-      val e = intercept[IllegalArgumentException] {
-        CaseClassMeta("test")
-      }
-      e.getMessage shouldBe "java.lang.String is not a case class."
-    }
+  describe("ObjectMeta") {
 
     it("should extract case class attribute names correctly") {
-      CaseClassMeta(Person("test", 33)).caseAccessorNames should contain theSameElementsAs Set("name", "age")
+      ObjectMeta(Person("test", 33)).fieldNames should contain theSameElementsAs Set("name", "age", "otherField")
     }
 
     it("should extract dynamically field value correctly") {
-      val meta = CaseClassMeta(Person("test", 33))
+      val meta = ObjectMeta(Person("test", 33))
       meta.value("name") shouldBe "test"
       meta.value("age") shouldBe 33
+      meta.value("otherField") shouldBe "test other field"
     }
 
-    it("should throw IllegalArgumentException when non case class accessor name is used to retrieve value") {
-      val meta = CaseClassMeta(Person("test", 33))
+    it("should throw IllegalArgumentException when invalid attribute name is used to retrieve value") {
+      val meta = ObjectMeta(Person("test", 33))
       val e = intercept[IllegalArgumentException] {
-        meta.value("otherField")
+        meta.value("invalid")
       }
-      e.getMessage shouldBe "'otherField' is not a case accessor for this instance of case class."
+      e.getMessage shouldBe "'invalid' is not attribute for this instance."
     }
   }
 }

@@ -267,17 +267,16 @@ class DifferSpec extends FunSpec {
   case class Bar( s: String, i: Int ) extends Parent
   case class Foo( bar: Bar, b: List[Int], parent: Option[Parent] ) extends Parent
 
-  // SKIP-SCALATESTJS-START
-  describe("CaseClassDiffer") {
+  describe("ObjectDiffer") {
 
     it("should produce difference of 2 Bars correctly") {
       val a = Bar("asdf", 5)
       val b = Bar("asdf", 6)
       val c = Bar("asf", 6)
 
-      assert(CaseClassDiffer.difference(a, b).analysis == Some("DifferSpec$Bar(i: 5 -> 6)"))
-      assert(CaseClassDiffer.difference(b, c).analysis == Some("DifferSpec$Bar(s: as[d]f -> as[]f)"))
-      assert(CaseClassDiffer.difference(a, c).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[d]f -> as[]f)"))
+      assert(ObjectDiffer.difference(a, b).analysis == Some("DifferSpec$Bar(i: 5 -> 6)"))
+      assert(ObjectDiffer.difference(b, c).analysis == Some("DifferSpec$Bar(s: as[d]f -> as[]f)"))
+      assert(ObjectDiffer.difference(a, c).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[d]f -> as[]f)"))
     }
 
     it("should produce difference of 2 Foos correctly") {
@@ -292,7 +291,15 @@ class DifferSpec extends FunSpec {
         Some( Bar( "qwer", 5 ) )
       )
 
-      assert(CaseClassDiffer.difference(a, b).analysis == Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(x: DifferSpec$Bar(s: [asdf] -> [qwer])))"))
+      assert(
+        ObjectDiffer.difference(a, b).analysis ==
+        (
+          if (ScalacticVersions.BuiltForScalaVersion == "2.12")
+            Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(value: DifferSpec$Bar(s: [asdf] -> [qwer])))")
+          else
+            Some("DifferSpec$Foo(b: List(0: 123 -> 1234, 1: 1234 -> ), bar: DifferSpec$Bar(i: 5 -> 66), parent: Some(x: DifferSpec$Bar(s: [asdf] -> [qwer])))")
+        )
+      )
     }
 
     it("should be used when case class is being compared with shouldEqual matcher") {
@@ -339,8 +346,59 @@ class DifferSpec extends FunSpec {
       assert(e.differences(0).analysis == Some("DifferSpec$Bar(i: 5 -> 6, s: as[]df -> as[b]df)"))
     }
 
+    it("should not produce difference when left and right have the same elements in same order") {
+      assert(ObjectDiffer.difference((1, 2, 3), (1, 2, 3)).analysis == None)
+    }
+
+    it("should produce difference when element in left and right is different") {
+      assert(ObjectDiffer.difference((1, 2, 3), (1, 6, 3)).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
+    it("should product difference when element exist in left, but not in right") {
+      assert(ObjectDiffer.difference((1, 2, 3), (1, 2)).analysis == Some("Tuple3(_3: 3 -> )"))
+    }
+
+    it("should product difference when element exist in right, but not in left") {
+      assert(ObjectDiffer.difference((1, 2), (1, 2, 3)).analysis == Some("Tuple2(_3: -> 3)"))
+    }
+
+    it("should produce difference when elements in left and right is same but in different order") {
+      assert(ObjectDiffer.difference((1, 2, 3), (3, 2, 1)).analysis == Some("Tuple3(_1: 1 -> 3, _3: 3 -> 1)"))
+    }
+
+    it("should be used when Tuple is being compared with shouldEqual matcher") {
+      val e = intercept[TestFailedException] {
+        (1, 2, 3) shouldEqual (1, 6, 3)
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
+    it("should be used when Tuple is being compared with should equal matcher") {
+      val e = intercept[TestFailedException] {
+        (1, 2, 3) should equal ((1, 6, 3))
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
+    it("should be used when Tuple is being compared with 'all' shouldEqual matcher") {
+      val e = intercept[TestFailedException] {
+        all(List((1, 2, 3))) shouldEqual ((1, 6, 3))
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
+    it("should be used when Tuple is being compared with 'all' should equal matcher") {
+      val e = intercept[TestFailedException] {
+        all(List((1, 2, 3))) should equal ((1, 6, 3))
+      }
+      assert(e.differences.length == 1)
+      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
+    }
+
   }
-  // SKIP-SCALATESTJS-END
 
   describe("GenSeqDiffer") {
 
@@ -542,62 +600,6 @@ class DifferSpec extends FunSpec {
       }
       assert(e.differences.length == 1)
       assert(e.differences(0).analysis == Some("Map(2: two -> , 6: -> six)"))
-    }
-
-  }
-
-  describe("ProductDiffer") {
-
-    it("should not produce difference when left and right have the same elements in same order") {
-      assert(ProductDiffer.difference((1, 2, 3), (1, 2, 3)).analysis == None)
-    }
-
-    it("should produce difference when element in left and right is different") {
-      assert(ProductDiffer.difference((1, 2, 3), (1, 6, 3)).analysis == Some("Tuple3(_2: 2 -> 6)"))
-    }
-
-    it("should product difference when element exist in left, but not in right") {
-      assert(ProductDiffer.difference((1, 2, 3), (1, 2)).analysis == Some("Tuple3(_3: 3 -> )"))
-    }
-
-    it("should product difference when element exist in right, but not in left") {
-      assert(ProductDiffer.difference((1, 2), (1, 2, 3)).analysis == Some("Tuple2(_3: -> 3)"))
-    }
-
-    it("should produce difference when elements in left and right is same but in different order") {
-      assert(ProductDiffer.difference((1, 2, 3), (3, 2, 1)).analysis == Some("Tuple3(_1: 1 -> 3, _3: 3 -> 1)"))
-    }
-
-    it("should be used when Tuple is being compared with shouldEqual matcher") {
-      val e = intercept[TestFailedException] {
-        (1, 2, 3) shouldEqual (1, 6, 3)
-      }
-      assert(e.differences.length == 1)
-      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
-    }
-
-    it("should be used when Tuple is being compared with should equal matcher") {
-      val e = intercept[TestFailedException] {
-        (1, 2, 3) should equal ((1, 6, 3))
-      }
-      assert(e.differences.length == 1)
-      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
-    }
-
-    it("should be used when Tuple is being compared with 'all' shouldEqual matcher") {
-      val e = intercept[TestFailedException] {
-        all(List((1, 2, 3))) shouldEqual ((1, 6, 3))
-      }
-      assert(e.differences.length == 1)
-      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
-    }
-
-    it("should be used when Tuple is being compared with 'all' should equal matcher") {
-      val e = intercept[TestFailedException] {
-        all(List((1, 2, 3))) should equal ((1, 6, 3))
-      }
-      assert(e.differences.length == 1)
-      assert(e.differences(0).analysis == Some("Tuple3(_2: 2 -> 6)"))
     }
 
   }

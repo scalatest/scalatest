@@ -15,7 +15,7 @@
  */
 package org.scalactic
 
-import org.scalactic.source.CaseClassMeta
+import org.scalactic.source.ObjectMeta
 
 trait Differ {
 
@@ -47,38 +47,6 @@ object Differ {
 
   implicit def default: Differ = new AnyDiffer
 }
-
-class AnyDiffer extends Differ {
-
-  def difference(a: Any, b: Any): Difference = {
-
-    (a, b) match {
-      case (s1: String, s2: String) => StringDiffer.difference(s1, s2)
-      case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2)
-      case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2)
-      case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2)
-      // SKIP-SCALATESTJS-START
-      case (s1: Product, s2: Product) if CaseClassMeta.isCaseClass(s1) && CaseClassMeta.isCaseClass(s2) => CaseClassDiffer.difference(s1, s2)
-      // SKIP-SCALATESTJS-END
-      case (s1: Product, s2: Product) => ProductDiffer.difference(s1, s2)
-      case _ =>
-        if (a != b)
-          new Difference {
-
-            def inlineDiff = Some((a, b))
-
-            def sideBySideDiff = None
-
-            def analysis = None
-          }
-        else
-          Difference.empty
-    }
-  }
-
-}
-
-object AnyDiffer extends AnyDiffer
 
 trait StringDiffer extends Differ {
 
@@ -140,68 +108,6 @@ trait StringDiffer extends Differ {
 }
 
 object StringDiffer extends StringDiffer
-
-// SKIP-SCALATESTJS-START
-trait CaseClassDiffer extends Differ {
-
-  def difference(a: Any, b: Any): Difference = {
-    new Difference {
-      def inlineDiff = None
-
-      def sideBySideDiff = None
-
-      def analysis = {
-        val leftMeta = CaseClassMeta(a)
-        val rightMeta = CaseClassMeta(b)
-
-        val diffSet =
-          leftMeta.caseAccessorNames.flatMap { name =>
-            val leftValue = leftMeta.value(name)
-            try {
-              val rightValue = rightMeta.value(name)
-              if (leftValue != rightValue) {
-                val nestedDiff = AnyDiffer.difference(leftValue, rightValue)
-                if (nestedDiff == Difference.empty)
-                  Some(name + ": " + leftValue + " -> " + rightValue)
-                else {
-                  nestedDiff.inlineDiff match {
-                    case Some((leftee, rightee)) => Some(name + ": " + leftee + " -> " + rightee)
-                    case _ =>
-                      nestedDiff.analysis match {
-                        case Some(analysis) =>
-                          Some(name + ": " + analysis + "")
-
-                        case None => Some(name + ": " + leftValue + " -> " + rightValue)
-                      }
-                  }
-                }
-
-              }
-              else
-                None
-            }
-            catch {
-              case iae: IllegalArgumentException => None
-            }
-          }
-
-        if (diffSet.isEmpty)
-          None
-        else {
-          val shortName = Differ.simpleClassName(a)
-          Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
-        }
-      }
-    }
-
-  }
-
-}
-
-object CaseClassDiffer extends CaseClassDiffer
-// SKIP-SCALATESTJS-END
-
-// interesting to see https://github.com/twitter/diffy/blob/master/src/main/scala/com/twitter/diffy/compare/Difference.scala
 
 class GenSeqDiffer extends Differ {
 
@@ -334,51 +240,104 @@ class GenMapDiffer[K, V] extends Differ {
 
 object GenMapDiffer extends GenMapDiffer
 
-trait ProductDiffer extends Differ {
+trait ObjectDiffer extends Differ {
 
   def difference(a: Any, b: Any): Difference = {
-    // SKIP-SCALATESTJS-START
-    if (a != null && CaseClassMeta.isCaseClass(a) && b != null && CaseClassMeta.isCaseClass(b))
-      CaseClassDiffer.difference(a, b)
-    else
-    // SKIP-SCALATESTJS-END
-      new Difference {
-        def inlineDiff = None
+    new Difference {
+      def inlineDiff = None
 
-        def sideBySideDiff = None
+      def sideBySideDiff = None
 
-        def analysis = {
-          (a, b) match {
-            case (aProduct: scala.Product, bProduct: scala.Product) =>
-              val diffSet =
-                ((0 until aProduct.productArity) flatMap { i =>
-                  val leftEl = aProduct.productElement(i)
-                  if (bProduct.productArity > i) {
-                    val rightEl = bProduct.productElement(i)
-                    if (leftEl != rightEl)
-                      Some("_" + (i + 1) + ": " + leftEl + " -> " + rightEl)
-                    else
-                      None
+      def analysis = {
+
+        import org.scalactic.source.ObjectMeta
+
+        val leftMeta = ObjectMeta(a)
+        val rightMeta = ObjectMeta(b)
+
+        val diffSet =
+          (leftMeta.fieldNames.flatMap { name =>
+            val leftValue = leftMeta.value(name)
+            try {
+              if (rightMeta.hasField(name)) {
+                val rightValue = rightMeta.value(name)
+                if (leftValue != rightValue) {
+                  val nestedDiff = AnyDiffer.difference(leftValue, rightValue)
+                  if (nestedDiff == Difference.empty)
+                    Some(name + ": " + leftValue + " -> " + rightValue)
+                  else {
+                    nestedDiff.inlineDiff match {
+                      case Some((leftee, rightee)) => Some(name + ": " + leftee + " -> " + rightee)
+                      case _ =>
+                        nestedDiff.analysis match {
+                          case Some(analysis) =>
+                            Some(name + ": " + analysis + "")
+
+                          case None => Some(name + ": " + leftValue + " -> " + rightValue)
+                        }
+                    }
                   }
-                  else
-                    Some("_" + (i + 1) + ": " + leftEl + " -> ")
-                }).toSet ++
-                  ((aProduct.productArity until bProduct.productArity) flatMap { i =>
-                    Some("_" + (i + 1) + ": -> " + bProduct.productElement(i))
-                  }).toSet
 
-              val shortName = Differ.simpleClassName(aProduct)
-              if (diffSet.isEmpty)
-                None
+                }
+                else
+                  None
+              }
               else
-                Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
-
-            case _ => None
+                Some(name + ": " + leftValue + " -> ")
+            }
+            catch {
+              case iae: IllegalArgumentException =>
+                None
+            }
+          }) ++
+          rightMeta.fieldNames.filter(f => !leftMeta.fieldNames.contains(f)).flatMap { name =>
+            val rightValue = rightMeta.value(name)
+            Some(name + ": -> " + rightValue)
           }
+
+
+        if (diffSet.isEmpty)
+          None
+        else {
+          val shortName = Differ.simpleClassName(a)
+          Some(shortName + "(" + diffSet.toList.sorted.mkString(", ") + ")")
         }
       }
+    }
+
   }
 
 }
 
-object ProductDiffer extends ProductDiffer
+object ObjectDiffer extends ObjectDiffer
+
+class AnyDiffer extends Differ {
+
+  def difference(a: Any, b: Any): Difference = {
+
+    (a, b) match {
+      case (s1: String, s2: String) => StringDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenMap[Any, Any], s2: scala.collection.GenMap[Any, Any]) => GenMapDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenSeq[_], s2: scala.collection.GenSeq[_]) => GenSeqDiffer.difference(s1, s2)
+      case (s1: scala.collection.GenSet[Any], s2: scala.collection.GenSet[Any]) => GenSetDiffer.difference(s1, s2)
+      //case (s1: Product, s2: Product) if ObjectMeta.isCaseClass(s1) && ObjectMeta.isCaseClass(s2) => ObjectDiffer.difference(s1, s2)
+      // SKIP-SCALATESTJS-END
+      case (s1: Product, s2: Product) => ObjectDiffer.difference(s1, s2)//ProductDiffer.difference(s1, s2)
+      case _ =>
+        if (a != b)
+          new Difference {
+
+            def inlineDiff = Some((a, b))
+
+            def sideBySideDiff = None
+
+            def analysis = None
+          }
+        else
+          Difference.empty
+    }
+  }
+
+}
+
+object AnyDiffer extends AnyDiffer
