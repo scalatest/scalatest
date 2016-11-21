@@ -18,7 +18,7 @@ package org.scalactic
 case class PrettyPair(
   left: String,
   right: String,
-  hint: Option[String]
+  analysis: Option[String]
 )
 
 
