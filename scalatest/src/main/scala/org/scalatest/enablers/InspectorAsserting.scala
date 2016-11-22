@@ -33,7 +33,9 @@ import org.scalatest.FailureMessages.decorateToStringValue
  * else it will have result type <code>Unit</code>.
  * </p>
  */
-trait InspectorAsserting[T, R] {
+trait InspectorAsserting[T] {
+
+  type RESULT
 
   def succeed(result: T): (Boolean, Option[Throwable])
 
@@ -42,37 +44,37 @@ trait InspectorAsserting[T, R] {
   /**
    * Implementation method for <code>Inspectors</code> <code>forAll</code> syntax.
    */
-  def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R
+  def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forAtLeast</code> syntax.
    */
-  def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R
+  def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forAtMost</code> syntax.
    */
-  def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R
+  def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forExactly</code> syntax.
    */
-  def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R
+  def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forNo</code> syntax.
    */
-  def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R
+  def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forBetween</code> syntax.
    */
-  def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R
+  def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT
 
   /**
    * Implementation method for <code>Inspectors</code> <code>forEvery</code> syntax.
    */
-  def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R
+  def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT
 }
 
 /**
@@ -84,12 +86,12 @@ abstract class UnitInspectorAsserting {
    * Abstract subclass of <code>InspectorAsserting</code> that provides the bulk of the implementations of <code>InspectorAsserting</code>
    * methods.
    */
-  abstract class InspectorAssertingImpl[T, R] extends InspectorAsserting[T, R] {
+  abstract class InspectorAssertingImpl[T] extends InspectorAsserting[T] {
 
     import InspectorAsserting._
 
     // Inherit Scaladoc for now. See later if can just make this implementation class private[scalatest].
-    def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R = {
+    def forAll[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT = {
       val xsIsMap = isMap(original)
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.failedElements.length > 0, succeed)
@@ -105,7 +107,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAll succeeded")
     }
 
-    def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R = {
+    def forAtLeast[E](min: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT = {
       @tailrec
       def forAtLeastAcc(itr: Iterator[E], includeIndex: Boolean, index: Int, passedCount: Int, messageAcc: IndexedSeq[String]): (Int, IndexedSeq[String]) = {
         if (itr.hasNext) {
@@ -167,7 +169,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAtLeast succeeded")
     }
 
-    def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R = {
+    def forAtMost[E](max: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT = {
       if (max <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'max'"))
 
@@ -186,7 +188,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forAtMost succeeded")
     }
 
-    def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R = {
+    def forExactly[E](succeededCount: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT = {
       if (succeededCount <= 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanZero("'succeededCount'"))
 
@@ -219,7 +221,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forExactly succeeded")
     }
 
-    def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R = {
+    def forNo[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT = {
       val xsIsMap = isMap(original)
       val result =
         runFor(xs.toIterator, xsIsMap, 0, new ForResult[E], fun, _.passedCount != 0, succeed)
@@ -235,7 +237,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forNo succeeded")
     }
 
-    def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R = {
+    def forBetween[E](from: Int, upTo: Int, xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT = {
       if (from < 0)
         throw new IllegalArgumentException(Resources.forAssertionsMoreThanEqualZero("'from'"))
       if (upTo <= 0)
@@ -272,7 +274,7 @@ abstract class UnitInspectorAsserting {
       else indicateSuccess("forBetween succeeded")
     }
 
-    def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): R = {
+    def forEvery[E](xs: GenTraversable[E], original: Any, shorthand: Boolean, prettifier: Prettifier, pos: source.Position)(fun: E => T): RESULT = {
       @tailrec
       def runAndCollectErrorMessage[E](itr: Iterator[E], messageList: IndexedSeq[String], index: Int)(fun: E => T): IndexedSeq[String] = {
         if (itr.hasNext) {
@@ -325,9 +327,9 @@ abstract class UnitInspectorAsserting {
     // TODO: Why is this a by-name? Well, I made it a by-name because it was one in MatchersHelper.
     // Why is it a by-name there?
     // CS: because we want to construct the message lazily.
-    private[scalatest] def indicateSuccess(message: => String): R
+    private[scalatest] def indicateSuccess(message: => String): RESULT
 
-    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): R
+    private[scalatest] def indicateFailure(message: => String, optionalCause: Option[Throwable], pos: source.Position): RESULT
 
     @tailrec
     private[scalatest] final def runFor[E](itr: Iterator[E], xsIsMap: Boolean, index:Int, result: ForResult[E], fun: E => T, stopFun: ForResult[_] => Boolean, succeedFun: T => (Boolean, Option[Throwable])): ForResult[E] = {
@@ -371,8 +373,9 @@ abstract class UnitInspectorAsserting {
    * Provides an implicit <code>InspectorAsserting</code> instance for any type that did not match a
    * higher priority implicit provider, enabling inspector syntax that has result type <code>Unit</code>.
    */
-  implicit def assertingNatureOfT[T]: InspectorAsserting[T, Unit] =
-    new InspectorAssertingImpl[T, Unit] {
+  implicit def assertingNatureOfT[T]: InspectorAsserting[T] =
+    new InspectorAssertingImpl[T] {
+      type RESULT = Unit
       def succeed(result: T): (Boolean, Option[Throwable]) = (true, None)
       def createMessage(messageKey: String, result: Option[T], t: Option[Throwable], xsIsMap: Boolean): String =
         t match {
@@ -413,8 +416,9 @@ abstract class UnitInspectorAsserting {
  */
 private[scalatest] abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  /*private[scalatest] */implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation, Expectation] = {
-    new InspectorAssertingImpl[Expectation, Expectation] {
+  /*private[scalatest] */implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] = {
+    new InspectorAssertingImpl[Expectation] {
+      type RESULT = Expectation
       def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
       def createMessage(messageKey: String, result: Option[Expectation], t: Option[Throwable], xsIsMap: Boolean): String =
         if (xsIsMap)
@@ -453,8 +457,9 @@ object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorA
    * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
    * enabling inspector syntax that has result type <code>Assertion</code>.
    */
-  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion, Assertion] =
-    new InspectorAssertingImpl[Assertion, Assertion] {
+  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] =
+    new InspectorAssertingImpl[Assertion] {
+      type RESULT = Assertion
       def succeed(result: Assertion): (Boolean, Option[Throwable]) = (true, None)
       def createMessage(messageKey: String, result: Option[Assertion], t: Option[Throwable], xsIsMap: Boolean): String =
         t match {
