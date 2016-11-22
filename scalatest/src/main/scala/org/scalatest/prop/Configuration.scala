@@ -16,9 +16,9 @@
 package org.scalatest.prop
 
 import org.scalacheck.Test.Parameters
-import org.scalactic.anyvals.{PosZInt, PosZDouble, PosInt}
+import org.scalactic.anyvals.{PosInt, PosZDouble, PosZInt}
 import org.scalacheck.Test.TestCallback
-
+import org.scalatest.tools.Runner
 
 /**
  * Trait providing methods and classes used to configure property checks provided by the
@@ -43,8 +43,8 @@ trait Configuration {
 
   case class PropertyCheckConfiguration(minSuccessful: PosInt = PosInt(10),
                                         maxDiscardedFactor: PosZDouble = PosZDouble(5.0),
-                                        minSize: PosZInt = PosZInt(0),
-                                        sizeRange: PosZInt = PosZInt(100),
+                                        minSize: PosZInt = Runner.minSize.get(),
+                                        sizeRange: PosZInt = Runner.sizeRange.get(),
                                         workers: PosInt = PosInt(1)) extends PropertyCheckConfigurable {
     @deprecated("Transitional value to ensure upgrade compatibility when mixing PropertyCheckConfig and minSuccessful parameters.  Remove with PropertyCheckConfig class")
     private [scalatest] val legacyMaxDiscarded: Option[Int] = None

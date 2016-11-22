@@ -18,9 +18,10 @@ package org.scalatest.tools
 import java.io.File
 import java.net.URL
 import java.util.regex.Pattern
-import org.scalactic.Requirements._
-import org.scalactic.exceptions.NullArgumentException
 
+import org.scalactic.Requirements._
+import org.scalactic.anyvals.PosZInt
+import org.scalactic.exceptions.NullArgumentException
 import org.scalatest.{ConfigMap, Resources}
 
 import scala.collection.mutable.ListBuffer
@@ -185,7 +186,10 @@ private[tools] object ArgsParser {
     val testSortingReporterTimeout = new ListBuffer[String]()
     val slowpoke = new ListBuffer[String]()
     // SKIP-SCALATESTJS-END
+
     val seeds = ListBuffer[String]()
+    val generatorMinSize = new ListBuffer[String]()
+    val generatorSizeRange = new ListBuffer[String]()
 
     val it = args.iterator.buffered
     while (it.hasNext) {
@@ -427,6 +431,16 @@ private[tools] object ArgsParser {
         // SKIP-SCALATESTJS-END
         //SCALATESTJS-ONLY throw new IllegalArgumentException("Argument not supported by ScalaTest-js: " + s)
       }
+      else if (s == "-N") {
+        generatorMinSize += s
+        if (it.hasNext)
+          generatorMinSize += it.next()
+      }
+      else if (s == "-Z") {
+        generatorSizeRange += s
+        if (it.hasNext)
+          generatorSizeRange += it.next()
+      }
       else {
         throw new IllegalArgumentException("Argument unrecognized by ScalaTest's Runner: " + s)
       }
@@ -458,7 +472,9 @@ private[tools] object ArgsParser {
       testSortingReporterTimeout.toList,
       slowpoke.toList,
       // SKIP-SCALATESTJS-END
-      seeds.toList
+      seeds.toList,
+      generatorMinSize.toList,
+      generatorSizeRange.toList
     )
   }
 
@@ -1266,6 +1282,38 @@ private[tools] object ArgsParser {
       None
     else if (lb.size == 1)
       Some(lb(0))
+    else
+      throw new IllegalArgumentException("Only one " + dashArg + " can be specified.")
+  }
+
+  def parsePosZIntArgument(args: List[String], dashArg: String, defaultValue: PosZInt): PosZInt = {
+    val it = args.iterator
+    val lb = new ListBuffer[Option[PosZInt]]()
+    while (it.hasNext) {
+      val dash = it.next
+      if (dash != dashArg)
+        throw new IllegalArgumentException("Every other element, starting with the first, must be " + dashArg)
+      if (it.hasNext) {
+        val valueString = it.next
+        try {
+          lb += PosZInt.from(valueString.toInt)
+
+          if (lb.last.isEmpty)
+            throw new IllegalArgumentException(dashArg + " must be followed by a positive number, but '" + valueString + "' is not a positive number.")
+        }
+        catch {
+          case e: NumberFormatException =>
+            throw new IllegalArgumentException(dashArg + " must be followed by a positive number, but '" + valueString + "' is not a number.")
+        }
+      }
+      else
+        throw new IllegalArgumentException("Last element must be a number, not a " + dashArg + ".")
+    }
+    val fl = lb.flatten.toList
+    if (fl.size == 0)
+      defaultValue
+    else if (fl.size == 1)
+      fl(0)
     else
       throw new IllegalArgumentException("Only one " + dashArg + " can be specified.")
   }

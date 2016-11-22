@@ -33,7 +33,9 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
     tagsToExcludeArgs,
     membersOnlyArgs,
     wildcardArgs,
-    seeds
+    seeds,
+    generatorMinSize,
+    generatorSizeRange
   ) = parseArgs(args)
 
   val (
@@ -79,6 +81,9 @@ class SlaveRunner(theArgs: Array[String], theRemoteArgs: Array[String], testClas
   val tagsToExclude: Set[String] = parseCompoundArgIntoSet(tagsToExcludeArgs, "-l")
   val membersOnly: List[String] = parseSuiteArgsIntoNameStrings(membersOnlyArgs, "-m")
   val wildcard: List[String] = parseSuiteArgsIntoNameStrings(wildcardArgs, "-w")
+
+  Runner.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+  Runner.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-Z", PosZInt(100)))
 
   parseLongArgument(seeds, "-S") match {
     case Some(seed) => Randomizer.defaultSeed.getAndSet(Some(seed))
