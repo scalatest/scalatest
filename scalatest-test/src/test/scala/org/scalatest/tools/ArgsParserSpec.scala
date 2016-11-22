@@ -19,6 +19,7 @@ import java.util.regex.Pattern
 import org.scalatest._
 import java.io.File
 import org.scalactic.exceptions.NullArgumentException
+import org.scalactic.anyvals.PosZInt
 
 class ArgsParserSpec extends FunSpec {
 
@@ -64,18 +65,17 @@ class ArgsParserSpec extends FunSpec {
       concurrentList,
       // SKIP-SCALATESTJS-END
       memberOfList,
-      // SKIP-SCALATESTJS-START
       beginsWithList,
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY beginsWithList
       // SKIP-SCALATESTJS-START
       testNGList,
       suffixes,
       chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
-      slowpokeList
+      slowpokeList,
       // SKIP-SCALATESTJS-END
+      generatorMinSize,
+      generatorSizeRange
       ) = ArgsParser.parseArgs(args)
 
       // SKIP-SCALATESTJS-START
@@ -545,18 +545,17 @@ class ArgsParserSpec extends FunSpec {
       concurrentList,
       // SKIP-SCALATESTJS-END
       memberOfList,
-      // SKIP-SCALATESTJS-START
       beginsWithList,
-      // SKIP-SCALATESTJS-END
-      //SCALATESTJS-ONLY beginsWithList
       // SKIP-SCALATESTJS-START
       testNGList,
       suffixes,
       chosenStyleList,
       spanScaleFactorList,
       testSortingReporterTimeoutList,
-      slowpokeList
+      slowpokeList,
       // SKIP-SCALATESTJS-END
+      generatorMinSize,
+      generatorSizeRange
       ) = ArgsParser.parseArgs(args)
 
       // SKIP-SCALATESTJS-START
@@ -1752,6 +1751,12 @@ class ArgsParserSpec extends FunSpec {
     }
     val testSortingReporterTimeout = ArgsParser.parseDoubleArgument(List("-T", "888"), "-T", 15.0)
     assert(spanScaleFactor === 888)
+
+    val generatorMinSize = ArgsParser.parsePosZIntArgument(List("-N", "9"), "-N", PosZInt(0))
+    assert(generatorMinSize === PosZInt(9))
+
+    val generatorSizeRange = ArgsParser.parsePosZIntArgument(List("-S", "99"), "-S", PosZInt(100))
+    assert(generatorSizeRange === PosZInt(99))
   }
 
   // SKIP-SCALATESTJS-START
@@ -1925,6 +1930,20 @@ class ArgsParserSpec extends FunSpec {
       ArgsParser.parseArgs(Array("-F2"))
     }
     assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -F2")
+  }
+
+  it("parseArgs should disallow -N2") {
+    val e = intercept[IllegalArgumentException] {
+      ArgsParser.parseArgs(Array("-N2"))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -N2")
+  }
+
+  it("parseArgs should disallow -S2") {
+    val e = intercept[IllegalArgumentException] {
+      ArgsParser.parseArgs(Array("-S2"))
+    }
+    assert(e.getMessage == "Argument unrecognized by ScalaTest's Runner: -S2")
   }
 
   it("parseArgs should disallow -T20") {

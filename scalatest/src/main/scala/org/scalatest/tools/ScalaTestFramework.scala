@@ -31,6 +31,8 @@ import org.scalatest.events.SuiteCompleted
 import org.scalatest.events.SuiteStarting
 import org.scalatest.events.TopOfClass
 import org.scalatools.testing.{Framework => SbtFramework, _}
+import org.scalactic.anyvals.PosZInt
+import org.scalatest.prop.Configuration
 
 /**
  * Class that makes ScalaTest tests visible to SBT (prior to version 0.13).
@@ -151,7 +153,9 @@ class ScalaTestFramework extends SbtFramework {
             chosenStyles, 
             spanScaleFactors, 
             testSortingReporterTimeouts,
-            slowpokeArgs
+            slowpokeArgs,
+            generatorMinSize,
+            generatorSizeRange
           ) = parseArgs(FriendlyParamsTranslator.translateArguments(args))
           
           if (!runpathArgs.isEmpty)
@@ -202,6 +206,9 @@ class ScalaTestFramework extends SbtFramework {
           }
           
           Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
+
+          Runner.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+          Runner.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-S", PosZInt(100)))
           
           val fullReporterConfigurations = parseReporterArgsIntoConfigurations(reporterArgs)
           val sbtNoFormat = java.lang.Boolean.getBoolean("sbt.log.noformat")

@@ -217,6 +217,8 @@ class PosDoubleSpec extends FunSpec with Matchers with GeneratorDrivenPropertyCh
       }
 
       it("should offer a unary + method that is consistent with Double") {
+        println("###generatorDrivenConfig.minSize: " + generatorDrivenConfig.minSize)
+        println("###generatorDrivenConfig.sizeRange: " + generatorDrivenConfig.sizeRange)
         forAll { (pdouble: PosDouble) =>
           (+pdouble).toDouble shouldEqual (+(pdouble.toDouble))
         }
