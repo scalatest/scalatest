@@ -373,7 +373,7 @@ abstract class UnitInspectorAsserting {
    * Provides an implicit <code>InspectorAsserting</code> instance for any type that did not match a
    * higher priority implicit provider, enabling inspector syntax that has result type <code>Unit</code>.
    */
-  implicit def assertingNatureOfT[T]: InspectorAsserting[T] =
+  implicit def assertingNatureOfT[T]: InspectorAsserting[T] { type RESULT = Unit } =
     new InspectorAssertingImpl[T] {
       type RESULT = Unit
       def succeed(result: T): (Boolean, Option[Throwable]) = (true, None)
@@ -416,7 +416,7 @@ abstract class UnitInspectorAsserting {
  */
 private[scalatest] abstract class ExpectationInspectorAsserting extends UnitInspectorAsserting {
 
-  /*private[scalatest] */implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] = {
+  /*private[scalatest] */implicit def assertingNatureOfExpectation(implicit prettifier: Prettifier): InspectorAsserting[Expectation] { type RESULT = Expectation } = {
     new InspectorAssertingImpl[Expectation] {
       type RESULT = Expectation
       def succeed(result: Expectation): (Boolean, Option[Throwable]) = (result.isYes, result.cause)
@@ -451,13 +451,13 @@ private[scalatest] abstract class ExpectationInspectorAsserting extends UnitInsp
  * Companion object to <code>InspectorAsserting</code> that provides two implicit providers, a higher priority one for passed functions that have result
  * type <code>Assertion</code>, which also yields result type <code>Assertion</code>, and one for any other type, which yields result type <code>Unit</code>.
  */
-object InspectorAsserting extends UnitInspectorAsserting /*ExpectationInspectorAsserting*/ {
+object InspectorAsserting extends /*UnitInspectorAsserting*/ ExpectationInspectorAsserting {
 
   /**
    * Provides an implicit <code>InspectorAsserting</code> instance for type <code>Assertion</code>,
    * enabling inspector syntax that has result type <code>Assertion</code>.
    */
-  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] =
+  implicit def assertingNatureOfAssertion: InspectorAsserting[Assertion] { type RESULT = Assertion } =
     new InspectorAssertingImpl[Assertion] {
       type RESULT = Assertion
       def succeed(result: Assertion): (Boolean, Option[Throwable]) = (true, None)
