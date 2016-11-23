@@ -209,7 +209,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
       }
   }
 
-  implicit def function1IntToListOfStringGenerator(implicit genOfInt: Generator[Int]): Generator[Int => List[String]] = {
+  implicit def function1IntToListOfStringGenerator: Generator[Int => List[String]] = {
     object IntToListOfStringIdentity extends PrettyFunction1[Int, List[String]] {
       def apply(i: Int): List[String] = List(i.toString)
       override def toString = "(i: Int) => List(i.toString)"
@@ -237,14 +237,14 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Int => List[String]] {
       def next(size: Int, rnd: Randomizer): (Int => List[String], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
       override def toString = "Generator[Int => List[String]]"
     }
   }
-  implicit def function1StringToListOfLongGenerator(implicit genOfInt: Generator[Int]): Generator[String => List[Long]] = {
+  implicit def function1StringToListOfLongGenerator: Generator[String => List[Long]] = {
     object StringToListOfLongLength extends PrettyFunction1[String, List[Long]] {
       def apply(s: String): List[Long] = List(s.length.toLong)
       override def toString = "(s: String) => List(s.length.toLong)"
@@ -272,7 +272,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[String => List[Long]] {
       def next(size: Int, rnd: Randomizer): (String => List[Long], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
@@ -280,7 +280,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1IntToIntGenerator(implicit genOfInt: Generator[Int]): Generator[Int => Int] = {
+  implicit def function1IntToIntGenerator: Generator[Int => Int] = {
     object IntToIntIdentity extends PrettyFunction1[Int, Int] {
       def apply(i: Int): Int = i
       override def toString = "(i: Int) => i"
@@ -364,7 +364,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Int => Int] {
       def next(size: Int, rnd: Randomizer): (Int => Int, Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
@@ -372,7 +372,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1IntToOptionOfIntGenerator(implicit genOfInt: Generator[Int]): Generator[Int => Option[Int]] = {
+  implicit def function1IntToOptionOfIntGenerator: Generator[Int => Option[Int]] = {
     object IntToOptionOfIntNonZero extends PrettyFunction1[Int, Option[Int]] {
       def apply(i: Int): Option[Int] = if (i != 0) Some(i) else None
       override def toString = "(i: Int) => if (i != 0) Some(i) else None"
@@ -414,7 +414,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Int => Option[Int]] {
       def next(size: Int, rnd: Randomizer): (Int => Option[Int], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
@@ -422,7 +422,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1IntToStringGenerator(implicit genOfInt: Generator[Int]): Generator[Int => String] = {
+  implicit def function1IntToStringGenerator: Generator[Int => String] = {
     object IntToStringIdentity extends PrettyFunction1[Int, String] {
       def apply(i: Int): String = i.toString
       override def toString = "(i: Int) => i.toString"
@@ -499,7 +499,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[Int => String] {
       def next(size: Int, rnd: Randomizer): (Int => String, Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
@@ -507,7 +507,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1StringToIntGenerator(implicit genOfInt: Generator[Int]): Generator[String => Int] = {
+  implicit def function1StringToIntGenerator: Generator[String => Int] = {
     object StringToIntLength extends PrettyFunction1[String, Int] {
       def apply(s: String): Int = s.length
       override def toString = "(s: String) => s.length"
@@ -570,14 +570,14 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[String => Int] {
       def next(size: Int, rnd: Randomizer): (String => Int, Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
       override def toString = "Generator[String => Int]"
     }
   }
-  implicit def function1StringToStringGenerator(implicit genOfInt: Generator[Int]): Generator[String => String] = {
+  implicit def function1StringToStringGenerator: Generator[String => String] = {
     object StringToStringEcho extends PrettyFunction1[String, String] {
       def apply(s: String): String = s
       override def toString = "(s: String) => s"
@@ -640,7 +640,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[String => String] {
       def next(size: Int, rnd: Randomizer): (String => String, Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
@@ -648,7 +648,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-  implicit def function1StringToOptionOfStringGenerator(implicit genOfInt: Generator[Int]): Generator[String => Option[String]] = {
+  implicit def function1StringToOptionOfStringGenerator: Generator[String => Option[String]] = {
     object StringToOptionOfStringNonZero extends PrettyFunction1[String, Option[String]] {
       def apply(s: String): Option[String] = if (s.length != 0) Some(s) else None
       override def toString = "(s: String) => if (s.length != 0) Some(s) else None"
@@ -704,14 +704,14 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[String => Option[String]] {
       def next(size: Int, rnd: Randomizer): (String => Option[String], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
       override def toString = "Generator[String => Option[String]]"
     }
   }
-  implicit def function1StringToOptionOfLongGenerator(implicit genOfInt: Generator[Int]): Generator[String => Option[Long]] = {
+  implicit def function1StringToOptionOfLongGenerator: Generator[String => Option[Long]] = {
     object StringToOptionOfStringNonZero extends PrettyFunction1[String, Option[Long]] {
       def apply(s: String): Option[Long] = if (s.length != 0) Some(s.hashCode.toLong) else None
       override def toString = "(s: String) => if (s.length != 0) Some(s.hashCode.toLong) else None"
@@ -767,14 +767,14 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[String => Option[Long]] {
       def next(size: Int, rnd: Randomizer): (String => Option[Long], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
       override def toString = "Generator[String => Option[Long]]"
     }
   }
-  implicit def function1StringToLongGenerator(implicit genOfInt: Generator[Int]): Generator[String => Long] = {
+  implicit def function1StringToLongGenerator: Generator[String => Long] = {
     object StringToLongLength extends PrettyFunction1[String, Long] {
       def apply(s: String): Long = s.length.toLong
       override def toString = "(s: String) => s.length.toLong"
@@ -837,7 +837,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
     new Generator[String => Long] {
       def next(size: Int, rnd: Randomizer): (String => Long, Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val (nextInt, nextRnd) = rnd.nextInt
         val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
         (funs(idx), nextRnd)
       }
@@ -846,8 +846,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
   }
 
   implicit def function1AToOptionBGenerator[A, B](
-    implicit genOfInt: Generator[Int],
-    genOfAToB: Generator[A => B],
+    implicit genOfAToB: Generator[A => B],
     genOfBToOptB: Generator[B => Option[B]]
   ): Generator[A => Option[B]] = {
     for {
@@ -863,8 +862,7 @@ object Generator extends LowerPriorityGeneratorImplicits {
   }
 
   implicit def function1AToBOrCGenerator[A, B, C](
-    implicit genOfInt: Generator[Int],
-    genOfAToOptB: Generator[A => Option[B]],
+    implicit genOfAToOptB: Generator[A => Option[B]],
     genOfAToC: Generator[A => C]
   ): Generator[A => B Or C] = {
     for {
