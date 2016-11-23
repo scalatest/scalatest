@@ -865,27 +865,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
     }
   }
 
-/*
-  // I don't think we should offer this, because it doesn't do a good job of testing, and
-  // in fact might give people a false sense of security. Better to have them create 
-  // their own generators for function types.
-  implicit def function1Generator[P, R](implicit genOfR: Generator[R]): Generator[P => R] = {
-    class ConstantFunction(constantResult: R) extends (P => R) {
-      def apply(i: P): R = constantResult
-      override def toString = s"_ => $constantResult"
-      def name = "const"
-      def asDef = s"def const(n: Nothing) = $constantResult"
-    }
-    new Generator[P => R] {
-      def next(size: Int, rnd: Randomizer): (P => R, Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextR, nextRnd) = genOfR.next(size, rnd)
-        (new ConstantFunction(nextR), nextRnd)
-      }
-    }
-  }
-*/
-
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
       def next(size: Int, rnd: Randomizer): (Option[T], Randomizer) = {
