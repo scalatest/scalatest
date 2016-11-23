@@ -186,28 +186,6 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[List[T]]"
     }
 
-  trait PrettyFunction1[A, B] extends (A => B) {
-    val paramName: String
-    val paramTypeName: String
-  }
-  object PrettyFunction1 {
-    def chain[A, B, C](aToBPretty: PrettyFunction1[A, B], bToCPretty: PrettyFunction1[B, C]): PrettyFunction1[A, C] =
-      new PrettyFunction1[A, C] {
-        def apply(a: A): C = {
-          val f = aToBPretty
-          val g = bToCPretty
-          g(f(a))
-        }
-        val paramName = aToBPretty.paramName
-        val paramTypeName = aToBPretty.paramTypeName
-        override def toString = {
-          s"(${aToBPretty.paramName}: ${aToBPretty.paramTypeName}) => { " + 
-          s"val f = ${aToBPretty.toString}; " +
-          s"val g = ${bToCPretty.toString}; " +
-          s"g(f(${aToBPretty.paramName})) }"
-        }
-      }
-  }
 
   implicit def function1IntToListOfStringGenerator: Generator[Int => List[String]] = {
     object IntToListOfStringIdentity extends PrettyFunction1[Int, List[String]] {
@@ -886,16 +864,11 @@ object Generator extends LowerPriorityGeneratorImplicits {
       }
     }
   }
-/*
-  implicit def function1IntToOptionStringGenerator(implicit genOfInt: Generator[Int], genOfIntToString: Generator[Int => String], genOfStringToOptString: Generator[String => Option[String]]): Generator[Int => Option[String]] = {
-    for {
-      aToB <- genOfAToB
-      bToC <- genOfBToC
-    } yield aToB andThen bToC
-  }
-*/
 
 /*
+  // I don't think we should offer this, because it doesn't do a good job of testing, and
+  // in fact might give people a false sense of security. Better to have them create 
+  // their own generators for function types.
   implicit def function1Generator[P, R](implicit genOfR: Generator[R]): Generator[P => R] = {
     class ConstantFunction(constantResult: R) extends (P => R) {
       def apply(i: P): R = constantResult
