@@ -29,8 +29,6 @@ import scala.language.higherKinds
 
 class FunctorLaws[Context[_]] private (
   implicit functor: Functor[Context],
-  /*arbCa: Arbitrary[Context[Int]],
-  shrCa: Shrink[Context[Int]]*/
   genCa: Generator[Context[Int]],
   genAa: Generator[Int => Int]
 ) extends Laws {
@@ -56,8 +54,6 @@ class FunctorLaws[Context[_]] private (
 object FunctorLaws {
   def apply[Context[_]](
     implicit functor: Functor[Context],
-    /*arbCa: Arbitrary[Context[Int]],
-    shrCa: Shrink[Context[Int]]*/
     genCa: Generator[Context[Int]],
     genAa: Generator[Int => Int]
   ): FunctorLaws[Context] = new FunctorLaws[Context]

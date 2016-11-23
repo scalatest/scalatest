@@ -29,21 +29,11 @@ import scala.language.higherKinds
 
 class ApplicativeLaws[Context[_]] private (
   implicit ap: Applicative[Context],
-  /*arbCa: Arbitrary[Context[Int]],
-  shrCa: Shrink[Context[Int]],
-  arbAb: Arbitrary[Int => String],
-  shrAb: Shrink[Int => String],
-  arbBc: Arbitrary[String => Double],
-  shrBc: Shrink[String => Double],
-  arbCab: Arbitrary[Context[Int => String]],
-  shrCab: Shrink[Context[Int => String]],
-  arbCbc: Arbitrary[Context[String => Double]],
-  shrCbc: Shrink[Context[String => Double]]*/
   genCa: Generator[Context[Int]],
   genAb: Generator[Int => String],
-  genBc: Generator[String => Double],
+  genBc: Generator[String => Long],
   genCab: Generator[Context[Int => String]],
-  genCbc: Generator[Context[String => Double]]
+  genCbc: Generator[Context[String => Long]]
 ) extends Laws {
 
   val lawsName = "applicative"
@@ -51,9 +41,9 @@ class ApplicativeLaws[Context[_]] private (
   override def laws =
     Vector(
       law("composition") {
-        forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Double]) =>
+        forAll { (ca: Context[Int], cf: Context[Int => String], cg: Context[String => Long]) =>
           ((ca applying cf) applying cg) shouldEqual
-            (ca applying (cf applying (cg map ( (g: String => Double) => (f: Int => String) => g compose f))))
+            (ca applying (cf applying (cg map ( (g: String => Long) => (f: Int => String) => g compose f))))
         }
       },
 
@@ -82,20 +72,10 @@ class ApplicativeLaws[Context[_]] private (
 object ApplicativeLaws {
   def apply[Context[_]](
     implicit ap: Applicative[Context],
-    /*arbCa: Arbitrary[Context[Int]],
-    shrCa: Shrink[Context[Int]],
-    arbAb: Arbitrary[Int => String],
-    shrAb: Shrink[Int => String],
-    arbBc: Arbitrary[String => Double],
-    shrBc: Shrink[String => Double],
-    arbCab: Arbitrary[Context[Int => String]],
-    shrCab: Shrink[Context[Int => String]],
-    arbCbc: Arbitrary[Context[String => Double]],
-    shrCbc: Shrink[Context[String => Double]]*/
     genCa: Generator[Context[Int]],
     genAb: Generator[Int => String],
-    genBc: Generator[String => Double],
+    genBc: Generator[String => Long],
     genCab: Generator[Context[Int => String]],
-    genCbc: Generator[Context[String => Double]]
+    genCbc: Generator[Context[String => Long]]
   ): ApplicativeLaws[Context] = new ApplicativeLaws[Context]
 }

@@ -34,15 +34,9 @@ import scala.language.higherKinds
  */
 class MonadLaws[Context[_]] private (
   implicit monad: Monad[Context],
-  /*arbCa: Arbitrary[Context[Int]],
-  shrCa: Shrink[Context[Int]],
-  arbCab: Arbitrary[Int => Context[String]],
-  shrCab: Shrink[Int => Context[String]],
-  arbCbc: Arbitrary[String => Context[Double]],
-  shrCbc: Shrink[String => Context[Double]]*/
   genCa: Generator[Context[Int]],
   genCab: Generator[Int => Context[String]],
-  genCbc: Generator[String => Context[Double]]
+  genCbc: Generator[String => Context[Long]]
 ) extends Laws {
 
   val lawsName = "monad"
@@ -50,7 +44,7 @@ class MonadLaws[Context[_]] private (
   override def laws =
     Vector(
       law("associativity") {
-        forAll { (ca: Context[Int], f: Int => Context[String], g: String => Context[Double]) =>
+        forAll { (ca: Context[Int], f: Int => Context[String], g: String => Context[Long]) =>
           ((ca flatMap f) flatMap g) shouldEqual (ca flatMap (a => f(a) flatMap g))
         }
       },
@@ -72,14 +66,9 @@ class MonadLaws[Context[_]] private (
 object MonadLaws {
   def apply[Context[_]](
     implicit monad: Monad[Context],
-    /*arbCa: Arbitrary[Context[Int]],
-    shrCa: Shrink[Context[Int]],
-    arbCab: Arbitrary[Int => Context[String]],
-    shrCab: Shrink[Int => Context[String]],
-    arbCbc: Arbitrary[String => Context[Double]],
-    shrCbc: Shrink[String => Context[Double]]*/
     genCa: Generator[Context[Int]],
     genCab: Generator[Int => Context[String]],
-    genCbc: Generator[String => Context[Double]]
+    genCbc: Generator[String => Context[Long]]
   ) = new MonadLaws[Context]
 }
+
