@@ -980,8 +980,16 @@ import java.net.{ServerSocket, InetAddress}
     
     Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
-    Runner.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
-    Runner.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-S", PosZInt(100)))
+    import scala.reflect.runtime._
+
+    val runtimeMirror = universe.runtimeMirror(testClassLoader)
+
+    val module = runtimeMirror.staticModule("org.scalatest.tools.Runner$")
+    val obj = runtimeMirror.reflectModule(module)
+    val runnerInstance = obj.instance.asInstanceOf[Runner.type]
+
+    runnerInstance.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
+    runnerInstance.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-S", PosZInt(100)))
 
     val autoSelectors = parseSuiteArgs(suiteArgs)
 
