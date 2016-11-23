@@ -204,8 +204,6 @@ class ScalaTestFramework extends SbtFramework {
               slowpokeDetectionDelay.getAndSet(60000L)
               slowpokeDetectionPeriod.getAndSet(60000L)
           }
-          
-          Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
           import scala.reflect.runtime._
 
@@ -215,6 +213,7 @@ class ScalaTestFramework extends SbtFramework {
           val obj = runtimeMirror.reflectModule(module)
           val runnerInstance = obj.instance.asInstanceOf[Runner.type]
 
+          runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
           runnerInstance.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
           runnerInstance.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-S", PosZInt(100)))
           

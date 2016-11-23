@@ -977,8 +977,6 @@ import java.net.{ServerSocket, InetAddress}
         case Some(SlowpokeConfig(delayInMillis, periodInMillis)) => (true, delayInMillis, periodInMillis)
         case _ => (false, 60000L, 60000L)
       }
-    
-    Runner.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
 
     import scala.reflect.runtime._
 
@@ -988,6 +986,7 @@ import java.net.{ServerSocket, InetAddress}
     val obj = runtimeMirror.reflectModule(module)
     val runnerInstance = obj.instance.asInstanceOf[Runner.type]
 
+    runnerInstance.spanScaleFactor = parseDoubleArgument(spanScaleFactors, "-F", 1.0)
     runnerInstance.minSize.getAndSet(parsePosZIntArgument(generatorMinSize, "-N", PosZInt(0)))
     runnerInstance.sizeRange.getAndSet(parsePosZIntArgument(generatorSizeRange, "-S", PosZInt(100)))
 
