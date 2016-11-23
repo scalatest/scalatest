@@ -54,7 +54,6 @@ trait LowerPriorityGeneratorImplicits {
         }
       }
     }
-
 }
 
 object Generator extends LowerPriorityGeneratorImplicits {
@@ -187,15 +186,734 @@ object Generator extends LowerPriorityGeneratorImplicits {
       override def toString = "Generator[List[T]]"
     }
 
-  implicit def function1Generator[T1, R](implicit genOfR: Generator[R]): Generator[T1 => R] =
-    new Generator[T1 => R] {
-      def next(size: Int, rnd: Randomizer): (T1 => R, Randomizer) = {
-        require(size >= 0, "; the size passed to next must be >= 0")
-        val (nextR, nextRnd) = genOfR.next(size, rnd)
-        (t1 => nextR, nextRnd)
+  trait PrettyFunction1[A, B] extends (A => B) {
+    val paramName: String
+    val paramTypeName: String
+  }
+  object PrettyFunction1 {
+    def chain[A, B, C](aToBPretty: PrettyFunction1[A, B], bToCPretty: PrettyFunction1[B, C]): PrettyFunction1[A, C] =
+      new PrettyFunction1[A, C] {
+        def apply(a: A): C = {
+          val f = aToBPretty
+          val g = bToCPretty
+          g(f(a))
+        }
+        val paramName = aToBPretty.paramName
+        val paramTypeName = aToBPretty.paramTypeName
+        override def toString = {
+          s"(${aToBPretty.paramName}: ${aToBPretty.paramTypeName}) => { " + 
+          s"val f = ${aToBPretty.toString}; " +
+          s"val g = ${bToCPretty.toString}; " +
+          s"g(f(${aToBPretty.paramName})) }"
+        }
+      }
+  }
 
+  implicit def function1IntToListOfStringGenerator(implicit genOfInt: Generator[Int]): Generator[Int => List[String]] = {
+    object IntToListOfStringIdentity extends PrettyFunction1[Int, List[String]] {
+      def apply(i: Int): List[String] = List(i.toString)
+      override def toString = "(i: Int) => List(i.toString)"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToListOfStringChars extends PrettyFunction1[Int, List[String]] {
+      def apply(i: Int): List[String] = i.toString.toList.map(_.toString)
+      override def toString = "(i: Int) => i.toString.toList.map(_.toString)"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToListOfStringCharPairs extends PrettyFunction1[Int, List[String]] {
+      def apply(i: Int): List[String] = i.toString.toList.sliding(2).toList.map(_.mkString)
+      override def toString = "(i: Int) => i.toString.toList.sliding(2).toList.map(_.mkString)"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    val funs: Vector[Int => List[String]] =
+      Vector(
+        IntToListOfStringIdentity,
+        IntToListOfStringChars,
+        IntToListOfStringCharPairs
+      )
+    new Generator[Int => List[String]] {
+      def next(size: Int, rnd: Randomizer): (Int => List[String], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[Int => List[String]]"
+    }
+  }
+  implicit def function1StringToListOfLongGenerator(implicit genOfInt: Generator[Int]): Generator[String => List[Long]] = {
+    object StringToListOfLongLength extends PrettyFunction1[String, List[Long]] {
+      def apply(s: String): List[Long] = List(s.length.toLong)
+      override def toString = "(s: String) => List(s.length.toLong)"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToListOfLongChars extends PrettyFunction1[String, List[Long]] {
+      def apply(s: String): List[Long] = s.toList.map(_.toLong)
+      override def toString = "(s: String) => s.toList.map(_.toLong)"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToListOfReverseLongChars extends PrettyFunction1[String, List[Long]] {
+      def apply(s: String): List[Long] = s.toList.reverse.map(_.toLong)
+      override def toString = "(s: String) => s.toList.reverse.map(_.toLong)"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    val funs: Vector[String => List[Long]] =
+      Vector(
+        StringToListOfLongLength,
+        StringToListOfLongChars,
+        StringToListOfReverseLongChars
+      )
+    new Generator[String => List[Long]] {
+      def next(size: Int, rnd: Randomizer): (String => List[Long], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[String => List[Long]]"
+    }
+  }
+
+  implicit def function1IntToIntGenerator(implicit genOfInt: Generator[Int]): Generator[Int => Int] = {
+    object IntToIntIdentity extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i
+      override def toString = "(i: Int) => i"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntIncr extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i + 1
+      override def toString = "(i: Int) => i + 1"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntSquare extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i * 1
+      override def toString = "(i: Int) => i * i"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntHalf extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i / 2
+      override def toString = "(i: Int) => i / 2"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntAddMax extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i + Int.MaxValue
+      override def toString = "(i: Int) => i + Int.MaxValue"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntAddMin extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i + Int.MinValue
+      override def toString = "(i: Int) => i + Int.MinValue"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntSubtractMax extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i - Int.MaxValue
+      override def toString = "(i: Int) => i - Int.MaxValue"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntSubtractMin extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i - Int.MinValue
+      override def toString = "(i: Int) => i - Int.MinValue"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntAbs extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = i.abs
+      override def toString = "(i: Int) => i.abs"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntNegate extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = -i
+      override def toString = "(i: Int) => -i"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToIntComplement extends PrettyFunction1[Int, Int] {
+      def apply(i: Int): Int = ~i
+      override def toString = "(i: Int) => ~i"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    val funs: Vector[Int => Int] =
+      Vector(
+        IntToIntIdentity,
+        IntToIntIncr,
+        IntToIntSquare,
+        IntToIntHalf,
+        IntToIntAddMax,
+        IntToIntAddMin,
+        IntToIntSubtractMax,
+        IntToIntSubtractMin,
+        IntToIntAbs,
+        IntToIntNegate,
+        IntToIntComplement
+      )
+    new Generator[Int => Int] {
+      def next(size: Int, rnd: Randomizer): (Int => Int, Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[Int => Int]"
+    }
+  }
+
+  implicit def function1IntToOptionOfIntGenerator(implicit genOfInt: Generator[Int]): Generator[Int => Option[Int]] = {
+    object IntToOptionOfIntNonZero extends PrettyFunction1[Int, Option[Int]] {
+      def apply(i: Int): Option[Int] = if (i != 0) Some(i) else None
+      override def toString = "(i: Int) => if (i != 0) Some(i) else None"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToOptionOfIntPositive extends PrettyFunction1[Int, Option[Int]] {
+      def apply(i: Int): Option[Int] = if (i > 0) Some(i) else None
+      override def toString = "(i: Int) => if (i > 0) Some(i) else None"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToOptionOfIntNegative extends PrettyFunction1[Int, Option[Int]] {
+      def apply(i: Int): Option[Int] = if (i < 0) Some(i) else None
+      override def toString = "(i: Int) => if (i < 0) Some(i) else None"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToOptionOfIntEven extends PrettyFunction1[Int, Option[Int]] {
+      def apply(i: Int): Option[Int] = if (i % 2 == 0) Some(i) else None
+      override def toString = "(i: Int) => if (i % 2 == 0) Some(i) else None"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToOptionOfIntOdd extends PrettyFunction1[Int, Option[Int]] {
+      def apply(i: Int): Option[Int] = if (i % 2 == 1) Some(i) else None
+      override def toString = "(i: Int) => if (i % 2 == 1) Some(i) else None"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    val funs: Vector[Int => Option[Int]] =
+      Vector(
+        IntToOptionOfIntNonZero,
+        IntToOptionOfIntPositive,
+        IntToOptionOfIntNegative,
+        IntToOptionOfIntEven,
+        IntToOptionOfIntOdd
+      )
+    new Generator[Int => Option[Int]] {
+      def next(size: Int, rnd: Randomizer): (Int => Option[Int], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[Int => Option[Int]]"
+    }
+  }
+
+  implicit def function1IntToStringGenerator(implicit genOfInt: Generator[Int]): Generator[Int => String] = {
+    object IntToStringIdentity extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = i.toString
+      override def toString = "(i: Int) => i.toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringIncr extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = (i + 1).toString
+      override def toString = "(i: Int) => (i + 1).toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringSquare extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = (i * 1).toString
+      override def toString = "(i: Int) => (i * i).toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringAddMax extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = (i + Int.MaxValue).toString
+      override def toString = "(i: Int) => (i + Int.MaxValue).toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringAddMin extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = (i + Int.MinValue).toString
+      override def toString = "(i: Int) => (i + Int.MinValue).toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringSubtractMax extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = (i - Int.MaxValue).toString
+      override def toString = "(i: Int) => (i - Int.MaxValue).toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringSubtractMin extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = (i - Int.MinValue).toString
+      override def toString = "(i: Int) => (i - Int.MinValue).toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringAbs extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = i.abs.toString
+      override def toString = "(i: Int) => i.abs.toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringNegate extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = (-i).toString
+      override def toString = "(i: Int) => (-i).toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    object IntToStringComplement extends PrettyFunction1[Int, String] {
+      def apply(i: Int): String = (~i).toString
+      override def toString = "(i: Int) => (~i).toString"
+      val paramName: String = "i"
+      val paramTypeName: String = "Int"
+    }
+    val funs: Vector[Int => String] =
+      Vector(
+        IntToStringIdentity,
+        IntToStringIncr,
+        IntToStringSquare,
+        IntToStringAddMax,
+        IntToStringAddMin,
+        IntToStringSubtractMax,
+        IntToStringSubtractMin,
+        IntToStringAbs,
+        IntToStringNegate,
+        IntToStringComplement
+      )
+    new Generator[Int => String] {
+      def next(size: Int, rnd: Randomizer): (Int => String, Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[Int => String]"
+    }
+  }
+
+  implicit def function1StringToIntGenerator(implicit genOfInt: Generator[Int]): Generator[String => Int] = {
+    object StringToIntLength extends PrettyFunction1[String, Int] {
+      def apply(s: String): Int = s.length
+      override def toString = "(s: String) => s.length"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToIntHead extends PrettyFunction1[String, Int] {
+      def apply(s: String): Int = if (s.isEmpty) 0 else s.charAt(0)
+      override def toString = "(s: String) => if (s.isEmpty) 0 else s.charAt(0).toInt"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToIntSum extends PrettyFunction1[String, Int] {
+      def apply(s: String): Int = s.toList.map(_.toInt).sum
+      override def toString = "(s: String) => s.toList.map(_.toInt).sum"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToIntProd extends PrettyFunction1[String, Int] {
+      def apply(s: String): Int = s.toList.map(_.toInt).product
+      override def toString = "(s: String) => s.toList.map(_.toInt).product"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToIntUpperSum extends PrettyFunction1[String, Int] {
+      def apply(s: String): Int = s.toUpperCase.toList.map(_.toInt).sum
+      override def toString = "(s: String) => s.toUpperCase.toList.map(_.toInt).sum"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToIntUpperProd extends PrettyFunction1[String, Int] {
+      def apply(s: String): Int = s.toUpperCase.toList.map(_.toInt).product
+      override def toString = "(s: String) => s.toUpperCase.toList.map(_.toInt).product"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToIntLowerSum extends PrettyFunction1[String, Int] {
+      def apply(s: String): Int = s.toLowerCase.toList.map(_.toInt).sum
+      override def toString = "(s: String) => s.toLowerCase.toList.map(_.toInt).sum"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToIntLowerProd extends PrettyFunction1[String, Int] {
+      def apply(s: String): Int = s.toLowerCase.toList.map(_.toInt).product
+      override def toString = "(s: String) => s.toLowerCase.toList.map(_.toInt).product"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    val funs: Vector[String => Int] =
+      Vector(
+        StringToIntLength,
+        StringToIntHead,
+        StringToIntSum,
+        StringToIntProd,
+        StringToIntUpperSum,
+        StringToIntUpperProd,
+        StringToIntLowerSum,
+        StringToIntLowerProd
+      )
+    new Generator[String => Int] {
+      def next(size: Int, rnd: Randomizer): (String => Int, Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[String => Int]"
+    }
+  }
+  implicit def function1StringToStringGenerator(implicit genOfInt: Generator[Int]): Generator[String => String] = {
+    object StringToStringEcho extends PrettyFunction1[String, String] {
+      def apply(s: String): String = s
+      override def toString = "(s: String) => s"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToStringReverse extends PrettyFunction1[String, String] {
+      def apply(s: String): String = s.reverse
+      override def toString = "(s: String) => s.reverse"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToStringLength extends PrettyFunction1[String, String] {
+      def apply(s: String): String = s.length.toString
+      override def toString = "(s: String) => s.length.toString"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToStringHead extends PrettyFunction1[String, String] {
+      def apply(s: String): String = if (s.isEmpty) s else s.substring(0, 1)
+      override def toString = "(s: String) => if (s.isEmpty) s else s.substring(0, 1)"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToStringFirstHalf extends PrettyFunction1[String, String] {
+      def apply(s: String): String = s.substring(0, s.length / 2)
+      override def toString = "(s: String) => s.substring(0, s.length / 2)"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToStringSecondHalf extends PrettyFunction1[String, String] {
+      def apply(s: String): String = s.substring(s.length / 2)
+      override def toString = "(s: String) => s.substring(s.length / 2)"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToStringLower extends PrettyFunction1[String, String] {
+      def apply(s: String): String = s.toLowerCase
+      override def toString = "(s: String) => s.toLowerCase"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToStringUpper extends PrettyFunction1[String, String] {
+      def apply(s: String): String = s.toUpperCase
+      override def toString = "(s: String) => s.toUpperCase"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    val funs: Vector[String => String] =
+      Vector(
+        StringToStringEcho,
+        StringToStringReverse,
+        StringToStringLength,
+        StringToStringHead,
+        StringToStringFirstHalf,
+        StringToStringSecondHalf,
+        StringToStringLower,
+        StringToStringUpper
+      )
+    new Generator[String => String] {
+      def next(size: Int, rnd: Randomizer): (String => String, Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[String => String]"
+    }
+  }
+
+  implicit def function1StringToOptionOfStringGenerator(implicit genOfInt: Generator[Int]): Generator[String => Option[String]] = {
+    object StringToOptionOfStringNonZero extends PrettyFunction1[String, Option[String]] {
+      def apply(s: String): Option[String] = if (s.length != 0) Some(s) else None
+      override def toString = "(s: String) => if (s.length != 0) Some(s) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringEvenLen extends PrettyFunction1[String, Option[String]] {
+      def apply(s: String): Option[String] = if (s.length % 2 == 0) Some(s) else None
+      override def toString = "(s: String) => if (s.length % 2 == 0) Some(s) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringOddLen extends PrettyFunction1[String, Option[String]] {
+      def apply(s: String): Option[String] = if (s.length % 2 == 1) Some(s) else None
+      override def toString = "(s: String) => if (s.length % 2 == 1) Some(s) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringEvenSum extends PrettyFunction1[String, Option[String]] {
+      def apply(s: String): Option[String] = if (s.sum % 2 == 0) Some(s) else None
+      override def toString = "(s: String) => if (s.sum % 2 == 0) Some(s) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringOddSum extends PrettyFunction1[String, Option[String]] {
+      def apply(s: String): Option[String] = if (s.sum % 2 == 1) Some(s) else None
+      override def toString = "(s: String) => if (s.sum % 2 == 1) Some(s) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringEvenProd extends PrettyFunction1[String, Option[String]] {
+      def apply(s: String): Option[String] = if (s.product % 2 == 0) Some(s) else None
+      override def toString = "(s: String) => if (s.product % 2 == 0) Some(s) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringOddProd extends PrettyFunction1[String, Option[String]] {
+      def apply(s: String): Option[String] = if (s.product % 2 == 1) Some(s) else None
+      override def toString = "(s: String) => if (s.product % 2 == 1) Some(s) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    val funs: Vector[String => Option[String]] =
+      Vector(
+        StringToOptionOfStringNonZero,
+        StringToOptionOfStringEvenLen,
+        StringToOptionOfStringOddLen,
+        StringToOptionOfStringEvenSum,
+        StringToOptionOfStringOddSum,
+        StringToOptionOfStringEvenProd,
+        StringToOptionOfStringOddProd
+      )
+    new Generator[String => Option[String]] {
+      def next(size: Int, rnd: Randomizer): (String => Option[String], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[String => Option[String]]"
+    }
+  }
+  implicit def function1StringToOptionOfLongGenerator(implicit genOfInt: Generator[Int]): Generator[String => Option[Long]] = {
+    object StringToOptionOfStringNonZero extends PrettyFunction1[String, Option[Long]] {
+      def apply(s: String): Option[Long] = if (s.length != 0) Some(s.hashCode.toLong) else None
+      override def toString = "(s: String) => if (s.length != 0) Some(s.hashCode.toLong) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringEvenLen extends PrettyFunction1[String, Option[Long]] {
+      def apply(s: String): Option[Long] = if (s.length % 2 == 0) Some(s.hashCode.toLong) else None
+      override def toString = "(s: String) => if (s.length % 2 == 0) Some(s.hashCode.toLong) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringOddLen extends PrettyFunction1[String, Option[Long]] {
+      def apply(s: String): Option[Long] = if (s.length % 2 == 1) Some(s.hashCode.toLong) else None
+      override def toString = "(s: String) => if (s.length % 2 == 1) Some(s.hashCode.toLong) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringEvenSum extends PrettyFunction1[String, Option[Long]] {
+      def apply(s: String): Option[Long] = if (s.sum % 2 == 0) Some(s.hashCode.toLong) else None
+      override def toString = "(s: String) => if (s.sum % 2 == 0) Some(s.hashCode.toLong) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringOddSum extends PrettyFunction1[String, Option[Long]] {
+      def apply(s: String): Option[Long] = if (s.sum % 2 == 1) Some(s.hashCode.toLong) else None
+      override def toString = "(s: String) => if (s.sum % 2 == 1) Some(s.hashCode.toLong) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringEvenProd extends PrettyFunction1[String, Option[Long]] {
+      def apply(s: String): Option[Long] = if (s.product % 2 == 0) Some(s.hashCode.toLong) else None
+      override def toString = "(s: String) => if (s.product % 2 == 0) Some(s.hashCode.toLong) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToOptionOfStringOddProd extends PrettyFunction1[String, Option[Long]] {
+      def apply(s: String): Option[Long] = if (s.product % 2 == 1) Some(s.hashCode.toLong) else None
+      override def toString = "(s: String) => if (s.product % 2 == 1) Some(s.hashCode.toLong) else None"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    val funs: Vector[String => Option[Long]] =
+      Vector(
+        StringToOptionOfStringNonZero,
+        StringToOptionOfStringEvenLen,
+        StringToOptionOfStringOddLen,
+        StringToOptionOfStringEvenSum,
+        StringToOptionOfStringOddSum,
+        StringToOptionOfStringEvenProd,
+        StringToOptionOfStringOddProd
+      )
+    new Generator[String => Option[Long]] {
+      def next(size: Int, rnd: Randomizer): (String => Option[Long], Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[String => Option[Long]]"
+    }
+  }
+  implicit def function1StringToLongGenerator(implicit genOfInt: Generator[Int]): Generator[String => Long] = {
+    object StringToLongLength extends PrettyFunction1[String, Long] {
+      def apply(s: String): Long = s.length.toLong
+      override def toString = "(s: String) => s.length.toLong"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToLongHead extends PrettyFunction1[String, Long] {
+      def apply(s: String): Long = if (s.isEmpty) 0L else s.charAt(0).toLong
+      override def toString = "(s: String) => if (s.isEmpty) 0L else s.charAt(0).toLong"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToLongSum extends PrettyFunction1[String, Long] {
+      def apply(s: String): Long = s.toList.map(_.toLong).sum
+      override def toString = "(s: String) => s.toList.map(_.toLong).sum"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToLongProd extends PrettyFunction1[String, Long] {
+      def apply(s: String): Long = s.toList.map(_.toLong).product
+      override def toString = "(s: String) => s.toList.map(_.toLong).product"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToLongUpperSum extends PrettyFunction1[String, Long] {
+      def apply(s: String): Long = s.toUpperCase.toList.map(_.toLong).sum
+      override def toString = "(s: String) => s.toUpperCase.toList.map(_.toLong).sum"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToLongUpperProd extends PrettyFunction1[String, Long] {
+      def apply(s: String): Long = s.toUpperCase.toList.map(_.toLong).product
+      override def toString = "(s: String) => s.toUpperCase.toList.map(_.toLong).product"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToLongLowerSum extends PrettyFunction1[String, Long] {
+      def apply(s: String): Long = s.toLowerCase.toList.map(_.toLong).sum
+      override def toString = "(s: String) => s.toLowerCase.toList.map(_.toLong).sum"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    object StringToLongLowerProd extends PrettyFunction1[String, Long] {
+      def apply(s: String): Long = s.toLowerCase.toList.map(_.toLong).product
+      override def toString = "(s: String) => s.toLowerCase.toList.map(_.toLong).product"
+      val paramName: String = "s"
+      val paramTypeName: String = "String"
+    }
+    val funs: Vector[String => Long] =
+      Vector(
+        StringToLongLength,
+        StringToLongHead,
+        StringToLongSum,
+        StringToLongProd,
+        StringToLongUpperSum,
+        StringToLongUpperProd,
+        StringToLongLowerSum,
+        StringToLongLowerProd
+      )
+    new Generator[String => Long] {
+      def next(size: Int, rnd: Randomizer): (String => Long, Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextInt, nextRnd) = genOfInt.next(size, rnd)
+        val idx = (if (nextInt == Int.MinValue) Int.MaxValue else nextInt.abs) % funs.length
+        (funs(idx), nextRnd)
+      }
+      override def toString = "Generator[String => Long]"
+    }
+  }
+
+  implicit def function1AToOptionBGenerator[A, B](
+    implicit genOfInt: Generator[Int],
+    genOfAToB: Generator[A => B],
+    genOfBToOptB: Generator[B => Option[B]]
+  ): Generator[A => Option[B]] = {
+    for {
+      aToB <- genOfAToB
+      bToOptB <- genOfBToOptB
+    } yield {
+      (aToB, bToOptB) match {
+        case (aToBPretty: PrettyFunction1[A, B], bToOptBPretty: PrettyFunction1[B, Option[B]]) =>
+          PrettyFunction1.chain(aToBPretty, bToOptBPretty)
+        case _ => aToB andThen bToOptB
       }
     }
+  }
+
+  implicit def function1AToBOrCGenerator[A, B, C](
+    implicit genOfInt: Generator[Int],
+    genOfAToOptB: Generator[A => Option[B]],
+    genOfAToC: Generator[A => C]
+  ): Generator[A => B Or C] = {
+    for {
+      aToOptB <- genOfAToOptB
+      aToC <- genOfAToC
+    } yield {
+      (aToOptB, aToC) match {
+        case (aToOptBPretty: PrettyFunction1[A, Option[B]], aToCPretty: PrettyFunction1[A, C]) =>
+          new PrettyFunction1[A, B Or C] {
+            def apply(a: A): B Or C = Or.from(aToOptBPretty(a), aToCPretty(a))
+            val paramName = aToOptBPretty.paramName
+            val paramTypeName = aToOptBPretty.paramTypeName
+            override def toString = {
+              s"(${aToOptBPretty.paramName}: ${aToOptBPretty.paramTypeName}) => { " + 
+              s"val f = ${aToOptBPretty.toString}; " +
+              s"val g = ${aToCPretty.toString}; " +
+              s"Or.from(f(${aToOptBPretty.paramName}), g(${aToOptBPretty.paramName})) }"
+            }
+          }
+        case _ => (a: A) => Or.from(aToOptB(a), aToC(a))
+      }
+    }
+  }
+/*
+  implicit def function1IntToOptionStringGenerator(implicit genOfInt: Generator[Int], genOfIntToString: Generator[Int => String], genOfStringToOptString: Generator[String => Option[String]]): Generator[Int => Option[String]] = {
+    for {
+      aToB <- genOfAToB
+      bToC <- genOfBToC
+    } yield aToB andThen bToC
+  }
+*/
+
+/*
+  implicit def function1Generator[P, R](implicit genOfR: Generator[R]): Generator[P => R] = {
+    class ConstantFunction(constantResult: R) extends (P => R) {
+      def apply(i: P): R = constantResult
+      override def toString = s"_ => $constantResult"
+      def name = "const"
+      def asDef = s"def const(n: Nothing) = $constantResult"
+    }
+    new Generator[P => R] {
+      def next(size: Int, rnd: Randomizer): (P => R, Randomizer) = {
+        require(size >= 0, "; the size passed to next must be >= 0")
+        val (nextR, nextRnd) = genOfR.next(size, rnd)
+        (new ConstantFunction(nextR), nextRnd)
+      }
+    }
+  }
+*/
 
   implicit def optionGenerator[T](implicit genOfT: Generator[T]): Generator[Option[T]] =
     new Generator[Option[T]] {
@@ -211,8 +929,8 @@ object Generator extends LowerPriorityGeneratorImplicits {
       }
     }
 
-  implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[Or[G, B]] =
-    new Generator[Or[G, B]] {
+  implicit def orGenerator[G, B](implicit genOfG: Generator[G], genOfB: Generator[B]): Generator[G Or B] =
+    new Generator[G Or B] {
       def next(size: Int, rnd: Randomizer): (Or[G, B], Randomizer) = {
         require(size >= 0, "; the size passed to next must be >= 0")
         val (nextInt, nextRnd) = rnd.nextInt
