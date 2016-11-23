@@ -220,8 +220,6 @@ object ScalatestBuild extends Build {
       "-m", "org.scalatest.words",
       "-m", "org.scalatest.enablers",
       "-oDI",
-      "N",
-      "5",
       "-W", "120", "60",
       "-h", "target/html",
       "-u", "target/junit",
