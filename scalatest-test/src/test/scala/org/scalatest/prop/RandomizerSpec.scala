@@ -134,7 +134,6 @@ class RandomizerSpec extends FunSpec with Matchers {
     }
     it("should offer a nextList[T] method that produces a List[T] of the requested 0 or greater size") {
 
-      
       an [IllegalArgumentException] should be thrownBy { Randomizer(100).nextList[Int](-1) }
 
       val (la, ra) = Randomizer(100).nextList[Int](0)
@@ -150,6 +149,26 @@ class RandomizerSpec extends FunSpec with Matchers {
       ld should have length 100
 
       ld.distinct shouldNot have size 1
+    }
+    it("should offer a shuffle method in its companion object that shuffles a list.") {
+      import GeneratorDrivenPropertyChecks._
+      var nextRnd = Randomizer.default
+      forAll { (xs: List[Int]) =>
+        val (shuffled, nr) = Randomizer.shuffle(xs, nextRnd)
+        nextRnd = nr
+/* shuffled should not equal xs
+[info] - should offer a shuffle method in its companion object that shuffles a list. *** FAILED *** (13 milliseconds)
+[info]   GeneratorDrivenPropertyCheckFailedException was thrown during property evaluation.
+[info]    (RandomizerSpec.scala:156)
+[info]     Falsified after 0 successful property evaluations.
+[info]     Location: (RandomizerSpec.scala:156)
+[info]     Occurred when passed generated values (
+[info]       arg0 = PropertyArgument(None,List())
+[info]     )
+This should just say arg0 = List()
+*/
+        shuffled should contain theSameElementsAs xs
+      }
     }
   }
 }

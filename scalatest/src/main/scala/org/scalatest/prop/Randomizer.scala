@@ -197,6 +197,7 @@ class Randomizer(seed: Long) { thisRandomizer =>
       loop(this)
     }
   }
+
 }
 
 object Randomizer {
@@ -207,6 +208,31 @@ object Randomizer {
   // Note, this method where you pass the seed in will produce edges in always the same order, so it 
   // is completely predictable. Maybe I should offer a way to let people customize edges too I suppose.
   def apply(seed: Long): Randomizer = new Randomizer((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1))
+
+  def shuffle[T](xs: List[T], rnd: Randomizer): (List[T], Randomizer) = {
+
+    import scala.collection.mutable.ArrayBuffer
+
+    val buf = ArrayBuffer.empty[T]
+    buf ++= xs
+
+    def swap(i: Int, j: Int) {
+      val tmp = buf(i)
+      buf(i) = buf(j)
+      buf(j) = tmp
+    }
+
+    var nextRnd = rnd
+
+    for (n <- buf.length to 2 by -1) {
+      val (ni, nr) = rnd.nextInt
+      nextRnd = nr
+      val k = ni.abs % n
+      swap(n - 1, k)
+    }
+
+    (buf.toList, nextRnd)
+  }
 }
 
 
